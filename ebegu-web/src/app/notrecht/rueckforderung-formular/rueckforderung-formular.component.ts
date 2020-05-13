@@ -26,6 +26,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
@@ -39,6 +40,9 @@ import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungFormularComponent implements OnInit {
+    public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
+        return this._rueckforderungZahlungenList;
+    }
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
@@ -50,6 +54,10 @@ export class RueckforderungFormularComponent implements OnInit {
     public erstattungGemaessKanton: boolean;
     public mahlzeitenBGSubventionenGebuehrensystem: boolean;
     public belegeEinreichenBetrageKantonZurueckfordern: boolean;
+    private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
+    private _stufe1ProvBetrag: number;
+
+    private readonly TAGEMULTIPLYFACTOR: number = 25;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -70,6 +78,7 @@ export class RueckforderungFormularComponent implements OnInit {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
+                    this.initRueckforderungZahlungen(response);
                     return response;
                 }));
     }
@@ -117,6 +126,30 @@ export class RueckforderungFormularComponent implements OnInit {
         }
 
         this.saveRueckforderungFormular(rueckforderungFormular);
+    }
+
+    public initRueckforderungZahlungen(rueckfordeungFormular: TSRueckforderungFormular): void {
+        this._rueckforderungZahlungenList = [];
+        if (EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeBetrag)) {
+            const rueckforderungZahlungStufe1 = new TSRueckforderungZahlung();
+            rueckforderungZahlungStufe1.betrag = rueckfordeungFormular.stufe1FreigabeBetrag;
+            rueckforderungZahlungStufe1.datumErstellt = rueckfordeungFormular.stufe1FreigabeDatum;
+            rueckforderungZahlungStufe1.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_STUFE_1';
+            rueckforderungZahlungStufe1.ausgeloest =
+                EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeAusbezahltAm);
+            this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe1);
+        }
+        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungBetrag)) {
+            return;
+        }
+        const rueckforderungZahlungStufe2 = new TSRueckforderungZahlung();
+        rueckforderungZahlungStufe2.betrag = rueckfordeungFormular.stufe2VerfuegungBetrag;
+        rueckforderungZahlungStufe2.datumErstellt = rueckfordeungFormular.stufe2VerfuegungDatum;
+        rueckforderungZahlungStufe2.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_STUFE_2';
+        rueckforderungZahlungStufe2.ausgeloest =
+            EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungAusbezahltAm);
+        this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe2);
+
     }
 
     public enableRueckforderungAbschliessen(): boolean {
@@ -167,6 +200,54 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public isKitaAngebot(rueckforderungFormular: TSRueckforderungFormular): boolean {
         return rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
+    }
+
+    public calculateInstiProvBetrag(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.stufe1ProvBetrag = undefined;
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung)) {
+            return;
+        }
+        if (this.isKitaAngebot(rueckforderungFormular)
+            && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage)) {
+            this.stufe1ProvBetrag =
+                rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage * this.TAGEMULTIPLYFACTOR
+                + rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
+            return;
+        }
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden)) {
+            return;
+        }
+        this.stufe1ProvBetrag =
+            rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden * 1
+            + rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
+    }
+
+    public calculateKantonProvBetrag(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.stufe1ProvBetrag = undefined;
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung)) {
+            return;
+        }
+        if (this.isKitaAngebot(rueckforderungFormular)
+            && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage)) {
+            this.stufe1ProvBetrag =
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage * this.TAGEMULTIPLYFACTOR
+                + rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
+            return;
+        }
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden)) {
+            return;
+        }
+        this.stufe1ProvBetrag =
+            rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden * 1
+            + rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
+    }
+
+    public get stufe1ProvBetrag(): number {
+        return this._stufe1ProvBetrag;
+    }
+
+    public set stufe1ProvBetrag(stufe1ProvBetrag: number) {
+        this._stufe1ProvBetrag = stufe1ProvBetrag;
     }
 
     public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
