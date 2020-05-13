@@ -58,7 +58,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -121,35 +120,12 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		q.setParameter(keyParam, ebeguVorlageKey);
 		List<EbeguVorlage> resultList = q.getResultList();
 		EbeguVorlage paramOrNull = null;
-		if (!resultList.isEmpty() && resultList.size() == 1) {
+		if (resultList.size() == 1) {
 			paramOrNull = resultList.get(0);
 		} else if (resultList.size() > 1) {
 			throw new NonUniqueResultException();
 		}
 		return Optional.ofNullable(paramOrNull);
-	}
-
-	@Nonnull
-	@PermitAll
-	private Optional<EbeguVorlage> getNewestEbeguVorlageByKey(EbeguVorlageKey key) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<EbeguVorlage> query = cb.createQuery(EbeguVorlage.class);
-		Root<EbeguVorlage> root = query.from(EbeguVorlage.class);
-		query.select(root);
-
-		ParameterExpression<EbeguVorlageKey> nameParam = cb.parameter(EbeguVorlageKey.class, "key");
-		Predicate namePredicate = cb.equal(root.get(EbeguVorlage_.name), nameParam);
-
-		query.orderBy(cb.desc(root.get(EbeguVorlage_.timestampErstellt)));
-		query.where(namePredicate);
-		TypedQuery<EbeguVorlage> q = persistence.getEntityManager().createQuery(query);
-		q.setParameter(nameParam, key);
-
-		List<EbeguVorlage> resultList = q.getResultList();
-		if (CollectionUtils.isNotEmpty(resultList)) {
-			return Optional.of(resultList.get(0));
-		}
-		return Optional.empty();
 	}
 
 	@Override
