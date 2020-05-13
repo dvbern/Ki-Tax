@@ -17,56 +17,40 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
+public class JaxRueckforderungMitteilungRequestParams extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -8553194968646128553L;
 
 	@Nonnull
-	private String betreff;
+	private JaxRueckforderungMitteilung mitteilung;
 
 	@Nonnull
-	private String inhalt;
-
-	@Nullable
-	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime sendeDatum;
-
+	private List<RueckforderungStatus> statusList;
 
 	@Nonnull
-	public String getBetreff() {
-		return betreff;
+	public JaxRueckforderungMitteilung getMitteilung() {
+		return mitteilung;
 	}
 
-	public void setBetreff(@Nonnull String betreff) {
-		this.betreff = betreff;
+	public void setMitteilung(@Nonnull JaxRueckforderungMitteilung mitteilung) {
+		this.mitteilung = mitteilung;
 	}
 
 	@Nonnull
-	public String getInhalt() {
-		return inhalt;
+	public List<RueckforderungStatus> getStatusList() {
+		return statusList;
 	}
 
-	public void setInhalt(@Nonnull String inhalt) {
-		this.inhalt = inhalt;
-	}
-
-	@Nullable
-	public LocalDateTime getSendeDatum() {
-		return sendeDatum;
-	}
-
-	public void setSendeDatum(@Nonnull LocalDateTime sendeDatum) {
-		this.sendeDatum = sendeDatum;
+	public void setStatusList(@Nonnull List<RueckforderungStatus> statusList) {
+		this.statusList = statusList;
 	}
 }

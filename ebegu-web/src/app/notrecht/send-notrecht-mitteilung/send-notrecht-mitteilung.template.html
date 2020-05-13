@@ -1,0 +1,90 @@
+<!--
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<form role="form"
+	  #form="ngForm"
+      [ngClass]="{'ng-submitted': form.submitted}"
+      (ngSubmit)="save()"
+      novalidate>
+    <mat-dialog-content class="send-notrecht-mitteilung-dialog">
+
+        <div class="row" *ngIf="!isEinladung">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="select-status" translate>MITTEILUNG_SENDEN_AN_STATUS</label>
+                    <mat-select class="form-control"
+                                [(ngModel)]="statusToSendMitteilung"
+                                name="selectStatus"
+                                id="select-status"
+                                required
+                                [multiple]="true">
+                        <mat-option *ngFor="let status of getAllRueckforderungFormularStatus()"
+                                    [value]="status">
+                            {{translateRueckforderungStatus(status)}}
+                        </mat-option>
+                    </mat-select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="md-no-float" translate="MITTEILUNG_SUBJECT"
+                           for="betreff">
+                    </label>
+                    <input
+                        type="text"
+                        name="betreff"
+                        class="form-control"
+                        id="betreff"
+                        required
+                        [(ngModel)]="mitteilung.betreff"
+                        maxlength="250">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="md-no-float" translate="MITTEILUNG_MESSAGE"
+                           for="inhalt">
+                    </label>
+                    <textarea name="inhalt"
+                              class="form-control " rows="12"
+                              id="inhalt"
+                              required
+                              [(ngModel)]="mitteilung.inhalt"
+                              maxlength="4000">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <div class="dv-dialog-actions">
+            <button type="submit" class="dv-btn">
+                <i class="fa fa-lg fa-paper-plane"></i>&nbsp;
+                <span [textContent]="'MITTEILUNG_SENDEN' | translate"></span>
+            </button>
+            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+        </div>
+    </mat-dialog-actions>
+</form>

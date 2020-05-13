@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
@@ -50,10 +51,12 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -622,6 +625,33 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			}
 		} else {
 			LOG.warn("skipping setInfoGemeineAngebotAktiviert because Mitteilungsempfaenger is null");
+		}
+	}
+
+	@Override
+	public void sendNotrechtGenerischeMitteilung(
+		@Nonnull RueckforderungMitteilung mitteilung,
+		@Nonnull String empfaengerMail,
+		@Nonnull List<RueckforderungStatus> statusList
+	) {
+		if (StringUtils.isNotEmpty(empfaengerMail)) {
+			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(
+				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt());
+			String statusAsString = statusList.stream()
+				.map(RueckforderungStatus::name)
+				.collect(Collectors.joining(","));
+			try {
+				sendMessageWithTemplate(mail, empfaengerMail);
+				LOG.debug("Email fuer NotrechtGenerischeMitteilung wurde versendet an {} für Status {}",
+					empfaengerMail, statusAsString);
+			} catch (Exception e) {
+				logExceptionAccordingToEnvironment(
+					e,
+					"Mail NotrechtGenerischeMitteilung konnte nicht verschickt werden fuer Empfaenger ",
+					empfaengerMail);
+			}
+		} else {
+			LOG.warn("skipping NotrechtGenerischeMitteilung because Mitteilungsempfaenger is null");
 		}
 	}
 }
