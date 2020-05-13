@@ -24,11 +24,14 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 
 @Component({
     selector: 'dv-rueckforderung-formular',
@@ -60,7 +63,9 @@ export class RueckforderungFormularComponent implements OnInit {
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
         private readonly notrechtRS: NotrechtRS,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
     }
 
@@ -74,6 +79,9 @@ export class RueckforderungFormularComponent implements OnInit {
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
                     this.initRueckforderungZahlungen(response);
+                    if (this.isPruefungKantonStufe1(response)) {
+                        this.calculateKantonProvBetrag(response);
+                    }
                     return response;
                 }));
     }
@@ -247,5 +255,18 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public set stufe1ProvBetrag(stufe1ProvBetrag: number) {
         this._stufe1ProvBetrag = stufe1ProvBetrag;
+    }
+
+    public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        const language = this.i18nServiceRS.currentLanguage();
+        const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
+        this.downloadRS.getAccessTokenNotrechtvorlage(language, angebotTyp)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 }

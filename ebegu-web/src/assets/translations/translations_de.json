@@ -2019,5 +2019,7 @@
     "RUECKFORDERUNG_ZAHLUNGEN_STUFE_2": "STUFE 2",
     "RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG": "Provisorische Betrag",
     "BESTAETIGEN": "Bestätigen",
+    "RUECKFORDERUNG_MITTEILUNGEN": "Mitteilungen",
+    "RUECKFORDERUNG_DOWNLOAD_VORLAGE": "Vorlage herunterladen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

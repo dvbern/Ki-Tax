@@ -15,6 +15,9 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -22,16 +25,10 @@ import javax.annotation.Nullable;
  */
 public enum EbeguVorlageKey {
 
-	// Benutzerhandbuecher
-	VORLAGE_BENUTZERHANDBUCH_ADMIN("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Administrator.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_INSTITUTION("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Institution.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_JUGENDAMT("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Jugendamt.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_JURIST("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Jurist.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_REVISOR("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Revisor.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_SCHULAMT("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Schulamt.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_ADMINISTRATOR_SCHULAMT("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Administrator Schulamt.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_STV("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Steuerverwaltung.pdf"),
-	VORLAGE_BENUTZERHANDBUCH_TRAEGERSCHAFT("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Trägerschaft.pdf");
+	VORLAGE_NOTRECHT_KITA_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita_de.xlsx"),
+	VORLAGE_NOTRECHT_KITA_FR("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita_fr.xlsx"),
+	VORLAGE_NOTRECHT_TFO_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO_de.xlsx"),
+	VORLAGE_NOTRECHT_TFO_FR("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO_fr.xlsx");
 
 	private String defaultVorlagePath;
 
@@ -39,6 +36,7 @@ public enum EbeguVorlageKey {
 	EbeguVorlageKey(String defaultVorlagePath) {
 		this.defaultVorlagePath = defaultVorlagePath;
 	}
+
 
 	public String getDefaultVorlagePath() {
 		return defaultVorlagePath;
@@ -48,39 +46,19 @@ public enum EbeguVorlageKey {
 		this.defaultVorlagePath = defaultVorlagePath;
 	}
 
-	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	@Nullable
-	public static EbeguVorlageKey getBenutzerHandbuchKeyForRole(@Nullable UserRole userRole) {
-		if (userRole != null) {
-			switch (userRole) {
-				case ADMIN_BG:
-				case ADMIN_GEMEINDE:
-				case SUPER_ADMIN:
-					return VORLAGE_BENUTZERHANDBUCH_ADMIN;
-				case SACHBEARBEITER_BG:
-				case SACHBEARBEITER_GEMEINDE:
-					return VORLAGE_BENUTZERHANDBUCH_JUGENDAMT;
-				case ADMIN_TRAEGERSCHAFT:
-				case SACHBEARBEITER_TRAEGERSCHAFT:
-					return VORLAGE_BENUTZERHANDBUCH_TRAEGERSCHAFT;
-				case ADMIN_INSTITUTION:
-				case SACHBEARBEITER_INSTITUTION:
-					return VORLAGE_BENUTZERHANDBUCH_INSTITUTION;
-				case JURIST:
-					return VORLAGE_BENUTZERHANDBUCH_JURIST;
-				case REVISOR:
-				case ADMIN_MANDANT:
-				case SACHBEARBEITER_MANDANT:
-					return VORLAGE_BENUTZERHANDBUCH_REVISOR;
-				case STEUERAMT:
-					return VORLAGE_BENUTZERHANDBUCH_STV;
-				case SACHBEARBEITER_TS:
-					return VORLAGE_BENUTZERHANDBUCH_SCHULAMT;
-				case ADMIN_TS:
-					return VORLAGE_BENUTZERHANDBUCH_ADMINISTRATOR_SCHULAMT;
-				default:
-					return null;
+	public static EbeguVorlageKey getNotrechtVorlage(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+		if (angebotTyp == BetreuungsangebotTyp.KITA) {
+			if (Locale.FRENCH.getLanguage().equals(language)) {
+				return VORLAGE_NOTRECHT_KITA_FR;
 			}
+			return VORLAGE_NOTRECHT_KITA_DE;
+		}
+		if (angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
+			if (Locale.FRENCH.getLanguage().equals(language)) {
+				return VORLAGE_NOTRECHT_TFO_FR;
+			}
+			return VORLAGE_NOTRECHT_TFO_DE;
 		}
 		return null;
 	}
