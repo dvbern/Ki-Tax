@@ -53,6 +53,8 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
 import io.swagger.annotations.Api;
@@ -74,6 +76,9 @@ public class NotrechtResource {
 
 	@Inject
 	private PrincipalBean principalBean;
+
+	@Inject
+	private MailService mailService;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -153,6 +158,16 @@ public class NotrechtResource {
 
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
+
+		if (isStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular.getStatus())) {
+			try {
+				mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
+			} catch (MailException e) {
+				throw new EbeguRuntimeException("update",
+					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+			}
+		}
+
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 
@@ -182,10 +197,11 @@ public class NotrechtResource {
 
 	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular) {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
-			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
+			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())) {
 			return true;
 		}
-		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT, UserRole.SUPER_ADMIN)
+		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
+			UserRole.SUPER_ADMIN)
 			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())) {
 			return true;
 		}
@@ -226,9 +242,7 @@ public class NotrechtResource {
 		@Nonnull RueckforderungStatus statusFromDB
 	) {
 		// Kanton hat der Stufe 1 eingaben geprueft
-		if (statusFromDB == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-			&& rueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
-		) {
+		if (isStufe1Geprueft(statusFromDB, rueckforderungFormular.getStatus())) {
 			BigDecimal freigabeBetrag;
 			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
 				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
@@ -244,5 +258,11 @@ public class NotrechtResource {
 			rueckforderungFormular.setStufe1FreigabeBetrag(freigabeBetrag);
 			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
 		}
+	}
+
+	private boolean isStufe1Geprueft(@Nonnull RueckforderungStatus rueckforderungStatusOld,
+		@Nonnull RueckforderungStatus rueckforderungStatusNeu) {
+		return rueckforderungStatusOld == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+			&& rueckforderungStatusNeu == RueckforderungStatus.GEPRUEFT_STUFE_1;
 	}
 }

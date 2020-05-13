@@ -15,20 +15,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
 import {NotrechtComponent} from './notrecht/notrecht.component';
 import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckforderung-formular.component';
+import {RueckforderungMitteilungenComponent} from './rueckforderung-mitteilung/rueckforderung-mitteilungen.component';
 import {SendNotrechtMitteilungComponent} from './send-notrecht-mitteilung/send-notrecht-mitteilung.component';
 
 @NgModule({
     declarations: [
         NotrechtComponent,
         RueckforderungFormularComponent,
-        SendNotrechtMitteilungComponent
+        SendNotrechtMitteilungComponent,
+        RueckforderungMitteilungenComponent
     ],
     imports: [
         MaterialModule,
@@ -39,7 +41,9 @@ import {SendNotrechtMitteilungComponent} from './send-notrecht-mitteilung/send-n
     providers: [],
     entryComponents: [
         SendNotrechtMitteilungComponent
-    ]
+    ],
+    // used for dv-accordion
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class NotrechtModule {
 }

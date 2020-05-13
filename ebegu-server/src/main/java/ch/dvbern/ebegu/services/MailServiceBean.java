@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -500,7 +501,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			.append(Constants.LINE_BREAK);
 		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
 
-
 		try {
 			String supportMail = ebeguConfiguration.getSupportMail();
 			sendMessage(subject, content.toString(), supportMail);
@@ -652,6 +652,28 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			}
 		} else {
 			LOG.warn("skipping NotrechtGenerischeMitteilung because Mitteilungsempfaenger is null");
+		}
+	}
+
+	@Override
+	public void sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
+		String mailaddress = institutionStammdaten.getMail();
+		try {
+			if (StringUtils.isNotEmpty(mailaddress) && rueckforderungFormular.getStufe1FreigabeBetrag() != null) {
+				String message = mailTemplateConfig
+					.getNotrechtBestaetigungPruefungStufe1(institutionStammdaten,
+						rueckforderungFormular.getStufe1FreigabeBetrag().toString());
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer NotrechtBestaetigungPruefungStufe1 wurde versendet an {}", mailaddress);
+			} else {
+				LOG.warn("Skipping NotrechtBestaetigungPruefungStufe1 because E-Mail of Institution is null");
+			}
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail NotrechtBestaetigungPruefungStufe1 konnte nicht verschickt werden fuer Institution",
+				institutionStammdaten.getInstitution().getName());
 		}
 	}
 }

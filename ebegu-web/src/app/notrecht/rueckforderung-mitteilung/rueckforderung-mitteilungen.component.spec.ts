@@ -17,54 +17,60 @@
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
-import {Transition} from '@uirouter/core';
+import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import {DownloadRS} from '../../core/service/downloadRS.rest';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {NotrechtRoutingModule} from '../notrecht-routing/notrecht-routing.module';
 import {NotrechtModule} from '../notrecht.module';
-import {RueckforderungFormularComponent} from './rueckforderung-formular.component';
 
-describe('RueckforderungFormularComponent', () => {
-    let component: RueckforderungFormularComponent;
-    let fixture: ComponentFixture<RueckforderungFormularComponent>;
+import {RueckforderungMitteilungenComponent} from './rueckforderung-mitteilungen.component';
 
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
-    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['findRueckforderungFormular']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
+describe('RueckforderungMitteilungenComponent', () => {
+    let component: RueckforderungMitteilungenComponent;
+    let fixture: ComponentFixture<RueckforderungMitteilungenComponent>;
+    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name,
+        ['initializeRueckforderungFormulare', 'getRueckforderungFormulareForCurrentBenutzer']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole', 'isOneOfRoles']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
-                MaterialModule,
                 NotrechtRoutingModule,
                 TranslateModule,
-                NotrechtModule
+                MaterialModule,
+                SharedModule,
+                NotrechtModule,
+                NoopAnimationsModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 WindowRef,
-                {provide: Transition, useValue: transitionSpy},
                 {provide: NotrechtRS, useValue: notrechtRSSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
-        transitionSpy.params.and.returnValue({});
-        transitionSpy.from.and.returnValue({});
+        notrechtRSSpy.getRueckforderungFormulareForCurrentBenutzer.and.resolveTo([]);
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(RueckforderungFormularComponent);
+        fixture = TestBed.createComponent(RueckforderungMitteilungenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
