@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
@@ -172,4 +173,9 @@ public interface MailService {
 		@Nonnull RueckforderungMitteilung mitteilung,
 		@Nonnull String empfaengerMail,
 		@Nonnull List<RueckforderungStatus> statusList);
+
+	/**
+	 * Sendet eine Email mit der Informatiom, dass ein Ruckforderungformular bei der Kanton geprueft wurde
+	 */
+	void sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
 }

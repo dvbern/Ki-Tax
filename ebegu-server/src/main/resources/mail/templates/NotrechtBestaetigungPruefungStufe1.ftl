@@ -4,7 +4,8 @@
 <#-- @ftlvariable name="betrag" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Corona-Finanzierung für Kitas und TFO: Zahlung freigegeben</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung
+	für Kitas und TFO: Zahlung freigegeben</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -12,7 +13,7 @@ Content-Type: text/html;charset=utf-8
     ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Corona-Finanzierung für Kitas und TFO: Zahlung
+	<title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung für Kitas und TFO: Zahlung
 		freigegeben</title>
 
 </head>
