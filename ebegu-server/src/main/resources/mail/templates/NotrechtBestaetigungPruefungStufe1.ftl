@@ -13,8 +13,9 @@ Content-Type: text/html;charset=utf-8
     ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung für Kitas und TFO: Zahlung
-		freigegeben</title>
+	<title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung für Kitas und
+		TFO: Zahlung
+		freigegeben / Corona - financement pour les crèches et les parents de jour: Versement libéré </title>
 
 </head>
 
@@ -69,9 +70,8 @@ Content-Type: text/html;charset=utf-8
 	</p>
 	<p>
 		Nach der Freigabe der Stufe 2 findet die detaillierte Prüfung der Angaben statt. Das Resultat der Prüfung ist
-		eine
-		anfechtbare Verfügung, welche die definitiven Beträge festlegt. Sie enthält auch Angaben darüber, ob der Kanton
-		allenfalls Rückforderungen stellt oder eine Nachzahlung tätigt muss.
+		eine anfechtbare Verfügung, welche die definitiven Beträge festlegt. Sie enthält auch Angaben darüber, ob der
+		Kanton allenfalls Rückforderungen stellt oder eine Nachzahlung tätigt muss.
 	</p>
 	<p>
 		Abteilung Familie Kanton Bern
@@ -86,6 +86,76 @@ Content-Type: text/html;charset=utf-8
 		<p>
 			<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen
 				verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		</p>
+    </#if>
+</div>
+
+<div>
+	<p>
+		Chère madame, cher monsieur,
+	</p>
+	<p>
+		vous allez recevoir dans les prochains jour le versement suivant:
+	</p>
+	<p>
+        <#if institutionStammdaten.betreuungsangebotTyp.isKita()>
+			Pour les heures/places qui n'ont plus pu être offerte:    CHF    ${betrag}
+        </#if>
+        <#if institutionStammdaten.betreuungsangebotTyp.isTagesfamilien()>
+			Pour les tarifs pour la garde des enfants liés aux absences dues au corona:    CHF    ${betrag}
+        </#if>
+	</p>
+	<p>
+		Vous pouvez voir ici, si il y a eu des changements en comparaison avec vos données entrées. La facturation
+		définitive avec les raisons des écarts par rapport aux données entrées aura lieu après l'examen détaillé de
+		votre demande lors de l'étape 2.
+	</p>
+	<p>
+		<b>
+			Remarque: vous devez également complèter la deuxième étape avant le 31 juillet 2020.
+			Sinon le droit aux prestations est perdu et la canton récupèrera le versement effectué.
+		</b>
+	</p>
+	<p>
+		Pour la facturation final, vous devez nous fournir les documents suivants:
+	</p>
+	<ul>
+		<li>Sois le forumlaire excel rempli, sois d'autres documents ou les données demandées dans le
+			formulaire excel sont visible.
+		</li>
+		<li>Les communications avec les parents (tous les courriers à plusieurs destinataires, e-mail groupé,
+			règles de languages interne) concernant la garde entre le 17 mars et le 16 mai 2020.
+		</li>
+		<li>Les plans d'horaires du 17 mars ou 16 mai, ou l'on peut voir quelle personne était opérationelle.
+		</li>
+	</ul>
+	<p>
+		Les contracts avec les parents ainsi que des factures pour la période concernée peuvent vous
+		être demandés spontanément.
+		Les parents peuvent être contacter afin de vérifier les données concernant les communications.
+	</p>
+	<p>
+		Vous pouvez également corriger toutes les informations que vous avez fournies lors de la première étape.
+	</p>
+	<p>
+		Il y aura une vérification détaillée des données après la libération de l'étape 2. Le résultat de la
+		vérification est une décision contestable, qui fixe les montants définitifs. Elle contiendra aussi des
+		informations indiquant si le canton effectue une demande de restitution ou si un versement supplémentaire
+		doit être effectué.
+	</p>
+	<p>
+		Abteilung Familie Kanton Bern
+		info.fam@be.ch
+		031 633 78 91
+	</p>
+	<p>
+		Vous pouvez consulter l'état actuel de votre formulaire de demande de restitution sous <a
+				href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list">https://kibon.ch/corona-finanzierung/list</a>
+	</p>
+    <#if configuration.isDevmode>
+		<p>
+			<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système
+				ne donnent pas droit à un versement.</b><br><br>
 		</p>
     </#if>
 </div>

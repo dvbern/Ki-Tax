@@ -440,7 +440,7 @@
         <div class="dv-footer marginTop50">
             <dv-loading-button *ngIf="isInstitutionStufe1(rueckforderungFormular)" [type]="'submit'"
                                [buttonDisabled]="!enableRueckforderungAbschliessen()">
-                <span translate>RUECKFORDERUNG_ABSENDEN</span>
+                <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
             <dv-loading-button *ngIf="isInstitutionStufe1(rueckforderungFormular)"
                                (buttonClick)="rueckforderungAbschliessen(rueckforderungFormular);">
@@ -452,7 +452,7 @@
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"
-                    translate>RUECKFORDERUNG_CANCEL
+                    translate>LABEL_ABBRECHEN
             </button>
         </div>
     </form>
