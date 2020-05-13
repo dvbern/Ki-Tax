@@ -21,6 +21,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
@@ -36,6 +37,7 @@ describe('RueckforderungFormularComponent', () => {
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['findRueckforderungFormular']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -52,6 +54,7 @@ describe('RueckforderungFormularComponent', () => {
                 {provide: Transition, useValue: transitionSpy},
                 {provide: NotrechtRS, useValue: notrechtRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
