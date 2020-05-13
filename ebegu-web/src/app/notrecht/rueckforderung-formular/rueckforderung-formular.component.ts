@@ -187,7 +187,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public isGeprueftKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
             && this.authServiceRS.isOneOfRoles(
-                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+                TSRoleUtil.getAllRolesForNotrecht())) {
             return true;
         }
         return false;

@@ -46,27 +46,40 @@
     }
 }
 
-::ng-deep .checkbox-with-tooltip {
-    display: flex;
 
-    dv-tooltip {
-        display: flex;
-        align-items: center;
-        padding-left: 0.75rem;
+.download-file {
+    margin-top: 2rem;
+
+    span {
+        margin-right: 1rem;
+        cursor: pointer;
     }
 }
 
-::ng-deep .mt-5 {
-    margin-top: 5rem;
+::ng-deep .notrecht {
+    .checkbox-with-tooltip {
+        display: flex;
+
+        dv-tooltip {
+            display: flex;
+            align-items: center;
+            padding-left: 0.75rem;
+        }
+    }
+
+    .mt-5 {
+        margin-top: 5rem;
+    }
+
+    label.mat-checkbox-layout {
+        margin-top: 0.8rem;
+    }
+
+    label.long-label {
+        white-space: nowrap;
+    }
 }
 
-::ng-deep label.mat-checkbox-layout {
-    margin-top: 0.8rem;
-}
-
-::ng-deep label.long-label {
-    white-space: nowrap;
-}
 
 .status-header {
     font-size: 1.5rem;

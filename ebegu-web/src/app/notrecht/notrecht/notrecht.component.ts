@@ -153,9 +153,8 @@ export class NotrechtComponent implements OnInit {
                     this.errorService.addMesageAsInfo(this.translate.instant(
                         'RUECKFORDERUNG_EINLADUNG_VERSENDET'
                     ));
+                    this.loadRueckforderungFormulareForCurrentBenutzer();
                 });
-                // Daten neu laden weil sich Status aktualisiert haben
-                this.ngOnInit();
                 return;
             }
             // tslint:disable-next-line:no-identical-functions

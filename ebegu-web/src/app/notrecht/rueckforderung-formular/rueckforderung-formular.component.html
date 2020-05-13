@@ -395,33 +395,49 @@
                     [rueckforderungMitteilungen]="rueckforderungFormular.rueckforderungMitteilungen"
                 ></dv-rueckforderung-mitteilungen>
             </div>
-        </div>
 
-        <div class="col-md-8 col-md-offset-2" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
-            <h1 translate class="marginTop50">RUECKFORDERUNG_ZAHLUNGEN</h1>
-            <div class="table-responsive">
-                <table class="table">
-                    <tr>
-                        <th translate>RUECKFORDERUNG_ZAHLUNGEN_ERSTELLT</th>
-                        <th translate>RUECKFORDERUNG_ZAHLUNGEN_STUFE</th>
-                        <th translate>RUECKFORDERUNG_ZAHLUNGEN_BETRAG</th>
-                        <th translate>RUECKFORDERUNG_ZAHLUNGEN_AUSGELOEST</th>
-                    </tr>
-                    <tr *ngFor="let zahlung of rueckforderungZahlungenList">
-                        <td>{{zahlung.datumErstellt.format('L LTS')}}</td>
-                        <td>{{zahlung.stufe | translate}}</td>
-                        <td>{{zahlung.betrag}}</td>
-                        <td>{{(zahlung.ausgeloest ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
-                    </tr>
-                </table>
+            <div class="col-md-8 col-md-offset-2" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3 translate class="marginTop30">RUECKFORDERUNG_ZAHLUNGEN</h3>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_ERSTELLT</th>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_STUFE</th>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_BETRAG</th>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_AUSGELOEST</th>
+                                </tr>
+                                <tr *ngFor="let zahlung of rueckforderungZahlungenList">
+                                    <td>{{zahlung.datumErstellt.format('L LTS')}}</td>
+                                    <td>{{zahlung.stufe | translate}}</td>
+                                    <td>{{zahlung.betrag}}</td>
+                                    <td>{{(zahlung.ausgeloest ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-md-offset-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 translate class="marginTop50">DOKUMENTE</h2>
+                        <hr class="header"/>
+                        <div class="download-file">
+                            <a (buttonClick)="downloadVorlage(rueckforderungFormular);">
+                                <span class="fa fa-download"></span>
+                                <span translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Buttons -->
-        <div class="dv-footer">
-            <dv-loading-button (buttonClick)="downloadVorlage(rueckforderungFormular);">
-                <span translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE</span>
-            </dv-loading-button>
+        <div class="dv-footer marginTop50">
             <dv-loading-button *ngIf="isInstitutionStufe1(rueckforderungFormular)" [type]="'submit'"
                                [buttonDisabled]="!enableRueckforderungAbschliessen()">
                 <span translate>RUECKFORDERUNG_ABSENDEN</span>
