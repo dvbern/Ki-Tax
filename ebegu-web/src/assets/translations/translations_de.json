@@ -1967,9 +1967,13 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
-    "TARIF_PRO_HAUPTMAHLZEIT": "Tarif pro Hauptmahlzeit",
-    "TARIF_PRO_NEBENMAHLZEIT": "Tarif pro Nebenmahlzeit",
+    "TARIF_PRO_HAUPTMAHLZEIT": "Tarif pro Hauptmahlzeit in CHF",
+    "TARIF_PRO_NEBENMAHLZEIT": "Tarif pro Nebenmahlzeit in CHF",
     "TARIF_PRO_HAUPTMAHLZEIT_HELP": "TODO",
     "TARIF_PRO_NEBENMAHLZEIT_HELP": "TODO",
+    "MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEITEN": "Minimaler Elternbeitrag Hauptmahlzeiten in CHF",
+    "MINIMALER_ELTERNBEITRAG_NEBENMAHLZEITEN": "Minimaler Elternbeitrag Nebenmahlzeiten in CHF",
+    "MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEITEN_READONLY": "Minimaler Elternbeitrag Hauptmahlzeiten: {{value}} CHF",
+    "MINIMALER_ELTERNBEITRAG_NEBENMAHLZEITEN_READONLY": "Minimaler Elternbeitrag Nebenmahlzeiten: {{value}} CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

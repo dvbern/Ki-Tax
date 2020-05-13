@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -80,8 +81,8 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		// Anzahl Haupt und Nebenmahlzeiten übernehmen
-		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheHauptmahlzeiten());
-		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheNebenmahlzeiten());
+		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(BigDecimal.valueOf(betreuungspensum.getMonatlicheHauptmahlzeiten()));
+		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(BigDecimal.valueOf(betreuungspensum.getMonatlicheNebenmahlzeiten()));
 
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
