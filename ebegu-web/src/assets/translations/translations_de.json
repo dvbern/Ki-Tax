@@ -1970,6 +1970,7 @@
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
     "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}} - {{status}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Anzahl Plätze (in Tagen ausgedrückt), die nicht zur Verfügung standen",
+    "RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN": "Anzahl Plätze (in Stunden ausgedrückt), die nicht zur Verfügung standen",
     "RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG": "Kostenübernahme Betreuung",
     "MITTEILUNG_SENDEN_AN_STATUS": "Mitteilung senden an Status",
     "ZAHLUNG_STUFE_1_AUSGELOEST": "Zahlung Stufe 1 ausgelöst am",
