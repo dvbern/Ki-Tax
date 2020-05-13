@@ -15,17 +15,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-.cdk-column-is-clickable {
-    flex: 0 0 40px;
+package ch.dvbern.ebegu.services;
+
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
+
+/**
+ * Service fuer die Rueckforderungsformulare
+ */
+public interface RueckforderungMitteilungService {
+
+	void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull List<RueckforderungStatus> statusList);
+
+	void sendEinladung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung);
+
 }
-
-.notrecht-buttons {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-
-    .dv-btn {
-        margin-right: 20px;
-    }
-}
-

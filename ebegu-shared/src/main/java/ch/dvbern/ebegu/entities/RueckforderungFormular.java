@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -36,6 +38,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 @Audited
@@ -62,13 +65,16 @@ public class RueckforderungFormular extends AbstractEntity {
 				"rueckforderung_mitteilung_id"),
 		}
 	)
-	private @NotNull
-	Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
+
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+	@NotNull
+	private Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
 
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
-	private RueckforderungStatus status;
+	@Enumerated(EnumType.STRING)
+	private RueckforderungStatus status = RueckforderungStatus.NEU;
 
 	@Column(name = "stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
@@ -149,6 +155,10 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setRueckforderungMitteilungen(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
 		this.rueckforderungMitteilungen = rueckforderungMitteilungen;
+	}
+
+	public void addRueckforderungMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+		this.rueckforderungMitteilungen.add(rueckforderungMitteilung);
 	}
 
 	@Nonnull
