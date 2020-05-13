@@ -78,9 +78,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	private FileSaverService fileSaverService;
 
 	@Inject
-	private PrincipalBean principalBean;
-
-	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
