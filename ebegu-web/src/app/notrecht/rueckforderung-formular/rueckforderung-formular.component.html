@@ -52,7 +52,9 @@
                                            name="anzahl_plaetze_stufe1_insti_in_tage"
 										   #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
-                                           class="form-control" required>
+                                           class="form-control"
+                                           (blur)="calculateInstiProvBetrag(rueckforderungFormular)"
+                                           required>
                                     <dv-error-messages
                                         [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlTage.errors"
                                         inputId="anzahl_plaetze_stufe1_insti_in_tage_id">
@@ -69,7 +71,9 @@
                                            name="anzahl_stunden_stufe1_insti"
 										   #stufe1InstitutionKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden"
-                                           class="form-control" required>
+                                           class="form-control"
+                                           (blur)="calculateInstiProvBetrag(rueckforderungFormular)"
+                                           required>
                                     <dv-error-messages
                                         [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlStunden.errors"
                                         inputId="anzahl_stunden_stufe1_insti_id">
@@ -86,13 +90,30 @@
                                            name="kostenuebernahme_betreuung_stuf1_insti"
 										   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
-                                           class="form-control" required>
+                                           class="form-control"
+                                           (blur)="calculateInstiProvBetrag(rueckforderungFormular)"
+                                           required>
                                     <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
                                                        inputId="kostenuebernahme_betreuung_stuf1_insti_id">
                                     </dv-error-messages>
                                 </div>
                             </div>
                         </div>
+                        <!-- ProvisorischeBerechnung -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required" translate
+                                           for="kostenuebernahme_prov_betrag_stuf1_insti_id">
+                                        RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG</label>
+                                    <input id="kostenuebernahme_prov_betrag_stuf1_insti_id" type="number"
+                                           name="kostenuebernahme_prov_betrag_stuf1_insti"
+                                           [(ngModel)]="stufe1ProvBetrag"
+                                           class="form-control" disabled="true">
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Checkbox -->
                         <div class="row">
                             <div class="col-sm-12">
@@ -151,6 +172,7 @@
                                            name="anzahl_plaetze_stufe1_kanton_in_tage"
 										   #stufe1KantonKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage"
+                                           (blur)="calculateKantonProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisherForm">
                                         <div
@@ -177,6 +199,7 @@
                                            name="anzahl_stunden_stufe1_kanton"
 										   #stufe1KantonKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden"
+                                           (blur)="calculateKantonProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisherForm">
                                         <div
@@ -204,6 +227,7 @@
                                            name="kostenuebernahme_betreuung_stuf1_kanton"
 										   #stufe1KantonKostenuebernahmeBetreuung="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung"
+                                           (blur)="calculateKantonProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisherForm">
                                         <div
@@ -217,6 +241,20 @@
                                     <dv-error-messages [errorObject]="stufe1KantonKostenuebernahmeBetreuung.errors"
                                                        inputId="kostenuebernahme_betreuung_stuf1_kanton_id">
                                     </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ProvisorischeBerechnung -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required" translate
+                                           for="kostenuebernahme_prov_betrag_stuf1_kanton_id">
+                                        RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG</label>
+                                    <input id="kostenuebernahme_prov_betrag_stuf1_kanton_id" type="number"
+                                           name="kostenuebernahme_prov_betrag_stuf1_kanton"
+                                           [(ngModel)]="stufe1ProvBetrag"
+                                           class="form-control" disabled="true">
                                 </div>
                             </div>
                         </div>
