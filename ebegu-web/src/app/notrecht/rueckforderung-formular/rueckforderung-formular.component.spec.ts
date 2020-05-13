@@ -19,6 +19,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -34,6 +35,7 @@ describe('RueckforderungFormularComponent', () => {
 
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['findRueckforderungFormular']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -49,6 +51,7 @@ describe('RueckforderungFormularComponent', () => {
                 WindowRef,
                 {provide: Transition, useValue: transitionSpy},
                 {provide: NotrechtRS, useValue: notrechtRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,

@@ -22,11 +22,13 @@ import {SharedModule} from '../shared/shared.module';
 import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
 import {NotrechtComponent} from './notrecht/notrecht.component';
 import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckforderung-formular.component';
+import {SendNotrechtMitteilungComponent} from './send-notrecht-mitteilung/send-notrecht-mitteilung.component';
 
 @NgModule({
     declarations: [
         NotrechtComponent,
-        RueckforderungFormularComponent
+        RueckforderungFormularComponent,
+        SendNotrechtMitteilungComponent
     ],
     imports: [
         MaterialModule,
@@ -34,7 +36,10 @@ import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckfo
         TranslateModule,
         SharedModule
     ],
-    providers: []
+    providers: [],
+    entryComponents: [
+        SendNotrechtMitteilungComponent
+    ]
 })
 export class NotrechtModule {
 }
