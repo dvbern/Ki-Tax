@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {MatSort, MatTableDataSource, MatPaginator} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
@@ -29,6 +29,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
 
 @Component({
     selector: 'dv-notrecht',
@@ -49,6 +50,8 @@ export class NotrechtComponent implements OnInit {
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
 
+    private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
+
     public constructor(
         private readonly notrechtRS: NotrechtRS,
         private readonly authServiceRS: AuthServiceRS,
@@ -56,7 +59,9 @@ export class NotrechtComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly $state: StateService,
-    ) {}
+        private readonly dialog: MatDialog,
+    ) {
+    }
 
     public ngOnInit(): void {
       this.loadRueckforderungFormulareForCurrentBenutzer();
@@ -81,11 +86,16 @@ export class NotrechtComponent implements OnInit {
     private initSort(): void {
         this.rueckforderungFormulareSource.sortingDataAccessor = (item, property) => {
             switch (property) {
-                case 'institutionStammdaten.institution.name': return item.institutionStammdaten.institution.name;
-                case 'status': return this.translateRueckforderungStatus(item.status);
-                case 'institutionStammdaten.betreuungsangebotTyp': return item.institutionStammdaten.betreuungsangebotTyp;
-                case 'zahlungStufe1': return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
-                case 'zahlungStufe2': return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
+                case 'institutionStammdaten.institution.name':
+                    return item.institutionStammdaten.institution.name;
+                case 'status':
+                    return this.translateRueckforderungStatus(item.status);
+                case 'institutionStammdaten.betreuungsangebotTyp':
+                    return item.institutionStammdaten.betreuungsangebotTyp;
+                case 'zahlungStufe1':
+                    return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
+                case 'zahlungStufe2':
+                    return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
                 default:
                     // @ts-ignore
                     return item[property];
@@ -105,7 +115,7 @@ export class NotrechtComponent implements OnInit {
     }
 
     private initFilter(): void {
-        this.rueckforderungFormulareSource.filterPredicate = (data, filter)  => {
+        this.rueckforderungFormulareSource.filterPredicate = (data, filter) => {
             return EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
@@ -126,6 +136,35 @@ export class NotrechtComponent implements OnInit {
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public sendMitteilung(isEinladung: boolean): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.data = {isEinladung};
+        dialogConfig.panelClass = this.panelClass;
+        // Bei Ok erhalten wir die Mitteilung, die gesendet werden soll, sonst nichts
+        this.dialog.open(SendNotrechtMitteilungComponent, dialogConfig).afterClosed().toPromise().then(result => {
+            if (EbeguUtil.isNullOrUndefined(result) || EbeguUtil.isNullOrUndefined(result.mitteilung)) {
+                return;
+            }
+            if (isEinladung) {
+                this.notrechtRS.sendEinladung(result.mitteilung).then(() => {
+                    this.errorService.addMesageAsInfo(this.translate.instant(
+                        'RUECKFORDERUNG_EINLADUNG_VERSENDET'
+                    ));
+                });
+                // Daten neu laden weil sich Status aktualisiert haben
+                this.ngOnInit();
+                return;
+            }
+            // tslint:disable-next-line:no-identical-functions
+            this.notrechtRS.sendMitteilung(result.mitteilung, result.statusToSendMitteilung).then(() => {
+                this.errorService.addMesageAsInfo(this.translate.instant(
+                    'RUECKFORDERUNG_MITTEILUNG_VERSENDET'
+                ));
+            });
+        });
     }
 
     public getZahlungAusgeloest(date: moment.Moment | null): string {
@@ -160,15 +199,19 @@ export class NotrechtComponent implements OnInit {
     };
 
     public openRueckforderungFormular(formular: TSRueckforderungFormular): void {
-      if (!this.openFormularAllowed(formular)) {
-          return;
-      }
-      this.$state.go('notrecht.form', {
-          rueckforderungId: formular.id,
-      });
+        if (!this.openFormularAllowed(formular)) {
+            return;
+        }
+        this.$state.go('notrecht.form', {
+            rueckforderungId: formular.id,
+        });
     }
 
     public translateRueckforderungStatus(status: string): string {
         return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
+    }
+
+    public showMitteilungSenden(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }

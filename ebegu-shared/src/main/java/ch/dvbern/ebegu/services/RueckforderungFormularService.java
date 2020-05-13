@@ -24,6 +24,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 /**
  * Service fuer die Rueckforderungsformulare
@@ -51,4 +53,10 @@ public interface RueckforderungFormularService {
 
 	@Nonnull
 	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
+
+	@Nonnull
+	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status);
+
+	@Nonnull
+	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
 }
