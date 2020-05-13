@@ -35,7 +35,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
@@ -99,12 +98,14 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	/**
 	 * Falls in der Liste der Rückforderungsformulare die Institution bereits existiert, wird true zurückgegeben
 	 */
-	private boolean isFormularExisting(InstitutionStammdaten stammdaten,
-		Collection<RueckforderungFormular> rueckforderungFormularCollection) {
-		List<RueckforderungFormular> filteredFormulare = rueckforderungFormularCollection.stream().filter(formular -> {
-			return formular.getInstitutionStammdaten().getId().equals(stammdaten.getId());
-		}).collect(Collectors.toList());
-		return filteredFormulare.size() > 0;
+	private boolean isFormularExisting(@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull Collection<RueckforderungFormular> rueckforderungFormularCollection
+	) {
+		List<RueckforderungFormular> filteredFormulare = rueckforderungFormularCollection
+			.stream()
+			.filter(formular -> formular.getInstitutionStammdaten().getId().equals(stammdaten.getId()))
+			.collect(Collectors.toList());
+		return !filteredFormulare.isEmpty();
 	}
 
 	@Nonnull
@@ -147,7 +148,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	@Interceptors(UpdateRueckfordFormStatusInterceptor.class)
-	public Optional<RueckforderungFormular> findRueckforderungFormular(String id) {
+	public Optional<RueckforderungFormular> findRueckforderungFormular(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, id);
 		return Optional.ofNullable(rueckforderungFormular);
@@ -157,7 +158,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
-	public RueckforderungFormular save(RueckforderungFormular rueckforderungFormular) {
+	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
 		return mergedRueckforderungFormular;
@@ -181,8 +182,10 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public RueckforderungFormular addMitteilung(RueckforderungFormular formular,
-		RueckforderungMitteilung mitteilung) {
+	public RueckforderungFormular addMitteilung(
+		@Nonnull RueckforderungFormular formular,
+		@Nonnull RueckforderungMitteilung mitteilung
+	) {
 		formular.addRueckforderungMitteilung(mitteilung);
 		return persistence.persist(formular);
 	}

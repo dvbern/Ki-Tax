@@ -43,6 +43,8 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilungRequestParams;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -213,25 +215,24 @@ public class NotrechtResource {
 		}
 	}
 
-	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
-		+ "Status",
-		response = JaxRueckforderungMitteilung.class)
+	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
 	@POST
 	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public void sendMessage(
-		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Nonnull @NotNull JaxRueckforderungMitteilungRequestParams data,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
+		@Context HttpServletResponse response
+	) {
+		final JaxRueckforderungMitteilung jaxRueckforderungMitteilung = data.getMitteilung();
+		List<RueckforderungStatus> statusList = data.getStatusList();
 		RueckforderungMitteilung rueckforderungMitteilung =
 			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
-		rueckforderungMitteilungService.sendMitteilung(rueckforderungMitteilung);
+		rueckforderungMitteilungService.sendMitteilung(rueckforderungMitteilung, statusList);
 	}
 
-	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
-		+ "Status",
-		response = JaxRueckforderungMitteilung.class)
+	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
 	@POST
 	@Path("/einladung")
 	@Consumes(MediaType.WILDCARD)

@@ -15,22 +15,42 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.api.dtos;
 
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
-/**
- * Service fuer die Rueckforderungsformulare
- */
-public interface RueckforderungMitteilungService {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxRueckforderungMitteilungRequestParams extends JaxAbstractDTO {
 
-	void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull List<RueckforderungStatus> statusList);
+	private static final long serialVersionUID = -8553194968646128553L;
 
-	void sendEinladung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung);
+	@Nonnull
+	private JaxRueckforderungMitteilung mitteilung;
 
+	@Nonnull
+	private List<RueckforderungStatus> statusList;
+
+	@Nonnull
+	public JaxRueckforderungMitteilung getMitteilung() {
+		return mitteilung;
+	}
+
+	public void setMitteilung(@Nonnull JaxRueckforderungMitteilung mitteilung) {
+		this.mitteilung = mitteilung;
+	}
+
+	@Nonnull
+	public List<RueckforderungStatus> getStatusList() {
+		return statusList;
+	}
+
+	public void setStatusList(@Nonnull List<RueckforderungStatus> statusList) {
+		this.statusList = statusList;
+	}
 }

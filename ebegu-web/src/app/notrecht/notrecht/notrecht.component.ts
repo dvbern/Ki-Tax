@@ -159,7 +159,7 @@ export class NotrechtComponent implements OnInit {
                 return;
             }
             // tslint:disable-next-line:no-identical-functions
-            this.notrechtRS.sendMitteilung(result.mitteilung).then(() => {
+            this.notrechtRS.sendMitteilung(result.mitteilung, result.statusToSendMitteilung).then(() => {
                 this.errorService.addMesageAsInfo(this.translate.instant(
                     'RUECKFORDERUNG_MITTEILUNG_VERSENDET'
                 ));

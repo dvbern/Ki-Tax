@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
@@ -55,6 +56,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -627,14 +629,21 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendNotrechtGenerischeMitteilung(@Nonnull RueckforderungMitteilung mitteilung, @Nonnull String empfaengerMail) {
+	public void sendNotrechtGenerischeMitteilung(
+		@Nonnull RueckforderungMitteilung mitteilung,
+		@Nonnull String empfaengerMail,
+		@Nonnull List<RueckforderungStatus> statusList
+	) {
 		if (StringUtils.isNotEmpty(empfaengerMail)) {
-			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(empfaengerMail,
-			mitteilung.getBetreff(), mitteilung.getInhalt());
+			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(
+				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt());
+			String statusAsString = statusList.stream()
+				.map(RueckforderungStatus::name)
+				.collect(Collectors.joining(","));
 			try {
 				sendMessageWithTemplate(mail, empfaengerMail);
 				LOG.debug("Email fuer NotrechtGenerischeMitteilung wurde versendet an {} für Status {}",
-					empfaengerMail, mitteilung.getGesendetAnStatusList());
+					empfaengerMail, statusAsString);
 			} catch (Exception e) {
 				logExceptionAccordingToEnvironment(
 					e,

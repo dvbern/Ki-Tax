@@ -23,7 +23,6 @@ export class TSRueckforderungMitteilung extends TSAbstractEntity {
     private _betreff: string;
     private _inhalt: string;
     private _sendeDatum: moment.Moment;
-    private _gesendetAnStatus: string[];
 
     public constructor() {
         super();
@@ -51,13 +50,5 @@ export class TSRueckforderungMitteilung extends TSAbstractEntity {
 
     public set sendeDatum(value: moment.Moment) {
         this._sendeDatum = value;
-    }
-
-    public get gesendetAnStatus(): string[] {
-        return this._gesendetAnStatus;
-    }
-
-    public set gesendetAnStatus(value: string[]) {
-        this._gesendetAnStatus = value;
     }
 }

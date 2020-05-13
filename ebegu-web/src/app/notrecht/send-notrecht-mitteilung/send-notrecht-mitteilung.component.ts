@@ -33,6 +33,7 @@ export class SendNotrechtMitteilungComponent {
 
     public mitteilung: TSRueckforderungMitteilung;
     public isEinladung: boolean;
+    public statusToSendMitteilung: TSRueckforderungStatus[];
 
     public constructor(
         private readonly dialogRef: MatDialogRef<SendNotrechtMitteilungComponent>,
@@ -47,15 +48,13 @@ export class SendNotrechtMitteilungComponent {
             return;
         }
         this.mitteilung = new TSRueckforderungMitteilung();
-        if (this.isEinladung) {
-            this.mitteilung.gesendetAnStatus = [TSRueckforderungStatus.NEU];
-        }
     }
 
     public save(): void {
         if (this.isValid()) {
             this.dialogRef.close({
                 mitteilung: this.mitteilung,
+                statusToSendMitteilung: this.statusToSendMitteilung,
             });
             return;
         }
