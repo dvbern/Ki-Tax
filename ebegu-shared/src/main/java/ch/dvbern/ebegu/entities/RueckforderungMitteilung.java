@@ -28,7 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class RueckforderungMitteilung extends AbstractEntity {
+public class RueckforderungMitteilung extends AbstractEntity implements Comparable {
 
 	private static final long serialVersionUID = 5010422246166625084L;
 
@@ -113,5 +113,23 @@ public class RueckforderungMitteilung extends AbstractEntity {
 			&& this.betreff.equals(otherRueckforderungMitteilung.getBetreff())
 			&& this.inhalt.equals(otherRueckforderungMitteilung.getInhalt())
 			&& this.sendeDatum.equals(otherRueckforderungMitteilung.getSendeDatum());
+	}
+
+	@Override
+	public int compareTo(@Nonnull Object o) {
+		if (this == o) {
+			return 1;
+		}
+		if (!getClass().equals(o.getClass())) {
+			return -1;
+		}
+		if (!(o instanceof RueckforderungMitteilung)) {
+			return -1;
+		}
+		final RueckforderungMitteilung otherRueckforderungMitteilung = (RueckforderungMitteilung) o;
+		if (this.sendeDatum.isBefore(otherRueckforderungMitteilung.sendeDatum)) {
+			return -1;
+		}
+		return 1;
 	}
 }
