@@ -29,7 +29,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 export class RueckforderungMitteilungenComponent implements OnInit, OnChanges {
 
     @Input()
-    private rueckforderungMitteilungen: TSRueckforderungMitteilung[];
+    public rueckforderungMitteilungen: TSRueckforderungMitteilung[];
 
     public constructor(
     ) {}
@@ -41,7 +41,7 @@ export class RueckforderungMitteilungenComponent implements OnInit, OnChanges {
         if (!changes.rueckforderungMitteilungen || !changes.rueckforderungMitteilungen.currentValue) {
             return;
         }
-        this.rueckforderungMitteilungen = this.rueckforderungMitteilungen.sort((a, b) => {
+        this.rueckforderungMitteilungen.sort((a, b) => {
             if (a.sendeDatum.isBefore(b.sendeDatum)) {
                 return -1;
             }
