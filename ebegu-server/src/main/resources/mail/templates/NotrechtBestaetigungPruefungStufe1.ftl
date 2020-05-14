@@ -1,7 +1,8 @@
 <#-- @ftlvariable name="institutionStammdaten" type="ch.dvbern.ebegu.entities.InstitutionStammdaten" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
-<#-- @ftlvariable name="betrag" type="java.lang.String" -->
+<#-- @ftlvariable name="betrag1" type="java.lang.String" -->
+<#-- @ftlvariable name="betrag2" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung
@@ -29,12 +30,8 @@ Content-Type: text/html;charset=utf-8
 		Sie werden in den nächsten Tagen die folgende Zahlung erhalten:
 	</p>
 	<p>
-        <#if institutionStammdaten.betreuungsangebotTyp.isKita()>
-			Für Stunden/ Plätze, welche nicht mehr angeboten wurden: CHF ${betrag}
-        </#if>
-        <#if institutionStammdaten.betreuungsangebotTyp.isTagesfamilien()>
-			Für Elterngebühren für die Betreuung für coronabedingte Abwesenheiten: CHF ${betrag}
-        </#if>
+		Für Stunden/ Plätze, welche nicht mehr angeboten wurden: CHF ${betrag1} <br>
+		Für Elterngebühren für die Betreuung für coronabedingte Abwesenheiten: CHF ${betrag2}
 	</p>
 	<p>
 	<p>
@@ -104,12 +101,8 @@ Content-Type: text/html;charset=utf-8
 		Le versement suivant sera effectué au cours des prochains jours :
 	</p>
 	<p>
-        <#if institutionStammdaten.betreuungsangebotTyp.isKita()>
-            ${betrag} francs pour les heures ou les places qui n’ont plus pu être proposées.
-        </#if>
-        <#if institutionStammdaten.betreuungsangebotTyp.isTagesfamilien()>
-            ${betrag} francs de contributions parentales pour les frais de prise en charge des enfants absents en raison du coronavirus.
-        </#if>
+    	${betrag1} francs pour les heures ou les places qui n’ont plus pu être proposées.<br>
+    	${betrag2} francs de contributions parentales pour les frais de prise en charge des enfants absents en raison du coronavirus.
 	</p>
 	<p>
 		Vous pouvez contrôler <a
