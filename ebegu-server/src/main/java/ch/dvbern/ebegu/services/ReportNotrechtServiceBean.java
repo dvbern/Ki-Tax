@@ -89,6 +89,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private NotrechtDataRow convertToDataRow(@Nonnull RueckforderungFormular formular) {
 		NotrechtDataRow row = new NotrechtDataRow();
 		InstitutionStammdaten stammdaten = formular.getInstitutionStammdaten();
