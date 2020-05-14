@@ -1356,7 +1356,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitution jaxInstitution = new JaxInstitution();
 		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
 		jaxInstitution.setName(persistedInstitution.getName());
-		assert persistedInstitution.getMandant() != null;
+		Objects.requireNonNull(persistedInstitution.getMandant());
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
@@ -1370,7 +1370,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionListDTO jaxInstitutionListDTO = new JaxInstitutionListDTO();
 		convertAbstractVorgaengerFieldsToJAX(entry.getKey(), jaxInstitutionListDTO);
 		jaxInstitutionListDTO.setName(entry.getKey().getName());
-		assert entry.getKey().getMandant() != null;
+		Objects.requireNonNull(entry.getKey().getMandant());
 		jaxInstitutionListDTO.setMandant(mandantToJAX(entry.getKey().getMandant()));
 		jaxInstitutionListDTO.setStatus(entry.getKey().getStatus());
 		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());

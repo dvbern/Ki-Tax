@@ -195,9 +195,42 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		}
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
-		if (gemeinsameSteuererklaerung && gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
-			Objects.requireNonNull(gesuch.getGesuchsteller1(), "GS1 darf zu diesem Zeitpunkt nicht null sein");
-			Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), "Die FinSit des GS1 darf zu diesem Zeitpunkt nicht null sein");
+		handleGemeinsameSteuererklaerung(gesuch);
+
+		return gesuchService.updateGesuch(gesuch, false);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	public FinanzielleSituationContainer saveFinanzielleSituation(
+		@Nonnull FinanzielleSituationContainer finanzielleSituation,
+		@Nonnull String gesuchId
+	) {
+		// Die eigentliche FinSit speichern
+		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
+			.FINANZIELLE_SITUATION);
+
+		final Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
+
+		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
+		handleGemeinsameSteuererklaerung(gesuch);
+
+		return finanzielleSituationPersisted;
+	}
+
+	private void handleGemeinsameSteuererklaerung(@Nonnull Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+		Objects.requireNonNull(gesuch.getGesuchsteller1(), "GS1 darf zu diesem Zeitpunkt nicht null sein");
+		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
+		if (familiensituation.getGemeinsameSteuererklaerung() != null
+			&& familiensituation.getGemeinsameSteuererklaerung()
+			&& gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()
+			&& gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null
+		) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2(), "GS2 darf zu diesem Zeitpunkt nicht null sein");
 			if (gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null) {
 				// Falls der GS2 Container zu diesem Zeitpunkt noch nicht existiert, wird er hier erstellt
@@ -213,21 +246,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			finanzielleSituationGS2.setSteuerveranlagungErhalten(finanzielleSituationGS1.getSteuerveranlagungErhalten());
 			finanzielleSituationGS2.setSteuererklaerungAusgefuellt(finanzielleSituationGS1.getSteuererklaerungAusgefuellt());
 		}
-		return gesuchService.updateGesuch(gesuch, false);
-	}
-
-	@Nonnull
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public FinanzielleSituationContainer saveFinanzielleSituation(
-		@Nonnull FinanzielleSituationContainer finanzielleSituation,
-		@Nonnull String gesuchId
-	) {
-		// Die eigentliche FinSit speichern
-		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
-		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
-			.FINANZIELLE_SITUATION);
-		return finanzielleSituationPersisted;
 	}
 
 	@Nonnull
