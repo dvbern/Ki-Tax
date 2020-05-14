@@ -247,7 +247,7 @@ public class NotrechtResource {
 			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
 				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
 				freigabeBetrag =
-					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage().multiply(new BigDecimal(25));
+					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage();
 			} else {
 				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 				freigabeBetrag =

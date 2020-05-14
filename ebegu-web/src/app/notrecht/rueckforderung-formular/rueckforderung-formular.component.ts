@@ -57,8 +57,6 @@ export class RueckforderungFormularComponent implements OnInit {
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
 
-    private readonly TAGEMULTIPLYFACTOR: number = 25;
-
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
@@ -217,7 +215,7 @@ export class RueckforderungFormularComponent implements OnInit {
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage)) {
             this.stufe1ProvBetrag =
-                rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage * this.TAGEMULTIPLYFACTOR
+                rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
                 + rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
             return;
         }
@@ -225,7 +223,7 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
         this.stufe1ProvBetrag =
-            rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden * 1
+            rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
             + rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
     }
 
@@ -237,7 +235,7 @@ export class RueckforderungFormularComponent implements OnInit {
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage)) {
             this.stufe1ProvBetrag =
-                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage * this.TAGEMULTIPLYFACTOR
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
                 + rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
             return;
         }
@@ -245,7 +243,7 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
         this.stufe1ProvBetrag =
-            rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden * 1
+            rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
             + rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
     }
 
