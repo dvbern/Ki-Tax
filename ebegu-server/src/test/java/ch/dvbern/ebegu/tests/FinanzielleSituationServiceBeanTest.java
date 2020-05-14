@@ -64,6 +64,8 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		FinanzielleSituationContainer container = TestDataUtil.createFinanzielleSituationContainer();
 		container.setFinanzielleSituationGS(finanzielleSituation);
 		container.setGesuchsteller(gesuchsteller);
+		gesuch.setGesuchsteller1(gesuchsteller);
+		persistence.merge(gesuch);
 
 		finanzielleSituationService.saveFinanzielleSituation(container, gesuch.getId());
 		Collection<FinanzielleSituationContainer> allFinanzielleSituationen = finanzielleSituationService.getAllFinanzielleSituationen();
@@ -77,11 +79,13 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 	public void updateFinanzielleSituationTest() {
 		Assert.assertNotNull(finanzielleSituationService);
 		FinanzielleSituationContainer insertedFinanzielleSituations = insertNewEntity();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		Optional<FinanzielleSituationContainer> finanzielleSituationOptional = finanzielleSituationService.findFinanzielleSituation(insertedFinanzielleSituations.getId());
 		Assert.assertTrue(finanzielleSituationOptional.isPresent());
 		FinanzielleSituationContainer finanzielleSituation = finanzielleSituationOptional.get();
 		finanzielleSituation.setFinanzielleSituationGS(TestDataUtil.createDefaultFinanzielleSituation());
 
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		FinanzielleSituationContainer updatedCont = finanzielleSituationService.saveFinanzielleSituation(
 			finanzielleSituation, gesuch.getId());
 		Assert.assertNotNull(updatedCont.getFinanzielleSituationGS().getNettolohn());
@@ -99,7 +103,8 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		FinanzielleSituationContainer container = TestDataUtil.createFinanzielleSituationContainer();
 		gesuchsteller.setFinanzielleSituationContainer(container);
-		gesuchsteller = persistence.persist(gesuchsteller);
+		this.gesuch.setGesuchsteller1(gesuchsteller);
+		persistence.merge(gesuch);
 		return gesuchsteller.getFinanzielleSituationContainer();
 	}
 }
