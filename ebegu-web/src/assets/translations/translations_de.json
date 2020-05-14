@@ -1968,7 +1968,7 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
-    "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}} - {{status}}",
+    "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Rückerstattung Kanton für nicht angebotene Betreuungstage",
     "RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN": "Rückerstattung Kanton für nicht angebotene Betreuungsstunden",
     "RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG": "Betreuungskosten für Plätze von corona-abwesenden Kindern ",

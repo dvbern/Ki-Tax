@@ -426,7 +426,7 @@
                         <h2 translate class="marginTop50">DOKUMENTE</h2>
                         <hr class="header"/>
                         <div class="download-file">
-                            <a (buttonClick)="downloadVorlage(rueckforderungFormular);">
+                            <a (click)="downloadVorlage(rueckforderungFormular);">
                                 <span class="fa fa-download"></span>
                                 <span translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE</span>
                             </a>
@@ -452,7 +452,7 @@
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"
-                    translate>LABEL_ABBRECHEN
+                    translate>ZURUECK_ONLY
             </button>
         </div>
     </form>
