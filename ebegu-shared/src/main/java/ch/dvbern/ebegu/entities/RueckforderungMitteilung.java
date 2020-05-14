@@ -32,7 +32,7 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.DB_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_RUECKFORDERUNGSMITTEILUNG_LENGTH;
 
 @Entity
 public class RueckforderungMitteilung extends AbstractEntity implements Comparable<RueckforderungMitteilung> {
@@ -52,7 +52,7 @@ public class RueckforderungMitteilung extends AbstractEntity implements Comparab
 	@Nonnull
 	private String betreff;
 
-	@Size(min = 1, max = DB_MAX_LENGTH)
+	@Size(min = 1, max = DB_RUECKFORDERUNGSMITTEILUNG_LENGTH)
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
