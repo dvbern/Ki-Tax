@@ -18,9 +18,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,7 +25,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungData;
@@ -38,22 +34,21 @@ import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
- * Sonderregel die nach der eigentlich Berechnung angewendet wird um die Mahlzeitenvergünstigung zu berechnen
+ * Regel die angewendet wird um die Mahlzeitenvergünstigung zu berechnen
  */
 public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 	protected MahlzeitenverguenstigungData mahlzeitenverguenstigungParams;
 
 	protected MahlzeitenverguenstigungBGCalcRule(
-		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale,
-		MahlzeitenverguenstigungData mahlzeitenverguenstigungParams
+		@Nonnull MahlzeitenverguenstigungData mahlzeitenverguenstigungParams
 	) {
-		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, ruleValidity, validityPeriod, locale);
+
+		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.GEMEINDE, validityPeriod, locale);
 		this.mahlzeitenverguenstigungParams = mahlzeitenverguenstigungParams;
 	}
 
@@ -64,10 +59,8 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
-		//falls vergünstigung aktiv ist
-
-		// TODO KIBON-1233 hier sollten wir auch prüfen, ob die betreuung in der entsprechenden gemeinde stattfindet
-		if (!mahlzeitenverguenstigungParams.isEnabled()) {
+		// TODO KIBON-1233 prüfen, ob der Antragsteller eine Vergünstigung überhaupt gewünscht hat
+		if (!mahlzeitenverguenstigungParams.isEnabled() || !hasAnspruch() || !validateInput(inputData)) {
 			return;
 		}
 
@@ -83,13 +76,17 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 			// vergünstigung pro hauptmahlzeit berechnen
 			BigDecimal multiplier = getTarifToUse(verguenstigungProHauptmahlzeit,
-				mahlzeitenverguenstigungParams.getTarifProHauptmahlzeit(),
+				inputData.getTarifHauptmahlzeit(),
 				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
 
 			// total vergünstigung berechnen
 			BigDecimal verguenstigungTotal =
 				MathUtil.roundToFrankenRappen(inputData.getAnzahlHauptmahlzeiten().multiply(multiplier));
-			inputData.getParent().getBgCalculationResultGemeinde().setVerguenstigungHauptmahlzeitenTotal(verguenstigungTotal);
+
+			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
+				verguenstigungTotal;
+
+			inputData.getParent().setVerguenstigungHauptmahlzeitenTotal(verguenstigungTotal);
 		}
 
 		// Wenn die Vergünstigung pro Nebenmahlzeit grösser 0 ist
@@ -99,13 +96,23 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 			// vergünstigung pro hauptmahlzeit berechnen
 			BigDecimal multiplier = getTarifToUse(verguenstigungProNebenmahlzeit,
-				mahlzeitenverguenstigungParams.getTarifProNebenmahlzeit(),
+				inputData.getTarifNebenmahlzeit(),
 				mahlzeitenverguenstigungParams.getMinimalerElternbeitragNebenmahlzeit());
 
 			// total vergünstigung berechnen
 			BigDecimal verguenstigungTotal =
 				MathUtil.roundToFrankenRappen(inputData.getAnzahlNebenmahlzeiten().multiply(multiplier));
-			inputData.getParent().getBgCalculationResultGemeinde().setVerguenstigungNebenmahlzeitenTotal(verguenstigungTotal);
+			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
+				verguenstigungTotal;
+
+			inputData.getParent().setVerguenstigungNebenmahlzeitenTotal(verguenstigungTotal);
+		}
+
+		verguenstigungProHauptmahlzeit = verguenstigungProHauptmahlzeit == null ? BigDecimal.ZERO :	verguenstigungProHauptmahlzeit;
+		verguenstigungProNebenmahlzeit = verguenstigungProNebenmahlzeit == null ? BigDecimal.ZERO : verguenstigungProNebenmahlzeit;
+
+		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0 || verguenstigungProNebenmahlzeit.compareTo(verguenstigungProNebenmahlzeit) > 0) {
+			addBemerkung(inputData, verguenstigungProHauptmahlzeit, verguenstigungProNebenmahlzeit);
 		}
 	}
 
@@ -116,7 +123,18 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		return tarifProMahlzeit.subtract(minimalerElternbeitrag);
 	}
 
-	private void addBemerkung(BGCalculationInput inputData) {
-		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_JA, getLocale());
+	private void addBemerkung(BGCalculationInput inputData, BigDecimal haupt, BigDecimal neben) {
+		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_JA, getLocale(), haupt, neben);
+	}
+
+	private boolean hasAnspruch() {
+		return true;
+	}
+
+	private boolean validateInput(BGCalculationInput inputData) {
+		return inputData.getAnzahlHauptmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
+			inputData.getAnzahlNebenmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
+			inputData.getTarifHauptmahlzeit().compareTo(BigDecimal.ZERO) > 0 &&
+			inputData.getTarifNebenmahlzeit().compareTo(BigDecimal.ZERO) > 0;
 	}
 }

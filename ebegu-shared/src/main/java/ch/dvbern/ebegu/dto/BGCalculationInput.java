@@ -143,7 +143,15 @@ public class BGCalculationInput {
 
 	private BigDecimal anzahlHauptmahlzeiten = BigDecimal.ZERO;
 
+	private BigDecimal tarifHauptmahlzeit = BigDecimal.ZERO;
+
 	private BigDecimal anzahlNebenmahlzeiten = BigDecimal.ZERO;
+
+	private BigDecimal tarifNebenmahlzeit = BigDecimal.ZERO;
+
+	private BigDecimal verguenstigungHauptmahlzeitenTotal = BigDecimal.ZERO;
+
+	private BigDecimal verguenstigungNebenmahlzeitenTotal = BigDecimal.ZERO;
 
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
@@ -170,6 +178,10 @@ public class BGCalculationInput {
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.anzahlHauptmahlzeiten = toCopy.anzahlHauptmahlzeiten;
 		this.anzahlNebenmahlzeiten = toCopy.anzahlNebenmahlzeiten;
+		this.tarifHauptmahlzeit = toCopy.tarifHauptmahlzeit;
+		this.tarifNebenmahlzeit = toCopy.tarifNebenmahlzeit;
+		this.verguenstigungHauptmahlzeitenTotal = toCopy.verguenstigungHauptmahlzeitenTotal;
+		this.verguenstigungNebenmahlzeitenTotal = toCopy.getVerguenstigungNebenmahlzeitenTotal();
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
 		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
@@ -563,6 +575,38 @@ public class BGCalculationInput {
 		this.anzahlNebenmahlzeiten = anzahlNebenmahlzeiten;
 	}
 
+	public BigDecimal getTarifHauptmahlzeit() {
+		return tarifHauptmahlzeit;
+	}
+
+	public void setTarifHauptmahlzeit(BigDecimal tarifHauptmahlzeit) {
+		this.tarifHauptmahlzeit = tarifHauptmahlzeit;
+	}
+
+	public BigDecimal getTarifNebenmahlzeit() {
+		return tarifNebenmahlzeit;
+	}
+
+	public void setTarifNebenmahlzeit(BigDecimal tarifNebenmahlzeit) {
+		this.tarifNebenmahlzeit = tarifNebenmahlzeit;
+	}
+
+	public BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
+		return verguenstigungHauptmahlzeitenTotal;
+	}
+
+	public void setVerguenstigungHauptmahlzeitenTotal(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
+	}
+
+	public BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
+		return verguenstigungNebenmahlzeitenTotal;
+	}
+
+	public void setVerguenstigungNebenmahlzeitenTotal(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
+	}
+
 	@Override
 	public String toString() {
 		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
@@ -623,6 +667,43 @@ public class BGCalculationInput {
 			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(other.getAnzahlNebenmahlzeiten());
 		}
 		this.setAnzahlNebenmahlzeiten(newMonatlicheNebenmahlzeiten);
+
+		BigDecimal newTarifHauptmhalzeit = BigDecimal.ZERO;
+		if (this.getTarifHauptmahlzeit() != null) {
+			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(this.getTarifHauptmahlzeit());
+		}
+		if (other.getTarifHauptmahlzeit() != null) {
+			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(other.getTarifHauptmahlzeit());
+		}
+		this.setTarifHauptmahlzeit(newTarifHauptmhalzeit);
+
+		BigDecimal newTarifNebenmahlzeit = BigDecimal.ZERO;
+		if (this.getTarifNebenmahlzeit() != null) {
+			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(this.getTarifNebenmahlzeit());
+		}
+		if (other.getTarifNebenmahlzeit() != null) {
+			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(other.getTarifNebenmahlzeit());
+		}
+		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
+
+		BigDecimal newVerguenstigungHaupt = BigDecimal.ZERO;
+		if (this.getVerguenstigungHauptmahlzeitenTotal() != null) {
+			newVerguenstigungHaupt = newVerguenstigungHaupt.add(this.getVerguenstigungHauptmahlzeitenTotal());
+		}
+		if (other.getTarifNebenmahlzeit() != null) {
+			newVerguenstigungHaupt = newVerguenstigungHaupt.add(other.getVerguenstigungHauptmahlzeitenTotal());
+		}
+		this.setVerguenstigungHauptmahlzeitenTotal(newVerguenstigungHaupt);
+
+		BigDecimal newVerguenstigungNeben = BigDecimal.ZERO;
+		if (this.getVerguenstigungNebenmahlzeitenTotal() != null) {
+			newVerguenstigungNeben = newVerguenstigungNeben.add(this.getVerguenstigungNebenmahlzeitenTotal());
+		}
+		if (other.getVerguenstigungNebenmahlzeitenTotal() != null) {
+			newVerguenstigungNeben = newVerguenstigungNeben.add(other.getVerguenstigungNebenmahlzeitenTotal());
+		}
+		this.setVerguenstigungNebenmahlzeitenTotal(newVerguenstigungNeben);
+
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -725,6 +806,10 @@ public class BGCalculationInput {
 			// TODO KIBON-1233: sind das sichtbare daten?
 			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
 			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
+			MathUtil.isSame(tarifHauptmahlzeit, that.tarifHauptmahlzeit) &&
+			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
+			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, that.verguenstigungHauptmahlzeitenTotal) &&
+			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, that.verguenstigungHauptmahlzeitenTotal) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == that.anspruchspensumProzent &&

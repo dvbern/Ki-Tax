@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -41,11 +43,11 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 
 	@NotNull
 	@Column(nullable = false)
-	private Integer tarifProHauptmahlzeit = 0;
+	private BigDecimal tarifProHauptmahlzeit = BigDecimal.ZERO;
 
 	@NotNull
 	@Column(nullable = false)
-	private Integer tarifProNebenmahlzeit = 0;
+	private BigDecimal tarifProNebenmahlzeit = BigDecimal.ZERO;
 
 	@Nonnull
 	public Integer getMonatlicheHauptmahlzeiten() {
@@ -65,19 +67,19 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
-	public Integer getTarifProHauptmahlzeit() {
+	public BigDecimal getTarifProHauptmahlzeit() {
 		return tarifProHauptmahlzeit;
 	}
 
-	public void setTarifProHauptmahlzeit(Integer tarifProHauptmahlzeit) {
+	public void setTarifProHauptmahlzeit(BigDecimal tarifProHauptmahlzeit) {
 		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
 	}
 
-	public Integer getTarifProNebenmahlzeit() {
+	public BigDecimal getTarifProNebenmahlzeit() {
 		return tarifProNebenmahlzeit;
 	}
 
-	public void setTarifProNebenmahlzeit(Integer tarifProNebenmahlzeit) {
+	public void setTarifProNebenmahlzeit(BigDecimal tarifProNebenmahlzeit) {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 

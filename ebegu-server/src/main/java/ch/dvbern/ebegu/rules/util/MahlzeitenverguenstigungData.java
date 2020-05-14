@@ -19,23 +19,48 @@ package ch.dvbern.ebegu.rules.util;
 
 import java.math.BigDecimal;
 
+import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
+import com.google.common.collect.TreeRangeMap;
 
 public class MahlzeitenverguenstigungData {
 
-	private boolean enabled;
+	private boolean enabled = false;
 
-	private RangeMap<BigDecimal, BigDecimal> verguenstigungProHauptmahlzeit;
+	private RangeMap<BigDecimal, BigDecimal> verguenstigungProHauptmahlzeit = TreeRangeMap.create();
 
-	private RangeMap<BigDecimal, BigDecimal> verguenstigungProNebenmahlzeit;
+	private RangeMap<BigDecimal, BigDecimal> verguenstigungProNebenmahlzeit = TreeRangeMap.create();
 
-	private BigDecimal minimalerElternbeitragHauptmahlzeit;
+	private BigDecimal minimalerElternbeitragHauptmahlzeit = BigDecimal.ZERO;
 
-	private BigDecimal minimalerElternbeitragNebenmahlzeit;
+	private BigDecimal minimalerElternbeitragNebenmahlzeit = BigDecimal.ZERO;
 
-	private BigDecimal tarifProHauptmahlzeit;
+	public MahlzeitenverguenstigungData(
+		boolean enabled,
+		BigDecimal maxEinkommenStufe1,
+		BigDecimal maxEinkommenStufe2,
+		BigDecimal verguenstigungStufe1Hauptmahlzeit,
+		BigDecimal verguenstigungStufe2Hauptmahlzeit,
+		BigDecimal verguenstigungStufe3Hauptmahlzeit,
+		BigDecimal verguenstigungStufe1Nebenmahlzeit,
+		BigDecimal verguenstigungStufe2Nebenmahlzeit,
+		BigDecimal verguenstigungStufe3Nebenmahlzeit,
+		BigDecimal minimalerElternbeitragHauptmahlzeit,
+		BigDecimal minimalerElternbeitragNebenmahlzeit
+	) {
+		this.enabled = enabled;
 
-	private BigDecimal tarifProNebenmahlzeit;
+		verguenstigungProHauptmahlzeit.put(Range.closed(BigDecimal.ZERO, maxEinkommenStufe1), verguenstigungStufe1Hauptmahlzeit);
+		verguenstigungProHauptmahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Hauptmahlzeit);
+		verguenstigungProHauptmahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Hauptmahlzeit);
+
+		verguenstigungProNebenmahlzeit.put(Range.closed(BigDecimal.ZERO, maxEinkommenStufe1), verguenstigungStufe1Nebenmahlzeit);
+		verguenstigungProNebenmahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Nebenmahlzeit);
+		verguenstigungProNebenmahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Nebenmahlzeit);
+
+		this.minimalerElternbeitragHauptmahlzeit = minimalerElternbeitragHauptmahlzeit;
+		this.minimalerElternbeitragNebenmahlzeit = minimalerElternbeitragNebenmahlzeit;
+	}
 
 	public boolean isEnabled() {
 		return enabled;
@@ -75,21 +100,5 @@ public class MahlzeitenverguenstigungData {
 
 	public void setMinimalerElternbeitragNebenmahlzeit(BigDecimal minimalerElternbeitragNebenmahlzeit) {
 		this.minimalerElternbeitragNebenmahlzeit = minimalerElternbeitragNebenmahlzeit;
-	}
-
-	public BigDecimal getTarifProHauptmahlzeit() {
-		return tarifProHauptmahlzeit;
-	}
-
-	public void setTarifProHauptmahlzeit(BigDecimal tarifProHauptmahlzeit) {
-		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
-	}
-
-	public BigDecimal getTarifProNebenmahlzeit() {
-		return tarifProNebenmahlzeit;
-	}
-
-	public void setTarifProNebenmahlzeit(BigDecimal tarifProNebenmahlzeit) {
-		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 }

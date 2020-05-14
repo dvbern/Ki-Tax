@@ -505,6 +505,25 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputAsiv().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
 		this.getBgCalculationInputGemeinde().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
 	}
+
+	public void setTarifHauptmahlzeit(BigDecimal tarifHauptmahlzeit) {
+		this.getBgCalculationInputAsiv().setTarifHauptmahlzeit(tarifHauptmahlzeit);
+		this.getBgCalculationInputGemeinde().setTarifHauptmahlzeit(tarifHauptmahlzeit);
+	}
+
+	public void setTarifNebenmahlzeit(BigDecimal tarifNebenmahlzeit) {
+		this.getBgCalculationInputAsiv().setTarifNebenmahlzeit(tarifNebenmahlzeit);
+		this.getBgCalculationInputGemeinde().setTarifNebenmahlzeit(tarifNebenmahlzeit);
+	}
+	public void setVerguenstigungHauptmahlzeitenTotal(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
+	}
+	public void setVerguenstigungNebenmahlzeitenTotal(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 
@@ -701,5 +720,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
+		result.setVerguenstigungHauptmahlzeitenTotal(input.getVerguenstigungHauptmahlzeitenTotal());
+		result.setVerguenstigungNebenmahlzeitenTotal(input.getVerguenstigungNebenmahlzeitenTotal());
 	}
 }

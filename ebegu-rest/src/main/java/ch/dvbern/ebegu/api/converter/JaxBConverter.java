@@ -3049,6 +3049,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
+		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
+		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
@@ -3095,6 +3097,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
+		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
+		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 
 		return betreuungspensum;
 	}
@@ -3107,6 +3111,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
+		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
+		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
 
 		return jaxBetreuungspensum;
 	}
@@ -3394,6 +3400,8 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
+		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigungHauptmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigungNebenmahlzeitenTotal());
 		return jaxZeitabschn;
 	}
 
@@ -3508,6 +3516,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
 		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
+		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
+		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
 
 		return jaxBetreuungspensum;
 	}
