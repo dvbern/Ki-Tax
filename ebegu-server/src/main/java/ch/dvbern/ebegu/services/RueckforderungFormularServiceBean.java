@@ -84,7 +84,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			// neues Formular erstellen falls es sich un eine kita oder TFO handelt und noch kein Formular existiert
 			if ((institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ||
 				institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN) &&
-				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)) {
+				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)
+				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null
+				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getIban() != null) {
 
 				RueckforderungFormular formular = new RueckforderungFormular();
 				formular.setInstitutionStammdaten(institutionStammdaten);
