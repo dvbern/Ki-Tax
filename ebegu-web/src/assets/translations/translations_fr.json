@@ -2018,5 +2018,8 @@
     "RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG": "Montant provisoire",
     "RUECKFORDERUNG_MITTEILUNGEN": "Messages",
     "RUECKFORDERUNG_DOWNLOAD_VORLAGE": "Télécharger le modèle",
+    "RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE": "Initialiser les formulaires de demande de restitution",
+    "RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT": "Êtes-vous sûre de vouloir initialiser les formulaires de demande de restitution?",
+    "RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE": "Êtes-vous sûre de votre action?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

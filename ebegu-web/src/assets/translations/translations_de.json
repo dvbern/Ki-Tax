@@ -1993,7 +1993,7 @@
     "NOTRECHT_STATISTIK": "Corona Finanzierung",
     "NOTRECHT_INFO": "Statistik zu den Auszahlungen der Corona Finanzierung",
     "NOTRECHT_ZAHLUNGEN_AUSLOESEN": "Fällige Zahlungen auslösen",
-    "STATISTIK_NOTRECHT_HINT": "TODO Text definieren",
+    "STATISTIK_NOTRECHT_HINT": "",
     "TOOLBAR_LOESCHEN_FORCED": "Antrag loeschen als Superadmin",
     "CONFIRM_GESUCH_LOESCHEN_FORCED": "Sind Sie sicher, dass sie dieses Gesuch loeschen wollen?",
     "BESCHREIBUNG_GESUCH_LOESCHEN_FORCED": "Ich bestaetige, dass dies mit dem Gesuchsteller abgesprochen ist",
