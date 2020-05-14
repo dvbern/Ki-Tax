@@ -13,17 +13,17 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="erwerbspensumListView gesuchModul">
+<div class="erwerbspensumListView gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-12">
             <h2>
                 <span data-translate="ERWERBSPENSEN_LIST_TITLE"></span>
             </h2>
             <hr class="header"/>
-            <p ng-if="vm.gesuchModelManager.getGesuch().isMutation() && !vm.isGesuchReadonly()" class="inlineHint"
+            <p ng-if="vm.gesuchModelManager.getGesuch().isMutation() && !vm.isGesuchReadonly()" class="inline-hint"
                data-translate="ERWERBSPENSUM_HINT"></p>
-            <p ng-if="vm.gesuchModelManager.getGesuch().isMutation()" class="inlineHint"
+            <p ng-if="vm.gesuchModelManager.getGesuch().isMutation()" class="inline-hint"
                data-translate="ERWERBSPENSEN_LIST_HINT">
             </p>
             <div class="row" ng-if="!vm.erwerbspensumRequired">
@@ -38,8 +38,8 @@
 
 
     <!--Erwerbspensen von Gesuchsteller 1-->
-    <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller1" class="marginBottom80">
-        <h3 class="ebeguH2">
+    <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller1" class="margin-bottom-80">
+        <h3 class="ebegu-h2">
             <span ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName()"></span>
         </h3>
         <dv-erwerbspensum-list erwerbspensen="vm.getErwerbspensenListGS1()" table-id="erwerbspensenGS1"
@@ -53,7 +53,7 @@
     </div>
     <!--Erwerbspensen von Gesuchsteller 2-->
     <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller2">
-        <h3 class="ebeguH2">
+        <h3 class="ebegu-h2">
             <span ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName()"></span>
         </h3>
         <dv-erwerbspensum-list erwerbspensen="vm.getErwerbspensenListGS2()" table-id="erwerbspensenGS2"
@@ -66,7 +66,7 @@
     </div>
 
     <!-- Information zu Ausserordentlichem Anspruch -->
-    <div class="well well-status-warten marginTop20"
+    <div class="well well-status-warten margin-top-20"
          ng-if="vm.showInfoAusserordentlichenAnspruch">
         <span data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH"
               data-translate-value-telefon="{{vm.gemeindeTelefon}}"

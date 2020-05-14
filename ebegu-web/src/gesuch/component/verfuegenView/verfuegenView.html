@@ -13,21 +13,21 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="verfuegenView gesuchModul">
+<div class="verfuegen-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row">
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
 
                 <!-- Titel -->
-                <div class="row marginTop40">
+                <div class="row margin-top-40">
                     <div class="col-md-8">
-                        <h3 class="ebeguH2" class="mainTitle">
+                        <h3 class="ebegu-h2" class="main-title">
                             {{vm.getKindName()}} / {{vm.getInstitutionName()}}
                         </h3>
                     </div>
                     <div class="col-md-4 text-right">
-                        <h3 class="ebeguH2" aria-hidden class="mainTitle">
+                        <h3 class="ebegu-h2" aria-hidden class="main-title">
                             {{vm.getBetreuungNumber()}}
                         </h3>
                     </div>
@@ -41,7 +41,7 @@
                 <!-- Status -->
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="betreuung-status verfuegenView ng-class:vm.getBetreuungsstatus();">
+                        <div class="betreuung-status verfuegen-view ng-class:vm.getBetreuungsstatus();">
                             <div
                                 ng-bind="vm.getBetreuungsstatus() | translate">
                             </div>
@@ -85,7 +85,7 @@
                     </div>
 
                     <!-- Abholung aus der Tagesschule -->
-                    <div class="row marginTop20">
+                    <div class="row margin-top-20">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
                                 <label class="md-no-float"
@@ -152,9 +152,9 @@
                     </div>
 
                     <!-- Abweichung zweites Semester und Bemerkungen -->
-                    <div class="row marginTop30">
+                    <div class="row margin-top-30">
                         <div class="col-sm-12 dv-input-container-question">
-                            <md-checkbox class="checkbox marginTop20"
+                            <md-checkbox class="checkbox margin-top-20"
                                          ng-model="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
                                          name="abweichungZweitesSemester"
                                          id="abweichungZweitesSemester"
@@ -169,7 +169,7 @@
                                        data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG"
                                        for="bemerkung_ID">
                                 </label>
-                                <p class="inlineHint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
+                                <p class="inline-hint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
                                 <textarea aria-describedby="bemerkung_ID-error"
                                           name="bemerkung"
                                           class="form-control " rows="6"
@@ -190,7 +190,7 @@
                             <div class="col-md-12">
                                 <h3 class="md-no-float"
                                     data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL"></h3>
-                                <p class="inlineHint"
+                                <p class="inline-hint"
                                    data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT"></p>
                             </div>
                         </div>
@@ -290,7 +290,7 @@
                         </div>
 
                         <!--VerfuegungPDF anzeigen-->
-                        <div class="row marginTop20 text-left">
+                        <div class="row margin-top-20 text-left">
                             <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">
                                 <button type="button" class="dv-btn btn-link link-underline"
                                         ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()">
@@ -425,12 +425,12 @@
                 </div>
                 <div ng-if="!vm.isTagesschuleVerfuegung()">
                     <!--bemerkungen-->
-                    <div class="row marginTop20" dv-show-element
+                    <div class="row margin-top-20" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtRoles()"
                          dv-show-expression="vm.showVerfuegungsDetails()">
                         <div class="col-md-12 form-group">
-                            <label class="md-no-float inlineHint" for="manuelle_notes"
-                                   data-translate="BEGRUENDUNG"></label>
+                            <label class="md-no-float inline-hint" for="manuelle_notes"
+								   data-translate="BEGRUENDUNG"></label>
                             <textarea md-no-autogrow class="form-control" rows="6" name="manuelle_notes"
                                       id="manuelle_notes"
                                       ng-model="vm.bemerkungen" ng-disabled="vm.isBemerkungenDisabled()"
@@ -468,7 +468,7 @@
                     </div>
 
                     <!--VerfuegungPDF anzeigen-->
-                    <div class="row marginTop20 text-left">
+                    <div class="row margin-top-20 text-left">
                         <div class="col-xs-12" ng-if="vm.showVerfuegungPdfLink()">
                             <button type="button" class="dv-btn btn-link link-underline"
                                     ng-click="vm.openVerfuegungPDF()">
@@ -488,7 +488,7 @@
 
                         </div>
                         <!--schemalinks-->
-                        <div class="col-xs-12 marginTop10" dv-show-element
+                        <div class="col-xs-12 margin-top-10" dv-show-element
                              dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
                              dv-show-expression="vm.showSchemas && vm.showExportLink()">
                             <span class="marginRight10"> Schemas:</span>
@@ -508,7 +508,7 @@
                     </div>
 
 
-                    <div class="row marginTop20" ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten">
+                    <div class="row margin-top-20" ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten">
                         <div class="col-md-12">
                             <div class="well well-status-warten">
                                 <span data-translate="IDENTISCHE_BERECHNUNG"></span>

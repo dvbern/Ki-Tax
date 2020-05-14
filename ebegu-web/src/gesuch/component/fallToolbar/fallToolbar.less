@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-@import (reference) "../../../style/variables.less";
+@import (reference) '../../../style/variables.less';
 
 @toolbar-height: 4rem;
 
@@ -28,12 +28,15 @@
         }
         button {
             border: 0;
-            text-align: center;
             border-right: 1px solid #fff;
+            text-align: center;
         }
     }
 
     .dossier-list {
+        margin-left: auto;
+        max-height: 30px !important;
+        padding: 0 !important;
         button.dossier-element {
             padding: 0 2rem;
             width: auto;
@@ -41,36 +44,33 @@
         div.dossier-element {
             padding: 0;
         }
-        margin-left: auto;
-        padding: 0 !important;
-        max-height: 30px !important;
         .dossier-element {
             background-color: @grey;
             color: @contrast-lightest;
             font-weight: bold;
-            min-height: @toolbar-height;
             line-height: @toolbar-height;
+            min-height: @toolbar-height;
             text-align: center;
 
             &.fall-nummer{
+                background-color: transparent;
                 color: @toolbar-color;
                 font-weight: normal;
-                width: auto;
-                background-color: transparent;
                 margin-right: 2rem;
+                width: auto;
             }
             &.fall-nummer-gesuchsteller {
+                background-color: transparent;
                 color: @black;
                 font-weight: bold;
-                width: auto;
-                background-color: transparent;
                 margin-right: 2rem;
+                width: auto;
             }
 
             &.add-dossier {
-                width: auto;
                 padding-left: 1.5rem;
                 padding-right: 1.5rem;
+                width: auto;
             }
         }
 
@@ -86,39 +86,37 @@
 }
 
 .fall-toolbar-mobile {
-    &-dropdown {
-        padding: 0;
-    }
 
     &-dropdown-menu {
         background: @contrast-darkest;
-        width: 100%;
-        margin: 0;
-        border-radius: 0;
         border: 0;
-        text-align: left;
+        border-radius: 0;
+        margin: 0;
         padding: 0;
+        text-align: left;
+        width: 100%;
     }
 
     &-dropdown {
         height: 5rem;
+        padding: 0;
         text-align: left;
     }
     &-dropdown-button {
-        color: @contrast-lightest;
-        text-decoration: none;
         background: transparent;
-        height: 100%;
         border: 0;
+        color: @contrast-lightest;
+        height: 100%;
         padding: 0 2rem;
+        text-decoration: none;
         &.active, &:active, &:hover, &:focus {
             background-color: transparent;
-            color: @contrast-lightest;
-            outline: none;
-            text-decoration: none !important;
-            outline: 0;
             -webkit-box-shadow: none;
             box-shadow: none;
+            color: @contrast-lightest;
+            outline: none;
+            outline: 0;
+            text-decoration: none !important;
 
         }
     }
@@ -138,7 +136,7 @@
 
 .kitax-link a {
     color: @toolbar-color;
+    font-size: 1.6rem;
     font-weight: normal;
     text-decoration: none;
-    font-size: 1.6rem;
 }

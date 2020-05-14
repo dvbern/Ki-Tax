@@ -13,15 +13,15 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="adminView adminModul">
+<div class="admin-view admin-modul">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
 
-            <div class="viewTitle marginTop10">
+            <div class="view-title margin-top-10">
                 <h1 data-translate="ADMIN"></h1>
             </div>
             <!-- Application Properties: Tabelle -->
-            <div class="row marginTop10">
+            <div class="row margin-top-10">
                 <div class="col-md-12 table-responsive">
 
                     <table st-table="displayedCollection" st-safe-src="vm.applicationProperties" st-delay="20"
@@ -29,7 +29,7 @@
                         <thead>
                         <tr>
                             <th st-sort="name" class="sortable" data-translate="PROPERTY_NAME"></th>
-                            <th st-sort="value" class="sortable valCol" data-translate="PROPERTY_VALUE"></th>
+                            <th st-sort="value" class="sortable val-col" data-translate="PROPERTY_VALUE"></th>
                             <th st-sort="timestampErstellt" class="sortable" data-translate="TIMEERSTELLT"></th>
                         </tr>
                         <tr>
@@ -44,7 +44,7 @@
                         <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
                             ng-click="vm.editRow(row)">
                             <td ng-bind="row.name | translate"></td>
-                            <td ng-bind="row.value" class="valCol" title="{{row.value}}"></td>
+                            <td ng-bind="row.value" class="val-col" title="{{row.value}}"></td>
                             <td ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>
                         </tr>
                         </tbody>
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <!-- Application Properties Detail -->
-            <div class="row marginTop10" ng-if="!vm.isReadonly()">
+            <div class="row margin-top-10" ng-if="!vm.isReadonly()">
                 <form ng-submit="form.$valid && vm.submit()" name="form" role="form" class="" novalidate
                       ng-if="vm.applicationProperty"
                       unsaved-warning-form>
@@ -110,10 +110,10 @@
 
             <!-- Suchindex -->
             <div ng-if="!vm.isReadonly() && vm.authServiceRS.isOneOfRoles(vm.TSRoleUtil.getSuperAdminRoles())">
-                <div class="viewTitle marginTop10">
+                <div class="view-title margin-top-10">
                     <h1 data-translate="CREATE_SEARCHINDEX"></h1>
                 </div>
-                <div class="row marginTop10">
+                <div class="row margin-top-10">
                     <div class="col-md-12 form-group">
                         <dv-loading-button force-wait-service="true" button-click="vm.startReindex()">
                             <span data-translate="CREATE_SEARCHINDEX"></span>

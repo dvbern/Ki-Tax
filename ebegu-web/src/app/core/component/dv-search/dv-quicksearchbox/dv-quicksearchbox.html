@@ -30,7 +30,7 @@
     <md-item-template>
         <dv-search-result-icon entry="item"></dv-search-result-icon>
         <span md-highlight-text="vm.searchQuery" md-highlight-flags="i"
-              ng-class="{'ALL':'allresultsLink'}[item.entity]">
+              ng-class="{'ALL':'allresults-link'}[item.entity]">
             {{item.antragDTO.getQuicksearchString()}}{{item.text ? ' ('+ item.text+ ') ': ''}}
         </span>
     </md-item-template>

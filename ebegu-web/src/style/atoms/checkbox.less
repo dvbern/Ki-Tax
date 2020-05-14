@@ -16,43 +16,43 @@
 @import (reference) '../mixins.less';
 
 .checkbox {
-    margin: 0 0 3rem;
-    height: auto;
     font-size: 0;
+    height: auto;
+    margin: 0 0 3rem;
     dv-tooltip {
         display: inline-block;
+        font-size: 0;
         height: 1.7rem;
         line-height: 1.7rem;
-        vertical-align: middle;
-        font-size: 0;
         margin-left: -4rem;
+        vertical-align: middle;
         i {
             font-size: 1.6rem;
         }
     }
     .dv-error-messages {
-        overflow: visible;
-        height: auto;
-        min-height: 3rem;
         display: block;
+        height: auto;
         margin-bottom: -3rem;
+        min-height: 3rem;
+        overflow: visible;
     }
 }
 
 md-checkbox {
     float:left;
     font-size: 0;
-    position: relative;
+    height: auto;
+    margin-bottom: 0;
+    margin-right: 4rem;
+    margin-top: 0;
     min-height: 1.7rem;
     min-width: 0;
-    height: auto;
+    position: relative;
     width: auto;
     &:last-of-type {
         margin-right: 4rem;
     }
-    margin-right: 4rem;
-    margin-top: 0;
-    margin-bottom: 0;
     &[disabled] {
         color: @contrast-dark;
         .md-label {
@@ -73,95 +73,95 @@ md-checkbox {
     }
     &.md-focused, &:focus {
         .md-icon {
+            box-shadow: 0 0 0 2px @contrast-darkest;
             //-webkit-box-shadow: 0 0 4px 0 #858585;
             //box-shadow: 0 0 4px 0 #858585;
             //outline: 2px solid @contrast-darkest;
             transition: none;
-            box-shadow: 0 0 0 2px @contrast-darkest;
 
         }
     }
     .md-container {
-        width: 1.7rem;
-        height: 1.7rem;
         display: block;
+        height: 1.7rem;
+        width: 1.7rem;
         &:before {
             content: none !important;
         }
     }
     .md-label {
         display: inline-block;
-        margin-left: 3rem;
-        height: auto;
-        min-height: 1.7rem;
-        line-height: 1.7rem;
-        vertical-align: middle;
         font-size: 0;
+        height: auto;
+        line-height: 1.7rem;
+        margin-left: 3rem;
+        min-height: 1.7rem;
+        vertical-align: middle;
 
         span {
             .ebeguH3();
-            margin: 0;
-            line-height: 1.7rem;
-            height: auto;
-            min-height: 1.7rem;
             display: block;
+            height: auto;
+            line-height: 1.7rem;
+            margin: 0;
             margin-right: 1rem;
+            min-height: 1.7rem;
             vertical-align: middle;
         }
     }
     .md-icon, &:not(.md-checked) .md-icon {
         border: 1px solid @contrast-darkest;
         border-radius: 0.2rem;
-        width: auto;
+        bottom: 0;
         height: auto;
+        left: 0;
         line-height: 1.7rem;
         position: absolute;
-        left: 0;
         right: 0;
-        bottom: 0;
         top: 0;
+        width: auto;
     }
     &.md-checked {
         .md-icon {
             background-color: @contrast-darkest;
             &:after {
+                border-radius: 0.2rem;
+                border-width: 0;
+                bottom: 0;
+                color: @contrast-lightest;
+                content: '\f00c';
+                display: block !important;
+                font-family: 'FontAwesome', sans-serif;
+                font-size: 0.8rem;
+                height: auto;
+                left: 0;
                 line-height: 175%;
                 position: absolute;
-                font-size: 0.8rem;
-                font-family: 'FontAwesome';
-                left: 0;
                 right: 0;
-                top: 0;
-                bottom: 0;
-                width: auto;
-                height: auto;
-                transform: none;
-                border-width: 0;
-                border-radius: 0.2rem;
-                content: "\f00c";
                 text-align: center;
+                top: 0;
+                transform: none;
                 vertical-align: middle;
-                color: @contrast-lightest;
-                display: block !important;
+                width: auto;
             }
         }
     }
 }
 
 md-checkbox.dv-ebegu-calendar {
-    position: absolute !important;
-    top: 0;
-    left: 0;
+    align-items: stretch;
     bottom: 0;
-    right: 0;
+    display: flex;
     float:left;
     font-size: 0;
     height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: stretch;
     justify-content: center;
+    left: 0;
     margin: 0;
+    position: absolute !important;
+    right: 0;
+    top: 0;
+    width: 100%;
     &:last-of-type {
         margin-right: 0;
     }
@@ -183,59 +183,59 @@ md-checkbox.dv-ebegu-calendar {
     }
     &.md-focused, &:focus {
         .md-icon {
-            transition: none;
             box-shadow: 0 0 0 2px @contrast-darkest;
+            transition: none;
 
         }
     }
     .md-container {
+        background: @contrast-lightest;
+        display: block;
         height: 100%;
         width: 100%;
-        display: block;
-        background: @contrast-lightest;
         &:before {
             content: none !important;
         }
     }
     .md-label {
-        position: relative !important;
-        margin-left: 0;
-        flex: 1 0 auto !important;
-        height: unset !important;
-        min-height: 1.7rem;
-        line-height: 1.7rem;
-        vertical-align: top !important;
-        text-align: center !important;
-        font-size: 0;
-        display: flex !important;
         align-items: center !important;
-        justify-content: flex-start !important;
-        max-height: none;
+        display: flex !important;
+        flex: 1 0 auto !important;
         flex-direction: column;
+        font-size: 0;
+        height: unset !important;
+        justify-content: flex-start !important;
+        line-height: 1.7rem;
+        margin-left: 0;
+        max-height: none;
+        min-height: 1.7rem;
+        position: relative !important;
+        text-align: center !important;
+        vertical-align: top !important;
 
         span {
-            line-height: initial !important;
-            height: auto;
-            min-height: initial !important;
-            display: initial !important;
-            margin: 0;
-            padding: 0;
             border-bottom: none;
+            display: initial !important;
+            height: auto;
+            line-height: initial !important;
+            margin: 0;
+            min-height: initial !important;
+            padding: 0;
             vertical-align: initial !important;
         }
     }
     .md-icon, &:not(.md-checked) .md-icon {
-        display: block;
         border: none;
         border-radius: 0;
-        width: auto;
+        bottom: 0;
+        display: block;
         height: auto;
+        left: 0;
         line-height: 1.7rem;
         position: absolute;
-        left: 0;
         right: 0;
-        bottom: 0;
         top: 0;
+        width: auto;
     }
     &.md-checked {
         .md-label {
@@ -248,41 +248,41 @@ md-checkbox.dv-ebegu-calendar {
             background-color: @contrast-dark;
             top: 0;
             &:after {
+                border-radius: 0;
+                border-width: 0;
+                bottom: unset !important;
+                color: @contrast-lightest;
+                content: '';
+                display: none !important;
+                font-family: 'FontAwesome', sans-serif;
+                font-size: 2rem;
+                height: auto;
+                left: 0;
                 line-height: normal;
                 position: absolute;
-                font-family: 'FontAwesome';
-                left: 0;
                 right: 0;
+                text-align: center;
                 top: 50%;
                 transform: translateY(-50%);
-                bottom: unset !important;
-                width: auto;
-                height: auto;
-                border-width: 0;
-                border-radius: 0;
-                content: "";
-                text-align: center;
                 vertical-align: middle;
-                color: @contrast-lightest;
-                font-size: 2rem;
-                display: none !important;
+                width: auto;
             }
         }
     }
 }
 
 md-checkbox.dv-ebegu-calendar--tagesschule {
-    position: absolute !important;
-    top: 0;
-    left: 0;
     bottom: 0;
-    right: 0;
+    display: block;
     float:left;
     font-size: 0;
     height: 100%;
-    width: 100%;
-    display: block;
+    left: 0;
     margin: 0;
+    position: absolute !important;
+    right: 0;
+    top: 0;
+    width: 100%;
     &:last-of-type {
         margin-right: 0;
     }
@@ -312,83 +312,83 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
     }
     &.md-focused, &:focus {
         .md-icon {
+            box-shadow: 0 0 0 2px @contrast-darkest;
             //-webkit-box-shadow: 0 0 4px 0 #858585;
             //box-shadow: 0 0 4px 0 #858585;
             //outline: 2px solid @contrast-darkest;
             transition: none;
-            box-shadow: 0 0 0 2px @contrast-darkest;
 
         }
     }
     .md-container {
+        background: @contrast-lightest;
+        display: block;
         height: 100%;
         width: 100%;
-        display: block;
-        background: @contrast-lightest;
         &:before {
             content: none !important;
         }
     }
     .md-label {
-        position: relative !important;
         display: block;
-        margin-left: 0;
-        height: auto;
-        min-height: 1.7rem;
-        line-height: 1.7rem;
-        vertical-align: top;
-        text-align: center;
         font-size: 0;
+        height: auto;
+        line-height: 1.7rem;
+        margin-left: 0;
+        min-height: 1.7rem;
+        position: relative !important;
+        text-align: center;
+        vertical-align: top;
 
         span {
             .ebeguH3();
-            line-height: 1.7rem;
-            height: auto;
-            min-height: 1.7rem;
-            display: block;
-            margin: 0;
-            padding: 8rem 0;
             border-bottom: 1px solid @contrast;
-            vertical-align: middle;
             border-bottom: none;
-          &.error {
-              color: red;
-              font-weight: bold;
-          }
+            display: block;
+            height: auto;
+            line-height: 1.7rem;
+            margin: 0;
+            min-height: 1.7rem;
+            padding: 8rem 0;
+            vertical-align: middle;
+            &.error {
+                color: red;
+                font-weight: bold;
+            }
 
         }
     }
     .md-icon, &:not(.md-checked) .md-icon {
-        display: block;
         border: none;
         border-radius: 0;
-        width: auto;
+        bottom: 0;
+        display: block;
         height: auto;
+        left: 0;
         line-height: 1.7rem;
         position: absolute;
-        left: 0;
         right: 0;
-        bottom: 0;
         top: 0;
+        width: auto;
         &:after {
+            border-radius: 0;
+            border-width: 0;
+            bottom: unset !important;
+            color: @contrast-lighter;
+            content: '\f05d';
+            display: block !important;
+            font-family: 'FontAwesome', sans-serif;
+            font-size: 3.5rem;
+            height: auto;
+            left: 0;
             line-height: normal;
             position: absolute;
-            font-family: 'FontAwesome';
-            left: 0;
             right: 0;
+            text-align: center;
             top: 50%;
             transform: translateY(-50%);
-            bottom: unset !important;
-            width: auto;
-            height: auto;
-            border-width: 0;
-            border-radius: 0;
-            content: "\f05d";
-            text-align: center;
             vertical-align: middle;
-            color: @contrast-lighter;
-            font-size: 3.5rem;
-            display: block !important;
+            width: auto;
         }
     }
     &.md-checked {
@@ -402,24 +402,24 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
             background-color: @contrast-dark;
             top: 0;
             &:after {
+                border-radius: 0;
+                border-width: 0;
+                bottom: unset !important;
+                color: @contrast-lightest;
+                content: '\f058';
+                display: block !important;
+                font-family: 'FontAwesome', sans-serif;
+                font-size: 3.5rem;
+                height: auto;
+                left: 0;
                 line-height: normal;
                 position: absolute;
-                font-family: 'FontAwesome';
-                left: 0;
                 right: 0;
+                text-align: center;
                 top: 50%;
                 transform: translateY(-50%);
-                bottom: unset !important;
-                width: auto;
-                height: auto;
-                border-width: 0;
-                border-radius: 0;
-                content: "\f058";
-                text-align: center;
                 vertical-align: middle;
-                color: @contrast-lightest;
-                font-size: 3.5rem;
-                display: block !important;
+                width: auto;
             }
         }
     }

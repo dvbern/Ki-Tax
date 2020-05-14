@@ -22,8 +22,8 @@ md-radio-group.radio, .radio {
         md-radio-button {
             &:first-child {
                 .md-off {
-                    box-shadow: 0 0 0 0.3rem rgba(0, 0, 0, 0.4);
                     background: rgba(0, 0, 0, 0.4);
+                    box-shadow: 0 0 0 0.3rem rgba(0, 0, 0, 0.4);
                 }
             }
         }
@@ -42,21 +42,18 @@ md-radio-group.radio, .radio {
 }
 
 md-radio-button {
-    min-height: 1.5rem;
-    height: auto;
     color: @contrast-darkest;
+    height: auto;
     margin: 0 0 1.5rem;
-    .md-label {
-
-    }
+    min-height: 1.5rem;
     &:last-child {
         margin-bottom: 0;
     }
     .md-container {
         display: block !important;
+        height: 1.5rem;
         top: 50%;
         transform: translateY(-50%);
-        height: 1.5rem;
         width: 1.5rem;
         &:before {
             content: none;
@@ -64,46 +61,46 @@ md-radio-button {
     }
     .md-label {
         display: block;
-        margin-left: 3rem;
+        height: auto;
         // font-size:1.4rem;
         line-height: 1.5rem;
+        margin-left: 3rem;
         min-height: 1.5rem;
-        height: auto;
         span {
             .ebeguH3();
+            height: 1.5rem;
             // font-size:1.4rem;
             line-height: 1.5rem;
-            height: 1.5rem;
         }
     }
     .md-off {
+        border-color: @contrast-darkest;
+        border-width: 1px;
+        height: 1.5rem;
 
         width: 1.5rem;
-        height: 1.5rem;
-        border-width: 1px;
-        border-color: @contrast-darkest;
     }
 
     .md-on {
-        width: 1.5rem;
-        height: 1.5rem;
         background-color: @contrast-darkest;
         border: none;
+        height: 1.5rem;
+        width: 1.5rem;
     }
     &.md-checked {
         .md-off {
+            border-color: @contrast-darkest;
+            height: 1.5rem;
 
             width: 1.5rem;
-            height: 1.5rem;
-            border-color: @contrast-darkest;
         }
         .md-on {
+            background-color: @contrast-darkest;
             border: none;
+            border-color: @contrast-darkest;
+            height: 1.5rem;
             transform: scale(0.3);
             width: 1.5rem;
-            height: 1.5rem;
-            background-color: @contrast-darkest;
-            border-color: @contrast-darkest;
         }
     }
     &[disabled] {
@@ -115,8 +112,8 @@ md-radio-button {
         }
 
         .md-on {
-            border: none;
             background-color: @contrast-dark;
+            border: none;
             border-color: @contrast-dark;
         }
         &.md-checked {

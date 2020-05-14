@@ -20,8 +20,8 @@
 label,
 button,
 p {
-    font-size: 1.4rem;
     color: @white;
+    font-size: 1.4rem;
     letter-spacing: 0.05rem;
     line-height: 1.9rem;
 }
@@ -29,46 +29,46 @@ p {
 .onboarding-title {
     font-size: 7.2rem;
     font-weight: bold;
-    line-height: 9.8rem;
     letter-spacing: 0.15rem;
+    line-height: 9.8rem;
     padding: 4vh;
     text-align: center;
 }
 
-.onboarding-subtitle-sc{
+.onboarding-subtitle-sc {
+    color: white;
     font-size: 3.6rem;
     font-weight: bold;
     letter-spacing: 0.193rem;
     line-height: 4.9rem;
     margin: 5vh 0;
+    max-width: 100%;
     text-align: center;
     text-overflow: ellipsis;
-    max-width: 100%;
-    color: white;
 }
 
 .onboarding-subtitle {
-    margin-left: 11vw;
-    margin-right: 11vw;
-    margin-top: 28%;
-    text-align: center;
+    color: black;
     font-size: 3.6rem;
     font-weight: bold;
     letter-spacing: 0.193rem;
     line-height: 4.9rem;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    color: black;
-}
-
-.onboarding-container-info{
     margin-left: 11vw;
     margin-right: 11vw;
     margin-top: 28%;
-    text-align: left;
+    max-width: 100%;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.onboarding-container-info {
     color: #000000;
-    font-family: "Open Sans";
+    font-family: 'Open Sans', sans-serif;
+    margin-left: 11vw;
+    margin-right: 11vw;
+    margin-top: 28%;
     overflow-x: unset;
+    text-align: left;
 
     .fa-arrow-circle-left {
         color: red;
@@ -82,15 +82,15 @@ p {
     }
 
     p {
+        color: #222222;
         font-size: 14px;
         letter-spacing: 1px;
         line-height: 19px;
-        color: #222222;
     }
 
     a {
         color: red;
-        font-family: "Open Sans";
+        font-family: 'Open Sans', sans-serif;
         font-size: 12px;
         letter-spacing: 0.82px;
         line-height: 17px;
@@ -99,25 +99,25 @@ p {
 
 .onboarding-big-red-button {
     color: #FFFFFF;
-    font-family: "Open Sans";
+    font-family: 'Open Sans', sans-serif;
     font-size: 14px;
+    height: 6rem;
     letter-spacing: 0.5px;
     line-height: 19px;
     text-align: center;
-    height: 6rem;
     text-transform: uppercase;
 }
 
 .onboarding-red-border-button {
-    margin-bottom: 4rem;
-    height: 6rem;
-    border-color: red;
     background-color: white;
+    border-color: red;
     border-style: solid;
     color: red;
     font-size: 14px;
+    height: 6rem;
     letter-spacing: 0.5px;
     line-height: 19px;
+    margin-bottom: 4rem;
     text-align: center;
     text-transform: uppercase;
 }
@@ -133,31 +133,34 @@ p {
     }
 
     &-label {
-        width: 26.3rem;
         margin-bottom: 1.7rem;
+        width: 26.3rem;
     }
 
-    &-input{
+    &-input {
+        align-items: flex-end;
         display: flex;
         flex-flow: row wrap;
-        align-items: flex-end;
         justify-content: space-between;
+
         &-container {
             margin-top: 2rem;
         }
-        &-button{
-            margin-top: 0rem;
-            font-family: "Open Sans";
+
+        &-button {
+            font-family: 'Open Sans', sans-serif;
             font-size: 14px;
             letter-spacing: 0.5px;
             line-height: 19px;
+            margin-top: 0;
         }
-        ::ng-deep .mat-select, .mat-option{
-            font-family: "Open Sans";
+
+        ::ng-deep .mat-select, .mat-option {
+            border: 2px solid @black;
+            font-family: 'Open Sans', sans-serif;
             font-size: 14px;
             letter-spacing: 0.5px;
             line-height: 19px;
-            border: 2px solid @black;
         }
     }
 
@@ -166,47 +169,47 @@ p {
         width: 100%;
 
         &-input {
+            align-items: center;
+            color: @black;
+            display: flex;
             height: 4rem;
             top: 0.5rem;
-            color: @black;
             width: 100%;
-            display: flex;
-            align-items: center;
         }
 
         .dv-select-style-onboarding {
-            border: 2px solid @black;
             background: @contrast-lightest;
+            border: 2px solid @black;
             width: 100%;
 
             select {
-                width: calc(100% - 1px);
-                height: calc(3rem - 1px);
-                font-family: "Open Sans";
+                font-family: 'Open Sans', sans-serif;
                 font-size: 14px;
+                height: calc(3rem - 1px);
                 letter-spacing: 0.5px;
                 line-height: 19px;
+                width: calc(100% - 1px);
                 //font-weight: normal;
             }
 
             &::after {
-                content: " \f002";
-                top: 0.5rem;
                 color: @black;
+                content: ' \f002';
+                top: 0.5rem;
             }
         }
 
     }
 
     ::ng-deep &-auswaehlen {
-        width: auto;
-        text-transform: uppercase;
-        margin-bottom: 4rem;
         display: block;
-        font-family: "Open Sans";
+        font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         letter-spacing: 0.5px;
         line-height: 19px;
+        margin-bottom: 4rem;
+        text-transform: uppercase;
+        width: auto;
         // wenn der button fokusiert ist braucht er 2px für den Outline
     }
 }
@@ -216,79 +219,69 @@ p {
 }
 
 .onboarding-info-action {
-    margin-top: 2vh;
     //text-align: center;
     line-height: 2.8rem;
+    margin-top: 2vh;
 }
 
 @media only screen
-and (min-device-width: 320px)
-and (max-device-width: 568px)
-and (-webkit-min-device-pixel-ratio: 2), only screen
-and (min-device-width: 375px)
-and (max-device-width: 667px)
-and (-webkit-min-device-pixel-ratio: 2), only screen
-and (min-device-width: 414px)
-and (max-device-width: 736px)
-and (-webkit-min-device-pixel-ratio: 3), only screen
-and (max-device-width: 640px), only screen
-and (max-device-width: 667px), only screen
-and (max-width: 480px) {
+    and (min-device-width: 320px)
+    and (max-device-width: 568px)
+    and (-webkit-min-device-pixel-ratio: 2), only screen
+    and (min-device-width: 375px)
+    and (max-device-width: 667px)
+    and (-webkit-min-device-pixel-ratio: 2), only screen
+    and (min-device-width: 414px)
+    and (max-device-width: 736px)
+    and (-webkit-min-device-pixel-ratio: 3), only screen
+    and (max-device-width: 640px), only screen
+    and (max-device-width: 667px), only screen
+    and (max-width: 480px) {
 
     .onboarding-big-red-button {
         font-size: 12px;
     }
 
     .onboarding-gemeinde-container {
-        display: flex;
         align-items: center;
+        display: flex;
         flex-direction: column;
-
     }
 
-    .onboarding-gemeinde-input-container,
-    .be-login-actions {
-        width: 100%;
-        justify-content: center;
-    }
 
     .onboarding-gs-abschliessen {
-        width: 100%;
         max-width: 100%;
         min-width: 100%;
+        width: 100%;
     }
 
     .onboarding-gs-angaben, .onboarding-gs-gemeinde {
         width: 100%;
     }
-    .onboarding-gemeinde-container {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
 
-    }
 
     .onboarding-gemeinde-input-container,
     .be-login-actions {
-        width: 100%;
         justify-content: center;
+        width: 100%;
     }
 
     .be-login-actions {
         .dv-btn {
+            margin: 1rem 0 !important;
             width: 100%;
-            margin:1rem 0 !important;
         }
     }
 
     .input-error {
         padding: 0;
+
         ::ng-deep .dv-error-messages {
             text-align: center;
         }
     }
 
-    .mobile-hide{
+    .mobile-hide {
         display: none;
     }
 
@@ -296,7 +289,7 @@ and (max-width: 480px) {
         margin-top: 8%;
     }
 
-    .onboarding-gs-container{
+    .onboarding-gs-container {
         flex-direction: column-reverse;
     }
 
