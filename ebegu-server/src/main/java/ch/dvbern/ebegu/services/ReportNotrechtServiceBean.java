@@ -119,6 +119,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		row.setStufe1FreigabeBetrag(printBigDecimal(formular.getStufe1FreigabeBetrag()));
 		row.setStufe1FreigabeDatum(formular.getStufe1FreigabeDatum());
 		row.setStufe1FreigabeAusbezahltAm(formular.getStufe1FreigabeAusbezahltAm());
+		row.setStufe1ZahlungJetztAusgeloest((formular.isStufe1ZahlungJetztAusgeloest()) ? "Ja" : "-");
 
 		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
 		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
@@ -130,6 +131,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		row.setStufe2VerfuegungBetrag(printBigDecimal(formular.getStufe2VerfuegungBetrag()));
 		row.setStufe2VerfuegungDatum(formular.getStufe2VerfuegungDatum());
 		row.setStufe2VerfuegungAusbezahltAm(formular.getStufe2VerfuegungAusbezahltAm());
+		row.setStufe2ZahlungJetztAusgeloest((formular.isStufe2ZahlungJetztAusgeloest()) ? "Ja" : "-");
 
 		InstitutionStammdatenBetreuungsgutscheine stammdatenBetreuungsgutscheine = stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (stammdatenBetreuungsgutscheine != null) {
@@ -139,13 +141,14 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 			row.setKontoinhaber(stammdatenBetreuungsgutscheine.getKontoinhaber());
 
 			Adresse zahlungsadresse = stammdatenBetreuungsgutscheine.getAdresseKontoinhaber();
-			if (zahlungsadresse != null) {
-				row.setAuszahlungOrganisation(zahlungsadresse.getOrganisation());
-				row.setAuszahlungStrasse(zahlungsadresse.getStrasse());
-				row.setAuszahlungHausnummer(zahlungsadresse.getHausnummer());
-				row.setAuszahlungPlz(zahlungsadresse.getPlz());
-				row.setAuszahlungOrt(zahlungsadresse.getOrt());
+			if (zahlungsadresse == null) {
+				zahlungsadresse = stammdaten.getAdresse();
 			}
+			row.setAuszahlungOrganisation(zahlungsadresse.getOrganisation());
+			row.setAuszahlungStrasse(zahlungsadresse.getStrasse());
+			row.setAuszahlungHausnummer(zahlungsadresse.getHausnummer());
+			row.setAuszahlungPlz(zahlungsadresse.getPlz());
+			row.setAuszahlungOrt(zahlungsadresse.getOrt());
 		}
 		return row;
 	}

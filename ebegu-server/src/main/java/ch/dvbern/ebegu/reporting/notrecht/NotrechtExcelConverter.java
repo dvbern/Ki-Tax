@@ -76,6 +76,7 @@ public class NotrechtExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1FreigabeBetrag, dataRow.getStufe1FreigabeBetrag());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1FreigabeDatum, dataRow.getStufe1FreigabeDatum());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1FreigabeAusbezahltAm, dataRow.getStufe1FreigabeAusbezahltAm());
+			excelRowGroup.addValue(MergeFieldNotrecht.stufe1ZahlungJetztAusgeloest, dataRow.getStufe1ZahlungJetztAusgeloest());
 
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlTage, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlTage());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlStunden, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
@@ -87,6 +88,7 @@ public class NotrechtExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2VerfuegungBetrag, dataRow.getStufe2VerfuegungBetrag());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2VerfuegungDatum, dataRow.getStufe2VerfuegungDatum());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2VerfuegungAusbezahltAm, dataRow.getStufe2VerfuegungAusbezahltAm());
+			excelRowGroup.addValue(MergeFieldNotrecht.stufe2ZahlungJetztAusgeloest, dataRow.getStufe2ZahlungJetztAusgeloest());
 
 			excelRowGroup.addValue(MergeFieldNotrecht.iban, dataRow.getIban());
 			excelRowGroup.addValue(MergeFieldNotrecht.kontoinhaber, dataRow.getKontoinhaber());
