@@ -50,7 +50,7 @@ Content-Type: text/html;charset=utf-8
 		</b>
 	</p>
 	<p>
-		Für die definitive Abrechnung müssen Sie die folgenden Dokumente hochladen:
+		Für die definitive Abrechnung müssen Sie die folgenden Dokumente hochladen (ab dem 1. Juni 2020 möglich):
 	</p>
 	<ul>
 		<li>Entweder das ausgefüllte Excel-Formular oder sonstige Dokumente, aus denen die im Excel-Formular enthaltenen
@@ -125,7 +125,7 @@ Content-Type: text/html;charset=utf-8
 		</b>
 	</p>
 	<p>
-		Pour le décompte définitif, il nous faut les documents suivants :
+		Pour le décompte définitif, il nous faut les documents suivants (possible à partir du 1er juin) :
 	</p>
 	<ul>
 		<li>soit le formulaire Excel dûment rempli, soit d’autres documents fournissant toutes les informations du

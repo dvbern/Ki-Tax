@@ -428,7 +428,8 @@
                         <div class="download-file">
                             <a (click)="downloadVorlage(rueckforderungFormular);">
                                 <span class="fa fa-download"></span>
-                                <span translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE</span>
+                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA</span>
+                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO</span>
                             </a>
                         </div>
                     </div>
