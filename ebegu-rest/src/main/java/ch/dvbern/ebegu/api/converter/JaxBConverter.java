@@ -5148,6 +5148,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
 
+		convertAbstractFieldsToJAX(rueckforderungFormular, jaxFormular);
+
 		jaxFormular.setInstitutionStammdaten(institutionStammdatenToJAX(rueckforderungFormular.getInstitutionStammdaten()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
 
@@ -5178,6 +5180,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public RueckforderungFormular rueckforderungFormularToEntity(@Nonnull JaxRueckforderungFormular rueckforderungFormularJax, @Nonnull RueckforderungFormular rueckforderungFormular) {
+
+		convertAbstractFieldsToEntity(rueckforderungFormularJax, rueckforderungFormular);
 
 		//InstitutionStammdaten
 		String instStammdatenID = rueckforderungFormularJax.getInstitutionStammdaten().getId();
@@ -5222,9 +5226,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
-		jaxMitteilung.setAbsender(benutzerToJaxBenutzer(rueckforderungMitteilung.getAbsender()));
+		convertAbstractFieldsToJAX(rueckforderungMitteilung, jaxMitteilung);
 		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
-		jaxMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
 		jaxMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
 		jaxMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
 		return jaxMitteilung;
@@ -5250,22 +5253,14 @@ public class JaxBConverter extends AbstractConverter {
 		return convertedRueckforderungMitteilung;
 	}
 
-	public RueckforderungMitteilung rueckforderungMitteilungToEntity(@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung, @Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+	public RueckforderungMitteilung rueckforderungMitteilungToEntity(
+		@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 
 		convertAbstractFieldsToEntity(jaxRueckforderungMitteilung, rueckforderungMitteilung);
 
-		Benutzer benutzer =
-			benutzerService.findBenutzer(jaxRueckforderungMitteilung.getAbsender().getUsername())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"rueckforderungMitteilungToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxRueckforderungMitteilung.getAbsender().getUsername()));
-
-		rueckforderungMitteilung.setAbsender(benutzer);
-		rueckforderungMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
-		rueckforderungMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
-		rueckforderungMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
-		rueckforderungMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
+		rueckforderungMitteilung.setBetreff(jaxRueckforderungMitteilung.getBetreff());
+		rueckforderungMitteilung.setInhalt(jaxRueckforderungMitteilung.getInhalt());
 
 		return rueckforderungMitteilung;
 	}

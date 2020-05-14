@@ -17,11 +17,11 @@
 
 import * as moment from 'moment';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
 
-export class TSRueckforderungFormular extends TSAbstractMutableEntity {
+export class TSRueckforderungFormular extends TSAbstractEntity {
 
     private _institutionStammdaten: TSInstitutionStammdaten;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];

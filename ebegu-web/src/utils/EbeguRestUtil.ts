@@ -685,7 +685,8 @@ export class EbeguRestUtil {
             restFamiliensituationContainer.sozialhilfeZeitraumContainers = [];
             if (Array.isArray(familiensituationContainer.sozialhilfeZeitraumContainers)) {
                 restFamiliensituationContainer.sozialhilfeZeitraumContainers =
-                    familiensituationContainer.sozialhilfeZeitraumContainers.map(szc => this.sozialhilfeZeitraumContainerToRestObject({}, szc));
+                    familiensituationContainer.sozialhilfeZeitraumContainers.map(
+                        szc => this.sozialhilfeZeitraumContainerToRestObject({}, szc));
             }
 
             return restFamiliensituationContainer;
@@ -708,7 +709,8 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any, sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
+    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any,
+                                           sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
         if (sozialhilfeZeitraum) {
             this.abstractDateRangeEntityToRestObject(restSozialhilfeZeitraum, sozialhilfeZeitraum);
             return restSozialhilfeZeitraum;
@@ -742,7 +744,8 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum, sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
+    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum,
+                                    sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
         if (sozialhilfeZeitraumFromServer) {
             this.parseDateRangeEntity(sozialhilfeZeitraum, sozialhilfeZeitraumFromServer);
             return sozialhilfeZeitraum;
@@ -3648,9 +3651,9 @@ export class EbeguRestUtil {
 
             if (ferieninselStammdatenTS.zeitraumList &&
                 (ferieninselStammdatenTS.zeitraumList.length > 1 ||
-                (ferieninselStammdatenTS.zeitraumList.length === 1 &&
-                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
-                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
+                    (ferieninselStammdatenTS.zeitraumList.length === 1 &&
+                        ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
+                        ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
                 restFerieninselStammdaten.zeitraumList = [];
                 for (let i = 0; i < ferieninselStammdatenTS.zeitraumList.length; i++) {
                     const zeitraum: any = {};
@@ -3684,7 +3687,7 @@ export class EbeguRestUtil {
             ? data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
             : [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
 
-        tage.sort( (a: TSBelegungFerieninselTag, b: TSBelegungFerieninselTag) => {
+        tage.sort((a: TSBelegungFerieninselTag, b: TSBelegungFerieninselTag) => {
             return a.tag.valueOf() - b.tag.valueOf();
         });
 
@@ -3840,7 +3843,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseKitaxResponse (response: any): TSKitaxResponse {
+    public parseKitaxResponse(response: any): TSKitaxResponse {
 
         const kitaxResponse = new TSKitaxResponse();
 
@@ -3862,6 +3865,9 @@ export class EbeguRestUtil {
 
     public parseRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular,
                                        rueckforderungFormularFromServer: any): TSRueckforderungFormular {
+
+        this.parseAbstractEntity(rueckforderungFormular, rueckforderungFormularFromServer);
+
         rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
         rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
@@ -3886,14 +3892,14 @@ export class EbeguRestUtil {
         rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeBetreuung;
         rueckforderungFormular.stufe1FreigabeBetrag = rueckforderungFormularFromServer.stufe1FreigabeBetrag;
         rueckforderungFormular.stufe1FreigabeDatum =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
         rueckforderungFormular.stufe1FreigabeAusbezahltAm =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe1FreigabeAusbezahltAm);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeAusbezahltAm);
         rueckforderungFormular.stufe2VerfuegungBetrag = rueckforderungFormularFromServer.stufe2VerfuegungBetrag;
         rueckforderungFormular.stufe2VerfuegungDatum =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
         rueckforderungFormular.stufe2VerfuegungAusbezahltAm =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
         return rueckforderungFormular;
     }
 
@@ -3909,11 +3915,63 @@ export class EbeguRestUtil {
 
     public parseRueckforderungMitteilung(rueckforderungMitteilung: TSRueckforderungMitteilung,
                                          rueckforderungMitteilungFromServer: any): TSRueckforderungMitteilung {
-        rueckforderungMitteilung.absender = this.parseUser(new TSBenutzer(), rueckforderungMitteilungFromServer.absender);
+        this.parseAbstractEntity(rueckforderungMitteilung, rueckforderungMitteilungFromServer);
         rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
         rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
-        rueckforderungMitteilung.sendeDatum = DateUtil.localDateToMoment(rueckforderungMitteilungFromServer.sendeDatum);
-        rueckforderungMitteilung.gesendetAnStatus = rueckforderungMitteilungFromServer.gesendetAnStatus;
+        rueckforderungMitteilung.sendeDatum = DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
         return rueckforderungMitteilung;
+    }
+
+    public rueckforderungFormularToRestObject(rueckforderungFormularRest: any,
+                                              rueckforderungFormularTS: TSRueckforderungFormular): any {
+        this.abstractEntityToRestObject(rueckforderungFormularRest, rueckforderungFormularTS);
+        rueckforderungFormularRest.institutionStammdaten = this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
+        rueckforderungFormularRest.rueckforderungMitteilungen = this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
+        rueckforderungFormularRest.status = rueckforderungFormularTS.status;
+        rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe2KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularTS.stufe2KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe2KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularTS.stufe2KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe1KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe1KantonKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe2KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe2KantonKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe1FreigabeBetrag = rueckforderungFormularTS.stufe1FreigabeBetrag;
+        rueckforderungFormularRest.stufe1FreigabeDatum =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeDatum);
+        rueckforderungFormularRest.stufe1FreigabeAusbezahltAm =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeAusbezahltAm);
+        rueckforderungFormularRest.stufe2VerfuegungBetrag = rueckforderungFormularTS.stufe2VerfuegungBetrag;
+        rueckforderungFormularRest.stufe2VerfuegungDatum =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
+        rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        return rueckforderungFormularRest;
+    }
+
+    public rueckforderungMitteilungListToRestObject(rueckforderungMitteilungenList: TSRueckforderungMitteilung[]): Array<any> {
+
+        return rueckforderungMitteilungenList ? rueckforderungMitteilungenList.map(
+            item => this.rueckforderungMitteilungToRestObject({}, item)) : [];
+    }
+
+    public rueckforderungMitteilungToRestObject(rueckforderungMitteilungRest: any,
+                                                rueckforderungMitteilungTS: TSRueckforderungMitteilung): any {
+        this.abstractEntityToRestObject(rueckforderungMitteilungRest, rueckforderungMitteilungTS);
+        rueckforderungMitteilungRest.betreff = rueckforderungMitteilungTS.betreff;
+        rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
+        rueckforderungMitteilungRest.sendeDatum = DateUtil.momentToLocalDateTime(rueckforderungMitteilungTS.sendeDatum);
+        return rueckforderungMitteilungRest;
     }
 }

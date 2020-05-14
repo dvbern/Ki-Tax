@@ -365,6 +365,12 @@ public interface GesuchService {
 	void removeOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Loescht ein Gesuch. Einzige Ausnahme: Das Gesuch ist bereits verfuegt.
+	 * Nur fuer Superadmin zugelassen
+	 */
+	void removeAntragForced(@Nonnull Gesuch gesuch);
+
+	/**
 	 * Als Gemeinde-Benutzer:
 	 * Loescht das angegebene Gesuch falls es sich um ein Papiergesuch handelt, das noch nicht im Status "verfuegen"
 	 * oder verfuegt ist. Wenn es sich um ein Papier-Erstgesuch handelt, wird auch der Fall gelöscht.

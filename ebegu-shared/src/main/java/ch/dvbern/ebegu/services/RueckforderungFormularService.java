@@ -22,15 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 /**
  * Service fuer die Rueckforderungsformulare
@@ -48,15 +43,20 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular createRueckforderungFormular(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
 
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer();
+
+	@Nonnull
 	Optional<RueckforderungFormular> findRueckforderungFormular(String id);
 
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
 
+	@Nonnull
+	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status);
+
+	@Nonnull
+	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
 }

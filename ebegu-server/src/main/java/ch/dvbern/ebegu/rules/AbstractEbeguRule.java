@@ -179,7 +179,6 @@ public abstract class AbstractEbeguRule implements Rule {
 	 */
 	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit())) {
-			validateZeitabschnittGueltigkeit(verfuegungZeitabschnitt);
 			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
 				executeRule(platz, inputDatum);
 			}

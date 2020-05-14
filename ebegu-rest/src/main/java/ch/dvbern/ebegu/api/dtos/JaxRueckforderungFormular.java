@@ -26,8 +26,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungFormular extends JaxAbstractDTO {
@@ -83,18 +85,22 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private BigDecimal stufe1FreigabeBetrag;
 
 	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime stufe1FreigabeDatum;
 
 	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
 	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime stufe2VerfuegungDatum;
 
 	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
 
 	@Nonnull
