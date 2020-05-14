@@ -499,7 +499,8 @@
                                                         <div class="dv-input-container-small" style="padding-right:32px;">
                                                             <input aria-describedby="tarifProHauptmahlzeit-{{$index}}-error"
                                                                    id="tarifProHauptmahlzeit-{{$index}}"
-                                                                   type="number" min="0" step="1"
+                                                                   type="number" min="0" step="0.05"
+                                                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                                    name="tarifProHauptmahlzeit-{{$index}}"
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProHauptmahlzeit"
                                                                    class="form-control"
@@ -523,7 +524,8 @@
                                                         <div class="dv-input-container-small" style="padding-right:32px;">
                                                             <input aria-describedby="tarifProNebenmahlzeit-{{$index}}-error"
                                                                    id="tarifProNebenmahlzeit-{{$index}}"
-                                                                   type="number" min="0" step="1"
+                                                                   type="number" min="0" step="0.05"
+                                                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                                    name="tarifProNebenmahlzeit-{{$index}}"
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProNebenmahlzeit"
                                                                    class="form-control"

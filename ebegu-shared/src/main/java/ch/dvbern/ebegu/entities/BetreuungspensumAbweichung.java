@@ -70,6 +70,14 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	@Nullable
 	private Integer vertraglicheNebenmahlzeiten = null;
 
+	@Transient
+	@NotNull
+	private BigDecimal vertraglicherTarifHauptmahlzeit = BigDecimal.ZERO;
+
+	@Transient
+	@NotNull
+	private BigDecimal vertraglicherTarifNebenmahlzeit = BigDecimal.ZERO;
+
 	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
@@ -136,6 +144,14 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		vertraglicheNebenmahlzeiten += amount;
 	}
 
+	public void addTarifHaupt(BigDecimal tarif) {
+		vertraglicherTarifHauptmahlzeit.add(tarif);
+	}
+
+	public void addTarifNeben(BigDecimal tarif) {
+		vertraglicherTarifNebenmahlzeit.add(tarif);
+	}
+
 	@Nonnull
 	public Betreuung getBetreuung() {
 		return betreuung;
@@ -195,6 +211,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
 		mitteilungPensum.setMonatlicheHauptmahlzeiten(hauptmahlzeiten);
 		mitteilungPensum.setMonatlicheNebenmahlzeiten(nebenmahlzeiten);
+
+		// Tarif is immutable at this point and we just copy the old value
+		mitteilungPensum.setTarifProHauptmahlzeit(vertraglicherTarifHauptmahlzeit);
+		mitteilungPensum.setTarifProNebenmahlzeit(vertraglicherTarifNebenmahlzeit);
 
 		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
 		// attach it to the BetreuungsmitteilungPensum
