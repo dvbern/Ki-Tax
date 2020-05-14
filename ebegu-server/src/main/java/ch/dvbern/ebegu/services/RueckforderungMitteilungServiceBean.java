@@ -50,8 +50,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Local(RueckforderungMitteilungService.class)
 public class RueckforderungMitteilungServiceBean extends AbstractBaseService implements RueckforderungMitteilungService {
 
-	private static final Pattern PATTERN = Pattern.compile("<INSTITUTIONEN>", Pattern.LITERAL);
-
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
 
@@ -149,7 +147,7 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 			RueckforderungMitteilung mitteilung = new RueckforderungMitteilung(rueckforderungMitteilung);
 			String institutionenString =
 				institutions.stream().map(Institution::getName).collect(Collectors.joining(DELIMITER));
-			mitteilung.setInhalt(PATTERN.matcher(mitteilung.getInhalt()).replaceAll(Matcher.quoteReplacement(institutionenString)));
+			mitteilung.setInhalt(RueckforderungMitteilung.getPATTERN().matcher(mitteilung.getInhalt()).replaceAll(Matcher.quoteReplacement(institutionenString)));
 			mitteilungen.put(empfaenger, mitteilung);
 		});
 		return mitteilungen;

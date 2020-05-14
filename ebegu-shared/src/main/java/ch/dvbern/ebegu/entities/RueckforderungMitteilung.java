@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -33,6 +34,8 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 public class RueckforderungMitteilung extends AbstractEntity implements Comparable<RueckforderungMitteilung> {
 
 	private static final long serialVersionUID = 5010422246166625084L;
+
+	private static final Pattern PATTERN = Pattern.compile("<INSTITUTIONEN>", Pattern.LITERAL);
 
 	@NotNull
 	@ManyToOne()
@@ -125,5 +128,9 @@ public class RueckforderungMitteilung extends AbstractEntity implements Comparab
 		compareToBuilder.append(this.getInhalt(), other.getInhalt());
 		compareToBuilder.append(this.getSendeDatum(), other.getSendeDatum());
 		return compareToBuilder.toComparison();
+	}
+
+	public static Pattern getPATTERN() {
+		return PATTERN;
 	}
 }
