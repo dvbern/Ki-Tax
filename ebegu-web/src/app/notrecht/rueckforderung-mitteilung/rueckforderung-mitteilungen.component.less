@@ -29,6 +29,7 @@ dv-rueckforderung-mitteilungen .header-line {
     }
 
     .message {
+
         .formatted {
             white-space: pre-line;
         }
@@ -173,9 +174,14 @@ dv-rueckforderung-mitteilungen .header-line {
                 margin: 2rem 0 3rem;
             }
             .message {
-                white-space: pre;
+                word-break: break-all;
+                overflow: hidden;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: pre-wrap;
                 display: flex;
                 flex-direction: column;
+
                 .betreuung {
                     color: @institution-color;
                     margin-bottom: 2rem;
