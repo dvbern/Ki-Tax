@@ -120,9 +120,6 @@ public class RueckforderungMitteilung extends AbstractEntity implements Comparab
 	@Override
 	public int compareTo(@Nonnull RueckforderungMitteilung other) {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
-		compareToBuilder.append(this.getAbsender(), other.getAbsender());
-		compareToBuilder.append(this.getBetreff(), other.getBetreff());
-		compareToBuilder.append(this.getInhalt(), other.getInhalt());
 		compareToBuilder.append(this.getSendeDatum(), other.getSendeDatum());
 		return compareToBuilder.toComparison();
 	}
