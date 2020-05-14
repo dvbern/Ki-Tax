@@ -100,7 +100,7 @@ export class RueckforderungFormularComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
-            text: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TEXT',
+            text: '',
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -155,7 +155,7 @@ export class RueckforderungFormularComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
-            text: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TEXT',
+            text: '',
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
