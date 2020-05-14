@@ -2019,5 +2019,7 @@
     "BESTAETIGEN": "Bestätigen",
     "RUECKFORDERUNG_MITTEILUNGEN": "Mitteilungen",
     "RUECKFORDERUNG_DOWNLOAD_VORLAGE": "Vorlage herunterladen",
+    "RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE": "Rückforderungsformulare initialisieren",
+    "RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT": "Sind Sie sicher das Sie die Rückforderungformulare initialisieren wollen?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
