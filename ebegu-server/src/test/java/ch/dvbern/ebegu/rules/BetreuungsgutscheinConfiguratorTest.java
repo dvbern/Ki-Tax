@@ -21,7 +21,7 @@ import static java.util.Locale.GERMAN;
 public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	private BetreuungsgutscheinConfigurator ruleConfigurator;
-	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = EbeguRuleTestsHelper.getEinstellungenSetRulesAsiv(gesuchsperiodeOfEvaluator);
+	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = EbeguRuleTestsHelper.getEinstellungenRulesAsiv(gesuchsperiodeOfEvaluator);
 	private KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	private static final int ANZAHL_RULES_ASIV = 29;
