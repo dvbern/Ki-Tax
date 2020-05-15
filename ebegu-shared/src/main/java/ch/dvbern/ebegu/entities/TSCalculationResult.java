@@ -52,6 +52,10 @@ public class TSCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private BigDecimal totalKostenProWoche = BigDecimal.ZERO;
 
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal verpflegungskostenVerguenstigt = BigDecimal.ZERO;
+
 
 	public TSCalculationResult() {
 	}
@@ -97,6 +101,15 @@ public class TSCalculationResult extends AbstractEntity {
 
 	public void setTotalKostenProWoche(@Nonnull BigDecimal totalKostenProWoche) {
 		this.totalKostenProWoche = totalKostenProWoche;
+	}
+
+	@Nonnull
+	public BigDecimal getVerpflegungskostenVerguenstigt() {
+		return verpflegungskostenVerguenstigt;
+	}
+
+	public void setVerpflegungskostenVerguenstigt(@Nonnull BigDecimal verpflegungskostenVerguenstigt) {
+		this.verpflegungskostenVerguenstigt = verpflegungskostenVerguenstigt;
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		// TODO KIBON-1233 prüfen, ob der Antragsteller eine Vergünstigung überhaupt gewünscht hat
-		if (!mahlzeitenverguenstigungParams.isEnabled() || !hasAnspruch() || !validateInput(inputData)) {
+		if (!mahlzeitenverguenstigungParams.isEnabled() || !validateInput(inputData)) {
 			return;
 		}
 
@@ -135,10 +135,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 	private void addBemerkung(BGCalculationInput inputData, BigDecimal haupt, BigDecimal neben) {
 		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_JA, getLocale(), haupt, neben);
-	}
-
-	private boolean hasAnspruch() {
-		return true;
 	}
 
 	private boolean validateInput(BGCalculationInput inputData) {

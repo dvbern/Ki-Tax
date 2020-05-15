@@ -28,3 +28,6 @@ ALTER TABLE bgcalculation_result_aud ADD COLUMN verguenstigung_hauptmahlzeiten_t
 ALTER TABLE bgcalculation_result ADD COLUMN verguenstigung_nebenmahlzeiten_total decimal(19,2);
 ALTER TABLE bgcalculation_result_aud ADD COLUMN verguenstigung_nebenmahlzeiten_total decimal(19,2);
 
+ALTER TABLE tscalculation_result ADD COLUMN verpflegungskosten_verguenstigt decimal(19,2);
+ALTER TABLE tscalculation_result_aud ADD COLUMN verpflegungskosten_verguenstigt decimal(19,2);
+

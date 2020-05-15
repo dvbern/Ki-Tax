@@ -363,7 +363,9 @@ public class BetreuungsgutscheinConfigurator {
 			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT).getValueAsBigDecimal()
 		);
 		MahlzeitenverguenstigungBGCalcRule mahlzeitenBGCalcRule = new MahlzeitenverguenstigungBGCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
-
 		rules.add(mahlzeitenBGCalcRule);
+
+		MahlzeitenverguenstigungTSCalcRule mahlzeitenTSCalcRule = new MahlzeitenverguenstigungTSCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
+		rules.add(mahlzeitenTSCalcRule);
 	}
 }

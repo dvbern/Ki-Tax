@@ -456,6 +456,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
 	}
 
+	public void setTsVerpflegungskostenVerguenstigtMitBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
+		this.getBgCalculationInputAsiv().setTsVerpflegungskostenVerguenstigtMitBetreuung(tsVerpflegungskostenMitBetreuung);
+		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenVerguenstigtMitBetreuung(tsVerpflegungskostenMitBetreuung);
+	}
+
 	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
 		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
@@ -464,6 +469,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setTsVerpflegungskostenOhneBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
 		this.getBgCalculationInputAsiv().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	public void setTsVerpflegungskostenVerguenstigtOhneBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
+		this.getBgCalculationInputAsiv().setTsVerpflegungskostenVerguenstigtOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
+		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenVerguenstigtOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
 	}
 
 	public void setEinkommensjahrForAsivAndGemeinde(@Nonnull Integer einkommensjahr) {

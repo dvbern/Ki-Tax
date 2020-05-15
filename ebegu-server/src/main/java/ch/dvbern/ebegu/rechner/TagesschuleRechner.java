@@ -102,6 +102,7 @@ public class TagesschuleRechner extends AbstractRechner {
 		TSCalculationResult result = new TSCalculationResult();
 		result.setBetreuungszeitProWoche(betreuungsZeit.intValueExact());
 		result.setVerpflegungskosten(verpflegungskosten);
+		result.setVerpflegungskostenVerguenstigt(verpflegungskosten);
 		result.setGebuehrProStunde(gebuehrProStunde);
 		result.setTotalKostenProWoche(totalKostenProWoche);
 

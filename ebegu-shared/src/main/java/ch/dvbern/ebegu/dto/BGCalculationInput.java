@@ -525,12 +525,20 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskosten(tsVerpflegungskostenMitBetreuung);
 	}
 
+	public void setTsVerpflegungskostenVerguenstigtMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtMitBetreuung) {
+		this.tsInputMitBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtMitBetreuung);
+	}
+
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.tsInputOhneBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheOhneBetreuung);
 	}
 
 	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
 		this.tsInputOhneBetreuung.setVerpflegungskosten(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	public void setTsVerpflegungskostenVerguenstigtOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtOhneBetreuung) {
+		this.tsInputOhneBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtOhneBetreuung);
 	}
 
 	@Nonnull
