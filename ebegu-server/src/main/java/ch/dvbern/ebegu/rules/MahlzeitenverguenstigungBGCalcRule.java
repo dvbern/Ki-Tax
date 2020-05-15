@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungData;
+import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
@@ -40,12 +40,12 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
-	protected MahlzeitenverguenstigungData mahlzeitenverguenstigungParams;
+	protected MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
 
 	protected MahlzeitenverguenstigungBGCalcRule(
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale,
-		@Nonnull MahlzeitenverguenstigungData mahlzeitenverguenstigungParams
+		@Nonnull MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams
 	) {
 
 		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.GEMEINDE, validityPeriod, locale);

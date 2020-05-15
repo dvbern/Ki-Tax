@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungData;
+import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -349,7 +349,7 @@ public class BetreuungsgutscheinConfigurator {
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);
 		rules.add(restanspruchLimitCalcRule);
 
-		MahlzeitenverguenstigungData mahlzeitenParams = new MahlzeitenverguenstigungData(
+		MahlzeitenverguenstigungParameter mahlzeitenParams = new MahlzeitenverguenstigungParameter(
 			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean(),
 			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN).getValueAsBigDecimal(),
 			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN).getValueAsBigDecimal(),

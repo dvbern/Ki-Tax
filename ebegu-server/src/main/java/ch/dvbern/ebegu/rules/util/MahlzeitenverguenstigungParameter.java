@@ -23,7 +23,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
-public class MahlzeitenverguenstigungData {
+public class MahlzeitenverguenstigungParameter {
 
 	private boolean enabled = false;
 
@@ -35,7 +35,7 @@ public class MahlzeitenverguenstigungData {
 
 	private BigDecimal minimalerElternbeitragNebenmahlzeit = BigDecimal.ZERO;
 
-	public MahlzeitenverguenstigungData(
+	public MahlzeitenverguenstigungParameter(
 		boolean enabled,
 		BigDecimal maxEinkommenStufe1,
 		BigDecimal maxEinkommenStufe2,
