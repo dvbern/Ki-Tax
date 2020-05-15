@@ -112,6 +112,22 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.vertraglicheHauptmahlzeiten = vertraglicheHauptmahlzeiten;
 	}
 
+	public BigDecimal getVertraglicherTarifHauptmahlzeit() {
+		return vertraglicherTarifHauptmahlzeit;
+	}
+
+	public void setVertraglicherTarifHauptmahlzeit(BigDecimal vertraglicherTarifHauptmahlzeit) {
+		this.vertraglicherTarifHauptmahlzeit = vertraglicherTarifHauptmahlzeit;
+	}
+
+	public BigDecimal getVertraglicherTarifNebenmahlzeit() {
+		return vertraglicherTarifNebenmahlzeit;
+	}
+
+	public void setVertraglicherTarifNebenmahlzeit(BigDecimal vertraglicherTarifNebenmahlzeit) {
+		this.vertraglicherTarifNebenmahlzeit = vertraglicherTarifNebenmahlzeit;
+	}
+
 	@Nullable
 	public Integer getVertraglicheNebenmahlzeiten() {
 		return vertraglicheNebenmahlzeiten;
@@ -145,11 +161,13 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	}
 
 	public void addTarifHaupt(BigDecimal tarif) {
-		vertraglicherTarifHauptmahlzeit.add(tarif);
+		vertraglicherTarifHauptmahlzeit = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(tarif),
+			vertraglicherTarifHauptmahlzeit);
 	}
 
 	public void addTarifNeben(BigDecimal tarif) {
-		vertraglicherTarifNebenmahlzeit.add(tarif);
+		vertraglicherTarifNebenmahlzeit = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(tarif),
+			vertraglicherTarifNebenmahlzeit);
 	}
 
 	@Nonnull

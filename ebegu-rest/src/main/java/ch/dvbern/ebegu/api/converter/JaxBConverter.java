@@ -3233,6 +3233,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setStatus(abweichung.getStatus());
 		jaxAbweichung.setMonatlicheHauptmahlzeiten(abweichung.getMonatlicheHauptmahlzeiten());
 		jaxAbweichung.setMonatlicheNebenmahlzeiten(abweichung.getMonatlicheNebenmahlzeiten());
+		jaxAbweichung.setTarifProHauptmahlzeit(abweichung.getTarifProHauptmahlzeit());
+		jaxAbweichung.setTarifProNebenmahlzeit(abweichung.getTarifProNebenmahlzeit());
+		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
+		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 
 		return jaxAbweichung;
 	}

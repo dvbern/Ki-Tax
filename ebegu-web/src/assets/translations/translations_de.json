@@ -2035,5 +2035,6 @@
     "MINIMALER_ELTERNBEITRAG_NEBENMAHLZEITEN_READONLY": "Minimaler Elternbeitrag Nebenmahlzeiten: {{value}} CHF",
     "VERGUENSTIGUNG_HAUPTMAHLZEITEN": "Vergünstigung Hauptmahlzeiten in CHF",
     "VERGUENSTIGUNG_NEBENMAHLZEITEN": "Vergünstigung Nebenmahlzeiten in CHF",
+    "MONATLICHE_MAHLZEITEN_KOSTEN": "Kosten Mahlzeiten in CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
