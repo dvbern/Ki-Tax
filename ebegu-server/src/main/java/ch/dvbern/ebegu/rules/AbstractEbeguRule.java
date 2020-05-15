@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -34,9 +35,11 @@ import javax.validation.Valid;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
@@ -181,6 +184,12 @@ public abstract class AbstractEbeguRule implements Rule {
 		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit())) {
 			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
 				executeRule(platz, inputDatum);
+				if (ruleValidity == RuleValidity.GEMEINDE) {
+					// Wir verlassen uns hier darauf, dass GEMEINDE-Rules nur dann verwendet werden,
+					// wenn sich die Berechnung tatsaechlich von ASIV unterscheidet. Siehe auch
+					// ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator
+					inputDatum.getParent().setHasGemeindeSpezifischeBerechnung(true);
+				}
 			}
 		}
 	}
@@ -409,5 +418,13 @@ public abstract class AbstractEbeguRule implements Rule {
 		}
 
 		return Collections.singletonList(zeitabschnitt.getBgCalculationInputGemeinde());
+	}
+
+	@Override
+	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		// Grundsaetzlich gehen wir davon aus, dass jede Regel fuer jede Gemeinde gueltig ist.
+		// Ausnahme sind Regeln mit RuleValiditiy=GEMEINDE, fuer welche eine Einstellung gleich
+		// ist (bzw. nicht ueberschrieben) wie bei ASIV
+		return true;
 	}
 }

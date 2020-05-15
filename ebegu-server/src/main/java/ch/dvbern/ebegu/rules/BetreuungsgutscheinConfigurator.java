@@ -112,7 +112,7 @@ public class BetreuungsgutscheinConfigurator {
 		Einstellung zuschlagEWP = einstellungMap.get(ERWERBSPENSUM_ZUSCHLAG);
 		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
 		ErwerbspensumAsivAbschnittRule erwerbspensumAsivAbschnittRule = new ErwerbspensumAsivAbschnittRule(defaultGueltigkeit, zuschlagEWP.getValueAsInteger(), locale);
-		rules.add(erwerbspensumAsivAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(erwerbspensumAsivAbschnittRule, einstellungMap);
 
 		// - Erwerbspensum: Erweiterung fuer Gemeinden
 		Einstellung param_MaxAbzugFreiwilligenarbeit = einstellungMap.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT);
@@ -123,22 +123,22 @@ public class BetreuungsgutscheinConfigurator {
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleVorStichtag = new ErwerbspensumGemeindeAbschnittRule(
 				vorStichtag, 0, 0, locale);
-			rules.add(ewpBernAbschnittRuleVorStichtag);
+			addToRuleSetIfRelevantForGemeinde(ewpBernAbschnittRuleVorStichtag, einstellungMap);
 			// Nach dem Stichtag gilt die Regel gemaess Konfiguration
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleNachStichtag = new ErwerbspensumGemeindeAbschnittRule(
 				nachStichtag, zuschlagEWP.getValueAsInteger(), param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
-			rules.add(ewpBernAbschnittRuleNachStichtag);
+			addToRuleSetIfRelevantForGemeinde(ewpBernAbschnittRuleNachStichtag, einstellungMap);
 		} else {
 			// Fuer alle anderen Gemeinden gibt es nur *eine* Rule
 			ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(
 				defaultGueltigkeit, zuschlagEWP.getValueAsInteger(), param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
-			rules.add(erwerbspensumGmdeAbschnittRule);
+			addToRuleSetIfRelevantForGemeinde(erwerbspensumGmdeAbschnittRule, einstellungMap);
 		}
 
 		// - Unbezahlter Urlaub
 		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(unbezahlterUrlaubAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(unbezahlterUrlaubAbschnittRule, einstellungMap);
 
 		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
 		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
@@ -156,61 +156,61 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
 			locale);
-		rules.add(familienabzugAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRule, einstellungMap);
 
 		// Betreuungsgutscheine Gueltigkeit
 		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(gutscheineStartdatumAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(gutscheineStartdatumAbschnittRule, einstellungMap);
 
 		// - KindTarif
 		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(kindTarifAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(kindTarifAbschnittRule, einstellungMap);
 
 		// Betreuungsangebot
 		BetreuungsangebotTypAbschnittRule betreuungsangebotTypAbschnittRule = new BetreuungsangebotTypAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(betreuungsangebotTypAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(betreuungsangebotTypAbschnittRule, einstellungMap);
 
 		// - Betreuungspensum
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(betreuungspensumAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, einstellungMap);
 
 		// - Pensum Tagesschule
 		TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule = new TagesschuleBetreuungszeitAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(tagesschuleAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(tagesschuleAbschnittRule, einstellungMap);
 
 		// - Fachstelle
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(fachstelleAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(fachstelleAbschnittRule, einstellungMap);
 
 		// - Ausserordentlicher Anspruch
 		AusserordentlicherAnspruchAbschnittRule ausserordntl = new AusserordentlicherAnspruchAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(ausserordntl);
+		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(einkommenAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(einkommenAbschnittRule, einstellungMap);
 
 		// Wohnsitz (Zuzug und Wegzug)
 		WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(wohnsitzAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(wohnsitzAbschnittRule, einstellungMap);
 
 		// - Einreichungsfrist
 		EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(einreichungsfristAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(einreichungsfristAbschnittRule, einstellungMap);
 
 		// Abwesenheit
 		Einstellung abwesenheitMaxDaysParam = einstellungMap.get(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT);
 		Integer abwesenheitMaxDaysValue = abwesenheitMaxDaysParam.getValueAsInteger();
 		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit, abwesenheitMaxDaysValue, locale);
-		rules.add(abwesenheitAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(abwesenheitAbschnittRule, einstellungMap);
 
 		// Zivilstandsaenderung
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(zivilstandsaenderungAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(zivilstandsaenderungAbschnittRule, einstellungMap);
 
 		// Sozialhilfe
 		SozialhilfeAbschnittRule sozialhilfeAbschnittRule = new SozialhilfeAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(sozialhilfeAbschnittRule);
+		addToRuleSetIfRelevantForGemeinde(sozialhilfeAbschnittRule, einstellungMap);
 	}
 
 	private void berechnenAnspruchRegeln(
@@ -222,7 +222,7 @@ public class BetreuungsgutscheinConfigurator {
 
 		// - Storniert
 		StorniertCalcRule storniertCalcRule = new StorniertCalcRule(defaultGueltigkeit, locale);
-		rules.add(storniertCalcRule);
+		addToRuleSetIfRelevantForGemeinde(storniertCalcRule, einstellungMap);
 
 		// - Erwerbspensum ASIV
 		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
@@ -234,7 +234,7 @@ public class BetreuungsgutscheinConfigurator {
 			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
 			minEWP_eingeschultAsiv.getValueAsInteger(),
 			locale);
-		rules.add(erwerbspensumAsivCalcRule);
+		addToRuleSetIfRelevantForGemeinde(erwerbspensumAsivCalcRule, einstellungMap);
 
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
@@ -251,7 +251,7 @@ public class BetreuungsgutscheinConfigurator {
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
 				locale);
-			rules.add(ewpBernCalcRuleVorStichtag);
+			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleVorStichtag, einstellungMap);
 			// Regel 2: Gemaess ASIV ab dem Stichtag
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleNachStichtag = new ErwerbspensumGemeindeCalcRule(
@@ -259,7 +259,7 @@ public class BetreuungsgutscheinConfigurator {
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
 				locale);
-			rules.add(ewpBernCalcRuleNachStichtag);
+			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleNachStichtag, einstellungMap);
 		} else {
 			// Fuer alle anderen Gemeinden gibt es nur *eine* Rule
 			ErwerbspensumGemeindeCalcRule erwerbspensumGemeindeCalcRule = new ErwerbspensumGemeindeCalcRule(
@@ -267,16 +267,16 @@ public class BetreuungsgutscheinConfigurator {
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
 				locale);
-			rules.add(erwerbspensumGemeindeCalcRule);
+			addToRuleSetIfRelevantForGemeinde(erwerbspensumGemeindeCalcRule, einstellungMap);
 		}
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit, locale);
-		rules.add(fachstelleCalcRule);
+		addToRuleSetIfRelevantForGemeinde(fachstelleCalcRule, einstellungMap);
 
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann
 		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
-		rules.add(ausserordntl);
+		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
@@ -285,7 +285,7 @@ public class BetreuungsgutscheinConfigurator {
 		// BETREUUNGS GUTSCHEINE START DATUM - Anspruch verfällt, wenn Gutscheine vor dem BetreuungsgutscheineStartdatum
 		// der Gemeinde liegen
 		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit, locale);
-		rules.add(gutscheineStartdatumCalcRule);
+		addToRuleSetIfRelevantForGemeinde(gutscheineStartdatumCalcRule, einstellungMap);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(MAX_MASSGEBENDES_EINKOMMEN);
@@ -294,36 +294,42 @@ public class BetreuungsgutscheinConfigurator {
 			defaultGueltigkeit,
 			paramMassgebendesEinkommenMax.getValueAsBigDecimal(),
 			locale);
-		rules.add(maxEinkommenCalcRule);
+		addToRuleSetIfRelevantForGemeinde(maxEinkommenCalcRule, einstellungMap);
 
 		// Betreuungsangebot Tagesschule nicht berechnen
 		BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(defaultGueltigkeit, locale);
-		rules.add(betreuungsangebotTypCalcRule);
+		addToRuleSetIfRelevantForGemeinde(betreuungsangebotTypCalcRule, einstellungMap);
 
 		// Wohnsitz (Zuzug und Wegzug)
 		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit, locale);
-		rules.add(wohnsitzCalcRule);
+		addToRuleSetIfRelevantForGemeinde(wohnsitzCalcRule, einstellungMap);
 
 		// Einreichungsfrist
 		EinreichungsfristCalcRule einreichungsfristRule = new EinreichungsfristCalcRule(defaultGueltigkeit, locale);
-		rules.add(einreichungsfristRule);
+		addToRuleSetIfRelevantForGemeinde(einreichungsfristRule, einstellungMap);
 
 		// Abwesenheit
 		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit, locale);
-		rules.add(abwesenheitCalcRule);
+		addToRuleSetIfRelevantForGemeinde(abwesenheitCalcRule, einstellungMap);
 
 		// - Schulstufe des Kindes: Je nach Gemeindeeinstellung wird bis zu einer gewissen STufe ein Gutschein ausgestellt
 		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe, locale);
-		rules.add(schulstufeCalcRule);
+		addToRuleSetIfRelevantForGemeinde(schulstufeCalcRule, einstellungMap);
 
 		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
 		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit, locale);
-		rules.add(kesbPlatzierungCalcRule);
+		addToRuleSetIfRelevantForGemeinde(kesbPlatzierungCalcRule, einstellungMap);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);
-		rules.add(restanspruchLimitCalcRule);
+		addToRuleSetIfRelevantForGemeinde(restanspruchLimitCalcRule, einstellungMap);
+	}
+
+	private void addToRuleSetIfRelevantForGemeinde(@Nonnull Rule rule, @Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		if (rule.isRelevantForGemeinde(einstellungMap)) {
+			rules.add(rule);
+		}
 	}
 }
