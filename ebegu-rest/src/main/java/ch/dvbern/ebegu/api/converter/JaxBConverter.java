@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -5158,7 +5159,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setStufe2VerfuegungDatum(rueckforderungFormular.getStufe2VerfuegungDatum());
 		jaxFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormular.getStufe2VerfuegungAusbezahltAm());
 
-		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen()));
+		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
 		return jaxFormular;
 
@@ -5205,16 +5206,17 @@ public class JaxBConverter extends AbstractConverter {
 		return rueckforderungFormular;
 	}
 
-	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
-		return rueckforderungMitteilungen.stream().map(this::rueckforderungMitteilungToJax)
+	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen, @Nonnull String institutionName) {
+		return rueckforderungMitteilungen.stream().map(rueckforderungMitteilung -> rueckforderungMitteilungToJax(rueckforderungMitteilung,
+			institutionName))
 			.collect(Collectors.toList());
 	}
 
-	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull String institutionName) {
 		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
 		convertAbstractFieldsToJAX(rueckforderungMitteilung, jaxMitteilung);
 		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
-		jaxMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
+		jaxMitteilung.setInhalt(RueckforderungMitteilung.getPATTERN().matcher(rueckforderungMitteilung.getInhalt()).replaceAll(Matcher.quoteReplacement(institutionName)));
 		jaxMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
 		return jaxMitteilung;
 	}

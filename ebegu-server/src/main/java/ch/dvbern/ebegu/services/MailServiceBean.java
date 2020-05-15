@@ -15,16 +15,19 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.AsyncResult;
@@ -655,17 +658,30 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		}
 	}
 
+	@Nullable
 	@Override
-	public void sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+	public String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
 		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		String mailaddress = institutionStammdaten.getMail();
 		try {
 			if (StringUtils.isNotEmpty(mailaddress) && rueckforderungFormular.getStufe1FreigabeBetrag() != null) {
+				BigDecimal betrag1 = null;
+				if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+					Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+					betrag1 = rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage();
+				} else {
+					Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+					betrag1 = rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden();
+				}
+				BigDecimal betrag2 = rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung();
+				final String betrag1AsString = Constants.CURRENCY_FORMAT.format(betrag1);
+				final String betrag2AsString = Constants.CURRENCY_FORMAT.format(betrag2);
 				String message = mailTemplateConfig
 					.getNotrechtBestaetigungPruefungStufe1(institutionStammdaten,
-						rueckforderungFormular.getStufe1FreigabeBetrag().toString());
+						betrag1AsString, betrag2AsString);
 				sendMessageWithTemplate(message, mailaddress);
 				LOG.debug("Email fuer NotrechtBestaetigungPruefungStufe1 wurde versendet an {}", mailaddress);
+				return message;
 			} else {
 				LOG.warn("Skipping NotrechtBestaetigungPruefungStufe1 because E-Mail of Institution is null");
 			}
@@ -675,5 +691,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				"Mail NotrechtBestaetigungPruefungStufe1 konnte nicht verschickt werden fuer Institution",
 				institutionStammdaten.getInstitution().getName());
 		}
+		return null;
 	}
 }

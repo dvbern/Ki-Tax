@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -26,24 +27,32 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_RUECKFORDERUNGSMITTEILUNG_LENGTH;
 
 @Entity
 public class RueckforderungMitteilung extends AbstractEntity implements Comparable<RueckforderungMitteilung> {
 
 	private static final long serialVersionUID = 5010422246166625084L;
 
+	private static final Pattern PATTERN = Pattern.compile("<INSTITUTIONEN>", Pattern.LITERAL);
+
 	@NotNull
 	@ManyToOne()
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_RueckforderungMitteilung_Benutzer_id"), nullable = false)
 	private Benutzer absender;
 
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
 	private String betreff;
 
+	@Size(min = 1, max = DB_RUECKFORDERUNGSMITTEILUNG_LENGTH)
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
@@ -120,10 +129,11 @@ public class RueckforderungMitteilung extends AbstractEntity implements Comparab
 	@Override
 	public int compareTo(@Nonnull RueckforderungMitteilung other) {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
-		compareToBuilder.append(this.getAbsender(), other.getAbsender());
-		compareToBuilder.append(this.getBetreff(), other.getBetreff());
-		compareToBuilder.append(this.getInhalt(), other.getInhalt());
 		compareToBuilder.append(this.getSendeDatum(), other.getSendeDatum());
 		return compareToBuilder.toComparison();
+	}
+
+	public static Pattern getPATTERN() {
+		return PATTERN;
 	}
 }
