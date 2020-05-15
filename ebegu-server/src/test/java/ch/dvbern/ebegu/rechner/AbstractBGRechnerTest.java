@@ -85,7 +85,9 @@ public abstract class AbstractBGRechnerTest {
 	protected static final int BASISJAHR_PLUS_1 = 2017;
 	protected static final int BASISJAHR_PLUS_2 = 2018;
 
-	protected Gemeinde gemeindeOfEvaluator = TestDataUtil.createGemeindeParis();
+	// Wir sollten fuer Tests nicht gerade Paris als Beispiel nehmen, sondern eine
+	// Gemeinde, die moeglichst wenig Spezialfaelle hat
+	protected Gemeinde gemeindeOfEvaluator = TestDataUtil.createGemeindeLondon();
 	protected Gesuchsperiode gesuchsperiodeOfEvaluator = TestDataUtil.createGesuchsperiode1718();
 
 
