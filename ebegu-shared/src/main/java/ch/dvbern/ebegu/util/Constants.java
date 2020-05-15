@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -137,5 +138,23 @@ public final class Constants {
 		//this prevents even the native class from
 		//calling this ctor as well :
 		throw new AssertionError();
+	}
+
+	// Alle diese Werte sollten nicht hier sein, da sie nur fuer Tests verwendet werden duerfen
+	// Sollte ins TestDataUtil verschoben werden oder in ein TestConstants, damit sie nicht aus
+	// Versehen in produktivem Code verwendet werden
+	public interface EinstellungenDefaultWerteAsiv {
+		public static final String EINSTELLUNG_MAX_EINKOMMEN = "160000";
+		public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 = "3800";
+		public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 = "6000";
+		public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 = "7000";
+		public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 = "7700";
+		public static final String EINSTELLUNG_MAX_TAGE_ABWESENHEIT = "30";
+		public static final String EINSTELLUNG_BG_BIS_UND_MIT_SCHULSTUFE = EinschulungTyp.VORSCHULALTER.name();
+		public static final String EINSTELLUNG_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT = "20";
+		public static final String EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT = "40";
+		public static final int ZUSCHLAG_ERWERBSPENSUM = 20;
+		public static final String EINSTELLUNG_ZUSCHLAG_ERWERBSPENSUM = String.valueOf(ZUSCHLAG_ERWERBSPENSUM);
+
 	}
 }
