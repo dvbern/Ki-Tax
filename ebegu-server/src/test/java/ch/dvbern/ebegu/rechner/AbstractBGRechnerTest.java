@@ -100,10 +100,7 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde bern
 	) {
-		// Wir brauchen alle Einstellungen fuer Rules
-		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenRulesAsiv(gesuchsperiode);
-		// ... und fuer Rechner
-		einstellungen.putAll(EbeguRuleTestsHelper.getEinstellungenRulesAsiv(gesuchsperiode));
+		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
