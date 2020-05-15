@@ -96,11 +96,10 @@ public class BetreuungsgutscheinConfigurator {
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
-
+		this.rules.clear();
 		abschnitteErstellenRegeln(gemeinde, kitaxParameterDTO, einstellungen);
 		berechnenAnspruchRegeln(gemeinde, kitaxParameterDTO, einstellungen);
 		reduktionsRegeln(einstellungen);
-
 	}
 
 	@SuppressWarnings({"checkstyle:LocalVariableName", "PMD.NcssMethodCount"})
