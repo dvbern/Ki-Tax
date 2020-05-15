@@ -5137,7 +5137,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToJAX(rueckforderungFormular, jaxFormular);
 
-		jaxFormular.setInstitutionStammdaten(institutionStammdatenToJAX(rueckforderungFormular.getInstitutionStammdaten()));
+		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
