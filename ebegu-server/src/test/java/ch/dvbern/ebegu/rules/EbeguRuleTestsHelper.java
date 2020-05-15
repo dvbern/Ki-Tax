@@ -245,17 +245,18 @@ public final class EbeguRuleTestsHelper {
 		Map<EinstellungKey, Einstellung> einstellungen = new EnumMap<>(EinstellungKey.class);
 
 		Einstellung maxTarifTsMitBetreuung = new Einstellung(
-						MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode);
-					einstellungen.put(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, maxTarifTsMitBetreuung);
+			MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode);
+		einstellungen.put(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, maxTarifTsMitBetreuung);
 
-					Einstellung maxTarifTsOhneBetreuung = new Einstellung(
-						MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode);
-					einstellungen.put(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, maxTarifTsOhneBetreuung);
+		Einstellung maxTarifTsOhneBetreuung = new Einstellung(
+			MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode);
+		einstellungen.put(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, maxTarifTsOhneBetreuung);
 
-					Einstellung minTarifTs = new Einstellung(
-						MIN_TARIF, "0.78", gesuchsperiode);
-					einstellungen.put(MIN_TARIF, minTarifTs);
-					return einstellungen;
+		Einstellung minTarifTs = new Einstellung(
+			MIN_TARIF, "0.78", gesuchsperiode);
+		einstellungen.put(MIN_TARIF, minTarifTs);
+
+		return einstellungen;
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
