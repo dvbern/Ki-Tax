@@ -66,11 +66,11 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal minimalerElternbeitrag = BigDecimal.ZERO; //TODO (hefr) brauchts mich???
+	private BigDecimal minimalerElternbeitrag = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal elternbeitrag = BigDecimal.ZERO; //TODO (hefr) brauchts mich?
+	private BigDecimal elternbeitrag = BigDecimal.ZERO;
 
 	@Nullable // Aktuell noch nullable, wegen bereits verfuegten Gesuchen!
 	@Column(nullable = true)

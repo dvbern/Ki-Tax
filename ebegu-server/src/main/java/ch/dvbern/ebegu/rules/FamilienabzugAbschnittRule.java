@@ -135,9 +135,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			final VerfuegungZeitabschnitt lastVerfuegungZeitabschnitt = familienAbzugZeitabschnitt.get(familienAbzugZeitabschnitt.size() - 1);
 			lastVerfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(entry.getKey().minusDays(1));
 
-			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-			verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(entry.getKey());
-			verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(entry.getKey(), gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
 			verfuegungZeitabschnitt.setAbzugFamGroesseForAsivAndGemeinde(calculateAbzugAufgrundFamiliengroesse(entry.getValue().getKey(), entry.getValue().getValue()));
 			verfuegungZeitabschnitt.setFamGroesseForAsivAndGemeinde(new BigDecimal(String.valueOf(entry.getValue().getKey())));
 
@@ -228,7 +226,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	public List<VerfuegungZeitabschnitt> createInitialenFamilienAbzug(Gesuch gesuch) {
-		VerfuegungZeitabschnitt initialFamAbzug = new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
+		VerfuegungZeitabschnitt initialFamAbzug = createZeitabschnittWithinValidityPeriodOfRule(gesuch.getGesuchsperiode().getGueltigkeit());
 		//initial gilt die Familiengroesse die am letzten Tag vor dem Start der neuen Gesuchsperiode vorhanden war
 		Double famGrBeruecksichtigungAbzug = 0.0;
 		Integer famGrAnzahlPersonen = 0;

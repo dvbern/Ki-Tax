@@ -396,6 +396,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
 	}
 
+	public void setErwerbspensumZuschlagForAsivAndGemeinde(int zuschlag) {
+		this.getBgCalculationInputAsiv().setErwerbspensumZuschlag(zuschlag);
+		this.getBgCalculationInputGemeinde().setErwerbspensumZuschlag(zuschlag);
+	}
+
 	public void addTaetigkeitForAsivAndGemeinde(@Nullable Taetigkeit taetigkeit) {
 		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
 		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
@@ -479,11 +484,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
 		this.getBgCalculationInputAsiv().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
 		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
-	}
-
-	public void setSameAusbezahlteVerguenstigungForAsivAndGemeinde(boolean sameAusbezahlteVerguenstigung) {
-		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
 	}
 
 	public void setSozialhilfeempfaengerForAsivAndGemeinde(boolean sozialhilfe) {

@@ -1117,10 +1117,14 @@
                     </div>
                     <ng-template #displayRechtsmittelbelehrung>
                         <div class="form-group mt-5">
-                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_DE</h3>
-                            <p>{{stammdaten.rechtsmittelbelehrung.textDeutsch}}</p>
-                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_FR</h3>
-                            <p>{{stammdaten.rechtsmittelbelehrung.textFranzoesisch}}</p>
+                            <div *ngIf="stammdaten.korrespondenzspracheDe">
+                                <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_DE</h3>
+                                <p>{{stammdaten.rechtsmittelbelehrung.textDeutsch}}</p>
+                            </div>
+                            <div *ngIf="stammdaten.korrespondenzspracheFr">
+                                <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_FR</h3>
+                                <p>{{stammdaten.rechtsmittelbelehrung.textFranzoesisch}}</p>
+                            </div>
                         </div>
                     </ng-template>
                 </div>

@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Interface für alle Berechnungs-Regeln in Ki-Tax.
@@ -41,9 +42,15 @@ public interface Rule {
 	LocalDate validTo();
 
 	/**
-	 * @return true wenn die Regel am Strichtag gueltig sit
+	 * @return DateRange, in welchem die Regel gilt
 	 */
-	boolean isValid(@Nonnull LocalDate stichtag);
+	@Nonnull
+	DateRange validityPeriod();
+
+	/**
+	 * @return true, wenn die Regel *irgendwann* in diesem Zeitraum gueltig ist
+	 */
+	boolean isValid(@Nonnull DateRange dateRange);
 
 	/**
 	 * @return den {@link RuleType} Enumwert dieser Regel
@@ -56,12 +63,6 @@ public interface Rule {
 	 */
 	@Nonnull
 	RuleKey getRuleKey();
-
-	/**
-	 * Gibt  zurueck, ob diese Regel fuer ASIV oder nur fuer die GEMEINDE gueltig ist.
-	 */
-	@Nonnull
-	RuleValidity getRuleValidity();
 
 	/**
 	 * Diese Methode fuehrt die eigentliche Berechnung durch die von der Regel abgebildet wird

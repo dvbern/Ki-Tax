@@ -36,8 +36,12 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAsivAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleValidity.ASIV, validityPeriod, locale);
+	public ErwerbspensumAsivAbschnittRule(
+		@Nonnull DateRange validityPeriod,
+		int erwerbspensumZuschlag,
+		@Nonnull Locale locale
+	) {
+		super(RuleValidity.ASIV, validityPeriod, erwerbspensumZuschlag, locale);
 	}
 
 	@Override
@@ -49,7 +53,7 @@ public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 	@Nullable
 	@Override
 	protected VerfuegungZeitabschnitt createZeitAbschnitt(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum, boolean isGesuchsteller1) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
 		if (isGesuchsteller1) {
 			zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
@@ -57,5 +61,10 @@ public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 			zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
 		}
 		return zeitabschnitt;
+	}
+
+	@Override
+	protected void setErwerbspensumZuschlag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, int zuschlagErwerbspensum) {
+		zeitabschnitt.setErwerbspensumZuschlagForAsivAndGemeinde(zuschlagErwerbspensum);
 	}
 }

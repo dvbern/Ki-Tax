@@ -15,13 +15,18 @@
 
 package ch.dvbern.ebegu.rest.test;
 
+import java.time.LocalDate;
+import java.time.Month;
+
 import javax.inject.Inject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.util.Constants;
@@ -45,6 +50,10 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	private Benutzer dummyAdmin;
 
 	@Before
@@ -57,6 +66,10 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 		} catch (LoginException ex) {
 			LOG.error("Konnte dummy login nicht vornehmen fuer ArquillianTests ", ex);
 		}
+		// Fuer die Tests soll Bern/Paris bereits nach ASIV funktionieren, wir setzen die Daten in die Vergangeheit
+		LocalDate stadtBernStartDatumAsiv = LocalDate.of(2000, Month.JANUARY, 1);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM, Constants.DATE_FORMATTER.format(stadtBernStartDatumAsiv));
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, "true");
 	}
 
 	@After

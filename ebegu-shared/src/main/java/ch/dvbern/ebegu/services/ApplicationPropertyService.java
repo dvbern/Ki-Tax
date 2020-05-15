@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -102,4 +103,16 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue);
+
+	/**
+	 * Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
+	 */
+	@Nonnull
+	LocalDate getStadtBernAsivStartDatum();
+
+	/**
+	 * Wenn TRUE koennen die Zeitraeume ab ASIV_START_DATUM verfuegt werden
+	 */
+	@Nonnull
+	Boolean isStadtBernAsivConfigured();
 }

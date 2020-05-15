@@ -233,7 +233,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
         const gs2 = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
         gs2.steuererklaerungAusgefuellt = !!gs2.steuererklaerungAusgefuellt;
-        gs2.steuerveranlagungErhalten = !gs2.steuerveranlagungErhalten;
+        gs2.steuerveranlagungErhalten = !!gs2.steuerveranlagungErhalten;
     }
 
     public steuerveranlagungClicked(): void {
