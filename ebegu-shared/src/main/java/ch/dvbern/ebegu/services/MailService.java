@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
@@ -177,5 +178,6 @@ public interface MailService {
 	/**
 	 * Sendet eine Email mit der Informatiom, dass ein Ruckforderungformular bei der Kanton geprueft wurde
 	 */
-	void sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
+	@Nullable
+	String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
 }

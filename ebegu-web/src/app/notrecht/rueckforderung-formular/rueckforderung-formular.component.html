@@ -38,8 +38,8 @@
                     </div>
                 </div>
                 <div class="row" *ngIf="showAbsendenText(rueckforderungFormular)">
-                    <div class="col-md-12" translate>
-                        RUECKFORDERUNG_ABSENDENTEXT
+                    <div class="col-md-12">
+                        {{'RUECKFORDERUNG_ABSENDENTEXT' | translate }}
                     </div>
                 </div>
                 <fieldset>
@@ -47,8 +47,8 @@
                         <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="required long-label" translate for="anzahl_plaetze_stufe1_insti_in_tage_id">
-                                        RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE</label>
+                                    <label class="required long-label" for="anzahl_plaetze_stufe1_insti_in_tage_id">
+                                        {{'RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE' | translate}}</label>
                                     <input id="anzahl_plaetze_stufe1_insti_in_tage_id" type="number"
                                            name="anzahl_plaetze_stufe1_insti_in_tage"
 										   #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
@@ -66,8 +66,8 @@
                         <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="required long-label" translate for="anzahl_stunden_stufe1_insti_id">
-                                        RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN</label>
+                                    <label class="required long-label" for="anzahl_stunden_stufe1_insti_id">
+                                        {{'RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN' | translate}}</label>
                                     <input id="anzahl_stunden_stufe1_insti_id" type="number"
                                            name="anzahl_stunden_stufe1_insti"
 										   #stufe1InstitutionKostenuebernahmeAnzahlStunden="ngModel"
@@ -85,8 +85,8 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="required long-label" translate for="kostenuebernahme_betreuung_stuf1_insti_id">
-                                        RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG</label>
+                                    <label class="required long-label" for="kostenuebernahme_betreuung_stuf1_insti_id">
+                                        {{'RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG' | translate}}</label>
                                     <input id="kostenuebernahme_betreuung_stuf1_insti_id" type="number"
                                            name="kostenuebernahme_betreuung_stuf1_insti"
 										   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
@@ -106,7 +106,7 @@
                                 <div class="form-group">
                                     <label class="required long-label" translate
                                            for="kostenuebernahme_prov_betrag_stuf1_insti_id">
-                                        RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG</label>
+                                        {{'RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG' | translate}}</label>
                                     <input id="kostenuebernahme_prov_betrag_stuf1_insti_id" type="number"
                                            name="kostenuebernahme_prov_betrag_stuf1_insti"
                                            [(ngModel)]="stufe1ProvBetrag"
@@ -428,7 +428,8 @@
                         <div class="download-file">
                             <a (click)="downloadVorlage(rueckforderungFormular);">
                                 <span class="fa fa-download"></span>
-                                <span translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE</span>
+                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA</span>
+                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO</span>
                             </a>
                         </div>
                     </div>
@@ -442,10 +443,10 @@
                                [buttonDisabled]="!enableRueckforderungAbschliessen()">
                 <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
-            <dv-loading-button *ngIf="isInstitutionStufe1(rueckforderungFormular)"
-                               (buttonClick)="rueckforderungAbschliessen(rueckforderungFormular);">
+            <button type="button" class="dv-btn cancel-button" *ngIf="isInstitutionStufe1(rueckforderungFormular)"
+                               (click)="rueckforderungAbschliessen(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN</span>
-            </dv-loading-button>
+            </button>
             <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>

@@ -25,10 +25,10 @@ import javax.annotation.Nullable;
  */
 public enum EbeguVorlageKey {
 
-	VORLAGE_NOTRECHT_KITA_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita_de.xlsx"),
-	VORLAGE_NOTRECHT_KITA_FR("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita_fr.xlsx"),
-	VORLAGE_NOTRECHT_TFO_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO_de.xlsx"),
-	VORLAGE_NOTRECHT_TFO_FR("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO_fr.xlsx");
+	VORLAGE_NOTRECHT_KITA_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita.xlsx"),
+	VORLAGE_NOTRECHT_KITA_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_garderie.xlsx"),
+	VORLAGE_NOTRECHT_TFO_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO.xlsx"),
+	VORLAGE_NOTRECHT_TFO_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_accueil_familial_de_jo.xlsx");
 
 	private String defaultVorlagePath;
 

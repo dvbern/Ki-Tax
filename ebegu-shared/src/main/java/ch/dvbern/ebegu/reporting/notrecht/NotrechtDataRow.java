@@ -51,6 +51,7 @@ public class NotrechtDataRow {
 	private @Nullable BigDecimal stufe1FreigabeBetrag;
 	private @Nullable LocalDateTime stufe1FreigabeDatum;
 	private @Nullable LocalDateTime stufe1FreigabeAusbezahltAm;
+	private @Nullable String stufe1ZahlungJetztAusgeloest;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
@@ -60,6 +61,7 @@ public class NotrechtDataRow {
 	private @Nullable BigDecimal stufe2VerfuegungBetrag;
 	private @Nullable LocalDateTime stufe2VerfuegungDatum;
 	private @Nullable LocalDateTime stufe2VerfuegungAusbezahltAm;
+	private @Nullable String stufe2ZahlungJetztAusgeloest;
 	private @Nullable String iban;
 	private @Nullable String kontoinhaber;
 	private @Nullable String auszahlungOrganisation;
@@ -354,5 +356,23 @@ public class NotrechtDataRow {
 
 	public void setAuszahlungOrt(@Nullable String auszahlungOrt) {
 		this.auszahlungOrt = auszahlungOrt;
+	}
+
+	@Nullable
+	public String getStufe1ZahlungJetztAusgeloest() {
+		return stufe1ZahlungJetztAusgeloest;
+	}
+
+	public void setStufe1ZahlungJetztAusgeloest(@Nullable String stufe1ZahlungJetztAusgeloest) {
+		this.stufe1ZahlungJetztAusgeloest = stufe1ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public String getStufe2ZahlungJetztAusgeloest() {
+		return stufe2ZahlungJetztAusgeloest;
+	}
+
+	public void setStufe2ZahlungJetztAusgeloest(@Nullable String stufe2ZahlungJetztAusgeloest) {
+		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
 	}
 }
