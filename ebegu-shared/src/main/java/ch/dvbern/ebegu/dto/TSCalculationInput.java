@@ -40,6 +40,10 @@ public class TSCalculationInput {
 	@Nonnull
 	private BigDecimal verpflegungskostenVerguenstigt = BigDecimal.ZERO;
 
+	@NotNull
+	@Nonnull
+	private Integer anzVerpflegungen = 0;
+
 	public TSCalculationInput() {
 	}
 
@@ -47,18 +51,21 @@ public class TSCalculationInput {
 		this.betreuungszeitProWoche = other.betreuungszeitProWoche;
 		this.verpflegungskosten = other.verpflegungskosten;
 		this.verpflegungskostenVerguenstigt = other.verpflegungskostenVerguenstigt;
+		this.anzVerpflegungen = other.anzVerpflegungen;
 	}
 
 	public void add(@Nonnull TSCalculationInput other) {
 		this.betreuungszeitProWoche = this.betreuungszeitProWoche + other.betreuungszeitProWoche;
 		this.verpflegungskosten = MathUtil.DEFAULT.addNullSafe(this.verpflegungskosten, other.verpflegungskosten);
 		this.verpflegungskostenVerguenstigt = MathUtil.DEFAULT.addNullSafe(this.verpflegungskostenVerguenstigt, other.verpflegungskostenVerguenstigt);
+		this.anzVerpflegungen = this.anzVerpflegungen + other.anzVerpflegungen;
 	}
 
 	public boolean isSame(@Nonnull TSCalculationInput other) {
 		return Objects.equals(this.betreuungszeitProWoche, other.betreuungszeitProWoche)
 			&& MathUtil.isSame(this.verpflegungskosten, other.verpflegungskosten)
-			&& MathUtil.isSame(this.verpflegungskostenVerguenstigt, other.verpflegungskostenVerguenstigt);
+			&& MathUtil.isSame(this.verpflegungskostenVerguenstigt, other.verpflegungskostenVerguenstigt)
+			&& Objects.equals(this.anzVerpflegungen, other.anzVerpflegungen);
 	}
 
 	@Nonnull
@@ -76,6 +83,7 @@ public class TSCalculationInput {
 			.add("betreuungszeitProWoche=" + betreuungszeitProWoche)
 			.add("verpflegungskosten=" + verpflegungskosten)
 			.add("verpflegungskostenVerguenstigt=" + verpflegungskostenVerguenstigt)
+			.add("anzVerpflegungen=" + anzVerpflegungen)
 			.toString();
 	}
 
@@ -104,5 +112,14 @@ public class TSCalculationInput {
 
 	public void setVerpflegungskostenVerguenstigt(@Nonnull BigDecimal verpflegungskostenVerguenstigt) {
 		this.verpflegungskostenVerguenstigt = verpflegungskostenVerguenstigt;
+	}
+
+	@Nonnull
+	public Integer getAnzVerpflegungen() {
+		return anzVerpflegungen;
+	}
+
+	public void setAnzVerpflegungen(@Nonnull Integer anzVerpflegungen) {
+		this.anzVerpflegungen = anzVerpflegungen;
 	}
 }

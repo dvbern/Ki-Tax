@@ -529,6 +529,14 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtMitBetreuung);
 	}
 
+	public void setTsAnzVerpflegungenMitBetreuung(@Nonnull int anzVerpflegungen) {
+		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+	}
+
+	public void setTsAnzVerpflegungenOhneBetreuung(@Nonnull int anzVerpflegungen) {
+		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+	}
+
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.tsInputOhneBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheOhneBetreuung);
 	}

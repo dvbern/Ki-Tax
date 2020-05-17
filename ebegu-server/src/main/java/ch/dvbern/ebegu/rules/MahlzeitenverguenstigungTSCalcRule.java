@@ -68,12 +68,16 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 
 			BigDecimal kostenMitBetreuung = inputData.getTsInputMitBetreuung().getVerpflegungskosten();
 			BigDecimal kostenOhneBetreuung = inputData.getTsInputOhneBetreuung().getVerpflegungskosten();
+			int anzVerpflegungenMitBetreuung = inputData.getTsInputMitBetreuung().getAnzVerpflegungen();
+			int anzVerpflegungenOhneBetreuung = inputData.getTsInputOhneBetreuung().getAnzVerpflegungen();
 
 			if (kostenMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(kostenMitBetreuung.subtract(verguenstigung));
+				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(kostenMitBetreuung
+					.subtract(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenMitBetreuung))));
 			}
 			if (kostenOhneBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(kostenOhneBetreuung.subtract(verguenstigung));
+				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(kostenOhneBetreuung
+					.subtract(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung))));
 			}
 
 			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_JA, getLocale(), verguenstigung);
