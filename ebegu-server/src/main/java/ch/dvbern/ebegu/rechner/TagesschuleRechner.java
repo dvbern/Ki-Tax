@@ -97,12 +97,14 @@ public class TagesschuleRechner extends AbstractRechner {
 		BigDecimal gebuehrProStunde = calculateGebuehrProStunde(sharedInput, maxTarif, parameterDTO);
 		BigDecimal betreuungsZeit = BigDecimal.valueOf(input.getBetreuungszeitProWoche());
 		BigDecimal verpflegungskosten = input.getVerpflegungskosten();
-		BigDecimal totalKostenProWoche = calculateKostenProWoche(gebuehrProStunde, betreuungsZeit, verpflegungskosten);
+		BigDecimal verpflegungskostenVerguenstigt = input.getVerpflegungskostenVerguenstigt();
+		BigDecimal totalKostenProWoche = calculateKostenProWoche(gebuehrProStunde, betreuungsZeit, verpflegungskosten
+			, verpflegungskostenVerguenstigt);
 
 		TSCalculationResult result = new TSCalculationResult();
 		result.setBetreuungszeitProWoche(betreuungsZeit.intValueExact());
 		result.setVerpflegungskosten(verpflegungskosten);
-		result.setVerpflegungskostenVerguenstigt(verpflegungskosten);
+		result.setVerpflegungskostenVerguenstigt(verpflegungskostenVerguenstigt);
 		result.setGebuehrProStunde(gebuehrProStunde);
 		result.setTotalKostenProWoche(totalKostenProWoche);
 
@@ -153,12 +155,15 @@ public class TagesschuleRechner extends AbstractRechner {
 	private BigDecimal calculateKostenProWoche(
 		BigDecimal gebuehrProStunde,
 		BigDecimal betreuungszeitProWoche,
-		BigDecimal verpflegungskosten) {
+		BigDecimal verpflegungskosten,
+		BigDecimal verpflegungskostenVerguenstigt) {
 
 		BigDecimal kostenProWoche = MathUtil.EXACT.multiply(gebuehrProStunde, betreuungszeitProWoche);
 		kostenProWoche = MathUtil.EXACT.divide(kostenProWoche, new BigDecimal(60));
 		BigDecimal totalKostenProWoche = MathUtil.DEFAULT.addNullSafe(kostenProWoche, verpflegungskosten);
+		BigDecimal verguenstigung = MathUtil.DEFAULT.subtractNullSafe(verpflegungskosten,
+			verpflegungskostenVerguenstigt);
 
-		return totalKostenProWoche;
+		return  MathUtil.DEFAULT.subtractNullSafe(totalKostenProWoche, verguenstigung);
 	}
 }

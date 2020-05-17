@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
@@ -44,7 +45,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		@Nonnull MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams
 	) {
 
-		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.GEMEINDE, validityPeriod, locale);
+		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
 		this.mahlzeitenverguenstigungParams = mahlzeitenverguenstigungParams;
 	}
 
@@ -55,7 +56,15 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
-		// TODO KIBON-1233 prüfen, ob der Antragsteller eine Vergünstigung überhaupt gewünscht hat
+
+		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+
+		boolean verguenstigungBeantrag = familiensituation == null ? false : !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
+
+		if (!verguenstigungBeantrag) {
+			return;
+		}
+
 		if (!mahlzeitenverguenstigungParams.isEnabled()) {
 			return;
 		}

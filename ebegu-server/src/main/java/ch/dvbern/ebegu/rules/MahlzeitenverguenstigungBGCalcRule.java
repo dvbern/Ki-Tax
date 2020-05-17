@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
@@ -59,18 +60,31 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
-		// TODO KIBON-1233 prüfen, ob der Antragsteller eine Vergünstigung überhaupt gewünscht hat
-		if (!mahlzeitenverguenstigungParams.isEnabled() || !validateInput(inputData)) {
+
+		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+
+		boolean verguenstigungBeantrag = familiensituation == null ? false : !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
+
+		if (!verguenstigungBeantrag) {
 			return;
 		}
 
-		BigDecimal verguenstigungProHauptmahlzeit = mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeit()
-			.get(inputData.getMassgebendesEinkommen());
-		BigDecimal verguenstigungProNebenmahlzeit = mahlzeitenverguenstigungParams.getVerguenstigungProNebenmahlzeit()
-			.get(inputData.getMassgebendesEinkommen());
+		final BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
+		final boolean sozialhilfeempfaenger = inputData.isSozialhilfeempfaenger();
+
+		if (!mahlzeitenverguenstigungParams.isEnabled() ||
+			!validateInput(inputData) ||
+			!mahlzeitenverguenstigungParams.hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
+			return;
+		}
+
+		BigDecimal verguenstigungProHauptmahlzeit =
+			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
+		BigDecimal verguenstigungProNebenmahlzeit =
+			mahlzeitenverguenstigungParams.getVerguenstigungProNebenmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigungProHauptmahlzeit != null && verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 
 			// vergünstigung für Hauptmahlzeiten ist gegeben
 
@@ -94,7 +108,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		}
 
 		// Wenn die Vergünstigung pro Nebenmahlzeit grösser 0 ist
-		if (verguenstigungProNebenmahlzeit != null && verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 
 			// vergünstigung für Nebenmahlzeiten ist gegeben
 
@@ -115,9 +129,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 			inputData.getParent().setVerguenstigungNebenmahlzeitenTotal(verguenstigungTotal);
 		}
-
-		verguenstigungProHauptmahlzeit = verguenstigungProHauptmahlzeit == null ? BigDecimal.ZERO :	verguenstigungProHauptmahlzeit;
-		verguenstigungProNebenmahlzeit = verguenstigungProNebenmahlzeit == null ? BigDecimal.ZERO : verguenstigungProNebenmahlzeit;
 
 		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0 ||
 			verguenstigungProNebenmahlzeit.compareTo(verguenstigungProNebenmahlzeit) > 0) {

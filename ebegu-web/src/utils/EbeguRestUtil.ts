@@ -2861,6 +2861,7 @@ export class EbeguRestUtil {
             resultTS.betreuungszeitProWoche = resultFromServer.betreuungszeitProWoche;
             resultTS.betreuungszeitProWocheFormatted = resultFromServer.betreuungszeitProWocheFormatted;
             resultTS.verpflegungskosten = resultFromServer.verpflegungskosten;
+            resultTS.verpflegungskostenVerguenstigt = resultFromServer.verpflegungskostenVerguenstigt;
             resultTS.gebuehrProStunde = resultFromServer.gebuehrProStunde;
             resultTS.totalKostenProWoche = resultFromServer.totalKostenProWoche;
             return resultTS;

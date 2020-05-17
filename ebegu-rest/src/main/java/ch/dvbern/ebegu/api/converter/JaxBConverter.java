@@ -3405,8 +3405,8 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
-		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigungHauptmahlzeitenTotal());
-		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigungNebenmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationInput().getVerguenstigungHauptmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationInput().getVerguenstigungNebenmahlzeitenTotal());
 		return jaxZeitabschn;
 	}
 
@@ -3423,6 +3423,7 @@ public class JaxBConverter extends AbstractConverter {
 		result.setBetreuungszeitProWoche(zeitabschnitt.getBetreuungszeitProWoche());
 		result.setBetreuungszeitProWocheFormatted(zeitabschnitt.getBetreuungszeitProWocheFormatted());
 		result.setVerpflegungskosten(zeitabschnitt.getVerpflegungskosten());
+		result.setVerpflegungskostenVerguenstigt(zeitabschnitt.getVerpflegungskostenVerguenstigt());
 		result.setGebuehrProStunde(zeitabschnitt.getGebuehrProStunde());
 		result.setTotalKostenProWoche(zeitabschnitt.getTotalKostenProWoche());
 		return result;
