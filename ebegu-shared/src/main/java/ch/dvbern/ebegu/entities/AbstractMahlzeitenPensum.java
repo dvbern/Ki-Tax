@@ -31,8 +31,6 @@ import org.hibernate.envers.Audited;
 @Audited
 public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 
-	// TODO (EGCH): Nullable vs. Nonnull anschauen
-
 	private static final long serialVersionUID = 7183887010325524679L;
 
 	@NotNull

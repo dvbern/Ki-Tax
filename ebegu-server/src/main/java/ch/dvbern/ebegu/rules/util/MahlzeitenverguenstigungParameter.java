@@ -27,7 +27,6 @@ public class MahlzeitenverguenstigungParameter {
 
 	private boolean enabled = false;
 
-	// TODO (EGCH): Wir noch nicht beruecksichtigt
 	private boolean enabledFuerSozHilfeBez = false;
 
 	private RangeMap<BigDecimal, BigDecimal> verguenstigungProHauptmahlzeit = TreeRangeMap.create();
@@ -76,26 +75,40 @@ public class MahlzeitenverguenstigungParameter {
 		return false;
 	}
 
-	// TODO (EGCH) Negative Einkommen funktionieren nicht
 	public BigDecimal getVerguenstigungProHauptmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
-		BigDecimal verguenstigung = sozialhilfeBezueger
-			? verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO)
-			: verguenstigungProHauptmahlzeit.get(massgebendesEinkommen);
-		if (verguenstigung != null) {
-			return verguenstigung;
+
+		BigDecimal verguenstigung = verguenstigungProHauptmahlzeit.get(massgebendesEinkommen);
+
+		// falls es sich um einen Sozialhilfebezüger handelt und Die Vergünstigung für diese aktiv ist, nehmen wir
+		// die Vergünstigung der Stufe 0
+		if (sozialhilfeBezueger && enabledFuerSozHilfeBez) {
+			verguenstigung = verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO);
 		}
-		return BigDecimal.ZERO;
+
+		// falls keine Vergünstigung deklariert ist, geben wir 0 zurück
+		if (verguenstigung == null) {
+			return BigDecimal.ZERO;
+		}
+
+		return verguenstigung;
 	}
 
-	// TODO (EGCH) Negative Einkommen funktionieren nicht
 	public BigDecimal getVerguenstigungProNebenmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
-		BigDecimal verguenstigung = sozialhilfeBezueger
-			? verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO)
-			: verguenstigungProNebenmahlzeit.get(massgebendesEinkommen);
-		if (verguenstigung != null) {
-			return verguenstigung;
+
+		BigDecimal verguenstigung = verguenstigungProNebenmahlzeit.get(massgebendesEinkommen);
+
+		// falls es sich um einen Sozialhilfebezüger handelt und Die Vergünstigung für diese aktiv ist, nehmen wir
+		// die Vergünstigung der Stufe 0
+		if (sozialhilfeBezueger && enabledFuerSozHilfeBez) {
+			verguenstigung = verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO);
 		}
-		return BigDecimal.ZERO;
+
+		// falls keine Vergünstigung deklariert ist, geben wir 0 zurück
+		if (verguenstigung == null) {
+			return BigDecimal.ZERO;
+		}
+
+		return verguenstigung;
 	}
 
 	public boolean isEnabled() {

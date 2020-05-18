@@ -41,8 +41,6 @@ import org.hibernate.envers.Audited;
 @Entity
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
-	// TODO (EGCH): Nullable vs. Nonnull anschauen
-
 	private static final long serialVersionUID = -8308660793880620086L;
 
 	@NotNull @Nonnull
@@ -73,11 +71,11 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	private Integer vertraglicheNebenmahlzeiten = null;
 
 	@Transient
-	@NotNull
+	@Nullable
 	private BigDecimal vertraglicherTarifHauptmahlzeit = BigDecimal.ZERO;
 
 	@Transient
-	@NotNull
+	@Nullable
 	private BigDecimal vertraglicherTarifNebenmahlzeit = BigDecimal.ZERO;
 
 	@Nonnull
@@ -89,19 +87,21 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.status = status;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglichesPensum() {
 		return vertraglichesPensum;
 	}
 
-	public void setVertraglichesPensum(BigDecimal vertraglichesPensum) {
+	public void setVertraglichesPensum(@Nullable BigDecimal vertraglichesPensum) {
 		this.vertraglichesPensum = vertraglichesPensum;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicheKosten() {
 		return vertraglicheKosten;
 	}
 
-	public void setVertraglicheKosten(BigDecimal vertraglicheKosten) {
+	public void setVertraglicheKosten(@Nullable BigDecimal vertraglicheKosten) {
 		this.vertraglicheKosten = vertraglicheKosten;
 	}
 
@@ -114,19 +114,21 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.vertraglicheHauptmahlzeiten = vertraglicheHauptmahlzeiten;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicherTarifHauptmahlzeit() {
 		return vertraglicherTarifHauptmahlzeit;
 	}
 
-	public void setVertraglicherTarifHauptmahlzeit(BigDecimal vertraglicherTarifHauptmahlzeit) {
+	public void setVertraglicherTarifHauptmahlzeit(@Nullable BigDecimal vertraglicherTarifHauptmahlzeit) {
 		this.vertraglicherTarifHauptmahlzeit = vertraglicherTarifHauptmahlzeit;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicherTarifNebenmahlzeit() {
 		return vertraglicherTarifNebenmahlzeit;
 	}
 
-	public void setVertraglicherTarifNebenmahlzeit(BigDecimal vertraglicherTarifNebenmahlzeit) {
+	public void setVertraglicherTarifNebenmahlzeit(@Nullable BigDecimal vertraglicherTarifNebenmahlzeit) {
 		this.vertraglicherTarifNebenmahlzeit = vertraglicherTarifNebenmahlzeit;
 	}
 
@@ -225,6 +227,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 
 		Objects.requireNonNull(pensum);
 		Objects.requireNonNull(kosten);
+		Objects.requireNonNull(hauptmahlzeiten);
+		Objects.requireNonNull(nebenmahlzeiten);
+		Objects.requireNonNull(vertraglicherTarifHauptmahlzeit);
+		Objects.requireNonNull(vertraglicherTarifNebenmahlzeit);
 
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
