@@ -66,6 +66,8 @@ public class InstitutionenKitaxMappingCreator {
 		try (InputStream resourceAsStream = InstitutionenKitaxMappingCreator.class.getResourceAsStream(INPUT_FILE)) {
 			String str = "";
 			reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
+			// Die erste Zeile ist der Header
+			reader.readLine();
 			while ((str = reader.readLine()) != null) {
 				if (StringUtils.isEmpty(str)) {
 					return;
