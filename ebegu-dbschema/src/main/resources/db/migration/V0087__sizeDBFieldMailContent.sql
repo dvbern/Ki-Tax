@@ -1,0 +1,1 @@
+ALTER TABLE rueckforderung_mitteilung MODIFY inhalt VARCHAR(10000) NOT NULL;

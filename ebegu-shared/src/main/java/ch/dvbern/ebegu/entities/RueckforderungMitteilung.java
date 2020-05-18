@@ -18,33 +18,41 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-import org.hibernate.envers.Audited;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_RUECKFORDERUNGSMITTEILUNG_LENGTH;
 
 @Entity
-@Audited
-public class RueckforderungMitteilung extends AbstractEntity {
+public class RueckforderungMitteilung extends AbstractEntity implements Comparable<RueckforderungMitteilung> {
 
 	private static final long serialVersionUID = 5010422246166625084L;
 
+	private static final Pattern PATTERN = Pattern.compile("<INSTITUTIONEN>", Pattern.LITERAL);
+
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne()
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_RueckforderungMitteilung_Benutzer_id"), nullable = false)
 	private Benutzer absender;
 
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
 	private String betreff;
 
+	@Size(min = 1, max = DB_RUECKFORDERUNGSMITTEILUNG_LENGTH)
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
@@ -55,10 +63,14 @@ public class RueckforderungMitteilung extends AbstractEntity {
 	@Nonnull
 	private LocalDateTime sendeDatum;
 
-	@NotNull
-	@Column(nullable = false)
-	@Nonnull
-	private String gesendetAnStatus;
+	public RueckforderungMitteilung() {}
+
+	public RueckforderungMitteilung(RueckforderungMitteilung toCopy) {
+		this.absender = toCopy.getAbsender();
+		this.betreff = toCopy.getBetreff();
+		this.inhalt = toCopy.getInhalt();
+		this.sendeDatum = toCopy.getSendeDatum();
+	}
 
 	public Benutzer getAbsender() {
 		return absender;
@@ -95,15 +107,6 @@ public class RueckforderungMitteilung extends AbstractEntity {
 		this.sendeDatum = sendeDatum;
 	}
 
-	@Nonnull
-	public String getGesendetAnStatus() {
-		return gesendetAnStatus;
-	}
-
-	public void setGesendetAnStatus(@Nonnull String gesendetAnStatus) {
-		this.gesendetAnStatus = gesendetAnStatus;
-	}
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -121,5 +124,16 @@ public class RueckforderungMitteilung extends AbstractEntity {
 			&& this.betreff.equals(otherRueckforderungMitteilung.getBetreff())
 			&& this.inhalt.equals(otherRueckforderungMitteilung.getInhalt())
 			&& this.sendeDatum.equals(otherRueckforderungMitteilung.getSendeDatum());
+	}
+
+	@Override
+	public int compareTo(@Nonnull RueckforderungMitteilung other) {
+		CompareToBuilder compareToBuilder = new CompareToBuilder();
+		compareToBuilder.append(this.getSendeDatum(), other.getSendeDatum());
+		return compareToBuilder.toComparison();
+	}
+
+	public static Pattern getPATTERN() {
+		return PATTERN;
 	}
 }

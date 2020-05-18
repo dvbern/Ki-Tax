@@ -111,7 +111,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		}
 
 		//Alle Daten des GS2 loeschen wenn man von 2GS auf 1GS wechselt und GS2 bereits erstellt wurde
-		assert mergedFamiliensituationContainer != null;
+		Objects.requireNonNull(mergedFamiliensituationContainer);
 		if (gesuch.getGesuchsteller2() != null
 			&& isNeededToRemoveGesuchsteller2(gesuch, mergedFamiliensituationContainer.extractFamiliensituation(),
 			oldFamiliensituation)

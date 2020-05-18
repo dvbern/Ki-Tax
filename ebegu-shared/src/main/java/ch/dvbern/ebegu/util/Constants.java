@@ -31,6 +31,7 @@ public final class Constants {
 
 	public static final int DB_DEFAULT_MAX_LENGTH = 255;
 	public static final int DB_TEXTAREA_LENGTH = 4000;
+	public static final int DB_RUECKFORDERUNGSMITTEILUNG_LENGTH = 10000;
 	public static final int DB_DEFAULT_SHORT_LENGTH = 100;
 	public static final int ONE_MB = 1048576;
 	public static final int TEN_MB = 10485760;
@@ -103,6 +104,7 @@ public final class Constants {
 	public static final String PATH_DESIGNATOR_NO_TOKEN_REFRESH = "notokenrefresh";
 
 	public static final String TEMP_REPORT_FOLDERNAME = "tempReports";
+	public static final String TEMP_NOTVERORDNUNG = "tempNotverordnung";
 
 	public static final String SYSTEM_USER_USERNAME = "System";
 	public static final String ANONYMOUS_USER_USERNAME = "anonymous";

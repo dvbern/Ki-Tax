@@ -90,7 +90,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.getKindJA().setPensumFachstelle(null);
-		assert kind.getKindGS() != null;
+		Assert.assertNotNull(kind.getKindGS());
 		kind.getKindGS().setPensumFachstelle(null);
 
 		InstitutionStammdaten instStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();

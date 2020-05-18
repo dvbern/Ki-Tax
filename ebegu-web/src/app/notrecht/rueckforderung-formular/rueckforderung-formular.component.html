@@ -30,51 +30,431 @@
 							name:
 							rueckforderungFormular.institutionStammdaten.institution.name
 						}
-                            }}</h2>
+                            }}
+                        <span class="status-header">
+                            {{translateStatus(rueckforderungFormular.status)}}
+                        </span></h2>
                         <hr class="header">
                     </div>
                 </div>
+                <div class="row" *ngIf="showAbsendenText(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        {{'RUECKFORDERUNG_ABSENDENTEXT' | translate }}
+                    </div>
+                </div>
                 <fieldset>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="required" translate for="anzahl_plaetze_stufe1_insti_in_tage_id">
-                                    RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE</label>
-                                <input id="anzahl_plaetze_stufe1_insti_in_tage_id" type="number"
-                                       name="anzahl_plaetze_stufe1_insti_in_tage"
-                                       #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
-                                       [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
-                                       class="form-control" required>
-                                <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlTage.errors"
-                                                   inputId="anzahl_plaetze_stufe1_insti_in_tage_id">
-                                </dv-error-messages>
+                    <div class="form-group" *ngIf="isInstitutionStufe1(rueckforderungFormular)">
+                        <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" for="anzahl_plaetze_stufe1_insti_in_tage_id">
+                                        {{'RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE' | translate}}</label>
+                                    <input id="anzahl_plaetze_stufe1_insti_in_tage_id" type="number"
+                                           name="anzahl_plaetze_stufe1_insti_in_tage"
+										   #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
+                                           [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
+                                           class="form-control"
+                                           (blur)="calculateInstiProvBetrag(rueckforderungFormular)"
+                                           required>
+                                    <dv-error-messages
+                                        [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlTage.errors"
+                                        inputId="anzahl_plaetze_stufe1_insti_in_tage_id">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" for="anzahl_stunden_stufe1_insti_id">
+                                        {{'RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN' | translate}}</label>
+                                    <input id="anzahl_stunden_stufe1_insti_id" type="number"
+                                           name="anzahl_stunden_stufe1_insti"
+										   #stufe1InstitutionKostenuebernahmeAnzahlStunden="ngModel"
+                                           [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden"
+                                           class="form-control"
+                                           (blur)="calculateInstiProvBetrag(rueckforderungFormular)"
+                                           required>
+                                    <dv-error-messages
+                                        [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlStunden.errors"
+                                        inputId="anzahl_stunden_stufe1_insti_id">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" for="kostenuebernahme_betreuung_stuf1_insti_id">
+                                        {{'RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG' | translate}}</label>
+                                    <input id="kostenuebernahme_betreuung_stuf1_insti_id" type="number"
+                                           name="kostenuebernahme_betreuung_stuf1_insti"
+										   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
+                                           [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
+                                           class="form-control"
+                                           (blur)="calculateInstiProvBetrag(rueckforderungFormular)"
+                                           required>
+                                    <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
+                                                       inputId="kostenuebernahme_betreuung_stuf1_insti_id">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ProvisorischeBerechnung -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" translate
+                                           for="kostenuebernahme_prov_betrag_stuf1_insti_id">
+                                        {{'RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG' | translate}}</label>
+                                    <input id="kostenuebernahme_prov_betrag_stuf1_insti_id" type="number"
+                                           name="kostenuebernahme_prov_betrag_stuf1_insti"
+                                           [(ngModel)]="stufe1ProvBetrag"
+                                           class="form-control" disabled="true">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Checkbox -->
+                        <div class="row mt-5">
+                            <div class="col-sm-12">
+                                <span class="mt-5">
+                                    {{'BETREUUNG_KORREKT_AUSGEWIESEN'|translate}}
+                                    <dv-tooltip id="betreuungKorrektAusgewiesenCbx-tooltip"
+                                                [text]="'BETREUUNG_KORREKT_AUSGEWIESEN_INFO'|translate"></dv-tooltip>
+                                </span>
+                                <div class="form-group">
+                                    <mat-checkbox id="betreuungKorrektAusgewiesenCbx_id"
+                                                  name="betreuungKorrektAusgewiesenCbx_id"
+                                                  [(ngModel)]="betreuungKorrektAusgewiesen" required>
+                                        {{ 'BESTAETIGEN' | translate }}
+                                    </mat-checkbox>
+                                </div>
+                                <span class="mt-5">
+                                    {{'GUTSCHEIN_PLAETZEN_REDUZIERT'|translate}}
+                                    <dv-tooltip id="gutscheinPlaetzenReduziertCbx-tooltip"
+                                                [text]="'GUTSCHEIN_PLAETZEN_REDUZIERT_INFO'|translate"></dv-tooltip>
+                                </span>
+                                <div class="form-group">
+                                    <mat-checkbox id="gutscheinPlaetzenReduziertCbx_id"
+                                                  name="gutscheinPlaetzenReduziertCbx_id"
+                                                  [(ngModel)]="gutscheinPlaetzenReduziert" required>
+                                        {{ 'BESTAETIGEN' | translate }}
+                                    </mat-checkbox>
+                                </div>
+                                <span class="mt-5">
+                                    {{'ERSTATTUNG_GEMAESS_KANTON'|translate}}
+                                    <dv-tooltip id="erstattungGemaessKantonCbx-tooltip"
+                                                [text]="'ERSTATTUNG_GEMAESS_KANTON_INFO'|translate"></dv-tooltip>
+                                </span>
+                                <div class="form-group">
+                                    <mat-checkbox id="erstattungGemaessKantonCbx_id"
+                                                  name="erstattungGemaessKantonCbx_id"
+                                                  [(ngModel)]="erstattungGemaessKanton" required>
+                                        {{ 'BESTAETIGEN' | translate }}
+                                    </mat-checkbox>
+                                </div>
+                                <span class="mt-5">
+                                    {{'MAHLZEITEN_BG_SUBVENTIONEN_GEBUEHRENSYSTEM'|translate}}
+                                </span>
+                                <div class="form-group">
+                                    <mat-checkbox id="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                                  name="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                                  [(ngModel)]="mahlzeitenBGSubventionenGebuehrensystem" required>
+                                        {{ 'BESTAETIGEN' | translate }}
+                                    </mat-checkbox>
+                                </div>
+                                <span class="mt-5">
+                                    {{'BELEGE_EINREICHEN_BETRAG_KANTON_ZURUECKFORDERN'|translate}}
+                                </span>
+                                <div class="form-group">
+                                    <mat-checkbox id="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                                  name="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                                  [(ngModel)]="belegeEinreichenBetrageKantonZurueckfordern"
+                                                  required>
+                                        {{ 'BESTAETIGEN' | translate }}
+                                    </mat-checkbox>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6">
+                    <div class="form-group" *ngIf="isPruefungKantonStufe1(rueckforderungFormular)">
+                        <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" translate for="anzahl_plaetze_stufe1_kanton_in_tage_id">
+                                        RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE</label>
+                                    <input id="anzahl_plaetze_stufe1_kanton_in_tage_id" type="number"
+                                           name="anzahl_plaetze_stufe1_kanton_in_tage"
+										   #stufe1KantonKostenuebernahmeAnzahlTage="ngModel"
+                                           [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage"
+                                           (blur)="calculateKantonProvBetrag(rueckforderungFormular)"
+                                           class="form-control" required>
+                                    <div class="bisherForm">
+                                        <div
+                                            class="dv-bisher"
+                                            *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage !== rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage">
+                                            <span translate>BISHER_GS</span>
+                                            <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage}}</span>
+                                        </div>
+                                    </div>
+                                    <dv-error-messages
+                                        [errorObject]="stufe1KantonKostenuebernahmeAnzahlTage.errors"
+                                        inputId="anzahl_plaetze_stufe1_kanton_in_tage_id">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" translate
+                                           for="anzahl_stunden_stufe1_kanton_id">
+                                        RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN</label>
+                                    <input id="anzahl_stunden_stufe1_kanton_id" type="number"
+                                           name="anzahl_stunden_stufe1_kanton"
+										   #stufe1KantonKostenuebernahmeAnzahlStunden="ngModel"
+                                           [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden"
+                                           (blur)="calculateKantonProvBetrag(rueckforderungFormular)"
+                                           class="form-control" required>
+                                    <div class="bisherForm">
+                                        <div
+                                            class="dv-bisher"
+                                            *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
+                                            !== rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden">
+                                            <span translate>BISHER_GS</span>
+                                            <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden}}</span>
+                                        </div>
+                                    </div>
+                                    <dv-error-messages
+                                        [errorObject]="stufe1KantonKostenuebernahmeAnzahlStunden.errors"
+                                        inputId="anzahl_stunden_stufe1_kanton_id">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" translate
+                                           for="kostenuebernahme_betreuung_stuf1_kanton_id">
+                                        RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG</label>
+                                    <input id="kostenuebernahme_betreuung_stuf1_kanton_id" type="number"
+                                           name="kostenuebernahme_betreuung_stuf1_kanton"
+										   #stufe1KantonKostenuebernahmeBetreuung="ngModel"
+                                           [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung"
+                                           (blur)="calculateKantonProvBetrag(rueckforderungFormular)"
+                                           class="form-control" required>
+                                    <div class="bisherForm">
+                                        <div
+                                            class="dv-bisher"
+                                            *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
+                                            !== rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung">
+                                            <span translate>BISHER_GS</span>
+                                            <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung}}</span>
+                                        </div>
+                                    </div>
+                                    <dv-error-messages [errorObject]="stufe1KantonKostenuebernahmeBetreuung.errors"
+                                                       inputId="kostenuebernahme_betreuung_stuf1_kanton_id">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ProvisorischeBerechnung -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required long-label" translate
+                                           for="kostenuebernahme_prov_betrag_stuf1_kanton_id">
+                                        RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG</label>
+                                    <input id="kostenuebernahme_prov_betrag_stuf1_kanton_id" type="number"
+                                           name="kostenuebernahme_prov_betrag_stuf1_kanton"
+                                           [(ngModel)]="stufe1ProvBetrag"
+                                           class="form-control" disabled="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
+                        <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <h3 class="required" translate>RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE</h3>
+                                    <p>{{rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage}}</p>
+                                    <div class="bisherForm">
+                                        <div
+                                            class="dv-bisher"
+                                            *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage !== rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage">
+                                            <span translate>BISHER_GS</span>
+                                            <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <h3 class="required" translate>RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN</h3>
+                                    <p>{{rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden}}</p>
+                                    <div class="bisherForm">
+                                        <div
+                                            class="dv-bisher"
+                                            *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
+                                            !== rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden">
+                                            <span translate>BISHER_GS</span>
+                                            <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <h3 class="required" translate>
+                                        RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG</h3>
+                                    <p>{{rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung}}
+                                    <div class="bisherForm">
+                                        <div
+                                            class="dv-bisher"
+                                            *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
+                                            !== rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung">
+                                            <span translate>BISHER_GS</span>
+                                            <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Checkbox -->
+                    <div class="row" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular) || isPruefungKantonStufe1(rueckforderungFormular)">
+                        <div class="col-sm-12">
+                            <span class="mt-5">{{'BETREUUNG_KORREKT_AUSGEWIESEN'|translate}}
+                                <dv-tooltip id="betreuungKorrektAusgewiesenCbxReadOnly-tooltip"
+                                            [text]="'BETREUUNG_KORREKT_AUSGEWIESEN_INFO'|translate"></dv-tooltip></span>
                             <div class="form-group">
-                                <label class="required" translate for="kostenuebernahme_betreuung_stuf1_insti_id">
-                                    RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG</label>
-                                <input id="kostenuebernahme_betreuung_stuf1_insti_id" type="number"
-                                       name="kostenuebernahme_betreuung_stuf1_insti"
-									   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
-                                       [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
-                                       class="form-control" required>
-                                <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
-                                                   inputId="kostenuebernahme_betreuung_stuf1_insti_id">
-                                </dv-error-messages>
+                                <mat-checkbox id="betreuungKorrektAusgewiesenCbxReadOnly_id"
+                                              name="betreuungKorrektAusgewiesenCbx_id"
+                                              checked="true"
+                                              disabled="true">
+                                    {{'BESTAETIGEN' | translate }}
+                                </mat-checkbox>
+                            </div>
+                            <span class="mt-5">{{'GUTSCHEIN_PLAETZEN_REDUZIERT'|translate}}
+                                <dv-tooltip id="gutscheinPlaetzenReduziertCbxReadOnly-tooltip"
+                                            [text]="'GUTSCHEIN_PLAETZEN_REDUZIERT_INFO'|translate"></dv-tooltip></span>
+                            <div class="form-group">
+                                <mat-checkbox id="gutscheinPlaetzenReduziertCbxReadOnly_id"
+                                              name="gutscheinPlaetzenReduziertCbx_id"
+                                              checked="true"
+                                              disabled="true">
+                                    {{'BESTAETIGEN' | translate }}
+                                </mat-checkbox>
+                            </div>
+                            <span class="mt-5">{{'ERSTATTUNG_GEMAESS_KANTON'|translate}}
+                                <dv-tooltip id="erstattungGemaessKantonCbxReadOnly-tooltip"
+                                            [text]="'ERSTATTUNG_GEMAESS_KANTON_INFO'|translate">
+                                </dv-tooltip>
+                            </span>
+                            <div class="form-group">
+                                <mat-checkbox id="erstattungGemaessKantonCbxReadOnly_id"
+                                              name="erstattungGemaessKantonCbx_id"
+                                              checked="true"
+                                              disabled="true">
+                                    {{'BESTAETIGEN' | translate }}
+                                </mat-checkbox>
+                            </div>
+                            <span class="mt-5">{{'MAHLZEITEN_BG_SUBVENTIONEN_GEBUEHRENSYSTEM'|translate}}</span>
+                            <div class="form-group">
+                                <mat-checkbox id="mahlzeitenBGSubventionenGebuehrensystemCbxReadOnly_id"
+                                              name="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                              checked="true"
+                                              disabled="true">
+                                    {{'BESTAETIGEN' | translate }}
+                                </mat-checkbox>
+                            </div>
+                            <span class="mt-5">
+                                {{'BELEGE_EINREICHEN_BETRAG_KANTON_ZURUECKFORDERN'|translate}}
+                            </span>
+                            <div class="form-group">
+                                <mat-checkbox id="belegeEinreichenBetrageKantonZurueckfordernCbxReadOnly_id"
+                                              name="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                              checked="true"
+                                              disabled="true">
+                                    {{'BESTAETIGEN' | translate }}
+                                </mat-checkbox>
                             </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
+            <div class="col-md-8 col-md-offset-2">
+                <dv-rueckforderung-mitteilungen
+                    [rueckforderungMitteilungen]="rueckforderungFormular.rueckforderungMitteilungen"
+                ></dv-rueckforderung-mitteilungen>
+            </div>
+
+            <div class="col-md-8 col-md-offset-2" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3 translate class="marginTop30">RUECKFORDERUNG_ZAHLUNGEN</h3>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_ERSTELLT</th>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_STUFE</th>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_BETRAG</th>
+                                    <th translate>RUECKFORDERUNG_ZAHLUNGEN_AUSGELOEST</th>
+                                </tr>
+                                <tr *ngFor="let zahlung of rueckforderungZahlungenList">
+                                    <td>{{zahlung.datumErstellt.format('L LTS')}}</td>
+                                    <td>{{zahlung.stufe | translate}}</td>
+                                    <td>{{zahlung.betrag}}</td>
+                                    <td>{{(zahlung.ausgeloest ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-md-offset-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 translate class="marginTop50">DOKUMENTE</h2>
+                        <hr class="header"/>
+                        <div class="download-file">
+                            <a (click)="downloadVorlage(rueckforderungFormular);">
+                                <span class="fa fa-download"></span>
+                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA</span>
+                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <!-- Buttons -->
-        <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
-                <span translate>SPEICHERN</span>
+        <div class="dv-footer marginTop50">
+            <dv-loading-button *ngIf="isInstitutionStufe1(rueckforderungFormular)" [type]="'submit'"
+                               [buttonDisabled]="!enableRueckforderungAbschliessen()">
+                <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
+            <button type="button" class="dv-btn cancel-button" *ngIf="isInstitutionStufe1(rueckforderungFormular)"
+                               (click)="rueckforderungAbschliessen(rueckforderungFormular);">
+                <span translate>RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN</span>
+            </button>
+            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
+                <span translate>RUECKFORDERUNG_GEPRUEFT</span>
+            </dv-loading-button>
+            <button type="button"
+                    class="dv-btn cancel-button"
+                    [uiSref]="'notrecht.list'"
+                    translate>ZURUECK_ONLY
+            </button>
         </div>
     </form>
 </dv-full-height-container>
