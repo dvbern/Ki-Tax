@@ -84,8 +84,8 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(BigDecimal.valueOf(betreuungspensum.getMonatlicheHauptmahlzeiten()));
 		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(BigDecimal.valueOf(betreuungspensum.getMonatlicheNebenmahlzeiten()));
 		// Tarife der Mahlzeiten übernehmen
-		zeitabschnitt.setTarifHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
-		zeitabschnitt.setTarifNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
+		zeitabschnitt.setTarifHauptmahlzeitForAsivAndGemeinde(betreuungspensum.getTarifProHauptmahlzeit());
+		zeitabschnitt.setTarifNebenmahlzeitForAsivAndGemeinde(betreuungspensum.getTarifProNebenmahlzeit());
 
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();

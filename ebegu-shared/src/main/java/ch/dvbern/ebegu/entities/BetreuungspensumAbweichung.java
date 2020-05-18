@@ -41,6 +41,8 @@ import org.hibernate.envers.Audited;
 @Entity
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
+	// TODO (EGCH): Nullable vs. Nonnull anschauen
+
 	private static final long serialVersionUID = -8308660793880620086L;
 
 	@NotNull @Nonnull
@@ -227,6 +229,7 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
 		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
+		//
 		mitteilungPensum.setMonatlicheHauptmahlzeiten(hauptmahlzeiten);
 		mitteilungPensum.setMonatlicheNebenmahlzeiten(nebenmahlzeiten);
 

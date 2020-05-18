@@ -529,11 +529,11 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtMitBetreuung);
 	}
 
-	public void setTsAnzVerpflegungenMitBetreuung(@Nonnull int anzVerpflegungen) {
+	public void setTsAnzVerpflegungenMitBetreuung(int anzVerpflegungen) {
 		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
 	}
 
-	public void setTsAnzVerpflegungenOhneBetreuung(@Nonnull int anzVerpflegungen) {
+	public void setTsAnzVerpflegungenOhneBetreuung(int anzVerpflegungen) {
 		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
 	}
 
@@ -818,12 +818,6 @@ public class BGCalculationInput {
 			einschulungTyp == that.einschulungTyp &&
 			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
-
-			// TODO KIBON-1233: sind das sichtbare daten?
-			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
-			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
-			MathUtil.isSame(tarifHauptmahlzeit, that.tarifHauptmahlzeit) &&
-			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
 			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, that.verguenstigungHauptmahlzeitenTotal) &&
 			MathUtil.isSame(verguenstigungNebenmahlzeitenTotal, that.verguenstigungNebenmahlzeitenTotal) &&
 			// Zusätzliche Felder aus Result

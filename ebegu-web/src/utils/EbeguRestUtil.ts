@@ -1426,7 +1426,6 @@ export class EbeguRestUtil {
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
             restInstitutionStammdaten.tarifProHauptmahlzeit = institutionStammdaten.tarifProHauptmahlzeit;
             restInstitutionStammdaten.tarifProNebenmahlzeit = institutionStammdaten.tarifProNebenmahlzeit;
-
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -2846,9 +2845,7 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungHauptmahlzeitTotal = zeitabschnittFromServer.verguenstigungHauptmahlzeitTotal;
             verfuegungZeitabschnittTS.verguenstigungNebenmahlzeitTotal = zeitabschnittFromServer.verguenstigungNebenmahlzeitTotal;
-
             return verfuegungZeitabschnittTS;
-
         }
         return undefined;
     }

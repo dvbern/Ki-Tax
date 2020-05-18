@@ -104,7 +104,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 				MathUtil.roundToFrankenRappen(verguenstigungTotal.multiply(inputData.getBgPensumProzent()
 					.divide(new BigDecimal(100))));
 
-			inputData.getParent().setVerguenstigungHauptmahlzeitenTotal(verguenstigungTotal);
+			inputData.getParent().setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 		}
 
 		// Wenn die Vergünstigung pro Nebenmahlzeit grösser 0 ist
@@ -127,7 +127,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 				MathUtil.roundToFrankenRappen(verguenstigungTotal.multiply(inputData.getBgPensumProzent())
 					.divide(new BigDecimal(100)));
 
-			inputData.getParent().setVerguenstigungNebenmahlzeitenTotal(verguenstigungTotal);
+			inputData.getParent().setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 		}
 
 		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0 ||
@@ -136,19 +136,20 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		}
 	}
 
-	private BigDecimal getVerguenstigungToUse(BigDecimal verguenstigung, BigDecimal tarifProMahlzeit,
-		BigDecimal minimalerElternbeitrag) {
+	private BigDecimal getVerguenstigungToUse(
+		@Nonnull BigDecimal verguenstigung, @Nonnull BigDecimal tarifProMahlzeit, @Nonnull BigDecimal minimalerElternbeitrag
+	) {
 		if ((tarifProMahlzeit.subtract(verguenstigung)).subtract(minimalerElternbeitrag).compareTo(BigDecimal.ZERO) >= 0) {
 			return verguenstigung;
 		}
 		return tarifProMahlzeit.subtract(minimalerElternbeitrag);
 	}
 
-	private void addBemerkung(BGCalculationInput inputData, BigDecimal haupt, BigDecimal neben) {
-		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_JA, getLocale(), haupt, neben);
+	private void addBemerkung(@Nonnull BGCalculationInput inputData, @Nonnull BigDecimal haupt, @Nonnull BigDecimal neben) {
+		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, getLocale(), haupt, neben);
 	}
 
-	private boolean validateInput(BGCalculationInput inputData) {
+	private boolean validateInput(@Nonnull BGCalculationInput inputData) {
 		return inputData.getAnzahlHauptmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
 			inputData.getAnzahlNebenmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
 			inputData.getTarifHauptmahlzeit().compareTo(BigDecimal.ZERO) > 0 &&

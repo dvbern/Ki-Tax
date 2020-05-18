@@ -45,7 +45,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		@Nonnull MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams
 	) {
 
-		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
+		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.GEMEINDE, validityPeriod, locale);
 		this.mahlzeitenverguenstigungParams = mahlzeitenverguenstigungParams;
 	}
 
@@ -89,7 +89,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 					.subtract(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung))));
 			}
 
-			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_JA, getLocale(), verguenstigung);
+			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigung);
 		}
 	}
 }

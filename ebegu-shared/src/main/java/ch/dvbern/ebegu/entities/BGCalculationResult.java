@@ -134,9 +134,11 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal verguenstigungHauptmahlzeitenTotal;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal verguenstigungNebenmahlzeitenTotal;
 
@@ -240,7 +242,6 @@ public class BGCalculationResult extends AbstractEntity {
 		this.abzugFamGroesse = roundToFrankenRappen(abzugFamGroesse);
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
-
 
 		this.verguenstigungHauptmahlzeitenTotal = roundToFrankenRappen(verguenstigungHauptmahlzeitenTotal);
 		this.verguenstigungNebenmahlzeitenTotal = roundToFrankenRappen(verguenstigungNebenmahlzeitenTotal);
@@ -613,19 +614,19 @@ public class BGCalculationResult extends AbstractEntity {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
-	public BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
+	public @Nullable BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
 		return verguenstigungHauptmahlzeitenTotal;
 	}
 
-	public void setVerguenstigungHauptmahlzeitenTotal(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+	public void setVerguenstigungHauptmahlzeitenTotal(@Nullable BigDecimal verguenstigungHauptmahlzeitenTotal) {
 		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
 	}
 
-	public BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
+	public @Nullable BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
 		return verguenstigungNebenmahlzeitenTotal;
 	}
 
-	public void setVerguenstigungNebenmahlzeitenTotal(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+	public void setVerguenstigungNebenmahlzeitenTotal(@Nullable BigDecimal verguenstigungNebenmahlzeitenTotal) {
 		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
 	}
 }

@@ -350,6 +350,7 @@ public class BetreuungsgutscheinConfigurator {
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);
 		rules.add(restanspruchLimitCalcRule);
 
+		// Mahlzeitenverguenstigung
 		MahlzeitenverguenstigungParameter mahlzeitenParams = new MahlzeitenverguenstigungParameter(
 			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean(),
 			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED).getValueAsBoolean(),
