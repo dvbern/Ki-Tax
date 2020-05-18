@@ -534,7 +534,7 @@ public class BGCalculationInput {
 	}
 
 	public void setTsAnzVerpflegungenOhneBetreuung(int anzVerpflegungen) {
-		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+		this.tsInputOhneBetreuung.setAnzVerpflegungen(anzVerpflegungen);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
