@@ -60,6 +60,21 @@ public class TagesschuleRechner extends AbstractRechner {
 		ohnePaedagogischerBetreuung(input, parameterDTO)
 			.ifPresent(bgResult::setTsCalculationResultOhnePaedagogischerBetreuung);
 
+		// Bei Tagesschulen handelt es sich immer um Hauptmahlzeiten. Wir schreiben das Total auch aufs BGCalculationResult
+		BigDecimal verpflegungskostenVerguenstigt = BigDecimal.ZERO;
+		if (bgResult.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
+			MathUtil.DEFAULT.add(
+				verpflegungskostenVerguenstigt,
+				bgResult.getTsCalculationResultMitPaedagogischerBetreuung().getVerpflegungskostenVerguenstigt());
+		}
+		if (bgResult.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
+			MathUtil.DEFAULT.add(
+				verpflegungskostenVerguenstigt,
+				bgResult.getTsCalculationResultOhnePaedagogischerBetreuung().getVerpflegungskostenVerguenstigt());
+		}
+		input.setVerguenstigungHauptmahlzeitenTotal(verpflegungskostenVerguenstigt);
+		input.setVerguenstigungNebenmahlzeitenTotal(BigDecimal.ZERO);
+
 		return bgResult;
 	}
 

@@ -27,6 +27,7 @@ public class MahlzeitenverguenstigungParameter {
 
 	private boolean enabled = false;
 
+	// TODO (EGCH): Wir noch nicht beruecksichtigt
 	private boolean enabledFuerSozHilfeBez = false;
 
 	private RangeMap<BigDecimal, BigDecimal> verguenstigungProHauptmahlzeit = TreeRangeMap.create();
