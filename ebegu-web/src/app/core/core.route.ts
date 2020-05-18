@@ -111,15 +111,12 @@ export function appRun(
             mandantRS.getFirst();
         }
         // muss immer geleert werden
-        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll();
-        // muss immer geleert werden
         globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();
         // since we will need these lists anyway we already load on login
         gesuchsperiodeRS.updateActiveGesuchsperiodenList().then(gesuchsperioden => {
             // tslint:disable-next-line:early-exit
             if (gesuchsperioden.length > 0) {
                 const newestGP = gesuchsperioden[0];
-                institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
             }
         });
         gemeindeRS.getAllGemeinden();

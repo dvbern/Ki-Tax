@@ -242,41 +242,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(
-		@Nonnull String gesuchsperiodeId) {
-
-		Objects.requireNonNull(gesuchsperiodeId);
-		Benutzer currentBenutzer = principalBean.getBenutzer();
-		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
-				gesuchsperiodeId,
-				currentBenutzer.extractGemeindenForUser());
-		}
-
-		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		query.select(root);
-		List<Predicate> predicates = new ArrayList<>();
-
-		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
-		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
-
-		// InstStammdaten Ende muss NACH GP Start sein
-		// InstStammdaten Start muss VOR GP Ende sein
-		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
-		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-
-		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
-		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
-		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
-		return typedQuery.getResultList();
-	}
-
-	@Override
 	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull String gemeindeId) {

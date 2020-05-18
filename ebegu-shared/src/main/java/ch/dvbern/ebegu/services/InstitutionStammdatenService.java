@@ -64,12 +64,6 @@ public interface InstitutionStammdatenService {
 
 	/**
 	 * @param gesuchsperiodeId Id der gewuenschten Gesuchsperiode
-	 * @return Alle aktiven InstitutionStammdaten bei denen eine Ueberschneidung der Gueltigkeit zwischen datumVon und datumBis liegt
-	 */
-	Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(@Nonnull String gesuchsperiodeId);
-
-	/**
-	 * @param gesuchsperiodeId Id der gewuenschten Gesuchsperiode
 	 * @param gemeindeId Id der gewuenschten Gemeinde
 	 * @return Alle aktiven InstitutionStammdaten bei denen eine Ueberschneidung der Gueltigkeit zwischen datumVon und
 	 * datumBis liegt und die (falls TS oder FI) zur übergebenen Gemeinde gehören
