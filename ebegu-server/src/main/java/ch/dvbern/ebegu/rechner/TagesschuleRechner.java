@@ -177,7 +177,7 @@ public class TagesschuleRechner extends AbstractRechner {
 
 		BigDecimal kostenProWoche = MathUtil.EXACT.multiply(gebuehrProStunde, betreuungszeitProWoche);
 		kostenProWoche = MathUtil.EXACT.divide(kostenProWoche, new BigDecimal(60));
-		BigDecimal verpflegungsKostenEffektiv = MathUtil.DEFAULT.addNullSafe(verpflegungskosten, verpflegungskostenVerguenstigt);
+		BigDecimal verpflegungsKostenEffektiv = MathUtil.DEFAULT.subtractNullSafe(verpflegungskosten, verpflegungskostenVerguenstigt);
 		BigDecimal totalKostenProWoche = MathUtil.DEFAULT.addNullSafe(kostenProWoche, verpflegungsKostenEffektiv);
 
 		return totalKostenProWoche;
