@@ -2200,7 +2200,6 @@ export class EbeguRestUtil {
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
         abweichungTS.vertraglicherTarifHaupt = abweichungFromServer.vertraglicherTarifHaupt;
         abweichungTS.vertraglicherTarifNeben = abweichungFromServer.vertraglicherTarifNeben;
-        abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
         abweichungTS.monatlicheHauptmahlzeiten = abweichungFromServer.monatlicheHauptmahlzeiten;
         abweichungTS.monatlicheNebenmahlzeiten = abweichungFromServer.monatlicheNebenmahlzeiten;
         abweichungTS.vertraglichesPensum = originalPensum;
