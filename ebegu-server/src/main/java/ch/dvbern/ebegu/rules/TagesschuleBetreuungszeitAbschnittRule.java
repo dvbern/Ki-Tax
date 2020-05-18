@@ -71,7 +71,8 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		long dauerProWocheInMinutenOhneBetreuung = 0;
 		BigDecimal verpflegKostenProWocheMitBetreuung = BigDecimal.ZERO;
 		BigDecimal verpflegKostenProWocheOhneBetreuung = BigDecimal.ZERO;
-		int anzahlVerpflegungen = 0;
+		int anzahlVerpflegungenMitBetreuung = 0;
+		int anzahlVerpflegungenOhneBetreuung = 0;
 
 		for (BelegungTagesschuleModul belegungTagesschuleModul : anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
 			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
@@ -85,7 +86,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 				if (verpflegungskosten != null) {
 					verpflegKostenProWocheMitBetreuung = MathUtil.DEFAULT.addNullSafe(verpflegKostenProWocheMitBetreuung,
 						verpflegungskosten);
-					anzahlVerpflegungen++;
+					anzahlVerpflegungenMitBetreuung++;
 				}
 
 			} else {
@@ -93,7 +94,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 				if (verpflegungskosten != null) {
 					verpflegKostenProWocheOhneBetreuung = MathUtil.DEFAULT.addNullSafe(verpflegKostenProWocheOhneBetreuung,
 						verpflegungskosten);
-					anzahlVerpflegungen++;
+					anzahlVerpflegungenOhneBetreuung++;
 				}
 			}
 		}
@@ -101,12 +102,12 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		if (dauerProWocheInMinutenMitBetreuung > 0) {
 			zeitabschnitt.setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(Long.valueOf(dauerProWocheInMinutenMitBetreuung).intValue());
 			zeitabschnitt.setTsVerpflegungskostenMitBetreuungForAsivAndGemeinde(verpflegKostenProWocheMitBetreuung);
-			zeitabschnitt.setTsAnzVerpflegungenMitBetreuungForAsivAndGemeinde(anzahlVerpflegungen);
+			zeitabschnitt.setTsAnzVerpflegungenMitBetreuungForAsivAndGemeinde(anzahlVerpflegungenMitBetreuung);
 		}
 		if (dauerProWocheInMinutenOhneBetreuung > 0) {
 			zeitabschnitt.setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(Long.valueOf(dauerProWocheInMinutenOhneBetreuung).intValue());
 			zeitabschnitt.setTsVerpflegungskostenOhneBetreuungForAsivAndGemeinde(verpflegKostenProWocheOhneBetreuung);
-			zeitabschnitt.setTsAnzVerpflegungenOhneBetreuungForAsivAndGemeinde(anzahlVerpflegungen);
+			zeitabschnitt.setTsAnzVerpflegungenOhneBetreuungForAsivAndGemeinde(anzahlVerpflegungenOhneBetreuung);
 		}
 		return zeitabschnitt;
 	}
