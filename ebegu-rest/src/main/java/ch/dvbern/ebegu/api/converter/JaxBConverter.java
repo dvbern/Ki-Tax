@@ -1300,6 +1300,14 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxTraegerschaft;
 	}
 
+	public JaxTraegerschaft traegerschaftLightToJAX(final Traegerschaft persistedTraegerschaft) {
+		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
+		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
+		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
+		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
+		return jaxTraegerschaft;
+	}
+
 	public Mandant mandantToEntity(final JaxMandant mandantJAXP, final Mandant mandant) {
 		requireNonNull(mandant);
 		requireNonNull(mandantJAXP);
@@ -1376,7 +1384,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());
 
 		if (entry.getKey().getTraegerschaft() != null) {
-			jaxInstitutionListDTO.setTraegerschaft(traegerschaftToJAX(entry.getKey().getTraegerschaft()));
+			jaxInstitutionListDTO.setTraegerschaft(traegerschaftLightToJAX(entry.getKey().getTraegerschaft()));
 		}
 
 		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
