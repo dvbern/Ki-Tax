@@ -53,11 +53,11 @@ public class MahlzeitenverguenstigungParameter {
 	) {
 		this.enabled = enabled;
 		this.enabledFuerSozHilfeBez = enabledFuerSozHilfeBez;
-		verguenstigungProHauptmahlzeit.put(Range.closed(BigDecimal.ZERO, maxEinkommenStufe1), verguenstigungStufe1Hauptmahlzeit);
+		verguenstigungProHauptmahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Hauptmahlzeit);
 		verguenstigungProHauptmahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Hauptmahlzeit);
 		verguenstigungProHauptmahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Hauptmahlzeit);
 
-		verguenstigungProNebenmahlzeit.put(Range.closed(BigDecimal.ZERO, maxEinkommenStufe1), verguenstigungStufe1Nebenmahlzeit);
+		verguenstigungProNebenmahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Nebenmahlzeit);
 		verguenstigungProNebenmahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Nebenmahlzeit);
 		verguenstigungProNebenmahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Nebenmahlzeit);
 
