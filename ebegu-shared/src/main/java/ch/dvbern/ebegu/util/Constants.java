@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -144,7 +145,8 @@ public final class Constants {
 	// Sollte ins TestDataUtil verschoben werden oder in ein TestConstants, damit sie nicht aus
 	// Versehen in produktivem Code verwendet werden
 	public interface EinstellungenDefaultWerteAsiv {
-		String EINSTELLUNG_MAX_EINKOMMEN = "160000";
+		BigDecimal MAX_EINKOMMEN = MathUtil.DEFAULT.from(160000);
+		String EINSTELLUNG_MAX_EINKOMMEN = String.valueOf(MAX_EINKOMMEN);
 		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 = "3800";
 		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 = "6000";
 		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 = "7000";
