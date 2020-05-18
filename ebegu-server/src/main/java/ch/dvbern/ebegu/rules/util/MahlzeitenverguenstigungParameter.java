@@ -76,6 +76,7 @@ public class MahlzeitenverguenstigungParameter {
 		return false;
 	}
 
+	// TODO (EGCH) Negative Einkommen funktionieren nicht
 	public BigDecimal getVerguenstigungProHauptmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
 		BigDecimal verguenstigung = sozialhilfeBezueger
 			? verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO)
@@ -86,6 +87,7 @@ public class MahlzeitenverguenstigungParameter {
 		return BigDecimal.ZERO;
 	}
 
+	// TODO (EGCH) Negative Einkommen funktionieren nicht
 	public BigDecimal getVerguenstigungProNebenmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
 		BigDecimal verguenstigung = sozialhilfeBezueger
 			? verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO)

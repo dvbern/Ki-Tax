@@ -136,7 +136,8 @@
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"
                                              name="keineMahlzeitenverguenstigungBeantragt"
-                                             aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}">
+                                             aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}"
+                                             ng-disabled="!vm.areZahlungsdatenEditable()">
                                     <span data-translate="MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT"></span>
                                 </md-checkbox>
                                 <dv-bisher gs="vm.model.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt"
