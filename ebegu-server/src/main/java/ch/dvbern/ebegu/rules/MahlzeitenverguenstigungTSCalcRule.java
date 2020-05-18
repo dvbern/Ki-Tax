@@ -69,8 +69,8 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 			return;
 		}
 
-		BigDecimal verguenstigung = mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeit()
-			.get(inputData.getMassgebendesEinkommen());
+		BigDecimal verguenstigung =
+			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
 		if (verguenstigung != null && verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
