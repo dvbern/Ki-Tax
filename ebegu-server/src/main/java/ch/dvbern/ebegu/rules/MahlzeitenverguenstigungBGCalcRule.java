@@ -131,7 +131,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		}
 
 		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0 ||
-			verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
+			verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 			addBemerkung(inputData, verguenstigungProHauptmahlzeit, verguenstigungProNebenmahlzeit);
 		}
 	}
