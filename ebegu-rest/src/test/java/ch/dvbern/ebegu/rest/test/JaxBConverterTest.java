@@ -181,6 +181,12 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		assertEquals(nameTraegerschaft, loadedTraegerschaft.getName());
 	}
 
+	/**
+	 * Institution ist trotzdem updated wenn:
+	 * Der Name ist geaendert
+	 * Der Traegerschaft ist geaendert
+	 * Der Status ist geandert
+	 */
 	@Test
 	public void institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten() {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
@@ -200,7 +206,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitutionStammdaten updatedInstitution = institutionResource.updateInstitutionAndStammdaten(id, jaxUpdate);
 
 		assertNotNull(updatedInstitution);
-		assertEquals("Institution1", updatedInstitution.getInstitution().getName());
+		assertEquals(false, updatedInstitution.getInstitution().isStammdatenCheckRequired());
 	}
 
 	@Test
