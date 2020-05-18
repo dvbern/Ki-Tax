@@ -111,6 +111,33 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	}
 
 	/**
+	 * Einstellung zu Freiwilligenarbeit angepasst: Max 15%
+	 * EWP 20% Angestellt, 15% Freiwiligenarbeit (gemaess ASIV nicht beachtet), Zuschlag 20% -> BG 55%
+	 */
+	@Test
+	public void gemeindeFreiwilligenarbeitZugelassenMitFreiwilligenarbeit() {
+		// Einstellung zu Freiwilligenarbeit angepasst
+		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
+			15, MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, MIN_ERWERBSPENSUM_EINGESCHULT, ZUSCHLAG_ERWERBSPENSUM);
+		// EWP 20 Angestellt, plus 20 Freiwilligenarbeit, wovon 15% gewaehrt werden
+		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 20, 20);
+
+		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
+		Assert.assertTrue(
+			"Gemeindespezifische Berechnung, Freiwilligenarbeit gewaehrt",
+			abschnitt.isHasGemeindeSpezifischeBerechnung());
+		Assert.assertNotNull(
+			"Entsprechend darf das Gemeinde-Result nicht null sein",
+			abschnitt.getBgCalculationResultGemeinde());
+
+		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
+		Assert.assertEquals(55, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
+		Assert.assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_FREIWILLIGENARBEIT));
+	}
+
+	/**
 	 * Einstellungen zu den mimimalen Erwerbspensen reduziert.
 	 * EWP 20% -> Wird auch gemaess ASIV erreicht
 	 */
