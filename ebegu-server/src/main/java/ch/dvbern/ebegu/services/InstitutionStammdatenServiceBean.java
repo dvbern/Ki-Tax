@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -187,6 +188,33 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		if (roleGemeindeabhaengig) {
 			typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
 		}
+		return typedQuery.getResultList();
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
+			JoinType.LEFT);
+		List<Predicate> predicates = new ArrayList<>();
+
+		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+
+		Predicate predicateTraegerschaft = cb.equal(joinInstitution.get(Institution_.traegerschaft), trageschaft);
+		predicates.add(predicateTraegerschaft);
+		Predicate predicateMandant = PredicateHelper.getPredicateMandant(cb, joinInstitution.get(Institution_.mandant)
+			, currentBenutzer);
+		predicates.add(predicateMandant);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		return typedQuery.getResultList();
 	}
 

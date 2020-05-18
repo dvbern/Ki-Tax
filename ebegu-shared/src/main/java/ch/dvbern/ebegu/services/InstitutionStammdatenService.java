@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -95,4 +96,6 @@ public interface InstitutionStammdatenService {
 	 * Tagesschulen zurückgegeben.
 	 */
 	Collection<InstitutionStammdaten> getTagesschulenForCurrentBenutzer();
+
+	Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft);
 }
