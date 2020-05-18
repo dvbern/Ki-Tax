@@ -37,7 +37,7 @@ import com.google.common.collect.ImmutableList;
  */
 public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 
-	protected MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
+	private final MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
 
 	protected MahlzeitenverguenstigungTSCalcRule(
 		@Nonnull DateRange validityPeriod,

@@ -41,7 +41,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
-	protected MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
+	private final MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
 
 	protected MahlzeitenverguenstigungBGCalcRule(
 		@Nonnull DateRange validityPeriod,
@@ -131,7 +131,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		}
 
 		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0 ||
-			verguenstigungProNebenmahlzeit.compareTo(verguenstigungProNebenmahlzeit) > 0) {
+			verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 			addBemerkung(inputData, verguenstigungProHauptmahlzeit, verguenstigungProNebenmahlzeit);
 		}
 	}
