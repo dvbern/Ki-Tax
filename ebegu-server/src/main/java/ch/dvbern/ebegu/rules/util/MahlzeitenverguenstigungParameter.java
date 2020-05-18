@@ -77,22 +77,22 @@ public class MahlzeitenverguenstigungParameter {
 	}
 
 	public BigDecimal getVerguenstigungProHauptmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
-		BigDecimal verguenstigung = sozialhilfeBezueger ? verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO):
-			verguenstigungProHauptmahlzeit.get(massgebendesEinkommen);
+		BigDecimal verguenstigung = sozialhilfeBezueger
+			? verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO)
+			: verguenstigungProHauptmahlzeit.get(massgebendesEinkommen);
 		if (verguenstigung != null) {
 			return verguenstigung;
 		}
-
 		return BigDecimal.ZERO;
 	}
 
 	public BigDecimal getVerguenstigungProNebenmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
-		BigDecimal verguenstigung = sozialhilfeBezueger ? verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO):
-			verguenstigungProNebenmahlzeit.get(massgebendesEinkommen);
+		BigDecimal verguenstigung = sozialhilfeBezueger
+			? verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO)
+			: verguenstigungProNebenmahlzeit.get(massgebendesEinkommen);
 		if (verguenstigung != null) {
 			return verguenstigung;
 		}
-
 		return BigDecimal.ZERO;
 	}
 
