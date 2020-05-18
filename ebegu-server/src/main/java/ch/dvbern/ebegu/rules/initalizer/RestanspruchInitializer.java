@@ -85,7 +85,6 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 				// Noch nicht verfuegt: Die Restansprueche wurden im Input initialisiert
 				restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputAsiv(), restanspruchsAbschnitt.getBgCalculationInputAsiv());
 				if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
-					Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
 					restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
 				} else {
 					restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
