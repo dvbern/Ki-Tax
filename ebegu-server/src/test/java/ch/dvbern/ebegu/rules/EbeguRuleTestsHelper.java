@@ -310,7 +310,7 @@ public final class EbeguRuleTestsHelper {
 
 	public static Map<EinstellungKey, Einstellung> getEinstellungenRulesParis(@Nonnull Gesuchsperiode gesuchsperiode) {
 		final Map<EinstellungKey, Einstellung> einstellungenGemeinde = new HashMap<>();
-		einstellungenGemeinde.putAll(getEinstellungenConfiguratorAsiv(gesuchsperiode));
+		einstellungenGemeinde.putAll(getAllEinstellungen(gesuchsperiode));
 		einstellungenGemeinde.get(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED).setValue("true");
 		einstellungenGemeinde.get(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT).setValue("20");
 		einstellungenGemeinde.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT).setValue("15");
