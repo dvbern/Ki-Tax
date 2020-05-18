@@ -8,7 +8,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import ch.dvbern.ebegu.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +35,7 @@ public class DVLoggedInHealthCheckTest {
 	public void testReturnedValues() throws IOException {
 
 		//setup
-		Collection<String> userList = ImmutableList.of("markus.hofstetter@dvbern.ch", "jeamand@irgendow.com");
+		Collection<String> userList = ImmutableList.of("eberhard.gugler@mailinator.com", "jemand@irgendwo.com");
 		EasyMock.expect(authServiceMock.findActiveSince(EasyMock.anyInt()))
 			.andReturn(userList);
 		EasyMock.replay(authServiceMock); // im replay modus wird bei aufrufen die definierte antwort zurueckgegeben
@@ -48,7 +47,7 @@ public class DVLoggedInHealthCheckTest {
 		// actual test
 		Collection<String> list = dvLoggedInHealthCheck.findAndRecordActiveUsers();
 		String currentusersJson = dvLoggedInHealthCheck.toStringArray(list);
-		Assert.assertEquals("[\"markus.hofstetter@dvbern.ch\",\"jeamand@irgendow.com\"]", currentusersJson);
+		Assert.assertEquals("[\"eberhard.gugler@mailinator.com\",\"jemand@irgendwo.com\"]", currentusersJson);
 		String lastEntryTimeSeriesJson = dvLoggedInHealthCheck.getLastEntryTimeSeriesJson(MAX_TIMESERIES_ENTRIES);
 
 		Assert.assertTrue(lastEntryTimeSeriesJson.startsWith("{"));
