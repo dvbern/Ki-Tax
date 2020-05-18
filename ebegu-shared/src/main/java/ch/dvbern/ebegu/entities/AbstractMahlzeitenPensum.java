@@ -83,7 +83,6 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 
-	@Nonnull
 	public void copyAbstractBetreuungspensumMahlzeitenEntity(@Nonnull AbstractMahlzeitenPensum target,
 		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractBetreuungspensumEntity(target, copyType);
