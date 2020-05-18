@@ -32,10 +32,12 @@
     margin: 1rem 0 0;
     display: inline-block;
     border-color: @contrast-light;
+
     span:first-child {
         font-weight: 400;
         font-style: italic;
     }
+
     span {
         font-size: 1.3rem;
         color: @contrast-darkest;
@@ -44,16 +46,46 @@
     }
 }
 
-::ng-deep .checkbox-with-tooltip {
-    display: flex;
-    dv-tooltip {
-        display: flex;
-        align-items: center;
-        padding-left: 0.75rem;
+
+.download-file {
+    margin-top: 2rem;
+
+    span {
+        margin-right: 1rem;
+        cursor: pointer;
     }
 }
 
-::ng-deep .mt-5 {
-    margin-top: 5rem;
+::ng-deep .notrecht {
+    .checkbox-with-tooltip {
+        display: flex;
+
+        dv-tooltip {
+            display: flex;
+            align-items: center;
+            padding-left: 0.75rem;
+        }
+    }
+
+    .mt-5 {
+        margin-top: 5rem;
+    }
+
+    label.mat-checkbox-layout {
+        margin-top: 0.8rem;
+    }
+
+    label.long-label {
+        white-space: nowrap;
+    }
+}
+
+
+.status-header {
+    font-size: 1.5rem;
+    position: absolute;
+    right: 15px;
+    font-style: italic;
+    font-weight: initial;
 }
 

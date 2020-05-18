@@ -69,6 +69,10 @@ export class DvPulldownUserMenuController implements IController {
             this.notrechtVisible = true;
             return;
         }
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForNotrecht())) {
+            this.notrechtVisible = false;
+            return;
+        }
         this.notrechtRS.currentUserHasFormular()
             .then(result => {
                 this.notrechtVisible = result;

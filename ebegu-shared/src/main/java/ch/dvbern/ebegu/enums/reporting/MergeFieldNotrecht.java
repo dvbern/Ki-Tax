@@ -56,6 +56,7 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe1FreigabeBetrag(new SimpleMergeField<>("stufe1FreigabeBetrag", BIGDECIMAL_CONVERTER)),
 	stufe1FreigabeDatum(new SimpleMergeField<>("stufe1FreigabeDatum", DATETIME_CONVERTER)),
 	stufe1FreigabeAusbezahltAm(new SimpleMergeField<>("stufe1FreigabeAusbezahltAm", DATETIME_CONVERTER)),
+	stufe1ZahlungJetztAusgeloest(new SimpleMergeField<>("stufe1ZahlungJetztAusgeloest", STRING_CONVERTER)),
 
 	stufe2InstitutionKostenuebernahmeAnzahlTage(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlTage", BIGDECIMAL_CONVERTER)),
 	stufe2InstitutionKostenuebernahmeAnzahlStunden(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlStunden", BIGDECIMAL_CONVERTER)),
@@ -67,6 +68,7 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe2VerfuegungBetrag(new SimpleMergeField<>("stufe2VerfuegungBetrag", BIGDECIMAL_CONVERTER)),
 	stufe2VerfuegungDatum(new SimpleMergeField<>("stufe2VerfuegungDatum", DATETIME_CONVERTER)),
 	stufe2VerfuegungAusbezahltAm(new SimpleMergeField<>("stufe2VerfuegungAusbezahltAm", DATETIME_CONVERTER)),
+	stufe2ZahlungJetztAusgeloest(new SimpleMergeField<>("stufe2ZahlungJetztAusgeloest", STRING_CONVERTER)),
 
 	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
 	kontoinhaber(new SimpleMergeField<>("kontoinhaber", STRING_CONVERTER)),

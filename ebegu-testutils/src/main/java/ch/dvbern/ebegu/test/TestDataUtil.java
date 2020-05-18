@@ -1249,7 +1249,7 @@ public final class TestDataUtil {
 				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
 				InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
 					institutionStammdaten.getInstitutionStammdatenTagesschule();
-				assert institutionStammdatenTagesschule != null;
+				Objects.requireNonNull(institutionStammdatenTagesschule);
 				saveInstitutionStammdatenTagesschule(persistence, institutionStammdatenTagesschule);
 			}
 			for(AnmeldungFerieninsel anmeldungFerieninsel: kindContainer.getAnmeldungenFerieninsel()){

@@ -12,7 +12,6 @@ Content-Type: text/html;charset=utf-8
 <html>
 <head>
 ${templateConfiguration.mailCss}
-	<style type="text/css">body {white-space: pre}</style>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – ${betreff}</title>
