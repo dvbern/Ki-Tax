@@ -30,6 +30,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 
 @Component({
     selector: 'dv-notrecht',
@@ -64,7 +65,7 @@ export class NotrechtComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-      this.loadRueckforderungFormulareForCurrentBenutzer();
+        this.loadRueckforderungFormulareForCurrentBenutzer();
     }
 
     private loadRueckforderungFormulareForCurrentBenutzer(): void {
@@ -125,13 +126,26 @@ export class NotrechtComponent implements OnInit {
     }
 
     public initializeRueckforderungFormulare(): void {
-        this.notrechtRS.initializeRueckforderungFormulare().then(formulare => {
-            this.errorService.addMesageAsInfo(this.translate.instant(
-                'RUECKFORDERUNG_FORMULARE_INITIALISIERT',
-                {anzahlFormulare: formulare.length}
-            ));
-            this.loadRueckforderungFormulareForCurrentBenutzer();
-        });
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.notrechtRS.initializeRueckforderungFormulare().then(formulare => {
+                        this.errorService.addMesageAsInfo(this.translate.instant(
+                            'RUECKFORDERUNG_FORMULARE_INITIALISIERT',
+                            {anzahlFormulare: formulare.length}
+                        ));
+                        this.loadRueckforderungFormulareForCurrentBenutzer();
+                    });
+                },
+                () => {
+                });
     }
 
     public isSuperAdmin(): boolean {
@@ -153,9 +167,8 @@ export class NotrechtComponent implements OnInit {
                     this.errorService.addMesageAsInfo(this.translate.instant(
                         'RUECKFORDERUNG_EINLADUNG_VERSENDET'
                     ));
+                    this.loadRueckforderungFormulareForCurrentBenutzer();
                 });
-                // Daten neu laden weil sich Status aktualisiert haben
-                this.ngOnInit();
                 return;
             }
             // tslint:disable-next-line:no-identical-functions
@@ -202,9 +215,10 @@ export class NotrechtComponent implements OnInit {
         if (!this.openFormularAllowed(formular)) {
             return;
         }
-        this.$state.go('notrecht.form', {
+        const url = this.$state.href('notrecht.form', {
             rueckforderungId: formular.id,
         });
+        window.open(url, '_blank');
     }
 
     public translateRueckforderungStatus(status: string): string {

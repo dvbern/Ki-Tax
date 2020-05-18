@@ -57,8 +57,10 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 
 @Path("notrecht")
 @Stateless
@@ -79,6 +81,9 @@ public class NotrechtResource {
 
 	@Inject
 	private MailService mailService;
+
+	@Inject
+	private Persistence persistence;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -161,7 +166,28 @@ public class NotrechtResource {
 
 		if (isStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular.getStatus())) {
 			try {
-				mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
+				// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als RueckforderungsMitteilung zu
+				// speichern, wird hier der generierte HTML-Inhalt des Mails zurueckgegeben
+				final String mailText = mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
+				if (mailText != null) {
+					// Wir wollen nur den body speichern
+					String content = StringUtils.substringBetween(mailText, "<body>", "</body>");
+					// remove any newlines or tabs (leading or trailing whitespace doesn't matter)
+					content = content.replaceAll("(\\t|\\n)", "");
+					// boil down remaining whitespace to a single space
+					content = content.replaceAll("\\s+", " ");
+					content = content.trim();
+
+					final String betreff = "Corona-Finanzierung für Kitas und  TFO: Zahlung freigegeben / "
+						+ "Corona - financement pour les crèches et les parents de jour: Versement libéré";
+					RueckforderungMitteilung mitteilung = new RueckforderungMitteilung();
+					mitteilung.setBetreff(betreff);
+					mitteilung.setInhalt(content);
+					mitteilung.setAbsender(principalBean.getBenutzer());
+					mitteilung.setSendeDatum(LocalDateTime.now());
+					mitteilung = persistence.persist(mitteilung);
+					rueckforderungFormularService.addMitteilung(modifiedRueckforderungFormular, mitteilung);
+				}
 			} catch (MailException e) {
 				throw new EbeguRuntimeException("update",
 					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
@@ -247,7 +273,7 @@ public class NotrechtResource {
 			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
 				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
 				freigabeBetrag =
-					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage().multiply(new BigDecimal(25));
+					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage();
 			} else {
 				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 				freigabeBetrag =

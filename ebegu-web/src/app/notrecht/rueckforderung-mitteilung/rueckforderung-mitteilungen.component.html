@@ -14,7 +14,7 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
-<div class="row marginTop50">
+<div class="row marginTop30">
     <div class="col-sm-12">
         <h2 translate>RUECKFORDERUNG_MITTEILUNGEN</h2>
         <hr class="header"/>
@@ -32,7 +32,7 @@
                     <div class="arrow"><i class="fa fa-angle-down"></i></div>
                 </tab-title>
                 <tab-body>
-                    <div class="message" [textContent]="mitteilung.inhalt"></div>
+                    <div class="message" [innerHTML]="mitteilung.inhalt"></div>
                 </tab-body>
             </dv-accordion-tab>
         </dv-accordion>

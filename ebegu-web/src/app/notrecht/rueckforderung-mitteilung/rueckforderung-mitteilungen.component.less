@@ -21,7 +21,7 @@ dv-rueckforderung-mitteilungen .header-line {
     margin-bottom: 2rem;
 }
 
-/deep/ dv-accordion {
+/deep/ .notrecht dv-accordion {
     margin-top: 2rem;
     .subject {
         .ebeguBold();
@@ -29,6 +29,7 @@ dv-rueckforderung-mitteilungen .header-line {
     }
 
     .message {
+
         .formatted {
             white-space: pre-line;
         }
@@ -173,9 +174,9 @@ dv-rueckforderung-mitteilungen .header-line {
                 margin: 2rem 0 3rem;
             }
             .message {
-                white-space: pre;
                 display: flex;
                 flex-direction: column;
+
                 .betreuung {
                     color: @institution-color;
                     margin-bottom: 2rem;

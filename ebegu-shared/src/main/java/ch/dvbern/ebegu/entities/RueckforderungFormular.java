@@ -34,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
@@ -147,6 +148,13 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(name = "stufe_2_verfuegung_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
+
+	@Transient
+	private boolean stufe1ZahlungJetztAusgeloest = false;
+
+	@Transient
+	private boolean stufe2ZahlungJetztAusgeloest = false;
+
 
 	@Nonnull
 	public Set<RueckforderungMitteilung> getRueckforderungMitteilungen() {
@@ -340,6 +348,22 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
 	}
 
+	public boolean isStufe1ZahlungJetztAusgeloest() {
+		return stufe1ZahlungJetztAusgeloest;
+	}
+
+	public void setStufe1ZahlungJetztAusgeloest(boolean stufe1ZahlungJetztAusgeloest) {
+		this.stufe1ZahlungJetztAusgeloest = stufe1ZahlungJetztAusgeloest;
+	}
+
+	public boolean isStufe2ZahlungJetztAusgeloest() {
+		return stufe2ZahlungJetztAusgeloest;
+	}
+
+	public void setStufe2ZahlungJetztAusgeloest(boolean stufe2ZahlungJetztAusgeloest) {
+		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -358,7 +382,8 @@ public class RueckforderungFormular extends AbstractEntity {
 	}
 
 	private boolean isAuszuzahlenStufe1() {
-		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null;
+		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null
+			&& !status.equals(RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH);
 	}
 
 	private boolean isAuszuzahlenStufe2() {
@@ -368,9 +393,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	public void handleAuszahlungIfNecessary() {
 		if (isAuszuzahlenStufe1()) {
 			this.stufe1FreigabeAusbezahltAm = LocalDateTime.now();
+			this.stufe1ZahlungJetztAusgeloest = true;
 		}
 		if (isAuszuzahlenStufe2()) {
 			this.stufe2VerfuegungAusbezahltAm = LocalDateTime.now();
+			this.stufe2ZahlungJetztAusgeloest = true;
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private static final long serialVersionUID = -7620977294104032869L;
 
 	@Nonnull
-	private JaxInstitutionStammdaten institutionStammdaten;
+	private JaxInstitutionStammdatenSummary institutionStammdaten;
 
 	@Nonnull
 	private List<JaxRueckforderungMitteilung> rueckforderungMitteilungen = new ArrayList<>();
@@ -230,11 +230,11 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public JaxInstitutionStammdaten getInstitutionStammdaten() {
+	public JaxInstitutionStammdatenSummary getInstitutionStammdaten() {
 		return institutionStammdaten;
 	}
 
-	public void setInstitutionStammdaten(@Nonnull JaxInstitutionStammdaten institutionStammdaten) {
+	public void setInstitutionStammdatenSummary(@Nonnull JaxInstitutionStammdatenSummary institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
 	}
 

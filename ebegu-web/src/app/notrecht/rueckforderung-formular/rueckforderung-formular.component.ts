@@ -15,8 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
@@ -32,6 +33,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 
 @Component({
     selector: 'dv-rueckforderung-formular',
@@ -57,14 +59,14 @@ export class RueckforderungFormularComponent implements OnInit {
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
 
-    private readonly TAGEMULTIPLYFACTOR: number = 25;
-
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
         private readonly notrechtRS: NotrechtRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly downloadRS: DownloadRS,
+        private readonly dialog: MatDialog,
+        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
     }
@@ -87,7 +89,7 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
-        if (!this.form.valid && rueckforderungFormular.status !== TSRueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH) {
+        if (!this.form.valid) {
             EbeguUtil.selectFirstInvalid();
             return;
         }
@@ -95,6 +97,24 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
 
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
+            text: '',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.doSave(rueckforderungFormular);
+                    this.changeDetectorRef.markForCheck();
+                },
+                () => {
+                });
+    }
+
+    private doSave(rueckforderungFormular: TSRueckforderungFormular): void {
         // Status wechseln:
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1) {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
@@ -116,7 +136,11 @@ export class RueckforderungFormularComponent implements OnInit {
             }
         }
 
-        this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular);
+        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular)
+            .then((response: TSRueckforderungFormular) => {
+                this.initRueckforderungZahlungen(response);
+                return response;
+            }));
     }
 
     public rueckforderungAbschliessen(rueckforderungFormular: TSRueckforderungFormular): void {
@@ -128,7 +152,22 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
 
-        this.saveRueckforderungFormular(rueckforderungFormular);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
+            text: '',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        rueckforderungFormular.status = TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1;
+                        this.changeDetectorRef.markForCheck();
+                        return;
+                    }
+                    this.doSave(rueckforderungFormular);
+                },
+                () => {
+                });
     }
 
     public initRueckforderungZahlungen(rueckfordeungFormular: TSRueckforderungFormular): void {
@@ -183,7 +222,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public isGeprueftKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
             && this.authServiceRS.isOneOfRoles(
-                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+                TSRoleUtil.getAllRolesForNotrecht())) {
             return true;
         }
         return false;
@@ -213,7 +252,7 @@ export class RueckforderungFormularComponent implements OnInit {
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage)) {
             this.stufe1ProvBetrag =
-                rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage * this.TAGEMULTIPLYFACTOR
+                rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
                 + rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
             return;
         }
@@ -221,7 +260,7 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
         this.stufe1ProvBetrag =
-            rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden * 1
+            rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
             + rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
     }
 
@@ -233,7 +272,7 @@ export class RueckforderungFormularComponent implements OnInit {
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage)) {
             this.stufe1ProvBetrag =
-                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage * this.TAGEMULTIPLYFACTOR
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
                 + rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
             return;
         }
@@ -241,7 +280,7 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
         this.stufe1ProvBetrag =
-            rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden * 1
+            rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
             + rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
     }
 

@@ -59,7 +59,8 @@ public class MailTemplateConfiguration {
 	public static final String MITTEILUNG = "mitteilung";
 	public static final String TEMPLATES_FOLDER = "/mail/templates";
 	public static final String INSTITUTION_STAMMDATEN = "institutionStammdaten";
-	public static final String BETRAG = "betrag";
+	public static final String BETRAG1 = "betrag1";
+	public static final String BETRAG2 = "betrag2";
 	public static final String FTL_FILE_EXTENSION = ".ftl";
 
 	private final Configuration freeMarkerConfiguration;
@@ -637,11 +638,13 @@ public class MailTemplateConfiguration {
 	@Nonnull
 	public String getNotrechtBestaetigungPruefungStufe1(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
-		@Nonnull String betrag
+		@Nonnull String betragRueckerstattungNichtAngeboten,
+		@Nonnull String betragKostenuebernahmeNichtAnwesend
 	) {
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
-		paramMap.put(BETRAG, betrag);
+		paramMap.put(BETRAG1, betragRueckerstattungNichtAngeboten);
+		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
 
 		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + FTL_FILE_EXTENSION, paramMap);
 	}
