@@ -279,7 +279,10 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public areZahlungsdatenEditable(): boolean {
-        return this.gesuchModelManager.isNeuestesGesuch() && !this.isGesuchReadonly();
+        return this.gesuchModelManager.isNeuestesGesuch()
+        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()) ?
+            true :
+            !this.isGesuchReadonly();
     }
 
     public preSave(): IPromise<TSGesuch> {
