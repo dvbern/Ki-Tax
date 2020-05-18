@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -64,7 +63,7 @@ public class DVLoggedInHealthCheck implements org.eclipse.microprofile.health.He
 		initCache();
 	}
 
-	public void initCache() {
+	public final void initCache() {
 		// create a cache that has limits in size and weight to ensure it does not eat too much mem
 		userNameCache = CacheBuilder.newBuilder()
 			.<LocalDateTime, Collection<String>>weigher((key, values) -> values.size())
