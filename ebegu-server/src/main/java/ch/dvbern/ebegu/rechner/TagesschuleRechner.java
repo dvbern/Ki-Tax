@@ -41,7 +41,9 @@ public class TagesschuleRechner extends AbstractRechner {
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
-		// Fuer Tagesschule gibt es (Stand heute) keine gemeindespezifischen Regeln
+		if (input.getParent().isHasGemeindeSpezifischeBerechnung()) {
+			return Optional.of(calculateAsiv(input, parameterDTO));
+		}
 		return Optional.empty();
 	}
 
