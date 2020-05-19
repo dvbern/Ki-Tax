@@ -790,6 +790,16 @@ public final class TestDataUtil {
 		return erwerbspensumContainer;
 	}
 
+	public static ErwerbspensumContainer createErwerbspensum(int pensum, @Nonnull Taetigkeit taetigkeit) {
+		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
+		Erwerbspensum erwerbspensum = new Erwerbspensum();
+		erwerbspensum.setTaetigkeit(taetigkeit);
+		erwerbspensum.setPensum(pensum);
+		erwerbspensum.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
+		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
+		return erwerbspensumContainer;
+	}
+
 	public static Erwerbspensum createErwerbspensumData() {
 		Erwerbspensum ep = new Erwerbspensum();
 		ep.setTaetigkeit(Taetigkeit.ANGESTELLT);

@@ -619,4 +619,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         return false;
     }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
+    }
 }

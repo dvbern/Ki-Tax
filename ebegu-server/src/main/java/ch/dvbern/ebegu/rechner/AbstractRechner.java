@@ -43,12 +43,14 @@ public abstract class AbstractRechner {
 		BGCalculationResult asivResult = calculateAsiv(asivInput, parameterDTO).roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(asivResult);
 
-		BGCalculationInput gemeindeInput = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
-		BGCalculationResult gemeindeResult = calculateGemeinde(gemeindeInput, parameterDTO)
-			.map(BGCalculationResult::roundAllValues)
-			.orElseGet(() -> new BGCalculationResult(asivResult));
-
-		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(gemeindeResult);
+		// Das Resultat Gemeinde wird nur gespeichert, wenn es ueberhaupt eine gemeindespezifische Berechnung gab
+		if (verfuegungZeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+			BGCalculationInput gemeindeInput = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
+			BGCalculationResult gemeindeResult = calculateGemeinde(gemeindeInput, parameterDTO)
+				.map(BGCalculationResult::roundAllValues)
+				.orElseGet(() -> new BGCalculationResult(asivResult));
+			verfuegungZeitabschnitt.setBgCalculationResultGemeinde(gemeindeResult);
+		}
 	}
 
 	/**
