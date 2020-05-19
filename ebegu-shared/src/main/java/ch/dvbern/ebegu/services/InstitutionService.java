@@ -120,5 +120,5 @@ public interface InstitutionService {
 
 	void saveExternalClients(@Nonnull Institution institution, @Nonnull Collection<ExternalClient> externalClients);
 
-	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH);
+	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH);
 }
