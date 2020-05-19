@@ -305,7 +305,6 @@ export class GesuchModelManager {
         });
     }
 
-
     /**
      * Retrieves the list of InstitutionStammdaten for the date of today.
      */

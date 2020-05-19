@@ -101,6 +101,7 @@ export class TestDataUtil {
         $httpBackend.when('POST', '/ebegu/api/v1/wizard-steps').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active').respond({});
     }
 
     public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
@@ -110,6 +111,7 @@ export class TestDataUtil {
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active').respond({});
     }
 
     public static createWizardStep(gesuchId: string): TSWizardStep {

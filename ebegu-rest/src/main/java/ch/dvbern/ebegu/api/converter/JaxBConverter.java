@@ -1284,6 +1284,12 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxMandant;
 	}
 
+	/**
+	 * Diese Methode verwenden nur wenn man der Institution Count und InstitutionNamen benoetigt
+	 *
+	 * @param persistedTraegerschaft
+	 * @return
+	 */
 	public JaxTraegerschaft traegerschaftToJAX(final Traegerschaft persistedTraegerschaft) {
 		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
@@ -1300,6 +1306,12 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxTraegerschaft;
 	}
 
+	/**
+	 * Diese Methode verwenden ausser wenn man der Institution Count und InstitutionNamen benoetigt
+	 *
+	 * @param persistedTraegerschaft
+	 * @return
+	 */
 	public JaxTraegerschaft traegerschaftLightToJAX(final Traegerschaft persistedTraegerschaft) {
 		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
@@ -1369,7 +1381,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
 		if (persistedInstitution.getTraegerschaft() != null) {
-			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
+			jaxInstitution.setTraegerschaft(traegerschaftLightToJAX(persistedInstitution.getTraegerschaft()));
 		}
 		return jaxInstitution;
 	}
@@ -3761,7 +3773,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxBerechtigung.setInstitution(institutionToJAX(berechtigung.getInstitution()));
 		}
 		if (berechtigung.getTraegerschaft() != null) {
-			jaxBerechtigung.setTraegerschaft(traegerschaftToJAX(berechtigung.getTraegerschaft()));
+			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
 		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
@@ -3783,7 +3795,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxHistory.setInstitution(institutionToJAX(history.getInstitution()));
 		}
 		if (history.getTraegerschaft() != null) {
-			jaxHistory.setTraegerschaft(traegerschaftToJAX(history.getTraegerschaft()));
+			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setStatus(history.getStatus());
