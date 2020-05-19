@@ -293,4 +293,17 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         return EbeguUtil.isNotNullAndPositive(abweichung.pensum)
             || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
     }
+
+    public getMonthlyMahlzeitenKosten(index: number): number {
+        const abweichung = this.getAbweichung(index);
+
+        const hauptmahlzeiten = EbeguUtil.isNullOrUndefined(abweichung.monatlicheHauptmahlzeiten)
+            ? abweichung.vertraglicheHauptmahlzeiten : abweichung.monatlicheHauptmahlzeiten;
+
+        const nebenmahlzeiten = EbeguUtil.isNullOrUndefined(abweichung.monatlicheNebenmahlzeiten)
+            ? abweichung.vertraglicheNebenmahlzeiten : abweichung.monatlicheNebenmahlzeiten;
+
+        return (hauptmahlzeiten * abweichung.vertraglicherTarifHaupt) + (nebenmahlzeiten * abweichung.vertraglicherTarifNeben);
+
+    }
 }
