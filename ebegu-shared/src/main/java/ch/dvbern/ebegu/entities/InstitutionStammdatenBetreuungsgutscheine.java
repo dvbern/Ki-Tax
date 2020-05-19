@@ -94,6 +94,14 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	private BigDecimal anzahlPlaetzeFirmen;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal tarifProHauptmahlzeit;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal tarifProNebenmahlzeit;
+
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
@@ -180,6 +188,24 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
 		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
+	}
+
+	@Nullable
+	public BigDecimal getTarifProHauptmahlzeit() {
+		return tarifProHauptmahlzeit;
+	}
+
+	public void setTarifProHauptmahlzeit(@Nullable BigDecimal tarifProHauptmahlzeit) {
+		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+	}
+
+	@Nullable
+	public BigDecimal getTarifProNebenmahlzeit() {
+		return tarifProNebenmahlzeit;
+	}
+
+	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {
+		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 
 	@Override

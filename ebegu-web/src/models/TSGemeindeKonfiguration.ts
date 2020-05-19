@@ -54,6 +54,8 @@ export class TSGemeindeKonfiguration {
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
+    public konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit: number; // only on client
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
     public erwerbspensumMiminumVorschuleMax: number;
@@ -120,6 +122,7 @@ export class TSGemeindeKonfiguration {
         this.konfigFerieninselAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
         this.konfigTagesschuleTagisEnabled = false;
         this.konfigurationen.forEach(property => {
+            // tslint:disable-next-line:max-switch-cases
             switch (property.key) {
                 case TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE: {
                     this.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
@@ -237,6 +240,14 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED: {
                     this.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_TAGESSCHULE_TAGIS_ENABLED: {
