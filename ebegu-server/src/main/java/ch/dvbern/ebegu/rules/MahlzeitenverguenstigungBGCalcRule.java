@@ -20,13 +20,16 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
@@ -35,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 
 /**
  * Regel die angewendet wird um die Mahlzeitenvergünstigung zu berechnen
@@ -63,7 +67,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 
-		boolean verguenstigungBeantrag = familiensituation == null ? false : !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
+		boolean verguenstigungBeantrag = familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
 
 		if (!verguenstigungBeantrag) {
 			return;
@@ -154,5 +158,10 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			inputData.getAnzahlNebenmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
 			inputData.getTarifHauptmahlzeit().compareTo(BigDecimal.ZERO) > 0 &&
 			inputData.getTarifNebenmahlzeit().compareTo(BigDecimal.ZERO) > 0;
+	}
+
+	@Override
+	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		return einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean();
 	}
 }

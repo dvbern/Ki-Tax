@@ -425,6 +425,10 @@ public abstract class AbstractEbeguRule implements Rule {
 		// Grundsaetzlich gehen wir davon aus, dass jede Regel fuer jede Gemeinde gueltig ist.
 		// Ausnahme sind Regeln mit RuleValiditiy=GEMEINDE, fuer welche eine Einstellung gleich
 		// ist (bzw. nicht ueberschrieben) wie bei ASIV
+		if (RuleValidity.GEMEINDE == ruleValidity) {
+			throw new EbeguRuntimeException("isRelevantForGemeinde",
+				"Rule mit validity GEMEINDE muessen isRelevantForGemeinde ueberschreiben! " + this.getClass().getName());
+		}
 		return true;
 	}
 }
