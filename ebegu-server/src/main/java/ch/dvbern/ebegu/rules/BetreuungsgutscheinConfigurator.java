@@ -86,11 +86,7 @@ public class BetreuungsgutscheinConfigurator {
 		return rules;
 	}
 
-	public Set<EinstellungKey> getRequiredParametersForGemeinde(@Nonnull Gemeinde gemeinde) {
-		return requiredBernerParameters();
-	}
-
-	public Set<EinstellungKey> requiredBernerParameters() {
+	public Set<EinstellungKey> getRequiredParametersForGemeinde() {
 		return EnumSet.of(
 			MAX_MASSGEBENDES_EINKOMMEN,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,

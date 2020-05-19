@@ -154,10 +154,10 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	}
 
 	private boolean validateInput(@Nonnull BGCalculationInput inputData) {
-		return inputData.getAnzahlHauptmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
-			inputData.getAnzahlNebenmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
-			inputData.getTarifHauptmahlzeit().compareTo(BigDecimal.ZERO) > 0 &&
-			inputData.getTarifNebenmahlzeit().compareTo(BigDecimal.ZERO) > 0;
+		return (inputData.getAnzahlHauptmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
+			inputData.getTarifHauptmahlzeit().compareTo(BigDecimal.ZERO) > 0) ||
+			(inputData.getAnzahlNebenmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
+			inputData.getTarifNebenmahlzeit().compareTo(BigDecimal.ZERO) > 0);
 	}
 
 	@Override
