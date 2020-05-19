@@ -16,27 +16,16 @@
  */
 
 import * as moment from 'moment';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSBenutzer} from './TSBenutzer';
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-export class TSRueckforderungMitteilung extends TSAbstractMutableEntity {
+export class TSRueckforderungMitteilung extends TSAbstractEntity {
 
-    private _absender: TSBenutzer;
     private _betreff: string;
     private _inhalt: string;
     private _sendeDatum: moment.Moment;
-    private _gesendetAnStatus: string;
 
     public constructor() {
         super();
-    }
-
-    public get absender(): TSBenutzer {
-        return this._absender;
-    }
-
-    public set absender(value: TSBenutzer) {
-        this._absender = value;
     }
 
     public get betreff(): string {
@@ -61,13 +50,5 @@ export class TSRueckforderungMitteilung extends TSAbstractMutableEntity {
 
     public set sendeDatum(value: moment.Moment) {
         this._sendeDatum = value;
-    }
-
-    public get gesendetAnStatus(): string {
-        return this._gesendetAnStatus;
-    }
-
-    public set gesendetAnStatus(value: string) {
-        this._gesendetAnStatus = value;
     }
 }

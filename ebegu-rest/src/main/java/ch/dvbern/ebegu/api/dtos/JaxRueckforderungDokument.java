@@ -22,9 +22,11 @@ import java.time.LocalDateTime;
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungDokument extends JaxAbstractDTO {
@@ -38,6 +40,7 @@ public class JaxRueckforderungDokument extends JaxAbstractDTO {
 	private RueckforderungDokumentTyp rueckforderungDokumentTyp;
 
 	@Nonnull
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime timestampUpload;
 
 	@Nonnull

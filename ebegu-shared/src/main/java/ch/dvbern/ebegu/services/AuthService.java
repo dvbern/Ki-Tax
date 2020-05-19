@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -66,4 +67,12 @@ public interface AuthService {
 	 * @return Die Anzahl gelöschter Tokens
 	 */
 	int deleteInvalidAuthTokens();
+
+	/**
+	 * return usernames of the users that have been active within some timeframe
+	 * @param secondsSinceLastActivity time frame in seconds
+	 * @return list of usernames
+	 */
+	@Nonnull
+	Collection<String> findActiveSince(int secondsSinceLastActivity);
 }

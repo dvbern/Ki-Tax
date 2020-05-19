@@ -29,22 +29,32 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.interceptor.Interceptors;
 
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.RueckforderungFormular_;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@RolesAllowed({ SUPER_ADMIN })
 @Stateless
 @Local(RueckforderungFormularService.class)
 public class RueckforderungFormularServiceBean extends AbstractBaseService implements RueckforderungFormularService {
@@ -58,9 +68,12 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private InstitutionService institutionService;
+
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	public List<RueckforderungFormular> initializeRueckforderungFormulare() {
 
 		Collection<InstitutionStammdaten> institutionenStammdatenCollection = institutionStammdatenService.getAllInstitutionStammdaten();
@@ -69,9 +82,11 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		List<RueckforderungFormular> rueckforderungFormulare = new ArrayList<>();
 		for (InstitutionStammdaten institutionStammdaten : institutionenStammdatenCollection) {
 			// neues Formular erstellen falls es sich un eine kita oder TFO handelt und noch kein Formular existiert
-			if ((institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.KITA) ||
-				institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.TAGESFAMILIEN)) &&
-				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)) {
+			if ((institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ||
+				institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN) &&
+				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)
+				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null
+				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getIban() != null) {
 
 				RueckforderungFormular formular = new RueckforderungFormular();
 				formular.setInstitutionStammdaten(institutionStammdaten);
@@ -85,31 +100,57 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	/**
 	 * Falls in der Liste der Rückforderungsformulare die Institution bereits existiert, wird true zurückgegeben
 	 */
-	private boolean isFormularExisting(InstitutionStammdaten stammdaten,
-		Collection<RueckforderungFormular> rueckforderungFormularCollection) {
-		List<RueckforderungFormular> filteredFormulare = rueckforderungFormularCollection.stream().filter(formular -> {
-			return formular.getInstitutionStammdaten().getId().equals(stammdaten.getId());
-		}).collect(Collectors.toList());
-		return filteredFormulare.size() > 0;
+	private boolean isFormularExisting(@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull Collection<RueckforderungFormular> rueckforderungFormularCollection
+	) {
+		List<RueckforderungFormular> filteredFormulare = rueckforderungFormularCollection
+			.stream()
+			.filter(formular -> formular.getInstitutionStammdaten().getId().equals(stammdaten.getId()))
+			.collect(Collectors.toList());
+		return !filteredFormulare.isEmpty();
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	public RueckforderungFormular createRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		return persistence.persist(rueckforderungFormular);
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Collection<RueckforderungFormular> getAllRueckforderungFormulare(){
 		return criteriaQueryHelper.getAll(RueckforderungFormular.class);
 	}
 
 	@Nonnull
 	@Override
-	public Optional<RueckforderungFormular> findRueckforderungFormular(String id) {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
+		Collection<Institution> institutionenCurrentBenutzer =
+			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
+
+		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
+
+		return allRueckforderungFormulare.stream().filter(formular -> {
+			for (Institution institution : institutionenCurrentBenutzer) {
+				if (institution.getId().equals(formular.getInstitutionStammdaten().getInstitution().getId())) {
+					return true;
+				}
+			}
+			return false;
+		}).collect(Collectors.toList());
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	@Interceptors(UpdateRueckfordFormStatusInterceptor.class)
+	public Optional<RueckforderungFormular> findRueckforderungFormular(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, id);
 		return Optional.ofNullable(rueckforderungFormular);
@@ -117,9 +158,37 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	public RueckforderungFormular save(RueckforderungFormular rueckforderungFormular) {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
 		return mergedRueckforderungFormular;
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	public Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status) {
+		Objects.requireNonNull(status.get(0), "Mindestens ein Status muss angegeben werden");
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<RueckforderungFormular> query = cb.createQuery(RueckforderungFormular.class);
+
+		final Root<RueckforderungFormular> root = query.from(RueckforderungFormular.class);
+
+		Predicate predicateStatus = root.get(RueckforderungFormular_.status).in(status);
+		query.where(predicateStatus);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public RueckforderungFormular addMitteilung(
+		@Nonnull RueckforderungFormular formular,
+		@Nonnull RueckforderungMitteilung mitteilung
+	) {
+		formular.addRueckforderungMitteilung(mitteilung);
+		return persistence.persist(formular);
 	}
 }

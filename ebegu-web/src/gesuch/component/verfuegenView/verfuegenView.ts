@@ -548,12 +548,16 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return TagesschuleUtil.getModulTimeAsString(modul);
     }
 
+    public isSuperuser(): boolean {
+        return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
     public showPensumInHours(): boolean {
-        return this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+        return this.isTagesfamilienVerfuegung() || this.isSuperuser();
     }
 
     public showPensumInPercent(): boolean {
-        return !this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+        return !this.isTagesfamilienVerfuegung() || this.isSuperuser();
     }
 
     private getTagesschuleZeitabschnitteMitBetreuung(): Array<TSVerfuegungZeitabschnitt> {

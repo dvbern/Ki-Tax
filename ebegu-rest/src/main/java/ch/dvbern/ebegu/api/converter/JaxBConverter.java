@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -1355,7 +1356,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitution jaxInstitution = new JaxInstitution();
 		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
 		jaxInstitution.setName(persistedInstitution.getName());
-		assert persistedInstitution.getMandant() != null;
+		Objects.requireNonNull(persistedInstitution.getMandant());
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
@@ -1369,7 +1370,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionListDTO jaxInstitutionListDTO = new JaxInstitutionListDTO();
 		convertAbstractVorgaengerFieldsToJAX(entry.getKey(), jaxInstitutionListDTO);
 		jaxInstitutionListDTO.setName(entry.getKey().getName());
-		assert entry.getKey().getMandant() != null;
+		Objects.requireNonNull(entry.getKey().getMandant());
 		jaxInstitutionListDTO.setMandant(mandantToJAX(entry.getKey().getMandant()));
 		jaxInstitutionListDTO.setStatus(entry.getKey().getStatus());
 		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());
@@ -1603,6 +1604,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
 		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
+		jaxInstStammdaten.setTarifProHauptmahlzeit(persistedInstStammdaten.getTarifProHauptmahlzeit());
+		jaxInstStammdaten.setTarifProNebenmahlzeit(persistedInstStammdaten.getTarifProNebenmahlzeit());
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
@@ -1626,6 +1629,8 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
 		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
+		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());
+		institutionStammdaten.setTarifProNebenmahlzeit(institutionStammdatenJAXP.getTarifProNebenmahlzeit());
 
 		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
@@ -3045,6 +3050,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
+		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
+		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
@@ -3091,6 +3098,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
+		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
+		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 
 		return betreuungspensum;
 	}
@@ -3103,6 +3112,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
+		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
+		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
 
 		return jaxBetreuungspensum;
 	}
@@ -3223,6 +3234,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setStatus(abweichung.getStatus());
 		jaxAbweichung.setMonatlicheHauptmahlzeiten(abweichung.getMonatlicheHauptmahlzeiten());
 		jaxAbweichung.setMonatlicheNebenmahlzeiten(abweichung.getMonatlicheNebenmahlzeiten());
+		jaxAbweichung.setTarifProHauptmahlzeit(abweichung.getTarifProHauptmahlzeit());
+		jaxAbweichung.setTarifProNebenmahlzeit(abweichung.getTarifProNebenmahlzeit());
+		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
+		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 
 		return jaxAbweichung;
 	}
@@ -3390,6 +3405,8 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
+		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationInput().getVerguenstigungHauptmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationInput().getVerguenstigungNebenmahlzeitenTotal());
 		return jaxZeitabschn;
 	}
 
@@ -3406,6 +3423,7 @@ public class JaxBConverter extends AbstractConverter {
 		result.setBetreuungszeitProWoche(zeitabschnitt.getBetreuungszeitProWoche());
 		result.setBetreuungszeitProWocheFormatted(zeitabschnitt.getBetreuungszeitProWocheFormatted());
 		result.setVerpflegungskosten(zeitabschnitt.getVerpflegungskosten());
+		result.setVerpflegungskostenVerguenstigt(zeitabschnitt.getVerpflegungskostenVerguenstigt());
 		result.setGebuehrProStunde(zeitabschnitt.getGebuehrProStunde());
 		result.setTotalKostenProWoche(zeitabschnitt.getTotalKostenProWoche());
 		return result;
@@ -3504,6 +3522,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
 		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
+		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
+		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
 
 		return jaxBetreuungspensum;
 	}
@@ -5134,7 +5154,9 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
 
-		jaxFormular.setInstitutionStammdaten(institutionStammdatenToJAX(rueckforderungFormular.getInstitutionStammdaten()));
+		convertAbstractFieldsToJAX(rueckforderungFormular, jaxFormular);
+
+		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
@@ -5156,7 +5178,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setStufe2VerfuegungDatum(rueckforderungFormular.getStufe2VerfuegungDatum());
 		jaxFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormular.getStufe2VerfuegungAusbezahltAm());
 
-		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen()));
+		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
 		return jaxFormular;
 
@@ -5164,6 +5186,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public RueckforderungFormular rueckforderungFormularToEntity(@Nonnull JaxRueckforderungFormular rueckforderungFormularJax, @Nonnull RueckforderungFormular rueckforderungFormular) {
+
+		convertAbstractFieldsToEntity(rueckforderungFormularJax, rueckforderungFormular);
 
 		//InstitutionStammdaten
 		String instStammdatenID = rueckforderungFormularJax.getInstitutionStammdaten().getId();
@@ -5201,17 +5225,17 @@ public class JaxBConverter extends AbstractConverter {
 		return rueckforderungFormular;
 	}
 
-	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
-		return rueckforderungMitteilungen.stream().map(this::rueckforderungMitteilungToJax)
+	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen, @Nonnull String institutionName) {
+		return rueckforderungMitteilungen.stream().map(rueckforderungMitteilung -> rueckforderungMitteilungToJax(rueckforderungMitteilung,
+			institutionName))
 			.collect(Collectors.toList());
 	}
 
-	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull String institutionName) {
 		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
-		jaxMitteilung.setAbsender(benutzerToJaxBenutzer(rueckforderungMitteilung.getAbsender()));
+		convertAbstractFieldsToJAX(rueckforderungMitteilung, jaxMitteilung);
 		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
-		jaxMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
-		jaxMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
+		jaxMitteilung.setInhalt(RueckforderungMitteilung.getPATTERN().matcher(rueckforderungMitteilung.getInhalt()).replaceAll(Matcher.quoteReplacement(institutionName)));
 		jaxMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
 		return jaxMitteilung;
 	}
@@ -5236,22 +5260,14 @@ public class JaxBConverter extends AbstractConverter {
 		return convertedRueckforderungMitteilung;
 	}
 
-	public RueckforderungMitteilung rueckforderungMitteilungToEntity(@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung, @Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+	public RueckforderungMitteilung rueckforderungMitteilungToEntity(
+		@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 
 		convertAbstractFieldsToEntity(jaxRueckforderungMitteilung, rueckforderungMitteilung);
 
-		Benutzer benutzer =
-			benutzerService.findBenutzer(jaxRueckforderungMitteilung.getAbsender().getUsername())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"rueckforderungMitteilungToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxRueckforderungMitteilung.getAbsender().getUsername()));
-
-		rueckforderungMitteilung.setAbsender(benutzer);
-		rueckforderungMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
-		rueckforderungMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
-		rueckforderungMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
-		rueckforderungMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
+		rueckforderungMitteilung.setBetreff(jaxRueckforderungMitteilung.getBetreff());
+		rueckforderungMitteilung.setInhalt(jaxRueckforderungMitteilung.getInhalt());
 
 		return rueckforderungMitteilung;
 	}

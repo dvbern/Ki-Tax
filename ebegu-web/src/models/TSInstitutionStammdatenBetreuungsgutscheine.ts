@@ -30,6 +30,8 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public subventioniertePlaetze: boolean = undefined;
     public anzahlPlaetze: number = undefined;
     public anzahlPlaetzeFirmen: number = undefined;
+    public tarifProHauptmahlzeit: number = undefined;
+    public tarifProNebenmahlzeit: number = undefined;
 
     public constructor() {
         super();

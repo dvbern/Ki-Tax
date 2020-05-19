@@ -26,16 +26,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 @Audited
@@ -62,27 +66,30 @@ public class RueckforderungFormular extends AbstractEntity {
 				"rueckforderung_mitteilung_id"),
 		}
 	)
-	private @NotNull
-	Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
+
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+	@NotNull
+	private Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
 
 	@NotNull
 	@Column(nullable = false)
 	@Nonnull
-	private RueckforderungStatus status;
+	@Enumerated(EnumType.STRING)
+	private RueckforderungStatus status = RueckforderungStatus.NEU;
 
-	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden;
 
-	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_tage", nullable = true)
+	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlStunden;
 
-	@Column(name = "stufe_1_institution_kostenuebernahme_betreuung", nullable = true)
+	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 
-	@Column(name = "stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 
@@ -90,27 +97,27 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_kanton_kostenuebernahme_betreuung", nullable = true)
+	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_tage", nullable = true)
 	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_freigabe_ausbezahlt_am", nullable = true)
+	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_tage", nullable = true)
 	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_freigabe_betrag", nullable = true)
+	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_tage", nullable = true)
 	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_freigabe_datum", nullable = true)
+	@Column(name = "stufe_1_kanton_kostenuebernahme_betreuung", nullable = true)
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeBetreuung;
 
-	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_1_institution_kostenuebernahme_betreuung", nullable = true)
 	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeBetreuung;
 
-	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_tage", nullable = true)
+	@Column(name = "stufe_2_kanton_kostenuebernahme_betreuung", nullable = true)
 	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeBetreuung;
 
@@ -118,29 +125,36 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
 
-	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_1_freigabe_betrag", nullable = true)
 	@Nullable
 	private BigDecimal stufe1FreigabeBetrag;
 
-	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_tage", nullable = true)
+	@Column(name = "stufe_1_freigabe_datum", nullable = true)
 	@Nullable
 	private LocalDateTime stufe1FreigabeDatum;
 
-	@Column(name = "stufe_2_kanton_kostenuebernahme_betreuung", nullable = true)
+	@Column(name = "stufe_1_freigabe_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
-	@Column(name = "stufe_2_verfuegung_ausbezahlt_am", nullable = true)
+	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
-	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
+	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2VerfuegungDatum;
 
-	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
+	@Column(name = "stufe_2_verfuegung_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
+
+	@Transient
+	private boolean stufe1ZahlungJetztAusgeloest = false;
+
+	@Transient
+	private boolean stufe2ZahlungJetztAusgeloest = false;
+
 
 	@Nonnull
 	public Set<RueckforderungMitteilung> getRueckforderungMitteilungen() {
@@ -149,6 +163,10 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setRueckforderungMitteilungen(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
 		this.rueckforderungMitteilungen = rueckforderungMitteilungen;
+	}
+
+	public void addRueckforderungMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+		this.rueckforderungMitteilungen.add(rueckforderungMitteilung);
 	}
 
 	@Nonnull
@@ -330,6 +348,22 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
 	}
 
+	public boolean isStufe1ZahlungJetztAusgeloest() {
+		return stufe1ZahlungJetztAusgeloest;
+	}
+
+	public void setStufe1ZahlungJetztAusgeloest(boolean stufe1ZahlungJetztAusgeloest) {
+		this.stufe1ZahlungJetztAusgeloest = stufe1ZahlungJetztAusgeloest;
+	}
+
+	public boolean isStufe2ZahlungJetztAusgeloest() {
+		return stufe2ZahlungJetztAusgeloest;
+	}
+
+	public void setStufe2ZahlungJetztAusgeloest(boolean stufe2ZahlungJetztAusgeloest) {
+		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -345,5 +379,25 @@ public class RueckforderungFormular extends AbstractEntity {
 		final RueckforderungFormular otherRueckforderungFormular = (RueckforderungFormular) other;
 		return this.status.equals(otherRueckforderungFormular.getStatus()) &&
 			this.getInstitutionStammdaten().getId().equals(otherRueckforderungFormular.getInstitutionStammdaten().getId());
+	}
+
+	private boolean isAuszuzahlenStufe1() {
+		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null
+			&& !status.equals(RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH);
+	}
+
+	private boolean isAuszuzahlenStufe2() {
+		return RueckforderungStatus.VERFUEGT == status && stufe2VerfuegungAusbezahltAm == null;
+	}
+
+	public void handleAuszahlungIfNecessary() {
+		if (isAuszuzahlenStufe1()) {
+			this.stufe1FreigabeAusbezahltAm = LocalDateTime.now();
+			this.stufe1ZahlungJetztAusgeloest = true;
+		}
+		if (isAuszuzahlenStufe2()) {
+			this.stufe2VerfuegungAusbezahltAm = LocalDateTime.now();
+			this.stufe2ZahlungJetztAusgeloest = true;
+		}
 	}
 }

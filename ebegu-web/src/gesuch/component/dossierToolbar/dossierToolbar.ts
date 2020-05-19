@@ -648,6 +648,21 @@ export class DossierToolbarController implements IDVFocusableController {
         });
     }
 
+    public gesuchLoeschenForced(): IPromise<void> {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, undefined, RemoveDialogController, {
+            title: 'CONFIRM_GESUCH_LOESCHEN_FORCED',
+            deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN_FORCED',
+            parentController: this,
+            elementID: 'gesuchLoeschenForcedButton',
+        }).then(() => {
+            this.setAllFormsPristine();
+            this.gesuchRS.removeAntragForced(this.getGesuch().id).then(() => {
+                this.resetNavigationParameters();
+                this.$state.go('faelle.list');
+            });
+        });
+    }
+
     private setAllFormsPristine(): void {
         const forms: [IFormController] = this.unsavedWarningSharedService.allForms();
         // tslint:disable-next-line:prefer-for-of

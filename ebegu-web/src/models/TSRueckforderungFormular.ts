@@ -17,13 +17,13 @@
 
 import * as moment from 'moment';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
 
-export class TSRueckforderungFormular extends TSAbstractMutableEntity {
+export class TSRueckforderungFormular extends TSAbstractEntity {
 
-    private _institutionStammdaten: TSInstitutionStammdaten;
+    private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];
     private _status: TSRueckforderungStatus;
     private _stufe1KantonKostenuebernahmeAnzahlStunden: number;
@@ -49,11 +49,11 @@ export class TSRueckforderungFormular extends TSAbstractMutableEntity {
         super();
     }
 
-    public get institutionStammdaten(): TSInstitutionStammdaten {
+    public get institutionStammdaten(): TSInstitutionStammdatenSummary {
         return this._institutionStammdaten;
     }
 
-    public set institutionStammdaten(value: TSInstitutionStammdaten) {
+    public set institutionStammdaten(value: TSInstitutionStammdatenSummary) {
         this._institutionStammdaten = value;
     }
 

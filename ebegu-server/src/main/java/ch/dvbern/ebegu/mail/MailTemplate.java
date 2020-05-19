@@ -41,5 +41,7 @@ public enum MailTemplate {
 	InfoStatistikGeneriert,
 	InfoOffenePendenzenInstitution,
 	InfoSchulamtAnmeldungTagesschuleAkzeptiert,
-	InfoGemeindeAngebotAktiviert
+	InfoGemeindeAngebotAktiviert,
+	NotrechtGenerischeMitteilung,
+	NotrechtBestaetigungPruefungStufe1
 }
