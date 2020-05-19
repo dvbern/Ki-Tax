@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 
 /**
  * Services fuer Rules
@@ -51,12 +52,13 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	public List<Rule> getRulesForGesuchsperiode(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO,
 		@Nonnull Locale locale
 	) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
 		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde(gemeinde);
 		Map<EinstellungKey, Einstellung> einstellungen = loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
-		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen, locale);
+		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen, kitaxParameterDTO, locale);
 	}
 
 	private Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad) {

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
@@ -261,6 +263,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		authorizer.checkReadAuthorization(gesuchToPersist);
+
+		// Vor dem Speichern noch pruefen, dass noch kein Gesuch dieses Typs fuer das Dossier und die Periode existiert
+		ensureUniqueErstgesuchProDossierAndGesuchsperiode(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
 
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
@@ -433,7 +438,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
 					if (anmeldungTagesschule.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
-						this.verfuegungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+						this.verfuegungService.anmeldungTagesschuleUebernehmen(anmeldungTagesschule);
+					}
+				}
+				AnmeldungFerieninsel[] anmeldungFerieninselArray =
+					kindContainerToWorkWith.getAnmeldungenFerieninsel().toArray(new AnmeldungFerieninsel[kindContainerToWorkWith.getAnmeldungenFerieninsel().size()]);
+				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenFerieninsel().size(); j++) {
+					AnmeldungFerieninsel anmeldungFerieninsel = anmeldungFerieninselArray[j];
+					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
+					if (anmeldungFerieninsel.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
+						this.verfuegungService.anmeldungFerieninselUebernehmen(anmeldungFerieninsel);
 					}
 				}
 			}
@@ -615,7 +629,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
 					// der Mutation eine Verfügung gespeichert. Diese muss nun wieder gelöscht werden
 					vorgaenger.setVerfuegung(null);
@@ -626,7 +641,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
-			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isSchulamt())
+			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
 			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
 				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(anmeldung.extractGesuch().getId(), anmeldung.getId());
@@ -1240,6 +1255,37 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistence.getCriteriaResults(query);
 	}
 
+	private void ensureUniqueErstgesuchProDossierAndGesuchsperiode(@Nonnull Gesuch gesuchToPersist) {
+		if (gesuchToPersist.getTyp() != AntragTyp.MUTATION) {
+			// Von allem ausser MUTATION darf es pro Dossier und Gesuchsperiode nur einen Antrag geben
+			List<Gesuch> existingGesuch = findExistingGesuch(gesuchToPersist.getDossier(), gesuchToPersist.getGesuchsperiode(), gesuchToPersist.getTyp());
+			if (!existingGesuch.isEmpty()) {
+				String message = MessageFormat.format("Es gibt schon ein Gesuch dieses Typs fuer die Gesuchsperiode {0} und Dossier {1} / {2}: ",
+					gesuchToPersist.getGesuchsperiode().getGesuchsperiodeString(),
+					String.valueOf(gesuchToPersist.getDossier().getFall().getFallNummer()),
+					gesuchToPersist.getDossier().getGemeinde().getName());
+				throw new EbeguRuntimeException("ensureUniqueErstgesuchProDossierAndGesuchsperiode", message, ErrorCodeEnum.ERROR_ERSTGESUCH_ALREADY_EXISTS);
+			}
+		}
+	}
+
+	private List<Gesuch> findExistingGesuch(
+		@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull AntragTyp typ
+	) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		Predicate predicateTyp = cb.equal(root.get(Gesuch_.typ), typ);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+		Predicate predicateDossier = cb.equal(root.get(Gesuch_.dossier), dossier);
+
+		query.where(predicateTyp, predicateGesuchsperiode, predicateDossier);
+		query.select(root);
+		return persistence.getCriteriaResults(query);
+	}
+
 	@Nonnull
 	private Eingangsart calculateEingangsart() {
 		Eingangsart eingangsart;
@@ -1775,6 +1821,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			throw new EbeguRuntimeException("findOnlineFolgegesuch", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
 		return criteriaResults.get(0);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeAntragForced(@Nonnull Gesuch gesuch) {
+		if (gesuch.getStatus().isAnyStatusOfVerfuegt()) {
+			throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED,
+				gesuch.getStatus());
+		}
+		removeGesuch(gesuch.getId(), GesuchDeletionCause.SUPERADMIN);
 	}
 
 	@Override

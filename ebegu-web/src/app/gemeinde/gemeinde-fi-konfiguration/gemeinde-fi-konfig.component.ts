@@ -20,6 +20,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Moment} from 'moment';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
@@ -74,8 +75,9 @@ export class GemeindeFiKonfigComponent implements OnInit {
 
     public isAnmeldeschlussRequired(fiStammdaten: TSFerieninselStammdaten): boolean {
         // Wenn mindestens ein Zeitraum erfasst ist
-        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb)
-            || EbeguUtil.isNotNullOrUndefined(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis);
+        return this.hasZeitraeume(fiStammdaten) &&
+            EbeguUtil.isNotNullOrUndefined(fiStammdaten.zeitraumList[0].gueltigkeit.gueltigAb) ||
+            EbeguUtil.isNotNullOrUndefined(fiStammdaten.zeitraumList[0].gueltigkeit.gueltigBis);
     }
 
     public isDatumAbRequired(zeitraum: TSFerieninselZeitraum, fiStammdaten: TSFerieninselStammdaten): boolean {
@@ -103,5 +105,37 @@ export class GemeindeFiKonfigComponent implements OnInit {
         }
 
         return date.format(CONSTANTS.DATE_FORMAT);
+    }
+
+    public ferieninselAktivierungsdatumChanged(config: TSGemeindeKonfiguration): void {
+        config.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB === property.key)
+            .forEach(property => {
+                property.value = this.getFerieninselAktivierungsdatumAsString(config);
+            });
+    }
+
+    public getFerieninselAktivierungsdatumAsString(konfiguration: TSGemeindeKonfiguration): string {
+        const datum = konfiguration.konfigFerieninselAktivierungsdatum;
+        if (datum && datum.isValid()) {
+            return datum.format(CONSTANTS.DATE_FORMAT);
+        }
+        return '';
+    }
+
+    public areAnyFerienConfiguredForStammdatenArray(stammdatenArr: TSFerieninselStammdaten[]): boolean {
+        return stammdatenArr.filter(f => f.anmeldeschluss).length > 0;
+    }
+
+    public areAnyFerienConfiguredForStammdaten(stammdaten: TSFerieninselStammdaten): boolean {
+        return EbeguUtil.isNotNullOrUndefined(stammdaten.anmeldeschluss);
+    }
+
+    public trackById(fiStammdaten: TSFerieninselStammdaten): string {
+        return fiStammdaten.id;
+    }
+
+    public hasZeitraeume(stammdaten: TSFerieninselStammdaten): boolean {
+        return stammdaten.zeitraumList && stammdaten.zeitraumList.length > 0;
     }
 }

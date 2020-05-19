@@ -26,7 +26,7 @@ export const CONSTANTS = {
     PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
-    PATTERN_ZEMIS_NUMMER: '^[0-9]{8}\\.[0-9]$',
+    PATTERN_ZEMIS_NUMMER: '(^0?\\d{8}\\.\\d$)|(^0\\d{2}\\.\\d{3}\\.\\d{3}[\\.-]\\d$)',
     INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE: '199ac4a1-448f-4d4c-b3a6-5aee21f89613',
     ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA: '00000000-0000-0000-0000-000000000000',
     ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE: '00000000-0000-0000-0000-000000000001',
@@ -34,6 +34,7 @@ export const CONSTANTS = {
     PARTS_OF_BETREUUNGSNUMMER: 5,
     END_OF_TIME_STRING: '31.12.9999',
     DATE_FORMAT: 'DD.MM.YYYY',
+    DATE_TIME_FORMAT: 'DD.MM.YYYY HH:mm',
     EARLIEST_DATE_OF_TS_ANMELDUNG: '2020-08-01'
 };
 // 100% = 20 days => 1% = 0.2 days

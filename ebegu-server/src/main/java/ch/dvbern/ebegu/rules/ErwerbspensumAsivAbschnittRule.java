@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -35,8 +36,12 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAsivAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleValidity.ASIV, validityPeriod, locale);
+	public ErwerbspensumAsivAbschnittRule(
+		@Nonnull DateRange validityPeriod,
+		int erwerbspensumZuschlag,
+		@Nonnull Locale locale
+	) {
+		super(RuleValidity.ASIV, validityPeriod, erwerbspensumZuschlag, locale);
 	}
 
 	@Override
@@ -45,21 +50,21 @@ public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 		return Taetigkeit.getTaetigkeitenForAsiv();
 	}
 
+	@Nullable
 	@Override
-	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+	protected VerfuegungZeitabschnitt createZeitAbschnitt(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum, boolean isGesuchsteller1) {
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
+		if (isGesuchsteller1) {
+			zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
+		} else {
+			zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
+		}
 		return zeitabschnitt;
 	}
 
 	@Override
-	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
-		return zeitabschnitt;
+	protected void setErwerbspensumZuschlag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, int zuschlagErwerbspensum) {
+		zeitabschnitt.setErwerbspensumZuschlagForAsivAndGemeinde(zuschlagErwerbspensum);
 	}
 }

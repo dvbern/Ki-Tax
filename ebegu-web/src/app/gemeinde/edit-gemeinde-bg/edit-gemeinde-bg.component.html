@@ -499,7 +499,7 @@
                                                 </div>
                                             </div>
                                         </div>
-<!--                                            Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                        <!-- Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
                                         <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="row">
                                                 <div class="col-sm-6">
@@ -630,7 +630,7 @@
                                                             </mat-option>
                                                         </mat-select>
                                                     </div>
-                                                    <!--                                            Zusaetzlicher Gutschein bei TFOs anbieten bis und mit-->
+                                                    <!-- Zusaetzlicher Gutschein bei TFOs anbieten bis und mit-->
                                                     <div class="form-group"
                                                          *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT</label>
@@ -646,7 +646,7 @@
                                                         </mat-select>
                                                     </div>
 
-                                                    <!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
+                                                    <!-- Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
                                                     <div class="form-group">
                                                         <mat-checkbox id="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
                                                                       name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
@@ -657,7 +657,7 @@
                                                             </span>
                                                         </mat-checkbox>
                                                     </div>
-                                                    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas-->
+                                                    <!-- Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas-->
                                                     <div class="form-group"
                                                          *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
                                                         <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
@@ -743,7 +743,7 @@
                                                     <div class="form-group">
 
 
-                                                        <!--                                            Mahlzeitenverguenstigung -->
+                                                        <!-- Mahlzeitenverguenstigung -->
                                                         <div class="form-group">
                                                             <mat-checkbox id="mahlzeitenverguenstigung_enabled_{{i}}"
                                                                           name="mahlzeitenverguenstigung_enabled_{{i}}"
@@ -755,6 +755,48 @@
                                                             </mat-checkbox>
                                                         </div>
 
+                                                        <!-- Minimaler Elternbeitrag Hauptmahlzeiten -->
+                                                        <div class="form-group"
+                                                             *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                            <label for="minimaler_elternbeitrag_hauptmahlzeiten_{{i}}"
+                                                                   class="required" translate>MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEITEN</label>
+                                                            <input id="minimaler_elternbeitrag_hauptmahlzeiten_{{i}}"
+                                                                   name="minimaler_elternbeitrag_hauptmahlzeiten_{{i}}"
+                                                                   class="form-control"
+                                                                   type="number"
+                                                                   #minimaler_elternbeitrag_hauptmahlzeiten='ngModel'
+                                                                   required
+                                                                   customMinMax
+                                                                   [minValue]="0"
+                                                                   [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit"
+                                                                   (change)="changeKonfigMahlzeitenverguenstigungMinmalerElternanteilHauptmahlzeit(konfigurationsListe[i])">
+
+                                                            <dv-error-messages
+                                                                inputId="minimaler_elternbeitrag_hauptmahlzeiten_{{i}}"
+                                                                [errorObject]="minimaler_elternbeitrag_hauptmahlzeiten.errors">
+                                                            </dv-error-messages>
+                                                        </div>
+                                                        <!-- Minimaler Elternbeitrag Hauptmahlzeiten -->
+                                                        <div class="form-group"
+                                                             *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                            <label for="minimaler_elternbeitrag_nebenmahlzeiten_{{i}}"
+                                                                   class="required" translate>MINIMALER_ELTERNBEITRAG_NEBENMAHLZEITEN</label>
+                                                            <input id="minimaler_elternbeitrag_nebenmahlzeiten_{{i}}"
+                                                                   name="minimaler_elternbeitrag_nebenmahlzeiten_{{i}}"
+                                                                   class="form-control"
+                                                                   type="number"
+                                                                   #minimaler_elternbeitrag_nebenmahlzeiten='ngModel'
+                                                                   required
+                                                                   customMinMax
+                                                                   [minValue]="0"
+                                                                   [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit"
+                                                                   (change)="changeKonfigMahlzeitenverguenstigungMinmalerElternanteilNebenmahlzeit(konfigurationsListe[i])">
+
+                                                            <dv-error-messages
+                                                                inputId="minimaler_elternbeitrag_nebenmahlzeiten_{{i}}"
+                                                                [errorObject]="minimaler_elternbeitrag_nebenmahlzeiten.errors">
+                                                            </dv-error-messages>
+                                                        </div>
                                                         <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
                                                         <div class="table-responsive mt-2"
                                                              *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
@@ -1042,69 +1084,18 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
-                                        <div>
-                                            <div class="form-group">
-                                                <label translate
-                                                       for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
-                                                <input id="standardDokTitleDisplay_id"
-                                                       type="text"
-                                                       name="standardDokTitleDisplay_id"
-                                                       [(ngModel)]="stammdaten.standardDokTitle"
-                                                       class="form-control"
-                                                       disabled="true">
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <!-- Unterschrift 1 Titel-->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate
-                                                   for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
-                                            <input id="standardDokUnterschriftTitelDisplay_id" type="text"
-                                                   name="standardDokUnterschriftTitelDisplay_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
-                                                   class="form-control" disabled="true">
-                                        </div>
+                                <div class="form-group">
+                                    <p><b>{{stammdaten.standardDokTitle}}</b></p>
+                                    <div class="row">
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftTitel}}</p></div>
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftTitel2}}</p></div>
                                     </div>
-                                    <!-- Unterschrift 1 Name -->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate for="standardDokUnterschriftNameDisplay_id">
-                                                STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
-                                            <input id="standardDokUnterschriftNameDisplay_id"
-                                                   type="text"
-                                                   name="standardDokUnterschriftNameDisplay_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName"
-                                                   class="form-control" disabled="true">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <!-- Unterschrift 2 Titel-->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate
-                                                   for="standardDokUnterschriftTitel2Display_id">
-                                                STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
-                                            <input id="standardDokUnterschriftTitel2Display_id" type="text"
-                                                   name="standardDokUnterschriftTitel2Display_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
-                                                   class="form-control" disabled="true">
-                                        </div>
-                                    </div>
-                                    <!-- Unterschrift 2 Name -->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate for="standardDokUnterschriftName2Display_id">
-                                                STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
-                                            <input id="standardDokUnterschriftName2Display_id"
-                                                   type="text"
-                                                   name="standardDokUnterschriftName2Display_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName2"
-                                                   class="form-control" disabled="true">
-                                        </div>
+                                    <br/>
+                                    <div class="row">
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftName}}</p></div>
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftName2}}</p></div>
                                     </div>
                                 </div>
                             </div>
@@ -1168,10 +1159,14 @@
                     </div>
                     <ng-template #displayRechtsmittelbelehrung>
                         <div class="form-group mt-5">
-                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_DE</h3>
-                            <p>{{stammdaten.rechtsmittelbelehrung.textDeutsch}}</p>
-                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_FR</h3>
-                            <p>{{stammdaten.rechtsmittelbelehrung.textFranzoesisch}}</p>
+                            <div *ngIf="stammdaten.korrespondenzspracheDe">
+                                <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_DE</h3>
+                                <p>{{stammdaten.rechtsmittelbelehrung.textDeutsch}}</p>
+                            </div>
+                            <div *ngIf="stammdaten.korrespondenzspracheFr">
+                                <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_FR</h3>
+                                <p>{{stammdaten.rechtsmittelbelehrung.textFranzoesisch}}</p>
+                            </div>
                         </div>
                     </ng-template>
                 </div>
@@ -1275,12 +1270,20 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--                                        Mahlzeitenverguenstigung -->
+                                        <!-- Mahlzeitenverguenstigung -->
                                         <div class="col-sm-12"
                                              *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
                                             <p><strong translate>MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE</strong></p>
+                                            <p translate
+                                               [translateParams]="{value: konfigurationsListe[i].konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit}">
+                                                MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEITEN_READONLY
+                                            </p>
+                                            <p translate
+                                               [translateParams]="{value: konfigurationsListe[i].konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit}">
+                                                MINIMALER_ELTERNBEITRAG_NEBENMAHLZEITEN_READONLY
+                                            </p>
 
-                                            <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
+                                            <!-- Mahlzeitenverguenstigung pro Einkommensstufe-->
                                             <div class="table-responsive"
                                                  *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
                                                 <table class="mahlzeitenverguenstigung-table">

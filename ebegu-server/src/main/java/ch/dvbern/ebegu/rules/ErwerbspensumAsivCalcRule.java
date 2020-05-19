@@ -34,11 +34,10 @@ public class ErwerbspensumAsivCalcRule extends ErwerbspensumCalcRule {
 
 	public ErwerbspensumAsivCalcRule(
 		@Nonnull DateRange validityPeriod,
-		int zuschlagErwerbspensum,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
 		@Nonnull Locale locale
 	) {
-		super(RuleValidity.ASIV, validityPeriod, zuschlagErwerbspensum, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
+		super(RuleValidity.ASIV, validityPeriod, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
 	}
 }

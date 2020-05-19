@@ -61,7 +61,7 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumFachstelle pensumFachstelle) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(pensumFachstelle.getGueltigkeit());
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(pensumFachstelle.getGueltigkeit());
 		zeitabschnitt.setFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getPensum());
 		zeitabschnitt.setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp()
 			== IntegrationTyp.SPRACHLICHE_INTEGRATION);

@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.dto;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,11 +31,15 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
+
+	@Nonnull
+	private RuleValidity ruleValidity;
 
 	private VerfuegungZeitabschnitt parent;
 
@@ -49,6 +54,9 @@ public class BGCalculationInput {
 
 	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
+
+	@Nullable
+	private Integer erwerbspensumZuschlag = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
@@ -133,15 +141,29 @@ public class BGCalculationInput {
 
 	private boolean betreuungInGemeinde = false;
 
+	private BigDecimal anzahlHauptmahlzeiten = BigDecimal.ZERO;
 
-	public BGCalculationInput(VerfuegungZeitabschnitt parent) {
+	private BigDecimal tarifHauptmahlzeit = BigDecimal.ZERO;
+
+	private BigDecimal anzahlNebenmahlzeiten = BigDecimal.ZERO;
+
+	private BigDecimal tarifNebenmahlzeit = BigDecimal.ZERO;
+
+	private BigDecimal verguenstigungHauptmahlzeitenTotal = BigDecimal.ZERO;
+
+	private BigDecimal verguenstigungNebenmahlzeitenTotal = BigDecimal.ZERO;
+
+
+	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
+		this.ruleValidity = ruleValidity;
 	}
 
 	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
+		this.erwerbspensumZuschlag = toCopy.erwerbspensumZuschlag;
 		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
 		mergedTaetigkeiten.addAll(this.taetigkeiten);
 		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
@@ -154,6 +176,12 @@ public class BGCalculationInput {
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
 		this.betreuungspensumMustBeAtLeastFachstellenpensum = toCopy.betreuungspensumMustBeAtLeastFachstellenpensum;
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
+		this.anzahlHauptmahlzeiten = toCopy.anzahlHauptmahlzeiten;
+		this.anzahlNebenmahlzeiten = toCopy.anzahlNebenmahlzeiten;
+		this.tarifHauptmahlzeit = toCopy.tarifHauptmahlzeit;
+		this.tarifNebenmahlzeit = toCopy.tarifNebenmahlzeit;
+		this.verguenstigungHauptmahlzeitenTotal = toCopy.verguenstigungHauptmahlzeitenTotal;
+		this.verguenstigungNebenmahlzeitenTotal = toCopy.getVerguenstigungNebenmahlzeitenTotal();
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
 		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
@@ -178,6 +206,16 @@ public class BGCalculationInput {
 		this.tsInputOhneBetreuung = toCopy.tsInputOhneBetreuung.copy();
 		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
+		this.ruleValidity = toCopy.ruleValidity;
+	}
+
+	@Nonnull
+	public RuleValidity getRuleValidity() {
+		return ruleValidity;
+	}
+
+	public void setRuleValidity(@Nonnull RuleValidity ruleValidity) {
+		this.ruleValidity = ruleValidity;
 	}
 
 	public VerfuegungZeitabschnitt getParent() {
@@ -204,6 +242,15 @@ public class BGCalculationInput {
 
 	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS2) {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
+	}
+
+	@Nullable
+	public Integer getErwerbspensumZuschlag() {
+		return erwerbspensumZuschlag;
+	}
+
+	public void setErwerbspensumZuschlag (@Nullable Integer erwerbspensumZuschlag) {
+		this.erwerbspensumZuschlag = erwerbspensumZuschlag;
 	}
 
 	public Set<Taetigkeit> getTaetigkeiten() {
@@ -478,12 +525,28 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskosten(tsVerpflegungskostenMitBetreuung);
 	}
 
+	public void setTsVerpflegungskostenVerguenstigtMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtMitBetreuung) {
+		this.tsInputMitBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtMitBetreuung);
+	}
+
+	public void setTsAnzVerpflegungenMitBetreuung(int anzVerpflegungen) {
+		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+	}
+
+	public void setTsAnzVerpflegungenOhneBetreuung(int anzVerpflegungen) {
+		this.tsInputOhneBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+	}
+
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.tsInputOhneBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheOhneBetreuung);
 	}
 
 	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
 		this.tsInputOhneBetreuung.setVerpflegungskosten(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	public void setTsVerpflegungskostenVerguenstigtOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtOhneBetreuung) {
+		this.tsInputOhneBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtOhneBetreuung);
 	}
 
 	@Nonnull
@@ -510,6 +573,54 @@ public class BGCalculationInput {
 
 	public void setBetreuungInGemeinde(boolean betreuungInGemeinde) {
 		this.betreuungInGemeinde = betreuungInGemeinde;
+	}
+
+	public BigDecimal getAnzahlHauptmahlzeiten() {
+		return anzahlHauptmahlzeiten;
+	}
+
+	public void setAnzahlHauptmahlzeiten(BigDecimal anzahlHauptmahlzeiten) {
+		this.anzahlHauptmahlzeiten = anzahlHauptmahlzeiten;
+	}
+
+	public BigDecimal getAnzahlNebenmahlzeiten() {
+		return anzahlNebenmahlzeiten;
+	}
+
+	public void setAnzahlNebenmahlzeiten(BigDecimal anzahlNebenmahlzeiten) {
+		this.anzahlNebenmahlzeiten = anzahlNebenmahlzeiten;
+	}
+
+	public BigDecimal getTarifHauptmahlzeit() {
+		return tarifHauptmahlzeit;
+	}
+
+	public void setTarifHauptmahlzeit(BigDecimal tarifHauptmahlzeit) {
+		this.tarifHauptmahlzeit = tarifHauptmahlzeit;
+	}
+
+	public BigDecimal getTarifNebenmahlzeit() {
+		return tarifNebenmahlzeit;
+	}
+
+	public void setTarifNebenmahlzeit(BigDecimal tarifNebenmahlzeit) {
+		this.tarifNebenmahlzeit = tarifNebenmahlzeit;
+	}
+
+	public BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
+		return verguenstigungHauptmahlzeitenTotal;
+	}
+
+	public void setVerguenstigungHauptmahlzeitenTotal(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
+	}
+
+	public BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
+		return verguenstigungNebenmahlzeitenTotal;
+	}
+
+	public void setVerguenstigungNebenmahlzeitenTotal(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
 	}
 
 	@Override
@@ -541,6 +652,11 @@ public class BGCalculationInput {
 				(other.getErwerbspensumGS2() != null ? other.getErwerbspensumGS2() : 0));
 		}
 
+		// Die Felder betreffend EWP Zuschlag können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
+		if (other.getErwerbspensumZuschlag() != null) {
+			this.setErwerbspensumZuschlag(other.getErwerbspensumZuschlag());
+		}
+
 		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
 		if (this.getMonatlicheBetreuungskosten() != null) {
 			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
@@ -549,6 +665,61 @@ public class BGCalculationInput {
 			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(other.getMonatlicheBetreuungskosten());
 		}
 		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
+
+		BigDecimal newMonatlicheHauptmahlzeiten = BigDecimal.ZERO;
+		if (this.getAnzahlHauptmahlzeiten() != null) {
+			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(this.getAnzahlHauptmahlzeiten());
+		}
+		if (other.getAnzahlHauptmahlzeiten() != null) {
+			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(other.getAnzahlHauptmahlzeiten());
+		}
+		this.setAnzahlHauptmahlzeiten(newMonatlicheHauptmahlzeiten);
+
+		BigDecimal newMonatlicheNebenmahlzeiten = BigDecimal.ZERO;
+		if (this.getAnzahlNebenmahlzeiten() != null) {
+			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(this.getAnzahlNebenmahlzeiten());
+		}
+		if (other.getAnzahlNebenmahlzeiten() != null) {
+			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(other.getAnzahlNebenmahlzeiten());
+		}
+		this.setAnzahlNebenmahlzeiten(newMonatlicheNebenmahlzeiten);
+
+		BigDecimal newTarifHauptmhalzeit = BigDecimal.ZERO;
+		if (this.getTarifHauptmahlzeit() != null) {
+			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(this.getTarifHauptmahlzeit());
+		}
+		if (other.getTarifHauptmahlzeit() != null) {
+			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(other.getTarifHauptmahlzeit());
+		}
+		this.setTarifHauptmahlzeit(newTarifHauptmhalzeit);
+
+		BigDecimal newTarifNebenmahlzeit = BigDecimal.ZERO;
+		if (this.getTarifNebenmahlzeit() != null) {
+			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(this.getTarifNebenmahlzeit());
+		}
+		if (other.getTarifNebenmahlzeit() != null) {
+			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(other.getTarifNebenmahlzeit());
+		}
+		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
+
+		BigDecimal newVerguenstigungHaupt = BigDecimal.ZERO;
+		if (this.getVerguenstigungHauptmahlzeitenTotal() != null) {
+			newVerguenstigungHaupt = newVerguenstigungHaupt.add(this.getVerguenstigungHauptmahlzeitenTotal());
+		}
+		if (other.getTarifNebenmahlzeit() != null) {
+			newVerguenstigungHaupt = newVerguenstigungHaupt.add(other.getVerguenstigungHauptmahlzeitenTotal());
+		}
+		this.setVerguenstigungHauptmahlzeitenTotal(newVerguenstigungHaupt);
+
+		BigDecimal newVerguenstigungNeben = BigDecimal.ZERO;
+		if (this.getVerguenstigungNebenmahlzeitenTotal() != null) {
+			newVerguenstigungNeben = newVerguenstigungNeben.add(this.getVerguenstigungNebenmahlzeitenTotal());
+		}
+		if (other.getVerguenstigungNebenmahlzeitenTotal() != null) {
+			newVerguenstigungNeben = newVerguenstigungNeben.add(other.getVerguenstigungNebenmahlzeitenTotal());
+		}
+		this.setVerguenstigungNebenmahlzeitenTotal(newVerguenstigungNeben);
+
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -588,12 +759,16 @@ public class BGCalculationInput {
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
-			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
+			if (this.getAbzugFamGroesse() != null && !MathUtil.isSame(this.getAbzugFamGroesse(), other.getAbzugFamGroesse())) {
+				throw new IllegalArgumentException("Familiengoressenabzug kann nicht gemerged werden");
+			}
 			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
 		}
 		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
 		if (other.getFamGroesse() != null) {
-			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
+			if (this.getFamGroesse() != null && !MathUtil.isSame(this.getFamGroesse(), other.getFamGroesse())) {
+				throw new IllegalArgumentException("Familiengoressen kann nicht gemerged werden");
+			}
 			this.setFamGroesse(other.getFamGroesse());
 		}
 	}
@@ -602,6 +777,7 @@ public class BGCalculationInput {
 		return
 			isSameErwerbspensum(erwerbspensumGS1, other.erwerbspensumGS1) &&
 			isSameErwerbspensum(erwerbspensumGS2, other.erwerbspensumGS2) &&
+			isSameErwerbspensum(erwerbspensumZuschlag, other.erwerbspensumZuschlag) &&
 			fachstellenpensum == other.fachstellenpensum &&
 			ausserordentlicherAnspruch == other.ausserordentlicherAnspruch &&
 			anspruchspensumRest == other.anspruchspensumRest &&
@@ -642,6 +818,8 @@ public class BGCalculationInput {
 			einschulungTyp == that.einschulungTyp &&
 			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
+			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, that.verguenstigungHauptmahlzeitenTotal) &&
+			MathUtil.isSame(verguenstigungNebenmahlzeitenTotal, that.verguenstigungNebenmahlzeitenTotal) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == that.anspruchspensumProzent &&
@@ -673,5 +851,10 @@ public class BGCalculationInput {
 	@Nonnull
 	public BigDecimal getBgPensumProzent() {
 		return getBetreuungspensumProzent().min(MathUtil.DEFAULT.from(getAnspruchspensumProzent()));
+	}
+
+	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
+		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleValidity, msgKey, locale, args);
+		this.getParent().getBemerkungenList().addBemerkung(bemerkung);
 	}
 }

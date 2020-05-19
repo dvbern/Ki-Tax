@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -41,14 +40,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -76,14 +74,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput(this);
+	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput(this, RuleValidity.ASIV);
 
 	/**
 	 * Input-Werte für die Rules. Berechnung nach Spezialwünschen der Gemeinde, optional
 	 */
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput(this);
+	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput(this, RuleValidity.GEMEINDE);
 
 	/**
 	 * Berechnungsresultate. Berechnung nach ASIV (Standard)
@@ -398,6 +396,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
 	}
 
+	public void setErwerbspensumZuschlagForAsivAndGemeinde(int zuschlag) {
+		this.getBgCalculationInputAsiv().setErwerbspensumZuschlag(zuschlag);
+		this.getBgCalculationInputGemeinde().setErwerbspensumZuschlag(zuschlag);
+	}
+
 	public void addTaetigkeitForAsivAndGemeinde(@Nullable Taetigkeit taetigkeit) {
 		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
 		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
@@ -453,6 +456,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
 	}
 
+	public void setTsAnzVerpflegungenMitBetreuungForAsivAndGemeinde(int anzVerpflegungen) {
+		this.getBgCalculationInputAsiv().setTsAnzVerpflegungenMitBetreuung(anzVerpflegungen);
+		this.getBgCalculationInputGemeinde().setTsAnzVerpflegungenMitBetreuung(anzVerpflegungen);
+	}
+
+	public void setTsAnzVerpflegungenOhneBetreuungForAsivAndGemeinde(int anzVerpflegungen) {
+		this.getBgCalculationInputAsiv().setTsAnzVerpflegungenOhneBetreuung(anzVerpflegungen);
+		this.getBgCalculationInputGemeinde().setTsAnzVerpflegungenOhneBetreuung(anzVerpflegungen);
+	}
+
 	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
 		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
@@ -483,11 +496,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
 	}
 
-	public void setSameAusbezahlteVerguenstigungForAsivAndGemeinde(boolean sameAusbezahlteVerguenstigung) {
-		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-	}
-
 	public void setSozialhilfeempfaengerForAsivAndGemeinde(boolean sozialhilfe) {
 		this.getBgCalculationInputAsiv().setSozialhilfeempfaenger(sozialhilfe);
 		this.getBgCalculationInputGemeinde().setSozialhilfeempfaenger(sozialhilfe);
@@ -496,6 +504,36 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setBetreuungInGemeindeForAsivAndGemeinde(boolean inGemeinde) {
 		this.getBgCalculationInputAsiv().setBetreuungInGemeinde(inGemeinde);
 		this.getBgCalculationInputGemeinde().setBetreuungInGemeinde(inGemeinde);
+	}
+
+	public void setMonatlicheHauptmahlzeitenForAsivAndGemeinde(BigDecimal monatlicheHauptmahlzeiten) {
+		this.getBgCalculationInputAsiv().setAnzahlHauptmahlzeiten(monatlicheHauptmahlzeiten);
+		this.getBgCalculationInputGemeinde().setAnzahlHauptmahlzeiten(monatlicheHauptmahlzeiten);
+	}
+
+	public void setMonatlicheNebenmahlzeitenForAsivAndGemeinde(BigDecimal monatlicheNebenmahlzeiten) {
+		this.getBgCalculationInputAsiv().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
+		this.getBgCalculationInputGemeinde().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
+	}
+
+	public void setTarifHauptmahlzeitForAsivAndGemeinde(BigDecimal tarifHauptmahlzeit) {
+		this.getBgCalculationInputAsiv().setTarifHauptmahlzeit(tarifHauptmahlzeit);
+		this.getBgCalculationInputGemeinde().setTarifHauptmahlzeit(tarifHauptmahlzeit);
+	}
+
+	public void setTarifNebenmahlzeitForAsivAndGemeinde(BigDecimal tarifNebenmahlzeit) {
+		this.getBgCalculationInputAsiv().setTarifNebenmahlzeit(tarifNebenmahlzeit);
+		this.getBgCalculationInputGemeinde().setTarifNebenmahlzeit(tarifNebenmahlzeit);
+	}
+
+	public void setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
+	}
+
+	public void setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
@@ -633,8 +671,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public boolean isCloseTo(@Nonnull VerfuegungZeitabschnitt that) {
 		// Folgende Attribute sollen bei einer "kleinen" Änderung nicht zu einer Neuberechnung führen:
-		// (explizit wird nur ASIV verglichen, da es sich um einen "alten" Rundungsfehler handelt)
-		return bgCalculationResultAsiv.isCloseTo(that.getBgCalculationResultAsiv());
+		boolean asivCloseTo = bgCalculationResultAsiv.isCloseTo(that.getBgCalculationResultAsiv());
+		boolean gemeindeCloseTo = true;
+		if (hasGemeindeSpezifischeBerechnung) {
+			Objects.requireNonNull(this.getBgCalculationResultGemeinde());
+			Objects.requireNonNull(that.getBgCalculationResultGemeinde());
+			gemeindeCloseTo = this.getBgCalculationResultGemeinde().isCloseTo(that.getBgCalculationResultGemeinde());
+		}
+		return asivCloseTo && gemeindeCloseTo;
 	}
 
 	public void copyCalculationResult(@Nonnull VerfuegungZeitabschnitt that) {
@@ -688,5 +732,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
+		result.setVerguenstigungHauptmahlzeitenTotal(input.getVerguenstigungHauptmahlzeitenTotal());
+		result.setVerguenstigungNebenmahlzeitenTotal(input.getVerguenstigungNebenmahlzeitenTotal());
 	}
 }

@@ -55,7 +55,7 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {
 			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
 			inputData.setAnspruchspensumProzent(0);
-			inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
+			inputData.addBemerkung(MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
 		}
 	}
 }

@@ -54,7 +54,6 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -211,7 +210,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(new Phrase(translate(KIND_NAME), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(kind.getFullName(), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(translate(EINTRITTSDATUM), getPageConfiguration().getFont()));
-		assert anmeldungTagesschule.getBelegungTagesschule() != null;
+		Objects.requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
 		table.addCell(new Phrase(Constants.DATE_FORMATTER.format(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum()),
 			getPageConfiguration().getFont()));
 		// Row: Angebot + Klasse
@@ -260,7 +259,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			tagesschuleModuleMap.values().stream().sorted((oneList, otherList) -> {
 				ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
 				ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
-				return other.compareTo(one);
+				return one.compareTo(other);
 			}).forEach(v -> {
 				boolean monday = false;
 				boolean tuesday = false;
@@ -311,7 +310,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 						break;
 					}
 				}
-				assert mtg != null;
+				Objects.requireNonNull(mtg);
 				boolean isFrench = "fr".equalsIgnoreCase(sprache.getLanguage());
 				String bezeichnungStr;
 				if (mtg.getBezeichnung().getTextDeutsch() != null && mtg.getBezeichnung().getTextFranzoesisch() != null) {

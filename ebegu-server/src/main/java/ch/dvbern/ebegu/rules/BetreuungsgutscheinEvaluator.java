@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -37,11 +38,13 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,6 +131,7 @@ public class BetreuungsgutscheinEvaluator {
 	public void evaluate(
 		@Nonnull Gesuch gesuch,
 		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
@@ -135,6 +139,10 @@ public class BetreuungsgutscheinEvaluator {
 			throw new IllegalStateException(
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
+
+		LocalDate bernAsivStartDate = kitaxParameter.getStadtBernAsivStartDate();
+		Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
+
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO, locale);
 		List<KindContainer> kinder = new ArrayList<>(gesuch.getKindContainers());
@@ -228,15 +236,38 @@ public class BetreuungsgutscheinEvaluator {
 				Verfuegung verfuegungPreview = new Verfuegung();
 				platz.setVerfuegungPreview(verfuegungPreview);
 
+				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
+				final boolean possibleKitaxRechner =
+					kitaxParameter.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde()) && platz.getBetreuungsangebotTyp().isJugendamt();
 				// Den richtigen Rechner anwerfen
-				AbstractRechner rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
-				if (rechner != null) {
-					zeitabschnitte.forEach(zeitabschnitt -> rechner.calculate(zeitabschnitt, bgRechnerParameterDTO));
-
-					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-					if (vorgaengerVerfuegung != null) {
-						usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
+				zeitabschnitte.forEach(zeitabschnitt -> {
+					// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
+					// da fuer Stadt Bern bis zum Zeitpunkt X der alte Ki-Tax Rechner verwendet werden soll.
+					AbstractRechner rechnerToUse = null;
+					if (possibleKitaxRechner) {
+						if (zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
+							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, locale);
+						} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
+							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
+							// koennen wir den normalen ASIV Rechner verwenden.
+							rechnerToUse = asivRechner;
+						} else {
+							// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
+							// NullRechner? Wegen Bemerkungen?
+							rechnerToUse = new EmptyKitaxRechner(locale);
+						}
+					} else {
+						// Alle anderen rechnen normal mit dem Asiv-Rechner
+						rechnerToUse = asivRechner;
 					}
+					if (rechnerToUse != null) {
+						rechnerToUse.calculate(zeitabschnitt, bgRechnerParameterDTO);
+					}
+				});
+
+				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+				if (vorgaengerVerfuegung != null) {
+					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
@@ -319,14 +350,14 @@ public class BetreuungsgutscheinEvaluator {
 		return restanspruchZeitabschnitte;
 	}
 
-	private List<Rule> findRulesToRunForPeriode(Gesuchsperiode gesuchsperiode) {
+	private List<Rule> findRulesToRunForPeriode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<Rule> rulesForGesuchsperiode = new LinkedList<>();
 		for (Rule rule : rules) {
-			if (rule.isValid(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+			// Die Regel muss irgendwann waehrend der Gesuchsperiode gueltig sein, sonst muessen wir sie nicht beachten
+			if (rule.isValid(gesuchsperiode.getGueltigkeit())) {
 				rulesForGesuchsperiode.add(rule);
 			} else {
 				LOG.debug("Rule did not aply to Gesuchsperiode {}", rule);
-
 			}
 		}
 		return rulesForGesuchsperiode;

@@ -249,6 +249,10 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.getAnmeldungenTagesschule().add(anmeldungTagesschule.copyAnmeldungTagesschule(
 				new AnmeldungTagesschule(), copyType, target, targetGesuch.getEingangsart()));
 		}
+		for (AnmeldungFerieninsel anmeldungFerieninsel : this.getAnmeldungenFerieninsel()) {
+			target.getAnmeldungenFerieninsel().add(anmeldungFerieninsel.copyAnmeldungFerieninsel(
+				new AnmeldungFerieninsel(), copyType, target, targetGesuch.getEingangsart()));
+		}
 	}
 
 	@Nonnull

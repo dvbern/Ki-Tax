@@ -57,7 +57,6 @@ function overlappingValidator(fiStammdatenList: TSFerieninselStammdaten[]): {[ke
 function extractZeitraeume(stammdatenList: TSFerieninselStammdaten[]): TSFerieninselZeitraum[] {
     let zeitraeume: TSFerieninselZeitraum[] = [];
     for (const stammdaten of stammdatenList) {
-        zeitraeume.push(stammdaten.ersterZeitraum);
         zeitraeume = zeitraeume.concat(stammdaten.zeitraumList);
     }
     return zeitraeume;

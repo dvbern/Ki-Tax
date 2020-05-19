@@ -79,10 +79,8 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 
 	@Nullable
 	private VerfuegungZeitabschnitt createZeitabschnittBevorEinreichung(@Nonnull LocalDate startGP, @Nonnull LocalDate tagBevorAnspruch) {
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		// Der Anspruch beginnt erst am 1. des Monats der Einreichung
-		verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(startGP);
-		verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(tagBevorAnspruch);
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(startGP, tagBevorAnspruch);
 		verfuegungZeitabschnitt.setZuSpaetEingereichtForAsivAndGemeinde(true);
 		// Sicherstellen, dass nicht der ganze Zeitraum vor dem Einreichungsdatum liegt
 		if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {

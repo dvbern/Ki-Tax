@@ -63,9 +63,9 @@
                                             {{'TAGESSCHULE_TAGIS_ENABLED'|translate}}</mat-checkbox>
                                     </div>
 
-                                    <label class="required" translate for="tsAktivierungsdatum">TAGESSCHULE_AKTIVIERUNGSDATUM</label>
+                                    <label class="required" translate for="tsAktivierungsdatum_{{i}}">TAGESSCHULE_AKTIVIERUNGSDATUM</label>
                                     <input class="dv-mat-datepicker" type="text"
-                                           name="tsAktivierungsdatum" id="tsAktivierungsdatum"
+                                           name="tsAktivierungsdatum" id="tsAktivierungsdatum_{{i}}"
                                            [(ngModel)]="konfigurationsListe[i].konfigTagesschuleAktivierungsdatum"
                                            [matDatepicker]="tsAktivierungsdatum"
                                            (dateChange)="tagesschuleAktivierungsdatumChanged(konfigurationsListe[i])"
@@ -78,9 +78,9 @@
                                 <!-- Erster Schultag -->
                                 <div class="form-group">
                                     <label class="required" translate
-                                           for="tsErsterSchultag">TAGESSCHULE_ERSTER_SCHULTAG</label>
+                                           for="tsErsterSchultag_{{i}}">TAGESSCHULE_ERSTER_SCHULTAG</label>
                                     <input class="dv-mat-datepicker" type="text"
-                                           name="tsErsterSchultag" id="tsErsterSchultag"
+                                           name="tsErsterSchultag" id="tsErsterSchultag_{{i}}"
                                            [(ngModel)]="konfigurationsListe[i].konfigTagesschuleErsterSchultag"
                                            [matDatepicker]="tsErsterSchultag"
                                            (dateChange)="tagesschuleErsterSchultagChanged(konfigurationsListe[i])"

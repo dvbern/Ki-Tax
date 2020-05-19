@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.resource.schulamt;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -163,7 +164,7 @@ public class ScolarisBackendResource {
 
 				//check if Gemeinde Scolaris erlaubt:
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
-					return createResponseUnauthorised("username");
+					return createResponseUnauthorised("Username not allowed for this Gemeinde");
 				}
 
 				if (anmeldungTagesschule.isKeineDetailinformationen()) {
@@ -368,7 +369,7 @@ public class ScolarisBackendResource {
 		final String scolarisGemeindeUsername = strings[0];
 
 		//check if Gemeinde erlaubt Scolaris
-		assert anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule() != null;
+		Objects.requireNonNull(anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule());
 		GemeindeStammdaten gemeindeStammdaten =
 			gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule().getGemeinde().getId()).get();
 		AtomicBoolean isScolarisErlaubt = new AtomicBoolean(false);

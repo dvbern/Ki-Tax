@@ -279,6 +279,13 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
+            case TSStatistikParameterType.NOTRECHT:
+                this.reportAsyncRS.getNotrechtReportExcel(
+                    this._statistikParameter.doSave)
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
@@ -359,6 +366,8 @@ export class StatistikViewController implements IController {
     public getGesuchsperiodenForTagesschule(stammdaten: TSInstitutionStammdaten): TSGesuchsperiode[] {
         return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.map(d => {
             return d.gesuchsperiode;
+        }).sort((a, b) => {
+            return b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString);
         });
     }
 }

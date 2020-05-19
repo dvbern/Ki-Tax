@@ -33,7 +33,9 @@ public class KantonDataRow {
 	private LocalDate geburtsdatum;
 	private LocalDate zeitabschnittVon;
 	private LocalDate zeitabschnittBis;
-	private BigDecimal bgPensum;
+	private BigDecimal bgPensumKanton;
+	private BigDecimal bgPensumGemeinde;
+	private BigDecimal bgPensumTotal;
 	private BigDecimal elternbeitrag;
 	private BigDecimal verguenstigungKanton;
 	private BigDecimal verguenstigungGemeinde;
@@ -99,12 +101,28 @@ public class KantonDataRow {
 		this.zeitabschnittBis = zeitabschnittBis;
 	}
 
-	public BigDecimal getBgPensum() {
-		return bgPensum;
+	public BigDecimal getBgPensumKanton() {
+		return bgPensumKanton;
 	}
 
-	public void setBgPensum(BigDecimal bgPensum) {
-		this.bgPensum = bgPensum;
+	public void setBgPensumKanton(BigDecimal bgPensumKanton) {
+		this.bgPensumKanton = bgPensumKanton;
+	}
+
+	public BigDecimal getBgPensumGemeinde() {
+		return bgPensumGemeinde;
+	}
+
+	public void setBgPensumGemeinde(BigDecimal bgPensumGemeinde) {
+		this.bgPensumGemeinde = bgPensumGemeinde;
+	}
+
+	public BigDecimal getBgPensumTotal() {
+		return bgPensumTotal;
+	}
+
+	public void setBgPensumTotal(BigDecimal bgPensumTotal) {
+		this.bgPensumTotal = bgPensumTotal;
 	}
 
 	public BigDecimal getElternbeitrag() {

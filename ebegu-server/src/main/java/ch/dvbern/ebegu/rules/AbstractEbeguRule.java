@@ -73,7 +73,7 @@ public abstract class AbstractEbeguRule implements Rule {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
 		this.ruleValidity = ruleValidity;
-		this.validityPeriod = validityPeriod;
+		this.validityPeriod = new DateRange(validityPeriod);
 		this.locale = locale;
 	}
 
@@ -89,9 +89,15 @@ public abstract class AbstractEbeguRule implements Rule {
 		return validityPeriod.getGueltigBis();
 	}
 
+	@Nonnull
 	@Override
-	public boolean isValid(@Nonnull LocalDate stichtag) {
-		return validityPeriod.contains(stichtag);
+	public DateRange validityPeriod() {
+		return validityPeriod;
+	}
+
+	@Override
+	public boolean isValid(@Nonnull DateRange dateRange) {
+		return validityPeriod.getOverlap(dateRange).isPresent();
 	}
 
 	@Override
@@ -104,12 +110,6 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
-	}
-
-	@Override
-	@Nonnull
-	public RuleValidity getRuleValidity() {
-		return ruleValidity;
 	}
 
 	public Locale getLocale() {
@@ -125,6 +125,10 @@ public abstract class AbstractEbeguRule implements Rule {
 			// Nach jeder AbschnittRule erhalten wir die *neuen* Zeitabschnitte zurueck. Diese müssen bei ASIV-Regeln
 			// immer eine identische ASIV und GEMEINDE-Berechnung haben!
 			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
+			// Wir duerfen nur neue Abschnitte verwenden, welche ueberhaupt gueltig sind
+			for (VerfuegungZeitabschnitt zeitabschnitt : zwischenresultate) {
+				validateZeitabschnittGueltigkeit(zeitabschnitt);
+			}
 			// Wenn es eine ASIV Rule ist, gilt sie fuer die Gemeinde genau gleich, die Ergebnisse (nur
 			// genau dieser Rule) muessen identisch sein
 			if (RuleValidity.ASIV == ruleValidity) {
@@ -133,6 +137,23 @@ public abstract class AbstractEbeguRule implements Rule {
 			return zwischenresultate;
 		}
 		return new ArrayList<>();
+	}
+
+	protected void validateZeitabschnittGueltigkeit(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		boolean valid = true;
+		if (zeitabschnitt.getGueltigkeit().startsBefore(this.validityPeriod)) {
+			valid = false;
+		}
+		if (zeitabschnitt.getGueltigkeit().endsAfter(this.validityPeriod)) {
+			valid = false;
+		}
+		if (!valid) {
+			String msg =
+				"Regel " + this.getClass().getSimpleName() + " has invalid Zeitabschnitte. Rule " +
+					this.validityPeriod.toRangeString() + ", Abschnitt: " +
+					zeitabschnitt.getGueltigkeit().toRangeString();
+			throw new EbeguRuntimeException("validateZeitabschnittGueltigkeit", msg);
+		}
 	}
 
 	private void assertSimilarAsivAndGemeindeInputs(@Nonnull Collection<VerfuegungZeitabschnitt> zeitabschnitte) {
@@ -157,7 +178,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * aktuellen Betreuungstyp relevant ist
 	 */
 	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (isAnwendbarForAngebot(platz)) {
+		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit())) {
 			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
 				executeRule(platz, inputDatum);
 			}

@@ -56,7 +56,7 @@ public class TraegerschaftServiceTest {
 		traegerschaftService.saveTraegerschaft(traegerschaft);
 		Optional<Traegerschaft> traegerschaftOpt = traegerschaftService.findTraegerschaft(traegerschaft.getId());
 		Assert.assertTrue(traegerschaftOpt.isPresent());
-		Assert.assertEquals("Traegerschaft1", traegerschaftOpt.get().getName());
+		Assert.assertTrue(traegerschaftOpt.get().getName().startsWith("Traegerschaft"));
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,16 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
+package ch.dvbern.ebegu.reporting;
 
-@Pipe({
-  name: 'filterFiStammdaten'
-})
-export class FilterFiStammdatenPipe implements PipeTransform {
+import java.util.List;
 
-  public transform(fiStammdaten: TSFerieninselStammdaten[]): TSFerieninselStammdaten[] {
-    return fiStammdaten.filter(stammdaten => stammdaten.ferienActive);
-  }
+import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.reporting.notrecht.NotrechtDataRow;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+
+public interface ReportNotrechtService {
+
+	@Nonnull
+	List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen);
+
+	@Nonnull
+	UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException;
 }
