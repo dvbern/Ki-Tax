@@ -212,6 +212,7 @@
                                         <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
                                         <th data-translate="GEBUHR_PRO_STUNDE"></th>
                                         <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
+                                        <th data-translate="VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE"></th>
                                         <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
                                     </tr>
                                     </thead>
@@ -232,6 +233,10 @@
                                         <!-- Verpflegungskosten Pro Woche -->
                                         <td><span
                                             ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten"></span>
+                                        </td>
+                                        <!-- Mahlzeitenvergünstigung -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt"></span>
                                         </td>
                                         <!-- Total Kosten Pro Woche -->
                                         <td class="result"><span
@@ -258,6 +263,7 @@
                                         <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
                                         <th data-translate="GEBUHR_PRO_STUNDE"></th>
                                         <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
+                                        <th data-translate="VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE"></th>
                                         <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
                                     </tr>
                                     </thead>
@@ -278,6 +284,10 @@
                                         <!-- Verpflegungskosten Pro Woche -->
                                         <td><span
                                             ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskosten"></span>
+                                        </td>
+                                        <!-- Mahlzeitenvergünstigung -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskostenVerguenstigt"></span>
                                         </td>
                                         <!-- Total Kosten Pro Woche -->
                                         <td class="result"><span
@@ -369,6 +379,8 @@
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th class="result" data-translate="VERGUENSTIGUNG"></th>
+                                <th class="result" data-translate="VERGUENSTIGUNG_HAUPTMAHLZEITEN" ng-if="vm.isSuperuser()"></th>
+                                <th class="result" data-translate="VERGUENSTIGUNG_NEBENMAHLZEITEN" ng-if="vm.isSuperuser()"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
@@ -411,6 +423,12 @@
                                 <!-- An Kita überwiesen (Gutschein) -->
                                 <td class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>
+                                <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
+                                <td class="result"
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungHauptmahlzeitTotal | currency : '' : 2"></td>
+                                <!-- Mahlzeitenverguenstigung Nebenmahlzeiten -->
+                                <td class="result"
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungNebenmahlzeitTotal | currency : '' : 2"></td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">

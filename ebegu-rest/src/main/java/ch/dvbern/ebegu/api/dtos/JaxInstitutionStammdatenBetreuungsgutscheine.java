@@ -51,6 +51,12 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private boolean subventioniertePlaetze;
 
 	@Nullable
+	private BigDecimal tarifProHauptmahlzeit;
+
+	@Nullable
+	private BigDecimal tarifProNebenmahlzeit;
+
+	@Nullable
 	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal anzahlPlaetzeFirmen;
@@ -138,5 +144,23 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
 		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
+	}
+
+	@Nullable
+	public BigDecimal getTarifProHauptmahlzeit() {
+		return tarifProHauptmahlzeit;
+	}
+
+	public void setTarifProHauptmahlzeit(@Nullable BigDecimal tarifProHauptmahlzeit) {
+		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+	}
+
+	@Nullable
+	public BigDecimal getTarifProNebenmahlzeit() {
+		return tarifProNebenmahlzeit;
+	}
+
+	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {
+		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 }
