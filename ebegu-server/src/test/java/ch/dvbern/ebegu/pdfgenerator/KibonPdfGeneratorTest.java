@@ -254,7 +254,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch_tagesschule.getGesuchsteller1());
 		gesuch_tagesschule.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, art, anmeldungTagesschule);
+			stammdaten, art, anmeldungTagesschule, false);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
