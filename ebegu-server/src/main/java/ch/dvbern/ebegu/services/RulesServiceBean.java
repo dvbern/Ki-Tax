@@ -56,7 +56,7 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 		@Nonnull Locale locale
 	) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
-		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde(gemeinde);
+		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde();
 		Map<EinstellungKey, Einstellung> einstellungen = loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
 		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen, kitaxParameterDTO, locale);
 	}

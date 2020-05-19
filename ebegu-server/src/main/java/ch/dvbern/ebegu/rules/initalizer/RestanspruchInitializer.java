@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules.initalizer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -74,13 +75,20 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 				// Wenn die Betreuung schon verfuegt ist, muss der Restanspruch aufgrund der (gespeicherten) Resultate
 				// berechnet werden
 				restanspruchUebernehmenVerfuegt(zeitabschnitt.getBgCalculationResultAsiv(), restanspruchsAbschnitt.getBgCalculationInputAsiv());
-				if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+					Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
 					restanspruchUebernehmenVerfuegt(zeitabschnitt.getBgCalculationResultGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
+				} else {
+					restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
 				}
 			} else {
 				// Noch nicht verfuegt: Die Restansprueche wurden im Input initialisiert
 				restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputAsiv(), restanspruchsAbschnitt.getBgCalculationInputAsiv());
-				restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
+				if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+					restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
+				} else {
+					restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
+				}
 			}
 			restanspruchZeitabschnitte.add(restanspruchsAbschnitt);
 		}
