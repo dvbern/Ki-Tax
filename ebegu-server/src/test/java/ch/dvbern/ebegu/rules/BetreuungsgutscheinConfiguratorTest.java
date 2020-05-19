@@ -29,7 +29,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 	@Before
 	public void setUp() {
 		ruleConfigurator = new BetreuungsgutscheinConfigurator();
-		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde(gemeindeOfEvaluator);
+		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde();
 		// Sicherstellen, dass wir alle Einstellungen gemaess Configurator haben
 		Assert.assertEquals(keysToLoad.size(), einstellungenGemaessAsiv.size());
 	}
