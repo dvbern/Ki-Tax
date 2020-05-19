@@ -63,6 +63,8 @@
                             data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
                         <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
                             data-translate="MONATLICHE_NEBENMAHLZEITEN"></th>
+                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                            data-translate="MONATLICHE_MAHLZEITEN_KOSTEN"></th>
                         <th>
                             <span data-translate="STATUS"></span>
                             <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
@@ -121,6 +123,9 @@
                                    step="1"
                                    ng-required="vm.isRowRequired($index)"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheNebenmahlzeiten}}">
+                        </td>
+                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                            {{vm.getMonthlyMahlzeitenKosten($index)}}
                         </td>
                         <td>
                             <span class="fa {{vm.getIcon($index)}}" aria-hidden="true" title="{{vm.getIconTooltip($index)}}"></span>

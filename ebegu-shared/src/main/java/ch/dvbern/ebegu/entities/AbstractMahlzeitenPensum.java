@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -39,6 +41,14 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 	@Column(nullable = false)
 	private Integer monatlicheNebenmahlzeiten = 0;
 
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal tarifProHauptmahlzeit = BigDecimal.ZERO;
+
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal tarifProNebenmahlzeit = BigDecimal.ZERO;
+
 	@Nonnull
 	public Integer getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
@@ -57,7 +67,22 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
-	@Nonnull
+	public BigDecimal getTarifProHauptmahlzeit() {
+		return tarifProHauptmahlzeit;
+	}
+
+	public void setTarifProHauptmahlzeit(BigDecimal tarifProHauptmahlzeit) {
+		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+	}
+
+	public BigDecimal getTarifProNebenmahlzeit() {
+		return tarifProNebenmahlzeit;
+	}
+
+	public void setTarifProNebenmahlzeit(BigDecimal tarifProNebenmahlzeit) {
+		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
+	}
+
 	public void copyAbstractBetreuungspensumMahlzeitenEntity(@Nonnull AbstractMahlzeitenPensum target,
 		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractBetreuungspensumEntity(target, copyType);
@@ -65,6 +90,8 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		case MUTATION:
 			target.setMonatlicheHauptmahlzeiten(this.getMonatlicheHauptmahlzeiten());
 			target.setMonatlicheNebenmahlzeiten(this.getMonatlicheNebenmahlzeiten());
+			target.setTarifProHauptmahlzeit(this.getTarifProHauptmahlzeit());
+			target.setTarifProNebenmahlzeit(this.getTarifProNebenmahlzeit());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

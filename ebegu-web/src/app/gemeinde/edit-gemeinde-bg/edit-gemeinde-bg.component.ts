@@ -109,6 +109,16 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gk.konfigBeguBisUndMitSchulstufe, gk);
     }
 
+    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit, gk);
+    }
+
+    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit, gk);
+    }
+
     public changeKonfigErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
         // if the flag is unchecked, we need to restore the original value
         if (!gk.erwerbspensumZuschlagOverriden) {
