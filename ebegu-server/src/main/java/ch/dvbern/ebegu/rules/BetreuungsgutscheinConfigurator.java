@@ -270,8 +270,8 @@ public class BetreuungsgutscheinConfigurator {
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleVorStichtag = new ErwerbspensumGemeindeCalcRule(
 				vorStichtag,
-				minEWP_nichtEingeschultGmde.getValueAsInteger(),
-				minEWP_eingeschultGmde.getValueAsInteger(),
+				kitaxParameterDTO.getMinEWP(),
+				kitaxParameterDTO.getMinEWP(),
 				locale);
 			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleVorStichtag, einstellungMap);
 			// Regel 2: Gemaess ASIV ab dem Stichtag
