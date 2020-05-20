@@ -93,7 +93,7 @@ public class BetreuungsgutscheinEvaluator {
 			: gesuch.getFirstBetreuungOrAnmeldungTagesschule();
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
-		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
 
 		if (firstBetreuungOfGesuch != null) {
 
@@ -147,7 +147,7 @@ public class BetreuungsgutscheinEvaluator {
 			// Betreuung den "Restanspruch" merken für die Berechnung der nächsten Betreuung, am Schluss kommt dann
 			// jeweils eine Reduktionsregel die den Anspruch auf den Restanspruch beschraenkt
 			List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte =
-				createInitialenRestanspruch(gesuch.getGesuchsperiode(), !rechnerRulesForGemeinde.isEmpty());
+				RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), !rechnerRulesForGemeinde.isEmpty());
 
 			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
 			// EBEGU-561)
@@ -325,15 +325,5 @@ public class BetreuungsgutscheinEvaluator {
 			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
 		}
 		return rechnerRules;
-	}
-
-	public static List<VerfuegungZeitabschnitt> createInitialenRestanspruch(Gesuchsperiode gesuchsperiode, boolean hasGemeindeSpezifischeBerechnung) {
-		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
-		VerfuegungZeitabschnitt initialerRestanspruch = new VerfuegungZeitabschnitt(gesuchsperiode.getGueltigkeit());
-		// Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
-		initialerRestanspruch.setAnspruchspensumRestForAsivAndGemeinde(-1);
-		initialerRestanspruch.setHasGemeindeSpezifischeBerechnung(hasGemeindeSpezifischeBerechnung);
-		restanspruchZeitabschnitte.add(initialerRestanspruch);
-		return restanspruchZeitabschnitte;
 	}
 }
