@@ -46,7 +46,7 @@ public final class KitaxUebergangsloesungParameter {
 	private BigDecimal maxMassgebendesEinkommen = MathUtil.DEFAULT.from(160000);
 	private BigDecimal minMassgebendesEinkommen = MathUtil.DEFAULT.from(43000);
 
-	private int minEWP = 10; // Gilt fuer alle Schulstufen
+	private int minEWP = 10; // Gilt fuer alle Schulstufen. Zuschlaege/Rundungen werden im Korrekturmodus gemacht
 
 	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
 
