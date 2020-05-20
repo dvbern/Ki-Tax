@@ -3369,6 +3369,11 @@ public class JaxBConverter extends AbstractConverter {
 			return null;
 		}
 
+		// Achtung: Hier sollten nur Daten aus dem RelevantBGCalculation*Result* verwendet werden, da die Daten aus den
+		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr zugaenglich
+		// sind. Ausnahme sind Daten, die ZUM VERFUEGEN gebraucht werden, wie z.B.
+		// getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten()
+
 		final JaxVerfuegungZeitabschnitt jaxZeitabschn = new JaxVerfuegungZeitabschnitt();
 		convertAbstractDateRangedFieldsToJAX(zeitabschnitt, jaxZeitabschn);
 		jaxZeitabschn.setAbzugFamGroesse(zeitabschnitt.getAbzugFamGroesse());
@@ -3405,8 +3410,8 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
-		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationInput().getVerguenstigungHauptmahlzeitenTotal());
-		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationInput().getVerguenstigungNebenmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungHauptmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungNebenmahlzeitenTotal());
 		return jaxZeitabschn;
 	}
 

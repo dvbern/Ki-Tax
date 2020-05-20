@@ -17,11 +17,14 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -79,4 +82,11 @@ public interface Rule {
 	 * relevant ist
 	 */
 	boolean isRelevantForFamiliensituation();
+
+	/**
+	 * Entscheidet aufrund der Einstellungen, ob eine Regel fuer eine Gemeinde benoetigt wird.
+	 * z.B: ErwerbspensumZuschlag ist von der Gemeinde nicht ueberschrieben worden -> die
+	 * Regel ErwerbspensumGemeindeCalcRule wird nicht benoetigt.
+	 */
+	boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap);
 }

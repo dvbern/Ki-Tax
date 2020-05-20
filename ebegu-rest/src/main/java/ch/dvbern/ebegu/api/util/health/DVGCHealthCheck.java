@@ -26,7 +26,7 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
 
 @ApplicationScoped
 @Health
-public class DVHealthCheck implements org.eclipse.microprofile.health.HealthCheck {
+public class DVGCHealthCheck implements org.eclipse.microprofile.health.HealthCheck {
 
 	private static final int MAX_GC_TIME_PERCETAGE = 20;
 	private GCHealthCheck gcHealthCheck = null;

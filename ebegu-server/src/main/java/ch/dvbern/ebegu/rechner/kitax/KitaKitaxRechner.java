@@ -132,6 +132,8 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Resultat erstellen
 		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
 
+		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
+
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);
 

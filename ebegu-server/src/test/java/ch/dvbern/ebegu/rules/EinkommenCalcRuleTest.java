@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.EINSTELLUNG_MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -168,7 +169,7 @@ public class EinkommenCalcRuleTest {
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(0, (new BigDecimal("159000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertTrue(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(result.get(0).getBemerkungenList().isEmpty());

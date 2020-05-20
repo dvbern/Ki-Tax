@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -24,6 +25,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Superklasse für alle kiBon-Rechner
@@ -41,12 +43,14 @@ public abstract class AbstractRechner {
 		BGCalculationResult asivResult = calculateAsiv(asivInput, parameterDTO).roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(asivResult);
 
-		BGCalculationInput gemeindeInput = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
-		BGCalculationResult gemeindeResult = calculateGemeinde(gemeindeInput, parameterDTO)
-			.map(BGCalculationResult::roundAllValues)
-			.orElseGet(() -> new BGCalculationResult(asivResult));
-
-		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(gemeindeResult);
+		// Das Resultat Gemeinde wird nur gespeichert, wenn es ueberhaupt eine gemeindespezifische Berechnung gab
+		if (verfuegungZeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+			BGCalculationInput gemeindeInput = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
+			BGCalculationResult gemeindeResult = calculateGemeinde(gemeindeInput, parameterDTO)
+				.map(BGCalculationResult::roundAllValues)
+				.orElseGet(() -> new BGCalculationResult(asivResult));
+			verfuegungZeitabschnitt.setBgCalculationResultGemeinde(gemeindeResult);
+		}
 	}
 
 	/**
@@ -65,4 +69,21 @@ public abstract class AbstractRechner {
 	protected abstract BGCalculationResult calculateAsiv(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO);
+
+	/**
+	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
+	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
+	 */
+	protected void handleUntermonatlicheMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat) {
+		if (MathUtil.isSame(anteilMonat, BigDecimal.ONE)) {
+			// Es ist ein ganzer Monat, wir muessen nichts tun.
+			return;
+		}
+		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
+		// derselben mit dem Anteil des Monats korrigiert werden
+		final BigDecimal hauptmahlzeitenTotal = result.getVerguenstigungHauptmahlzeitenTotal();
+		final BigDecimal nebenmahlzeitenTotal = result.getVerguenstigungNebenmahlzeitenTotal();
+		result.setVerguenstigungHauptmahlzeitenTotal(MathUtil.DEFAULT.multiply(hauptmahlzeitenTotal, anteilMonat));
+		result.setVerguenstigungNebenmahlzeitenTotal(MathUtil.DEFAULT.multiply(nebenmahlzeitenTotal, anteilMonat));
+	}
 }

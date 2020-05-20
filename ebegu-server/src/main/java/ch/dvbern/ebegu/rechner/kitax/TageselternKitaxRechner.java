@@ -126,6 +126,8 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_TAGESFAMILIEN));
 		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_TAGESFAMILIEN));
 
+		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
+
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);
 

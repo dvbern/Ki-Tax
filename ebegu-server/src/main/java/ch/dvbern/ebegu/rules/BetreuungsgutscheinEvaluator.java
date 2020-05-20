@@ -62,13 +62,17 @@ public class BetreuungsgutscheinEvaluator {
 
 	private final List<Rule> rules;
 
+	private final BetreuungsgutscheinExecutor executor;
+
 	public BetreuungsgutscheinEvaluator(List<Rule> rules) {
 		this.rules = rules;
+		executor = new BetreuungsgutscheinExecutor(true);
 	}
 
 	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput) {
 		this.rules = rules;
 		this.isDebug = enableDebugOutput;
+		executor = new BetreuungsgutscheinExecutor(isDebug);
 	}
 
 	/**
@@ -97,12 +101,8 @@ public class BetreuungsgutscheinEvaluator {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
 
 		if (firstBetreuungOfGesuch != null) {
-			for (Rule rule : rulesToRun) {
-				// Nur ausgewaehlte Rules verwenden
-				if (rule.isRelevantForFamiliensituation()) {
-					zeitabschnitte = rule.calculate(firstBetreuungOfGesuch, zeitabschnitte);
-				}
-			}
+
+			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
 			MonatsRule monatsRule = new MonatsRule();
 			MutationsMerger mutationsMerger = new MutationsMerger(locale);
@@ -141,8 +141,7 @@ public class BetreuungsgutscheinEvaluator {
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 
-		LocalDate bernAsivStartDate = kitaxParameter.getStadtBernAsivStartDate();
-		Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
+		Objects.requireNonNull(kitaxParameter.getStadtBernAsivStartDate(), "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
 
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO, locale);
@@ -194,19 +193,7 @@ public class BetreuungsgutscheinEvaluator {
 					}
 				}
 
-				for (Rule rule : rulesToRun) {
-					zeitabschnitte = rule.calculate(platz, zeitabschnitte);
-					if (isDebug) {
-						LOG.info(
-							"{} ({}: {}" + ')',
-							rule.getClass().getSimpleName(),
-							rule.getRuleKey().name(),
-							rule.getRuleType().name());
-						for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-							LOG.info(verfuegungZeitabschnitt.toString());
-						}
-					}
-				}
+				zeitabschnitte = executor.executeRules(rulesToRun, platz, zeitabschnitte);
 
 				// Die Abschluss-Rules ebenfalls ausführen
 
@@ -237,40 +224,7 @@ public class BetreuungsgutscheinEvaluator {
 				Verfuegung verfuegungPreview = new Verfuegung();
 				platz.setVerfuegungPreview(verfuegungPreview);
 
-				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
-				final boolean possibleKitaxRechner =
-					kitaxParameter.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde()) && platz.getBetreuungsangebotTyp().isJugendamt();
-				// Den richtigen Rechner anwerfen
-				zeitabschnitte.forEach(zeitabschnitt -> {
-					// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
-					// da fuer Stadt Bern bis zum Zeitpunkt X der alte Ki-Tax Rechner verwendet werden soll.
-					AbstractRechner rechnerToUse = null;
-					if (possibleKitaxRechner) {
-						if (zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
-							String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
-							KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten =
-								kitaxParameter.getOeffnungszeiten(kitaName);
-							if (oeffnungszeiten == null) {
-								throw new EbeguRuntimeException("getOeffnungszeiten", "Keine Oeffnungszeiten gefunden fuer Kita " + kitaName);
-							}
-							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
-						} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
-							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
-							// koennen wir den normalen ASIV Rechner verwenden.
-							rechnerToUse = asivRechner;
-						} else {
-							// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
-							// NullRechner? Wegen Bemerkungen?
-							rechnerToUse = new EmptyKitaxRechner(locale);
-						}
-					} else {
-						// Alle anderen rechnen normal mit dem Asiv-Rechner
-						rechnerToUse = asivRechner;
-					}
-					if (rechnerToUse != null) {
-						rechnerToUse.calculate(zeitabschnitt, bgRechnerParameterDTO);
-					}
-				});
+				executor.calculateRechner(bgRechnerParameterDTO, kitaxParameter, locale, rechnerRulesForGemeinde, platz, zeitabschnitte);
 
 				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
 				if (vorgaengerVerfuegung != null) {
