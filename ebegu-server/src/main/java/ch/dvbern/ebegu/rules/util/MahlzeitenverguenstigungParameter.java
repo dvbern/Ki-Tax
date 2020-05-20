@@ -120,7 +120,7 @@ public class MahlzeitenverguenstigungParameter {
 			return verguenstigung;
 		}
 
-		if (tarifProMahlzeit.compareTo(minimalerElternbeitrag) >= 0) {
+		if (tarifProMahlzeit.subtract(minimalerElternbeitrag).compareTo(BigDecimal.ZERO) > 0) {
 			return tarifProMahlzeit.subtract(minimalerElternbeitrag);
 		}
 
