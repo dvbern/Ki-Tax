@@ -273,7 +273,9 @@ public class BetreuungsgutscheinConfigurator {
 				kitaxParameterDTO.getMinEWP(),
 				kitaxParameterDTO.getMinEWP(),
 				locale);
-			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleVorStichtag, einstellungMap);
+			// Wir muessen die Regel hier manuell hinzufuegen, da wir nicht die ueblichen Einstellungen verwenden!
+			// Sonst wird sie bei der Pruefung isRelevantForGemeinde wieder entfernt
+			rules.add(ewpBernCalcRuleVorStichtag);
 			// Regel 2: Gemaess ASIV ab dem Stichtag
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleNachStichtag = new ErwerbspensumGemeindeCalcRule(
