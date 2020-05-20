@@ -93,7 +93,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			// vergünstigung für Hauptmahlzeiten ist gegeben
 
 			// vergünstigung pro hauptmahlzeit berechnen
-			BigDecimal multiplier = getVerguenstigungToUse(verguenstigungProHauptmahlzeit,
+			BigDecimal multiplier = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProHauptmahlzeit,
 				inputData.getTarifHauptmahlzeit(),
 				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
 
@@ -117,7 +117,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			// vergünstigung für Nebenmahlzeiten ist gegeben
 
 			// vergünstigung pro hauptmahlzeit berechnen
-			BigDecimal multiplier = getVerguenstigungToUse(verguenstigungProNebenmahlzeit,
+			BigDecimal multiplier = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProNebenmahlzeit,
 				inputData.getTarifNebenmahlzeit(),
 				mahlzeitenverguenstigungParams.getMinimalerElternbeitragNebenmahlzeit());
 
@@ -138,15 +138,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 			addBemerkung(inputData, verguenstigungProHauptmahlzeit, verguenstigungProNebenmahlzeit);
 		}
-	}
-
-	private BigDecimal getVerguenstigungToUse(
-		@Nonnull BigDecimal verguenstigung, @Nonnull BigDecimal tarifProMahlzeit, @Nonnull BigDecimal minimalerElternbeitrag
-	) {
-		if ((tarifProMahlzeit.subtract(verguenstigung)).subtract(minimalerElternbeitrag).compareTo(BigDecimal.ZERO) >= 0) {
-			return verguenstigung;
-		}
-		return tarifProMahlzeit.subtract(minimalerElternbeitrag);
 	}
 
 	private void addBemerkung(@Nonnull BGCalculationInput inputData, @Nonnull BigDecimal haupt, @Nonnull BigDecimal neben) {
