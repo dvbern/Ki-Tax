@@ -34,6 +34,9 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
+@Table(
+	uniqueConstraints =	@UniqueConstraint(columnNames = "name", name = "UK_Traegerschaft_name")
+)
 public class Traegerschaft extends AbstractMutableEntity implements Displayable {
 
 	private static final long serialVersionUID = -8403454439884704618L;

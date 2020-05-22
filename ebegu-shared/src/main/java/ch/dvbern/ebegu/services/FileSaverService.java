@@ -43,4 +43,6 @@ public interface FileSaverService {
 	boolean removeAllFromSubfolder(@Nonnull String subfolder);
 
 	void deleteAllFilesInTempReportsFolder();
+
+	void deleteAllFilesInTempNotverordnungFolder();
 }

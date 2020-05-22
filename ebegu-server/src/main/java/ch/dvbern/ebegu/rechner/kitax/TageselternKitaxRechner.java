@@ -57,7 +57,12 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 		if (!input.isBetreuungInGemeinde()) {
 			input.setAnspruchspensumProzent(0);
-			input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
+			// Die Bemerkung wollen wir nur setzen, wenn es ueberhaupt eine Betreuung gibt zu diesem Zeitpunkt
+			// Das Flag betreuungInBern ist logischerweise auf der Betreuung, und in Zeitabschnitten ohne Betreuung
+			// defaultmaessig false!
+			if (input.getBetreuungspensumProzent().doubleValue() > 0) {
+				input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
+			}
 		}
 
 		// Benoetigte Daten
@@ -118,6 +123,8 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_TAGESFAMILIEN));
 		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_TAGESFAMILIEN));
 		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_TAGESFAMILIEN));
+
+		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);

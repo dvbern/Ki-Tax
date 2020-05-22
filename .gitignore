@@ -39,3 +39,5 @@ ebegu-ws/src/test/
 /logstash/input/uat/server.log**
 /logstash/input/prod1/server.log**
 /logstash/input/prod2/server.log**
+/.run/**
+.run/**

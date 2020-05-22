@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.rechner.kitax;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -52,6 +53,11 @@ public class EmptyKitaxRechner extends AbstractRechner {
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 		result.setAnspruchspensumProzent(0);
+		result.setVerguenstigungHauptmahlzeitenTotal(BigDecimal.ZERO);
+		result.setVerguenstigungNebenmahlzeitenTotal(BigDecimal.ZERO);
+		// Wir loeschen alle Bemerkungen, die den Zeitraum nach dem Stichtag betreffen
+		input.getParent().getBemerkungenList().clear();
+		// Bemerkung, dass der Gutschein noch nicht berechnet werden kann
 		input.addBemerkung(MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD, locale);
 		return result;
 	}

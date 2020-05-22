@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -192,6 +193,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			familiensituation.setAbweichendeZahlungsadresse(false);
 			familiensituation.setZahlungsadresse(null);
 		}
+
+		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
+		handleGemeinsameSteuererklaerung(gesuch);
+
 		return gesuchService.updateGesuch(gesuch, false);
 	}
 
@@ -206,7 +211,41 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
 		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
 			.FINANZIELLE_SITUATION);
+
+		final Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
+
+		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
+		handleGemeinsameSteuererklaerung(gesuch);
+
 		return finanzielleSituationPersisted;
+	}
+
+	private void handleGemeinsameSteuererklaerung(@Nonnull Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+		Objects.requireNonNull(gesuch.getGesuchsteller1(), "GS1 darf zu diesem Zeitpunkt nicht null sein");
+		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
+		if (familiensituation.getGemeinsameSteuererklaerung() != null
+			&& familiensituation.getGemeinsameSteuererklaerung()
+			&& gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()
+			&& gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null
+		) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2(), "GS2 darf zu diesem Zeitpunkt nicht null sein");
+			if (gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null) {
+				// Falls der GS2 Container zu diesem Zeitpunkt noch nicht existiert, wird er hier erstellt
+				gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer()
+					.setJahr(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getJahr());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setGesuchsteller(gesuch.getGesuchsteller2());
+			}
+			FinanzielleSituation finanzielleSituationGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+			FinanzielleSituation finanzielleSituationGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+
+			finanzielleSituationGS2.setSteuerveranlagungErhalten(finanzielleSituationGS1.getSteuerveranlagungErhalten());
+			finanzielleSituationGS2.setSteuererklaerungAusgefuellt(finanzielleSituationGS1.getSteuererklaerungAusgefuellt());
+		}
 	}
 
 	@Nonnull

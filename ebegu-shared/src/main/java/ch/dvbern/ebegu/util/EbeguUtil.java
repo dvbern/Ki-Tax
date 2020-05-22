@@ -206,7 +206,8 @@ public final class EbeguUtil {
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
+			&& (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
+			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger()))
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() != null;
 	}
 
