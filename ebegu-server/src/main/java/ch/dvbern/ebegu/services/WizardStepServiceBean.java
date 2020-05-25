@@ -569,8 +569,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstaendig(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
-		} else if (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
-			// the FinSit/EKV is required but has not been created yet, so it must be NOK
+		} else if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(wizardStep.getGesuch(), wizardStep.getWizardStepName())) {
+			// the FinSit/EKV is required but has not been created yet or is only partialy filled, so it must be NOK
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
@@ -922,12 +922,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				setWizardStepOkOrMutiert(wizardStep);
 			}
 			if ((dominantType == BetreuungsangebotTyp.KITA || dominantType == BetreuungsangebotTyp.TAGESSCHULE)
-				&& EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
+				&& EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(wizardStep.getGesuch(), wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 					|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
-				//TODO we dont check if there is a finsit container if the field are set or not
-				//so the step is ok if there's a finsit or Einkommsverschlt but without value
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 			}
 		}
