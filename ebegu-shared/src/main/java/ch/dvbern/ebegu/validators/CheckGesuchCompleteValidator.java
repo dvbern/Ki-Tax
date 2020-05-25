@@ -58,11 +58,11 @@ public class CheckGesuchCompleteValidator implements ConstraintValidator<CheckGe
 			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
 			if (dominantType != BetreuungsangebotTyp.FERIENINSEL) {
 				if (!EbeguUtil.isFamilienSituationVollstaendig(gesuch)) {
-					LOG.error("Familiensituation is incomplete {}", gesuch.getId());
+					LOG.error("Familiensituation is incomplete for this Gesuch {}", gesuch.getId());
 					valid = false;
 				} else if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 					if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(gesuch, null)) {
-						LOG.error("FinanzielleSituation is incomplete {}", gesuch.getId());
+						LOG.error("FinanzielleSituation is incomplete for this Gesuch {}", gesuch.getId());
 						valid = false;
 					}
 				}
