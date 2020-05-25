@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -42,6 +43,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -201,7 +203,7 @@ public final class EbeguUtil {
 	}
 
 	public static boolean isFinanzielleSituationNotIntroducedOrIncomplete(@Nonnull Gesuch gesuch,
-		@Nonnull WizardStepName wizardStepName) {
+		@Nullable WizardStepName wizardStepName) {
 		if (gesuch.getGesuchsteller1() == null
 			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
 			|| gesuch.getEinkommensverschlechterungInfoContainer() == null) {
@@ -213,7 +215,7 @@ public final class EbeguUtil {
 		boolean einkommensverschlechterungGS1Ok = true;
 		boolean einkommensverschlechterungGS2Ok = true;
 
-		if (wizardStepName == WizardStepName.FINANZIELLE_SITUATION) {
+		if (wizardStepName == null || wizardStepName == WizardStepName.FINANZIELLE_SITUATION) {
 			finSitGS1Ok =
 				isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
 
@@ -222,7 +224,7 @@ public final class EbeguUtil {
 					isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA());
 			}
 		}
-		if (wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG) {
+		if (wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG) {
 			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
 				if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
 					if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
@@ -401,5 +403,24 @@ public final class EbeguUtil {
 	public static boolean isKorrekturmodusGemeinde(@Nonnull Gesuch gesuch) {
 		return Eingangsart.ONLINE == gesuch.getEingangsart() &&
 			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus());
+	}
+
+	/**
+	 * Von allen Betreuungen der Liste gib den Typ zurueck der Betreuung, die ueber die anderen dominiert.
+	 * KITA > TAGESSCHULE > FERINEINSEL
+	 */
+	@Nonnull
+	public static BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<AbstractPlatz> betreuungenFromGesuch) {
+		BetreuungsangebotTyp dominantType = BetreuungsangebotTyp.FERIENINSEL; // less dominant type
+		for (AbstractPlatz betreuung : betreuungenFromGesuch) {
+			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+				dominantType = BetreuungsangebotTyp.TAGESSCHULE;
+			}
+			if (!betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
+				dominantType = BetreuungsangebotTyp.KITA;
+				break;
+			}
+		}
+		return dominantType;
 	}
 }

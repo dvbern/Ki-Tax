@@ -917,7 +917,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 			List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
 
-			BetreuungsangebotTyp dominantType = getDominantBetreuungsangebotTyp(allPlaetze);
+			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
 			}
@@ -929,25 +929,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 			}
 		}
-	}
-
-	/**
-	 * Von allen Betreuungen der Liste gib den Typ zurueck der Betreuung, die ueber die anderen dominiert.
-	 * KITA > TAGESSCHULE > FERINEINSEL
-	 */
-	@Nonnull
-	private BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<AbstractPlatz> betreuungenFromGesuch) {
-		BetreuungsangebotTyp dominantType = BetreuungsangebotTyp.FERIENINSEL; // less dominant type
-		for (AbstractPlatz betreuung : betreuungenFromGesuch) {
-			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
-				dominantType = BetreuungsangebotTyp.TAGESSCHULE;
-			}
-			if (!betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
-				dominantType = BetreuungsangebotTyp.KITA;
-				break;
-			}
-		}
-		return dominantType;
 	}
 
 	/**
