@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +41,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
@@ -66,17 +66,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 import static org.junit.Assert.assertEquals;
 
@@ -95,87 +85,25 @@ public abstract class AbstractBGRechnerTest {
 	protected static final int BASISJAHR_PLUS_1 = 2017;
 	protected static final int BASISJAHR_PLUS_2 = 2018;
 
+	// Wir sollten fuer Tests nicht gerade Paris als Beispiel nehmen, sondern eine
+	// Gemeinde, die moeglichst wenig Spezialfaelle hat
+	protected Gemeinde gemeindeOfEvaluator = TestDataUtil.createGemeindeLondon();
+	protected Gesuchsperiode gesuchsperiodeOfEvaluator = TestDataUtil.createGesuchsperiode1718();
+
+
 	@Before
 	public void setUpCalcuator() {
-		evaluator = createEvaluator(TestDataUtil.createGesuchsperiode1718(), TestDataUtil.createGemeindeParis());
+		evaluator = createEvaluator(gesuchsperiodeOfEvaluator, gemeindeOfEvaluator);
 	}
 
 	public static BetreuungsgutscheinEvaluator createEvaluator(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gemeinde bern) {
-		Map<EinstellungKey, Einstellung> einstellungen = new EnumMap<>(EinstellungKey.class);
-
-		Einstellung paramMaxEinkommen =
-			new Einstellung(EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN, "160000", gesuchsperiode);
-		einstellungen.put(EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN, paramMaxEinkommen);
-
-		Einstellung pmab3 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS,
-			gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, pmab3);
-
-		Einstellung pmab4 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS,
-			gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, pmab4);
-
-		Einstellung pmab5 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS,
-			gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, pmab5);
-
-		Einstellung pmab6 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS,
-			gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, pmab6);
-
-		Einstellung paramAbwesenheit = new Einstellung(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT, "30",
-			gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT, paramAbwesenheit);
-
-		Einstellung bgBisUndMitSchulstufe = new Einstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
-			EinschulungTyp.VORSCHULALTER.name(),
-			gesuchsperiode);
-		einstellungen.put(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, bgBisUndMitSchulstufe);
-
-		Einstellung minErwerbspensumNichtEingeschult = new Einstellung(
-			EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
-		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, minErwerbspensumNichtEingeschult);
-
-		Einstellung minErwerbspensumEingeschult = new Einstellung(
-			EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
-		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, minErwerbspensumEingeschult);
-
-		Einstellung erwerbspensumZuschlag = new Einstellung(
-			EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, "20", gesuchsperiode);
-		einstellungen.put(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, erwerbspensumZuschlag);
-
-		Einstellung maxTarifTsMitBetreuung = new Einstellung(
-			MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode);
-		einstellungen.put(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, maxTarifTsMitBetreuung);
-
-		Einstellung maxTarifTsOhneBetreuung = new Einstellung(
-			MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode);
-		einstellungen.put(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, maxTarifTsOhneBetreuung);
-
-		Einstellung minTarifTs = new Einstellung(
-			MIN_TARIF, "0.78", gesuchsperiode);
-		einstellungen.put(MIN_TARIF, minTarifTs);
-
-		Einstellung gmdeMinEwpNichtEingeschult = new Einstellung(
-			GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
-		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gmdeMinEwpNichtEingeschult);
-
-		Einstellung gmdeMinEwpEingeschult = new Einstellung(
-			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
-		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gmdeMinEwpEingeschult);
-
-		Einstellung gmdeMaxFreiwilligenarbeit = new Einstellung(
-			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, "0", gesuchsperiode);
-		einstellungen.put(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, gmdeMaxFreiwilligenarbeit);
+		@Nonnull Gemeinde bern
+	) {
+		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
 		return new BetreuungsgutscheinEvaluator(rules);
 	}
 
@@ -232,6 +160,30 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(MATH.from(massgebendesEinkVorFamAbz), MATH.from(abschnitt.getMassgebendesEinkommenVorAbzFamgr()));
 		assertEquals(MATH.from(abzugFam), MATH.from(abschnitt.getAbzugFamGroesse()));
 		assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
+	}
+
+	private static BGRechnerParameterDTO createParameterDTO() {
+		BGRechnerParameterDTO dto = new BGRechnerParameterDTO();
+		dto.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
+		dto.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
+		dto.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
+		dto.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
+		dto.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
+		dto.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
+		dto.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
+		dto.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
+		dto.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
+		dto.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
+		dto.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
+		dto.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
+		dto.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
+		dto.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
+		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
+		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
+		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
+		return dto;
 	}
 
 	/**

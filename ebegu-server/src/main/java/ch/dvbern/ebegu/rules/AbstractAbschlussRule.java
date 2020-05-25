@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 public abstract class AbstractAbschlussRule {
 
-	protected List<VerfuegungZeitabschnitt> executeIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public List<VerfuegungZeitabschnitt> executeIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		if (isApplicableForAngebot(platz)) {
 			return execute(platz, zeitabschnitte);
 		}

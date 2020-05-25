@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.rules.RuleValidity;
@@ -68,6 +69,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Column(nullable = false)
 	private boolean hasGemeindeSpezifischeBerechnung = false;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column(nullable = false)
+	private Regelwerk regelwerk = Regelwerk.ASIV;
 
 	/**
 	 * Input-Werte für die Rules. Berechnung nach ASIV (Standard)
@@ -134,6 +140,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod" })
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
+		this.regelwerk = toCopy.regelwerk;
 		this.hasGemeindeSpezifischeBerechnung = toCopy.hasGemeindeSpezifischeBerechnung;
 		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde = new BGCalculationInput(toCopy.bgCalculationInputGemeinde);
@@ -153,6 +160,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	public VerfuegungZeitabschnitt(DateRange gueltigkeit) {
 		this.setGueltigkeit(new DateRange(gueltigkeit));
+	}
+
+	@Nonnull
+	public Regelwerk getRegelwerk() {
+		return regelwerk;
+	}
+
+	public void setRegelwerk(@Nonnull Regelwerk regelwerk) {
+		this.regelwerk = regelwerk;
 	}
 
 	public boolean isHasGemeindeSpezifischeBerechnung() {
@@ -396,6 +412,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
 	}
 
+	public void setErwerbspensumZuschlagForAsivAndGemeinde(int zuschlag) {
+		this.getBgCalculationInputAsiv().setErwerbspensumZuschlag(zuschlag);
+		this.getBgCalculationInputGemeinde().setErwerbspensumZuschlag(zuschlag);
+	}
+
 	public void addTaetigkeitForAsivAndGemeinde(@Nullable Taetigkeit taetigkeit) {
 		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
 		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
@@ -451,6 +472,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
 	}
 
+	public void setTsAnzVerpflegungenMitBetreuungForAsivAndGemeinde(int anzVerpflegungen) {
+		this.getBgCalculationInputAsiv().setTsAnzVerpflegungenMitBetreuung(anzVerpflegungen);
+		this.getBgCalculationInputGemeinde().setTsAnzVerpflegungenMitBetreuung(anzVerpflegungen);
+	}
+
+	public void setTsAnzVerpflegungenOhneBetreuungForAsivAndGemeinde(int anzVerpflegungen) {
+		this.getBgCalculationInputAsiv().setTsAnzVerpflegungenOhneBetreuung(anzVerpflegungen);
+		this.getBgCalculationInputGemeinde().setTsAnzVerpflegungenOhneBetreuung(anzVerpflegungen);
+	}
+
 	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
 		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
@@ -481,11 +512,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
 	}
 
-	public void setSameAusbezahlteVerguenstigungForAsivAndGemeinde(boolean sameAusbezahlteVerguenstigung) {
-		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-	}
-
 	public void setSozialhilfeempfaengerForAsivAndGemeinde(boolean sozialhilfe) {
 		this.getBgCalculationInputAsiv().setSozialhilfeempfaenger(sozialhilfe);
 		this.getBgCalculationInputGemeinde().setSozialhilfeempfaenger(sozialhilfe);
@@ -494,6 +520,36 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setBetreuungInGemeindeForAsivAndGemeinde(boolean inGemeinde) {
 		this.getBgCalculationInputAsiv().setBetreuungInGemeinde(inGemeinde);
 		this.getBgCalculationInputGemeinde().setBetreuungInGemeinde(inGemeinde);
+	}
+
+	public void setMonatlicheHauptmahlzeitenForAsivAndGemeinde(BigDecimal monatlicheHauptmahlzeiten) {
+		this.getBgCalculationInputAsiv().setAnzahlHauptmahlzeiten(monatlicheHauptmahlzeiten);
+		this.getBgCalculationInputGemeinde().setAnzahlHauptmahlzeiten(monatlicheHauptmahlzeiten);
+	}
+
+	public void setMonatlicheNebenmahlzeitenForAsivAndGemeinde(BigDecimal monatlicheNebenmahlzeiten) {
+		this.getBgCalculationInputAsiv().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
+		this.getBgCalculationInputGemeinde().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
+	}
+
+	public void setTarifHauptmahlzeitForAsivAndGemeinde(BigDecimal tarifHauptmahlzeit) {
+		this.getBgCalculationInputAsiv().setTarifHauptmahlzeit(tarifHauptmahlzeit);
+		this.getBgCalculationInputGemeinde().setTarifHauptmahlzeit(tarifHauptmahlzeit);
+	}
+
+	public void setTarifNebenmahlzeitForAsivAndGemeinde(BigDecimal tarifNebenmahlzeit) {
+		this.getBgCalculationInputAsiv().setTarifNebenmahlzeit(tarifNebenmahlzeit);
+		this.getBgCalculationInputGemeinde().setTarifNebenmahlzeit(tarifNebenmahlzeit);
+	}
+
+	public void setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
+	}
+
+	public void setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
@@ -558,7 +614,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationInputGemeinde: " + bgCalculationInputGemeinde + '\t'
 			+ " bgCalculationResultAsiv: " + bgCalculationResultAsiv+ '\t'
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
-			+ " Status: " + zahlungsstatus + '\t'
+			+ " Regelwerk: " + regelwerk + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Bemerkungen: " + bemerkungen;
 		return sb;
@@ -575,6 +631,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
+		//noinspection ConstantConditions: Sonst motzt PMD
 		if (!(other instanceof VerfuegungZeitabschnitt)) {
 			return false;
 		}
@@ -692,5 +749,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
+		result.setVerguenstigungHauptmahlzeitenTotal(input.getVerguenstigungHauptmahlzeitenTotal());
+		result.setVerguenstigungNebenmahlzeitenTotal(input.getVerguenstigungNebenmahlzeitenTotal());
 	}
 }

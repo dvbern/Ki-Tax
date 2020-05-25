@@ -151,7 +151,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
@@ -254,7 +254,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch_tagesschule.getGesuchsteller1());
 		gesuch_tagesschule.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, art, anmeldungTagesschule);
+			stammdaten, art, anmeldungTagesschule, false);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 

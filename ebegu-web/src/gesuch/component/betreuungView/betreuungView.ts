@@ -650,6 +650,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // die gemeinde die vergünstigung deaktiviert hat
             tsBetreuungspensum.monatlicheNebenmahlzeiten = 0;
             tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
+            tsBetreuungspensum.tarifProHauptmahlzeit = 0;
+            tsBetreuungspensum.tarifProNebenmahlzeit = 0;
+        } else {
+            tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
+            tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
@@ -1233,6 +1238,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getBetreuungInGemeindeLabel(): string {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())) {
+            return '';
+        }
         return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
             {gemeinde: this.gesuchModelManager.getGemeinde().name});
     }

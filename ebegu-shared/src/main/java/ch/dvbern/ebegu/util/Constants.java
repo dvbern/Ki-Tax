@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -31,6 +33,7 @@ public final class Constants {
 
 	public static final int DB_DEFAULT_MAX_LENGTH = 255;
 	public static final int DB_TEXTAREA_LENGTH = 4000;
+	public static final int DB_RUECKFORDERUNGSMITTEILUNG_LENGTH = 10000;
 	public static final int DB_DEFAULT_SHORT_LENGTH = 100;
 	public static final int ONE_MB = 1048576;
 	public static final int TEN_MB = 10485760;
@@ -103,6 +106,7 @@ public final class Constants {
 	public static final String PATH_DESIGNATOR_NO_TOKEN_REFRESH = "notokenrefresh";
 
 	public static final String TEMP_REPORT_FOLDERNAME = "tempReports";
+	public static final String TEMP_NOTVERORDNUNG = "tempNotverordnung";
 
 	public static final String SYSTEM_USER_USERNAME = "System";
 	public static final String ANONYMOUS_USER_USERNAME = "anonymous";
@@ -135,5 +139,26 @@ public final class Constants {
 		//this prevents even the native class from
 		//calling this ctor as well :
 		throw new AssertionError();
+	}
+
+	// Alle diese Werte sollten nicht hier sein, da sie nur fuer Tests verwendet werden duerfen
+	// Sollte ins TestDataUtil verschoben werden oder in ein TestConstants, damit sie nicht aus
+	// Versehen in produktivem Code verwendet werden
+	public interface EinstellungenDefaultWerteAsiv {
+		BigDecimal MAX_EINKOMMEN = MathUtil.DEFAULT.from(160000);
+		String EINSTELLUNG_MAX_EINKOMMEN = String.valueOf(MAX_EINKOMMEN);
+		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 = "3800";
+		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 = "6000";
+		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 = "7000";
+		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 = "7700";
+		String EINSTELLUNG_MAX_TAGE_ABWESENHEIT = "30";
+		String EINSTELLUNG_BG_BIS_UND_MIT_SCHULSTUFE = EinschulungTyp.VORSCHULALTER.name();
+		int MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT = 0;
+		int MIN_ERWERBSPENSUM_NICHT_EINGESCHULT = 20;
+		String EINSTELLUNG_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT = String.valueOf(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		int MIN_ERWERBSPENSUM_EINGESCHULT = 40;
+		String EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT = String.valueOf(MIN_ERWERBSPENSUM_EINGESCHULT);
+		int ZUSCHLAG_ERWERBSPENSUM = 20;
+		String EINSTELLUNG_ZUSCHLAG_ERWERBSPENSUM = String.valueOf(ZUSCHLAG_ERWERBSPENSUM);
 	}
 }

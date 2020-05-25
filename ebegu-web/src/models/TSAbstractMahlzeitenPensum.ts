@@ -21,6 +21,8 @@ export class TSAbstractMahlzeitenPensum extends TSAbstractDecimalPensumEntity {
 
     private _monatlicheHauptmahlzeiten: number;
     private _monatlicheNebenmahlzeiten: number;
+    private _tarifProHauptmahlzeit: number;
+    private _tarifProNebenmahlzeit: number;
 
     public constructor() {
         super();
@@ -40,5 +42,21 @@ export class TSAbstractMahlzeitenPensum extends TSAbstractDecimalPensumEntity {
 
     public set monatlicheNebenmahlzeiten(value: number) {
         this._monatlicheNebenmahlzeiten = value;
+    }
+
+    public get tarifProHauptmahlzeit(): number {
+        return this._tarifProHauptmahlzeit;
+    }
+
+    public set tarifProHauptmahlzeit(value: number) {
+        this._tarifProHauptmahlzeit = value;
+    }
+
+    public get tarifProNebenmahlzeit(): number {
+        return this._tarifProNebenmahlzeit;
+    }
+
+    public set tarifProNebenmahlzeit(value: number) {
+        this._tarifProNebenmahlzeit = value;
     }
 }

@@ -17,6 +17,12 @@
 
 package ch.dvbern.ebegu.ws.ewk;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
 import ch.bedag.geres.schemas._20180101.geresresidentinforesponse.BaseDeliveryType;
 import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
 import ch.dvbern.ebegu.dto.personensuche.EWKBeziehung;
@@ -31,10 +37,6 @@ import ch.ech.xmlns.ech_0020_f._3.EventBaseDelivery;
 import ch.ech.xmlns.ech_0020_f._3.ReportingMunicipalityType;
 import ch.ech.xmlns.ech_0021_f._7.ParentalRelationshipType;
 import ch.ech.xmlns.ech_0044_f._4.PersonIdentificationType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Konverter zwischen EWK-Objekten und unseren DTOs
@@ -87,7 +89,7 @@ public final class GeresConverter {
 		return ewkPerson;
 	}
 
-	private static EWKBeziehung createFromGeres(ParentalRelationshipType parentalRelationshipType) {
+	private static EWKBeziehung createFromGeres(@Nonnull ParentalRelationshipType parentalRelationshipType) {
 		EWKBeziehung ewkBeziehung = new EWKBeziehung();
 		ewkBeziehung.setBeziehungstyp("EWK_BEZIEHUNG_" + parentalRelationshipType.getTypeOfRelationship());
 		final PersonIdentificationType personIdentificationPartner = parentalRelationshipType.getPartner().getPersonIdentification();
@@ -96,10 +98,11 @@ public final class GeresConverter {
 		ewkBeziehung.setVorname(personIdentificationPartner.getFirstName());
 		ewkBeziehung.setGeburtsdatum(personIdentificationPartner.getDateOfBirth().getYearMonthDay());
 		ewkBeziehung.setGeschlecht(convertGeschlechtFromEWK(personIdentificationPartner.getSex()));
-		EWKAdresse ewkAdresse = convertFromGeres(parentalRelationshipType.getPartner().getAddress().getAddressInformation());
-		ewkBeziehung.setAdresse(ewkAdresse);
+		if (parentalRelationshipType.getPartner().getAddress() != null) {
+			EWKAdresse ewkAdresse = convertFromGeres(parentalRelationshipType.getPartner().getAddress().getAddressInformation());
+			ewkBeziehung.setAdresse(ewkAdresse);
+		}
 		return ewkBeziehung;
-
 	}
 
 	private static EWKAdresse convertFromGeres(DwellingAddressType dwellingAddressType) {
@@ -118,7 +121,7 @@ public final class GeresConverter {
 		return ewkAdresse;
 	}
 
-	private static EWKAdresse convertFromGeres(AddressInformationType addressInformationType) {
+	private static EWKAdresse convertFromGeres(@Nonnull AddressInformationType addressInformationType) {
 		EWKAdresse ewkAdresse = new EWKAdresse();
 		ewkAdresse.setAdresszusatz1(addressInformationType.getAddressLine1());
 		ewkAdresse.setAdresszusatz2(addressInformationType.getAddressLine2());

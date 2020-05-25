@@ -251,6 +251,8 @@ describe('EbeguRestUtil', () => {
                     pensum25,
                     0,
                     0,
+                    0,
+                    0,
                     new TSDateRange(DateUtil.today(), DateUtil.today())
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
@@ -260,6 +262,8 @@ describe('EbeguRestUtil', () => {
                     false,
                     monatlicheBetreuungskosten200,
                     pensum50,
+                    0,
+                    0,
                     0,
                     0,
                     new TSDateRange(DateUtil.today(), DateUtil.today())
@@ -335,6 +339,8 @@ describe('EbeguRestUtil', () => {
                     false,
                     monatlicheBetreuungskosten200,
                     pensum25,
+                    0,
+                    0,
                     0,
                     0,
                     new TSDateRange(DateUtil.today(), DateUtil.today())
@@ -590,6 +596,8 @@ describe('EbeguRestUtil', () => {
                                     pensum: number,
                                     hauptmahlzeiten: number,
                                     nebenmahlzeiten: number,
+                                    tarifProHauptmahlzeit: number,
+                                    tarifProNebenmahlzeit: number,
                                     gueltigkeit: TSDateRange): TSBetreuungspensum {
         const tsBetreuungspensum = new TSBetreuungspensum();
         tsBetreuungspensum.unitForDisplay = unitForDisplay;
@@ -598,6 +606,8 @@ describe('EbeguRestUtil', () => {
         tsBetreuungspensum.pensum = pensum;
         tsBetreuungspensum.monatlicheHauptmahlzeiten = hauptmahlzeiten;
         tsBetreuungspensum.monatlicheNebenmahlzeiten = nebenmahlzeiten;
+        tsBetreuungspensum.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+        tsBetreuungspensum.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
         tsBetreuungspensum.gueltigkeit = gueltigkeit;
         return tsBetreuungspensum;
     }

@@ -433,54 +433,108 @@
                                         </div>
                                     </div>
 
-                                    <div class="row" ng-if="vm.isMahlzeitenverguenstigungActive()">
-                                        <!-- monatlicheHauptmahlzeiten -->
-                                        <div class="col-sm-12 dv-input-container-small">
-                                            <div class="form-group">
-                                                <dv-input-container class="form-group">
-                                                    <label class="md-no-float"
-                                                           for="monatlicheHauptmahlzeiten-{{$index}}">
-                                                        <span data-translate="MONATLICHE_HAUPTMAHLZEITEN"></span>
-                                                        <dv-tooltip input-id="monatlicheHauptmahlzeiten-tooltip-{{$index}}"
-                                                                    text="'MONATLICHE_HAUPTMAHLZEITEN_HELP' | translate"></dv-tooltip>
-                                                    </label>
-                                                    <div class="dv-input-container-small" style="padding-right:32px;">
-                                                        <input aria-describedby="monatlicheHauptmahlzeiten-{{$index}}-error"
-                                                               id="monatlicheHauptmahlzeiten-{{$index}}"
-                                                               type="number" min="0" step="1"
-                                                               name="monatlicheHauptmahlzeiten-{{$index}}"
-                                                               ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
-                                                               class="form-control"
-                                                               ng-required="true">
-                                                        <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}"
-                                                                           for="vm.form['monatlicheHauptmahlzeiten-' + $index].$error"></dv-error-messages>
-                                                    </div>
-                                                </dv-input-container>
+                                    <div ng-if="vm.isMahlzeitenverguenstigungActive()">
+                                        <div class="row" >
+                                            <!-- monatlicheHauptmahlzeiten -->
+                                            <div class="col-sm-12 dv-input-container-small">
+                                                <div class="form-group">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               for="monatlicheHauptmahlzeiten-{{$index}}">
+                                                            <span data-translate="MONATLICHE_HAUPTMAHLZEITEN"></span>
+                                                            <dv-tooltip input-id="monatlicheHauptmahlzeiten-tooltip-{{$index}}"
+                                                                        text="'MONATLICHE_HAUPTMAHLZEITEN_HELP' | translate"></dv-tooltip>
+                                                        </label>
+                                                        <div class="dv-input-container-small" style="padding-right:32px;">
+                                                            <input aria-describedby="monatlicheHauptmahlzeiten-{{$index}}-error"
+                                                                   id="monatlicheHauptmahlzeiten-{{$index}}"
+                                                                   type="number" min="0" step="1"
+                                                                   name="monatlicheHauptmahlzeiten-{{$index}}"
+                                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
+                                                                   class="form-control"
+                                                                   ng-required="true">
+                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}"
+                                                                               for="vm.form['monatlicheHauptmahlzeiten-' + $index].$error"></dv-error-messages>
+                                                        </div>
+                                                    </dv-input-container>
+                                                </div>
+                                            </div>
+
+                                            <!-- monatlicheNebenmahlzeiten -->
+                                            <div class="col-sm-12 dv-input-container-small">
+                                                <div class="form-group">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               for="monatlicheNebenmahlzeiten-{{$index}}">
+                                                            <span data-translate="MONATLICHE_NEBENMAHLZEITEN"></span>
+                                                            <dv-tooltip input-id="monatlicheNebenmahlzeiten-tooltip-{{$index}}"
+                                                                        text="'MONATLICHE_NEBENMAHLZEITEN_HELP' | translate"></dv-tooltip>
+                                                        </label>
+                                                        <div class="dv-input-container-small" style="padding-right:32px;">
+                                                            <input aria-describedby="monatlicheNebenmahlzeiten-{{$index}}-error"
+                                                                   id="monatlicheNebenmahlzeiten-{{$index}}"
+                                                                   type="number" min="0" step="1"
+                                                                   name="monatlicheNebenmahlzeiten-{{$index}}"
+                                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheNebenmahlzeiten"
+                                                                   class="form-control"
+                                                                   ng-required="true">
+                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}"
+                                                                               for="vm.form['monatlicheNebenmahlzeiten-' + $index].$error"></dv-error-messages>
+                                                        </div>
+                                                    </dv-input-container>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <!-- monatlicheNebenmahlzeiten -->
-                                        <div class="col-sm-12 dv-input-container-small">
-                                            <div class="form-group">
-                                                <dv-input-container class="form-group">
-                                                    <label class="md-no-float"
-                                                           for="monatlicheNebenmahlzeiten-{{$index}}">
-                                                        <span data-translate="MONATLICHE_NEBENMAHLZEITEN"></span>
-                                                        <dv-tooltip input-id="monatlicheNebenmahlzeiten-tooltip-{{$index}}"
-                                                                    text="'MONATLICHE_NEBENMAHLZEITEN_HELP' | translate"></dv-tooltip>
-                                                    </label>
-                                                    <div class="dv-input-container-small" style="padding-right:32px;">
-                                                        <input aria-describedby="monatlicheNebenmahlzeiten-{{$index}}-error"
-                                                               id="monatlicheNebenmahlzeiten-{{$index}}"
-                                                               type="number" min="0" step="1"
-                                                               name="monatlicheNebenmahlzeiten-{{$index}}"
-                                                               ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheNebenmahlzeiten"
-                                                               class="form-control"
-                                                               ng-required="true">
-                                                        <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}"
-                                                                           for="vm.form['monatlicheNebenmahlzeiten-' + $index].$error"></dv-error-messages>
-                                                    </div>
-                                                </dv-input-container>
+                                        <div class="row">
+                                            <!-- tarif Hauptmhalzeiten -->
+                                            <div class="col-sm-12 dv-input-container-small">
+                                                <div class="form-group">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               for="tarifProHauptmahlzeit-{{$index}}">
+                                                            <span data-translate="TARIF_PRO_HAUPTMAHLZEIT"></span>
+                                                            <dv-tooltip input-id="tarifProHauptmahlzeit-tooltip-{{$index}}"
+                                                                        text="'TARIF_PRO_HAUPTMAHLZEIT_HELP' | translate"></dv-tooltip>
+                                                        </label>
+                                                        <div class="dv-input-container-small" style="padding-right:32px;">
+                                                            <input aria-describedby="tarifProHauptmahlzeit-{{$index}}-error"
+                                                                   id="tarifProHauptmahlzeit-{{$index}}"
+                                                                   type="number" min="0" step="0.05"
+                                                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                                   name="tarifProHauptmahlzeit-{{$index}}"
+                                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProHauptmahlzeit"
+                                                                   class="form-control"
+                                                                   ng-required="true">
+                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}"
+                                                                               for="vm.form['tarifProHauptmahlzeit-' + $index].$error"></dv-error-messages>
+                                                        </div>
+                                                    </dv-input-container>
+                                                </div>
+                                            </div>
+                                            <!-- tarif Nebenmahlzeiten -->
+                                            <div class="col-sm-12 dv-input-container-small">
+                                                <div class="form-group">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               for="tarifProNebenmahlzeit-{{$index}}">
+                                                            <span data-translate="TARIF_PRO_NEBENMAHLZEIT"></span>
+                                                            <dv-tooltip input-id="tarifProNebenmahlzeit-tooltip-{{$index}}"
+                                                                        text="'TARIF_PRO_NEBENMAHLZEIT_HELP' | translate"></dv-tooltip>
+                                                        </label>
+                                                        <div class="dv-input-container-small" style="padding-right:32px;">
+                                                            <input aria-describedby="tarifProNebenmahlzeit-{{$index}}-error"
+                                                                   id="tarifProNebenmahlzeit-{{$index}}"
+                                                                   type="number" min="0" step="0.05"
+                                                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                                   name="tarifProNebenmahlzeit-{{$index}}"
+                                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProNebenmahlzeit"
+                                                                   class="form-control"
+                                                                   ng-required="true">
+                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}"
+                                                                               for="vm.form['tarifProNebenmahlzeit-' + $index].$error"></dv-error-messages>
+                                                        </div>
+                                                    </dv-input-container>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

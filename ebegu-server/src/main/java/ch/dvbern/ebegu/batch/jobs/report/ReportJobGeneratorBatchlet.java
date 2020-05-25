@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
+import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -68,6 +69,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportLastenausgleichSelbstbehaltService reportLastenausgleichKibonService;
+
+	@Inject
+	private ReportNotrechtService reportNotrechtService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -155,29 +159,13 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
 			Objects.requireNonNull(gesuchPeriodeId);
-			boolean inklBgGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
-			boolean inklMischGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
-			boolean inklTsGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
-			boolean ohneFolgegesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE));
-			final String text = getParameters().getProperty(WorkJobConstants.TEXT);
-			UploadFileInfo uploadFileInfo = reportMassenversandService.generateExcelReportMassenversand(
-				dateFrom,
-				dateTo,
-				gesuchPeriodeId,
-				inklBgGesuche,
-				inklMischGesuche,
-				inklTsGesuche,
-				ohneFolgegesuche,
-				text,
-				locale
-			);
-			return uploadFileInfo;
+			return generateReportMassenversand(dateFrom, dateTo, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_INSTITUTIONEN: {
 			return this.reportService.generateExcelReportInstitutionen(locale);
 		}
 		case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
-			boolean doSave = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+			boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
 			return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
 		}
@@ -189,8 +177,38 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
 			return this.reportService.generateExcelReportTagesschuleOhneFinSit(stammdatenId, gesuchPeriodeId, locale);
 		}
+		case VORLAGE_REPORT_NOTRECHT: {
+			return generateReportNotrecht();
+		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
+	}
+
+	private UploadFileInfo generateReportMassenversand(
+		@Nonnull LocalDate dateFrom, @Nonnull LocalDate dateTo, @Nonnull String gesuchPeriodeId, @Nonnull Locale locale
+	) throws ExcelMergeException {
+		boolean inklBgGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
+		boolean inklMischGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
+		boolean inklTsGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
+		boolean ohneFolgegesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE));
+		final String text = getParameters().getProperty(WorkJobConstants.TEXT);
+		UploadFileInfo uploadFileInfo = reportMassenversandService.generateExcelReportMassenversand(
+			dateFrom,
+			dateTo,
+			gesuchPeriodeId,
+			inklBgGesuche,
+			inklMischGesuche,
+			inklTsGesuche,
+			ohneFolgegesuche,
+			text,
+			locale
+		);
+		return uploadFileInfo;
+	}
+
+	private UploadFileInfo generateReportNotrecht() throws ExcelMergeException {
+		boolean zahlungenAusloesen = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+		return this.reportNotrechtService.generateExcelReportNotrecht(zahlungenAusloesen);
 	}
 
 	private Properties getParameters() {
