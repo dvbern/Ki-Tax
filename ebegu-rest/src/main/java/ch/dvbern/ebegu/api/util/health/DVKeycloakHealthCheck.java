@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
@@ -66,6 +67,7 @@ public class DVKeycloakHealthCheck implements HealthCheck {
 	}
 
 	@Override
+	@SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Health Check reports reason")
 	public HealthCheckResponse call() {
 		String keycloackAuthServer = ebeguConfiguration.getKeycloackAuthServer();
 

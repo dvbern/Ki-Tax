@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.eclipse.microprofile.health.Health;
@@ -71,6 +72,7 @@ public class DVKafkaHealthCheck implements HealthCheck {
 	}
 
 	@Override
+	@SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Health Check reports reason")
 	public HealthCheckResponse call() {
 		if (!ebeguConfiguration.getKafkaURL().isPresent()) {
 			return HealthCheckResponse.named(NAME).down().withData("reason", "Bootstrap URL not configured").build();
