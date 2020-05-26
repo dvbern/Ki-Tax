@@ -45,6 +45,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_ID;
 import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_TYPE;
@@ -57,6 +59,8 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 
 @Stateless
 public class OutboxEventKafkaProducer {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OutboxEventKafkaProducer.class);
 
 	@PersistenceContext(unitName = "ebeguPersistenceUnit")
 	private EntityManager entityManager;
@@ -71,6 +75,7 @@ public class OutboxEventKafkaProducer {
 	@Schedule(info = "publish outbox events", minute = "*", hour = "*", persistent = true)
 	public void publishEvents() {
 		if (!ebeguConfiguration.getKafkaURL().isPresent()) {
+			LOG.debug("Kafka URL not set, not publishing events.");
 			return;
 		}
 
@@ -86,8 +91,11 @@ public class OutboxEventKafkaProducer {
 			.getResultList();
 
 		if (events.isEmpty()) {
+			LOG.debug("No OutboxEvents to publish.");
 			return;
 		}
+
+		LOG.info("Going to publish {} OutboxEvents", events.size());
 
 		Properties props = new Properties();
 		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
