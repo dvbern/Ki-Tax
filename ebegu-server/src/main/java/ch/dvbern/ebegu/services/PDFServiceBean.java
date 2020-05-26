@@ -277,8 +277,14 @@ public class PDFServiceBean implements PDFService {
 
 		AnmeldebestaetigungTSPDFGenerator.Art art = mitTarif ? AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF :
 			AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF;
+
+		Einstellung mahlzeitenverguenstigungEnabled = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			anmeldungTagesschule.extractGesuch().extractGemeinde(),
+			anmeldungTagesschule.extractGesuchsperiode());
+
 		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
-			stammdaten, art , anmeldungTagesschule);
+			stammdaten, art , anmeldungTagesschule, mahlzeitenverguenstigungEnabled.getValueAsBoolean());
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 

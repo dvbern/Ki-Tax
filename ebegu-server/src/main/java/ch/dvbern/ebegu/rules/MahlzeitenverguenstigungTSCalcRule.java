@@ -20,17 +20,22 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 
 /**
  * Regel die angewendet wird um die Mahlzeitenvergünstigung zu berechnen
@@ -59,7 +64,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 
 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 
-		boolean verguenstigungBeantrag = familiensituation == null ? false : !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
+		boolean verguenstigungBeantrag = familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
 
 		if (!verguenstigungBeantrag) {
 			return;
@@ -69,25 +74,40 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 			return;
 		}
 
-		BigDecimal verguenstigung =
+		BigDecimal verguenstigungGemaessEinkommen =
 			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigung != null && verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0) {
 
 			BigDecimal kostenMitBetreuung = inputData.getTsInputMitBetreuung().getVerpflegungskosten();
 			BigDecimal kostenOhneBetreuung = inputData.getTsInputOhneBetreuung().getVerpflegungskosten();
 			int anzVerpflegungenMitBetreuung = inputData.getTsInputMitBetreuung().getAnzVerpflegungen();
 			int anzVerpflegungenOhneBetreuung = inputData.getTsInputOhneBetreuung().getAnzVerpflegungen();
 
+
+			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+					kostenMitBetreuung,
+					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+
+			BigDecimal verguenstigungEffektivOhneBetreuung =
+				mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+					kostenOhneBetreuung,
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+
 			if (kostenMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenMitBetreuung)));
+				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(anzVerpflegungenMitBetreuung)));
+				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigungEffektivMitBetreuung);
 			}
 			if (kostenOhneBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung)));
+				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungEffektivOhneBetreuung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung)));
+				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigungEffektivOhneBetreuung);
 			}
-
-			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigung);
 		}
+	}
+
+	@Override
+	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		return einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean();
 	}
 }

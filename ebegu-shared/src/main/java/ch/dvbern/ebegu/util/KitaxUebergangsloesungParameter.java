@@ -46,6 +46,8 @@ public final class KitaxUebergangsloesungParameter {
 	private BigDecimal maxMassgebendesEinkommen = MathUtil.DEFAULT.from(160000);
 	private BigDecimal minMassgebendesEinkommen = MathUtil.DEFAULT.from(43000);
 
+	private int minEWP = 0; // Gilt fuer alle Schulstufen. Zuschlaege/Rundungen werden im Korrekturmodus gemacht
+
 	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
 
 	private LocalDate stadtBernAsivStartDate = null;
@@ -103,6 +105,14 @@ public final class KitaxUebergangsloesungParameter {
 
 	public BigDecimal getBabyFaktor() {
 		return babyFaktor;
+	}
+
+	public int getMinEWP() {
+		return minEWP;
+	}
+
+	public void setMinEWP(int minEWP) {
+		this.minEWP = minEWP;
 	}
 
 	public LocalDate getStadtBernAsivStartDate() {

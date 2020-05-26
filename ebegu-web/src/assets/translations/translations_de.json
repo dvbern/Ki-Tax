@@ -2037,6 +2037,6 @@
     "VERGUENSTIGUNG_HAUPTMAHLZEITEN": "Vergünstigung Hauptmahlzeiten in CHF",
     "VERGUENSTIGUNG_NEBENMAHLZEITEN": "Vergünstigung Nebenmahlzeiten in CHF",
     "MONATLICHE_MAHLZEITEN_KOSTEN": "Kosten Mahlzeiten in CHF",
-    "VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE": "Vergünstigung Verpflegung pro Woche",
+    "VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE": "Abzug Mahlzeitenvergünstigung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
