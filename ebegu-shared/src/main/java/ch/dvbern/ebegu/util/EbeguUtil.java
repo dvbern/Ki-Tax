@@ -224,30 +224,29 @@ public final class EbeguUtil {
 					isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA());
 			}
 		}
-		if (wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG) {
-			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
-				if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
-					if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-						return false;
-					}
-					einkommensverschlechterungGS1Ok =
-						isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
-					if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-						einkommensverschlechterungGS2Ok =
-							isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
-					}
+		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
+			&& gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
+			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
+					return false;
 				}
-				if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
-					if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-						return false;
-					}
-					einkommensverschlechterungGS1Ok = einkommensverschlechterungGS1Ok &&
-						isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
+				einkommensverschlechterungGS1Ok =
+					isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
+				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+					einkommensverschlechterungGS2Ok =
+						isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
+				}
+			}
+			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
+					return false;
+				}
+				einkommensverschlechterungGS1Ok = einkommensverschlechterungGS1Ok &&
+					isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
 
-					if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-						einkommensverschlechterungGS2Ok = einkommensverschlechterungGS2Ok &&
-							isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
-					}
+				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+					einkommensverschlechterungGS2Ok = einkommensverschlechterungGS2Ok &&
+						isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
 				}
 			}
 		}
