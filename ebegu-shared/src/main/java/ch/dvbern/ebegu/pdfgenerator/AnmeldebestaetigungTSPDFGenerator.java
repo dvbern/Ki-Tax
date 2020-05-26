@@ -92,6 +92,8 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private static final String GEBUEHR_PRO_STUNDE = "PdfGeneration_AnmeldungBestaetigung_GebuehrProStunde";
 	private static final String VERPFLEGUNGSKOSTEN_PRO_WOCHE =
 		"PdfGeneration_AnmeldungBestaetigung_VerplfegungsProWoche";
+	private static final String VERPFLEGUNGSKOSTEN_VERGUENSTIGUNG_PRO_WOCHE =
+		"PdfGeneration_AnmeldungBestaetigung_VerplfegungsVerguenstigungProWoche";
 	private static final String TOTAL_PRO_WOCHE = "PdfGeneration_AnmeldungBestaetigung_TotalProWoche";
 	private static final String NICHT_EINVERSTANDEN = "PdfGeneration_AnmeldungBestaetigung_NichtEinverstandenInfo";
 	private static final String CHF = "CHF ";
@@ -104,12 +106,14 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	@Nonnull
 	private final Art art;
 	private final AnmeldungTagesschule anmeldungTagesschule;
+	private boolean mahlzeitenverguenstigung;
 
 	public AnmeldebestaetigungTSPDFGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, AnmeldungTagesschule anmeldungTagesschule) {
+		@Nonnull Art art, AnmeldungTagesschule anmeldungTagesschule, boolean mahlzeitenverguenstigung) {
 		super(gesuch, stammdaten);
 		this.art = art;
 		this.anmeldungTagesschule = anmeldungTagesschule;
+		this.mahlzeitenverguenstigung = mahlzeitenverguenstigung;
 	}
 
 	@Nonnull
@@ -333,9 +337,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	}
 
 	private PdfPTable createGebuehrenTableHeader() {
-		PdfPTable table = new PdfPTable(6);
+
+		int rows = mahlzeitenverguenstigung ? 7 : 6;
+		int[] columnWidths = mahlzeitenverguenstigung ? new int[] { 20, 20, 30, 18, 30, 30, 25 } : new int [] { 20, 20,	30,	18,	30,	25 };
+
+		PdfPTable table = new PdfPTable(rows);
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
-		table.setWidths(new int[] { 20, 20, 30, 18, 30, 25 });
+		table.setWidths(columnWidths);
 		table.setHeaderRows(1);
 		table.setKeepTogether(true);
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(VON), Color.LIGHT_GRAY));
@@ -343,6 +351,9 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(BETREUNGSSTUNDEN_PRO_WOCHE), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(GEBUEHR_PRO_STUNDE), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(VERPFLEGUNGSKOSTEN_PRO_WOCHE), Color.LIGHT_GRAY));
+		if (mahlzeitenverguenstigung) {
+			table.addCell(createCell(Element.ALIGN_RIGHT, translate(VERPFLEGUNGSKOSTEN_VERGUENSTIGUNG_PRO_WOCHE), Color.LIGHT_GRAY));
+		}
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(TOTAL_PRO_WOCHE), Color.LIGHT_GRAY));
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;
@@ -369,6 +380,11 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			table.addCell(createCell(Element.ALIGN_RIGHT,
 				CHF + PdfUtil.printBigDecimal(tsResult.getVerpflegungskosten()),
 				null));
+			if (mahlzeitenverguenstigung) {
+				table.addCell(createCell(Element.ALIGN_RIGHT,
+					CHF + PdfUtil.printBigDecimal(tsResult.getVerpflegungskostenVerguenstigt()),
+					null));
+			}
 			table.addCell(createCell(Element.ALIGN_RIGHT,
 				CHF + PdfUtil.printBigDecimal(tsResult.getTotalKostenProWoche()),
 				null));
