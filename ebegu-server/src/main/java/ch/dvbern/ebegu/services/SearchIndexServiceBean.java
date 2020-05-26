@@ -131,9 +131,8 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	private List<String> tokenizeAndAndAddWildcardToQuery(@Nonnull String searchText) {
 		@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(persistence.getEntityManager());
-		Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer("EBEGUGermanAnalyzer"); //TODO TO TEST
+		Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer("EBEGUGermanAnalyzer");
 		List<String> tokenizedStrings = LuceneUtil.tokenizeString(analyzer, searchText);
-		analyzer.close();
 		return tokenizedStrings.stream().map(term -> term + WILDCARD).collect(Collectors.toList());
 	}
 
