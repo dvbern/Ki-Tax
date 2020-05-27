@@ -270,10 +270,12 @@ public class BetreuungsgutscheinConfigurator {
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleVorStichtag = new ErwerbspensumGemeindeCalcRule(
 				vorStichtag,
-				minEWP_nichtEingeschultGmde.getValueAsInteger(),
-				minEWP_eingeschultGmde.getValueAsInteger(),
+				kitaxParameterDTO.getMinEWP(),
+				kitaxParameterDTO.getMinEWP(),
 				locale);
-			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleVorStichtag, einstellungMap);
+			// Wir muessen die Regel hier manuell hinzufuegen, da wir nicht die ueblichen Einstellungen verwenden!
+			// Sonst wird sie bei der Pruefung isRelevantForGemeinde wieder entfernt
+			rules.add(ewpBernCalcRuleVorStichtag);
 			// Regel 2: Gemaess ASIV ab dem Stichtag
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleNachStichtag = new ErwerbspensumGemeindeCalcRule(
@@ -299,27 +301,6 @@ public class BetreuungsgutscheinConfigurator {
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann
 		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
-
-		// Mahlzeitenverguenstigung
-		MahlzeitenverguenstigungParameter mahlzeitenParams = new MahlzeitenverguenstigungParameter(
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED).getValueAsBoolean(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT).getValueAsBigDecimal()
-		);
-		MahlzeitenverguenstigungBGCalcRule mahlzeitenBGCalcRule = new MahlzeitenverguenstigungBGCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
-		addToRuleSetIfRelevantForGemeinde(mahlzeitenBGCalcRule, einstellungMap);
-
-		MahlzeitenverguenstigungTSCalcRule mahlzeitenTSCalcRule = new MahlzeitenverguenstigungTSCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
-		addToRuleSetIfRelevantForGemeinde(mahlzeitenTSCalcRule, einstellungMap);
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
@@ -368,6 +349,27 @@ public class BetreuungsgutscheinConfigurator {
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(restanspruchLimitCalcRule, einstellungMap);
+
+		// Mahlzeitenverguenstigung
+		MahlzeitenverguenstigungParameter mahlzeitenParams = new MahlzeitenverguenstigungParameter(
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED).getValueAsBoolean(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT).getValueAsBigDecimal(),
+			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT).getValueAsBigDecimal()
+		);
+		MahlzeitenverguenstigungBGCalcRule mahlzeitenBGCalcRule = new MahlzeitenverguenstigungBGCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
+		addToRuleSetIfRelevantForGemeinde(mahlzeitenBGCalcRule, einstellungMap);
+
+		MahlzeitenverguenstigungTSCalcRule mahlzeitenTSCalcRule = new MahlzeitenverguenstigungTSCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
+		addToRuleSetIfRelevantForGemeinde(mahlzeitenTSCalcRule, einstellungMap);
 	}
 
 	private void addToRuleSetIfRelevantForGemeinde(@Nonnull Rule rule, @Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {

@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -67,6 +68,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		// Die ASIV Berechnung muss ausgenullt werden
 		BGCalculationResult resultAsiv = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, resultAsiv);
+		input.getParent().setRegelwerk(Regelwerk.FEBR);
 		// Anspruch nach ASIV muss fuer Kitax-Rechner immer 0 sein
 		resultAsiv.setAnspruchspensumProzent(0);
 		return resultAsiv;

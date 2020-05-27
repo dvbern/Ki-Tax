@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.rules.util;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
@@ -109,6 +111,20 @@ public class MahlzeitenverguenstigungParameter {
 		}
 
 		return verguenstigung;
+	}
+
+	public BigDecimal getVerguenstigungEffektiv(
+		@Nonnull BigDecimal verguenstigung, @Nonnull BigDecimal tarifProMahlzeit, @Nonnull BigDecimal minimalerElternbeitrag
+	) {
+		if ((tarifProMahlzeit.subtract(verguenstigung)).subtract(minimalerElternbeitrag).compareTo(BigDecimal.ZERO) >= 0) {
+			return verguenstigung;
+		}
+
+		if (tarifProMahlzeit.subtract(minimalerElternbeitrag).compareTo(BigDecimal.ZERO) > 0) {
+			return tarifProMahlzeit.subtract(minimalerElternbeitrag);
+		}
+
+		return BigDecimal.ZERO;
 	}
 
 	public boolean isEnabled() {

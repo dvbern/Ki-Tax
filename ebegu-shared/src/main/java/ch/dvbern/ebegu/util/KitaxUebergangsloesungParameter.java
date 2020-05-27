@@ -50,10 +50,12 @@ public final class KitaxUebergangsloesungParameter {
 	private final @Nonnull BigDecimal kostenProStundeMaximalTageseltern = MATH.from(9.49);
 	private final @Nonnull BigDecimal kostenProStundeMinimal = MATH.from(0.79);
 
+	private int minEWP = 0; // Gilt fuer alle Schulstufen. Zuschlaege/Rundungen werden im Korrekturmodus gemacht
+
+	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
+
 	private final @Nonnull BigDecimal maxMassgebendesEinkommen = MATH.from(160000);
 	private final @Nonnull BigDecimal minMassgebendesEinkommen = MATH.from(43000);
-
-	private final @Nonnull BigDecimal babyFaktor = MATH.from(1.5);
 
 	private LocalDate stadtBernAsivStartDate = null;
 	private boolean isStadtBernAsivConfiguered = false;
@@ -126,6 +128,10 @@ public final class KitaxUebergangsloesungParameter {
 	@Nonnull
 	public BigDecimal getBabyFaktor() {
 		return babyFaktor;
+	}
+
+	public int getMinEWP() {
+		return minEWP;
 	}
 
 	public LocalDate getStadtBernAsivStartDate() {

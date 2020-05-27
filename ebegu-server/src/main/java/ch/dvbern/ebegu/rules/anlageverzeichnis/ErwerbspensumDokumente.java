@@ -61,7 +61,6 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
  * <p>
  * Bestätigung (ärztliche Indikation):
  * Notwendig, wenn Frage nach GS Gesundheitliche Einschränkung mit Ja beantwortet wird (gesundheitliche Einschränkung)
- *
  **/
 public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
@@ -77,12 +76,13 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		//if Verguenstigung nicht gewuenscht - keine Dokumenten
 		final FamiliensituationContainer famSitCont = gesuch.getFamiliensituationContainer();
-		if (famSitCont != null && !isVerguenstigungGewuenscht(famSitCont.getFamiliensituationJA())) {
+		if (famSitCont != null && !isVerguenstigungGewuenscht(famSitCont.getFamiliensituationJA())
+			&& !isSozialhilfeempfaenger(famSitCont.getFamiliensituationJA())) {
 			return;
 		}
 
 		// if nuer TS oder FI - keine Dokumenten
-		if (gesuch.hasOnlyBetreuungenOfSchulamt()){
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
 			return;
 		}
 
@@ -127,7 +127,8 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV, locale));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_FREIWILLIGENARBEIT, locale));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT, locale));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM, locale));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
+					locale));
 			});
 	}
 

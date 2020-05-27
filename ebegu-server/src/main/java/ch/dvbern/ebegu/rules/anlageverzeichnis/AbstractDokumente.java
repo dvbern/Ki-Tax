@@ -98,4 +98,14 @@ abstract class AbstractDokumente<T1, T2> {
 		}
 		return false;
 	}
+
+	protected boolean isSozialhilfeempfaenger(@Nullable Familiensituation familiensituation) {
+		if (familiensituation != null &&
+			familiensituation.getSozialhilfeBezueger() != null &&
+			familiensituation.getSozialhilfeBezueger()
+		) {
+			return true;
+		}
+		return false;
+	}
 }

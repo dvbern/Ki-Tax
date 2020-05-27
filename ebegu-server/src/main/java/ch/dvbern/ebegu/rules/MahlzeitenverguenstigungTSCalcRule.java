@@ -74,25 +74,35 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 			return;
 		}
 
-		BigDecimal verguenstigung =
+		BigDecimal verguenstigungGemaessEinkommen =
 			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigung != null && verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0) {
 
 			BigDecimal kostenMitBetreuung = inputData.getTsInputMitBetreuung().getVerpflegungskosten();
 			BigDecimal kostenOhneBetreuung = inputData.getTsInputOhneBetreuung().getVerpflegungskosten();
 			int anzVerpflegungenMitBetreuung = inputData.getTsInputMitBetreuung().getAnzVerpflegungen();
 			int anzVerpflegungenOhneBetreuung = inputData.getTsInputOhneBetreuung().getAnzVerpflegungen();
 
+
+			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+					kostenMitBetreuung,
+					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+
+			BigDecimal verguenstigungEffektivOhneBetreuung =
+				mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+					kostenOhneBetreuung,
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+
 			if (kostenMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenMitBetreuung)));
+				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(anzVerpflegungenMitBetreuung)));
+				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigungEffektivMitBetreuung);
 			}
 			if (kostenOhneBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung)));
+				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungEffektivOhneBetreuung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung)));
+				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigungEffektivOhneBetreuung);
 			}
-
-			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigung);
 		}
 	}
 
