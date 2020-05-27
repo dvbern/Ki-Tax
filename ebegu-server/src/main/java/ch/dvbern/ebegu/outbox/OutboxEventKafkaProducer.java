@@ -79,40 +79,47 @@ public class OutboxEventKafkaProducer {
 			return;
 		}
 
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<OutboxEvent> query = cb.createQuery(OutboxEvent.class);
-		Root<OutboxEvent> root = query.from(OutboxEvent.class);
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<OutboxEvent> query = cb.createQuery(OutboxEvent.class);
+			Root<OutboxEvent> root = query.from(OutboxEvent.class);
 
-		query.orderBy(cb.asc(root.get(AbstractEntity_.timestampErstellt)));
+			query.orderBy(cb.asc(root.get(AbstractEntity_.timestampErstellt)));
 
-		List<OutboxEvent> events = entityManager.createQuery(query)
-			// lock until we are done
-			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
-			.getResultList();
+			List<OutboxEvent> events = entityManager.createQuery(query)
+				// lock until we are done
+				.setLockMode(LockModeType.PESSIMISTIC_WRITE)
+				.getResultList();
 
-		if (events.isEmpty()) {
-			LOG.debug("No OutboxEvents to publish.");
-			return;
+			if (events.isEmpty()) {
+				LOG.debug("No OutboxEvents to publish.");
+				return;
+			}
+
+			LOG.info("Going to publish {} OutboxEvents", events.size());
+
+			Properties props = new Properties();
+			props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
+			props.setProperty(ACKS_CONFIG, "all");
+			props.setProperty(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+			props.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
+			props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
+
+			Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
+
+			events.stream()
+				.map(this::toProducerRecord)
+				.forEach(producer::send);
+
+			producer.close();
+
+			events.forEach(entityManager::remove);
+
+		} catch (RuntimeException e) {
+			// When a timer fails, it's called again sometime later. If that timer fails as well, the schedule is
+			// cancelled: https://stackoverflow.com/a/10598938
+			LOG.error("Kafka export failed", e);
 		}
-
-		LOG.info("Going to publish {} OutboxEvents", events.size());
-
-		Properties props = new Properties();
-		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
-		props.setProperty(ACKS_CONFIG, "all");
-		props.setProperty(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		props.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
-		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
-
-		Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
-
-		events.stream()
-			.map(this::toProducerRecord)
-			.forEach(producer::send);
-
-		producer.close();
-
-		events.forEach(entityManager::remove);
 	}
 
 	/**
