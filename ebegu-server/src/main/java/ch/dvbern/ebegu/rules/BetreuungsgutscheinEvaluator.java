@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -30,16 +29,12 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.rechner.AbstractRechner;
-import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
