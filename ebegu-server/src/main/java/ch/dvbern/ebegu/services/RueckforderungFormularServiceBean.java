@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -70,6 +71,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@Nonnull
 	@Override
@@ -190,5 +194,22 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	) {
 		formular.addRueckforderungMitteilung(mitteilung);
 		return persistence.persist(formular);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void initializePhase2() {
+		//set Application Properties zu true
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, "true");
+		//get alle Ruckforderungsformular, check status and changed if needed
+		ArrayList<RueckforderungStatus> statusGeprueftStufe1 = new ArrayList<>();
+		statusGeprueftStufe1.add(RueckforderungStatus.GEPRUEFT_STUFE_1);
+		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
+			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
+		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
+			formular.setStatus(RueckforderungStatus.EINGELADEN);
+			save(formular);
+		}
 	}
 }

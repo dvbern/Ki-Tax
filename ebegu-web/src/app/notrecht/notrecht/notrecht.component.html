@@ -122,6 +122,10 @@
             <button class="dv-btn" (click)="sendMitteilung(false)" *ngIf="showMitteilungSenden()" translate>
                 NOTVERORDNUNG_MITTEILUNG_SENDEN
             </button>
+
+            <button class="dv-btn" (click)="initializePhase2()" *ngIf="isSuperAdmin()" translate>
+                NOTVERORDNUNG_INITIALISIEREN_PHASE2
+            </button>
         </div>
     </div>
 </div>

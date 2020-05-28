@@ -148,6 +148,28 @@ export class NotrechtComponent implements OnInit {
                 });
     }
 
+    public initializePhase2(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.notrechtRS.initializePhase2().then(() => {
+                        this.loadRueckforderungFormulareForCurrentBenutzer();
+                        this.errorService.addMesageAsInfo(this.translate.instant(
+                            'RUECKFORDERUNG_PHASE2_INITIALISIERT'
+                        ));
+                    });
+                },
+                () => {
+                });
+    }
+
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
