@@ -56,6 +56,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
