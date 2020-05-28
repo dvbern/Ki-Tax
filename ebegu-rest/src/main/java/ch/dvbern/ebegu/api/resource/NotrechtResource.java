@@ -203,7 +203,7 @@ public class NotrechtResource {
 		){
 			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
-			modifiedRueckforderungFormular.setStufe2KantonKostenuebernahmeBetreuung(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
 			modifiedRueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
 			modifiedRueckforderungFormular =
 				this.rueckforderungFormularService.save(modifiedRueckforderungFormular);

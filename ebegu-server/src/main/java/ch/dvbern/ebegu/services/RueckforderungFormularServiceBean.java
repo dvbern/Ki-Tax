@@ -208,7 +208,10 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
 			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
-			formular.setStatus(RueckforderungStatus.EINGELADEN);
+			formular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(formular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+			formular.setStufe2InstitutionKostenuebernahmeAnzahlTage(formular.getStufe1KantonKostenuebernahmeAnzahlTage());
+			formular.setStufe2InstitutionKostenuebernahmeBetreuung(formular.getStufe1KantonKostenuebernahmeBetreuung());
+			formular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
 			save(formular);
 		}
 	}
