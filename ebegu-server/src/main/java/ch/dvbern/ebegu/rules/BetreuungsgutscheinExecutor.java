@@ -100,9 +100,6 @@ public class BetreuungsgutscheinExecutor {
 					String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
 					KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten =
 						kitaxParameter.getOeffnungszeiten(kitaName);
-					if (oeffnungszeiten == null) {
-						throw new EbeguRuntimeException("getOeffnungszeiten", "Keine Oeffnungszeiten gefunden fuer Kita " + kitaName);
-					}
 					rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
 				} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 					// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
