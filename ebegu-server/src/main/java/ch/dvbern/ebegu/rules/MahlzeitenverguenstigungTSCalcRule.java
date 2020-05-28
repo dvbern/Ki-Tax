@@ -85,7 +85,6 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 			int anzVerpflegungenMitBetreuung = inputData.getTsInputMitBetreuung().getAnzVerpflegungen();
 			int anzVerpflegungenOhneBetreuung = inputData.getTsInputOhneBetreuung().getAnzVerpflegungen();
 
-
 			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
 					kostenMitBetreuung,
 					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());

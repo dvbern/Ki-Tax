@@ -21,8 +21,10 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -73,6 +75,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		BigDecimal verpflegKostenProWocheOhneBetreuung = BigDecimal.ZERO;
 		int anzahlVerpflegungenMitBetreuung = 0;
 		int anzahlVerpflegungenOhneBetreuung = 0;
+		Map<Integer, BigDecimal> verpflegungenProModul = new HashMap<>();
 
 		for (BelegungTagesschuleModul belegungTagesschuleModul : anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
 			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
