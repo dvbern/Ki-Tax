@@ -140,6 +140,10 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);
 
+		if (oeffnungszeiten.isDummyParams()) {
+			input.addBemerkung(MsgKey.NO_MATCHING_FROM_KITAX, locale, oeffnungstageBerechnet, oeffnungsstundenBerechnet);
+		}
+
 		return Optional.of(result);
 	}
 

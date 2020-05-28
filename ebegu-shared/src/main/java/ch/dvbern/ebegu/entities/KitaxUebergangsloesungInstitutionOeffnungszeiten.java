@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -31,6 +32,9 @@ import javax.validation.constraints.NotNull;
 public final class KitaxUebergangsloesungInstitutionOeffnungszeiten extends AbstractEntity {
 
 	private static final long serialVersionUID = 6906112225260019153L;
+
+	@Transient
+	private boolean dummyParams = false;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -88,5 +92,13 @@ public final class KitaxUebergangsloesungInstitutionOeffnungszeiten extends Abst
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return false;
+	}
+
+	public boolean isDummyParams() {
+		return dummyParams;
+	}
+
+	public void setDummyParams(boolean dummyParams) {
+		this.dummyParams = dummyParams;
 	}
 }

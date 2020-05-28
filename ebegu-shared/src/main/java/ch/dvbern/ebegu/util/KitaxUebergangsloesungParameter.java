@@ -73,10 +73,20 @@ public final class KitaxUebergangsloesungParameter {
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	public KitaxUebergangsloesungInstitutionOeffnungszeiten getOeffnungszeiten(@Nonnull String kitaName) {
 		KitaxUebergangsloesungInstitutionOeffnungszeiten dto =
 			oeffnungszeitenMap.get(kitaName.toLowerCase(Locale.GERMAN).trim());
+
+		// we use the default parameters if there is no mapping
+		if (dto == null) {
+			dto = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
+			dto.setOeffnungsstunden(BigDecimal.valueOf(11.5));
+			dto.setOeffnungstage(BigDecimal.valueOf(240));
+			dto.setNameKibon(kitaName);
+			dto.setDummyParams(true);
+		}
+
 		return dto;
 	}
 
