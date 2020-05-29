@@ -1284,6 +1284,12 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxMandant;
 	}
 
+	/**
+	 * Diese Methode verwenden nur wenn man der Institution Count und InstitutionNamen benoetigt
+	 *
+	 * @param persistedTraegerschaft
+	 * @return
+	 */
 	public JaxTraegerschaft traegerschaftToJAX(final Traegerschaft persistedTraegerschaft) {
 		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
@@ -1297,6 +1303,20 @@ public class JaxBConverter extends AbstractConverter {
 			.map(Institution::getName)
 			.collect(Collectors.joining(", ")));
 		jaxTraegerschaft.setInstitutionCount(institutionen.size());
+		return jaxTraegerschaft;
+	}
+
+	/**
+	 * Diese Methode verwenden ausser wenn man der Institution Count und InstitutionNamen benoetigt
+	 *
+	 * @param persistedTraegerschaft
+	 * @return
+	 */
+	public JaxTraegerschaft traegerschaftLightToJAX(final Traegerschaft persistedTraegerschaft) {
+		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
+		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
+		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
+		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
 		return jaxTraegerschaft;
 	}
 
@@ -1361,7 +1381,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
 		if (persistedInstitution.getTraegerschaft() != null) {
-			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
+			jaxInstitution.setTraegerschaft(traegerschaftLightToJAX(persistedInstitution.getTraegerschaft()));
 		}
 		return jaxInstitution;
 	}
@@ -1376,7 +1396,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());
 
 		if (entry.getKey().getTraegerschaft() != null) {
-			jaxInstitutionListDTO.setTraegerschaft(traegerschaftToJAX(entry.getKey().getTraegerschaft()));
+			jaxInstitutionListDTO.setTraegerschaft(traegerschaftLightToJAX(entry.getKey().getTraegerschaft()));
 		}
 
 		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
@@ -3777,7 +3797,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxBerechtigung.setInstitution(institutionToJAX(berechtigung.getInstitution()));
 		}
 		if (berechtigung.getTraegerschaft() != null) {
-			jaxBerechtigung.setTraegerschaft(traegerschaftToJAX(berechtigung.getTraegerschaft()));
+			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
 		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
@@ -3799,7 +3819,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxHistory.setInstitution(institutionToJAX(history.getInstitution()));
 		}
 		if (history.getTraegerschaft() != null) {
-			jaxHistory.setTraegerschaft(traegerschaftToJAX(history.getTraegerschaft()));
+			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setStatus(history.getStatus());

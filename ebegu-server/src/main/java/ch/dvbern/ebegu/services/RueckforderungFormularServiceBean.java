@@ -35,6 +35,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.interceptor.Interceptors;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
@@ -74,6 +76,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override
@@ -134,10 +139,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
+		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		if(currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
+			return allRueckforderungFormulare.stream().collect(Collectors.toList());
+		}
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
-
-		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 
 		return allRueckforderungFormulare.stream().filter(formular -> {
 			for (Institution institution : institutionenCurrentBenutzer) {

@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -45,8 +46,12 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 	// 100% = 220 hours => 1% = 2.2 hours
 	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.DEFAULT.fromNullSafe(2.2);
 
-	public TageselternKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
-		super(kitaxParameter, locale);
+	public TageselternKitaxRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
+		super(kitaxParameter, oeffnungszeiten, locale);
 	}
 
 	@Nonnull

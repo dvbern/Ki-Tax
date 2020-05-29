@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
@@ -43,6 +44,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
 	protected KitaxUebergangsloesungParameter kitaxParameter;
+	protected KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten;
 	protected Locale locale;
 
 	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
@@ -50,8 +52,13 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
 
-	protected AbstractKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
+	protected AbstractKitaxRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
 		this.kitaxParameter = kitaxParameter;
+		this.oeffnungszeiten = oeffnungszeiten;
 		this.locale = locale;
 	}
 

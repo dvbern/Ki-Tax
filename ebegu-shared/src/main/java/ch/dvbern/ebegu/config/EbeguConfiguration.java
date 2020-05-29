@@ -148,7 +148,7 @@ public interface EbeguConfiguration {
 	String getKeycloackPassword();
 
 	/**
-	 * @return das Benutzerpasswort fuer den Schulamt API USER
+	 * @return die URL fuer den Keycloak Server
 	 */
 	String getKeycloackAuthServer();
 
