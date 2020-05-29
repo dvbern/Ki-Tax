@@ -73,5 +73,4 @@ export class BetreuungOverrideWarningComponent implements OnChanges {
             && (this.firstBetreuungspensum !== this.betreuungspensum
                 || this.firstBetreuungskosten !== this.betreuungskosten);
     }
-
 }
