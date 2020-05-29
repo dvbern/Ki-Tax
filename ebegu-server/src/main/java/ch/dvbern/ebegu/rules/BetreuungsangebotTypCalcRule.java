@@ -41,7 +41,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(TAGESSCHULE, BetreuungsangebotTyp.KITA);
+		return ImmutableList.of(TAGESSCHULE);
 	}
 
 	@Override
