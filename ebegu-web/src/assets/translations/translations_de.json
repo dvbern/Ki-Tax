@@ -2045,5 +2045,8 @@
     "BISHER_INSTITUTION_STUFE2": "Eingabe Institution Stufe 2: ",
     "NOTVERORDNUNG_INITIALISIEREN_PHASE2": "Start Phase 2",
     "RUECKFORDERUNG_PHASE2_INITIALISIERT": "Phase 2 gestartet",
+    "ALTERNATIVE_TELEFONNUMMER": "Alternative Telefonnummer",
+    "ALTERNATIVE_EMAIL": "Alternative Email Adresse",
+    "ANGABEN_VON_STAMMDATEN": "Falls dieses Feld leer gelassen wird, werden die Angaben der Stammdaten übernommen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
