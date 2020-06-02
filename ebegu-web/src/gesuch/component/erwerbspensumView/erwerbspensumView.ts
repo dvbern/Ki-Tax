@@ -175,15 +175,4 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
-
-    public getErwerbspensumNotRequired(): string {
-        const fiActive = this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
-        let undFerieninselnTxt = '';
-        if (fiActive) {
-            undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
-        }
-        return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
-            undFerieninseln: undFerieninselnTxt
-        });
-    }
 }

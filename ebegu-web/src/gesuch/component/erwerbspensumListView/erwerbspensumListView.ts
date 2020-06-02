@@ -32,6 +32,7 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
@@ -56,6 +57,7 @@ export class ErwerbspensumListViewController
         '$scope',
         'AuthServiceRS',
         '$timeout',
+        '$translate',
         'GemeindeRS'
     ];
 
@@ -76,6 +78,7 @@ export class ErwerbspensumListViewController
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
+        private readonly $translate: ITranslateService,
         private readonly gemeindeRS: GemeindeRS,
     ) {
         super(gesuchModelManager,
@@ -207,5 +210,16 @@ export class ErwerbspensumListViewController
 
     public setFocusBack(elementID: string): void {
         angular.element('#' + elementID).first().focus();
+    }
+
+    public getErwerbspensumNotRequired(): string {
+        const fiActive = this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
+        let undFerieninselnTxt = '';
+        if (fiActive) {
+            undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
+        }
+        return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
+            undFerieninseln: undFerieninselnTxt
+        });
     }
 }
