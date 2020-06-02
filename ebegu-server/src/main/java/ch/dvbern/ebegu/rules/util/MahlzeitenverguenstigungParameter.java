@@ -87,6 +87,12 @@ public class MahlzeitenverguenstigungParameter {
 			verguenstigung = verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO);
 		}
 
+		// falls es sich um einen Sozialhilfebezüger handelt aber die Mahlzeitenvergünstigung nicht an diese
+		// ausbezahlt wird, geben wir 0 zurück
+		if (sozialhilfeBezueger && !enabledFuerSozHilfeBez) {
+			return BigDecimal.ZERO;
+		}
+
 		// falls keine Vergünstigung deklariert ist, geben wir 0 zurück
 		if (verguenstigung == null) {
 			return BigDecimal.ZERO;
@@ -103,6 +109,12 @@ public class MahlzeitenverguenstigungParameter {
 		// die Vergünstigung der Stufe 0
 		if (sozialhilfeBezueger && enabledFuerSozHilfeBez) {
 			verguenstigung = verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO);
+		}
+
+		// falls es sich um einen Sozialhilfebezüger handelt aber die Mahlzeitenvergünstigung nicht an diese
+		// ausbezahlt wird, geben wir 0 zurück
+		if (sozialhilfeBezueger && !enabledFuerSozHilfeBez) {
+			return BigDecimal.ZERO;
 		}
 
 		// falls keine Vergünstigung deklariert ist, geben wir 0 zurück
