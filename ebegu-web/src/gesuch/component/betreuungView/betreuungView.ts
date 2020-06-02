@@ -315,6 +315,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    public displayBetreuungsPensumChangeWarning(): boolean {
+        return this.form.$dirty && this.isMutationsmeldungStatus;
+    }
+
     // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
@@ -1296,5 +1300,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isMahlzeitenverguenstigungActive(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+    // ausserdem soll die Meldung nicht gezeigt werden, wenn ein neues Betreuungspensum hinzugefügt wird
+    public showOverrideWarning(betreuungspensum: TSBetreuungspensum): boolean {
+        return !betreuungspensum.isNew() &&
+            (this.isMutationsmeldungStatus || this.isMutation());
     }
 }
