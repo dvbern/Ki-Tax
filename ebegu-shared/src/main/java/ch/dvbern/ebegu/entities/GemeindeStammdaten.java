@@ -210,6 +210,26 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String usernameScolaris;
 
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String bgTelefon;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String bgEmail;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String tsTelefon;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String tsEmail;
+
 	@Nonnull
 	@ManyToMany
 	@JoinTable(
@@ -587,5 +607,41 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setExternalClients(@Nonnull Set<ExternalClient> externalClients) {
 		this.externalClients = externalClients;
+	}
+
+	@Nullable
+	public String getBgTelefon() {
+		return bgTelefon;
+	}
+
+	public void setBgTelefon(@Nullable String bgTelefon) {
+		this.bgTelefon = bgTelefon;
+	}
+
+	@Nullable
+	public String getBgEmail() {
+		return bgEmail;
+	}
+
+	public void setBgEmail(@Nullable String bgEmail) {
+		this.bgEmail = bgEmail;
+	}
+
+	@Nullable
+	public String getTsTelefon() {
+		return tsTelefon;
+	}
+
+	public void setTsTelefon(@Nullable String tsTelefon) {
+		this.tsTelefon = tsTelefon;
+	}
+
+	@Nullable
+	public String getTsEmail() {
+		return tsEmail;
+	}
+
+	public void setTsEmail(@Nullable String tsEmail) {
+		this.tsEmail = tsEmail;
 	}
 }
