@@ -29,7 +29,7 @@
             <div class="row" ng-if="!vm.erwerbspensumRequired">
                 <div class="col-md-12">
                     <div class="well well-status-bestaetigt">
-                        <span translate>ERWERBSPENSEN_NOT_REQUIRED</span>
+                        <span ng-bind="vm.getErwerbspensumNotRequired()"></span>
                     </div>
                 </div>
             </div>
