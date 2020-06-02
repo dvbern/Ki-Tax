@@ -901,10 +901,10 @@ export class EbeguRestUtil {
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.bgAdresse = this.adresseToRestObject({}, stammdaten.bgAdresse);
             restStammdaten.tsAdresse = this.adresseToRestObject({}, stammdaten.tsAdresse);
-            restStammdaten.bgEmail = stammdaten.bgEmail;
-            restStammdaten.bgTelefon = stammdaten.bgTelefon;
-            restStammdaten.tsEmail = stammdaten.tsEmail;
-            restStammdaten.tsEmail = stammdaten.tsEmail;
+            restStammdaten.bgEmail = (stammdaten.bgEmail) ? stammdaten.bgEmail : null;
+            restStammdaten.bgTelefon = (stammdaten.bgTelefon) ? stammdaten.bgTelefon : null;
+            restStammdaten.tsEmail = (stammdaten.tsEmail) ? stammdaten.tsEmail : null;
+            restStammdaten.tsTelefon = (stammdaten.tsTelefon) ? stammdaten.tsTelefon : null;
             if (stammdaten.gemeinde.angebotBG) {
                 restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             }

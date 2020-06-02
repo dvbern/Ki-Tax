@@ -465,6 +465,36 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG Email (falls gesetzt), sonst die allgemeinen Angaben
+	 * Fuer *reine* TS-Angebote verwenden wir die TS Email (falls gesetzt), sonst die allgemeinen Angaben
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
+	 */
+	public String getEmailForGesuch(Gesuch gesuch) {
+		if (bgEmail != null && !bgEmail.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			return bgEmail;
+		}
+		if (tsEmail != null && !tsEmail.equals("") && gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return tsEmail;
+		}
+		return mail;
+	}
+
+	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
+	 * Fuer *reine* TS-Angebote verwenden wir die TS Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
+	 */
+	public String getTelefonForGesuch(Gesuch gesuch) {
+		if (bgTelefon != null && !bgTelefon.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			return bgTelefon;
+		}
+		if (tsTelefon != null && !tsTelefon.equals("") && gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return tsTelefon;
+		}
+		return telefon;
+	}
+
+	/**
 	 * Wir suchen einen Benutzer aufgrund der Betreuungen des übergebenen Gesuchs.
 	 * Falls *reines* BG Gesuch verwenden wir den BG-Benutzer, falls dieser die richtige Rolle hat
 	 * Falls *reines* TS Gesuch verwenden wir den TS-Benutzer, falls dieser die richtige Rolle hat
