@@ -117,6 +117,8 @@ import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSRueckforderungFormular} from '../models/TSRueckforderungFormular';
+import {TSRueckforderungMitteilung} from '../models/TSRueckforderungMitteilung';
 import {TSSozialhilfeZeitraum} from '../models/TSSozialhilfeZeitraum';
 import {TSSozialhilfeZeitraumContainer} from '../models/TSSozialhilfeZeitraumContainer';
 import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
@@ -134,6 +136,7 @@ import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
+import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
@@ -682,7 +685,8 @@ export class EbeguRestUtil {
             restFamiliensituationContainer.sozialhilfeZeitraumContainers = [];
             if (Array.isArray(familiensituationContainer.sozialhilfeZeitraumContainers)) {
                 restFamiliensituationContainer.sozialhilfeZeitraumContainers =
-                    familiensituationContainer.sozialhilfeZeitraumContainers.map(szc => this.sozialhilfeZeitraumContainerToRestObject({}, szc));
+                    familiensituationContainer.sozialhilfeZeitraumContainers.map(
+                        szc => this.sozialhilfeZeitraumContainerToRestObject({}, szc));
             }
 
             return restFamiliensituationContainer;
@@ -705,7 +709,8 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any, sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
+    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any,
+                                           sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
         if (sozialhilfeZeitraum) {
             this.abstractDateRangeEntityToRestObject(restSozialhilfeZeitraum, sozialhilfeZeitraum);
             return restSozialhilfeZeitraum;
@@ -739,7 +744,8 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum, sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
+    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum,
+                                    sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
         if (sozialhilfeZeitraumFromServer) {
             this.parseDateRangeEntity(sozialhilfeZeitraum, sozialhilfeZeitraumFromServer);
             return sozialhilfeZeitraum;
@@ -1418,6 +1424,8 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
+            restInstitutionStammdaten.tarifProHauptmahlzeit = institutionStammdaten.tarifProHauptmahlzeit;
+            restInstitutionStammdaten.tarifProNebenmahlzeit = institutionStammdaten.tarifProNebenmahlzeit;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1441,6 +1449,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
+            institutionStammdatenTS.tarifProHauptmahlzeit = institutionStammdatenFromServer.tarifProHauptmahlzeit;
+            institutionStammdatenTS.tarifProNebenmahlzeit = institutionStammdatenFromServer.tarifProNebenmahlzeit;
             return institutionStammdatenTS;
         }
         return undefined;
@@ -1813,7 +1823,7 @@ export class EbeguRestUtil {
         restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.ausAsylwesen = kind.ausAsylwesen;
-        restKind.zemisNummer = kind.zemisNummer;
+        restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -2082,8 +2092,10 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
-            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
-            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ? 0 : betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ? 0 : betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.tarifProHauptmahlzeit = EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProHauptmahlzeit) ? 0 : betreuungspensum.tarifProHauptmahlzeit;
+            restBetreuungspensum.tarifProNebenmahlzeit = EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProNebenmahlzeit) ? 0 : betreuungspensum.tarifProNebenmahlzeit;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -2096,6 +2108,8 @@ export class EbeguRestUtil {
         this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
         restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
+        restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit;
+        restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit;
         return restBetreuungspensum;
     }
 
@@ -2184,6 +2198,8 @@ export class EbeguRestUtil {
 
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
+        abweichungTS.vertraglicherTarifHaupt = abweichungFromServer.vertraglicherTarifHaupt;
+        abweichungTS.vertraglicherTarifNeben = abweichungFromServer.vertraglicherTarifNeben;
         abweichungTS.monatlicheHauptmahlzeiten = abweichungFromServer.monatlicheHauptmahlzeiten;
         abweichungTS.monatlicheNebenmahlzeiten = abweichungFromServer.monatlicheNebenmahlzeiten;
         abweichungTS.vertraglichesPensum = originalPensum;
@@ -2263,6 +2279,8 @@ export class EbeguRestUtil {
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
             betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
+            betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
+            betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
@@ -2277,6 +2295,8 @@ export class EbeguRestUtil {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
+            betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
+            betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             return betreuungspensumTS;
         }
         return undefined;
@@ -2822,6 +2842,8 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultMitPaedagogischerBetreuung);
             verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
+            verfuegungZeitabschnittTS.verguenstigungHauptmahlzeitTotal = zeitabschnittFromServer.verguenstigungHauptmahlzeitTotal;
+            verfuegungZeitabschnittTS.verguenstigungNebenmahlzeitTotal = zeitabschnittFromServer.verguenstigungNebenmahlzeitTotal;
             return verfuegungZeitabschnittTS;
         }
         return undefined;
@@ -2835,6 +2857,7 @@ export class EbeguRestUtil {
             resultTS.betreuungszeitProWoche = resultFromServer.betreuungszeitProWoche;
             resultTS.betreuungszeitProWocheFormatted = resultFromServer.betreuungszeitProWocheFormatted;
             resultTS.verpflegungskosten = resultFromServer.verpflegungskosten;
+            resultTS.verpflegungskostenVerguenstigt = resultFromServer.verpflegungskostenVerguenstigt;
             resultTS.gebuehrProStunde = resultFromServer.gebuehrProStunde;
             resultTS.totalKostenProWoche = resultFromServer.totalKostenProWoche;
             return resultTS;
@@ -3586,19 +3609,20 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.anmeldeschluss =
                 DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
             ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
-            const firstZeitraum = new TSFerieninselZeitraum();
-            if (receivedFerieninselStammdaten.zeitraumList[0]) {
-                this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
-            } else {
-                firstZeitraum.gueltigkeit = new TSDateRange();
-            }
-            ferieninselStammdatenTS.ersterZeitraum = firstZeitraum;
+
             ferieninselStammdatenTS.zeitraumList = [];
-            for (let i = 1; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
-                const zeitraum = new TSFerieninselZeitraum();
-                this.parseDateRangeEntity(zeitraum, receivedFerieninselStammdaten.zeitraumList[i]);
-                ferieninselStammdatenTS.zeitraumList.push(zeitraum);
+            for (const zeitraum of receivedFerieninselStammdaten.zeitraumList) {
+                const zeitraumTS = new TSFerieninselZeitraum();
+                this.parseDateRangeEntity(zeitraumTS, zeitraum);
+                ferieninselStammdatenTS.zeitraumList.push(zeitraumTS);
             }
+
+            if (ferieninselStammdatenTS.zeitraumList.length < 1) {
+                const emptyZeitraum = new TSFerieninselZeitraum();
+                emptyZeitraum.gueltigkeit = new TSDateRange();
+                ferieninselStammdatenTS.zeitraumList.push(emptyZeitraum);
+            }
+
             const tage = receivedFerieninselStammdaten.potenzielleFerieninselTageFuerBelegung;
             if (tage) {
                 ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegung =
@@ -3624,18 +3648,17 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            if (ferieninselStammdatenTS.ersterZeitraum && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit
-                && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit.gueltigAb) {
-                const firstZeitraum: any = {};
-                this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.ersterZeitraum);
+
+            if (ferieninselStammdatenTS.zeitraumList &&
+                (ferieninselStammdatenTS.zeitraumList.length > 1 ||
+                    (ferieninselStammdatenTS.zeitraumList.length === 1 &&
+                        ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
+                        ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
                 restFerieninselStammdaten.zeitraumList = [];
-                restFerieninselStammdaten.zeitraumList[0] = firstZeitraum;
-            }
-            if (ferieninselStammdatenTS.zeitraumList) {
                 for (let i = 0; i < ferieninselStammdatenTS.zeitraumList.length; i++) {
                     const zeitraum: any = {};
                     this.abstractDateRangeEntityToRestObject(zeitraum, ferieninselStammdatenTS.zeitraumList[i]);
-                    restFerieninselStammdaten.zeitraumList[i + 1] = zeitraum;
+                    restFerieninselStammdaten.zeitraumList[i] = zeitraum;
                 }
             }
             return restFerieninselStammdaten;
@@ -3660,9 +3683,15 @@ export class EbeguRestUtil {
         if (!data) {
             return [];
         }
-        return Array.isArray(data)
+        const tage = Array.isArray(data)
             ? data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
             : [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
+
+        tage.sort((a: TSBelegungFerieninselTag, b: TSBelegungFerieninselTag) => {
+            return a.tag.valueOf() - b.tag.valueOf();
+        });
+
+        return tage;
     }
 
     private parseBelegungFerieninselTag(
@@ -3814,7 +3843,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseKitaxResponse (response: any): TSKitaxResponse {
+    public parseKitaxResponse(response: any): TSKitaxResponse {
 
         const kitaxResponse = new TSKitaxResponse();
 
@@ -3822,5 +3851,127 @@ export class EbeguRestUtil {
         kitaxResponse.fallNummer = response.fallNr;
 
         return kitaxResponse;
+    }
+
+    public parseRueckforderungFormularList(data: any): TSRueckforderungFormular[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(
+                item => this.parseRueckforderungFormular(new TSRueckforderungFormular(), item))
+            : [this.parseRueckforderungFormular(new TSRueckforderungFormular(), data)];
+    }
+
+    public parseRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular,
+                                       rueckforderungFormularFromServer: any): TSRueckforderungFormular {
+
+        this.parseAbstractEntity(rueckforderungFormular, rueckforderungFormularFromServer);
+
+        rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
+        rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
+        rueckforderungFormular.status = rueckforderungFormularFromServer.status;
+        rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe1FreigabeBetrag = rueckforderungFormularFromServer.stufe1FreigabeBetrag;
+        rueckforderungFormular.stufe1FreigabeDatum =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
+        rueckforderungFormular.stufe1FreigabeAusbezahltAm =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeAusbezahltAm);
+        rueckforderungFormular.stufe2VerfuegungBetrag = rueckforderungFormularFromServer.stufe2VerfuegungBetrag;
+        rueckforderungFormular.stufe2VerfuegungDatum =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
+        rueckforderungFormular.stufe2VerfuegungAusbezahltAm =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
+        return rueckforderungFormular;
+    }
+
+    public parseRueckforderungMitteilungList(data: Array<any>): TSRueckforderungMitteilung[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(
+                item => this.parseRueckforderungMitteilung(new TSRueckforderungMitteilung(), item))
+            : [this.parseRueckforderungMitteilung(new TSRueckforderungMitteilung(), data)];
+    }
+
+    public parseRueckforderungMitteilung(rueckforderungMitteilung: TSRueckforderungMitteilung,
+                                         rueckforderungMitteilungFromServer: any): TSRueckforderungMitteilung {
+        this.parseAbstractEntity(rueckforderungMitteilung, rueckforderungMitteilungFromServer);
+        rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
+        rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
+        rueckforderungMitteilung.sendeDatum = DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
+        return rueckforderungMitteilung;
+    }
+
+    public rueckforderungFormularToRestObject(rueckforderungFormularRest: any,
+                                              rueckforderungFormularTS: TSRueckforderungFormular): any {
+        this.abstractEntityToRestObject(rueckforderungFormularRest, rueckforderungFormularTS);
+        rueckforderungFormularRest.institutionStammdaten = this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
+        rueckforderungFormularRest.rueckforderungMitteilungen = this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
+        rueckforderungFormularRest.status = rueckforderungFormularTS.status;
+        rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe2KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularTS.stufe2KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe2KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularTS.stufe2KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe1KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe1KantonKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe2KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe2KantonKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe1FreigabeBetrag = rueckforderungFormularTS.stufe1FreigabeBetrag;
+        rueckforderungFormularRest.stufe1FreigabeDatum =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeDatum);
+        rueckforderungFormularRest.stufe1FreigabeAusbezahltAm =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeAusbezahltAm);
+        rueckforderungFormularRest.stufe2VerfuegungBetrag = rueckforderungFormularTS.stufe2VerfuegungBetrag;
+        rueckforderungFormularRest.stufe2VerfuegungDatum =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
+        rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        return rueckforderungFormularRest;
+    }
+
+    public rueckforderungMitteilungListToRestObject(rueckforderungMitteilungenList: TSRueckforderungMitteilung[]): Array<any> {
+
+        return rueckforderungMitteilungenList ? rueckforderungMitteilungenList.map(
+            item => this.rueckforderungMitteilungToRestObject({}, item)) : [];
+    }
+
+    public rueckforderungMitteilungToRestObject(rueckforderungMitteilungRest: any,
+                                                rueckforderungMitteilungTS: TSRueckforderungMitteilung): any {
+        this.abstractEntityToRestObject(rueckforderungMitteilungRest, rueckforderungMitteilungTS);
+        rueckforderungMitteilungRest.betreff = rueckforderungMitteilungTS.betreff;
+        rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
+        rueckforderungMitteilungRest.sendeDatum = DateUtil.momentToLocalDateTime(rueckforderungMitteilungTS.sendeDatum);
+        return rueckforderungMitteilungRest;
     }
 }

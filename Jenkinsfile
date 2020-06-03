@@ -12,7 +12,7 @@ pipeline {
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
 		timeout(time: 2, unit: 'HOURS')
 		disableConcurrentBuilds()
-		lock('ebegu-tests')
+		throttle(['ebegu-job-limit'])
 	}
 	stages {
 		stage("Test") {

@@ -51,23 +51,23 @@ public class BemerkungsMergerTest {
 		VerfuegungZeitabschnitt mai = new VerfuegungZeitabschnitt(MAI);
 
 		// Abwesenheit: Durchgehend Jan-Mai
-		jan.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		feb.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		mar.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		apr.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		mai.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		mar.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		apr.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		mai.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
 
 		// Betreuungsangebot: Jan-März, Mai
-		jan.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
-		feb.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
-		mar.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
-		mai.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBgCalculationInputAsiv().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		mar.getBgCalculationInputAsiv().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		mai.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
 
 		// Einreichungsfrist: Jan-Feb, Apr-Mai
-		jan.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
-		feb.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
-		apr.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
-		mai.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		apr.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		mai.getBgCalculationInputAsiv().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
 
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, feb, mar, apr, mai);
@@ -89,8 +89,8 @@ public class BemerkungsMergerTest {
 		VerfuegungZeitabschnitt jan = new VerfuegungZeitabschnitt(JAN);
 		VerfuegungZeitabschnitt overlappWithJan = new VerfuegungZeitabschnitt(new DateRange(JAN.getGueltigBis(), FEB.getGueltigBis()));
 
-		jan.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		overlappWithJan.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		overlappWithJan.getBgCalculationInputAsiv().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
 
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, overlappWithJan);
@@ -106,13 +106,13 @@ public class BemerkungsMergerTest {
 	public void bemerkungenVonUeberschriebenenRegelnNichtAnzeigen() {
 		// Wenn alle drei Regeln: Es wird nur der AusserordentlicheAnspruch berücksichtigt
 		VerfuegungZeitabschnitt jan = new VerfuegungZeitabschnitt(JAN);
-		jan.getBemerkungenList().addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
-		jan.getBemerkungenList().addBemerkung(MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
-		jan.getBemerkungenList().addBemerkung(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, Constants.DEFAULT_LOCALE);
 		// Wenn Fachstelle und Erwerbspensum -> nur Fachstelle anzeigen
 		VerfuegungZeitabschnitt feb = new VerfuegungZeitabschnitt(FEB);
-		feb.getBemerkungenList().addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
-		feb.getBemerkungenList().addBemerkung(MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBgCalculationInputAsiv().addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
+		feb.getBgCalculationInputAsiv().addBemerkung(MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
 
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, feb);

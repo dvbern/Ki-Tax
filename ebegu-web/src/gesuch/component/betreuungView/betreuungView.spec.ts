@@ -108,7 +108,7 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
-            .and.returnValue($q.resolve(gesuchModelManager.getActiveInstitutionenList()));
+            .and.returnValue($q.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
             gesuchModelManager,
@@ -366,17 +366,6 @@ describe('betreuungView', () => {
                 expect(betreuungView.showInstitutionenList()).toBe(true);
                 expect(betreuungView.showInstitutionenAsText()).toBe(false);
             });
-            it('should not showInstitutionenList and not showInstitutionenAsText for TAGESSCHULE alte Gesuchsperiode',
-                () => {
-                    // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                    spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(false);
-                    spyOn(betreuungView, 'isEnabled').and.returnValue(true);
-                    spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
-                    spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
-
-                    expect(betreuungView.showInstitutionenList()).toBe(false);
-                    expect(betreuungView.showInstitutionenAsText()).toBe(false);
-                });
             it('should showInstitutionenList and not showInstitutionenAsText for enabled TAGESSCHULE neue Gesuchsperiode',
                 () => {
                     // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);

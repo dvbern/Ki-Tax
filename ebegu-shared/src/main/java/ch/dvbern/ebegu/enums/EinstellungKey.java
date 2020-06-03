@@ -31,6 +31,9 @@ public enum EinstellungKey {
 	// Ab welchem Datum können Anmeldungen für die Tagesschule erfasst werden
 	GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
 
+	// Ab welchem Datum können Anmeldungen für die Ferieninsel erfasst werden
+	GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
+
 	// Erster Schultag der Tagesschule
 	GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG(EinstellungTyp.GEMEINDE),
 
@@ -76,6 +79,8 @@ public enum EinstellungKey {
 
 	// Die Gemeinde gewährt die Mahlzeitenvergünstigung auch für Sozialhilfebezüger
 	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED(EinstellungTyp.GEMEINDE),
+	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT(EinstellungTyp.GEMEINDE),
+	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT(EinstellungTyp.GEMEINDE),
 
 	// Die Schnittstelle zu Ki-Tax ist aktiviert
 	GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED(EinstellungTyp.GEMEINDE),

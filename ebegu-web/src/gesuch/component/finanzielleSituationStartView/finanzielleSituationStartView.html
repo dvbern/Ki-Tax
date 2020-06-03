@@ -136,7 +136,8 @@
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"
                                              name="keineMahlzeitenverguenstigungBeantragt"
-                                             aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}">
+                                             aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}"
+                                             ng-disabled="vm.isGesuchReadonly()">
                                     <span data-translate="MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT"></span>
                                 </md-checkbox>
                                 <dv-bisher gs="vm.model.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt"
@@ -150,7 +151,10 @@
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="IBAN" for="iban"></label>
+                                    <label class="md-no-float"for="iban">
+                                        <span data-translate="IBAN" ></span>
+                                        <dv-tooltip input-id="iban" text="'IBAN_NUMMER_HINT'"></dv-tooltip>
+                                    </label>
                                     <input id="iban" type="text" name="iban"
                                            ng-model="vm.model.zahlungsinformationen.iban"
                                            dv-max-length class="form-control" required>

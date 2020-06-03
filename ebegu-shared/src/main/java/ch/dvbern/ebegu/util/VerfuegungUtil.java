@@ -22,6 +22,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
@@ -67,15 +69,36 @@ public final class VerfuegungUtil {
 			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte = letzteAusbezahlteVerfuegung.getZeitabschnitte();
 
 			for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
-				// todo imanol Dies sollte auch subzeitabschnitte vergleichen
-				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
-				if (oldSameZeitabschnitt.isPresent()) {
-					newZeitabschnitt.setSameAusbezahlteVerguenstigungForAsivAndGemeinde(Objects.equals(newZeitabschnitt.getVerguenstigung(), oldSameZeitabschnitt.get().getVerguenstigung()));
+				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
+				if (oldSameZeitabschnittOptional.isPresent()) {
+					VerfuegungZeitabschnitt oldSameZeitabschnitt = oldSameZeitabschnittOptional.get();
+					// Der Vergleich muuss fuer ASIV und Gemeinde separat erfolgen
+					setIsSameAusbezahlteVerguenstigung(
+						newZeitabschnitt.getBgCalculationInputAsiv(),
+						newZeitabschnitt.getBgCalculationResultAsiv(),
+						oldSameZeitabschnitt.getBgCalculationResultAsiv());
+					if (newZeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+						Objects.requireNonNull(newZeitabschnitt.getBgCalculationResultGemeinde());
+						Objects.requireNonNull(oldSameZeitabschnitt.getBgCalculationResultGemeinde());
+						setIsSameAusbezahlteVerguenstigung(
+							newZeitabschnitt.getBgCalculationInputGemeinde(),
+							newZeitabschnitt.getBgCalculationResultGemeinde(),
+							oldSameZeitabschnitt.getBgCalculationResultGemeinde());
+					}
 				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-					newZeitabschnitt.setSameAusbezahlteVerguenstigungForAsivAndGemeinde(false);
+					newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(false);
+					newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(false);
 				}
 			}
 		}
+	}
+
+	private static void setIsSameAusbezahlteVerguenstigung(
+		@Nonnull BGCalculationInput inputNeu,
+		@Nonnull BGCalculationResult resultNeu,
+		@Nonnull BGCalculationResult resultBisher
+	) {
+		inputNeu.setSameAusbezahlteVerguenstigung(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
 	}
 
 	@Nonnull

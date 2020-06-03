@@ -78,7 +78,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
-		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().size());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
@@ -118,7 +118,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
-		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().size());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
@@ -432,7 +432,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 	@Test
 	public void testFreiwilligenarbeitAllePensenUeberMinimum() {
 		// Beide Pensen sind einzeln schon gueltig. Gemeinde=Asiv+Gemeinde, Anspruch jeweils +20
-		assertBerechnungenMitFreiwilligenarbeit(40, 25, 60, 85);
+		assertBerechnungenMitFreiwilligenarbeit(40, 20, 60, 80);
 	}
 
 	@Test
@@ -476,7 +476,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		ewpFreiwilligenarbeit.getErwerbspensumJA().setTaetigkeit(Taetigkeit.FREIWILLIGENARBEIT);
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewpFreiwilligenarbeit);
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getEinstellungenRulesParis(gesuch.getGesuchsperiode()));
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);

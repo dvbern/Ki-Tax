@@ -243,7 +243,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			} else {
 				target.setBetreuungsstatus(this.getBetreuungsstatus());
 			}
-			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
+			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen() && target instanceof AnmeldungTagesschule){
 				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 			}
 			target.setKind(targetKindContainer);
@@ -296,6 +296,12 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	public Gesuch extractGesuch() {
 		Objects.requireNonNull(this.getKind(), "Can not extract Gesuch because Kind is null");
 		return this.getKind().getGesuch();
+	}
+
+	@Nonnull
+	@Transient
+	public Gemeinde extractGemeinde() {
+		return this.extractGesuch().extractGemeinde();
 	}
 
 	@Nonnull

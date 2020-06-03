@@ -34,6 +34,7 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
+import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
@@ -114,6 +115,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public erlaeuterung: string = null;
     public agbVorhanden: boolean;
     private _showWarningModuleZugewiesen: boolean = false;
+    public isScolaris: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -219,6 +221,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return;
         }
         this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
+        this.isScolaris = (tsEinstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS);
     }
 
     public getWeekDays(): TSDayOfWeek[] {
@@ -367,10 +370,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        if (this.form.$valid) {
-            this.preSave();
-            this.anmeldungSchulamtUebernehmen();
+        if (!this.form.$valid || !this.isThereAnyAnmeldung()) {
+            this.showErrorMessageNoModule = true;
+            return undefined;
         }
+        this.preSave();
+        this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
+
     }
 
     public saveAnmeldungSchulamtAblehnen(): void {

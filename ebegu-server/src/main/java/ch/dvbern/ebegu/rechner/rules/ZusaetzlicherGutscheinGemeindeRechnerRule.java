@@ -23,7 +23,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
@@ -67,6 +66,11 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		if (!inputGemeinde.isBetreuungInGemeinde()) {
 			hasAnspruch = false;
 			addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
+		}
+		// (4) Lange Abwesenheit
+		if (inputGemeinde.isLongAbwesenheit()) {
+			// Bei Abwesenheit wird der Anspruch *nicht* auf 0 gesetzt, darum muss es hier speziell behandelt werden
+			hasAnspruch = false;
 		}
 		return hasAnspruch;
 	}
@@ -124,7 +128,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 	private void addMessage(@Nonnull BGCalculationInput inputGemeinde, @Nonnull MsgKey msgKey, Object... args) {
 		// Saemtliche Bemerkungen werden nur dann angezeigt, wenn ueberhaupt prinzipiell Anspruch besteht
 		if (inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
-			inputGemeinde.getParent().getBemerkungenList().addBemerkung(new VerfuegungsBemerkung(msgKey, locale, args));
+			inputGemeinde.addBemerkung(msgKey, locale, args);
 		}
 	}
 }

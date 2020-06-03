@@ -123,7 +123,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			&& !inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
 		) {
 			inputData.setBesondereBeduerfnisseBestaetigt(false);
-			inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
 
@@ -146,7 +146,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
 				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
 				if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-					inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
 			}
 		}
@@ -170,14 +170,14 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			if (isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
 				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
-				inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 			if (isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-				inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
+				inputData.addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 			}
 		}
 	}

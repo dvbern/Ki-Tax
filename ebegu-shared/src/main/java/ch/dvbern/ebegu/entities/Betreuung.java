@@ -44,7 +44,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
@@ -94,7 +93,7 @@ import org.hibernate.search.annotations.Indexed;
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
 )
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
 public class Betreuung extends AbstractPlatz {
 
@@ -492,6 +491,8 @@ public class Betreuung extends AbstractPlatz {
 				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
 				abweichung.addHauptmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheHauptmahlzeiten()).multiply(anteil).intValue());
 				abweichung.addNebenmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheNebenmahlzeiten()).multiply(anteil).intValue());
+				abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
+				abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
 			}
 		}
 		return abweichung;

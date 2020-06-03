@@ -34,11 +34,16 @@ public enum MailTemplate {
 	InfoVerfuegtMutation,
 	InfoVerfuegtGesuch,
 	InfoSchulamtAnmeldungAbgelehnt,
-	InfoSchulamtAnmeldungUebernommen,
+	InfoSchulamtAnmeldungTagesschuleUebernommen,
+	InfoSchulamtAnmeldungFerieninselUebernommen,
 	InfoBetreuungenBestaetigt,
 	InfoBetreuungAbgelehnt,
 	InfoStatistikGeneriert,
 	InfoOffenePendenzenInstitution,
+	InfoSchulamtAnmeldungTagesschuleAkzeptiert,
+	InfoGemeindeAngebotAktiviert,
+	NotrechtGenerischeMitteilung,
+	NotrechtBestaetigungPruefungStufe1
 	InfoSchulamtAnmeldungAkzeptiert,
 	InfoGemeindeAngebotAktiviert,
 	InfoGesuchVerfuegtVerantwortlicherTS

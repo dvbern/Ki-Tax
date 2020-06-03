@@ -375,4 +375,8 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer"/>
 	<entity class="ch.dvbern.ebegu.entities.SozialhilfeZeitraum"/>
 	<entity class="ch.dvbern.ebegu.entities.EinstellungenFerieninsel"/>
+	<entity class="ch.dvbern.ebegu.entities.RueckforderungFormular"/>
+	<entity class="ch.dvbern.ebegu.entities.RueckforderungDokument"/>
+	<entity class="ch.dvbern.ebegu.entities.RueckforderungMitteilung"/>
+	<entity class="ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten"/>
 </entity-mappings>

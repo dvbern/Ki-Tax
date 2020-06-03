@@ -216,7 +216,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			return Optional.empty();
 		}
 		if (criteriaResults.size() > 1) {
-			throw new EbeguRuntimeException("findEinstellungByMandantGemeindeOrSystem", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+			throw new EbeguRuntimeException("findEinstellungByMandantGemeindeOrSystem", "For Key " + key, ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
 		return Optional.of(criteriaResults.get(0));
 	}
@@ -291,9 +291,10 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		einstellungenOfLastGP
 			.forEach(lastGPEinstellung -> {
 				Einstellung einstellungOfNewGP = lastGPEinstellung.copyGesuchsperiode(gesuchsperiodeToCreate);
-				// Es gibt zwei Ausnahmen, wo die Einstellung nicht kopiert werden darf. Wir ueberschreiben mit dem Start der GP
+				// Es gibt drei Ausnahmen, wo die Einstellung nicht kopiert werden darf. Wir ueberschreiben mit dem Start der GP
 				if (lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB ||
-					lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG) {
+					lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG ||
+					lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB) {
 					einstellungOfNewGP.setValue(gueltigAbAsString);
 				}
 				saveEinstellung(einstellungOfNewGP);

@@ -31,6 +31,7 @@ export class TSGemeindeKonfiguration {
     public konfigKontingentierung: boolean; // only on client
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
     public konfigTagesschuleTagisEnabled: boolean;
+    public konfigFerieninselAktivierungsdatum: moment.Moment;
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
     public konfigZusaetzlicherGutscheinEnabled: boolean; // only on client
@@ -53,6 +54,8 @@ export class TSGemeindeKonfiguration {
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
+    public konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit: number; // only on client
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
     public erwerbspensumMiminumVorschuleMax: number;
@@ -65,7 +68,7 @@ export class TSGemeindeKonfiguration {
     public erwerbspensumZuschlagOverriden: boolean;
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
-    private _ferieninselStammdaten: TSFerieninselStammdaten[];
+    public ferieninselStammdaten: TSFerieninselStammdaten[];
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -77,9 +80,20 @@ export class TSGemeindeKonfiguration {
                 || this.konfigTagesschuleAktivierungsdatum.isSame(moment([])));
     }
 
+    public isFerieninselanmeldungKonfiguriert(): boolean {
+        return this.hasFerieninseAnmeldung()
+            && (this.konfigFerieninselAktivierungsdatum.isBefore(moment([]))
+                || this.konfigFerieninselAktivierungsdatum.isSame(moment([])));
+    }
+
     public isTageschulenAnmeldungAktiv(): boolean {
         return this.isTagesschulenAnmeldungKonfiguriert()
             && this.konfigTagesschuleAktivierungsdatum.isBefore(moment());
+    }
+
+    public isFerieninselAnmeldungAktiv(): boolean {
+        return this.isFerieninselanmeldungKonfiguriert()
+            && this.konfigFerieninselAktivierungsdatum.isBefore(moment());
     }
 
     public hasTagesschulenAnmeldung(): boolean {
@@ -87,8 +101,7 @@ export class TSGemeindeKonfiguration {
     }
 
     public hasFerieninseAnmeldung(): boolean {
-        // TODO Muss implementiert werden, sobald Ferieninseln umgesetzt sind. Evtl. pro Ferien unterschiedlich?
-        return false;
+        return EbeguUtil.isNotNullOrUndefined(this.konfigFerieninselAktivierungsdatum);
     }
 
     public isTagesschulAnmeldungBeforePeriode(): boolean {
@@ -96,14 +109,20 @@ export class TSGemeindeKonfiguration {
             && this.konfigTagesschuleAktivierungsdatum.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);
     }
 
+    public isFerieninselAnmeldungBeforePeriode(): boolean {
+        return this.hasFerieninseAnmeldung()
+            && this.konfigFerieninselAktivierungsdatum.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);
+    }
+
     public initProperties(): void {
         this.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
         this.konfigKontingentierung = false;
         this.konfigTagesschuleAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
         this.konfigTagesschuleErsterSchultag = this.gesuchsperiode.gueltigkeit.gueltigAb;
+        this.konfigFerieninselAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
         this.konfigTagesschuleTagisEnabled = false;
-
         this.konfigurationen.forEach(property => {
+            // tslint:disable-next-line:max-switch-cases
             switch (property.key) {
                 case TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE: {
                     this.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
@@ -115,6 +134,10 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB: {
                     this.konfigTagesschuleAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB: {
+                    this.konfigFerieninselAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG: {
@@ -219,6 +242,14 @@ export class TSGemeindeKonfiguration {
                     this.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled = (property.value === 'true');
                     break;
                 }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit = Number(property.value);
+                    break;
+                }
                 case TSEinstellungKey.GEMEINDE_TAGESSCHULE_TAGIS_ENABLED: {
                     this.konfigTagesschuleTagisEnabled = (property.value === 'true');
                     break;
@@ -237,13 +268,5 @@ export class TSGemeindeKonfiguration {
         this.erwerbspensumMinimumOverriden =
             (this.erwerbspensumMiminumVorschule !== this.erwerbspensumMiminumVorschuleMax) ||
             (this.erwerbspensumMiminumSchulkinder !== this.erwerbspensumMiminumSchulkinderMax);
-    }
-
-    public get ferieninselStammdaten(): TSFerieninselStammdaten[] {
-        return this._ferieninselStammdaten;
-    }
-
-    public set ferieninselStammdaten(value: TSFerieninselStammdaten[]) {
-        this._ferieninselStammdaten = value;
     }
 }

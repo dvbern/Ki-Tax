@@ -49,6 +49,8 @@ import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -196,13 +198,14 @@ public class VerfuegungResource {
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
-	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanzielle Situation ist "
+		+ "geprueft", response = JaxBetreuung.class)
 	@Nonnull
 	@PUT
-	@Path("/tagesschulanmeldung/uebernehmen")
+	@Path("/anmeldung/uebernehmen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxBetreuung anmeldungSchulamtUebernehmen(
+	public JaxBetreuung anmeldungUebernehmen(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
@@ -214,12 +217,21 @@ public class VerfuegungResource {
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 
-		AnmeldungTagesschule convertedBetreuung = converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
+		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AnmeldungTagesschule persistedBetreuung = this.verfuegungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
 
-		return converter.platzToJAX(persistedBetreuung);
+		if (convertedBetreuung.getBetreuungsangebotTyp().isTagesschule()) {
+			AnmeldungTagesschule convertedAnmeldungTagesschule = (AnmeldungTagesschule) convertedBetreuung;
+			AnmeldungTagesschule persistedBetreuung =
+				this.verfuegungService.anmeldungTagesschuleUebernehmen(convertedAnmeldungTagesschule);
+			return converter.platzToJAX(persistedBetreuung);
+		} else {
+			AnmeldungFerieninsel convertedAnmeldungFerieninsel = (AnmeldungFerieninsel) convertedBetreuung;
+			AnmeldungFerieninsel persistedBetreuung =
+				this.verfuegungService.anmeldungFerieninselUebernehmen(convertedAnmeldungFerieninsel);
+			return converter.platzToJAX(persistedBetreuung);
+		}
 	}
 }
 

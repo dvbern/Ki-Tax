@@ -536,7 +536,21 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 			row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-			row.setBgPensum(zeitabschnitt.getBgPensum());
+
+			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+			BigDecimal pensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+			BigDecimal pensumGemeinde = BigDecimal.ZERO;
+			BigDecimal pensumTotal = pensumKanton;
+			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+				BigDecimal pensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+				pensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(pensumTotalGemeinde, pensumKanton);
+				pensumTotal = pensumTotalGemeinde;
+			}
+			row.setBgPensumKanton(pensumKanton);
+			row.setBgPensumGemeinde(pensumGemeinde);
+			row.setBgPensumTotal(pensumTotal);
+
 			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 
 			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
@@ -1352,8 +1366,37 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			)
 		);
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensumProzent()));
-		row.setAnspruchsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getAnspruchberechtigtesPensum()));
-		row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
+
+		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+		BigDecimal anspruchsPensumKanton =
+			new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
+		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
+		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+			BigDecimal anspruchsPensumTotalGemeinde =
+				new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
+			anspruchsPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(anspruchsPensumTotalGemeinde, anspruchsPensumKanton);
+			anspruchsPensumTotal = anspruchsPensumTotalGemeinde;
+		}
+		row.setAnspruchsPensumKanton(anspruchsPensumKanton);
+		row.setAnspruchsPensumGemeinde(anspruchsPensumGemeinde);
+		row.setAnspruchsPensumTotal(anspruchsPensumTotal);
+
+		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+		BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
+		BigDecimal bgPensumTotal = bgPensumKanton;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+			BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+			bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
+			bgPensumTotal = bgPensumTotalGemeinde;
+		}
+		row.setBgPensumKanton(bgPensumKanton);
+		row.setBgPensumGemeinde(bgPensumGemeinde);
+		row.setBgPensumTotal(bgPensumTotal);
+
 		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
@@ -2114,7 +2157,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
 		requireNonNull(kindContainerList);
-		return convertToTagesschuleDataRows(kindContainerList);
+
+		return convertToTagesschuleDataRows(kindContainerList, stammdatenID);
 	}
 
 	@Nonnull
@@ -2137,17 +2181,21 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nonnull
-	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList) {
+	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList, String stammdatenID) {
+		ReportServiceBean self = this;
 		return kindContainerList.stream()
-			.map(this::kindContainerToTagesschuleDataRow)
+			.map(kindContainer -> self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer) {
+	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer, String stammdatenID) {
 
 		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
-			kindContainer.getAnmeldungenTagesschule().iterator();
+			kindContainer.getAnmeldungenTagesschule()
+				.stream()
+				.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getId().equals(stammdatenID))
+				.iterator();
 		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
 
 		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.

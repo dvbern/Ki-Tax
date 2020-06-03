@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
@@ -60,7 +61,6 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
  * <p>
  * Bestätigung (ärztliche Indikation):
  * Notwendig, wenn Frage nach GS Gesundheitliche Einschränkung mit Ja beantwortet wird (gesundheitliche Einschränkung)
- *
  **/
 public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
@@ -74,6 +74,18 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		final LocalDate gueltigAb = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
+		//if Verguenstigung nicht gewuenscht - keine Dokumenten
+		final FamiliensituationContainer famSitCont = gesuch.getFamiliensituationContainer();
+		if (famSitCont != null && !isVerguenstigungGewuenscht(famSitCont.getFamiliensituationJA())
+			&& !isSozialhilfeempfaenger(famSitCont.getFamiliensituationJA())) {
+			return;
+		}
+
+		// if nuer TS oder FI - keine Dokumenten
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return;
+		}
+
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, 1, gueltigAb, locale);
 
 		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
@@ -115,7 +127,8 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV, locale));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_FREIWILLIGENARBEIT, locale));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT, locale));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM, locale));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
+					locale));
 			});
 	}
 

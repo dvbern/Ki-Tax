@@ -116,12 +116,12 @@ public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReport
 				dataRow.setKindGeburtsdatum(kindJA.getGeburtsdatum());
 				dataRow.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 				dataRow.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-				dataRow.setBgPensum(zeitabschnitt.getBgPensum());
+				dataRow.setBgPensum(zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent());
 				dataRow.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
 				dataRow.setBetreuungsTyp(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp());
 				dataRow.setTarif(kindJA.getEinschulungTyp());
 				dataRow.setZusatz(betreuung.hasErweiterteBetreuung());
-				dataRow.setGutschein(zeitabschnitt.getVerguenstigung());
+				dataRow.setGutschein(zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung());
 
 				return dataRow;
 			})

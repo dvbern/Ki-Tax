@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -145,6 +146,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(null, null);
+		jaxGesuch.setTyp(AntragTyp.MUTATION);
 		jaxGesuch.setDossier(converter.dossierToJAX(gesuch.getDossier()));
 		jaxGesuch.setGesuchsperiode(converter.gesuchsperiodeToJAX(gesuchsperiode));
 		jaxGesuch.getGesuchsperiode().setStatus(GesuchsperiodeStatus.INAKTIV);
@@ -159,9 +161,10 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
+		String nameTraegerschaft = traegerschaft.getName();
 		traegerschaft = persistence.persist(traegerschaft);
 		assertEquals("TestMandantDBUnit", mandant.getName());
-		assertEquals("Traegerschaft1", traegerschaft.getName());
+		assertEquals(nameTraegerschaft, traegerschaft.getName());
 
 		Institution institution = TestDataUtil.createDefaultInstitution();
 		institution.setTraegerschaft(traegerschaft);
@@ -173,11 +176,17 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 			BetreuungsangebotTyp.KITA, "mail@example.com", null, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
-		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
+		final Traegerschaft loadedTraegerschaft = persistence.find(Traegerschaft.class, traegerschaft.getId());
 		assertEquals("TestMandantDBUnit", loadedMandant.getName());
-		assertEquals("Traegerschaft1", loadedTraegerschaft.getName());
+		assertEquals(nameTraegerschaft, loadedTraegerschaft.getName());
 	}
 
+	/**
+	 * Institution ist trotzdem updated wenn:
+	 * Der Name ist geaendert
+	 * Der Traegerschaft ist geaendert
+	 * Der Status ist geandert
+	 */
 	@Test
 	public void institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten() {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
@@ -197,7 +206,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitutionStammdaten updatedInstitution = institutionResource.updateInstitutionAndStammdaten(id, jaxUpdate);
 
 		assertNotNull(updatedInstitution);
-		assertEquals("Institution1", updatedInstitution.getInstitution().getName());
+		assertEquals(false, updatedInstitution.getInstitution().isStammdatenCheckRequired());
 	}
 
 	@Test
