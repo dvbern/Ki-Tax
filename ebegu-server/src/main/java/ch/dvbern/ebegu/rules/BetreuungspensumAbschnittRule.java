@@ -147,12 +147,13 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			}
 
 			pensenToUse.clear();
+		} else {
+			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
+				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
+				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum, betreuung));
+			}
 		}
 
-		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
-			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum, betreuung));
-		}
 		return betreuungspensumAbschnitte;
 	}
 
