@@ -33,12 +33,10 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
-import org.apache.avro.generic.GenericData.Array;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -113,20 +111,29 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 					switch (betreuungspensum.getUnitForDisplay()) {
 						case DAYS:
-//							BigDecimal faktor = MathUtil.DEFAULT.divide(betreuungspensum.getPensum(),
-//								BigDecimal.valueOf(100L));
-//							BigDecimal tageProMonat = MathUtil.DEFAULT.divide(oeffnungszeiten.getOeffnungstage(), BigDecimal.valueOf(12L));
-//							BigDecimal tage = MathUtil.DEFAULT.multiply(tageProMonat, faktor);
-
-							BigDecimal faktor = MathUtil.DEFAULT.divide(BigDecimal.valueOf(240),
-								oeffnungszeiten.getOeffnungstage());
-							BigDecimal prozent = MathUtil.DEFAULT.multiply(betreuungspensum.getPensum(), faktor);
+							BigDecimal faktor = MathUtil.EXACT.divide(BigDecimal.valueOf(240), oeffnungszeiten.getOeffnungstage());
+							BigDecimal prozent = MathUtil.EXACT.multiply(betreuungspensum.getPensum(), faktor);
 							copy.setPensum(prozent);
 							break;
 						case HOURS:
+							BigDecimal pensumStundenAsiv = MathUtil.EXACT.multiply(betreuungspensum.getPensum(),
+								BigDecimal.valueOf(2.2));
+
+
+							BigDecimal anzahlTageProMonat = MathUtil.EXACT.divide(kitaxParameter.getMaxTageKita(), BigDecimal.valueOf(12));
+							BigDecimal maxBetreuungsstundenProMonat = MathUtil.EXACT.multiply(anzahlTageProMonat,
+								kitaxParameter.getMaxStundenProTagKita());
+
+							BigDecimal stunden = MathUtil.EXACT.multiply(maxBetreuungsstundenProMonat,
+								betreuungspensum.getPensum()).divide(BigDecimal.valueOf(100));
+
+							BigDecimal pensumEffektiv =
+								MathUtil.EXACT.divide(pensumStundenAsiv, stunden).multiply(betreuungspensum.getPensum());
+							copy.setPensum(pensumEffektiv);
 							break;
 						default:
 							copy.setPensum(betreuungspensum.getPensum());
+							break;
 					}
 
 					pensenToUse.add(copy);
