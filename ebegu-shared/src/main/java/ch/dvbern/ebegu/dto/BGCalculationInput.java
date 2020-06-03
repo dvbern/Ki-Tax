@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -153,6 +154,7 @@ public class BGCalculationInput {
 
 	private BigDecimal verguenstigungNebenmahlzeitenTotal = BigDecimal.ZERO;
 
+	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -207,6 +209,7 @@ public class BGCalculationInput {
 		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 		this.ruleValidity = toCopy.ruleValidity;
+		this.pensumUnit = toCopy.pensumUnit;
 	}
 
 	@Nonnull
@@ -856,5 +859,13 @@ public class BGCalculationInput {
 	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
 		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleValidity, msgKey, locale, args);
 		this.getParent().getBemerkungenList().addBemerkung(bemerkung);
+	}
+
+	public PensumUnits getPensumUnit() {
+		return pensumUnit;
+	}
+
+	public void setPensumUnit(PensumUnits pensumUnit) {
+		this.pensumUnit = pensumUnit;
 	}
 }
