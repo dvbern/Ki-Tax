@@ -70,12 +70,13 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 		final boolean possibleKitaxRechner = kitaxParameter.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
 			&& betreuung.getBetreuungsangebotTyp().isJugendamt();
-		boolean recalculationNecessary = false;
 
-		List<Betreuungspensum> pensenToUse = new ArrayList<>();
 
 		// es handelt sich um FEBR und wir müssen die Pensen gemäss dem alten System umrechnen.
 		if (possibleKitaxRechner) {
+			boolean recalculationNecessary = false;
+			List<Betreuungspensum> pensenToUse = new ArrayList<>();
+
 			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 
 				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
@@ -140,13 +141,18 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 					pensenToUse.add(copy);
 				}
 			}
+
+			for (Betreuungspensum pensum : pensenToUse) {
+				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensum, betreuung));
+			}
+
+			pensenToUse.clear();
 		}
 
-		for (Betreuungspensum pensum : pensenToUse) {
-			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensum, betreuung));
+		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
+			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
+			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum, betreuung));
 		}
-
-		pensenToUse.clear();
 		return betreuungspensumAbschnitte;
 	}
 
