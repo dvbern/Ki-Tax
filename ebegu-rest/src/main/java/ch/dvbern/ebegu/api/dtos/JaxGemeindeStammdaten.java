@@ -101,6 +101,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private @Valid List<String> externalClients = null;
 	@Nullable
 	private String usernameScolaris;
+	@Nullable
+	private String bgEmail;
+	@Nullable
+	private String bgTelefon;
+	@Nullable
+	private String tsEmail;
+	@Nullable
+	private String tsTelefon;
 
 
 	// ---------- Konfiguration ----------
@@ -398,5 +406,41 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setUsernameScolaris(@Nullable String usernameScolaris) {
 		this.usernameScolaris = usernameScolaris;
+	}
+
+	@Nullable
+	public String getBgEmail() {
+		return bgEmail;
+	}
+
+	public void setBgEmail(@Nullable String bgEmail) {
+		this.bgEmail = bgEmail;
+	}
+
+	@Nullable
+	public String getBgTelefon() {
+		return bgTelefon;
+	}
+
+	public void setBgTelefon(@Nullable String bgTelefon) {
+		this.bgTelefon = bgTelefon;
+	}
+
+	@Nullable
+	public String getTsEmail() {
+		return tsEmail;
+	}
+
+	public void setTsEmail(@Nullable String tsEmail) {
+		this.tsEmail = tsEmail;
+	}
+
+	@Nullable
+	public String getTsTelefon() {
+		return tsTelefon;
+	}
+
+	public void setTsTelefon(@Nullable String tsTelefon) {
+		this.tsTelefon = tsTelefon;
 	}
 }

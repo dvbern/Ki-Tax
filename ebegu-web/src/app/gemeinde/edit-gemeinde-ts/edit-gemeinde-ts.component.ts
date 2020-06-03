@@ -23,6 +23,7 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-edit-gemeinde-ts',
@@ -44,6 +45,8 @@ export class EditGemeindeComponentTS implements OnInit {
 
     @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly usernameScolarisChange: EventEmitter<string> = new EventEmitter();
+
+    public readonly CONSTANTS = CONSTANTS;
 
     public constructor() {
     }
