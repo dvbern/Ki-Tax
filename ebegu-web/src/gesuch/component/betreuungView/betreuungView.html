@@ -434,7 +434,7 @@
                                     </div>
 
                                     <div ng-if="vm.isMahlzeitenverguenstigungActive()">
-                                        <div class="row" >
+                                        <div class="row">
                                             <!-- monatlicheHauptmahlzeiten -->
                                             <div class="col-sm-12 dv-input-container-small">
                                                 <div class="form-group">
@@ -575,6 +575,13 @@
                                             </dv-input-container>
                                         </div>
                                     </div>
+
+                                    <betreuung-override-warning
+                                        ng-if="vm.showOverrideWarning(vm.getBetreuungspensum($index))"
+                                        [betreuungspensum]="vm.getBetreuungspensum($index).betreuungspensumJA.pensum"
+                                        [betreuungskosten]="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
+                                        [gueltig-ab]="vm.getBetreuungspensum($index).betreuungspensumJA.gueltigkeit.gueltigAb">
+                                    </betreuung-override-warning>
 
                                     <!--Betreuungspensum entfernen. Wird nur angezeigt wenn status=AUSSTEHEND und es mehrere Betreuungspensen gibt und role=institution-->
                                     <div class="row marginBottom60 dv-input-container-medium" dv-show-element

@@ -648,6 +648,8 @@
     "GESCHLOSSEN": "Geschlossen",
     "INAKTIV": "Inaktiv",
     "BETREUUNG_WARTEN_TEXT": "warten auf Platzbestätigung.",
+    "RUECKGAENGIG_MACHEN": "Rückgängig machen",
+    "BETREUUNG_MUTATION_WARNUNG": "Achtung: Diese Eingabe ändert den Betreuungszeitraum sowie den Betreuungsgutschein, rückwirkend und führt eventuell zu Korrekturzahlungen!\nFalls Sie die Betreuung rückwirkend nicht überschreiben möchten, sondern eine Anpassung für die zukünftige Betreuung vornehmen möchten, erfassen Sie bitte ein weiteres Betreuungspensum.",
     "BETREUUNG_BESTAETIGT_TEXT": "Dieses Betreuungsangebot wurde am {{date}} bestätigt.",
     "BETREUUNG_STORNIERT_TEXT": "Dieses Betreuungsangebot wurde storniert",
     "BETREUUNG_NICHT_EINGETRETEN_TEXT": "Dieses Betreuungsangebot wurde am {{date}} mutiert zu \"nicht eingetreten\"",
@@ -2038,5 +2040,10 @@
     "VERGUENSTIGUNG_NEBENMAHLZEITEN": "Vergünstigung Nebenmahlzeiten in CHF",
     "MONATLICHE_MAHLZEITEN_KOSTEN": "Kosten Mahlzeiten in CHF",
     "VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE": "Abzug Mahlzeitenvergünstigung",
+    "BISHER_INSTITUTION_STUFE1": "Eingabe Institution Stufe 1: ",
+    "BISHER_KANTON": "Eingabe Kanton Stufe 1: ",
+    "BISHER_INSTITUTION_STUFE2": "Eingabe Institution Stufe 2: ",
+    "NOTVERORDNUNG_INITIALISIEREN_PHASE2": "Start Phase 2",
+    "RUECKFORDERUNG_PHASE2_INITIALISIERT": "Phase 2 gestartet",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
