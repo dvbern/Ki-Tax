@@ -16,12 +16,18 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.util.List;
+import java.util.Locale;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rechner.kitax.KitaKitaxRechner;
+import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 
 /**
  * Factory, welche für eine Betreuung den richtigen BG-Rechner ermittelt
@@ -32,7 +38,7 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractRechner getRechner(AbstractPlatz betreuung, List<RechnerRule> rechnerRulesForGemeinde) {
+	public static AbstractRechner getRechner(@Nonnull AbstractPlatz betreuung, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaRechner(rechnerRulesForGemeinde);
@@ -41,6 +47,28 @@ public final class BGRechnerFactory {
 			return new TageselternRechner(rechnerRulesForGemeinde);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
+			return new TagesschuleRechner();
+		}
+		// Alle anderen Angebotstypen werden nicht berechnet
+		return null;
+	}
+
+	@Nullable
+	public static AbstractRechner getKitaxRechner(
+		@Nonnull AbstractPlatz betreuung,
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
+		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
+		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
+			return new KitaKitaxRechner(kitaxParameterDTO, oeffnungszeiten, locale);
+		}
+		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
+			return new TageselternKitaxRechner(kitaxParameterDTO, oeffnungszeiten, locale);
+		}
+		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
+			// Tagesschulen werden von Anfang an mit dem ASIV-Rechner berechnet
 			return new TagesschuleRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet

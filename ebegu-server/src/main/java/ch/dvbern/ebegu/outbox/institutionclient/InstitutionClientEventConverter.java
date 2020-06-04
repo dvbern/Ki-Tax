@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
 @ApplicationScoped
 public class InstitutionClientEventConverter {

@@ -315,6 +315,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    public displayBetreuungsPensumChangeWarning(): boolean {
+        return this.form.$dirty && this.isMutationsmeldungStatus;
+    }
+
     // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
@@ -646,6 +650,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // die gemeinde die vergünstigung deaktiviert hat
             tsBetreuungspensum.monatlicheNebenmahlzeiten = 0;
             tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
+            tsBetreuungspensum.tarifProHauptmahlzeit = 0;
+            tsBetreuungspensum.tarifProNebenmahlzeit = 0;
+        } else {
+            tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
+            tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
@@ -1229,6 +1238,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getBetreuungInGemeindeLabel(): string {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())) {
+            return '';
+        }
         return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
             {gemeinde: this.gesuchModelManager.getGemeinde().name});
     }
@@ -1288,5 +1300,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isMahlzeitenverguenstigungActive(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+    // ausserdem soll die Meldung nicht gezeigt werden, wenn ein neues Betreuungspensum hinzugefügt wird
+    public showOverrideWarning(betreuungspensum: TSBetreuungspensum): boolean {
+        return !betreuungspensum.isNew() &&
+            (this.isMutationsmeldungStatus || this.isMutation());
     }
 }

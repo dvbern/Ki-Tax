@@ -41,6 +41,8 @@ public final class LuceneUtil {
 			while (stream.incrementToken()) {
 				result.add(stream.getAttribute(CharTermAttribute.class).toString());
 			}
+			stream.end();
+			stream.close();
 		} catch (IOException e) {
 			// not thrown b/c we're using a string reader...
 			throw new EbeguRuntimeException("tokenizeString", "Unexpected Error when tokenizing", e, stringToAnalyze);

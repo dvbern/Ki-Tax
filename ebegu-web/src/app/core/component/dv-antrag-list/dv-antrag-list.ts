@@ -80,9 +80,9 @@ export class DVAntragListController implements IController {
     public totalResultCount: number;
     public displayedCollection: Array<TSAntragDTO> = []; // Liste die im Gui angezeigt wird
     public pagination: any;
-    public gesuchsperiodenList: Array<string>;
-    public institutionenList: Array<TSInstitution>;
-    public gemeindenList: Array<TSGemeinde>;
+    public gesuchsperiodenList: Array<string> = [];
+    public institutionenList: Array<TSInstitution> = [];
+    public gemeindenList: Array<TSGemeinde> = [];
 
     public selectedBetreuungsangebotTyp: string;
     public selectedAntragTyp: string;
@@ -164,7 +164,6 @@ export class DVAntragListController implements IController {
 
     public updateGesuchsperiodenList(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then(response => {
-            this.gesuchsperiodenList = [];
             response.forEach(gesuchsperiode => {
                 this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
             });

@@ -61,7 +61,7 @@ public class AusserordentlicherAnspruchAbschnittRule extends AbstractAbschnittRu
 
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumAusserordentlicherAnspruch anspruch) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(anspruch.getGueltigkeit());
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(anspruch.getGueltigkeit());
 		zeitabschnitt.setAusserordentlicherAnspruchForAsivAndGemeinde(anspruch.getPensum());
 		return zeitabschnitt;
 	}

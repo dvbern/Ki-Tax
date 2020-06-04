@@ -322,6 +322,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		Mandant mandant = mandantService.getFirst();
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
+		gemeinde.setBfsNummer(1L);
 		gemeinde.setMandant(mandant);
 		gemeinde.setBetreuungsgutscheineStartdatum(Constants.START_OF_TIME);
 		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2018,8,1));

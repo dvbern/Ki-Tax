@@ -108,7 +108,7 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
-            .and.returnValue($q.resolve(gesuchModelManager.getActiveInstitutionenList()));
+            .and.returnValue($q.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
             gesuchModelManager,

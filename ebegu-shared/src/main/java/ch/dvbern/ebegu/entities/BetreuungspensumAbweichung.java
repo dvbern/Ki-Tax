@@ -70,6 +70,14 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	@Nullable
 	private Integer vertraglicheNebenmahlzeiten = null;
 
+	@Transient
+	@Nullable
+	private BigDecimal vertraglicherTarifHauptmahlzeit = BigDecimal.ZERO;
+
+	@Transient
+	@Nullable
+	private BigDecimal vertraglicherTarifNebenmahlzeit = BigDecimal.ZERO;
+
 	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
@@ -79,19 +87,21 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.status = status;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglichesPensum() {
 		return vertraglichesPensum;
 	}
 
-	public void setVertraglichesPensum(BigDecimal vertraglichesPensum) {
+	public void setVertraglichesPensum(@Nullable BigDecimal vertraglichesPensum) {
 		this.vertraglichesPensum = vertraglichesPensum;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicheKosten() {
 		return vertraglicheKosten;
 	}
 
-	public void setVertraglicheKosten(BigDecimal vertraglicheKosten) {
+	public void setVertraglicheKosten(@Nullable BigDecimal vertraglicheKosten) {
 		this.vertraglicheKosten = vertraglicheKosten;
 	}
 
@@ -102,6 +112,24 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 
 	public void setVertraglicheHauptmahlzeiten(@Nullable Integer vertraglicheHauptmahlzeiten) {
 		this.vertraglicheHauptmahlzeiten = vertraglicheHauptmahlzeiten;
+	}
+
+	@Nullable
+	public BigDecimal getVertraglicherTarifHauptmahlzeit() {
+		return vertraglicherTarifHauptmahlzeit;
+	}
+
+	public void setVertraglicherTarifHauptmahlzeit(@Nullable BigDecimal vertraglicherTarifHauptmahlzeit) {
+		this.vertraglicherTarifHauptmahlzeit = vertraglicherTarifHauptmahlzeit;
+	}
+
+	@Nullable
+	public BigDecimal getVertraglicherTarifNebenmahlzeit() {
+		return vertraglicherTarifNebenmahlzeit;
+	}
+
+	public void setVertraglicherTarifNebenmahlzeit(@Nullable BigDecimal vertraglicherTarifNebenmahlzeit) {
+		this.vertraglicherTarifNebenmahlzeit = vertraglicherTarifNebenmahlzeit;
 	}
 
 	@Nullable
@@ -134,6 +162,16 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			vertraglicheNebenmahlzeiten = 0;
 		}
 		vertraglicheNebenmahlzeiten += amount;
+	}
+
+	public void addTarifHaupt(BigDecimal tarif) {
+		vertraglicherTarifHauptmahlzeit = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(tarif),
+			vertraglicherTarifHauptmahlzeit);
+	}
+
+	public void addTarifNeben(BigDecimal tarif) {
+		vertraglicherTarifNebenmahlzeit = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(tarif),
+			vertraglicherTarifNebenmahlzeit);
 	}
 
 	@Nonnull
@@ -189,12 +227,21 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 
 		Objects.requireNonNull(pensum);
 		Objects.requireNonNull(kosten);
+		Objects.requireNonNull(hauptmahlzeiten);
+		Objects.requireNonNull(nebenmahlzeiten);
+		Objects.requireNonNull(vertraglicherTarifHauptmahlzeit);
+		Objects.requireNonNull(vertraglicherTarifNebenmahlzeit);
 
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
 		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
+		//
 		mitteilungPensum.setMonatlicheHauptmahlzeiten(hauptmahlzeiten);
 		mitteilungPensum.setMonatlicheNebenmahlzeiten(nebenmahlzeiten);
+
+		// Tarif is immutable at this point and we just copy the old value
+		mitteilungPensum.setTarifProHauptmahlzeit(vertraglicherTarifHauptmahlzeit);
+		mitteilungPensum.setTarifProNebenmahlzeit(vertraglicherTarifNebenmahlzeit);
 
 		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
 		// attach it to the BetreuungsmitteilungPensum

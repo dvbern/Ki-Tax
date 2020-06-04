@@ -72,4 +72,19 @@ public enum ApplicationPropertyKey {
 	 */
 	SENTRY_ENV,
 
+	/**
+	 * Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
+	 */
+	STADT_BERN_ASIV_START_DATUM,
+
+	/**
+	 * Wenn TRUE koennen die Zeitraeume ab ASIV_START_DATUM verfuegt werden
+	 */
+	STADT_BERN_ASIV_CONFIGURED,
+
+	/**
+	 * Wenn TRUE ist die zweite Phase aktiv
+	 */
+	KANTON_NOTVERORDNUNG_PHASE_2_AKTIV,
+
 }

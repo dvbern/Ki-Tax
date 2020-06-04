@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,10 +32,13 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -56,6 +60,12 @@ public abstract class AbstractBaseService {
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
 	@PermitAll
@@ -75,8 +85,19 @@ public abstract class AbstractBaseService {
 	@Nonnull
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
-		return parameterDTO;
+		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
+	}
+
+	@PermitAll
+	@Nonnull
+	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten = criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
+		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
+			applicationPropertyService.getStadtBernAsivStartDatum(),
+			applicationPropertyService.isStadtBernAsivConfigured(),
+			oeffnungszeiten
+		);
+		return parameter;
 	}
 
 	protected void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {

@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel1;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel2;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel3;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,6 +44,8 @@ import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
  * Siehe https://support.dvbern.ch/browse/EBEGU-561
  */
 public class DoppelkitaTest extends AbstractBGRechnerTest {
+
+	private KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter = TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	/**
 	 * Testet Regel 1: Bei gleichzeitigem Beginn gewinnt die Kita mit dem höheren Pensum
@@ -59,7 +62,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -101,7 +104,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -143,7 +146,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {

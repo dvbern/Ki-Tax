@@ -28,7 +28,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.LuceneUtil;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.QuickSearchResultDTO;
@@ -131,9 +130,9 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	 */
 	private List<String> tokenizeAndAndAddWildcardToQuery(@Nonnull String searchText) {
 		@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-		Analyzer analyzer = new EBEGUGermanAnalyzer();
-		List<String> tokenizedStrings = LuceneUtil.tokenizeString(new EBEGUGermanAnalyzer(), searchText);
-		analyzer.close();
+		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(persistence.getEntityManager());
+		Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer("EBEGUGermanAnalyzer");
+		List<String> tokenizedStrings = LuceneUtil.tokenizeString(analyzer, searchText);
 		return tokenizedStrings.stream().map(term -> term + WILDCARD).collect(Collectors.toList());
 	}
 
