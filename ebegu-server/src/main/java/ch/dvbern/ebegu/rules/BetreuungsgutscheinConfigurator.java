@@ -193,7 +193,8 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(betreuungsangebotTypAbschnittRule, einstellungMap);
 
 		// - Betreuungspensum
-		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale);
+		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule =
+			new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale, kitaxParameterDTO);
 		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, einstellungMap);
 
 		// - Pensum Tagesschule

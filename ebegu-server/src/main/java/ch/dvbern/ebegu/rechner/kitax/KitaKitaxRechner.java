@@ -173,9 +173,15 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in TAGE berechnen
 		result.setZeiteinheit(PensumUnits.DAYS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_KITA));
-		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_KITA));
-		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_KITA));
+		BigDecimal tageProMonat = MathUtil.EXACT.divide(oeffnungszeiten.getOeffnungstage(), BigDecimal.valueOf(12));
+
+		BigDecimal multiplierPensum = MathUtil.EXACT.divide(result.getBetreuungspensumProzent(), BigDecimal.valueOf(100));
+		BigDecimal multiplierAnspruch =	MathUtil.EXACT.divide(MathUtil.EXACT.from(result.getAnspruchspensumProzent()), BigDecimal.valueOf(100));
+		BigDecimal multiplierBgPensum = MathUtil.EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
+
+		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(tageProMonat, multiplierPensum));
+		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiply(tageProMonat, multiplierAnspruch));
+		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiply(tageProMonat, multiplierBgPensum));
 
 		return result;
 	}
