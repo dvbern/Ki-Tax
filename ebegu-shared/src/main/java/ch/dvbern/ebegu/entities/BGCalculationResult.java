@@ -309,6 +309,8 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.abzugFamGroesse, otherEntity.abzugFamGroesse) &&
 				MathUtil.isSame(thisEntity.famGroesse, otherEntity.famGroesse) &&
 				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
+				MathUtil.isSame(thisEntity.verguenstigungHauptmahlzeitenTotal, otherEntity.verguenstigungHauptmahlzeitenTotal) &&
+				MathUtil.isSame(thisEntity.verguenstigungNebenmahlzeitenTotal, otherEntity.verguenstigungNebenmahlzeitenTotal) &&
 				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
 				(thisEntity.besondereBeduerfnisseBestaetigt == otherEntity.besondereBeduerfnisseBestaetigt) &&
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&

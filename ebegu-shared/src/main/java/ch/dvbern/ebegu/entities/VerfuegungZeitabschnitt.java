@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -472,14 +473,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
 	}
 
-	public void setTsAnzVerpflegungenMitBetreuungForAsivAndGemeinde(int anzVerpflegungen) {
-		this.getBgCalculationInputAsiv().setTsAnzVerpflegungenMitBetreuung(anzVerpflegungen);
-		this.getBgCalculationInputGemeinde().setTsAnzVerpflegungenMitBetreuung(anzVerpflegungen);
+	public void setVerpflegungskostenUndMahlzeitenMitBetreuungForAsivAndGemeinde(Map<BigDecimal, Integer> kostenMahlzeitMap) {
+		this.getBgCalculationInputAsiv().setVerpflegungskostenUndMahlzeitenMitBetreuung(kostenMahlzeitMap);
+		this.getBgCalculationInputGemeinde().setVerpflegungskostenUndMahlzeitenMitBetreuung(kostenMahlzeitMap);
 	}
 
-	public void setTsAnzVerpflegungenOhneBetreuungForAsivAndGemeinde(int anzVerpflegungen) {
-		this.getBgCalculationInputAsiv().setTsAnzVerpflegungenOhneBetreuung(anzVerpflegungen);
-		this.getBgCalculationInputGemeinde().setTsAnzVerpflegungenOhneBetreuung(anzVerpflegungen);
+	public void setVerpflegungskostenUndMahlzeitenOhneBetreuungForAsivAndGemeinde(Map<BigDecimal, Integer> kostenMahlzeitMap) {
+		this.getBgCalculationInputAsiv().setVerpflegungskostenUndMahlzeitenOhneBetreuung(kostenMahlzeitMap);
+		this.getBgCalculationInputGemeinde().setVerpflegungskostenUndMahlzeitenOhneBetreuung(kostenMahlzeitMap);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {

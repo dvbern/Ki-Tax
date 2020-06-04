@@ -135,15 +135,16 @@ public abstract class KibonPdfGenerator {
 
 	@Nonnull
 	private List<String> getGemeindeKontaktdaten() {
-		List<String> gemeindeKontaktdaten = Arrays.asList(
+		String email = gemeindeStammdaten.getEmailForGesuch(getGesuch());
+		String telefon = gemeindeStammdaten.getTelefonForGesuch(getGesuch());
+		return Arrays.asList(
 			translate(ABSENDER_TELEFON, gemeindeStammdaten.getTelefon()),
-			PdfUtil.printString(gemeindeStammdaten.getMail()),
-			PdfUtil.printString(gemeindeStammdaten.getWebseite()),
+			PdfUtil.printString(email),
+			PdfUtil.printString(telefon),
 			"",
 			"",
 			gemeindeStammdaten.getGemeinde().getName() + ", " + Constants.DATE_FORMATTER.format(LocalDate.now())
 		);
-		return gemeindeKontaktdaten;
 	}
 
 	@Nonnull

@@ -370,10 +370,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        if (this.form.$valid) {
-            this.preSave();
-            this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
+        if (!this.form.$valid || !this.isThereAnyAnmeldung()) {
+            this.showErrorMessageNoModule = true;
+            return undefined;
         }
+        this.preSave();
+        this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
+
     }
 
     public saveAnmeldungSchulamtAblehnen(): void {

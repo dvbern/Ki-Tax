@@ -21,8 +21,10 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -71,8 +73,8 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		long dauerProWocheInMinutenOhneBetreuung = 0;
 		BigDecimal verpflegKostenProWocheMitBetreuung = BigDecimal.ZERO;
 		BigDecimal verpflegKostenProWocheOhneBetreuung = BigDecimal.ZERO;
-		int anzahlVerpflegungenMitBetreuung = 0;
-		int anzahlVerpflegungenOhneBetreuung = 0;
+		Map<BigDecimal, Integer> verpflegungenProModulMitBetreuung = new HashMap<>();
+		Map<BigDecimal, Integer> verpflegungenProModulOhneBetreuung = new HashMap<>();
 
 		for (BelegungTagesschuleModul belegungTagesschuleModul : anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
 			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
@@ -86,7 +88,10 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 				if (verpflegungskosten != null) {
 					verpflegKostenProWocheMitBetreuung = MathUtil.DEFAULT.addNullSafe(verpflegKostenProWocheMitBetreuung,
 						verpflegungskosten);
-					anzahlVerpflegungenMitBetreuung++;
+
+					Integer count = verpflegungenProModulMitBetreuung.getOrDefault(verpflegungskosten, 0);
+					verpflegungenProModulMitBetreuung.put(verpflegungskosten, count + 1);
+
 				}
 
 			} else {
@@ -94,7 +99,9 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 				if (verpflegungskosten != null) {
 					verpflegKostenProWocheOhneBetreuung = MathUtil.DEFAULT.addNullSafe(verpflegKostenProWocheOhneBetreuung,
 						verpflegungskosten);
-					anzahlVerpflegungenOhneBetreuung++;
+
+					Integer count = verpflegungenProModulOhneBetreuung.getOrDefault(verpflegungskosten, 0);
+					verpflegungenProModulOhneBetreuung.put(verpflegungskosten, count + 1);
 				}
 			}
 		}
@@ -102,13 +109,14 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		if (dauerProWocheInMinutenMitBetreuung > 0) {
 			zeitabschnitt.setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(Long.valueOf(dauerProWocheInMinutenMitBetreuung).intValue());
 			zeitabschnitt.setTsVerpflegungskostenMitBetreuungForAsivAndGemeinde(verpflegKostenProWocheMitBetreuung);
-			zeitabschnitt.setTsAnzVerpflegungenMitBetreuungForAsivAndGemeinde(anzahlVerpflegungenMitBetreuung);
+			zeitabschnitt.setVerpflegungskostenUndMahlzeitenMitBetreuungForAsivAndGemeinde(verpflegungenProModulMitBetreuung);
 		}
 		if (dauerProWocheInMinutenOhneBetreuung > 0) {
 			zeitabschnitt.setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(Long.valueOf(dauerProWocheInMinutenOhneBetreuung).intValue());
 			zeitabschnitt.setTsVerpflegungskostenOhneBetreuungForAsivAndGemeinde(verpflegKostenProWocheOhneBetreuung);
-			zeitabschnitt.setTsAnzVerpflegungenOhneBetreuungForAsivAndGemeinde(anzahlVerpflegungenOhneBetreuung);
+			zeitabschnitt.setVerpflegungskostenUndMahlzeitenOhneBetreuungForAsivAndGemeinde(verpflegungenProModulOhneBetreuung);
 		}
+
 		return zeitabschnitt;
 	}
 }
