@@ -17,15 +17,19 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 
 public interface RueckforderungDokumentService {
 
 	Optional<RueckforderungDokument> findDokument(@Nonnull String key);
+
+	List<RueckforderungDokument> findDokumente(@Nonnull String rueckforderungFormularId);
 
 	void removeDokument(@Nonnull RueckforderungDokument dokument);
 

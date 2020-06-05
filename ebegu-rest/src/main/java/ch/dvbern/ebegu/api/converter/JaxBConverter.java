@@ -5309,6 +5309,13 @@ public class JaxBConverter extends AbstractConverter {
 		return rueckforderungMitteilung;
 	}
 
+	@Nonnull
+	public List<JaxRueckforderungDokument> rueckforderungDokumentListToJax(@Nonnull List<RueckforderungDokument> rueckforderungDokumentList) {
+		return rueckforderungDokumentList.stream()
+			.map(this::rueckforderungDokumentToJax)
+			.collect(Collectors.toList());
+	}
+
 	public JaxRueckforderungDokument rueckforderungDokumentToJax(RueckforderungDokument rueckforderungDokument) {
 		JaxRueckforderungDokument jaxRueckforderungDokument = convertAbstractVorgaengerFieldsToJAX(
 			rueckforderungDokument,

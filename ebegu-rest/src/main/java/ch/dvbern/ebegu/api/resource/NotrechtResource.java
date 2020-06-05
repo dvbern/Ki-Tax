@@ -43,10 +43,12 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilungRequestParams;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -57,6 +59,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -89,6 +92,9 @@ public class NotrechtResource {
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private RueckforderungDokumentService rueckforderungDokumentService;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -309,6 +315,22 @@ public class NotrechtResource {
 			rueckforderungFormular.setStufe1FreigabeBetrag(freigabeBetrag);
 			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
 		}
+	}
+
+	@ApiOperation(value = "Gibt alle Rückforderungsdokumente zurück, die die aktuelle RueckforderungForm",
+		responseContainer = "List", response = JaxRueckforderungFormular.class)
+	@GET
+	@Path("/dokumente/{rueckforderungFormId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxRueckforderungDokument> getRueckforderungFormulareDokumente(@Nonnull @NotNull @PathParam(
+		"rueckforderungFormId") JaxId rueckforderungFormJaxId) {
+		Objects.requireNonNull(rueckforderungFormJaxId.getId());
+		String rueckforderungFormId = converter.toEntityId(rueckforderungFormJaxId);
+		List<RueckforderungDokument> rueckforderungDokumente =
+			rueckforderungDokumentService.findDokumente(rueckforderungFormId);
+
+		return converter.rueckforderungDokumentListToJax(rueckforderungDokumente);
 	}
 
 	private boolean isStufe1Geprueft(@Nonnull RueckforderungStatus rueckforderungStatusOld,

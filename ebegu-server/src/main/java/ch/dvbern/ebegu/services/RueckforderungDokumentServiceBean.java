@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,8 +26,17 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
+import ch.dvbern.ebegu.entities.RueckforderungDokument_;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -45,6 +55,23 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 			return Optional.empty();
 		}
 		return Optional.of(doc);
+	}
+
+	@Override
+	public List<RueckforderungDokument> findDokumente(@Nonnull String rueckforderungFormularId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<RueckforderungDokument> query = cb.createQuery(RueckforderungDokument.class);
+		Root<RueckforderungDokument> root = query.from(RueckforderungDokument.class);
+
+		ParameterExpression<String> rueckforderungFormularIdParam = cb.parameter(String.class, "dossierId");
+
+		Predicate predicateRueckfoderungFormularId = cb.equal(root.get(RueckforderungDokument_.rueckforderungFormular).get(AbstractEntity_.id), rueckforderungFormularId);
+		query.where(predicateRueckfoderungFormularId);
+		query.orderBy(cb.asc(root.get(RueckforderungDokument_.timestampUpload)));
+		TypedQuery<RueckforderungDokument> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(rueckforderungFormularIdParam, rueckforderungFormularId);
+
+		return q.getResultList();
 	}
 
 	@Override
