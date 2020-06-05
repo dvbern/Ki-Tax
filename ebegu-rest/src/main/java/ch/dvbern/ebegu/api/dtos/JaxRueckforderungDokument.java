@@ -29,12 +29,9 @@ import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxRueckforderungDokument extends JaxAbstractDTO {
+public class JaxRueckforderungDokument extends JaxFile {
 
 	private static final long serialVersionUID = -924708642859396311L;
-
-	@Nonnull
-	private RueckforderungFormular rueckforderungFormular;
 
 	@Nonnull
 	private RueckforderungDokumentTyp rueckforderungDokumentTyp;
@@ -44,12 +41,12 @@ public class JaxRueckforderungDokument extends JaxAbstractDTO {
 	private LocalDateTime timestampUpload;
 
 	@Nonnull
-	public RueckforderungFormular getRueckforderungFormular() {
-		return rueckforderungFormular;
+	public LocalDateTime getTimestampUpload() {
+		return timestampUpload;
 	}
 
-	public void setRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
-		this.rueckforderungFormular = rueckforderungFormular;
+	public void setTimestampUpload(@Nonnull LocalDateTime timestampUpload) {
+		this.timestampUpload = timestampUpload;
 	}
 
 	@Nonnull
@@ -59,14 +56,5 @@ public class JaxRueckforderungDokument extends JaxAbstractDTO {
 
 	public void setRueckforderungDokumentTyp(@Nonnull RueckforderungDokumentTyp rueckforderungDokumentTyp) {
 		this.rueckforderungDokumentTyp = rueckforderungDokumentTyp;
-	}
-
-	@Nonnull
-	public LocalDateTime getTimestampUpload() {
-		return timestampUpload;
-	}
-
-	public void setTimestampUpload(@Nonnull LocalDateTime timestampUpload) {
-		this.timestampUpload = timestampUpload;
 	}
 }

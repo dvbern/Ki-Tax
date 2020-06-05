@@ -15,6 +15,7 @@
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -63,6 +64,40 @@ export class UploadRS {
             },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
+        }, (response: any) => {
+            console.log('Upload File: NOT SUCCESS');
+            return this.q.reject(response);
+        }, (evt: any) => {
+            const loaded: number = evt.loaded;
+            const total: number = evt.total;
+            const progressPercentage = 100 * loaded / total;
+            console.log(`progress: ${progressPercentage}% `);
+            this.q.defer().notify();
+        });
+    }
+
+    public uploadRueckforderungsDokumente(files: any, rueckforderungFormularId: string,
+                                          rueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
+    ): IPromise<any> {
+        const names: string [] = [];
+        for (const file of files) {
+            if (file) {
+                const encodedFilename = this.base64.encode(file.name);
+                names.push(encodedFilename);
+            }
+        }
+        return this.upload.upload({
+            url: `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
+            method: 'POST',
+            headers: {
+                'x-filename': names.join(';'),
+            },
+            data: {
+                file: files
+            },
+        }).then((response: any) => {
+            return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
+            return response.data;
         }, (response: any) => {
             console.log('Upload File: NOT SUCCESS');
             return this.q.reject(response);

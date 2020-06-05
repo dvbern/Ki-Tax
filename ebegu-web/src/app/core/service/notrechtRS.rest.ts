@@ -17,6 +17,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -108,5 +109,12 @@ export class NotrechtRS {
                 return;
             },
         );
+    }
+
+    public getRueckforderungDokumente(rueckforderungFormularID: string): IPromise<TSRueckforderungDokument[]> {
+        return this.$http.get(`${this.serviceURL}/dokumente/${encodeURIComponent(rueckforderungFormularID)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
+            });
     }
 }

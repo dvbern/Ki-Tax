@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.util.UploadFileInfo;

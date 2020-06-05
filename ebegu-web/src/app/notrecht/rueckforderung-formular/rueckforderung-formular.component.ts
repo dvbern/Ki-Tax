@@ -24,16 +24,21 @@ import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {UploadRS} from '../../core/service/uploadRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
-import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 
 @Component({
     selector: 'dv-rueckforderung-formular',
@@ -59,6 +64,8 @@ export class RueckforderungFormularComponent implements OnInit {
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
 
+    public rueckforderungAngabenDokumente: TSRueckforderungDokument[] = [];
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
@@ -68,6 +75,7 @@ export class RueckforderungFormularComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly i18nServiceRS: I18nServiceRSRest,
+        private readonly uploadRS: UploadRS,
     ) {
     }
 
@@ -81,11 +89,13 @@ export class RueckforderungFormularComponent implements OnInit {
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
                     this.initRueckforderungZahlungen(response);
+                    this.initDokumente(response);
                     if (this.isPruefungKantonStufe1(response)) {
                         this.calculateKantonProvBetrag(response);
                     }
                     return response;
                 }));
+
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
@@ -304,4 +314,86 @@ export class RueckforderungFormularComponent implements OnInit {
                 win.close();
             });
     }
+
+    public get rueckforderungDokumentTyp(): typeof TSRueckforderungDokumentTyp {
+        return TSRueckforderungDokumentTyp;
+    }
+
+    public uploadRuckforderungDokumente(event: any, rueckforderungFormularId: string, tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp): void {
+        const files = event.target.files
+        const filesTooBig: any[] = [];
+        const filesOk: any[] = [];
+        for (const file of files) {
+            if (file.size > MAX_FILE_SIZE) {
+                filesTooBig.push(file);
+            } else {
+                filesOk.push(file);
+            }
+        }
+        if (filesTooBig.length > 0) {
+            // DialogBox anzeigen für Files, welche zu gross sind!
+
+            var fileListString = '<ul>';
+            for (const file of filesTooBig) {
+                fileListString += '<li>';
+                fileListString += file.name;
+                fileListString += '</li>';
+            }
+            fileListString += '</ul>';
+            this.showFileTooBigDialog(fileListString);
+            return;
+        }
+        if (filesOk.length <= 0) {
+            return;
+        }
+        this.uploadRS.uploadRueckforderungsDokumente(filesOk, rueckforderungFormularId, tsRueckforderungDokumentTyp)
+            .then(() => {
+               //TODO Parse document list returned and add the new one to the existing list
+            });
+    }
+
+    private showFileTooBigDialog(text: String): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('FILE_ZU_GROSS'),
+            text: ''
+        };
+        this.dialog
+            .open(DvNgOkDialogComponent, dialogConfig);
+    }
+
+    public initDokumente(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.notrechtRS.getRueckforderungDokumente(
+            rueckforderungFormular.id)
+            .then(rueckforderungDokumente => {
+                this.rueckforderungAngabenDokumente = rueckforderungDokumente.filter(
+                    dokument => dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE)
+            });
+    }
+
+  /*  public remove(dokumentGrund: TSDokumentGrund, dokument: TSDokument): void {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+            deleteText: '',
+            title: 'FILE_LOESCHEN',
+            parentController: undefined,
+            elementID: undefined,
+        })
+            .then(() => {   // User confirmed removal
+                this.onRemove({dokumentGrund, dokument});
+
+            });
+    }
+
+    public download(dokument: TSRueckforderungDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }*/
+
+
 }
