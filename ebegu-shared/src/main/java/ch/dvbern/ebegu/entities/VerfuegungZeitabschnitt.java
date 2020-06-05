@@ -553,6 +553,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
 	}
 
+	public void setPensumUnitForAsivAndGemeinde(PensumUnits unit) {
+		this.getBgCalculationInputAsiv().setPensumUnit(unit);
+		this.getBgCalculationInputGemeinde().setPensumUnit(unit);
+
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 

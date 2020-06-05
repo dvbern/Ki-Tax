@@ -44,7 +44,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Tagesfamilien STUNDEN
 	// 100% = 220 hours => 1% = 2.2 hours
-	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.DEFAULT.fromNullSafe(2.2);
+	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.DEFAULT.fromNullSafe(2.44);
 
 	public TageselternKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
@@ -122,12 +122,19 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		// Wir rechnen im Kitax-Rechner mit den berechneten Vollkosten, nicht mit denjenigen, die auf der Platzbestaetigung angegeben wurden.
 		result.setVollkosten(vollkosten);
 
+		BigDecimal betreuungsstundenProMonat100Prozent = MathUtil.EXACT.multiply(anzahlTageProMonat,
+			kitaxParameter.getMaxStundenProTagKita());
+
+		BigDecimal multiplierPensum = MathUtil.EXACT.divide(result.getBetreuungspensumProzent(), BigDecimal.valueOf(100));
+		BigDecimal multiplierAnspruch =	MathUtil.EXACT.divide(MathUtil.EXACT.from(result.getAnspruchspensumProzent()), BigDecimal.valueOf(100));
+		BigDecimal multiplierBgPensum = MathUtil.EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
+
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in STUNDEN berechnen
 		result.setZeiteinheit(PensumUnits.HOURS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_TAGESFAMILIEN));
-		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_TAGESFAMILIEN));
-		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_TAGESFAMILIEN));
+		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierPensum, betreuungsstundenProMonat100Prozent));
+		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiply(multiplierAnspruch, betreuungsstundenProMonat100Prozent));
+		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiply(multiplierBgPensum, betreuungsstundenProMonat100Prozent));
 
 		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
 

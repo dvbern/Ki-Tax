@@ -47,7 +47,7 @@ Content-Type: text/html;charset=utf-8
 		</b>
 	</p>
 	<p>
-		Für die definitive Abrechnung müssen Sie die folgenden Dokumente hochladen (ab dem 1. Juni 2020 möglich):
+		Für die definitive Abrechnung müssen Sie die folgenden Dokumente hochladen (Sie werden eine Mail erhalten, sobald dies möglich ist):
 	</p>
 	<ul>
 		<li>Entweder das ausgefüllte Excel-Formular oder sonstige Dokumente, aus denen die im Excel-Formular enthaltenen
@@ -83,7 +83,7 @@ Content-Type: text/html;charset=utf-8
 	<p>
 		Amt für Integration und Soziales
 		info.fam@be.ch
-		031 633 78 91
+		031 633 78 83
 	</p>
     <#if configuration.isDevmode>
 		<p>
@@ -118,7 +118,7 @@ Content-Type: text/html;charset=utf-8
 		</b>
 	</p>
 	<p>
-		Pour le décompte définitif, il nous faut les documents suivants (possible à partir du 1er juin) :
+		Pour le décompte définitif, il nous faut les documents suivants (un courriel vous sera envoyé dès que les documents pourront être chargés dans kiBon) :
 	</p>
 	<ul>
 		<li>soit le formulaire Excel dûment rempli, soit d’autres documents fournissant toutes les informations du
@@ -145,7 +145,7 @@ Content-Type: text/html;charset=utf-8
 		canton.
 	</p>
 	<p>
-		En restant à votre disposition en cas de question (info.fam@be.ch ; 031 633 78 91), nous vous présentons,
+		En restant à votre disposition en cas de question (info.fam@be.ch ; 031 633 78 83), nous vous présentons,
 		Mesdames, Messieurs, nos salutations les meilleures.
 	</p>
 	<p>

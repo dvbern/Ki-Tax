@@ -15,9 +15,12 @@
 
 import {StateService, TargetState} from '@uirouter/core';
 import {IComponentOptions, IController, ILocationService, ITimeoutService, IWindowService} from 'angular';
+import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {IAuthenticationStateParams} from '../authentication.route';
+import {RedirectWarningDialogController} from '../redirect-warning-dialog/RedirectWarningDialogController';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
 // tslint:disable-next-line:naming-convention variable-name
@@ -30,9 +33,12 @@ export const LoginComponentConfig: IComponentOptions = {
     },
 };
 
+const dialogTemplate = require('../redirect-warning-dialog/redirectWarningDialogTemplate.html');
+
 export class LoginComponentController implements IController {
 
-    public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location'];
+    public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location',
+        'DvDialog', 'ApplicationPropertyRS'];
 
     public redirectionHref: string;
     public logoutHref: string;
@@ -48,6 +54,8 @@ export class LoginComponentController implements IController {
         private readonly $timeout: ITimeoutService,
         private readonly authService: AuthServiceRS,
         private readonly $location: ILocationService,
+        private readonly dvDialog: DvDialog,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
@@ -58,6 +66,20 @@ export class LoginComponentController implements IController {
             return;
         }
 
+        this.applicationPropertyRS.isDevMode().then(isDevMode => {
+            // tslint:disable-next-line:early-exit
+            if (isDevMode) {
+                this.dvDialog.showDialog(dialogTemplate, RedirectWarningDialogController, {})
+                    .then(() => {
+                        this.doRelocate();
+                    });
+            } else {
+                this.doRelocate();
+            }
+        });
+    }
+
+    private doRelocate(): void {
         // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
         // wrap in burn timeout request, note that this will always produce an error

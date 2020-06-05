@@ -4737,6 +4737,11 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setStandardDokUnterschriftTitel2(jaxStammdaten.getStandardDokUnterschriftTitel2());
 		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
 
+		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
+		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
+		stammdaten.setTsEmail(jaxStammdaten.getTsEmail());
+		stammdaten.setTsTelefon(jaxStammdaten.getTsTelefon());
+
 		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
 			if (stammdaten.getRechtsmittelbelehrung() == null) {
 				stammdaten.setRechtsmittelbelehrung(new TextRessource());
@@ -4806,6 +4811,11 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
 		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
+		jaxStammdaten.setBgTelefon(stammdaten.getBgTelefon());
+		jaxStammdaten.setBgEmail(stammdaten.getBgEmail());
+		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
+		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
+
 		// Konfiguration: Wir laden immer alle Gesuchsperioden
 		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
 			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(

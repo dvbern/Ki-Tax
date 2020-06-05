@@ -38,6 +38,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -54,6 +55,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
@@ -84,6 +86,9 @@ public class NotrechtResource {
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -193,6 +198,16 @@ public class NotrechtResource {
 					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
 			}
 		}
+		if(modifiedRueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
+		 && applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+		){
+			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			modifiedRueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+			modifiedRueckforderungFormular =
+				this.rueckforderungFormularService.save(modifiedRueckforderungFormular);
+		}
 
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
@@ -261,6 +276,16 @@ public class NotrechtResource {
 		RueckforderungMitteilung rueckforderungMitteilung =
 			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
 		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
+	}
+
+	@ApiOperation(value = "Aktiviert der Phase 2 und setzt die entsprechende Status fuer die Ruckforderungsformular "
+		+ "die schon mit Phase 1 durch sind")
+	@Nullable
+	@POST
+	@Path("/initializePhase2")
+	public Response initializePhase2() {
+		rueckforderungFormularService.initializePhase2();
+		return Response.ok().build();
 	}
 
 	private void zahlungenGenerieren(

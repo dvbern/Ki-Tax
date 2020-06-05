@@ -76,6 +76,10 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 				kindContainer.getAnmeldungenTagesschule().stream()
 					.map(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName())
 					.collect(Collectors.toList()));
+			betreuungenList.addAll(
+				kindContainer.getAnmeldungenFerieninsel().stream()
+					.map(anmeldungFerieninsel -> anmeldungFerieninsel.getInstitutionStammdaten().getInstitution().getName())
+					.collect(Collectors.toList()));
 
 			String betreuungStr = kindContainer.getKindJA().getFullName() + " (";
 			betreuungStr += String.join(", ", betreuungenList);

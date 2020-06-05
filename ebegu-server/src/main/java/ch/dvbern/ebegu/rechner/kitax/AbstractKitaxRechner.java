@@ -65,6 +65,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	@Nonnull
 	@Override
 	protected BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+
 		// Die ASIV Berechnung muss ausgenullt werden
 		BGCalculationResult resultAsiv = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, resultAsiv);
