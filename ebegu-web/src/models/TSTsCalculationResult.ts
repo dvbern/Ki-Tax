@@ -21,6 +21,7 @@ export class TSTsCalculationResult extends TSAbstractEntity {
 
     public betreuungszeitProWoche: number;
     public verpflegungskosten: number;
+    public verpflegungskostenVerguenstigt: number;
     public gebuehrProStunde: number;
     public totalKostenProWoche: number;
     public betreuungszeitProWocheFormatted: string;

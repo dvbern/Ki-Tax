@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
@@ -108,5 +108,9 @@ export class NotrechtRS {
                 return;
             },
         );
+    }
+
+    public initializePhase2(): IHttpPromise<any> {
+        return this.$http.post(`${this.serviceURL}/initializePhase2`, {});
     }
 }

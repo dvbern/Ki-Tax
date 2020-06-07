@@ -576,7 +576,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			abzuegeTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
-			total.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 			// Total wird bei 2 GS beim 2. GS eingetragen
 			total.setGs2(totalAbzuegeBeiderGS);
 		} else {

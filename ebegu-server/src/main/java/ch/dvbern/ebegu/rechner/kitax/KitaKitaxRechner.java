@@ -27,9 +27,11 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -44,13 +46,20 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 	// 100% = 20 days => 1% = 0.2 days
 	public static final BigDecimal MULTIPLIER_KITA = MathUtil.DEFAULT.fromNullSafe(0.2);
 
-	public KitaKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
-		super(kitaxParameter, locale);
+	public KitaKitaxRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
+		super(kitaxParameter, oeffnungszeiten, locale);
 	}
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
 		if (!input.isBetreuungInGemeinde()) {
 			input.setAnspruchspensumProzent(0);
@@ -65,8 +74,9 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Benoetigte Daten
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
 		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
-		BigDecimal oeffnungsstunden = kitaxParameter.getOeffnungsstundenKita();
-		BigDecimal oeffnungstage = kitaxParameter.getOeffnungstageKita();
+
+		BigDecimal oeffnungsstunden = oeffnungszeiten.getOeffnungsstunden();
+		BigDecimal oeffnungstage = oeffnungszeiten.getOeffnungstage();
 		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(input.getBgPensumProzent());
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 
@@ -126,8 +136,14 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Resultat erstellen
 		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
 
+		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
+
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);
+
+		if (oeffnungszeiten.isDummyParams()) {
+			input.addBemerkung(MsgKey.NO_MATCHING_FROM_KITAX, locale, oeffnungstageBerechnet, oeffnungsstundenBerechnet);
+		}
 
 		return Optional.of(result);
 	}
@@ -157,9 +173,15 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in TAGE berechnen
 		result.setZeiteinheit(PensumUnits.DAYS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_KITA));
-		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_KITA));
-		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_KITA));
+		BigDecimal tageProMonat = MathUtil.EXACT.divide(oeffnungszeiten.getOeffnungstage(), BigDecimal.valueOf(12));
+
+		BigDecimal multiplierPensum = MathUtil.EXACT.divide(result.getBetreuungspensumProzent(), BigDecimal.valueOf(100));
+		BigDecimal multiplierAnspruch =	MathUtil.EXACT.divide(MathUtil.EXACT.from(result.getAnspruchspensumProzent()), BigDecimal.valueOf(100));
+		BigDecimal multiplierBgPensum = MathUtil.EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
+
+		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(tageProMonat, multiplierPensum));
+		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiply(tageProMonat, multiplierAnspruch));
+		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiply(tageProMonat, multiplierBgPensum));
 
 		return result;
 	}

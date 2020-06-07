@@ -219,4 +219,11 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	public Boolean isStadtBernAsivConfigured() {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, false);
 	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public Boolean isKantonNotverordnungPhase2Aktiviert() {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, false);
+	}
 }

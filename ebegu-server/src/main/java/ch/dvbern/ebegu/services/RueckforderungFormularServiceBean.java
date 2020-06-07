@@ -35,10 +35,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.interceptor.Interceptors;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -70,6 +73,12 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override
@@ -130,10 +139,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
+		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		if(currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
+			return allRueckforderungFormulare.stream().collect(Collectors.toList());
+		}
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
-
-		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 
 		return allRueckforderungFormulare.stream().filter(formular -> {
 			for (Institution institution : institutionenCurrentBenutzer) {
@@ -190,5 +202,25 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	) {
 		formular.addRueckforderungMitteilung(mitteilung);
 		return persistence.persist(formular);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void initializePhase2() {
+		//set Application Properties zu true
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, "true");
+		//get alle Ruckforderungsformular, check status and changed if needed
+		ArrayList<RueckforderungStatus> statusGeprueftStufe1 = new ArrayList<>();
+		statusGeprueftStufe1.add(RueckforderungStatus.GEPRUEFT_STUFE_1);
+		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
+			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
+		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
+			formular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(formular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+			formular.setStufe2InstitutionKostenuebernahmeAnzahlTage(formular.getStufe1KantonKostenuebernahmeAnzahlTage());
+			formular.setStufe2InstitutionKostenuebernahmeBetreuung(formular.getStufe1KantonKostenuebernahmeBetreuung());
+			formular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+			save(formular);
+		}
 	}
 }

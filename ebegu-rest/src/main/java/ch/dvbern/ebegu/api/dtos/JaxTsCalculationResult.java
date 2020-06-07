@@ -36,6 +36,8 @@ public class JaxTsCalculationResult extends JaxAbstractDTO {
 
 	private BigDecimal verpflegungskosten = BigDecimal.ZERO;
 
+	private BigDecimal verpflegungskostenVerguenstigt = BigDecimal.ZERO;
+
 	private BigDecimal gebuehrProStunde = BigDecimal.ZERO;
 
 	private BigDecimal totalKostenProWoche = BigDecimal.ZERO;
@@ -80,5 +82,13 @@ public class JaxTsCalculationResult extends JaxAbstractDTO {
 
 	public void setBetreuungszeitProWocheFormatted(String betreuungszeitProWocheFormatted) {
 		this.betreuungszeitProWocheFormatted = betreuungszeitProWocheFormatted;
+	}
+
+	public BigDecimal getVerpflegungskostenVerguenstigt() {
+		return verpflegungskostenVerguenstigt;
+	}
+
+	public void setVerpflegungskostenVerguenstigt(BigDecimal verpflegungskostenVerguenstigt) {
+		this.verpflegungskostenVerguenstigt = verpflegungskostenVerguenstigt;
 	}
 }

@@ -476,7 +476,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		ewpFreiwilligenarbeit.getErwerbspensumJA().setTaetigkeit(Taetigkeit.FREIWILLIGENARBEIT);
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewpFreiwilligenarbeit);
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getEinstellungenRulesParis(gesuch.getGesuchsperiode()));
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);

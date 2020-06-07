@@ -203,14 +203,24 @@ export class MitteilungRS {
                         ? betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten
                         : 0;
 
-                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG', {
+                    const tarifHaupt = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.tarifProHauptmahlzeit)
+                        ? betpenContainer.betreuungspensumJA.tarifProHauptmahlzeit
+                        : 0;
+
+                    const tarifNeben = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.tarifProNebenmahlzeit)
+                        ? betpenContainer.betreuungspensumJA.tarifProNebenmahlzeit
+                        : 0;
+
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG_MIT_TARIF', {
                         num: i,
                         von: datumAb,
                         bis: datumBis,
                         pensum: pensumJA.pensum,
                         kosten: pensumJA.monatlicheBetreuungskosten,
                         hauptmahlzeiten,
-                        nebenmahlzeiten
+                        nebenmahlzeiten,
+                        tarifHaupt,
+                        tarifNeben
                     });
                 } else {
                     message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
