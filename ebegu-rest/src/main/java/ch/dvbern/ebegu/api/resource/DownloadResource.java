@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.ExportService;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -128,6 +129,9 @@ public class DownloadResource {
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private RueckforderungDokumentService rueckforderungDokumentService;
 
 
 	@SuppressWarnings("ConstantConditions")
@@ -566,5 +570,26 @@ public class DownloadResource {
 		WriteProtectedDokument persistedDokument = generatedDokumentService
 			.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, mitTarif, forceCreation);
 		return getFileDownloadResponse(uriInfo, ip, persistedDokument);
+	}
+
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download eines Dokumentes.")
+	@Nonnull
+	@GET
+	@Path("/{dokumentId}/rueckforderungDokument")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDokumentAccessTokenRueckforderungDokument(
+		@Nonnull @Valid @PathParam("dokumentId") JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
+
+		String ip = getIP(request);
+
+		requireNonNull(jaxId.getId());
+		String id = converter.toEntityId(jaxId);
+
+		final FileMetadata dokument = rueckforderungDokumentService.findDokument(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
+
+		return getFileDownloadResponse(uriInfo, ip, dokument);
 	}
 }

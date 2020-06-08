@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -66,6 +67,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
+
+import static java.util.Objects.requireNonNull;
 
 @Path("notrecht")
 @Stateless
@@ -331,6 +334,28 @@ public class NotrechtResource {
 			rueckforderungDokumentService.findDokumente(rueckforderungFormId);
 
 		return converter.rueckforderungDokumentListToJax(rueckforderungDokumente);
+	}
+
+	@ApiOperation("Loescht das Dokument mit der uebergebenen Id in der Datenbank")
+	@Nullable
+	@DELETE
+	@Path("/{rueckforderungDokumentId}")
+	@Consumes(MediaType.WILDCARD)
+	public Response removeRueckforderungDokument(
+		@Nonnull @NotNull @PathParam("rueckforderungDokumentId") JaxId rueckforderungDokumentJAXPId,
+		@Context HttpServletResponse response) {
+
+		requireNonNull(rueckforderungDokumentJAXPId.getId());
+		String dokumentId = converter.toEntityId(rueckforderungDokumentJAXPId);
+
+		RueckforderungDokument rueckforderungDokument =
+			rueckforderungDokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"removeRueckforderungDokument",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
+
+		rueckforderungDokumentService.removeDokument(rueckforderungDokument);
+
+		return Response.ok().build();
 	}
 
 	private boolean isStufe1Geprueft(@Nonnull RueckforderungStatus rueckforderungStatusOld,

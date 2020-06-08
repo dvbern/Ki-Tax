@@ -63,9 +63,9 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 		final CriteriaQuery<RueckforderungDokument> query = cb.createQuery(RueckforderungDokument.class);
 		Root<RueckforderungDokument> root = query.from(RueckforderungDokument.class);
 
-		ParameterExpression<String> rueckforderungFormularIdParam = cb.parameter(String.class, "dossierId");
+		ParameterExpression<String> rueckforderungFormularIdParam = cb.parameter(String.class, "rueckforderungFormularId");
 
-		Predicate predicateRueckfoderungFormularId = cb.equal(root.get(RueckforderungDokument_.rueckforderungFormular).get(AbstractEntity_.id), rueckforderungFormularId);
+		Predicate predicateRueckfoderungFormularId = cb.equal(root.get(RueckforderungDokument_.rueckforderungFormular).get(AbstractEntity_.id), rueckforderungFormularIdParam);
 		query.where(predicateRueckfoderungFormularId);
 		query.orderBy(cb.asc(root.get(RueckforderungDokument_.timestampUpload)));
 		TypedQuery<RueckforderungDokument> q = persistence.getEntityManager().createQuery(query);

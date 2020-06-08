@@ -289,4 +289,11 @@ export class DownloadRS {
         this.$window.URL.revokeObjectURL(url);
         a.remove();
     }
+
+    public getAccessTokenRueckforderungDokument(rueckForderungDokumentId: string) {
+        return this.http.get(`${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/rueckforderungDokument`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
 }

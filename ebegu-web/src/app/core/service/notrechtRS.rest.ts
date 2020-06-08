@@ -121,4 +121,11 @@ export class NotrechtRS {
                 return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
             });
     }
+
+    public deleteRueckforderungDokument(rueckforderungDokumentId: string) {
+        const url = `${this.serviceURL}/${encodeURIComponent(rueckforderungDokumentId)}`;
+        return this.$http.delete(url).then((response: any) => {
+            return response.data;
+        });
+    }
 }

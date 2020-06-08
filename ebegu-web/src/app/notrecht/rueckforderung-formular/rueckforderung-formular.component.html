@@ -715,12 +715,6 @@
                 </h1>
                 <hr class="header"/>
                 <table class="table" width="100%">
-                    <thead>
-                    <th colspan="3">
-                        DOKUMENTE
-                    </th>
-                    <th colspan="2"></th>
-                    </thead>
                     <tr>
                         <td
                             translate="RUECKOFORDERUNG_DOKUMENTE_ANGABEN"></td>
@@ -757,7 +751,7 @@
                             <th>
                                 GROESSE
                             </th>
-                            <th colspan="2"></th>
+                            <th colspan="3"></th>
                             </thead>
 
                             <tr *ngFor="let dokument of rueckforderungAngabenDokumente;">
@@ -765,46 +759,54 @@
                                     {{dokument.filename}}
                                 </td>
                                 <td>
-                                    {{dokument.timestampUpload}}
+                                    {{formatDate(dokument.timestampUpload)}}
                                 </td>
                                 <td>
                                     {{dokument.filesize}}
                                 </td>
-
                                 <td width="2%"
                                     class="symbol"
                                     tabindex="-1">
-                                    <!--  <button type="button"
-                                              (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
-                                              [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                    <button type="button"
+                                            (click)="download(dokument, true);$event.stopPropagation()"
+                                            class="dv-btn fa fa-download dv-btn-operation"
+                                            title="{{'DOKUMENT_DOWNLOAD' | translate}}"
+                                            [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                            aria-hidden="true"
+                                            tabindex="0"></button>
+                                </td>
+                                <td width="2%"
+                                    class="symbol"
+                                    tabindex="-1">
+                                     <button type="button"
+                                              (click)="download(dokument, false);$event.stopPropagation()"
                                               class="dv-btn fa fa-eye dv-btn-operation"
-                                              title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                                              [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                              title="{{'DOKUMENT_LOOK' | translate}}"
+                                              [attr.aria-label]="'DOKUMENT_LOOK' | translate"
                                               aria-hidden="true"
                                               tabindex="0"></button>
-                                  </td>-->
+                                  </td>
                                 <td width="2%"
                                     class="symbol"
                                     tabindex="-1">
-                                    <!--  <button type="button"
-                                              (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
-                                              [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
-                                              class="dv-btn fa fa-trash dv-btn-operation"
-                                              title="{{'DOKUMENT_DELETE' | translate}}"
-                                              [attr.aria-label]="'DOKUMENT_DELETE' | translate"
-                                              aria-hidden="true"
-                                              tabindex="0"></button>-->
-                                </td>
-                            </tr>
-                        </table>
-                        </td>
-                    </tr>
-                </table>
+                                <button type="button"
+                                          (click)="delete(dokument);$event.stopPropagation()"
+                                          class="dv-btn fa fa-trash dv-btn-operation"
+                                          title="{{'DOKUMENT_DELETE' | translate}}"
+                                          [attr.aria-label]="'DOKUMENT_DELETE' | translate"
+                                          aria-hidden="true"
+                                          tabindex="0"></button>
+                            </td>
+                        </tr>
+                    </table>
+                    </td>
+                </tr>
+            </table>
 
-            </div>
         </div>
+    </div>
 
-        <!-- Buttons -->
+    <!-- Buttons -->
         <div class="dv-footer marginTop50">
             <dv-loading-button
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"

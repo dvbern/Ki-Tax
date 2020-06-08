@@ -18,6 +18,7 @@ import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class UploadRS {
@@ -78,7 +79,7 @@ export class UploadRS {
 
     public uploadRueckforderungsDokumente(files: any, rueckforderungFormularId: string,
                                           rueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
-    ): IPromise<any> {
+    ): IPromise<TSRueckforderungDokument[]> {
         const names: string [] = [];
         for (const file of files) {
             if (file) {
@@ -97,7 +98,6 @@ export class UploadRS {
             },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
-            return response.data;
         }, (response: any) => {
             console.log('Upload File: NOT SUCCESS');
             return this.q.reject(response);
