@@ -452,7 +452,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showInstitutionenAsText(): boolean {
-        return !this.showInstitutionenList();
+        return !this.showInstitutionenList() && !this.model.keineDetailinformationen;
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
