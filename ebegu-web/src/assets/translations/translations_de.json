@@ -2045,5 +2045,8 @@
     "BISHER_INSTITUTION_STUFE2": "Eingabe Institution Stufe 2: ",
     "NOTVERORDNUNG_INITIALISIEREN_PHASE2": "Start Phase 2",
     "RUECKFORDERUNG_PHASE2_INITIALISIERT": "Phase 2 gestartet",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN": "Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "Verantwortlicher Tagesschule wird per Email informiert, nachdem ein Mischgesuch verfügt wurde",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "Nachdem ein Mischgesuch durch den Verantwortlichen Betreuungsgutscheine abgeschlossen wurde, erhält der Verantwortliche Tagesschulen eine Email. Dies ist bei manchen Gemeinden für interne Prozesse notwendig.<br>Empfohlene Einstellung: Aus.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

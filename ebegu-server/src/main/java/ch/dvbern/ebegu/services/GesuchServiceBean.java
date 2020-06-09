@@ -1958,10 +1958,22 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				.equals(gesuch.getId())) {
 				setGesuchAndVorgaengerUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
 			}
-			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG ist
+
 			Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
 			Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
-			if (verantwortlicherTS != null && verantwortlicherBG != null && !verantwortlicherBG.getId().equals(verantwortlicherTS.getId())) {
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId())
+				.orElseThrow(() -> new EbeguRuntimeException("postGesuchVerfuegen",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					gesuch.extractGemeinde().getId()));
+
+			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG ist
+			// und falls Einstellung gesetzt ist
+			if (gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen() != null
+				&& gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen()
+				&& verantwortlicherTS != null
+				&& verantwortlicherBG != null
+				&& !verantwortlicherBG.getId().equals(verantwortlicherTS.getId())) {
 				try {
 					mailService.sendInfoGesuchVerfuegtVerantwortlicherTS(gesuch, verantwortlicherTS);
 				} catch (MailException e) {
