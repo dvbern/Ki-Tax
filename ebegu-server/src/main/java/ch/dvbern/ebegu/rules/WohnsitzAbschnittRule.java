@@ -110,10 +110,6 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 						// Es ist ein Zuzug
 						result.add(zeitabschnitt);
 					}
-				} else {
-					// Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!
-					LOG.warn("Zweiter Adressen-Abschnitt mit gleichen Daten: Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!");
-					result.add(zeitabschnitt);
 				}
 			}
 			lastZeitAbschnitt = zeitabschnitt;
