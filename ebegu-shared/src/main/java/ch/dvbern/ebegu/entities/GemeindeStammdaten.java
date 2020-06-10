@@ -206,7 +206,8 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true)
 	private String standardDokUnterschriftName2;
 
-	@Nullable
+	@Nonnull
+	@NotNull
 	@Column(nullable = false)
 	private Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen = false;
 
@@ -572,12 +573,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.standardDokSignature = standardDokSignature;
 	}
 
-	@Nullable
+	@Nonnull
 	public Boolean getTsVerantwortlicherNachVerfuegungBenachrichtigen() {
 		return tsVerantwortlicherNachVerfuegungBenachrichtigen;
 	}
 
-	public void setTsVerantwortlicherNachVerfuegungBenachrichtigen(@Nullable Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen) {
+	public void setTsVerantwortlicherNachVerfuegungBenachrichtigen(@Nonnull Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen) {
 		this.tsVerantwortlicherNachVerfuegungBenachrichtigen = tsVerantwortlicherNachVerfuegungBenachrichtigen;
 	}
 
