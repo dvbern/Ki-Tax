@@ -1969,8 +1969,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG ist
 			// und falls Einstellung gesetzt ist
-			if (gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen() != null
-				&& gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen()
+			if (gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen()
 				&& verantwortlicherTS != null
 				&& verantwortlicherBG != null
 				&& !verantwortlicherBG.getId().equals(verantwortlicherTS.getId())) {
