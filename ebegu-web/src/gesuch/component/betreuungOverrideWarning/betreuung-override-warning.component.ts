@@ -45,7 +45,8 @@ export class BetreuungOverrideWarningComponent implements OnChanges {
 
     private firstBetreuungspensum: number;
     private firstBetreuungskosten: number;
-    private gueltigAbInPast = false;
+    private firstGueltigAb: moment.Moment;
+    private gueltigAbInPast: boolean = null;
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (EbeguUtil.isNullOrUndefined(this.firstBetreuungspensum)
@@ -58,12 +59,20 @@ export class BetreuungOverrideWarningComponent implements OnChanges {
             && EbeguUtil.isNotNullOrUndefined(changes.betreuungskosten.currentValue)) {
             this.firstBetreuungskosten = changes.betreuungskosten.currentValue;
         }
-        if (changes.gueltigAb &&
-            EbeguUtil.isNotNullOrUndefined(changes.gueltigAb.currentValue)) {
-            this.gueltigAbInPast = moment().isAfter(this.gueltigAb);
+        if (EbeguUtil.isNullOrUndefined(this.gueltigAbInPast)
+            && changes.gueltigAb
+            && EbeguUtil.isNotNullOrUndefined(changes.gueltigAb.currentValue)) {
+                this.firstGueltigAb = this.gueltigAb;
+                this.gueltigAbInPast = moment().isAfter(this.gueltigAb);
         }
     }
 
+    /**
+     * Warnung wird angezeigt, wenn mindestens eines der folgenden zutrifft:
+     * * Betreuungskosten ändert & gueltigAb liegt in Vergangenheit
+     * * Betreuungspensum ändert & gueltigAb liegt in Vergangenheit
+     * * gueltigAb liegt in Vergangenheit und wird verändert
+     */
     public showWarning(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.firstBetreuungskosten)
             && EbeguUtil.isNotNullOrUndefined(this.betreuungskosten)
@@ -71,6 +80,7 @@ export class BetreuungOverrideWarningComponent implements OnChanges {
             && EbeguUtil.isNotNullOrUndefined(this.betreuungspensum)
             && this.gueltigAbInPast
             && (this.firstBetreuungspensum !== this.betreuungspensum
-                || this.firstBetreuungskosten !== this.betreuungskosten);
+                || this.firstBetreuungskosten !== this.betreuungskosten
+                || !this.firstGueltigAb.isSame(this.gueltigAb));
     }
 }
