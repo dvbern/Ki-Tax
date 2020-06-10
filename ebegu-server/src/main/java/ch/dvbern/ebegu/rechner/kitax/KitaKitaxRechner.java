@@ -81,7 +81,6 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal oeffnungstage = oeffnungszeiten.getOeffnungstage();
 		BigDecimal bgPensum = EXACT.pctToFraction(input.getBgPensumProzent());
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
-		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
 		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
@@ -139,20 +138,11 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Resultat erstellen
 		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
 
-		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
-		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
-			anteilVerguenstigesPensumAmBetreuungspensum = EXACT.divide(input.getBgPensumProzent(), betreuungspensum);
-		}
-
-		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
-
-		result.setVerguenstigungHauptmahlzeitenTotal(EXACT.multiply(
-			result.getVerguenstigungHauptmahlzeitenTotal(), anteilVerguenstigesPensumAmBetreuungspensum
-		));
-
-		result.setVerguenstigungNebenmahlzeitenTotal(EXACT.multiply(
-			result.getVerguenstigungNebenmahlzeitenTotal(), anteilVerguenstigesPensumAmBetreuungspensum
-		));
+		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
+		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
+		// Pensum reduzieren.
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = calculateAnteilVerguenstigtesPensumAmBetreuungspensum(input);
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);
