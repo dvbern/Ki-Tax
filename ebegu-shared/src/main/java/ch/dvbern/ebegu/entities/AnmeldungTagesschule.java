@@ -180,10 +180,14 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		if (isKeineDetailinformationen()) {
 			return false;
 		}
-		Objects.requireNonNull(getBelegungTagesschule());
-		Set<BelegungTagesschuleModul> belegungTagesschuleModulList = getBelegungTagesschule().getBelegungTagesschuleModule();
-		BelegungTagesschuleModul belegungTagesschuleModul = belegungTagesschuleModulList.iterator().next();
-		ModulTagesschuleGroup modulTagesschuleGroup = belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup();
-		return modulTagesschuleGroup.getEinstellungenTagesschule().isTagi();
+		final InstitutionStammdatenTagesschule stammdatenTagesschule = this.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
+		Objects.requireNonNull(stammdatenTagesschule);
+		final Set<EinstellungenTagesschule> einstellungenTagesschule = stammdatenTagesschule.getEinstellungenTagesschule();
+		for (EinstellungenTagesschule einstellung : einstellungenTagesschule) {
+			if (einstellung.getGesuchsperiode().equals(this.extractGesuchsperiode())) {
+				return einstellung.isTagi();
+			}
+		}
+		return false;
 	}
 }
