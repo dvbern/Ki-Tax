@@ -84,6 +84,10 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
             firstGemeindeId = firstGemeinde.verbundId === null ? firstGemeinde.id : firstGemeinde.verbundId;
         }
         gemeindenAdded.push(firstGemeindeId);
+        if (EbeguUtil.isNullOrUndefined(firstGemeindeId)) {
+            // Gemaess Sentry 36245 ist hier die ID ab und zu undefined -> herausfinden welche und warum
+            LOG.error("firstGemeinde ID undefined", firstGemeinde);
+        }
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
             gemList.forEach(tsGemeindeRegistrierung => {
                 // Das Dossier wird für den Verbund erstellt, falls einer vorhanden ist, sonst für die Gemeinde
@@ -93,6 +97,10 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
                 // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur
                 // 1 Dossier (für Verbund 1) erstellt werden
                 if (gemeindenAdded.indexOf(gemeindeIdForDossier) === -1) {
+                    if (EbeguUtil.isNullOrUndefined(gemeindeIdForDossier)) {
+                        // Gemaess Sentry 36245 ist hier die ID ab und zu undefined -> herausfinden welche und warum
+                        LOG.error("tsGemeindeRegistrierung ID undefined", tsGemeindeRegistrierung);
+                    }
                     this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeIdForDossier);
                     gemeindenAdded.push(gemeindeIdForDossier);
                 }
