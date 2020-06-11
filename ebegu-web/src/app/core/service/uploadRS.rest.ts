@@ -25,6 +25,7 @@ export class UploadRS {
 
     public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q', 'base64'];
     public serviceURL: string;
+    private readonly NOT_SUCCESS = 'Upload File: NOT SUCCESS';
 
     public constructor(
         public http: IHttpService,
@@ -66,14 +67,10 @@ export class UploadRS {
         }).then((response: any) => {
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
         }, (response: any) => {
-            console.log('Upload File: NOT SUCCESS');
+            console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
-            const loaded: number = evt.loaded;
-            const total: number = evt.total;
-            const progressPercentage = 100 * loaded / total;
-            console.log(`progress: ${progressPercentage}% `);
-            this.q.defer().notify();
+            this.notifyCallbackByUpload(evt);
         });
     }
 
@@ -99,14 +96,10 @@ export class UploadRS {
         }).then((response: any) => {
             return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
         }, (response: any) => {
-            console.log('Upload File: NOT SUCCESS');
+            console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
-            const loaded: number = evt.loaded;
-            const total: number = evt.total;
-            const progressPercentage = 100 * loaded / total;
-            console.log(`progress: ${progressPercentage}% `);
-            this.q.defer().notify();
+            this.notifyCallbackByUpload(evt);
         });
     }
 
@@ -121,7 +114,7 @@ export class UploadRS {
         }).then((response: any) => {
             return response.data;
         }, (response: any) => {
-            console.log('Upload File: NOT SUCCESS');
+            console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         });
     }
@@ -145,5 +138,13 @@ export class UploadRS {
 
     public getServiceName(): string {
         return 'UploadRS';
+    }
+
+    private notifyCallbackByUpload(evt: any): void {
+        const loaded: number = evt.loaded;
+        const total: number = evt.total;
+        const progressPercentage = 100 * loaded / total;
+        console.log(`progress: ${progressPercentage}% `);
+        this.q.defer().notify();
     }
 }

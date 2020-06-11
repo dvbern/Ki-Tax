@@ -2051,5 +2051,7 @@
     "ALTERNATIVE_TELEFONNUMMER": "Alternative Telefonnummer",
     "ALTERNATIVE_EMAIL": "Alternative Email Adresse",
     "ANGABEN_VON_STAMMDATEN": "Falls dieses Feld leer gelassen wird, werden die Angaben der Stammdaten übernommen",
+    "RUECKFORDERUNG_DOKUMENTE_HOCHLADEN": "Rückforderungsdokumente",
+    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN": "Angaben Dokumente",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -20,7 +20,6 @@ import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
-import {Moment} from 'moment';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -31,7 +30,6 @@ import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
-import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
@@ -67,7 +65,7 @@ export class RueckforderungFormularComponent implements OnInit {
     private _stufe1ProvBetrag: number;
     private _stufe2ProvBetrag: number;
 
-    public rueckforderungAngabenDokumente: TSRueckforderungDokument[] = [];
+    public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -391,7 +389,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public uploadRuckforderungDokumente(event: any, rueckforderungFormularId: string,
                                         tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp): void {
-        const files = event.target.files
+        const files = event.target.files;
         const filesTooBig: any[] = [];
         const filesOk: any[] = [];
         for (const file of files) {
@@ -404,7 +402,7 @@ export class RueckforderungFormularComponent implements OnInit {
         if (filesTooBig.length > 0) {
             // DialogBox anzeigen für Files, welche zu gross sind!
 
-            var fileListString = '<ul>';
+            let fileListString = '<ul>';
             for (const file of filesTooBig) {
                 fileListString += '<li>';
                 fileListString += file.name;
@@ -421,8 +419,10 @@ export class RueckforderungFormularComponent implements OnInit {
             .then(rueckforderungDokumente => {
                 switch (tsRueckforderungDokumentTyp) {
                     case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
-                        rueckforderungDokumente.forEach(dokument => this.rueckforderungAngabenDokumente.push(dokument));
-                        this.cdr.detectChanges();
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungAngabenDokumente.push(dokument));
+                        this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                        this.cdr.markForCheck();
                         break;
                     case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
                     case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
@@ -432,11 +432,11 @@ export class RueckforderungFormularComponent implements OnInit {
             });
     }
 
-    private showFileTooBigDialog(text: String): void {
+    private showFileTooBigDialog(text: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('FILE_ZU_GROSS'),
-            text: ''
+            text: `${text}`
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig);
@@ -448,59 +448,60 @@ export class RueckforderungFormularComponent implements OnInit {
             .then(rueckforderungDokumente => {
                 this.rueckforderungAngabenDokumente = rueckforderungDokumente.filter(
                     dokument => dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
-                this.cdr.detectChanges();
+                this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                this.cdr.markForCheck();
             });
     }
 
-     public delete(dokument: TSRueckforderungDokument): void {
-         const dialogConfig = new MatDialogConfig();
-         dialogConfig.data = {
-             title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
-             text: ''
-         };
-          this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
-              .afterClosed()
-              .subscribe(
-                  userAccepted => {
-                      if (!userAccepted) {
-                          return;
-                      }
-                      this.notrechtRS.deleteRueckforderungDokument(dokument.id).then(() => {
-                          switch (dokument.rueckforderungDokumentTyp) {
-                              case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
-                                  this.removeFromList(dokument, this.rueckforderungAngabenDokumente);
-                                  this.cdr.detectChanges();
-                                  break;
-                              case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
-                              case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
-                              default:
-                                  return;
-                          }
+    public delete(dokument: TSRueckforderungDokument): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
+            text: ''
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                userAccepted => {
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.notrechtRS.deleteRueckforderungDokument(dokument.id).then(() => {
+                        switch (dokument.rueckforderungDokumentTyp) {
+                            case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungAngabenDokumente);
+                                this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                            case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                            default:
+                                return;
+                        }
 
-                      });
-                  }
-              );
-      }
+                    });
+                },
+                () => {
+                }
+            );
+    }
 
-      private removeFromList(dokument: TSRueckforderungDokument, dokumente: TSRueckforderungDokument[]): void {
-          const idx = EbeguUtil.getIndexOfElementwithID(dokument, dokumente);
-          if (idx > -1) {
-              dokumente.splice(idx, 1);
-          }
-      }
+    private removeFromList(dokument: TSRueckforderungDokument,
+                           rueckforderungDokumente: TSRueckforderungDokument[]): void {
+        const idx = EbeguUtil.getIndexOfElementwithID(dokument, rueckforderungDokumente);
+        if (idx > -1) {
+            rueckforderungDokumente.splice(idx, 1);
+        }
+    }
 
-      public download(dokument: TSRueckforderungDokument, attachment: boolean): void {
-          const win = this.downloadRS.prepareDownloadWindow();
-          this.downloadRS.getAccessTokenRueckforderungDokument(dokument.id)
-              .then((downloadFile: TSDownloadFile) => {
-                  this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
-              })
-              .catch(() => {
-                  win.close();
-              });
-      }
-
-    public formatDate(timestampUpload: Moment): string {
-        return DateUtil.momentToLocalDateFormat(timestampUpload, 'DD.MM.YYYY');
+    public download(dokument: TSRueckforderungDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenRueckforderungDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 }

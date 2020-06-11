@@ -122,7 +122,7 @@ export class NotrechtRS {
             });
     }
 
-    public deleteRueckforderungDokument(rueckforderungDokumentId: string) {
+    public deleteRueckforderungDokument(rueckforderungDokumentId: string): IHttpPromise<any> {
         const url = `${this.serviceURL}/${encodeURIComponent(rueckforderungDokumentId)}`;
         return this.$http.delete(url).then((response: any) => {
             return response.data;

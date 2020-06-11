@@ -23,7 +23,6 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
-import {TSRueckforderungDokumentTyp} from '../models/enums/TSRueckforderungDokumentTyp';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -3994,14 +3993,15 @@ export class EbeguRestUtil {
             : [this.parseRueckforderungDokument(new TSRueckforderungDokument(), data)];
     }
 
-    public parseRueckforderungDokument(dokument: TSRueckforderungDokument, dokumentFromServer: any): TSRueckforderungDokument {
+    public parseRueckforderungDokument(dokument: TSRueckforderungDokument,
+                                       dokumentFromServer: any): TSRueckforderungDokument {
         if (dokumentFromServer) {
             this.parseAbstractMutableEntity(dokument, dokumentFromServer);
             dokument.filename = dokumentFromServer.filename;
             dokument.filepfad = dokumentFromServer.filepfad;
             dokument.filesize = dokumentFromServer.filesize;
             dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
-            dokument.rueckforderungDokumentTyp =dokumentFromServer.rueckforderungDokumentTyp;
+            dokument.rueckforderungDokumentTyp = dokumentFromServer.rueckforderungDokumentTyp;
             return dokument;
         }
         return undefined;

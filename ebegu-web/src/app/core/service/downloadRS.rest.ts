@@ -269,6 +269,7 @@ export class DownloadRS {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
     }
+
     public openDownload(blob: Blob, filename: string): void {
         // tslint:disable-next-line
         if (typeof this.$window.navigator.msSaveBlob !== 'undefined') {
@@ -290,8 +291,9 @@ export class DownloadRS {
         a.remove();
     }
 
-    public getAccessTokenRueckforderungDokument(rueckForderungDokumentId: string) {
-        return this.http.get(`${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/rueckforderungDokument`)
+    public getAccessTokenRueckforderungDokument(rueckForderungDokumentId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/rueckforderungDokument`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
