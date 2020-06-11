@@ -652,7 +652,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
             tsBetreuungspensum.tarifProHauptmahlzeit = 0;
             tsBetreuungspensum.tarifProNebenmahlzeit = 0;
-        } else {
+        } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
+            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten Institution,
+            // dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die Tarife auf dem Modul hinterlegt sind)
             tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
             tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
