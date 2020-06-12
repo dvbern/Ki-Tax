@@ -121,11 +121,9 @@ public class UploadResource {
 
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
-	private static final String PART_RUECKFORDERUNG_DOKUMENT_TYP = "rueckforderungDokTyp";
 
 	private static final String FILENAME_HEADER = "x-filename";
 	private static final String GESUCHID_HEADER = "x-gesuchID";
-	private static final String RUECKFORDERUNGID_HEADER = "x-rueckforderungID";
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
 
