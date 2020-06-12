@@ -452,7 +452,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showInstitutionenAsText(): boolean {
-        return !this.showInstitutionenList();
+        return !this.showInstitutionenList() && !this.model.keineDetailinformationen;
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
@@ -654,7 +654,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProNebenmahlzeit = 0;
         } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
             // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten Institution,
-            // dort werden die Mahlzeiten eh nicht angezeigt)
+            // dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die Tarife auf dem Modul hinterlegt sind)
             tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
             tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
