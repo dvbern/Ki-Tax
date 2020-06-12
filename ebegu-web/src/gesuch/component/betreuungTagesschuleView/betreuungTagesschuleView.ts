@@ -439,7 +439,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private toggleWarnungModule(): void {
-        // Wir koennen hier nicht "isThereAnyAnmeldung()" verwenden, da dieses das nach preSave() abgefuellte Modell beachtet!
+        // Wir koennen hier nicht "isThereAnyAnmeldung()" verwenden, da dieses das nach preSave()
+        // abgefuellte Modell beachtet!
         for (const group of this.modulGroups) {
             for (const belegungModul of group.module) {
                 if (belegungModul.modulTagesschule.angemeldet) {
