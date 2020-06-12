@@ -504,4 +504,8 @@ export class RueckforderungFormularComponent implements OnInit {
                 win.close();
             });
     }
+
+    public showDokumentenUpload(): boolean {
+        return false;
+    }
 }
