@@ -179,14 +179,9 @@ export class TSFinanzModel {
     }
 
     public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
-        let familiensituation = gesuch.extractFamiliensituation();
-        if (EbeguUtil.isNullOrUndefined(familiensituation)) {
-            familiensituation = new TSFamiliensituation();
-            gesuch.familiensituationContainer.familiensituationJA = familiensituation;
-        }
-        familiensituation.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
-        familiensituation.sozialhilfeBezueger = this.sozialhilfeBezueger;
-        familiensituation.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
+        gesuch.extractFamiliensituation().gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
+        gesuch.extractFamiliensituation().sozialhilfeBezueger = this.sozialhilfeBezueger;
+        gesuch.extractFamiliensituation().verguenstigungGewuenscht = this.verguenstigungGewuenscht;
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
@@ -196,12 +191,12 @@ export class TSFinanzModel {
         }
         this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
 
-        familiensituation.kontoinhaber = this.zahlungsinformationen.kontoinhaber;
-        familiensituation.iban = this.zahlungsinformationen.iban;
-        familiensituation.abweichendeZahlungsadresse =
+        gesuch.extractFamiliensituation().kontoinhaber = this.zahlungsinformationen.kontoinhaber;
+        gesuch.extractFamiliensituation().iban = this.zahlungsinformationen.iban;
+        gesuch.extractFamiliensituation().abweichendeZahlungsadresse =
             this.zahlungsinformationen.abweichendeZahlungsadresse;
-        familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
-        familiensituation.keineMahlzeitenverguenstigungBeantragt =
+        gesuch.extractFamiliensituation().zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt =
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
 
         return gesuch;

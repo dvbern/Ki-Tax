@@ -311,7 +311,7 @@
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
-                <version>1.24.1</version>
+                <version>1.22</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -374,16 +374,6 @@
                 <version>1.5.22</version>
             </dependency>
             <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>1.5.22</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-core</artifactId>
-                <version>1.5.22</version>
-            </dependency>
-            <dependency>
                 <groupId>io.sentry</groupId>
                 <artifactId>sentry</artifactId>
                 <version>${version.sentry}</version>
@@ -424,7 +414,7 @@
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
-                <version>5.4.1</version>
+                <version>5.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
@@ -517,7 +507,7 @@
             <dependency>
                 <groupId>ch.dvbern.oss.cdipersistence</groupId>
                 <artifactId>cdi-persistence-api</artifactId>
-                <version>2.0.6</version>
+                <version>2.0.5</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.iso20022</groupId>
