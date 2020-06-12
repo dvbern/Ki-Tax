@@ -36,6 +36,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import org.hibernate.envers.Audited;
@@ -153,6 +154,10 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
 			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			if (target.isKeineDetailinformationen()) {
+				// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
+				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+			}
 			target.setVerfuegung(null);
 			break;
 		case ERNEUERUNG:
