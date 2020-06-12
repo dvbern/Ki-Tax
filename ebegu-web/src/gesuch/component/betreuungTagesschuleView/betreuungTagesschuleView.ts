@@ -274,6 +274,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.showErrorMessageNoModule = true;
                 return undefined;
             }
+            this.showErrorMessageNoModule = false;
             // Falls es "ohne Details" ist, muessen die Module entfernt werden
             if (this.betreuung.keineDetailinformationen) {
                 this.getBetreuungModel().belegungTagesschule = undefined;
@@ -343,6 +344,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
                     ev: Event): any {
+        this.toggleWarnungModule();
         this.lastModifiedModul = modul;
         if (!modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
@@ -374,6 +376,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.showErrorMessageNoModule = true;
             return undefined;
         }
+        this.showErrorMessageNoModule = false;
         this.preSave();
         this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
 
@@ -433,5 +436,18 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public get showWarningModuleZugewiesen(): boolean {
         return this._showWarningModuleZugewiesen;
+    }
+
+    private toggleWarnungModule(): void {
+        // Wir koennen hier nicht "isThereAnyAnmeldung()" verwenden, da dieses das nach preSave() abgefuellte Modell beachtet!
+        for (const group of this.modulGroups) {
+            for (const belegungModul of group.module) {
+                if (belegungModul.modulTagesschule.angemeldet) {
+                    this.showErrorMessageNoModule = false;
+                    return;
+                }
+            }
+        }
+        this.showErrorMessageNoModule = true;
     }
 }
