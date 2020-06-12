@@ -17,7 +17,6 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
-import {TSFamiliensituation} from './TSFamiliensituation';
 import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
 import {TSGesuch} from './TSGesuch';
