@@ -23,15 +23,17 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
 
 public interface RueckforderungDokumentService {
 
+	@Nonnull
 	Optional<RueckforderungDokument> findDokument(@Nonnull String key);
 
+	@Nonnull
 	List<RueckforderungDokument> findDokumente(@Nonnull String rueckforderungFormularId);
 
 	void removeDokument(@Nonnull RueckforderungDokument dokument);
 
+	@Nonnull
 	RueckforderungDokument saveDokumentGrund(@Nonnull RueckforderungDokument rueckforderungDokument);
 }

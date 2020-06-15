@@ -36,7 +36,6 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungDokument_;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -57,6 +56,7 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 		return Optional.of(doc);
 	}
 
+	@Nonnull
 	@Override
 	public List<RueckforderungDokument> findDokumente(@Nonnull String rueckforderungFormularId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();

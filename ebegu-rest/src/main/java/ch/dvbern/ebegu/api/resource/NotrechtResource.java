@@ -326,8 +326,9 @@ public class NotrechtResource {
 	@Path("/dokumente/{rueckforderungFormId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxRueckforderungDokument> getRueckforderungFormulareDokumente(@Nonnull @NotNull @PathParam(
-		"rueckforderungFormId") JaxId rueckforderungFormJaxId) {
+	public List<JaxRueckforderungDokument> getRueckforderungFormulareDokumente(
+		@Nonnull @NotNull @PathParam("rueckforderungFormId") JaxId rueckforderungFormJaxId
+	) {
 		Objects.requireNonNull(rueckforderungFormJaxId.getId());
 		String rueckforderungFormId = converter.toEntityId(rueckforderungFormJaxId);
 		List<RueckforderungDokument> rueckforderungDokumente =

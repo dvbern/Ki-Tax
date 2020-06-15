@@ -5316,11 +5316,9 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toList());
 	}
 
-	public JaxRueckforderungDokument rueckforderungDokumentToJax(RueckforderungDokument rueckforderungDokument) {
-		JaxRueckforderungDokument jaxRueckforderungDokument = convertAbstractVorgaengerFieldsToJAX(
-			rueckforderungDokument,
-			new JaxRueckforderungDokument()
-		);
+	@Nonnull
+	public JaxRueckforderungDokument rueckforderungDokumentToJax(@Nonnull RueckforderungDokument rueckforderungDokument) {
+		JaxRueckforderungDokument jaxRueckforderungDokument = new JaxRueckforderungDokument();
 		convertFileToJax(rueckforderungDokument, jaxRueckforderungDokument);
 
 		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());
