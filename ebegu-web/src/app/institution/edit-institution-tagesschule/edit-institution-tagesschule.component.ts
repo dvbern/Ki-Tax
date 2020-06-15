@@ -147,7 +147,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             if (1 === result) {
                 this.createDynamischesModul(einstellungenTagesschule);
             } else if (2 === result) {
-                // Scolaris erstellen!
                 this.changeToScolaris(einstellungenTagesschule);
             }
         });
