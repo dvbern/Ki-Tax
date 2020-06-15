@@ -138,9 +138,9 @@ public abstract class KibonPdfGenerator {
 		String email = gemeindeStammdaten.getEmailForGesuch(getGesuch());
 		String telefon = gemeindeStammdaten.getTelefonForGesuch(getGesuch());
 		return Arrays.asList(
-			translate(ABSENDER_TELEFON, gemeindeStammdaten.getTelefon()),
+			translate(ABSENDER_TELEFON, telefon),
 			PdfUtil.printString(email),
-			PdfUtil.printString(telefon),
+			PdfUtil.printString(gemeindeStammdaten.getWebseite()),
 			"",
 			"",
 			gemeindeStammdaten.getGemeinde().getName() + ", " + Constants.DATE_FORMATTER.format(LocalDate.now())

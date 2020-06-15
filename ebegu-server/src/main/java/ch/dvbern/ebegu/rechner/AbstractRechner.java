@@ -72,18 +72,20 @@ public abstract class AbstractRechner {
 
 	/**
 	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
-	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
+	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch. Ausserdem muss darf die Verguenstigung nur
+	 * fuer den Anteil des verguenstigten Pensums am Betreuungspensum gewaehrt werden
+	 * Beispiel: Anpruch 20%, Betreuungspensum 80%, Betreuung ueber einen halben Monat:
+	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.25 * 0.5
 	 */
-	protected void handleUntermonatlicheMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat) {
-		if (MathUtil.isSame(anteilMonat, BigDecimal.ONE)) {
-			// Es ist ein ganzer Monat, wir muessen nichts tun.
-			return;
-		}
+	protected void handleAnteileMahlzeitenverguenstigung(
+		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilVerguenstigesPensumAmBetreuungspensum
+	) {
 		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
-		// derselben mit dem Anteil des Monats korrigiert werden
+		// derselben mit dem Anteil des Monats sowie dem Anteil des verguenstigten Pensums am
+		// Betreuungspensum korrigiert werden
 		final BigDecimal hauptmahlzeitenTotal = result.getVerguenstigungHauptmahlzeitenTotal();
 		final BigDecimal nebenmahlzeitenTotal = result.getVerguenstigungNebenmahlzeitenTotal();
-		result.setVerguenstigungHauptmahlzeitenTotal(MathUtil.DEFAULT.multiply(hauptmahlzeitenTotal, anteilMonat));
-		result.setVerguenstigungNebenmahlzeitenTotal(MathUtil.DEFAULT.multiply(nebenmahlzeitenTotal, anteilMonat));
+		result.setVerguenstigungHauptmahlzeitenTotal(MathUtil.DEFAULT.multiply(hauptmahlzeitenTotal, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum));
+		result.setVerguenstigungNebenmahlzeitenTotal(MathUtil.DEFAULT.multiply(nebenmahlzeitenTotal, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum));
 	}
 }

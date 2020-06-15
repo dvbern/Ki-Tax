@@ -369,21 +369,24 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public hasAngebotBGOnly(): boolean {
-        return this.getGesuch().dossier
+        return this.getGesuch()
+            && this.getGesuch().dossier
             && this.getGesuch().dossier.gemeinde
             && this.getGesuch().dossier.gemeinde.angebotBG
             && !this.getGesuch().dossier.gemeinde.angebotTS;
     }
 
     public hasAngebotTSOnly(): boolean {
-        return this.getGesuch().dossier
+        return this.getGesuch()
+            && this.getGesuch().dossier
             && this.getGesuch().dossier.gemeinde
             && this.getGesuch().dossier.gemeinde.angebotTS
             && !this.getGesuch().dossier.gemeinde.angebotBG;
     }
 
     public hasAngebotBGAndTS(): boolean {
-        return this.getGesuch().dossier
+        return this.getGesuch()
+            && this.getGesuch().dossier
             && this.getGesuch().dossier.gemeinde
             && this.getGesuch().dossier.gemeinde.angebotTS
             && this.getGesuch().dossier.gemeinde.angebotBG;

@@ -87,26 +87,24 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		BigDecimal verguenstigungProNebenmahlzeit =
 			mahlzeitenverguenstigungParams.getVerguenstigungProNebenmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
 
+		BigDecimal verguenstigungProHauptmahlzeitEffektiv = BigDecimal.ZERO;
+		BigDecimal verguenstigungProNebenmahlzeitEffektiv = BigDecimal.ZERO;
+
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
 		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 
 			// vergünstigung für Hauptmahlzeiten ist gegeben
 
 			// vergünstigung pro hauptmahlzeit berechnen
-			BigDecimal multiplier = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProHauptmahlzeit,
+			verguenstigungProHauptmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProHauptmahlzeit,
 				inputData.getTarifHauptmahlzeit(),
 				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
 
 			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlHauptmahlzeiten().multiply(multiplier);
+			BigDecimal verguenstigungTotal = inputData.getAnzahlHauptmahlzeiten().multiply(verguenstigungProHauptmahlzeitEffektiv);
 
 			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
 				verguenstigungTotal;
-
-			// am schluss verrechnen wir den betrag noch mit dem BG Pensum und runden auf 5 Rappen
-			verguenstigungTotal =
-				MathUtil.roundToFrankenRappen(verguenstigungTotal.multiply(inputData.getBgPensumProzent()
-					.divide(new BigDecimal(100))));
 
 			inputData.getParent().setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 		}
@@ -117,26 +115,21 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			// vergünstigung für Nebenmahlzeiten ist gegeben
 
 			// vergünstigung pro hauptmahlzeit berechnen
-			BigDecimal multiplier = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProNebenmahlzeit,
+			verguenstigungProNebenmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProNebenmahlzeit,
 				inputData.getTarifNebenmahlzeit(),
 				mahlzeitenverguenstigungParams.getMinimalerElternbeitragNebenmahlzeit());
 
 			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlNebenmahlzeiten().multiply(multiplier);
+			BigDecimal verguenstigungTotal = inputData.getAnzahlNebenmahlzeiten().multiply(verguenstigungProNebenmahlzeitEffektiv);
 			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
 				verguenstigungTotal;
-
-			// am schluss verrechnen wir den betrag noch mit dem BG Pensum und runden auf 5 Rappen
-			verguenstigungTotal =
-				MathUtil.roundToFrankenRappen(verguenstigungTotal.multiply(inputData.getBgPensumProzent())
-					.divide(new BigDecimal(100)));
-
+			
 			inputData.getParent().setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 		}
 
-		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0 ||
-			verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
-			addBemerkung(inputData, verguenstigungProHauptmahlzeit, verguenstigungProNebenmahlzeit);
+		if (verguenstigungProHauptmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0 ||
+			verguenstigungProNebenmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0) {
+			addBemerkung(inputData, verguenstigungProHauptmahlzeitEffektiv, verguenstigungProNebenmahlzeitEffektiv);
 		}
 	}
 

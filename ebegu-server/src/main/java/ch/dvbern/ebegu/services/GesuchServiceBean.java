@@ -1024,14 +1024,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchOptional.isPresent()) {
 			Gesuch gesuch = gesuchOptional.get();
 
-			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH
+			if (gesuch.getTyp() == AntragTyp.MUTATION
 				|| Eingangsart.ONLINE != gesuch.getEingangsart()
 				|| gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
-				throw new EbeguRuntimeException(KibonLogLevel.NONE, "antragZurueckziehen", "Only Online Erstgesuche "
+				throw new EbeguRuntimeException(KibonLogLevel.WARN, "antragZurueckziehen", "Only Online Erst-/Erneuerungsgesuche "
 					+ "can be reverted");
 			}
 
-			LOG.warn("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
+			LOG.info("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
 
 			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
