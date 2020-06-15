@@ -19,12 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,13 +49,17 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.RueckforderungDokument;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -62,6 +69,8 @@ import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.RueckforderungDokumentService;
+import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -104,6 +113,12 @@ public class UploadResource {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private RueckforderungDokumentService rueckforderungDokumentService;
+
+	@Inject
+	private RueckforderungFormularService rueckforderungFormularService;
 
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
@@ -201,6 +216,52 @@ public class UploadResource {
 		return Response.created(uri).entity(jaxDokumentGrundToReturn).build();
 	}
 
+	@ApiOperation(value = "Speichert ein oder mehrere RueckforderungsDokument in der Datenbank", response =
+		JaxRueckforderungDokument.class)
+	@Path("/uploadRueckforderungsDokument/{rueckforderungFormularId}/{rueckforderungDokumentTyp}")
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadRueckforderungsFiles(
+		@Nonnull @NotNull @PathParam("rueckforderungFormularId") JaxId rueckforderungFormularJAXPId,
+		@Nonnull @NotNull @PathParam("rueckforderungDokumentTyp") RueckforderungDokumentTyp rueckforderungDokumentTyp,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo,
+		MultipartFormDataInput input)
+		throws IOException, MimeTypeParseException {
+
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+
+		String[] encodedFilenames = getFilenamesFromHeader(request);
+
+		// check if filenames available
+		if (encodedFilenames == null || encodedFilenames.length == 0) {
+			final String problemString = "filename must be given";
+			LOG.error(problemString);
+			return Response.serverError().entity(problemString).build();
+		}
+
+		// Get RueckforderungId from request Parameter
+		String rueckforderungId = converter.toEntityId(rueckforderungFormularJAXPId);
+
+		Optional<RueckforderungFormular> rueckforderungFormular = rueckforderungFormularService.findRueckforderungFormular(rueckforderungId);
+		if (!rueckforderungFormular.isPresent()) {
+			final String problemString = "Can't find RueckforderungFormular on DB";
+			LOG.error(problemString);
+			return Response.serverError().entity(problemString).build();
+		}
+
+		// for every file create a new RueckforderungsDokument linked with the given RueckforderungsFormular
+		List<JaxRueckforderungDokument> jaxRueckforderungDokuments =
+			extractFilesFromInputAndCreateRueckforderungsDokumenten(encodedFilenames, input, rueckforderungFormular.get(), rueckforderungDokumentTyp);
+
+		URI uri = uriInfo.getBaseUriBuilder()
+			.path(UploadResource.class)
+			.path('/' + rueckforderungFormular.get().getId())
+			.build();
+
+		return Response.created(uri).entity(jaxRueckforderungDokuments).build();
+	}
+
 	@ApiOperation("Stores the Erlaeuterungen zu Verfuegung pdf of the Gesuchsperiode with the given id and Sprache")
 	@POST
 	@Path("/gesuchsperiodeDokument/{sprache}/{periodeId}/{dokumentTyp}")
@@ -295,15 +356,68 @@ public class UploadResource {
 		}
 	}
 
+	private List<JaxRueckforderungDokument> extractFilesFromInputAndCreateRueckforderungsDokumenten(
+		@Nonnull String[] encodedFilenames,
+		@Nonnull MultipartFormDataInput input,
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull RueckforderungDokumentTyp rueckforderungDokumentTyp
+	) throws MimeTypeParseException, IOException {
+
+		int filecounter = 0;
+		String partrileName = PART_FILE + '[' + filecounter + ']';
+
+		List<JaxRueckforderungDokument> rueckforderungJaxDokuments = new ArrayList<>();
+
+		// do for every file:
+		List<InputPart> inputParts = input.getFormDataMap().get(partrileName);
+		while (inputParts != null && inputParts.stream().findAny().isPresent()) {
+			UploadFileInfo fileInfo = RestUtil.parseUploadFile(inputParts.stream().findAny().get());
+
+			// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
+			if (encodedFilenames[filecounter] != null) {
+				String decodedFilenamesJson =
+					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), StandardCharsets.UTF_8);
+				fileInfo.setFilename(decodedFilenamesJson);
+			}
+
+			try (InputStream fileInputStream = input.getFormDataPart(partrileName, InputStream.class, null)) {
+				fileInfo.setBytes(IOUtils.toByteArray(fileInputStream));
+			}
+
+			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
+			fileSaverService.save(fileInfo, rueckforderungFormular.getId());
+			checkFiletypeAllowed(fileInfo);
+
+			// create and add the new file to RueckforderungsDokument object and persist it
+			RueckforderungDokument rueckforderungDokument = new RueckforderungDokument();
+			rueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokumentTyp);
+			rueckforderungDokument.setRueckforderungFormular(rueckforderungFormular);
+			rueckforderungDokument.setFilepfad(fileInfo.getPath());
+			rueckforderungDokument.setFilename(fileInfo.getFilename());
+			rueckforderungDokument.setFilesize(fileInfo.getSizeString());
+
+			rueckforderungDokumentService.saveDokumentGrund(rueckforderungDokument);
+
+			rueckforderungJaxDokuments.add(converter.rueckforderungDokumentToJax(rueckforderungDokument));
+
+			filecounter++;
+			partrileName = PART_FILE + '[' + filecounter + ']';
+			inputParts = input.getFormDataMap().get(partrileName);
+		}
+
+		return rueckforderungJaxDokuments;
+	}
+
 	private void checkFiletypeAllowed(UploadFileInfo fileInfo) {
 		//we dont purly trust the filetype set in the header, so we perform our own content-type guessing
 		java.nio.file.Path filePath = Paths.get(fileInfo.getPath());
 		try {
 			Tika tika = new Tika();
 			String contentType = tika.detect(filePath); //tika should be more accurate than Files.probeContentType
-			if (contentType == null || !contentType.equals(fileInfo.getContentType().toString())) {
+			final MimeType mimeType = fileInfo.getContentType();
+			if (contentType == null || mimeType == null || !contentType.equals(mimeType.toString())) {
 				LOG.warn("Content type from Header did not match content type returned from probing. "
-					+ "\n\t header:   {} \n\t probing:  {}", fileInfo.getContentType(), contentType);
+					+ "\n\t header:   {} \n\t probing:  {}", mimeType, contentType);
 			}
 			if (!applicationPropertyService.readMimeTypeWhitelist().contains(contentType)) {
 				fileSaverService.remove(fileInfo.getPath());

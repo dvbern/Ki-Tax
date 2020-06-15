@@ -529,70 +529,71 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)">
+                    <div class="row"
+                         *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
-                            <div class="col-sm-12">
+                                <div class="col-sm-12">
                                 <span class="mt-5">
                                     {{'BETREUUNG_KORREKT_AUSGEWIESEN'|translate}}
                                     <dv-tooltip id="betreuungKorrektAusgewiesenCbx-tooltip"
                                                 [text]="'BETREUUNG_KORREKT_AUSGEWIESEN_INFO'|translate"></dv-tooltip>
                                 </span>
-                                <div class="form-group">
-                                    <mat-checkbox id="betreuungKorrektAusgewiesenCbx_id"
-                                                  name="betreuungKorrektAusgewiesenCbx_id"
-                                                  [(ngModel)]="betreuungKorrektAusgewiesen" required>
-                                        {{ 'BESTAETIGEN' | translate }}
-                                    </mat-checkbox>
-                                </div>
-                                <span class="mt-5">
+                                    <div class="form-group">
+                                        <mat-checkbox id="betreuungKorrektAusgewiesenCbx_id"
+                                                      name="betreuungKorrektAusgewiesenCbx_id"
+                                                      [(ngModel)]="betreuungKorrektAusgewiesen" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5">
                                     {{'GUTSCHEIN_PLAETZEN_REDUZIERT'|translate}}
-                                    <dv-tooltip id="gutscheinPlaetzenReduziertCbx-tooltip"
-                                                [text]="'GUTSCHEIN_PLAETZEN_REDUZIERT_INFO'|translate"></dv-tooltip>
+                                        <dv-tooltip id="gutscheinPlaetzenReduziertCbx-tooltip"
+                                                    [text]="'GUTSCHEIN_PLAETZEN_REDUZIERT_INFO'|translate"></dv-tooltip>
                                 </span>
-                                <div class="form-group">
-                                    <mat-checkbox id="gutscheinPlaetzenReduziertCbx_id"
-                                                  name="gutscheinPlaetzenReduziertCbx_id"
-                                                  [(ngModel)]="gutscheinPlaetzenReduziert" required>
-                                        {{ 'BESTAETIGEN' | translate }}
-                                    </mat-checkbox>
-                                </div>
-                                <span class="mt-5">
+                                    <div class="form-group">
+                                        <mat-checkbox id="gutscheinPlaetzenReduziertCbx_id"
+                                                      name="gutscheinPlaetzenReduziertCbx_id"
+                                                      [(ngModel)]="gutscheinPlaetzenReduziert" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5">
                                     {{'ERSTATTUNG_GEMAESS_KANTON'|translate}}
-                                    <dv-tooltip id="erstattungGemaessKantonCbx-tooltip"
-                                                [text]="'ERSTATTUNG_GEMAESS_KANTON_INFO'|translate"></dv-tooltip>
+                                        <dv-tooltip id="erstattungGemaessKantonCbx-tooltip"
+                                                    [text]="'ERSTATTUNG_GEMAESS_KANTON_INFO'|translate"></dv-tooltip>
                                 </span>
-                                <div class="form-group">
-                                    <mat-checkbox id="erstattungGemaessKantonCbx_id"
-                                                  name="erstattungGemaessKantonCbx_id"
-                                                  [(ngModel)]="erstattungGemaessKanton" required>
-                                        {{ 'BESTAETIGEN' | translate }}
-                                    </mat-checkbox>
-                                </div>
-                                <span class="mt-5">
+                                    <div class="form-group">
+                                        <mat-checkbox id="erstattungGemaessKantonCbx_id"
+                                                      name="erstattungGemaessKantonCbx_id"
+                                                      [(ngModel)]="erstattungGemaessKanton" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5">
                                     {{'MAHLZEITEN_BG_SUBVENTIONEN_GEBUEHRENSYSTEM'|translate}}
                                 </span>
-                                <div class="form-group">
-                                    <mat-checkbox id="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
-                                                  name="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
-                                                  [(ngModel)]="mahlzeitenBGSubventionenGebuehrensystem" required>
-                                        {{ 'BESTAETIGEN' | translate }}
-                                    </mat-checkbox>
-                                </div>
-                                <span class="mt-5">
+                                    <div class="form-group">
+                                        <mat-checkbox id="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                                      name="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                                      [(ngModel)]="mahlzeitenBGSubventionenGebuehrensystem" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5">
                                     {{'BELEGE_EINREICHEN_BETRAG_KANTON_ZURUECKFORDERN'|translate}}
                                 </span>
-                                <div class="form-group">
-                                    <mat-checkbox id="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
-                                                  name="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
-                                                  [(ngModel)]="belegeEinreichenBetrageKantonZurueckfordern"
-                                                  required>
-                                        {{ 'BESTAETIGEN' | translate }}
-                                    </mat-checkbox>
+                                    <div class="form-group">
+                                        <mat-checkbox id="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                                      name="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                                      [(ngModel)]="belegeEinreichenBetrageKantonZurueckfordern"
+                                                      required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <!-- Checkbox -->
@@ -703,6 +704,26 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+
+        <!-- Dokumenten -->
+        <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
+            <div class="row">
+                <h1>
+                    <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
+                </h1>
+                <hr class="header"/>
+                <dv-file-upload
+                    (download)="download($event[0],$event[1])"
+                    [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
+                    (delete)="delete($event)"
+                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                    rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
+                    [files]="rueckforderungAngabenDokumente"
+                >
+                </dv-file-upload>
             </div>
         </div>
 
