@@ -117,6 +117,7 @@ import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSRueckforderungDokument} from '../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../models/TSRueckforderungFormular';
 import {TSRueckforderungMitteilung} from '../models/TSRueckforderungMitteilung';
 import {TSSozialhilfeZeitraum} from '../models/TSSozialhilfeZeitraum';
@@ -3981,5 +3982,28 @@ export class EbeguRestUtil {
         rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
         rueckforderungMitteilungRest.sendeDatum = DateUtil.momentToLocalDateTime(rueckforderungMitteilungTS.sendeDatum);
         return rueckforderungMitteilungRest;
+    }
+
+    public parseRueckforderungDokumente(data: any): TSRueckforderungDokument[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseRueckforderungDokument(new TSRueckforderungDokument(), item))
+            : [this.parseRueckforderungDokument(new TSRueckforderungDokument(), data)];
+    }
+
+    public parseRueckforderungDokument(dokument: TSRueckforderungDokument,
+                                       dokumentFromServer: any): TSRueckforderungDokument {
+        if (dokumentFromServer) {
+            this.parseAbstractMutableEntity(dokument, dokumentFromServer);
+            dokument.filename = dokumentFromServer.filename;
+            dokument.filepfad = dokumentFromServer.filepfad;
+            dokument.filesize = dokumentFromServer.filesize;
+            dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+            dokument.rueckforderungDokumentTyp = dokumentFromServer.rueckforderungDokumentTyp;
+            return dokument;
+        }
+        return undefined;
     }
 }
