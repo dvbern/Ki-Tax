@@ -1602,11 +1602,11 @@ export class GesuchModelManager {
     }
 
     public isSozialhilfeBezueger(): boolean {
-        return this.getFamiliensituation().sozialhilfeBezueger;
+        return this.getFamiliensituation() && this.getFamiliensituation().sozialhilfeBezueger;
     }
 
     public isSozialhilfeBezuegerZeitraeumeRequired(): boolean {
-        return this.getFamiliensituation().sozialhilfeBezueger
+        return this.isSozialhilfeBezueger()
             && (this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
                 || this.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled);
     }
