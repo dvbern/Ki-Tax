@@ -306,7 +306,7 @@
              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
 
-                <dv-loading-button
+                <dv-loading-button button-disabled="vm.showErrorMessageNoModule"
                                    button-click="vm.saveAnmeldungSchulamtUebernehmen()"
                                    type="button"
                                    button-class="save">
