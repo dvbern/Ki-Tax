@@ -43,6 +43,7 @@ import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
+import {FileUploadComponent} from './component/file-upload/file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
@@ -111,7 +112,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         KiBonGuidedTourComponent,
         DvNgGesuchstellerDialogComponent,
         ExternalClientAssignmentComponent,
-        ExternalClientMultiselectComponent
+        ExternalClientMultiselectComponent,
+        FileUploadComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
@@ -132,6 +134,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgGesuchstellerDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
+        FileUploadComponent,
     ],
     exports: [
         CommonModule,
@@ -168,6 +171,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         TooltipDirective,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
+        FileUploadComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
