@@ -213,7 +213,8 @@ export class ErwerbspensumListViewController
     }
 
     public getErwerbspensumNotRequired(): string {
-        const fiActive = this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
+        const fiActive = this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
         let undFerieninselnTxt = '';
         if (fiActive) {
             undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
