@@ -13,9 +13,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="finanzielleSituation gesuchModul">
+<div class="finanzielleSituation gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-12">
 
             <h2>
@@ -38,7 +38,7 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
                             <div class="form-group">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
                                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></span>
                                 </span>
@@ -63,7 +63,7 @@
                         <div class="col-xs-12 dv-input-container-question"
                              ng-if="vm.showSteuerveranlagung() && vm.showSteuererklaerung()">
                             <div class="form-group">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
                                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></span>
                                 </span>
@@ -84,7 +84,7 @@
                     </div>
 
                     <!-- Infotext -->
-                    <p class="inlineHint marginBottom30" data-translate="FINANZIELLE_SITUATION_HINT1"
+                    <p class="inline-hint margin-bottom-30" data-translate="FINANZIELLE_SITUATION_HINT1"
                        translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></p>
 
                     <!-- Nettolohn -->

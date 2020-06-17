@@ -20,11 +20,11 @@
     //text-align: center;
 
     ::ng-deep .mat-checkbox-label {
+        color: #222222;
+        font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         letter-spacing: 1px;
         line-height: 19px;
-        color: #222222;
-        font-family: "Open Sans";
         white-space: pre-wrap;
     }
 }
@@ -39,14 +39,14 @@
     }
 
     &-label {
-        width: 26.3rem;
         margin-bottom: 1.7rem;
+        width: 26.3rem;
     }
 
     &-input {
+        align-items: flex-end;
         display: flex;
         flex-flow: row wrap;
-        align-items: flex-end;
         justify-content: space-between;
 
         &-container {
@@ -62,12 +62,12 @@
         }**/
 
         &-input {
+            align-items: center;
+            color: black;
+            display: flex;
             height: 4rem;
             top: 0.5rem;
-            color: black;
             width: 26.3rem;
-            display: flex;
-            align-items: center;
             // margin: auto;
         }
 
@@ -75,19 +75,19 @@
             border: 2px solid black;
 
             select {
-                width: calc(25.2rem - 1px);
-                height: calc(3rem - 1px);
-                font-family: "Open Sans";
+                font-family: 'Open Sans', sans-serif;
                 font-size: 14px;
+                font-weight: normal;
+                height: calc(3rem - 1px);
                 letter-spacing: 0.5px;
                 line-height: 19px;
-                font-weight: normal;
+                width: calc(25.2rem - 1px);
             }
 
             &::after {
-                content: " \f002";
-                top: 0.5rem;
                 color: black;
+                content: ' \f002';
+                top: 0.5rem;
             }
         }
 
