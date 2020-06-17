@@ -30,7 +30,6 @@ import {DateUtil} from '../../../../utils/DateUtil';
 @Component({
     selector: 'dv-file-upload',
     templateUrl: './file-upload.component.html',
-    styleUrls: ['./file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileUploadComponent implements OnChanges {

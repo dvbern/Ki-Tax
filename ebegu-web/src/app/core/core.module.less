@@ -12,9 +12,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 /* Component LESS */
 @import (reference) '../../style/variables.less';
 @import (reference) '../../style/mixins.less';
+
 /* Add Component LESS Above */
 .ebegu {
     //smart table
@@ -23,7 +25,7 @@
         color: white;
     }
 
-    .viewTitle {
+    .view-title {
         hr.header {
             margin-bottom: 5rem;
         }
@@ -33,7 +35,7 @@
 
     }
 
-    .viewSubTitle {
+    .view-sub-title {
         hr.header {
             margin-bottom: 1rem;
         }
@@ -43,7 +45,7 @@
 
     }
 
-    .inlineHint {
+    .inline-hint {
         .ebeguItalic();
         font-size: 1.4rem;
         line-height: 2.5rem;
@@ -52,28 +54,28 @@
     //SmartTable Styles
     .table > thead > tr:first-child > th.sortable, .table > thead:first-child > tr:first-child > th.sortable {
         cursor: pointer;
-        white-space: nowrap;
         padding-right: 0;
+        white-space: nowrap;
     }
     .sortable:after {
-        font-size: 1.2rem;
-        vertical-align: middle;
+        content: '\f0dc';
         display: inline-block;
+        font-family: FontAwesome, sans-serif;
+        font-size: 1.2rem;
         line-height: 0.8rem;
-        font-family: FontAwesome;
-        content: "\f0dc";
         margin-left: 1rem;
+        vertical-align: middle;
     }
     .st-sort-ascent:after {
-        transition: all 3s;
+        content: '\f0dd';
+        font-family: FontAwesome, sans-serif;
         font-size: 1.2rem;
-        font-family: FontAwesome;
-        content: "\f0dd";
+        transition: all 3s;
     }
     .st-sort-descent:after {
+        content: '\f0de';
+        font-family: FontAwesome, sans-serif;
         font-size: 1.2rem;
-        font-family: FontAwesome;
-        content: "\f0de";
     }
     .pagination {
 
@@ -81,19 +83,19 @@
             a {
                 background-color: @primary;
                 border-color: @primary-dark;
+                color: @contrast-lightest;
                 &:hover, &:focus {
-                    color: @contrast-lightest;
                     background-color: @primary-dark;
                     border-color: @primary;
+                    color: @contrast-lightest;
                 }
-                color: @contrast-lightest;
             }
         }
         a {
+            color: @primary;
             &, &:first-child, &:last-child {
                 border-radius: 0;
             }
-            color: @primary;
             &:hover, &:focus {
                 color: @primary-dark;
             }
@@ -101,80 +103,80 @@
     }
 
     hr.header {
-        height: 0.1rem;
-        min-height: 1px;
+        background-color: #333;
         border: none;
         color: #333;
-        background-color: #333;
+        height: 0.1rem;
         margin-bottom: 0.5rem;
         margin-top: 0.5rem;
+        min-height: 1px;
     }
 
-    .marginLeft50 {
+    .margin-left-50 {
         margin-left: 5rem;
     }
 
-    .marginLeft10 {
+    .margin-left-10 {
         margin-left: 1rem;
     }
 
-    .marginLeft5 {
+    .margin-left-5 {
         margin-left: 0.5rem;
     }
 
-    .noMarginY {
-        margin-top: 0;
+    .no-margin-y {
         margin-bottom: 0;
+        margin-top: 0;
     }
-    .noMargin {
+    .no-margin {
         margin: 0;
     }
 
-    .marginTop05 {
+    .margin-top-05 {
         margin-top: 0.5rem;
     }
 
-    .marginTop10 {
+    .margin-top-10 {
         margin-top: 1rem;
     }
 
-    .marginTop20 {
+    .margin-top-20 {
         margin-top: 2rem;
     }
 
-    .marginTop30 {
+    .margin-top-30 {
         margin-top: 3rem;
     }
 
-    .marginTop40 {
+    .margin-top-40 {
         margin-top: 4rem;
     }
 
-    .marginTop50 {
+    .margin-top-50 {
         margin-top: 5rem;
     }
 
-    .marginBottom10 {
+    .margin-bottom-10 {
         margin-bottom: 1rem;
     }
 
-    .marginBottom20 {
+    .margin-bottom-20 {
         margin-bottom: 2rem;
     }
 
-    .marginBottom30 {
+    .margin-bottom-30 {
         margin-bottom: 3rem;
     }
 
-    .marginBottom50 {
+    .margin-bottom-50 {
         margin-bottom: 5rem;
     }
 
-    .marginBottom60 {
+    .margin-bottom-60 {
         margin-bottom: 5rem;
     }
 
-    .marginBottom80 {
+    .margin-bottom-80 {
         margin-bottom: 8rem;
     }
 
@@ -186,7 +188,7 @@
         .form-group.ng-untouched ~ dv-error-messages > .dv-error-messages > .error,
         .md-input-container.ng-untouched ~ dv-error-messages > .dv-error-messages > .error,
         .input-element.ng-untouched ~ .dv-error-messages > .error,
-        input[type="text"].ng-untouched ~ .dv-error-messages > .error {
+        input[type='text'].ng-untouched ~ .dv-error-messages > .error {
             display: none;
         }
 
@@ -196,18 +198,19 @@
     // Damit wir unter den inputs hints anzeigen koennen schieben wir die errors noch bisschen runter wenn ein Hint existiert
     .hint {
         .ebeguItalic();
-        letter-spacing: 0.135rem;
-        position: absolute;
-        left: 0.2rem;
-        right: auto;
         bottom: 0.7rem;
-        font-size: 1.4rem;
-        line-height: 2.5rem;
-        transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
         color: @contrast-darkest;
+        font-size: 1.4rem;
+        left: 0.2rem;
+        letter-spacing: 0.135rem;
+        line-height: 2.5rem;
+        position: absolute;
+        right: auto;
+        transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
     }
 
     md-input-container .error.hint [ng-messages] {
+
         /* position: relative;
          -webkit-order: 4;
          -ms-flex- order: 4;
@@ -217,66 +220,69 @@
          clear: left;*/
     }
 
+    /*stylelint-disable selector-class-pattern */
     ._md-open-menu-container, .md-open-menu-container {
+
+        /*stylelint-enable */
         z-index: @z-index-error !important;
     }
 
     .well {
-        box-shadow: none;
         border: none;
         border-bottom: 0.5rem solid black;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 2rem 2.5rem 2rem 5rem;
         span {
             .ebeguH3();
         }
         i {
             padding: 1rem 1rem 1rem 0;
         }
-        border-radius: 0;
-        padding: 2rem 2.5rem 2rem 5rem;
     }
 
     .well-status-warten {
         background-color: @warning-light;
+        border-bottom-color: @warning;
         i {
             color: @warning;
         }
-        border-bottom-color: @warning;
     }
 
     .well-status-bestaetigt {
         background-color: @success-light;
+        border-bottom-color: @success;
         i {
             color: @success;
         }
-        border-bottom-color: @success;
     }
 
     .well-status-abgewiesen {
         background-color: @danger-light;
+        border-bottom-color: @danger;
         i {
             color: @danger;
         }
-        border-bottom-color: @danger;
     }
 
     .required:after {
-        content: "\00a0*";
+        content: '\00a0*';
         display: inline;
     }
-    h1.required span:after, .ebeguH1.required span:after {
-        content: "\00a0*";
+    h1.required span:after, .ebegu-h1.required span:after {
+        content: '\00a0*';
     }
-    h1.required:after, .ebeguH1.required:after {
-        content: "";
+    h1.required:after, .ebegu-h1.required:after {
+        content: '';
     }
     .md-required:after {
-        content: "\00a0*" !important;
+        content: '\00a0*' !important;
     }
 
 }
 
 .dv-input-container-question {
-    h1, .ebeguH1 {
+    h1, .ebegu-h1 {
         line-height: 2.4rem;
     }
 }

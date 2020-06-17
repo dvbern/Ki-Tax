@@ -24,7 +24,7 @@
             	&& !vm.getBetreuungModel().keineDetailinformationen">
 
             <!-- Warnung, wenn noch keine Module definiert -->
-            <div class="marginTop30"
+            <div class="margin-top-30"
                  ng-if="vm.isTagesschuleAlreadySelected()
                     && !vm.hasTagesschuleAnyModulGroupDefined()">
                 <div class="well well-status-warten">
@@ -75,7 +75,7 @@
                 </div>
 
                 <!-- Abholung aus der Tagesschule -->
-                <div class="row marginTop20">
+                <div class="row margin-top-20">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" ng-class="{'required': vm.isGesuchstellerRole()}"
@@ -171,21 +171,21 @@
                     </div>
                 </div>
 
-                <div class="well well-status-warten marginTop30" ng-if="vm.showWarningModuleZugewiesen">
+                <div class="well well-status-warten margin-top-30" ng-if="vm.showWarningModuleZugewiesen">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                     <span data-translate="TAGESSCHULE_MODULE_AUTOMATISCH_ZUGEWIESEN"></span>
                 </div>
 
-                <div ng-if="vm.erlaeuterung !== null" class="row marginTop20">
+                <div ng-if="vm.erlaeuterung !== null" class="row margin-top-20">
                     <div class="col-xs-12">
-                        <p class="inlineHint">{{vm.erlaeuterung}}</p>
+                        <p class="inline-hint">{{vm.erlaeuterung}}</p>
                     </div>
                 </div>
 
                 <!-- Abweichung zweites Semester und Bemerkungen -->
-                <div class="row marginTop30">
+                <div class="row margin-top-30">
                     <div class="col-sm-12 dv-input-container-question">
-                        <md-checkbox class="checkbox marginTop20"
+                        <md-checkbox class="checkbox margin-top-20"
                                      ng-model="vm.betreuung.belegungTagesschule.abweichungZweitesSemester"
                                      name="abweichungZweitesSemester"
                                      id="abweichungZweitesSemester"
@@ -198,7 +198,7 @@
                                    ng-class="{'required': vm.betreuung.belegungTagesschule.abweichungZweitesSemester}"
                                    data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG" for="bemerkung_ID">
                             </label>
-                            <p class="inlineHint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
+                            <p class="inline-hint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
                             <textarea aria-describedby="bemerkung_ID-error"
                                       name="bemerkung"
                                       class="form-control " rows="6"
@@ -211,7 +211,7 @@
                         </dv-input-container>
                     </div>
                 </div>
-                <div class="row marginTop30" ng-if="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
+                <div class="row margin-top-30" ng-if="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox"
                                      ng-model="vm.agbTSAkzeptiert"
@@ -239,7 +239,7 @@
         <div ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()">
 
             <!-- Hinweis, dass Tageschulanmeldung noch nicht freigeschaltet -->
-            <div class="marginTop30" ng-if="!vm.isTageschulenAnmeldungAktiv()">
+            <div class="margin-top-30" ng-if="!vm.isTageschulenAnmeldungAktiv()">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation " aria-hidden="true"></i>
                     <span>{{vm.getTagesschuleAnmeldungNotYetReadyText()}}</span>
@@ -247,7 +247,7 @@
             </div>
 
             <!-- Hinweis, wenn keine Module ausgewaehlt -->
-            <div class="marginTop30"
+            <div class="margin-top-30"
                  ng-if="vm.showErrorMessageNoModule === true && !vm.getBetreuungModel().keineDetailinformationen">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
@@ -255,14 +255,14 @@
                 </div>
             </div>
 
-            <div class="marginTop30" ng-if="vm.showNochNichtFreigegeben === true">
+            <div class="margin-top-30" ng-if="vm.showNochNichtFreigegeben === true">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                     <span data-translate="WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN"></span>
                 </div>
             </div>
 
-            <div class="marginTop30" ng-if="vm.showMutiert === true">
+            <div class="margin-top-30" ng-if="vm.showMutiert === true">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                     <span data-translate="WARN_ANGEBOT_MUTIERT"></span>

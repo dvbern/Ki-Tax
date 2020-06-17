@@ -13,9 +13,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="betreuungListView gesuchModul">
+<div class="betreuungListView gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-12">
             <h2>
                 <span data-translate="KINDER_MIT_BETREUUNG"></span>
@@ -27,10 +27,10 @@
     <!--Fuer jedes Kind Tabelle anzeigen-->
     <div class="row">
         <div class="col-md-12">
-            <div ng-repeat="kind in vm.getKinderWithBetreuungList()" class="marginBottom80">
+            <div ng-repeat="kind in vm.getKinderWithBetreuungList()" class="margin-bottom-80">
                 <div class="row">
                     <div class="col-md-12">
-                        <h3 class="ebeguH2">
+                        <h3 class="ebegu-h2">
                             <span>{{kind.kindJA.getFullName()}}</span>
                         </h3>
                     </div>
@@ -143,7 +143,7 @@
                         </dv-loading-button>
                     </div>
 
-                    <div class="col-md-12 marginTop40" dv-show-element
+                    <div class="col-md-12 margin-top-40" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="(vm.showButtonAnmeldungTagesschule() || !vm.isGesuchReadonly()) && !vm.isNeueBetreuungErlaubtForFI()">
                         <span data-translate="MUTATION_NOETIG"></span>
@@ -156,7 +156,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row marginTop20" ng-show="vm.hasBetreuungInStatusWarten()" dv-show-element
+            <div class="row margin-top-20" ng-show="vm.hasBetreuungInStatusWarten()" dv-show-element
                  dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
                 <div class="col-md-12">
                     <div class="well well-status-warten">
@@ -165,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row marginTop20" ng-show="vm.hasProvisorischeBetreuungen()" dv-show-element
+            <div class="row margin-top-20" ng-show="vm.hasProvisorischeBetreuungen()" dv-show-element
                  dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
                 <div class="col-md-12">
                     <div class="well well-status-warten">

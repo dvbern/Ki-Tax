@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 
-<div class="gemeinde-list adminModul" flex="auto">
+<div class="gemeinde-list admin-modul" flex="auto">
 
     <div class="col-md-8 col-md-offset-2">
 
         <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
-        <div class="viewTitle">
+        <div class="view-title">
             <h2 translate>GEMEINDEN</h2>
             <hr class="header">
         </div>
@@ -76,7 +76,7 @@
 
         <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
         <div *ngIf="hatBerechtigungHinzufuegen()"
-             class="marginTop50 row">
+             class="margin-top-50 row">
             <div class="col-md-3">
                 <dv-loading-button (buttonClick)="addGemeinde();">
                     <span translate>GEMEINDE_HINZUFUEGEN</span>

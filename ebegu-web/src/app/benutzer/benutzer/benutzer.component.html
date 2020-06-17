@@ -24,7 +24,7 @@
           novalidate>
         <div class="dv-content">
             <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
-            <div class="row viewTitle">
+            <div class="row view-title">
                 <div class="col-md-12">
                     <h2>{{'BENUTZER_DETAIL' | translate: {name: selectedUser.nachname, vorname: selectedUser.vorname}
                         }}</h2>
@@ -102,13 +102,13 @@
             </fieldset>
 
             <!-- Warnung, wenn gesperrt -->
-            <div class="well well-status-warten marginTop40"
+            <div class="well well-status-warten margin-top-40"
                  *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                 <span translate>BENUTZER_GESPERRT_INFO</span>
             </div>
 
-            <div class="marginTop50">
+            <div class="margin-top-50">
                 <h1 [textContent]="'ROLLE_AKTIV' | translate"></h1>
                 <hr class="header"/>
             </div>
@@ -119,7 +119,7 @@
 							 [disabled]="isDisabled || isDefaultVerantwortlicher">
 			</dv-berechtigung>
 
-            <div class="marginTop50" *ngIf="futureBerechtigung || !isDisabled">
+            <div class="margin-top-50" *ngIf="futureBerechtigung || !isDisabled">
                 <h1 [textContent]="'ROLLE_KUENFTIG' | translate"></h1>
                 <hr class="header"/>
             </div>
@@ -202,7 +202,7 @@
 
             <!-- History Tabelle -->
             <ng-container *ngIf="isSuperAdmin()">
-                <h1 translate class="marginTop50">BERECHTIGUNGHISTORY</h1>
+                <h1 translate class="margin-top-50">BERECHTIGUNGHISTORY</h1>
                 <div class="table-responsive">
                     <table class="table">
                         <tr>
