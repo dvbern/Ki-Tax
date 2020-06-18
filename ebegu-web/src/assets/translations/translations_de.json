@@ -2054,5 +2054,9 @@
     "BETREUUNG_HINT_UNTERMONATLICH": "Für die folgenden Angaben gilt: Falls das von- oder bis-Datum der Betreuung nicht auf einer Monatsgrenze liegt, müssen die Werte trotzdem für einen ganzen Monat erfasst werden. <br>&nbsp;",
     "RUECKFORDERUNG_DOKUMENTE_HOCHLADEN": "Rückforderungsdokumente",
     "RUECKFORDERUNG_DOKUMENTE_ANGABEN": "Angaben Dokumente",
+    "TS_DIALOG_FIRSTMODUL_TITLE": "Wollen Sie wirklich dynamische Module erstellen?",
+    "TS_DIALOG_FIRSTMODUL_TEXT": "Falls Sie die Software Scolaris zum Verwalten Ihrer Tagesschule verwenden, oder in Zukunft verwenden werden, müssen Sie die Module für Scolaris erstellen. Ansonsten können die Module später nicht korrekt synchronisiert werden",
+    "TS_DIALOG_FIRSTMODUL_ACTION1": "Dynamische Module erstellen",
+    "TS_DIALOG_FIRSTMODUL_ACTION2": "Scolaris Module erstellen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

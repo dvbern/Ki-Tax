@@ -39,6 +39,7 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgThreeButtonDialogComponent} from '../../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
@@ -123,6 +124,35 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public addModulTagesschuleGroup(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        if (einstellungenTagesschule.modulTagesschuleGroups.length > 0
+                || !this.canEditEinstellungen(einstellungenTagesschule)) {
+            // Es ist nicht das erste Modul, wir muessen nicht mehr fragen, ob der Benutzer
+            // evtl. Scolaris will ODER die Anmeldung ist eh schon offen und wir koennen keine
+            // ScolarisModule mehr erstellen
+            this.createDynamischesModul(einstellungenTagesschule);
+            return;
+        }
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'TS_DIALOG_FIRSTMODUL_TITLE',
+            text: 'TS_DIALOG_FIRSTMODUL_TEXT',
+            actionOneButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION1',
+            actionTwoButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION2'};
+        dialogConfig.role = 'dialog';
+        this.dialog.open(DvNgThreeButtonDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
+            // 1=Dynamisch, 2=Scolaris, undefined=Abbrechen
+            if (!EbeguUtil.isNotNullOrUndefined(result)) {
+                return;
+            }
+            if (1 === result) {
+                this.createDynamischesModul(einstellungenTagesschule);
+            } else if (2 === result) {
+                this.changeToScolaris(einstellungenTagesschule);
+            }
+        });
+    }
+
+    private createDynamischesModul(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
         group.bezeichnung = new TSTextRessource();
@@ -225,7 +255,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             );
     }
 
-    public changeToScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+    public askAndChangeToScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'MODUL_TYP_SCOLARIS_TITLE',
@@ -240,15 +270,19 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
                         return;
                     }
-                    einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.SCOLARIS;
-                    // Die Module sind neu nach Scolaris -> Alle eventuell vorhandenen werden gelöscht
-                    this.createModulGroupsScolaris(einstellungenTagesschule);
-                    this.ref.markForCheck();
+                    this.changeToScolaris(einstellungenTagesschule);
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
                 }
             );
+    }
+
+    private changeToScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.SCOLARIS;
+        // Die Module sind neu nach Scolaris -> Alle eventuell vorhandenen werden gelöscht
+        this.createModulGroupsScolaris(einstellungenTagesschule);
+        this.ref.markForCheck();
     }
 
     public createModulGroupsScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): void {
