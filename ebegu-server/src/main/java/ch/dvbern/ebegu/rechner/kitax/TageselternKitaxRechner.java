@@ -42,10 +42,6 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
-	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Tagesfamilien STUNDEN
-	// 100% = 220 hours => 1% = 2.2 hours
-	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.DEFAULT.fromNullSafe(2.44);
-
 	public TageselternKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,

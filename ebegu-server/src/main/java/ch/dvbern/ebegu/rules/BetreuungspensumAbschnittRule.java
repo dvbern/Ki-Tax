@@ -28,14 +28,13 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
-import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.KitaxUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -47,7 +46,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
-	private KitaxUebergangsloesungParameter kitaxParameter;
+	private final KitaxUebergangsloesungParameter kitaxParameter;
 
 	public BetreuungspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale, KitaxUebergangsloesungParameter kitaxParameter) {
 		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
@@ -68,37 +67,28 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
 
-		final boolean possibleKitaxRechner = kitaxParameter.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
+		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
 			&& betreuung.getBetreuungsangebotTyp().isJugendamt();
 
 
 		// es handelt sich um FEBR und wir müssen die Pensen gemäss dem alten System umrechnen.
 		if (possibleKitaxRechner) {
-			boolean recalculationNecessary = false;
+
 			List<Betreuungspensum> pensenToUse = new ArrayList<>();
 
 			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 
 				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-
-				if (kitaxParameter.getStadtBernAsivStartDate().isBefore(betreuungspensum.getGueltigkeit().getGueltigAb())) {
-					pensenToUse.add(betreuungspensum);
-					continue;
-				}
-
+				// Eine Kopie erstellen, da die Daten nicht veraendert werden duerfen!
 				Betreuungspensum copy = initBetreuungspensumCopy(betreuungspensum);
 
-				// das komplette Pensum liegt innerhalb von FEBR
-				if (kitaxParameter.getStadtBernAsivStartDate().isAfter(betreuungspensum.getGueltigkeit().getGueltigBis())) {
-					recalculationNecessary = true;
-				}
-
-				if (kitaxParameter.getStadtBernAsivStartDate().isAfter(betreuungspensum.getGueltigkeit().getGueltigAb()) &&
-					kitaxParameter.getStadtBernAsivStartDate().isBefore(betreuungspensum.getGueltigkeit().getGueltigBis())) {
-
-					recalculationNecessary = true;
+				// Das Betreuungspensum ist noch nicht in Monatsstuecken. Daher kann es vorkommen,
+				// dass der Stichtag vom Wechsel zu ASIV mitten im Pensum liegt
+				if (KitaxUtil.isPensumMixedFEBRandASIV(kitaxParameter, betreuungspensum)) {
+					// In diesem Fall muessen wir daraus zwei Zeitabschnitte machen:
+					// Dals alte beenden
 					copy.getGueltigkeit().setGueltigBis(kitaxParameter.getStadtBernAsivStartDate().minusDays(1l));
-
+					// und ein zweites fuer die Zeit nach Stichtag (ASIV) erstellen
 					Betreuungspensum restPensumAsiv = initBetreuungspensumCopy(betreuungspensum);
 					restPensumAsiv.getGueltigkeit().setGueltigAb(kitaxParameter.getStadtBernAsivStartDate());
 					restPensumAsiv.getGueltigkeit().setGueltigBis(betreuungspensum.getGueltigkeit().getGueltigBis());
@@ -106,40 +96,14 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 					pensenToUse.add(restPensumAsiv);
 				}
 
-				if (recalculationNecessary) {
-
+				// Ab hier kann es jetzt keine gemischten Pensen mehr geben: Sie sind immer ganz FEBR oder ganz ASIV
+				// Diejenigen, die ganz FEBR sind, muessen konvertiert werden
+				if (KitaxUtil.isCompletePensumFEBR(kitaxParameter, betreuungspensum)) {
+					// Das Pensum wird aufgrund der effektiven Oeffnungszeiten der Kita umgerechnet
 					String kitaName = betreuung.getInstitutionStammdaten().getInstitution().getName();
-					KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
-
-					switch (betreuungspensum.getUnitForDisplay()) {
-						case DAYS:
-							BigDecimal faktor = MathUtil.EXACT.divide(BigDecimal.valueOf(240), oeffnungszeiten.getOeffnungstage());
-							BigDecimal prozent = MathUtil.EXACT.multiply(betreuungspensum.getPensum(), faktor);
-							copy.setPensum(prozent);
-							break;
-						case HOURS:
-							BigDecimal pensumStundenAsiv = MathUtil.EXACT.multiply(betreuungspensum.getPensum(),
-								BigDecimal.valueOf(2.2));
-
-
-							BigDecimal anzahlTageProMonat = MathUtil.EXACT.divide(kitaxParameter.getMaxTageKita(), BigDecimal.valueOf(12));
-							BigDecimal maxBetreuungsstundenProMonat = MathUtil.EXACT.multiply(anzahlTageProMonat,
-								kitaxParameter.getMaxStundenProTagKita());
-
-							BigDecimal stunden = MathUtil.EXACT.multiply(maxBetreuungsstundenProMonat,
-								betreuungspensum.getPensum()).divide(BigDecimal.valueOf(100));
-
-							BigDecimal pensumEffektiv =
-								MathUtil.EXACT.divide(pensumStundenAsiv, stunden).multiply(betreuungspensum.getPensum());
-							copy.setPensum(pensumEffektiv);
-							break;
-						default:
-							copy.setPensum(betreuungspensum.getPensum());
-							break;
-					}
-
-					pensenToUse.add(copy);
+					copy.setPensum(KitaxUtil.recalculatePensumKonvertierung(kitaName, kitaxParameter, betreuungspensum));
 				}
+				pensenToUse.add(copy);
 			}
 
 			for (Betreuungspensum pensum : pensenToUse) {
@@ -214,6 +178,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		copy.setTarifProHauptmahlzeit(original.getTarifProHauptmahlzeit());
 		copy.setTarifProNebenmahlzeit(original.getTarifProNebenmahlzeit());
 		copy.setGueltigkeit(original.getGueltigkeit());
+		copy.setPensum(original.getPensum());
 
 		return copy;
 	}
