@@ -231,13 +231,33 @@ export class EditGemeindeComponent implements OnInit {
 
             this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
                 if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
-                 this.loadStammdaten();
+                    this.loadStammdaten();
                 }
+                this.updateExternalClients();
             });
 
             // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
             // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
             this.initializeEmptyUnrequiredFields(stammdaten);
+        });
+    }
+
+    private updateExternalClients(): void {
+        // the removed assigned clients need to be added in the available clients
+        this.initiallyAssignedClients.forEach(initiallyAssignedClient => {
+            if (this.externalClients.assignedClients.length === 0 || this.externalClients.assignedClients.filter(
+                assignedClient => assignedClient.id === initiallyAssignedClient.id).length === 0) {
+                this.externalClients.availableClients.push(initiallyAssignedClient);
+            }
+        });
+        this.initiallyAssignedClients = this.externalClients.assignedClients;
+        // the newly added assigned clients need to be removed from the available clients
+        this.externalClients.assignedClients.forEach(assignedClient => {
+            if (this.externalClients.availableClients.filter(
+                availableClient => availableClient.id === assignedClient.id).length > 0) {
+                const clientIndex = this.externalClients.availableClients.indexOf(assignedClient);
+                this.externalClients.availableClients.splice(clientIndex, 1);
+            }
         });
     }
 
