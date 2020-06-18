@@ -33,6 +33,7 @@ import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchst
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
@@ -98,6 +99,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
         ErrorMessagesComponent,
@@ -126,6 +128,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvPosteingangComponent,
         GemeindeMultiselectComponent,
         DvBenutzerEntry,
@@ -160,6 +163,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,
         FullHeightContainerComponent,
