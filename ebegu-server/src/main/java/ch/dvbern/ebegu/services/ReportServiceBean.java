@@ -902,9 +902,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionStammdaten()
-			.getInstitution()
-			.getName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionName();
 
 		return getUploadFileInfoZahlung(
 			reportData,

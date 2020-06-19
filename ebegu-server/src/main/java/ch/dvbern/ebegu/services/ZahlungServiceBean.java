@@ -46,6 +46,8 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -85,6 +87,7 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -497,10 +500,35 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 * Erstellt eine Zahlung fuer eine bestimmte Institution, welche zum uebergebenen Auftrag gehoert
 	 */
 	@Nonnull
-	private Zahlung createZahlung(@Nonnull InstitutionStammdaten institution, @Nonnull Zahlungsauftrag zahlungsauftrag) {
+	private Zahlung createZahlung(@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Zahlungsauftrag zahlungsauftrag) {
 		Zahlung zahlung = new Zahlung();
 		zahlung.setStatus(ZahlungStatus.ENTWURF);
-		zahlung.setInstitutionStammdaten(institution);
+		// TODO (hefr)
+		// Variante 1: Auszahlungsdaten der Zahlung ist eine Kopie der Auszahlungsdaten der Institution. Darauf werden
+		// direkt die zu verwendenden Daten gesetzt, d.h. falls keine spezifische Zahlungsadresse definiert ist, wird
+		// auf der Zahlung die Postadresse vermerkt. Nachteil: Die Adresse, bzw. vorallem die IBAN, kann nach erstelltem
+		// Zahlungslauf nicht mehr "korrigiert" werden, da eine Anpassung auf der Institution die Daten der Zahlung nicht
+		// mehr veraendert
+		final Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+		auszahlungsdaten.setIban(requireNonNull(institutionStammdaten.extractIban()));
+		String kontoinhaber = StringUtils.isNotEmpty(institutionStammdaten.extractKontoinhaber())
+			? institutionStammdaten.extractKontoinhaber() : institutionStammdaten.getInstitution().getName();
+		auszahlungsdaten.setKontoinhaber(kontoinhaber);
+		Adresse auszahlungsadresse = institutionStammdaten.extractAdresseKontoinhaber() != null
+			? institutionStammdaten.extractAdresseKontoinhaber() : institutionStammdaten.getAdresse();
+		auszahlungsdaten.setAdresseKontoinhaber(auszahlungsadresse);
+		// Variante 2: Die Zahlung referenziert direkt die Auszahlungsdaten der Institution. Damit koennen die Daten nach
+		// Erstellen des Zahlungslaufes noch korrigiert werden. Nachteil: Die Daten sind hier noch nicht vollstaendig, d.h.
+		// beim Erstellen des PAIN Files muss, falls z.B. keine explizite Zahlungsadresse gesetzt ist, die Postadresse der
+		// Institution ermittelt werden. Bedingt eine unterschiedliche Behandlung der beiden Zahlungslaeufe beim Erstellen
+		// des PAIN Files, da bei Mahlzeiten-Zahlungslaeufen die Wohnadresse des Gesuchsteller der Fallback ist.
+		zahlung.setAuszahlungsdaten(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getAuszahlungsdaten());
+		zahlung.setInstitutionId(institutionStammdaten.getInstitution().getId());
+		zahlung.setInstitutionName(institutionStammdaten.getInstitution().getName());
+		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());
+		if (institutionStammdaten.getInstitution().getTraegerschaft() != null) {
+			zahlung.setTraegerschaftName(institutionStammdaten.getInstitution().getTraegerschaft().getName());
+		}
 		zahlung.setZahlungsauftrag(zahlungsauftrag);
 		zahlungsauftrag.getZahlungen().add(zahlung);
 		return zahlung;

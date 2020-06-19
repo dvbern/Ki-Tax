@@ -23,22 +23,17 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von InstitutionStammdatenTagesschule in der Datenbank.
@@ -46,25 +41,15 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_bg_adressekontoinhaber_id"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id", name = "UK_institution_stammdaten_bg_auszahlungsdaten_id"))
 public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity implements Comparable<InstitutionStammdatenBetreuungsgutscheine> {
 
 	private static final long serialVersionUID = -5937387773922925929L;
 
-	@Column(nullable = true)
-	@Embedded
-	@Valid
-	private IBAN iban;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String kontoinhaber;
-
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_adressekontoinhaber_id"), nullable = true)
-	private Adresse adresseKontoinhaber;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_auszahlungsdaten_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdaten;
 
 	@NotNull
 	@Column(nullable = false)
@@ -106,30 +91,58 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
 
+	@Nullable
+	public Auszahlungsdaten getAuszahlungsdaten() {
+		return auszahlungsdaten;
+	}
+
+	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdaten = auszahlungsdaten;
+	}
+
+	@Nullable
 	public IBAN getIban() {
-		return iban;
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getIban();
+		}
+		return null;
 	}
 
 	public void setIban(IBAN iban) {
-		this.iban = iban;
+		if (auszahlungsdaten == null) {
+			auszahlungsdaten = new Auszahlungsdaten();
+		}
+		auszahlungsdaten.setIban(iban);
 	}
 
 	@Nullable
 	public String getKontoinhaber() {
-		return kontoinhaber;
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getKontoinhaber();
+		}
+		return null;
 	}
 
 	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
+		if (auszahlungsdaten == null) {
+			auszahlungsdaten = new Auszahlungsdaten();
+		}
+		auszahlungsdaten.setKontoinhaber(kontoinhaber);
 	}
 
 	@Nullable
 	public Adresse getAdresseKontoinhaber() {
-		return adresseKontoinhaber;
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getAdresseKontoinhaber();
+		}
+		return null;
 	}
 
 	public void setAdresseKontoinhaber(@Nullable Adresse adresseKontoinhaber) {
-		this.adresseKontoinhaber = adresseKontoinhaber;
+		if (auszahlungsdaten == null) {
+			auszahlungsdaten = new Auszahlungsdaten();
+		}
+		auszahlungsdaten.setAdresseKontoinhaber(adresseKontoinhaber);
 	}
 
 	public boolean getAlterskategorieBaby() {
@@ -221,7 +234,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 			return false;
 		}
 		final InstitutionStammdatenBetreuungsgutscheine otherInstStammdaten = (InstitutionStammdatenBetreuungsgutscheine) other;
-		return Objects.equals(getIban(), otherInstStammdaten.getIban());
+		return Objects.equals(getAuszahlungsdaten(), otherInstStammdaten.getAuszahlungsdaten());
 	}
 
 	@Override

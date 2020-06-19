@@ -38,6 +38,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
@@ -50,6 +51,11 @@ import org.hibernate.envers.Audited;
 public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = 5758088668232796741L;
+
+	@NotNull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private ZahlungslaufTyp zahlungslaufTyp;
 
 	@NotNull
 	@Column(nullable = false)
@@ -84,6 +90,15 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	@Nonnull
 	private Boolean hasNegativeZahlungen = false;
+
+
+	public ZahlungslaufTyp getZahlungslaufTyp() {
+		return zahlungslaufTyp;
+	}
+
+	public void setZahlungslaufTyp(ZahlungslaufTyp zahlungslaufTyp) {
+		this.zahlungslaufTyp = zahlungslaufTyp;
+	}
 
 	public LocalDate getDatumFaellig() {
 		return datumFaellig;

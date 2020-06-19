@@ -20,7 +20,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftragPeriode;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -54,10 +53,9 @@ public class ZahlungAuftragPeriodeExcelConverter implements ExcelConverter {
 			.sorted()
 			.forEach(zahlung -> {
 				ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftragPeriode.repeatZahlungAuftragRow);
-				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
-				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.institution, institutionStammdaten.getInstitution().getName());
+				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.institution, zahlung.getInstitutionName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.betreuungsangebotTyp,
-					ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale));
+					ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.gemeinde, zahlung.getZahlungsauftrag().getGemeinde().getName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.bezahltAm, zahlung.getZahlungsauftrag().getDatumFaellig());
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.betragCHF, zahlung.getBetragTotalZahlung());

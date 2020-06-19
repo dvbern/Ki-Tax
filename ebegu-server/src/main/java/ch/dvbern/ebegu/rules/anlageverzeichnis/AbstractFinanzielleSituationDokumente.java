@@ -97,11 +97,11 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation != null) {
-			if (!abstractFinanzielleSituation.getSteuerveranlagungErhalten()
-				&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt()
-				&& dokumentTyp != DokumentTyp.STEUERERKLAERUNG) {
-				return false;
-			}
+//			if (!abstractFinanzielleSituation.getSteuerveranlagungErhalten()
+//				&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt()
+//				&& dokumentTyp != DokumentTyp.STEUERERKLAERUNG) {
+//				return false;
+//			}
 			switch (dokumentTyp) {
 			case STEUERVERANLAGUNG:
 				return abstractFinanzielleSituation.getSteuerveranlagungErhalten();

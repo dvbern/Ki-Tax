@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -46,7 +47,6 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -177,21 +177,20 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
 		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
-			if (StringUtils.isNoneEmpty(iban)) {
-				familiensituation.setIban(new IBAN(iban));
-			} else {
-				familiensituation.setIban(null);
+			if (!keineMahlzeitenverguenstigungGewuenscht) {
+				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+				Objects.requireNonNull(iban, "IBAN muss angegeben werden, wenn Mahlzeitenverguenstigung gewuenscht");
+				auszahlungsdaten.setIban(new IBAN(iban));
+				auszahlungsdaten.setKontoinhaber(kontoinhaber);
+				auszahlungsdaten.setAdresseKontoinhaber(zahlungsadresse);
+				familiensituation.setAuszahlungsdaten(auszahlungsdaten);
 			}
-			familiensituation.setKontoinhaber(kontoinhaber);
 			familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
-			familiensituation.setZahlungsadresse(zahlungsadresse);
 		} else {
 			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
-			familiensituation.setIban(null);
-			familiensituation.setKontoinhaber(null);
+			familiensituation.setAuszahlungsdaten(null);
 			familiensituation.setAbweichendeZahlungsadresse(false);
-			familiensituation.setZahlungsadresse(null);
 		}
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2

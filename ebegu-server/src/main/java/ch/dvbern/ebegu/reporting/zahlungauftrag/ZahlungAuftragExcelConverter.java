@@ -30,7 +30,6 @@ import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -88,7 +87,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
 				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId()));
 			})
 			.sorted()
 			.forEach(zahlung ->
@@ -97,10 +96,9 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 					.sorted()
 					.forEach(zahlungsposition -> {
 						ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
-						InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institutionStammdaten.getInstitution().getName());
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getInstitutionName());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
-							ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale));
+							ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vorname, zahlungsposition.getKind().getVorname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.gebDatum, zahlungsposition.getKind().getGeburtsdatum());
