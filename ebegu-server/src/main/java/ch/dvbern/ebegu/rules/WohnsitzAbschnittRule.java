@@ -106,6 +106,8 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 						// Es ist ein Zuzug
 						result.add(zeitabschnitt);
 					}
+				} else {
+					result.add(zeitabschnitt);
 				}
 			}
 			lastZeitAbschnitt = zeitabschnitt;
