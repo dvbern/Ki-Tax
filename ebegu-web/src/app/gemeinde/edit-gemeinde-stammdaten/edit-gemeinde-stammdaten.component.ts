@@ -15,18 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
-import { CONSTANTS } from '../../core/constants/CONSTANTS';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 
@@ -40,13 +41,10 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
-    @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
 
     public readonly CONSTANTS = CONSTANTS;
-
-    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public korrespondenzsprache: string;
     public benutzerListe: Array<TSBenutzer>;
@@ -54,6 +52,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public minDateTSFI = moment('20200801', 'YYYYMMDD');
 
     private readonly unsubscribe$ = new Subject<void>();
+    public ebeguUtil = EbeguUtil;
 
     public constructor(
         private readonly translate: TranslateService,
@@ -106,8 +105,8 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             TSRole.SACHBEARBEITER_MANDANT]);
     }
 
-    public keineBeschwerdeAdresseChanged(newVal: boolean): void {
-        this.keineBeschwerdeAdresseChange.emit(newVal);
+    public isSuperadmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {

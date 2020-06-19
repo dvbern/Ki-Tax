@@ -15,20 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
 
@@ -46,8 +50,14 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
+    @Input() public keineBeschwerdeAdresse: boolean;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
+
+    @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
+
+    public readonly CONSTANTS = CONSTANTS;
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
@@ -57,6 +67,7 @@ export class EditGemeindeComponentBG implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
+        private readonly authServiceRs: AuthServiceRS,
     ) {
 
     }
@@ -89,11 +100,7 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeKonfigKontingentierung(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key)
-            .forEach(property => {
-                property.value = gk.konfigKontingentierung ? 'true' : 'false';
-            });
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED, gk.konfigKontingentierung, gk);
     }
 
     public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
@@ -102,14 +109,20 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeKonfigBeguBisUndMitSchulstufe(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key)
-            .forEach(property => {
-                property.value = gk.konfigBeguBisUndMitSchulstufe;
-            });
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gk.konfigBeguBisUndMitSchulstufe, gk);
     }
 
-    public changeErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit, gk);
+    }
+
+    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit, gk);
+    }
+
+    public changeKonfigErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
         // if the flag is unchecked, we need to restore the original value
         if (!gk.erwerbspensumZuschlagOverriden) {
             this.resetErwerbspensumZuschlag(gk);
@@ -117,10 +130,256 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeErwerbspensumZuschlag(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG, gk.erwerbspensumZuschlag, gk);
+    }
+
+    public changeKonfigZusaetzlicherGutscheinEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gk.konfigZusaetzlicherGutscheinEnabled, gk);
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherGutscheinEnabled)) {
+            this.resetKonfigZusaetzlicherGutschein(gk);
+        }
+    }
+
+    private resetKonfigZusaetzlicherGutschein(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherGutscheinBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinBetragTfo = 0;
+        gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
+        gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
+            gk.konfigZusaetzlicherGutscheinBetragKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO,
+            gk.konfigZusaetzlicherGutscheinBetragTfo, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo, gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBetragKita(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
+            gk.konfigZusaetzlicherGutscheinBetragKita,
+            gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBetragTfo(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO,
+            gk.konfigZusaetzlicherGutscheinBetragTfo,
+            gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita,
+            gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo,
+            gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherBabybeitragEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED,
+            gk.konfigZusaetzlicherBabybeitragEnabled, gk
+        );
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherBabybeitragEnabled)) {
+            this.resetKonfigZusaetzlicherBabybeitrag(gk);
+        }
+    }
+
+    private resetKonfigZusaetzlicherBabybeitrag(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherBabybeitragBetragKita = 0;
+        gk.konfigZusaetzlicherBabybeitragBetragTfo = 0;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA,
+            gk.konfigZusaetzlicherBabybeitragBetragKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO,
+            gk.konfigZusaetzlicherBabybeitragBetragTfo, gk
+        );
+    }
+
+    public changeZusaetzlicherBabybeitragKita(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA,
+            gk.konfigZusaetzlicherBabybeitragBetragKita,
+            gk
+        );
+    }
+
+    public changeZusaetzlicherBabybeitragTfo(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO,
+            gk.konfigZusaetzlicherBabybeitragBetragTfo,
+            gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED,
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled, gk
+        );
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled)) {
+            this.resetKonfigZusaetzlicherAnspruchFreiwilligenarbeit(gk);
+        }
+    }
+
+    private resetKonfigZusaetzlicherAnspruchFreiwilligenarbeit(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent = 0;
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent, gk
+        );
+    }
+
+    public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+            gk.konfigMahlzeitenverguenstigungEnabled,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(gk: TSGemeindeKonfiguration, i: number): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen,
+            gk
+        );
+        const stufe2MaxInput = this.group.control.controls[`mahlzeitenverguenstigung_stufe2_max_id_${i}`];
+        if (stufe2MaxInput.untouched) {
+            stufe2MaxInput.markAsTouched();
+        }
+        stufe2MaxInput.updateValueAndValidity();
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED,
+            gk.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled,
+            gk
+        );
+    }
+
+    public changeKonfigErwerbspensumMinimumOverriden(gk: TSGemeindeKonfiguration): void {
+        // if the flag is unchecked, we need to restore the original value
+        if (!gk.erwerbspensumMinimumOverriden) {
+            this.resetErwerbspensenMinimum(gk);
+        }
+    }
+
+    public changeErwerbspensumMinimumVorschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gk.erwerbspensumMiminumVorschule, gk);
+    }
+
+    public changeErwerbspensumMinimumSchulkinder(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gk.erwerbspensumMiminumSchulkinder, gk);
+    }
+
+    private resetErwerbspensenMinimum(gk: TSGemeindeKonfiguration): void {
+        gk.erwerbspensumMiminumVorschule = gk.erwerbspensumMiminumVorschuleMax;
+        gk.erwerbspensumMiminumSchulkinder = gk.erwerbspensumMiminumSchulkinderMax;
+        this.changeErwerbspensumMinimumVorschule(gk);
+        this.changeErwerbspensumMinimumSchulkinder(gk);
+    }
+
+    private changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
         gk.konfigurationen
-            .filter(property => TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG === property.key)
+            .filter(property => einstellungKey === property.key)
             .forEach(property => {
-                property.value = String(gk.erwerbspensumZuschlag);
+                property.value = String(konfig);
             });
     }
 
@@ -141,5 +400,13 @@ export class EditGemeindeComponentBG implements OnInit {
         this.konfigurationsListe.forEach(config => {
             config.initProperties();
         });
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public keineBeschwerdeAdresseChanged(newVal: boolean): void {
+        this.keineBeschwerdeAdresseChange.emit(newVal);
     }
 }

@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -173,6 +174,47 @@ public class BenutzerResource {
 			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
+
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
+		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS zurueck",
+		responseContainer = "List",
+		response = JaxBenutzer.class)
+	@Nonnull
+	@GET
+	@Path("/TsBgOrGemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
+	public List<JaxBenutzer> getBenutzerTsBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		Objects.requireNonNull(gemeindeJAXPId.getId());
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).
+			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		return benutzerService.getBenutzerTsBgOrGemeinde(gemeinde).stream()
+			.map(converter::benutzerToJaxBenutzer)
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
+		+ "ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
+		responseContainer = "List",
+		response = JaxBenutzer.class)
+	@Nonnull
+	@GET
+	@Path("/BgTsOrGemeinde/all")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxBenutzer> getAllBenutzerBgTsOrGemeinde() {
+		return benutzerService.getAllBenutzerBgTsOrGemeinde().stream()
+			.map(converter::benutzerToJaxBenutzer)
+			.collect(Collectors.toList());
+	}
+
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
@@ -362,9 +404,31 @@ public class BenutzerResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				username));
 
-		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
+		authorizer.checkWriteAuthorization(benutzer);
+
+		try {
+			benutzerService.checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
+			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
+			return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
+		} catch (BenutzerExistException b) {
+			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
+			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
+				// Der Fall und das Dossier muessen geloescht werden
+				if (b.getExistingFallId() != null) {
+					superAdminService.removeFallIfExists(b.getExistingFallId());
+				}
+				return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
+			}
+			throw b;
+		}
+	}
+
+	@Nonnull
+	private JaxBenutzer saveBenutzerBerechtigungenForced(@Nonnull Benutzer benutzerFromDB, @Nonnull JaxBenutzer benutzerJax) {
+		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzerFromDB);
+
 		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
-			converter.jaxBenutzerToBenutzer(benutzerJax, benutzer),
+			converter.jaxBenutzerToBenutzer(benutzerJax, benutzerFromDB),
 			currentBerechtigungChanged);
 
 		return converter.benutzerToJaxBenutzer(mergedBenutzer);
@@ -429,7 +493,7 @@ public class BenutzerResource {
 
 		Benutzer eingeloggterBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException(
-			"deleteBenutzer", "No User is logged in"));
+				"deleteBenutzer", "No User is logged in"));
 
 		superAdminService.removeFallAndBenutzer(username, eingeloggterBenutzer);
 		return Response.ok().build();

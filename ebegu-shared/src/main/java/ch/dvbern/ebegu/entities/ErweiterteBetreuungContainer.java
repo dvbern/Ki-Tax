@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -40,8 +41,11 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_ja"))
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
+	@SuppressWarnings("NullableProblems")
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone")
 	public ErweiterteBetreuungContainer() {
-		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
+		//noinspection ConstantConditions
+		setId(null);    // ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone
 	}
 
 	public ErweiterteBetreuungContainer(Betreuung betreuung) {
@@ -100,7 +104,7 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final ErweiterteBetreuungContainer otherErwBetrContainer = (ErweiterteBetreuungContainer) other;
-		return EbeguUtil.isSameObject(getErweiterteBetreuungJA(), otherErwBetrContainer.getErweiterteBetreuungJA());
+		return EbeguUtil.isSame(getErweiterteBetreuungJA(), otherErwBetrContainer.getErweiterteBetreuungJA());
 	}
 
 	@Nonnull

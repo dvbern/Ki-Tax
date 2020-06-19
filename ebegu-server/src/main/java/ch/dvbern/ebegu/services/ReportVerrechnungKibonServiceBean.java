@@ -22,11 +22,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -59,6 +64,7 @@ import ch.dvbern.ebegu.entities.VerrechnungKibon;
 import ch.dvbern.ebegu.entities.VerrechnungKibonDetail;
 import ch.dvbern.ebegu.entities.VerrechnungKibonDetail_;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.VerrechnungKibonKategorie;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonDataRow;
@@ -75,8 +81,6 @@ import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
@@ -86,8 +90,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Local(ReportVerrechnungKibonService.class)
 @PermitAll
 public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean implements ReportVerrechnungKibonService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ReportVerrechnungKibonServiceBean.class);
 
 	private VerrechnungKibonExcelConverter verrechnungKibonExcelConverter = new VerrechnungKibonExcelConverter();
 
@@ -114,7 +116,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		List<VerrechnungKibonDataRow> allGemeindenUndPerioden = new ArrayList<>();
 
 		// Es müssen alle aktiven Gesuchsperioden und alle aktiven Gemeinden berücksichtigt werden
-		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden();
+		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden();
 		Collection<Gemeinde> gemeinden = gemeindeService.getAktiveGemeinden();
 
 		// Die Daten der letzten Verrechnung lesen
@@ -138,8 +140,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 				createVerrechnungDetailsForGesuchsperiode(
 					gesuchsperiode,
 					gemeindeListMap,
-					aktuelleVerrechnung,
-					doSave
+					aktuelleVerrechnung
 				);
 			aktuelleVerrechnungDetails.addAll(verrechnungDetailsForGesuchsperiode);
 		}
@@ -195,8 +196,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	private List<VerrechnungKibonDetail> createVerrechnungDetailsForGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Map<Gemeinde, List<Gesuch>> gemeindeListMap,
-		@Nonnull VerrechnungKibon verrechnungAktuell,
-		boolean doSave
+		@Nonnull VerrechnungKibon verrechnungAktuell
 	) {
 		List<VerrechnungKibonDetail> result = new ArrayList<>();
 		for (Entry<Gemeinde, List<Gesuch>> gemeindeListEntry : gemeindeListMap.entrySet()) {
@@ -206,32 +206,87 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 			row.setGesuchsperiode(gesuchsperiode);
 			List<Gesuch> gesuchList = gemeindeListEntry.getValue();
 
-			long countAlleKinder = 0;
+			Map<VerrechnungKibonKategorie, Long> alleKinder = initVerrechnungskategorieMap();
 			for (Gesuch gesuch : gesuchList) {
-				long countKinderOfGesuch = 0;
-
-				StringBuilder kindernamen = new StringBuilder();
+				Map<VerrechnungKibonKategorie, Long> kinderOfGesuch = initVerrechnungskategorieMap();
 				for (KindContainer kindContainer : gesuch.getKindContainers()) {
+					// Das Kind muss mindestens die Checkbox angeklickt haben, auch wenn dann vielleicht
+					// kein Angebot ausgewaehlt wird
 					if (kindContainer.getKindJA().getFamilienErgaenzendeBetreuung()) {
-						countKinderOfGesuch++;
-						kindernamen.append(kindContainer.getKindJA().getVorname()).append(' ');
+						VerrechnungKibonKategorie kategorie = evaluateVerechnungskategorie(kindContainer);
+						kinderOfGesuch.put(kategorie, kinderOfGesuch.get(kategorie) + 1);
 					}
 				}
-				String debug = (gemeindeListEntry.getKey()).getName() + ';'
-					+ gesuchsperiode.getGesuchsperiodeString() + ';'
-					+ gesuch.getFall().getFallNummer() + ';'
-					+ kindernamen + ';'
-					+ countKinderOfGesuch + ';';
-				// Zur Kontrolle die Details loggen nur wenn es doSave ist
-				if (doSave) {
-					LOG.info(debug);
+				for (VerrechnungKibonKategorie value : VerrechnungKibonKategorie.values()) {
+					alleKinder.put(value, alleKinder.get(value) + kinderOfGesuch.get(value));
 				}
-				countAlleKinder += countKinderOfGesuch;
 			}
-			row.setTotalKinderVerrechnet(countAlleKinder);
+			verrechnungskategorieMapToDetail(alleKinder, row);
 			result.add(row);
 		}
 		return result;
+	}
+
+	private void verrechnungskategorieMapToDetail(
+		@Nonnull Map<VerrechnungKibonKategorie, Long> allKinder,
+		@Nonnull VerrechnungKibonDetail detail
+	) {
+		detail.setTotalBg(allKinder.get(VerrechnungKibonKategorie.BG));
+		detail.setTotalTs(allKinder.get(VerrechnungKibonKategorie.TS));
+		detail.setTotalBgTs(allKinder.get(VerrechnungKibonKategorie.BG_TS));
+		detail.setTotalFi(allKinder.get(VerrechnungKibonKategorie.FI));
+		detail.setTotalTagi(allKinder.get(VerrechnungKibonKategorie.TAGI));
+		detail.setTotalFiTagi(allKinder.get(VerrechnungKibonKategorie.FI_TAGI));
+		detail.setTotalKeinAngebot(allKinder.get(VerrechnungKibonKategorie.KEIN_ANGEBOT));
+	}
+
+	private Map<VerrechnungKibonKategorie, Long> initVerrechnungskategorieMap() {
+		Map<VerrechnungKibonKategorie, Long> map = new HashMap<>();
+		for (VerrechnungKibonKategorie value : VerrechnungKibonKategorie.values()) {
+			map.put(value, 0L);
+		}
+		return map;
+	}
+
+	private VerrechnungKibonKategorie evaluateVerechnungskategorie(@Nonnull KindContainer kind) {
+		Set<Betreuung> betreuungen = kind.getBetreuungen();
+		Set<AnmeldungTagesschule> anmeldungenTagesschule = kind.getAnmeldungenTagesschule();
+		Set<AnmeldungFerieninsel> anmeldungenFerieninsel = kind.getAnmeldungenFerieninsel();
+		boolean keinAngebot = betreuungen.isEmpty() && anmeldungenTagesschule.isEmpty() && anmeldungenFerieninsel.isEmpty();
+		if (keinAngebot) {
+			return VerrechnungKibonKategorie.KEIN_ANGEBOT;
+		}
+		boolean hasBG = !betreuungen.isEmpty();
+		boolean hasTS = false;
+		boolean hasTagi = false;
+		boolean hasFI = !anmeldungenFerieninsel.isEmpty();
+		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
+			if (anmeldungTagesschule.isTagesschuleTagi()) {
+				hasTagi = true;
+			} else {
+				hasTS = true;
+			}
+			// Sobald beide TRUE sind, muessen wir nicht weitersuchen
+			if (hasTS && hasTagi) {
+				break;
+			}
+		}
+		if (hasBG && hasTS) {
+			return VerrechnungKibonKategorie.BG_TS;
+		}
+		if (hasBG) {
+			return VerrechnungKibonKategorie.BG;
+		}
+		if (hasTS) {
+			return VerrechnungKibonKategorie.TS;
+		}
+		if (hasFI && hasTagi) {
+			return VerrechnungKibonKategorie.FI_TAGI;
+		}
+		if (hasFI) {
+			return VerrechnungKibonKategorie.FI;
+		}
+		return VerrechnungKibonKategorie.TAGI;
 	}
 
 	@Nonnull
@@ -243,11 +298,30 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		VerrechnungKibonDataRow row = new VerrechnungKibonDataRow();
 		row.setGemeinde(currentVerrechnungDetail.getGemeinde().getName());
 		row.setGesuchsperiode(currentVerrechnungDetail.getGesuchsperiode().getGesuchsperiodeString());
-		row.setKinderTotal(currentVerrechnungDetail.getTotalKinderVerrechnet());
+		row.setKinderKantonTotal(currentVerrechnungDetail.getTotalKanton());
+		row.setKinderBgTotal(currentVerrechnungDetail.getTotalBgAndBgTs());
+		row.setKinderTsTotal(currentVerrechnungDetail.getTotalTsAndBgTs());
+		row.setKinderKeinAngebotTotal(currentVerrechnungDetail.getTotalKeinAngebot());
+		row.setKinderGemeindeTotal(currentVerrechnungDetail.getTotalGemeinde());
+		row.setKinderFiTotal(currentVerrechnungDetail.getTotalFiAndFiTagi());
+		row.setKinderTagiTotal(currentVerrechnungDetail.getTotalTagiAndFiTagi());
+
 		if (lastVerrechnungDetail != null) {
-			row.setKinderBereitsVerrechnet(lastVerrechnungDetail.getTotalKinderVerrechnet());
+			row.setKinderKantonBereitsVerrechnet(lastVerrechnungDetail.getTotalKanton());
+			row.setKinderBgBereitsVerrechnet(lastVerrechnungDetail.getTotalBgAndBgTs());
+			row.setKinderTsBereitsVerrechnet(lastVerrechnungDetail.getTotalTsAndBgTs());
+			row.setKinderKeinAngebotBereitsVerrechnet(lastVerrechnungDetail.getTotalKeinAngebot());
+			row.setKinderGemeindeBereitsVerrechnet(lastVerrechnungDetail.getTotalGemeinde());
+			row.setKinderFiBereitsVerrechnet(lastVerrechnungDetail.getTotalFiAndFiTagi());
+			row.setKinderTagiBereitsVerrechnet(lastVerrechnungDetail.getTotalTagiAndFiTagi());
 		} else {
-			row.setKinderBereitsVerrechnet(0L);
+			row.setKinderKantonBereitsVerrechnet(0L);
+			row.setKinderBgBereitsVerrechnet(0L);
+			row.setKinderTsBereitsVerrechnet(0L);
+			row.setKinderKeinAngebotBereitsVerrechnet(0L);
+			row.setKinderGemeindeBereitsVerrechnet(0L);
+			row.setKinderFiBereitsVerrechnet(0L);
+			row.setKinderTagiBereitsVerrechnet(0L);
 		}
 		row.setBetragProKind(betragProKind);
 		return row;

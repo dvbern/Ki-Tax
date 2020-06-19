@@ -247,56 +247,107 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public showButtonAnmeldungTagesschule(): boolean {
-        const gemeinde = this.gesuchModelManager.getGemeinde();
-        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        return gemeinde
-            && gemeinde.angebotTS
-            && this.showButtonAnmeldungSchulamt()
-            && gesuchsperiode
-            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
+        return this.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode()
+            && this.isAnmeldungenHinzufuegenMoeglich();
     }
 
     public showButtonAnmeldungFerieninsel(): boolean {
-        const gemeinde = this.gesuchModelManager.getGemeinde();
-        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        return gemeinde
-            && gemeinde.angebotFI
-            && this.showButtonAnmeldungSchulamt()
-            && gesuchsperiode
-            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum);
+        return this.isAnmeldungFerieninselEnabledForMandantAndGemeinde()
+            && this.isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode()
+            && this.isAnmeldungenHinzufuegenMoeglich();
     }
 
-    public showButtonAnmeldungSchulamt(): boolean {
-        // Anmeldung Schulamt: Solange das Gesuch noch "normal" editiert werden kann, soll der Weg ueber "Betreuung
-        // hinzufuegen" verwendet werden Nachdem readonly: nur fuer Jugendamt, Schulamt und Gesuchsteller verfuegbar
-        // sein. Nur fuer GP.hasTagesschulenAnmeldung().
+    /**
+     * Entscheidet, ob Tagesschulen sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
+     */
+    private isAnmeldungTagesschuleEnabledForMandantAndGemeinde(): boolean {
         if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
             // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
             return false;
         }
+        const gemeinde = this.gesuchModelManager.getGemeinde();
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        return gemeinde
+            && gemeinde.angebotTS
+            && gesuchsperiode
+            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
+    }
+
+    /**
+     * Entscheidet, ob Ferieninseln sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
+     */
+    private isAnmeldungFerieninselEnabledForMandantAndGemeinde(): boolean {
+        if (!this.gesuchModelManager.isFerieninselangebotEnabled()) {
+            // Ferieninsel sind grundsätzlich auf dem Mandant nicht eingeschaltet
+            return false;
+        }
+        const gemeinde = this.gesuchModelManager.getGemeinde();
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        return gemeinde
+            && gemeinde.angebotFI
+            && gesuchsperiode
+            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum);
+    }
+
+    /**
+     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Tagesschulen
+     * (aufgrund des Datums) möglich ist.
+     */
+    private isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
+    }
+
+    /**
+     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Ferieninseln (aufgrund des
+     * Datums) möglich ist.
+     */
+    private isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.hasFerieninseAnmeldung();
+    }
+
+    /**
+     * Entscheidet aufgrund des Gesuchstatus und der Rolle des Benutzers ob in diesem Zustand grundsätzlich
+     * (nachträgliche) Anmeldungen (für Tagesschulen oder Ferieninseln) möglich sind. Es muss separat geprüft werden,
+     * ob die spezifische Anmeldung überhaupt für den Mandanten oder die Gemeinde eingeschaltet ist.
+     */
+    private isAnmeldungenHinzufuegenMoeglich(): boolean {
         const isStatus = isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)
             || this.gesuchModelManager.isGesuchReadonlyForRole()
             || this.gesuchModelManager.isKorrekturModusJugendamt()
             || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
         const allowedRoles = TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles();
         const isRole = this.authServiceRS.isOneOfRoles(allowedRoles);
-        const isGesuchsperiode = this.gesuchModelManager.gemeindeKonfiguration
-            && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
         const istNotStatusFreigabequittung = this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG;
-        return isStatus && isRole && isGesuchsperiode && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
+        return isStatus && isRole && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
     }
 
     /**
-     * Betreuungen und auch anmeldungen duerfen in Status FREIGABEQUITTUNG nicht hinzugefuegt werden
+     * Die Information, dass im Moment keine Anmeldungen möglich sind weil die Quittung noch nicht eingetroffen ist,
+     * soll in folgenden Fällen angezeigt werden:
+     * - Status = FREIGABEQUITTUNG
+     * - Anmeldungen entweder für Tagesschule ODER für Ferieninsel wären grundsätzlich möglich
      */
-    public isBetreuungenHinzufuegenDisabled(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration
-            && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-            && this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
+    public showAnmeldungenImMomentNichtMoeglichMessage(): boolean {
+        if (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG) {
+            return false;
+        }
+        const tagesschuleGrundsaetzlichErlaubt = this.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
+        const ferieninselGrundsaetzlichErlaubt = this.isAnmeldungFerieninselEnabledForMandantAndGemeinde()
+            && this.isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode();
+        return tagesschuleGrundsaetzlichErlaubt || ferieninselGrundsaetzlichErlaubt;
     }
 
-    public hasOnlyFerieninsel(): boolean {
+    public isNeueBetreuungErlaubtForFI(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
-        return !!gesuch && gesuch.areThereOnlyFerieninsel();
+        if (!!gesuch && !gesuch.areThereOnlyFerieninsel()) {
+            return true;
+        }
+        return !!gesuch && (gesuch.status === TSAntragStatus.IN_BEARBEITUNG_GS
+            || (EbeguUtil.isNullOrUndefined(gesuch.freigabeDatum)
+                && gesuch.status === TSAntragStatus.IN_BEARBEITUNG_JA));
     }
 }

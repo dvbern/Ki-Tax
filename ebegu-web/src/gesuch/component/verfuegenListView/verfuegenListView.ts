@@ -431,9 +431,27 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.gesuchModelManager.isGesuchStatusIn(statuse) && !this.getGesuch().gesperrtWegenBeschwerde;
     }
 
-    public stvPruefungAbschliessen(): void {
+    public stvPruefungZurueckholen(): void {
+        this.callStvPruefungAbschliessen('STV_PRUEFUNG_ZURUECKHOLEN_CONFIRMATION');
+    }
+
+    public showSTVPruefungZurueckholen(): boolean {
+        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.PRUEFUNG_STV)
+            && !this.getGesuch().gesperrtWegenBeschwerde;
+    }
+
+    private stvPruefungAbschliessen(): void {
+        this.callStvPruefungAbschliessen('STV_PRUEFUNG_ABSCHLIESSEN_CONFIRMATION');
+    }
+
+    public showSTVPruefungAbschliessen(): boolean {
+        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT_STV)
+            && !this.getGesuch().gesperrtWegenBeschwerde;
+    }
+
+    private callStvPruefungAbschliessen(title: string): void {
         this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'STV_PRUEFUNG_ABSCHLIESSEN_CONFIRMATION',
+            title: `${title}`,
             deleteText: '',
             parentController: undefined,
             elementID: undefined,
@@ -442,11 +460,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.gesuchModelManager.setGesuch(gesuch);
             });
         });
-    }
-
-    public showSTVPruefungAbschliessen(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT_STV)
-            && !this.getGesuch().gesperrtWegenBeschwerde;
     }
 
     public showErsteMahnungErstellen(): boolean {
@@ -748,6 +761,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
             this.getGesuch().finSitStatus).then(() => {
             this.gesuchModelManager.setGesuch(this.getGesuch());
+            // Die Berechnungen neu ausführen, da der FinSit-Status (zumindest bei TS) Einfluss hat auf den Tarif
+            this.refreshKinderListe();
             this.form.$setPristine();
         });
     }

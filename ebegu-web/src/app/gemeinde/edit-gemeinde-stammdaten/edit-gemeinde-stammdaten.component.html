@@ -19,7 +19,7 @@
      *ngIf="stammdaten$ | async as stammdaten">
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-stammdaten">
-            <div class="row marginTop20">
+            <div class="row margin-top-20">
                 <!-- Anschrift -->
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -27,7 +27,7 @@
                         <input id="anschrift_id" type="text" name="anschrift_id" #nameAnschrift="ngModel"
                                [(ngModel)]="stammdaten.adresse.organisation"
                                [maxlength]="255" class="form-control" required ng-required="true"
-                               placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                               placeholder="{{'GEMEINDE_ANSCHRIFT_PLACEHOLDER'|translate}}">
                         <dv-error-messages [errorObject]="nameAnschrift.errors"
                                            inputId="anschrift_id"></dv-error-messages>
                     </div>
@@ -164,150 +164,6 @@
             </div>
             <div class="row">
 
-                <!-- Beschwerde-Adresse Checkbox -->
-                <div class="col-sm-6">
-                    <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE
-                        <dv-tooltip inputId="keineBeschwerdeAdresse_id"
-                                    [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
-                    </h3>
-
-                    <div class="form-group">
-                        <mat-radio-group name="creationType"
-                                         [(ngModel)]="stammdaten.standardRechtsmittelbelehrung"
-                                         required>
-                            <mat-radio-button [value]="true">{{'STANDARD_TEXT'|translate}}</mat-radio-button>
-                            &nbsp;
-                            <mat-radio-button [value]="false">{{'BENUTZERDEFINIERTER_TEXT'|translate}}
-                            </mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                    <div class="row" *ngIf="!stammdaten.standardRechtsmittelbelehrung">
-                        <div class="col-sm-12">
-                            <div class="form-group" *ngIf="stammdaten.korrespondenzspracheDe">
-
-                                <label class="required" translate for="rechtsmittelbelehrung_deutsch_textarea">RECHTSMITTELBELEHRUNG_TEXT_DE</label>
-
-                                <textarea md-no-autogrow
-                                          class="form-control"
-                                          rows="6"
-                                          required
-                                          maxlength="4000"
-                                          id="rechtsmittelbelehrung_deutsch_textarea"
-										  #nameRechtmittelDE="ngModel"
-                                          name="rechtsmittelbelehrung_deutsch_textarea"
-                                          [(ngModel)]="stammdaten.rechtsmittelbelehrung.textDeutsch">
-                                                </textarea>
-                                <dv-error-messages [errorObject]="nameRechtmittelDE.errors"
-                                                   inputId="rechtsmittelbelehrung_deutsch_textarea"></dv-error-messages>
-
-                            </div>
-                            <div class="form-group"
-                                 id="rechtsmittelbelehrung-franzoesisch"
-                                 *ngIf="stammdaten.korrespondenzspracheFr">
-
-                                <label class="required" translate for="rechtsmittelbelehrung_franzoesisch_textarea">RECHTSMITTELBELEHRUNG_TEXT_FR</label>
-
-                                <textarea md-no-autogrow
-                                          class="form-control"
-                                          rows="6"
-                                          required
-                                          maxlength="4000"
-                                          id="rechtsmittelbelehrung_franzoesisch_textarea"
-										  #nameRechtmittelFR="ngModel"
-                                          name="rechtsmittelbelehrung_franzoesisch_textarea"
-                                          [(ngModel)]="stammdaten.rechtsmittelbelehrung.textFranzoesisch">
-                                                </textarea>
-                                <dv-error-messages [errorObject]="nameRechtmittelFR.errors"
-                                                   inputId="rechtsmittelbelehrung_franzoesisch_textarea"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group checkbox-with-tooltip">
-                        <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                      [(ngModel)]="keineBeschwerdeAdresse"
-                                      (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
-                            {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
-                        </mat-checkbox>
-                    </div>
-                    <div *ngIf="!keineBeschwerdeAdresse">
-                        <div class="col-sm-12">
-                            <div class="row">
-                                <div>
-                                    <div class="form-group">
-                                        <label class="required"
-                                               translate
-                                               for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
-                                        <input id="anschrift_ba_id"
-                                               type="text"
-                                               name="anschrift_ba_id"
-											   #nameAnschriftBA="ngModel"
-                                               [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
-                                               [maxlength]="255"
-                                               class="form-control"
-                                               required
-                                               placeholder="{{'ADRESSE_REGIERUNGSSTADTHALTERAMT_PLACEHOLDER'|translate}}">
-                                        <dv-error-messages [errorObject]="nameAnschriftBA.errors"
-                                                           inputId="anschrift_ba_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <!-- Strasse -->
-                            <div class="col-sm-10">
-                                <div class="form-group">
-                                    <label class="required"
-                                           translate
-                                           for="strasse_ba_id">ADRESSE_STRASSE</label>
-                                    <input id="strasse_ba_id" type="text" name="strasse_ba_id" #nameStrasseBA="ngModel"
-                                           [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
-                                           [maxlength]="255" class="form-control" required>
-                                    <dv-error-messages [errorObject]="nameStrasseBA.errors"
-                                                       inputId="strasse_ba_id"></dv-error-messages>
-                                </div>
-                            </div>
-                            <!-- Hausnummer -->
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
-                                    <input id="hausnummer_ba_id"
-                                           type="text"
-                                           name="hausnummer_ba_id"
-										   #nameHausnummerBA="ngModel"
-                                           [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
-                                           [maxlength]="255"
-                                           class="form-control">
-                                    <dv-error-messages [errorObject]="nameHausnummerBA.errors"
-                                                       inputId="hausnummer_ba_id"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <!-- PLZ -->
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label class="required" translate for="plz_ba_id">ADRESSE_PLZ</label>
-                                    <input id="plz_ba_id" type="text" name="plz_ba_id" #namePLZBA="ngModel"
-                                           [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
-                                           [maxlength]="255" class="form-control" required>
-                                    <dv-error-messages [errorObject]="namePLZBA.errors"
-                                                       inputId="plz_ba_id"></dv-error-messages>
-                                </div>
-                            </div>
-                            <!-- Ort -->
-                            <div class="col-sm-10">
-                                <div class="form-group">
-                                    <label class="required" translate for="ort_ba_id">ADRESSE_ORT</label>
-                                    <input id="ort_ba_id" type="text" name="ort_ba_id" #nameOrtBA="ngModel"
-                                           [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
-                                           [maxlength]="255" class="form-control" required>
-                                    <dv-error-messages [errorObject]="nameOrtBA.errors"
-                                                       inputId="ort_ba_id"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- Konfiguration der Angebote -->
                 <div class="col-sm-6">
 
@@ -357,7 +213,7 @@
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"
-                                      [disabled]="!(isSuperadminOrMandant())"
+                                      [disabled]="!(isSuperadmin())"
                                       [(ngModel)]="stammdaten.gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
                             {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
@@ -368,7 +224,7 @@
                                    [(ngModel)]="stammdaten.gemeinde.ferieninselanmeldungenStartdatum"
                                    [matDatepicker]="fi_start"
                                    [min]="minDateTSFI"
-                                   [disabled]="!(isSuperadminOrMandant())"
+                                   [disabled]="!(isSuperadmin())"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
                             <mat-datepicker-toggle matSuffix [for]="fi_start"></mat-datepicker-toggle>
                             <mat-datepicker #fi_start></mat-datepicker>
@@ -383,44 +239,6 @@
                     </div>
                 </div>
 
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
-                    <!-- Kontoinhaber -->
-                    <div class="form-group">
-                        <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
-                        <input id="kontoinhaber_id" type="text"
-                               name="kontoinhaber_id" #nameKontoinhaber="ngModel"
-                               required
-                               [(ngModel)]="stammdaten.kontoinhaber"
-                               [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="nameKontoinhaber.errors"
-                                           inputId="kontoinhaber_id"></dv-error-messages>
-                    </div>
-                    <!-- BIC/SWIFT-Nummer -->
-                    <div class="form-group">
-                        <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
-                        <input id="bic_id" type="text"
-                               name="bic_id" #nameBIC="ngModel"
-                               required
-                               [(ngModel)]="stammdaten.bic"
-                               [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="nameBIC.errors"
-                                           inputId="bic_id"></dv-error-messages>
-                    </div>
-                    <!-- IBAN-Nummer -->
-                    <div class="form-group">
-                        <label class="required" translate for="iban_id">IBAN_NUMMER</label>
-                        <input id="iban_id" type="text"
-                               name="iban_id" #nameIBAN="ngModel"
-                               required ngxIban
-                               [(ngModel)]="stammdaten.iban"
-                               [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="nameIBAN.errors"
-                                           inputId="iban_id"></dv-error-messages>
-                    </div>
-                </div>
             </div>
         </fieldset>
     </div>
@@ -443,7 +261,8 @@
                         <h3>&nbsp;</h3>
                         <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
                         <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
-                        <p><a href="{{stammdaten.webseite}}" target="tah">{{stammdaten.webseite}}</a></p>
+                        <p><a href="{{ebeguUtil.formatHrefUrl(stammdaten.webseite)}}"
+                              target="tah">{{stammdaten.webseite}}</a></p>
                     </div>
                 </div>
                 <!-- Angebot -->
@@ -471,45 +290,6 @@
                         <p>{{korrespondenzsprache}}</p>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <!-- BANKVERBINDUNG -->
-                    <div class="form-group">
-                        <h3 translate>BANKVERBINDUNG</h3>
-                        <p>{{stammdaten.kontoinhaber}}</p>
-                        <p>{{stammdaten.bic}}</p>
-                        <p>{{stammdaten.iban}}</p>
-                    </div>
-                </div>
-                <!-- Beschwerdeadresse -->
-                <div *ngIf="stammdaten.standardRechtsmittelbelehrung; else displayRechtsmittelbelehrung">
-                    <div *ngIf="keineBeschwerdeAdresse; else displayBeschwerdeAdresse" class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BESCHWERDE_ADRESSE</h3>
-                            <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
-                        </div>
-                    </div>
-                    <ng-template #displayBeschwerdeAdresse>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <h3 translate>BESCHWERDE_ADRESSE</h3>
-                                <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
-                                <p>{{stammdaten.beschwerdeAdresse.strasse}}
-                                    {{stammdaten.beschwerdeAdresse.hausnummer}}</p>
-                                <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.beschwerdeAdresse.ort}}</p>
-                            </div>
-                        </div>
-                    </ng-template>
-                </div>
-                <ng-template #displayRechtsmittelbelehrung>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_DE</h3>
-                            <p>{{stammdaten.rechtsmittelbelehrung.textDeutsch}}</p>
-                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_FR</h3>
-                            <p>{{stammdaten.rechtsmittelbelehrung.textFranzoesisch}}</p>
-                        </div>
-                    </div>
-                </ng-template>
             </div>
         </fieldset>
     </ng-template>

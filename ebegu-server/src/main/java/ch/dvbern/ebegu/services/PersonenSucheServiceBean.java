@@ -91,7 +91,7 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 	@PostConstruct
 	private void resolveService() {
-		if (config.isPersonenSucheDisabled()) {
+		if (config.isPersonenSucheDisabled() || config.usePersonenSucheDummyService()) {
 			ewkService = serviceInstance.select(new AnnotationLiteral<Dummy>() {
 			}, new AnnotationLiteral<Geres>() {
 			}).get();
@@ -161,10 +161,16 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 		@Nonnull LocalDate geburtsdatum,
 		@Nonnull Geschlecht geschlecht,
 		boolean isGesuchsteller,
-		boolean isKind) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		boolean isKind
+	) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		Objects.requireNonNull(resultat, "resultat darf nicht null sein");
+		Objects.requireNonNull(name, "name darf nicht null sein");
+		Objects.requireNonNull(vorname, "vorname darf nicht null sein");
+		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
+		Objects.requireNonNull(geschlecht, "geschlecht darf nicht null sein");
 		// versuche die gesuchte person zu matchen. wenn gefunde
 			List<EWKPerson> personenInHaushalt = resultat.getPersonen().stream()
-				.filter(person -> person.getGeburtsdatum().isEqual(geburtsdatum) && person.getNachname().equals(name))
+				.filter(person -> geburtsdatum.isEqual(person.getGeburtsdatum()) && name.equals(person.getNachname()))
 				.peek(person->{
 					person.setGesuchsteller(isGesuchsteller);
 					person.setKind(isKind);

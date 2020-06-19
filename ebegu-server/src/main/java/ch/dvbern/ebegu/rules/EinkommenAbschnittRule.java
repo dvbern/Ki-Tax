@@ -26,7 +26,13 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Setzt das massgebende Einkommen in die benoetigten Zeitabschnitte.
@@ -35,7 +41,12 @@ import ch.dvbern.ebegu.types.DateRange;
 public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
 	public EinkommenAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Nonnull
@@ -52,7 +63,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			VerfuegungZeitabschnitt lastAbschnitt;
 
 			// Abschnitt Finanzielle Situation (Massgebendes Einkommen fuer die Gesuchsperiode)
-			VerfuegungZeitabschnitt abschnittFinanzielleSituation = new VerfuegungZeitabschnitt(platz.extractGesuchsperiode().getGueltigkeit());
+			VerfuegungZeitabschnitt abschnittFinanzielleSituation = createZeitabschnittWithinValidityPeriodOfRule(platz.extractGesuchsperiode().getGueltigkeit());
 			einkommensAbschnitte.add(abschnittFinanzielleSituation);
 			lastAbschnitt = abschnittFinanzielleSituation;
 
@@ -60,12 +71,12 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			if (finanzDatenDTOAlleine.isEkv1Erfasst() || finanzDatenDTOZuZweit.isEkv1Erfasst()) {
 				int jahr = platz.extractGesuchsperiode().getBasisJahrPlus1();
 				DateRange rangeEKV1 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
-				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
+				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = createZeitabschnittWithinValidityPeriodOfRule(rangeEKV1);
 
 				// EKV1 fuer alleine erfasst
-				abschnittEinkommensverschlechterung1.getBgCalculationInputAsiv().setEkv1Alleine(finanzDatenDTOAlleine.isEkv1Erfasst());
+				abschnittEinkommensverschlechterung1.setEkv1AlleineForAsivAndGemeinde(finanzDatenDTOAlleine.isEkv1Erfasst());
 				// EKV1 fuer zu Zweit erfasst
-				abschnittEinkommensverschlechterung1.getBgCalculationInputAsiv().setEkv1ZuZweit(finanzDatenDTOZuZweit.isEkv1Erfasst());
+				abschnittEinkommensverschlechterung1.setEkv1ZuZweitForAsivAndGemeinde(finanzDatenDTOZuZweit.isEkv1Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung1);
 				// Den vorherigen Zeitabschnitt erst nach der EKV 1 beginnen
@@ -77,12 +88,12 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			if (finanzDatenDTOAlleine.isEkv2Erfasst() || finanzDatenDTOZuZweit.isEkv2Erfasst()) {
 				int jahr = platz.extractGesuchsperiode().getBasisJahrPlus2();
 				DateRange rangeEKV2 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
-				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
+				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = createZeitabschnittWithinValidityPeriodOfRule(rangeEKV2);
 
 				// EKV2 fuer alleine erfasst
-				abschnittEinkommensverschlechterung2.getBgCalculationInputAsiv().setEkv2Alleine(finanzDatenDTOAlleine.isEkv2Erfasst());
+				abschnittEinkommensverschlechterung2.setEkv2AlleineForAsivAndGemeinde(finanzDatenDTOAlleine.isEkv2Erfasst());
 				// EKV2 fuer zu Zweit erfasst
-				abschnittEinkommensverschlechterung2.getBgCalculationInputAsiv().setEkv2ZuZweit(finanzDatenDTOZuZweit.isEkv2Erfasst());
+				abschnittEinkommensverschlechterung2.setEkv2ZuZweitForAsivAndGemeinde(finanzDatenDTOZuZweit.isEkv2Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung2);
 				// Den vorherigen Zeitabschnitt beenden
@@ -96,5 +107,4 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 	public boolean isRelevantForFamiliensituation() {
 		return true;
 	}
-
 }

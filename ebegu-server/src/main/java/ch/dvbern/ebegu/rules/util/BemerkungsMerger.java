@@ -31,9 +31,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import com.google.common.collect.Multimaps;
@@ -99,27 +97,7 @@ public final class BemerkungsMerger {
 	}
 
 	public static void prepareGeneratedBemerkungen(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
-		// Aktuell bekannt:
-		// 1. Ausserordentlicher Anspruch
-		// 2. Fachstelle
-		// 3. Erwerbspensum
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap();
-		if (bemerkungenMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
-			bemerkungenMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-			bemerkungenMap.remove(MsgKey.FACHSTELLE_MSG);
-		}
-		if (bemerkungenMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
-			bemerkungenMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-		}
-		StringBuilder sb = new StringBuilder();
-		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenMap.values()) {
-			sb.append(verfuegungsBemerkung.getTranslated());
-			sb.append('\n');
-		}
-		// Den letzten NewLine entfernen
-		String bemerkungen = sb.toString();
-		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
+		String bemerkungen = verfuegungZeitabschnitt.getBemerkungenList().bemerkungenToString();
 		verfuegungZeitabschnitt.setBemerkungen(bemerkungen);
 	}
 

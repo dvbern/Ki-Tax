@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {TSAdresse} from './TSAdresse';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
 
@@ -25,6 +26,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
+    private _keineMahlzeitenverguenstigungBeantragt: boolean;
+    private _iban: string;
+    private _kontoinhaber: string;
+    private _abweichendeZahlungsadresse: boolean;
+    private _zahlungsadresse: TSAdresse;
 
     public constructor() {
         super();
@@ -76,6 +82,46 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set verguenstigungGewuenscht(value: boolean) {
         this._verguenstigungGewuenscht = value;
+    }
+
+    public get keineMahlzeitenverguenstigungBeantragt(): boolean {
+        return this._keineMahlzeitenverguenstigungBeantragt;
+    }
+
+    public set keineMahlzeitenverguenstigungBeantragt(value: boolean) {
+        this._keineMahlzeitenverguenstigungBeantragt = value;
+    }
+
+    public get iban(): string {
+        return this._iban;
+    }
+
+    public set iban(value: string) {
+        this._iban = value;
+    }
+
+    public get kontoinhaber(): string {
+        return this._kontoinhaber;
+    }
+
+    public set kontoinhaber(value: string) {
+        this._kontoinhaber = value;
+    }
+
+    public get abweichendeZahlungsadresse(): boolean {
+        return this._abweichendeZahlungsadresse;
+    }
+
+    public set abweichendeZahlungsadresse(value: boolean) {
+        this._abweichendeZahlungsadresse = value;
+    }
+
+    public get zahlungsadresse(): TSAdresse {
+        return this._zahlungsadresse;
+    }
+
+    public set zahlungsadresse(value: TSAdresse) {
+        this._zahlungsadresse = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {

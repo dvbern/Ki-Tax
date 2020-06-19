@@ -33,17 +33,28 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean erweiterteBeduerfnisseBestaetigt = false;
 
+	@Nullable
+	private Boolean betreuungInGemeinde;
+
 	@NotNull
 	@Column(nullable = false)
 	private Boolean keineKesbPlatzierung = false;
 
+	@Nullable
+	public Boolean getBetreuungInGemeinde() {
+		return betreuungInGemeinde;
+	}
 
+	public void setBetreuungInGemeinde(@Nullable Boolean betreuungInGemeinde) {
+		this.betreuungInGemeinde = betreuungInGemeinde;
+	}
 
+	@Nonnull
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
 
-	public void setErweiterteBeduerfnisse(Boolean erweiterteBeduerfnisse) {
+	public void setErweiterteBeduerfnisse(@Nonnull Boolean erweiterteBeduerfnisse) {
 		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 
@@ -64,11 +75,12 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 
+	@Nonnull
 	public Boolean getKeineKesbPlatzierung() {
 		return keineKesbPlatzierung;
 	}
 
-	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+	public void setKeineKesbPlatzierung(@Nonnull Boolean keineKesbPlatzierung) {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
@@ -116,6 +128,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 				this.isErweiterteBeduerfnisseBestaetigt());
 			target.setFachstelle(this.getFachstelle());
 			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
+			target.setBetreuungInGemeinde(this.getBetreuungInGemeinde());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

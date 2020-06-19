@@ -52,7 +52,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -81,7 +80,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckEmailGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
 @Entity
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @EntityListeners({ GesuchStatusListener.class , GesuchGueltigListener.class})
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
@@ -629,6 +628,16 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	@Nonnull
+	public List<AnmeldungTagesschule> extractAllAnmeldungenTagesschule() {
+		final List<AnmeldungTagesschule> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			list.addAll(kind.getAnmeldungenTagesschule());
+		}
+		return list;
+	}
+
+	@Transient
+	@Nonnull
 	public List<AbstractPlatz> extractAllPlaetze() {
 		final List<AbstractPlatz> list = new ArrayList<>();
 		for (final KindContainer kind : getKindContainers()) {
@@ -867,6 +876,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
+
+			if (getFamiliensituationContainer() != null
+				&& getFamiliensituationContainer().getFamiliensituationJA() != null
+				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht())) {
+				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -878,6 +893,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
+			if (getFamiliensituationContainer() != null
+				&& getFamiliensituationContainer().getFamiliensituationJA() != null
+				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht())) {
+				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+			}
 			break;
 		}
 		return target;
@@ -1099,25 +1119,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
-	public AbstractAnmeldung getFirstAnmeldung() {
-		return extractAllAnmeldungen().stream()
+	public AbstractPlatz getFirstBetreuungOrAnmeldungTagesschule() {
+		return extractAllPlaetze().stream()
+			.filter(platz -> platz.getBetreuungsangebotTyp().isBerechnetesAngebot())
 			.findFirst()
 			.orElse(null);
-	}
-
-	/**
-	 * Ermittelt, ob mindestens eine Betreuung mit erweitertem Betreuungsaufwand erfasst wurde.
-	 * Falls ja, wird die finanzielle Situation nicht mehr zwingend.
-	 * Achtung. Code Duplikat aus TSGesuch!
-	 */
-	public boolean isThereAnyBetreuungWithErweitertemBetreuungsaufwand() {
-		List<Betreuung> betreuungs = this.extractAllBetreuungen();
-		for (Betreuung betreuung : betreuungs) {
-			if (betreuung.hasErweiterteBetreuung()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public boolean hasSecondGesuchstellerAtEndOfGesuchsperiode() {

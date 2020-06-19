@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +89,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		return criteriaQueryHelper.getAll(Lastenausgleich.class);
 	}
 
-	@RolesAllowed(SUPER_ADMIN)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	@Nonnull
 	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz) {
@@ -162,24 +163,25 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		if (detailAktuellesTotalKorrekturjahr != null) {
 			// Dieses Detail ist jetzt aber das aktuelle Total für das Jahr. Uns interessiert aber die eventuelle
 			// Differenz zu bereits ausgeglichenen Beträgen
-			Collection<LastenausgleichDetail> detailsBereitsVerrechnetKorrekturjahr =
-				findLastenausgleichDetailForKorrekturen(korrekturJahr, gemeinde);
-			LastenausgleichDetail detailBisherigeWerte = new LastenausgleichDetail();
-			for (LastenausgleichDetail detailBereitsVerrechnet : detailsBereitsVerrechnetKorrekturjahr) {
-				detailBisherigeWerte.add(detailBereitsVerrechnet);
-			}
-			logBuilder.append("Davon bereits verrechnet: ").append(NEWLINE).append(detailBisherigeWerte).append(NEWLINE);
-			// Gibt es eine Differenz?
-			if (detailBisherigeWerte.hasChanged(detailAktuellesTotalKorrekturjahr)) {
-				// Es gibt eine Differenz (wobei wir nur den Betrag des Lastenausgleiches anschauen)
-				// Wir rechnen das bisher verrechnete minus
-				LastenausgleichDetail detailKorrektur = createLastenausgleichDetailKorrektur(detailBisherigeWerte);
-				detailKorrektur.setLastenausgleich(lastenausgleich);
-				lastenausgleich.addLastenausgleichDetail(detailKorrektur);
-				logBuilder.append("Korrektur PLUS: ").append(NEWLINE).append(detailKorrektur).append(NEWLINE);
-				// Und erstellen einen neuen Korrektur-Eintrag mit dem aktuell berechneten Wert
-				lastenausgleich.addLastenausgleichDetail(detailAktuellesTotalKorrekturjahr);
-				logBuilder.append("Korrektur MINUS: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+			Collection<LastenausgleichDetail> detailsBereitsVerrechnetKorrekturjahr = findLastenausgleichDetailForKorrekturen(korrekturJahr, gemeinde);
+			if (CollectionUtils.isNotEmpty(detailsBereitsVerrechnetKorrekturjahr)) {
+				LastenausgleichDetail detailBisherigeWerte = new LastenausgleichDetail();
+				for (LastenausgleichDetail detailBereitsVerrechnet : detailsBereitsVerrechnetKorrekturjahr) {
+					detailBisherigeWerte.add(detailBereitsVerrechnet);
+				}
+				logBuilder.append("Davon bereits verrechnet: ").append(NEWLINE).append(detailBisherigeWerte).append(NEWLINE);
+				// Gibt es eine Differenz?
+				if (detailBisherigeWerte.hasChanged(detailAktuellesTotalKorrekturjahr)) {
+					// Es gibt eine Differenz (wobei wir nur den Betrag des Lastenausgleiches anschauen)
+					// Wir rechnen das bisher verrechnete minus
+					LastenausgleichDetail detailKorrektur = createLastenausgleichDetailKorrektur(detailBisherigeWerte);
+					detailKorrektur.setLastenausgleich(lastenausgleich);
+					lastenausgleich.addLastenausgleichDetail(detailKorrektur);
+					logBuilder.append("Korrektur PLUS: ").append(NEWLINE).append(detailKorrektur).append(NEWLINE);
+					// Und erstellen einen neuen Korrektur-Eintrag mit dem aktuell berechneten Wert
+					lastenausgleich.addLastenausgleichDetail(detailAktuellesTotalKorrekturjahr);
+					logBuilder.append("Korrektur MINUS: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+				}
 			}
 		}
 	}
@@ -264,7 +266,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		BigDecimal totalGutscheine = BigDecimal.ZERO;
 		for (VerfuegungZeitabschnitt abschnitt : abschnitteProGemeindeUndJahr) {
 			BigDecimal anteilKalenderjahr = getAnteilKalenderjahr(abschnitt);
-			BigDecimal gutschein = abschnitt.getVerguenstigung();
+			BigDecimal gutschein = abschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 
 			totalBelegungInProzent = MathUtil.EXACT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
 			totalGutscheine = MathUtil.EXACT.addNullSafe(totalGutscheine, gutschein);
@@ -310,7 +312,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Pensum * AnteilDesMonats / 12. Beispiel 80% ganzer Monat = 6.67% AnteilKalenderjahr
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(zeitabschnitt.getGueltigkeit().getGueltigAb(),
 			zeitabschnitt.getGueltigkeit().getGueltigBis());
-		BigDecimal pensum = zeitabschnitt.getBgPensum();
+		BigDecimal pensum = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 		BigDecimal pensumAnteilMonat = MathUtil.EXACT.multiplyNullSafe(anteilMonat, pensum);
 		return MathUtil.EXACT.divide(pensumAnteilMonat, MathUtil.EXACT.from(12d));
 	}

@@ -68,11 +68,6 @@ public interface TraegerschaftService {
 	void removeTraegerschaft(@Nonnull String traegerschaftId);
 
 	/**
-	 * marks an Traegerschaft as inactive on the Database.
-	 */
-	void setInactive(@Nonnull String traegerschaftId);
-
-	/**
 	 * returns all types of Angebot that are offered by at least one of the Institutions of this Traegerschaft
 	 */
 	EnumSet<BetreuungsangebotTyp> getAllAngeboteFromTraegerschaft(@Nonnull String traegerschaftId);

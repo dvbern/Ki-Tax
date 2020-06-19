@@ -23,7 +23,7 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
@@ -34,7 +34,6 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
-import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
@@ -76,6 +75,7 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
+const TAGI_ANGEBOT_VALUE = 'TAGI';
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -115,7 +115,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isNewestGesuch: boolean;
     public dvDialog: DvDialog;
     public $translate: ITranslateService;
-    public moduleBackup: TSBelegungTagesschuleModul[] = undefined;
     public aktuellGueltig: boolean = true;
     public isDuplicated: boolean = false;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
@@ -185,7 +184,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
-                    if (obj.key === this.$stateParams.betreuungsangebotTyp) {
+                    if (obj.key === this.$stateParams.betreuungsangebotTyp
+                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
@@ -315,6 +315,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    public displayBetreuungsPensumChangeWarning(): boolean {
+        return this.form.$dirty && this.isMutationsmeldungStatus;
+    }
+
     // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
@@ -322,14 +326,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         if (this.isSchulamt()) {
-            if (this.isTagesschule()) {
-                this.getBetreuungModel().vertrag = true;
-                // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
-                if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-                    && this.isTageschulenAnmeldungAktiv()) {
-                    this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
-                    this.setErsterSchultag();
-                }
+            // Fuer saemliche Schulamt-Angebote gilt der Vertrag immer als akzeptiert
+            this.getBetreuungModel().vertrag = true;
+            this.onChangeVertrag();
+            if (this.isTagesschule() && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
+                && this.isTageschulenAnmeldungAktiv()) {
+                this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
+                this.setErsterSchultag();
             }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
@@ -436,32 +439,30 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public showInstitutionenList(): boolean {
         return this.getBetreuungModel()
-            && (
-                this.isTageschulenAnmeldungAktiv() &&
-                (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
+            && ((
+                this.isTageschulenAnmeldungAktiv()
+                && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                 || !this.isTageschulenAnmeldungAktiv() && (this.isEnabled() && !this.isTagesschule())
-            )
+            ) || (
+                this.isFerieninselAnmeldungAktiv()
+                && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
+                || !this.isFerieninselAnmeldungAktiv() && (this.isEnabled() && !this.isFerieninsel())
+            ))
             && !this.getBetreuungModel().keineDetailinformationen;
     }
 
     public showInstitutionenAsText(): boolean {
-        return (
-                (
-                    this.isTageschulenAnmeldungAktiv() &&
-                    !this.isEnabled() &&
-                    !this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)
-                )
-                ||
-                (
-                    !this.isTageschulenAnmeldungAktiv() && !this.isEnabled() && !this.isTagesschule()
-                )
-            )
-            && !this.getBetreuungModel().keineDetailinformationen;
+        return !this.showInstitutionenList() && !this.model.keineDetailinformationen;
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration
             && this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
+    }
+
+    public isFerieninselAnmeldungAktiv(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungAktiv();
     }
 
     public isFalscheInstitutionAndUserInRole(): boolean {
@@ -470,17 +471,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && this.aktuellGueltig;
     }
 
-    public anmeldungSchulamtUebernehmen(): void {
+    public anmeldungSchulamtUebernehmen(isScolaris: { isScolaris: boolean }): void {
         this.copyBGNumberLToClipboard();
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
-            deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
+            deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
         }).then(() => {
             let betreuungsstatus: TSBetreuungsstatus;
-            (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-               isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
-                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+
+            if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
+                (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+                    isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
+                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                    : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+            } else {
+                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+            }
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.save(betreuungsstatus,
@@ -531,6 +537,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.getGesuchsperiode());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
+        if (!this.gesuchModelManager.isTagesschuleTagisEnabled()) {
+            return;
+        }
+        this.betreuungsangebotValues.push({
+            key: TSBetreuungsangebotTyp.TAGESSCHULE,
+            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+        });
     }
 
     public cancel(): void {
@@ -555,8 +568,29 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return [];
         }
 
-        return this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
+        let institutionenSDList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
+
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
+            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+            institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+        }
+        return institutionenSDList;
+    }
+
+    private filterTagisTagesschule(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
+        return institutionenList.filter(instStamm => {
+                let isTagi = false;
+                instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
+                    einstellungTagesschule => {
+                        if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
+                            isTagi = einstellungTagesschule.tagi;
+                        }
+                    }
+                );
+                return isTagi;
+            }
+        );
     }
 
     public getInstitutionSD(): TSInstitutionStammdatenSummary {
@@ -610,6 +644,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
         tsBetreuungspensum.nichtEingetreten = false;
         tsBetreuungspensum.gueltigkeit = new TSDateRange();
+
+        if (!this.isMahlzeitenverguenstigungActive()) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die validierung nicht fehlschlägt falls
+            // die gemeinde die vergünstigung deaktiviert hat
+            tsBetreuungspensum.monatlicheNebenmahlzeiten = 0;
+            tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
+            tsBetreuungspensum.tarifProHauptmahlzeit = 0;
+            tsBetreuungspensum.tarifProNebenmahlzeit = 0;
+        } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
+            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten Institution,
+            // dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die Tarife auf dem Modul hinterlegt sind)
+            tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
+            tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
+        }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }
@@ -694,6 +742,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         // tslint:disable-next-line:early-exit
+        if (this.isBetreuungInGemeindeRequired() && !this.getErweiterteBetreuungJA().betreuungInGemeinde) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
+                deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                cancelText: 'LABEL_ABBRECHEN',
+                confirmText: 'LABEL_SPEICHERN',
+            })
+                .then(() => {
+                    this.checkErweiterteBetreuungAndSaveBestaetigung();
+                });
+        } else {
+            this.checkErweiterteBetreuungAndSaveBestaetigung();
+        }
+    }
+
+    public checkErweiterteBetreuungAndSaveBestaetigung(): void {
+        // tslint:disable-next-line:early-exit
         if (this.getErweiterteBetreuungJA()
             && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
             && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
@@ -709,7 +774,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             this.savePlatzBestaetigung();
         }
-
     }
 
     private savePlatzBestaetigung(): void {
@@ -865,7 +929,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
-            || this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse;
+            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
     }
 
     public showFalscheAngaben(): boolean {
@@ -917,7 +982,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-                this.mutationsmeldungModel).then(() => {
+                this.mutationsmeldungModel,
+                this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
 
                 this.form.$setUntouched();
                 this.form.$setPristine();
@@ -1013,7 +1079,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
         const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
         const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const isNew = this.getBetreuungModel().isNew();
+        const isNew = this.getBetreuungModel() && this.getBetreuungModel().isNew();
         if (!isNew) {
             const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
             const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
@@ -1099,6 +1165,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
     }
 
+    public isBetreuungInGemeindeRequired(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
+            && !this.isSchulamt()
+            && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled;
+    }
+
     public setSelectedFachsstelle(): void {
         const fachstellenList = this.getFachstellenList();
         const found = fachstellenList.find(f => f.id === this.fachstelleId);
@@ -1135,7 +1207,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.provisorischeBetreuung || this.getBetreuungModel().keineDetailinformationen;
+        return this.provisorischeBetreuung ||
+            (this.getBetreuungModel() && this.getBetreuungModel().keineDetailinformationen);
     }
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {
@@ -1166,6 +1239,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
+    }
+
+    public getBetreuungInGemeindeLabel(): string {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())) {
+            return '';
+        }
+        return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
+            {gemeinde: this.gesuchModelManager.getGemeinde().name});
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {
@@ -1219,5 +1300,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 ((this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
                     || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                     && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())));
+    }
+
+    public isMahlzeitenverguenstigungActive(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+    // ausserdem soll die Meldung nicht gezeigt werden, wenn ein neues Betreuungspensum hinzugefügt wird
+    public showOverrideWarning(betreuungspensum: TSBetreuungspensum): boolean {
+        return !betreuungspensum.isNew() &&
+            (this.isMutationsmeldungStatus || this.isMutation());
     }
 }

@@ -39,8 +39,10 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import org.hibernate.envers.Audited;
 
+import static ch.dvbern.ebegu.enums.ExternalClientType.EXCHANGE_SERVICE_USER;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
@@ -94,7 +96,8 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 			@Index(name = "IX_institution_external_clients_external_client_id", columnList = "external_client_id"),
 		}
 	)
-	private @Valid @NotNull Set<ExternalClient> externalClients = new HashSet<>();
+	private @Valid @NotNull
+	Set<@ExternalClientOfType(type = EXCHANGE_SERVICE_USER) ExternalClient> externalClients = new HashSet<>();
 
 	public Institution() {
 	}

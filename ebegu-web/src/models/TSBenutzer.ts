@@ -15,7 +15,6 @@
 
 import {DateUtil} from '../utils/DateUtil';
 import {EbeguUtil} from '../utils/EbeguUtil';
-import {TSAmt} from './enums/TSAmt';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
@@ -34,7 +33,6 @@ export class TSBenutzer {
     private _password: string;
     private _email: string;
     private _mandant: TSMandant;
-    private _amt: TSAmt;
     private _status: TSBenutzerStatus;
 
     private _currentBerechtigung: TSBerechtigung;
@@ -51,7 +49,6 @@ export class TSBenutzer {
         traegerschaft?: TSTraegerschaft,
         institution?: TSInstitution,
         gemeinde?: TSGemeinde[],
-        amt?: TSAmt,
         status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
         externalUUID?: string,
     ) {
@@ -62,7 +59,6 @@ export class TSBenutzer {
         this._password = password;
         this._email = email;
         this._mandant = mandant;
-        this._amt = amt;
         this._status = status;
         // Berechtigung
         this._currentBerechtigung = new TSBerechtigung();
@@ -129,17 +125,6 @@ export class TSBenutzer {
 
     public set mandant(value: TSMandant) {
         this._mandant = value;
-    }
-
-    public get amt(): TSAmt {
-        if (!this._amt) {
-            this._amt = this._currentBerechtigung.analyseAmt();
-        }
-        return this._amt;
-    }
-
-    public set amt(value: TSAmt) {
-        this._amt = value;
     }
 
     public get status(): TSBenutzerStatus {

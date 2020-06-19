@@ -69,6 +69,16 @@
 
             <span flex=""></span>
 
+            <!-- Gesuch loeschen forced (Superadmin) -->
+            <div dv-show-element
+                 dv-show-allowed-roles="vmx.TSRoleUtil.getSuperAdminRoles()">
+                <button ng-click="vmx.gesuchLoeschenForced()"
+                        aria-label="{{'TOOLBAR_LOESCHEN_FORCED' | translate}}" style="text-align: center;"
+                        input-id="{{'gesuchLoeschenForcedButton'}}" type="reset">
+                    <span class="uppercase" data-translate="TOOLBAR_LOESCHEN_FORCED"></span>
+                </button>
+            </div>
+
             <!-- Gesuch loeschen -->
             <div dv-show-element
                  dv-show-allowed-roles="vmx.TSRoleUtil.getAdministratorRoles()"

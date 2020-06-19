@@ -15,10 +15,12 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
@@ -34,15 +36,39 @@ public abstract class AbstractAbschnittRule extends AbstractEbeguRule {
 	protected AbstractAbschnittRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
+		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
-		super(ruleKey, ruleType, validityPeriod, locale);
+		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
 	}
 
 	//Subklassen dieser Abstrakten Klasse benoetigen diese Methode nicht da sie nur Abschnitte erstellen. Daher hier NOP
 	@Override
-	protected final void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected final void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		//NOP
+	}
+
+	@Nonnull
+	protected final VerfuegungZeitabschnitt createZeitabschnittWithinValidityPeriodOfRule(@Nonnull DateRange gueltigkeit) {
+		// Der Zeitabschnitt muss innerhalb der Gueltigkeit der Regel liegen!
+		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+		limitZeitabschnittToGueltigkeitRegel(zeitabschnitt);
+		return zeitabschnitt;
+	}
+
+	@Nonnull
+	protected final VerfuegungZeitabschnitt createZeitabschnittWithinValidityPeriodOfRule(@Nonnull LocalDate gueltigAb, @Nonnull LocalDate gueltigBis) {
+		// Der Zeitabschnitt muss innerhalb der Gueltigkeit der Regel liegen!
+		return createZeitabschnittWithinValidityPeriodOfRule(new DateRange(gueltigAb, gueltigBis));
+	}
+
+	private void limitZeitabschnittToGueltigkeitRegel(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		if (zeitabschnitt.getGueltigkeit().startsBefore(validityPeriod())) {
+			zeitabschnitt.getGueltigkeit().setGueltigAb(validFrom());
+		}
+		if (zeitabschnitt.getGueltigkeit().endsAfter(validityPeriod())) {
+			zeitabschnitt.getGueltigkeit().setGueltigBis(validTo());
+		}
 	}
 }

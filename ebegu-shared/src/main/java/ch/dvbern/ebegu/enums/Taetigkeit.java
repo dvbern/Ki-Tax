@@ -15,14 +15,26 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Enum fuer die verschiedenen Taetikeiten die es gibt
  */
 public enum Taetigkeit {
+
 	ANGESTELLT,
 	SELBSTAENDIG,
 	AUSBILDUNG,
 	RAV,
 	GESUNDHEITLICHE_EINSCHRAENKUNGEN,
 	INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
+	FREIWILLIGENARBEIT;
+
+
+	public static List<Taetigkeit> getTaetigkeitenForAsiv() {
+		List<Taetigkeit> list = Arrays.asList(Taetigkeit.values());
+		return list.stream().filter(taetigkeit -> taetigkeit != FREIWILLIGENARBEIT).collect(Collectors.toList());
+	}
 }

@@ -160,7 +160,7 @@
                        #anzahlPlaetzeFirmen="ngModel"
                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
                        class="form-control"
-                       customMinMax [minValue]="0.1"
+                       customMinMax [minValue]="0"
                        placeholder="{{getPlaceholderForPlaetze()}}">
                 <dv-error-messages [errorObject]="anzahlPlaetzeFirmen.errors"
                                    inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
@@ -172,6 +172,34 @@
                               [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze">
                     {{'INSTITUTION_SUBVENTIONIERTE_PLAETZE'|translate}}
                 </mat-checkbox>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate>TARIFE_MAHLZEITEN</h3>
+                <div class="form-group">
+                    <label translate for="tarifProHauptmahlzeit">TARIF_PRO_HAUPTMAHLZEIT</label>
+                    <input id="tarifProHauptmahlzeit" type="number" name="tarifProHauptmahlzeit"
+                           #tarifProHauptmahlzeit="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit"
+                           class="form-control"
+                           customMinMax [minValue]="0">
+                    <dv-error-messages [errorObject]="tarifProHauptmahlzeit.errors"
+                                       inputId="tarifProHauptmahlzeit"></dv-error-messages>
+                </div>
+                <div class="form-group">
+                    <label translate for="tarifProNebenmahlzeit">TARIF_PRO_NEBENMAHLZEIT</label>
+                    <input id="tarifProNebenmahlzeit" type="number" name="tarifProNebenmahlzeit"
+                           #tarifProNebenmahlzeit="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit"
+                           class="form-control"
+                           customMinMax [minValue]="0">
+                    <dv-error-messages [errorObject]="tarifProNebenmahlzeit.errors"
+                                       inputId="tarifProNebenmahlzeit"></dv-error-messages>
+                </div>
             </div>
         </div>
     </div>
@@ -243,6 +271,22 @@
             <div class="form-group">
                 <h3 translate>INSTITUTION_ALTERSKATEGORIE</h3>
                 <p>{{getAlterskategorien()}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group" *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit
+             || stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit">
+                <h3 translate>TARIFE_MAHLZEITEN</h3>
+                <p translate *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit"
+                   [translateParams]="{value: stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit}">
+                    TARIF_PRO_HAUPTMAHLZEIT_READONLY
+                </p>
+                <p translate *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit"
+                   [translateParams]="{value: stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit}">
+                    TARIF_PRO_NEBENMAHLZEIT_READONLY
+                </p>
             </div>
         </div>
     </div>

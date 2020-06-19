@@ -27,6 +27,7 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../models/TSBerechtigung';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
@@ -42,7 +43,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
 
     public displayedColumns: string[] = [];
-    public dataSource: MatTableDataSource<TSInstitution>;
+    public dataSource: MatTableDataSource<TSInstitutionListDTO>;
 
     @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
@@ -74,7 +75,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
+        this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
             .then(insti => {
                 this.dataSource = new MatTableDataSource(insti);
                 this.dataSource.paginator = this.paginator;
@@ -114,7 +115,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public createInstitutionBG(): void {
-        this.goToAddInstitution({undefined });
+        this.goToAddInstitution({undefined});
     }
 
     public createInstitutionTS(): void {
@@ -205,8 +206,8 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     private setDisplayedColumns(): void {
         this.displayedColumns = this.isDeleteAllowed()
-            ? ['name', 'status', 'detail', 'remove']
-            : ['name', 'status', 'detail'];
+            ? ['name', 'status', 'type', 'detail', 'remove']
+            : ['name', 'status', 'type', 'detail'];
     }
 
     public isSuperAdmin(): boolean {
@@ -219,7 +220,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         }
     }
 
-    public translateStatus(institution: TSInstitution): string {
+    public translateStatus(institution: TSInstitutionListDTO): string {
         const translatedStatus = this.translate.instant('INSTITUTION_STATUS_' + institution.status);
         const translatedCheck = institution.stammdatenCheckRequired
             ? this.translate.instant('INSTITUTION_STATUS_CHECK_REQUIRED')

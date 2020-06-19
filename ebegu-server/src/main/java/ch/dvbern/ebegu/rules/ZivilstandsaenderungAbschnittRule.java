@@ -27,10 +27,16 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Umsetzung der ASIV Revision: Finanzielle Situation bei Mutation der Familiensituation anpassen
@@ -45,7 +51,12 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Override
@@ -61,8 +72,6 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 
 		LocalDate gesuchsperiodeBis = platz.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
-
-		RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
 
 		if (familiensituation.getAenderungPer() != null && familiensituationErstgesuch != null &&
 			familiensituation.hasSecondGesuchsteller(gesuchsperiodeBis) != familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)) {
@@ -92,7 +101,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				stichtag,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittNachMutation.getBgCalculationInputAsiv().addBemerkung(ruleKey, msgKey, getLocale());
+			abschnittNachMutation.getBgCalculationInputAsiv().addBemerkung(msgKey, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
@@ -115,7 +124,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				startKonkubinatPlusFive,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittKonkubinat2GS.getBgCalculationInputAsiv().addBemerkung(ruleKey, MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
+			abschnittKonkubinat2GS.getBgCalculationInputAsiv().addBemerkung(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittKonkubinat2GS);
 
 		} else {
@@ -136,8 +145,8 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull LocalDate dateAb,
 		@Nonnull LocalDate dateBis
 	) {
-		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(new DateRange(dateAb, dateBis));
-		abschnitt.getBgCalculationInputAsiv().setHasSecondGesuchstellerForFinanzielleSituation(
+		VerfuegungZeitabschnitt abschnitt = createZeitabschnittWithinValidityPeriodOfRule(new DateRange(dateAb, dateBis));
+		abschnitt.setHasSecondGesuchstellerForFinanzielleSituationForAsivAndGemeinde(
 			familiensituation.hasSecondGesuchsteller(
 				// it must be checked at the end of the zeitabschnitt
 				abschnitt.getGueltigkeit().getGueltigBis()

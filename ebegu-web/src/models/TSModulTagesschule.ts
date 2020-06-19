@@ -17,6 +17,7 @@ import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSTextRessource} from './TSTextRessource';
 
 export class TSModulTagesschule extends TSAbstractEntity {
 
@@ -25,6 +26,9 @@ export class TSModulTagesschule extends TSAbstractEntity {
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
     public angeboten: boolean;
     public identifier: string;
+    public moduleGroupName: string; // Transient, ist nur ergaenzt als info um die gewaehlte Modulen von eine
+    // Scolaris Insti zu eine andere zu wieder finden
+    public moduleGroupBezeichnung: TSTextRessource; // wie moduleGroupName
 
     public constructor() {
         super();

@@ -26,6 +26,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import {HttpBuffer} from './HttpBuffer';
@@ -207,7 +208,6 @@ export class AuthServiceRS {
             id: this.principal.username,
             email: this.principal.email,
             role: this.principal.getCurrentRole(),
-            amt: this.principal.amt,
             status: this.principal.status,
             mandant: this.principal.mandant ? this.principal.mandant.name : null,
             traegerschaft: this.principal.currentBerechtigung.traegerschaft
@@ -269,6 +269,9 @@ export class AuthServiceRS {
     }
 
     public getVisibleRolesForPrincipal(): ReadonlyArray<TSRole> {
+        if (EbeguUtil.isNullOrUndefined(this.getPrincipal())) {
+            return [];
+        }
         const isTagesschuleEnabled = this.getPrincipal().mandant.angebotTS;
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:
@@ -307,6 +310,13 @@ export class AuthServiceRS {
     public hasMandantAngebotTS(): boolean {
         if (this.getPrincipal() && this.getPrincipal().mandant) {
             return this.getPrincipal().mandant.angebotTS;
+        }
+        return false;
+    }
+
+    public hasMandantAngebotFI(): boolean {
+        if (this.getPrincipal() && this.getPrincipal().mandant) {
+            return this.getPrincipal().mandant.angebotFI;
         }
         return false;
     }

@@ -163,8 +163,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testVerfuegung_SchulamtOnly() {
-		//TODO: @Reviewer, ich kann dieser Testfall nicht als verfügt persisten. verstehe aber nicht wieso.
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.SCHULAMT_ONLY, true, false, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.SCHULAMT_ONLY, true, true, gemeinde, gesuchsperiode);
 		//ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 		Assert.assertNotNull(gesuch);
 		Assert.assertTrue(gesuch.hasOnlyBetreuungenOfSchulamt());
@@ -208,10 +207,10 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		//		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, LocalDateTime.MAX, persistence);
+		LocalDate eingangsdatum = LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15);
+		LocalDate aenderungPer = LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15);
 		final Gesuch mutation = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15),
-			LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15),
-			true);
+			gesuch.getGesuchsperiode().getId(), eingangsdatum, aenderungPer, true);
 		ueberpruefeVerfuegungszeitabschnitte(mutation, "MutationScheidung");
 	}
 
@@ -222,16 +221,16 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(gesuch);
 
 		gesuch.getKindContainers().forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
-			Assert.assertNotNull(betreuung.getVerfuegung());
+			Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			writeResultsToFile(
-				betreuung.getVerfuegung().getZeitabschnitte(),
+				betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte(),
 				kindContainer.getKindJA().getFullName(),
 				betreuung.getInstitutionStammdaten().getInstitution().getName(),
 				betreuung.getBetreuungNummer(),
 				addText
 			);
 			compareWithDataInFile(
-				betreuung.getVerfuegung().getZeitabschnitte(),
+				betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte(),
 				kindContainer.getKindJA().getFullName(),
 				betreuung.getInstitutionStammdaten().getInstitution().getName(),
 				betreuung.getBetreuungNummer(),

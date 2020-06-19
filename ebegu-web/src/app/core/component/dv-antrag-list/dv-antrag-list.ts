@@ -55,7 +55,6 @@ export class DVAntragListConfig implements IComponentOptions {
         totalResultCount: '<',
         tableId: '@',
         tableTitle: '@',
-        actionVisible: '@',
         addButtonVisible: '@',
         addButtonText: '@',
         pendenz: '=',
@@ -81,9 +80,9 @@ export class DVAntragListController implements IController {
     public totalResultCount: number;
     public displayedCollection: Array<TSAntragDTO> = []; // Liste die im Gui angezeigt wird
     public pagination: any;
-    public gesuchsperiodenList: Array<string>;
-    public institutionenList: Array<TSInstitution>;
-    public gemeindenList: Array<TSGemeinde>;
+    public gesuchsperiodenList: Array<string> = [];
+    public institutionenList: Array<TSInstitution> = [];
+    public gemeindenList: Array<TSGemeinde> = [];
 
     public selectedBetreuungsangebotTyp: string;
     public selectedAntragTyp: string;
@@ -99,13 +98,13 @@ export class DVAntragListController implements IController {
     public selectedEingangsdatumSTV: string;
     public selectedVerantwortlicherBG: TSBenutzer;
     public selectedVerantwortlicherTS: TSBenutzer;
+    public selectedVerantwortlicherGemeinde: TSBenutzer;
     public selectedDokumenteHochgeladen: string;
     public pendenz: boolean;
     public selectedInstitutionName: string;
 
     public tableId: string;
     public tableTitle: string;
-    public actionVisible: string;
 
     public addButtonText: string;
     public addButtonVisible: string = 'false';
@@ -165,7 +164,6 @@ export class DVAntragListController implements IController {
 
     public updateGesuchsperiodenList(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then(response => {
-            this.gesuchsperiodenList = [];
             response.forEach(gesuchsperiode => {
                 this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
             });
@@ -263,10 +261,6 @@ export class DVAntragListController implements IController {
         return this.addButtonVisible === 'true';
     }
 
-    public isActionsVisible(): boolean {
-        return this.actionVisible === 'true';
-    }
-
     /**
      * Provided there is a row with id antraegeHeadRow it will take this row to check how many
      * columns there are. Therefore this row cannot have any colspan inside any cell and any other
@@ -298,5 +292,20 @@ export class DVAntragListController implements IController {
             bezeichnung = `${bezeichnung} ${antrag.laufnummer}`;
         }
         return bezeichnung;
+    }
+
+    public isPendenzGemeindeRolle(): boolean {
+        return this.pendenz && this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGemeindeOnlyRoles());
+    }
+
+    public getVerantwortlicheBgAndTs(antrag: TSAntragDTO): string {
+        const verantwortliche: string[] = [];
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicherBG)) {
+            verantwortliche.push(antrag.verantwortlicherBG);
+        }
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicherTS)) {
+            verantwortliche.push(antrag.verantwortlicherTS);
+        }
+        return verantwortliche.join(', ');
     }
 }

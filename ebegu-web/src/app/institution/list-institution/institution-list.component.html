@@ -15,11 +15,11 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="institutionen-list adminModul"  flex="auto">
+<div class="institutionen-list admin-modul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
 
         <h1 class="access-for-all-title" translate>AFA_INSTITUTIONENVERWALTUNG</h1>
-        <div class="viewTitle">
+        <div class="view-title">
             <h2 translate>INSTITUTIONEN</h2>
             <hr class="header">
         </div>
@@ -40,6 +40,17 @@
                     <mat-cell class="mat-cell-clickable" *matCellDef="let institution"
                               (click)="openInstitution(institution)">
                         {{institution.name}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column Type -->
+                <ng-container matColumnDef="type">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="betreuungsangebotTyp">
+                        {{'TYP' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let institution"
+                              (click)="openInstitution(institution)">
+                        {{institution.betreuungsangebotTyp.toString() | translate}}
                     </mat-cell>
                 </ng-container>
 
@@ -71,7 +82,7 @@
                     <mat-cell *matCellDef="let institution">
                         <dv-loading-button buttonClass="dv-btn-sm"
                                            (buttonClick)="removeInstitution(institution)">
-                            <i class="fa fa-minus"></i>
+                            <i class="fa fa-trash"></i>
                         </dv-loading-button>
                     </mat-cell>
                 </ng-container>

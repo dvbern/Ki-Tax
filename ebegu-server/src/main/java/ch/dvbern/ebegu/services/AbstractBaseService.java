@@ -15,7 +15,10 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
@@ -25,12 +28,17 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.rechner.TagesschuleRechnerParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -52,6 +60,12 @@ public abstract class AbstractBaseService {
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
 	@PermitAll
@@ -71,17 +85,53 @@ public abstract class AbstractBaseService {
 	@Nonnull
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
-		return parameterDTO;
+		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 	}
 
 	@PermitAll
 	@Nonnull
-	public TagesschuleRechnerParameterDTO loadTagesschuleRechnerParameters(@Nonnull Gemeinde gemeinde,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		TagesschuleRechnerParameterDTO parameterDTO = new TagesschuleRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
-		return parameterDTO;
+	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten = criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
+		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
+			applicationPropertyService.getStadtBernAsivStartDatum(),
+			applicationPropertyService.isStadtBernAsivConfigured(),
+			oeffnungszeiten
+		);
+		return parameter;
+	}
+
+	protected void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {
+		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
+		platz.setGueltig(true);
+		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(platz);
+		if (vorgaengerVerfuegungOptional.isPresent()) {
+			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOptional.get();
+			Objects.requireNonNull(vorgaengerVerfuegung.getPlatz());
+			vorgaengerVerfuegung.getPlatz().setGueltig(false);
+		}
+	}
+
+	/**
+	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
+	 */
+	@Nonnull
+	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz betreuung) {
+		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
+		if (betreuung.getVorgaengerId() == null) {
+			return Optional.empty();
+		}
+
+		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
+		// Leseberechtigt bin, fuer die Mutation aber schon!
+		AbstractPlatz vorgaengerbetreuung = persistence.find(betreuung.getClass(), betreuung.getVorgaengerId());
+		if (vorgaengerbetreuung != null) {
+			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
+				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
+			}
+			return findVorgaengerVerfuegung(vorgaengerbetreuung);
+		}
+		return Optional.empty();
 	}
 
 	protected void logExceptionAccordingToEnvironment(@Nonnull Exception e, @Nonnull String message, @Nonnull String arg) {

@@ -26,6 +26,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import {TSSprache} from '../../models/enums/TSSprache';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../models/TSBfsGemeinde';
+import {TSExternalClientAssignment} from '../../models/TSExternalClientAssignment';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
 import {TSGemeindeRegistrierung} from '../../models/TSGemeindeRegistrierung';
@@ -168,6 +169,10 @@ export class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
+    public getSupportedImageUrl(): string {
+        return `${this.serviceURL}/supported/image?timestamp=${new Date().getTime()}`;
+    }
+
     public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
@@ -189,6 +194,16 @@ export class GemeindeRS implements IEntityRS {
             this.$log.error(`Upload Gemeinde (${gemeindeId}) Logo failed`);
         }
         return result;
+    }
+
+    public isSupportedImage(fileToUpload: File): IPromise<any> {
+        const formData = new FormData();
+        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        formData.append('kat', fileToUpload, encodeURIComponent('logo'));
+        return this.$http.post(this.getSupportedImageUrl(), formData, {
+            transformRequest: (request: IHttpRequestTransformer) => request,
+            headers: {'Content-Type': undefined}
+        });
     }
 
     public getUnregisteredBfsGemeinden(): IPromise<TSBfsGemeinde[]> {
@@ -228,7 +243,7 @@ export class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
-    public updateAngebote(gemeinde: TSGemeinde): any {
+    public updateAngebote(gemeinde: TSGemeinde): IPromise<any> {
         let restGemeinde = {};
         restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
         return this.$http.put(`${this.serviceURL}/updateangebote`, restGemeinde);
@@ -257,5 +272,10 @@ export class GemeindeRS implements IEntityRS {
             .then((response: any) => {
                 return response.data;
             });
+    }
+
+    public getExternalClients(gemeindeId: string): IPromise<TSExternalClientAssignment> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gemeindeId)}/externalclients`)
+            .then(response => this.ebeguRestUtil.parseExternalClientAssignment(response.data));
     }
 }

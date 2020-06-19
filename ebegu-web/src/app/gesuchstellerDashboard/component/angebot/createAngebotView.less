@@ -19,32 +19,32 @@
 @buttonWidth: 24rem;
 @buttonHeight: 15rem;
 
-.createAngebotView {
+.create-angebot-view {
     padding-left: 2.5rem !important;
     &--centered-col {
-        margin: auto;
         float: unset;
+        margin: auto;
     }
     .nav-row-betreuung {
+        align-items: center;
+        bottom: -10rem;
         -ms-box-orient: horizontal;
         display: -ms-flexbox;
         display: flex;
-        flex-direction: row-reverse;
         -ms-flex-direction: row-reverse;
-        bottom: -10rem;
+        flex-direction: row-reverse;
         left: 0;
-        transform: unset;
-        position: absolute;
         margin: 0;
-        align-items: center;
+        position: absolute;
+        transform: unset;
         & > div {
-            flex-direction: row-reverse;
-            -ms-flex-direction: row-reverse;
             clear: both;
-            margin-bottom: 0;
             display: flex;
-            position: static;
+            -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+            margin-bottom: 0;
             padding: 0 3rem 0;
+            position: static;
             width: 100%;
         }
     }

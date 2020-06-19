@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,6 +42,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxAlwaysEditableProperties;
 import ch.dvbern.ebegu.api.dtos.JaxAntragSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -551,7 +553,7 @@ public class GesuchResource {
 
 	}
 
-	@ApiOperation(value = "Setzt das gegebene Gesuch als VERFUEGT und das Flag geprueftSTV als true",
+	@ApiOperation(value = "Setzt das gegebene Gesuch als VERFUEGT",
 		response = JaxGesuch.class)
 	@Nullable
 	@POST
@@ -564,7 +566,7 @@ public class GesuchResource {
 		@Context HttpServletResponse response) {
 
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
-		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT_STV);
+		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT_STV, AntragStatusDTO.PRUEFUNG_STV);
 
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
@@ -573,11 +575,11 @@ public class GesuchResource {
 		Gesuch gesuch = gesuchOptional.orElseThrow(() -> new EbeguEntityNotFoundException("stvPruefungAbschliessen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId()));
 
-		if (AntragStatus.GEPRUEFT_STV != gesuch.getStatus()) {
+		if (AntragStatus.GEPRUEFT_STV != gesuch.getStatus() && AntragStatus.PRUEFUNG_STV != gesuch.getStatus()) {
 			// Wir vergewissern uns dass das Gesuch im Status IN_BEARBEITUNG_STV ist, da sonst kann es nicht fuer das
 			// JA freigegeben werden
 			throw new EbeguRuntimeException("stvPruefungAbschliessen",
-				ErrorCodeEnum.ERROR_ONLY_IN_GEPRUEFT_STV_ALLOWED, "Status ist: " + gesuch.getStatus());
+				ErrorCodeEnum.ERROR_ONLY_IN_PRUEFUNG_GEPRUEFT_STV_ALLOWED, "Status ist: " + gesuch.getStatus());
 		}
 
 		Gesuch persistedGesuch = gesuchService.stvPruefungAbschliessen(gesuch);
@@ -683,6 +685,23 @@ public class GesuchResource {
 			+ "invalid: " + gesuchJaxId.getId()));
 
 		gesuchService.removeAntrag(gesuch);
+		return Response.ok().build();
+	}
+
+	@DELETE
+	@Path("/removeAntragForced/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	public Response removeAntragForced(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(gesuchJaxId.getId());
+
+		Gesuch gesuch = gesuchService.findGesuch(gesuchJaxId.getId(), true).orElseThrow(()
+			-> new EbeguEntityNotFoundException("removeAntragForced", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId "
+			+ "invalid: " + gesuchJaxId.getId()));
+
+		gesuchService.removeAntragForced(gesuch);
 		return Response.ok().build();
 	}
 
@@ -935,5 +954,27 @@ public class GesuchResource {
 		}
 		throw new EbeguEntityNotFoundException("setKeinKontingent",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId());
+	}
+
+	@ApiOperation(value = "Setzt und speichert Properties auf dem Gesuch, welche immer bearbeitet werden dürfen",
+		response = JaxAlwaysEditableProperties.class)
+	@PUT
+	@Path("/updateAlwaysEditableProperties")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGesuch updateAlwaysEditableProperties(
+		@Nonnull @NotNull @Valid JaxAlwaysEditableProperties properties,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(properties.getGesuchId().getId());
+		final String antragId = converter.toEntityId(properties.getGesuchId());
+		Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow( () -> new EbeguEntityNotFoundException(
+			"updateAlwaysEditableProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragId));
+
+		converter.alwaysEditablePropertiesToGesuch(properties,gesuch);
+		gesuchService.updateGesuch(gesuch, false);
+
+		return converter.gesuchToJAX(gesuch);
 	}
 }

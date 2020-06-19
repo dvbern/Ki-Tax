@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,7 +37,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -62,7 +63,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 	uniqueConstraints = @UniqueConstraint(columnNames = { "kindNummer", "gesuch_id" }, name = "UK_kindcontainer_gesuch_kind_nummer")
 )
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 public class KindContainer extends AbstractMutableEntity implements Comparable<KindContainer>, Searchable {
 
 	private static final long serialVersionUID = -6784985260190035840L;
@@ -248,6 +249,19 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.getAnmeldungenTagesschule().add(anmeldungTagesschule.copyAnmeldungTagesschule(
 				new AnmeldungTagesschule(), copyType, target, targetGesuch.getEingangsart()));
 		}
+		for (AnmeldungFerieninsel anmeldungFerieninsel : this.getAnmeldungenFerieninsel()) {
+			target.getAnmeldungenFerieninsel().add(anmeldungFerieninsel.copyAnmeldungFerieninsel(
+				new AnmeldungFerieninsel(), copyType, target, targetGesuch.getEingangsart()));
+		}
+	}
+
+	@Nonnull
+	public List<AbstractPlatz> getAllPlaetze() {
+		List<AbstractPlatz> plaetze = new ArrayList<>();
+		plaetze.addAll(getBetreuungen());
+		plaetze.addAll(getAnmeldungenTagesschule());
+		plaetze.addAll(getAnmeldungenFerieninsel());
+		return plaetze;
 	}
 
 	@Nonnull
@@ -300,7 +314,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			return false;
 		}
 		final KindContainer otherKindContainer = (KindContainer) other;
-		return EbeguUtil.isSameObject(getKindJA(), otherKindContainer.getKindJA()) &&
+		return EbeguUtil.isSame(getKindJA(), otherKindContainer.getKindJA()) &&
 			Objects.equals(getKindNummer(), otherKindContainer.getKindNummer());
 	}
 }

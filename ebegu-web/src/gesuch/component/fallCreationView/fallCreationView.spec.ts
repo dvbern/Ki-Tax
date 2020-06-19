@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
 import {IQService, IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -27,7 +26,6 @@ describe('fallCreationView', () => {
 
     let fallCreationview: FallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
-    let $state: StateService;
     let $q: IQService;
     let $rootScope: IScope;
     let form: any;
@@ -40,7 +38,6 @@ describe('fallCreationView', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockLazyGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        $state = $injector.get('$state');
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         form = {};
@@ -64,34 +61,10 @@ describe('fallCreationView', () => {
     }));
 
     describe('nextStep', () => {
-        it('submitted but rejected -> it does not go to the next step', () => {
-            spyOn($state, 'go');
-            const reject = $q.reject({}).catch(() => {
-                // need to catch rejected promise
-            });
-            spyOn(gesuchModelManager, 'saveGesuchAndFall').and.returnValue(reject);
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
-            fallCreationview.save();
-            $rootScope.$apply();
-            // tslint:disable-next-line:no-unbound-method
-            expect(gesuchModelManager.saveGesuchAndFall).toHaveBeenCalled();
-            expect($state.go).not.toHaveBeenCalled();
-        });
-        it('should submit the form and go to the next page', () => {
-            spyOn($state, 'go');
-            spyOn(gesuchModelManager, 'saveGesuchAndFall').and.returnValue($q.when({}));
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
-            fallCreationview.save();
-            $rootScope.$apply();
-            // tslint:disable-next-line:no-unbound-method
-            expect(gesuchModelManager.saveGesuchAndFall).toHaveBeenCalled();
-        });
         it('should not submit the form and not go to the next page because form is invalid', () => {
-            spyOn($state, 'go');
             spyOn(gesuchModelManager, 'saveGesuchAndFall');
             form.$valid = false;
             fallCreationview.save();
-            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).not.toHaveBeenCalled();
         });
     });
@@ -106,13 +79,13 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch der Periode 2016/17');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Antrag der Periode 2016/17');
         });
         it('should return kiBon – Erstgesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Antrag');
         });
     });
 });

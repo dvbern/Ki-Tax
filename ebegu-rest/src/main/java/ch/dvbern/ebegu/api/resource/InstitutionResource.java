@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -46,15 +47,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
 import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -82,6 +84,7 @@ import ch.dvbern.ebegu.util.Constants;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.map.HashedMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -182,7 +185,7 @@ public class InstitutionResource {
 			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
 			stammdatenTS.setGemeinde(gemeinde);
 			Set<EinstellungenTagesschule> einstellungenTagesschuleSet =
-				gesuchsperiodeService.getAllActiveGesuchsperioden().stream().map(
+				gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream().map(
 					gesuchsperiode -> {
 						EinstellungenTagesschule einstellungenTagesschule = new EinstellungenTagesschule();
 						einstellungenTagesschule.setInstitutionStammdatenTagesschule(stammdatenTS);
@@ -201,6 +204,19 @@ public class InstitutionResource {
 			gemeinde = getGemeindeOrThrowException(gemeindeId);
 			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
 			stammdatenFI.setGemeinde(gemeinde);
+
+			Set<EinstellungenFerieninsel> einstellungenFerieninselSet =
+				gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream().map(
+					gesuchsperiode -> {
+						EinstellungenFerieninsel einstellungenFerieninsel = new EinstellungenFerieninsel();
+						einstellungenFerieninsel.setInstitutionStammdatenFerieninsel(stammdatenFI);
+						einstellungenFerieninsel.setGesuchsperiode(gesuchsperiode);
+						return einstellungenFerieninsel;
+					}
+				).collect(Collectors.toSet());
+
+			stammdatenFI.setEinstellungenFerieninsel(einstellungenFerieninselSet);
+
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
 			break;
 		}
@@ -269,7 +285,7 @@ public class InstitutionResource {
 		}
 
 		if (update.getExternalClients() != null) {
-			Collection<ExternalClient> availableClients = externalClientService.getAll();
+			Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
 			availableClients.removeIf(client -> !update.getExternalClients().contains(client.getId()));
 			institutionService.saveExternalClients(institution, availableClients);
 		}
@@ -338,6 +354,21 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
+	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
+	@Nonnull
+	@GET
+	@Path("/editable/currentuser/listdto")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitutionListDTO> getInstitutionenListDTOEditableForCurrentBenutzer() {
+		Map<Institution,InstitutionStammdaten> institutionInstitutionStammdatenMap =
+			institutionService.getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(true);
+
+		return institutionInstitutionStammdatenMap.entrySet().stream().map(map -> converter.institutionListDTOToJAX(map))
+			.collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Find and return a list of all readable Institutionen of the currently logged in Benutzer. "
 		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
@@ -382,21 +413,14 @@ public class InstitutionResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				institutionJAXPId.getId()));
 
-		Collection<ExternalClient> availableClients = externalClientService.getAll();
+		Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
 		availableClients.removeAll(institution.getExternalClients());
 
 		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
-		jaxExternalClientAssignment.getAvailableClients().addAll(convert(availableClients));
-		jaxExternalClientAssignment.getAssignedClients().addAll(convert(institution.getExternalClients()));
+		jaxExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
+		jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(institution.getExternalClients()));
 
 		return Response.ok(jaxExternalClientAssignment).build();
-	}
-
-	@Nonnull
-	private List<JaxExternalClient> convert(@Nonnull Collection<ExternalClient> externalClients) {
-		return externalClients.stream()
-			.map(externalClient -> converter.externalClientToJAX(externalClient))
-			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(

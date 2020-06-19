@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import org.junit.Assert;
@@ -107,6 +108,8 @@ public class PDFServiceBeanTest {
 	private final boolean writeProtectPDF = false;
 
 	protected BetreuungsgutscheinEvaluator evaluator;
+
+	private KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter = TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	@Before
 	public void setupTestData() {
@@ -385,8 +388,7 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
-		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch,
-			Constants.DEFAULT_LOCALE, true);
+		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, evaluateFamiliensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
@@ -413,8 +415,8 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller2(), new BigDecimal("30000"), false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
-		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
-		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE, true);
+		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
+		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, familiensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
@@ -438,8 +440,8 @@ public class PDFServiceBeanTest {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
 		TestDataUtil.calculateFinanzDaten(gesuch);
-		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE, true);
-		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF, Constants.DEFAULT_LOCALE);
 
@@ -449,7 +451,7 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testPrintBegleitschreiben() throws Exception {
 
-		evaluator.evaluate(gesuch_1GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_1GS, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_1GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "BegleitschreibenWaelti.pdf");
@@ -463,7 +465,7 @@ public class PDFServiceBeanTest {
 			Assert.assertNotNull(gesuchstellerAdresse.getGesuchstellerAdresseJA());
 			gesuchstellerAdresse.getGesuchstellerAdresseJA().setZusatzzeile("Test zusatztzeile");
 		});
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_2GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "BegleitschreibenFeutz.pdf");
@@ -474,11 +476,11 @@ public class PDFServiceBeanTest {
 
 		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(testBetreuung.getVerfuegung());
-		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
+		Assert.assertNotNull(testBetreuung.getVerfuegungOrVerfuegungPreview());
+		testBetreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
 		byte[] verfuegungsPDF = pdfService
 			.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF, Constants.DEFAULT_LOCALE);
@@ -491,11 +493,11 @@ public class PDFServiceBeanTest {
 
 		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(testBetreuung.getVerfuegung());
-		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
+		Assert.assertNotNull(testBetreuung.getVerfuegungOrVerfuegungPreview());
+		testBetreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
 		byte[] verfuegungsPDF = pdfService
 			.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF, Constants.DEFAULT_LOCALE);

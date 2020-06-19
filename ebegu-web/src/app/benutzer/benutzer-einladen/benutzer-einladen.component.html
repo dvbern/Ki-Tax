@@ -19,11 +19,16 @@
     <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
         <div class="dv-content">
             <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
-            <div class="row viewTitle">
+            <div class="row view-title">
                 <div class="col-md-12">
                     <h2 translate>BENUTZER_ADD</h2>
                     <hr class="header">
                 </div>
+            </div>
+
+            <div class="well well-status-warten">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <span translate>BENUTZER_EINLADEN_NUTZUNGSBEDINGUNGEN_INFO</span>
             </div>
 
             <div class="row">

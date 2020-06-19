@@ -36,6 +36,8 @@ import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
  */
 public class BetreuungspensumRuleTest {
 
+	private RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+
 	@Test
 	public void testKitaNormalfall() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 60,  BigDecimal.valueOf(500.50));
@@ -50,7 +52,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(BigDecimal.valueOf(500.50), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
-		result = RestanspruchInitializer.execute(betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(0 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 	}
 
@@ -68,7 +70,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(BigDecimal.valueOf(200), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
-		result = RestanspruchInitializer.execute(betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(0, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 	}
 
@@ -87,7 +89,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(500), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
-		result = RestanspruchInitializer.execute(betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 	}
 
@@ -109,8 +111,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());  //restanspruch wurde noch nie berechnet
 		// Anspruchsrest fuer naechste Betreuung setzten
-		List<VerfuegungZeitabschnitt> abschnForNxtBetr =
-			RestanspruchInitializer.execute(betreuung1, result);
+		List<VerfuegungZeitabschnitt> abschnForNxtBetr = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung1, result);
 		//Nach dem Berechnen des Rests ist der Rest im  im Feld AnspruchspensumRest gesetzt, Anspruchsberechtigtes
 		// Pensum ist noch 0 da noch nciht berechnet
 		// fuer 2.Betr.
@@ -124,23 +125,17 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(resultBetr2);
 		Assert.assertEquals(1, resultBetr2.size());
 		Assert.assertEquals(Integer.valueOf(80), resultBetr2.get(0).getBgCalculationInputAsiv().getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBetreuungspensumProzent());
-		Assert.assertEquals(
-			20,
-			resultBetr2.get(0)
-				.getAnspruchberechtigtesPensum()); // Nach der Berechnung des Anspruchs kann der Anspruch nicht hoeher
+		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBgCalculationInputAsiv().getBetreuungspensumProzent());
+		Assert.assertEquals(20, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(20, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumProzent()); // Nach der Berechnung des Anspruchs kann der Anspruch nicht hoeher
 		// sein
 		// als der Restanspruch (20)
 		Assert.assertEquals(MathUtil.DEFAULT.from(20), resultBetr2.get(0).getBgPensum());
-		Assert.assertEquals(
-			20,
-			resultBetr2.get(0)
-				.getBgCalculationInputAsiv().getAnspruchspensumRest()); //Restanspruch wurde noch nicht neu berechnet fuer naechste betreuung
-		resultBetr2 = RestanspruchInitializer.execute(betreuung2, resultBetr2);
-		Assert.assertEquals(
-			0,
-			resultBetr2.get(0)
-				.getBgCalculationInputAsiv().getAnspruchspensumRest()); // Nach dem initialisieren fuer das nachste Betreuungspensum ist der noch
+		Assert.assertEquals(20, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest()); //Restanspruch wurde noch nicht neu
+		// berechnet fuer naechste betreuung
+		resultBetr2 = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung2, resultBetr2);
+		Assert.assertEquals(0, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest()); // Nach dem initialisieren fuer das
+		// nachste Betreuungspensum ist der noch
 		// verbleibende restanspruch 0
 	}
 
@@ -158,7 +153,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
-		result = RestanspruchInitializer.execute(betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(0, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 	}
 
@@ -178,7 +173,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
-		result = RestanspruchInitializer.execute(betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(0, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 	}
 }

@@ -111,6 +111,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
@@ -344,7 +345,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 		}
 
-		checkGesuchstellerHoehreRolleEinladen(benutzer);
+		checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
 
 		if (benutzer.isNew() && benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
 			throw new EbeguRuntimeException(
@@ -354,22 +355,25 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 	}
 
+	@Override
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkGesuchstellerHoehreRolleEinladen(@Nonnull Benutzer benutzer){
+	public void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer){
 		// falls gesuchsteller, und darf einladen
 		if(!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER){
 			//check if Gesuch exist
 			Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
-			if(!fallOpt.isPresent()){
+			if (!fallOpt.isPresent()){
 				//return error code keinen Gesusch, user can be deleted without warning
 				throw new BenutzerExistException(
 					KibonLogLevel.NONE,
 					benutzer.getUsername(),
 					benutzer.getFullName(),
-					ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+					ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH,
+					null);
 
 			} else {
-				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(fallOpt.get().getId());
+				Fall existingFall = fallOpt.get();
+				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(existingFall.getId());
 				boolean hasGesuchFreigegeben = false;
 				if (gesuchIdList.isEmpty()) {
 					//return error code keinen Gesusch, user can be deleted without warning
@@ -377,29 +381,32 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
-						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH,
+						existingFall.getId());
 				}
 				for (String id : gesuchIdList) {
 					Gesuch gs = gesuchService.findGesuch(id, false)
 						.orElseThrow(() -> new EbeguRuntimeException(
-						"checkGesuchstellerHoehreRolleEinladen", "Gesuch nicht gefunden"));
-					if(gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
+						"checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch", "Gesuch nicht gefunden"));
+					if (gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
 						hasGesuchFreigegeben = true;
 						break;
 					}
-				}
+					}
 				if (hasGesuchFreigegeben) {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
-						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH);
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH,
+						existingFall.getId());
 				} else {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
-						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH);
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH,
+						existingFall.getId());
 				}
 			}
 		}
@@ -516,6 +523,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
+	public Collection<Benutzer> getBenutzerTsBgOrGemeinde(Gemeinde gemeinde) {
+		return getBenutzersOfRoles(UserRole.getTsBgAndGemeindeRoles(), gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
 	public Collection<Benutzer> getBenutzerTsOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getTsAndGemeindeRoles(), gemeinde);
 	}
@@ -532,6 +546,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@PermitAll
 	public Collection<Benutzer> getAllBenutzerTsOrGemeinde() {
 		return getBenutzersOfRoles(getTsAndGemeindeRoles());
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Collection<Benutzer> getAllBenutzerBgTsOrGemeinde() {
+		return getBenutzersOfRoles(getTsBgAndGemeindeRoles());
 	}
 
 	/**
@@ -660,8 +681,29 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeBenutzer(@Nonnull String username) {
+		requireNonNull(username);
+		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"removeBenutzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			username));
+
+		try {
+			checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
+			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
+			removeBenutzerForced(benutzer.getUsername());
+		} catch (BenutzerExistException b) {
+			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
+			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
+				removeBenutzerForced(benutzer.getUsername());
+			} else {
+				throw b;
+			}
+		}
+	}
+
+	private void removeBenutzerForced(@Nonnull String username) {
 		requireNonNull(username);
 		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
@@ -710,7 +752,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			Benutzer foundUser = foundUserOptional.get();
 			// Wir ueberpruefen, ob der Username sich geaendert hat
 			if (!foundUser.getUsername().equals(benutzer.getUsername())) {
-				LOG.warn("External User has new Username: ExternalUUID {}, old username {}, new username {}. "
+				LOG.info("External User has new Username: ExternalUUID {}, old username {}, new username {}. "
 						+ "Updating and setting Bemerkung!",
 					benutzer.getExternalUUID(), foundUser.getUsername(), benutzer.getUsername());
 				foundUser.addBemerkung("External User has new Username: ExternalUUID: " + benutzer.getExternalUUID() + ", old username: " + foundUser.getUsername() + ", new username " + benutzer.getUsername());

@@ -19,13 +19,15 @@ package ch.dvbern.ebegu.api.enums;
  * Enum fuer the names of the Modul for Tagesschule.
  */
 public enum JaxExternalModulName {
-
-	VORMITTAG,
-	MITTAG,
-	MITTAG_HALB,
-	NACHMITTAGS_1,
-	NACHMITTAGS_1_HALB,
-	NACHMITTAGS_2,
-	NACHMITTAGS_2_HALB;
+	SCOLARIS_01,
+	SCOLARIS_02,
+	SCOLARIS_03,
+	SCOLARIS_04,
+	SCOLARIS_05,
+	SCOLARIS_06,
+	SCOLARIS_07,
+	SCOLARIS_08,
+	SCOLARIS_09,
+	SCOLARIS_10;
 
 }

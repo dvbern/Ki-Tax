@@ -28,3 +28,18 @@ export function getTSFeriennameValues(): Array<TSFerienname> {
         TSFerienname.SOMMERFERIEN,
     ];
 }
+
+export function ferienInselNameOrder(ferienname: TSFerienname): number {
+    switch (ferienname) {
+        case TSFerienname.HERBSTFERIEN:
+            return 0;
+        case TSFerienname.SPORTFERIEN:
+            return 1;
+        case TSFerienname.FRUEHLINGSFERIEN:
+            return 2;
+        case TSFerienname.SOMMERFERIEN:
+            return 3;
+        default:
+            throw new Error(`unrecognised Ferienname ${ferienname}`);
+    }
+}

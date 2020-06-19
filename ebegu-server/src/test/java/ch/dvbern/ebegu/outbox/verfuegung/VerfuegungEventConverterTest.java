@@ -34,17 +34,19 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Regelwerk;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
 import com.spotify.hamcrest.pojo.IsPojo;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
@@ -52,6 +54,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 
 public class VerfuegungEventConverterTest {
@@ -82,9 +87,11 @@ public class VerfuegungEventConverterTest {
 	@Test
 	public void testEventConversion() {
 		Verfuegung verfuegung = createVerfuegung();
-		VerfuegungVerfuegtEvent event = converter.of(verfuegung);
+		VerfuegungVerfuegtEvent event = converter.of(verfuegung)
+			.orElseThrow(() -> new IllegalStateException("Test setup broken"));
 
 		Betreuung betreuung = verfuegung.getBetreuung();
+		Assert.assertNotNull(betreuung);
 		Gesuchsperiode gesuchsperiode = verfuegung.getBetreuung().extractGesuchsperiode();
 		String institutionId = betreuung.getInstitutionStammdaten().getInstitution().getId();
 		String bgNummer = betreuung.getBGNummer();
@@ -128,6 +135,24 @@ public class VerfuegungEventConverterTest {
 		));
 	}
 
+	@Test
+	public void testRegelwerkConversion() {
+		Verfuegung verfuegung = createVerfuegung();
+
+		// setting non-default value
+		verfuegung.getZeitabschnitte()
+			.forEach(z -> z.setRegelwerk(ch.dvbern.ebegu.enums.Regelwerk.FEBR));
+
+		VerfuegungVerfuegtEvent event = converter.of(verfuegung)
+			.orElseThrow(() -> new IllegalStateException("Test setup broken"));
+
+		//noinspection deprecation
+		VerfuegungEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
+
+		// expecting value from verfuegung
+		assertThat(specificRecord.getZeitabschnitte(), everyItem(hasProperty("regelwerk", equalTo(Regelwerk.FEBR))));
+	}
+
 	@Nonnull
 	private IsPojo<ZeitabschnittDTO> defaultZeitAbschnitt() {
 		return pojo(ZeitabschnittDTO.class)
@@ -143,7 +168,8 @@ public class VerfuegungEventConverterTest {
 			.where(ZeitabschnittDTO::getVerguenstigung, comparesEqualTo(BigDecimal.ZERO))
 			.where(ZeitabschnittDTO::getVerfuegteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
 			.where(ZeitabschnittDTO::getAnspruchsberechtigteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTO::getZeiteinheit, is(Zeiteinheit.DAYS));
+			.where(ZeitabschnittDTO::getZeiteinheit, is(Zeiteinheit.DAYS))
+			.where(ZeitabschnittDTO::getRegelwerk, is(Regelwerk.ASIV));
 	}
 
 	@Nonnull
@@ -166,12 +192,15 @@ public class VerfuegungEventConverterTest {
 
 		kind.setKindNummer(1);
 		kind.setGesuch(gesuch);
-		Verfuegung verfuegung = new Verfuegung(betreuung);
+		Verfuegung verfuegung = new Verfuegung();
 
 		VerfuegungZeitabschnitt defaultZeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
+		defaultZeitabschnitt.initBGCalculationResult();
 		verfuegung.getZeitabschnitte().add(defaultZeitabschnitt);
 		verfuegung.setTimestampErstellt(TIMESTAMP_ERSTELLT);
+		verfuegung.setBetreuung(betreuung);
 
+		betreuung.setVerfuegung(verfuegung);
 		return verfuegung;
 	}
 }

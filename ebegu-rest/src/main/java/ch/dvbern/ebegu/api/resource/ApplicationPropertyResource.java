@@ -241,6 +241,9 @@ public class ApplicationPropertyResource {
 		String sentryEnvName = getSentryEnvName().getValue();
 		String background = getBackgroundColor().getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
+		boolean personenSucheDisabled = ebeguConfiguration.isPersonenSucheDisabled();
+		String kitaxHost = ebeguConfiguration.getKitaxHost();
+		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 
 		String nodeName = "";
 		try {
@@ -255,7 +258,10 @@ public class ApplicationPropertyResource {
 			dummyMode,
 			sentryEnvName,
 			background,
-			zahlungentestmode
+			zahlungentestmode,
+			personenSucheDisabled,
+			kitaxHost,
+			kitaxendpoint
 		);
 		return Response.ok(pubAppConf).build();
 	}

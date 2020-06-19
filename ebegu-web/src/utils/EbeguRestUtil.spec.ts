@@ -249,6 +249,10 @@ describe('EbeguRestUtil', () => {
                     false,
                     monatlicheBetreuungskosten500,
                     pensum25,
+                    0,
+                    0,
+                    0,
+                    0,
                     new TSDateRange(DateUtil.today(), DateUtil.today())
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
@@ -258,6 +262,10 @@ describe('EbeguRestUtil', () => {
                     false,
                     monatlicheBetreuungskosten200,
                     pensum50,
+                    0,
+                    0,
+                    0,
+                    0,
                     new TSDateRange(DateUtil.today(), DateUtil.today())
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
@@ -299,6 +307,14 @@ describe('EbeguRestUtil', () => {
                     .toBe(betreuung.betreuungspensumContainers[0].betreuungspensumGS.pensum);
                 expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumJA.pensum)
                     .toBe(betreuung.betreuungspensumContainers[0].betreuungspensumJA.pensum);
+                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumGS.monatlicheHauptmahlzeiten)
+                    .toEqual(betreuung.betreuungspensumContainers[0].betreuungspensumGS.monatlicheHauptmahlzeiten);
+                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumGS.monatlicheNebenmahlzeiten)
+                    .toEqual(betreuung.betreuungspensumContainers[0].betreuungspensumGS.monatlicheNebenmahlzeiten);
+                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumJA.monatlicheHauptmahlzeiten)
+                    .toEqual(betreuung.betreuungspensumContainers[0].betreuungspensumJA.monatlicheHauptmahlzeiten);
+                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumJA.monatlicheNebenmahlzeiten)
+                    .toEqual(betreuung.betreuungspensumContainers[0].betreuungspensumJA.monatlicheNebenmahlzeiten);
 
                 const transformedBetreuung = ebeguRestUtil.parseBetreuung(new TSBetreuung(),
                     restBetreuung);
@@ -323,6 +339,10 @@ describe('EbeguRestUtil', () => {
                     false,
                     monatlicheBetreuungskosten200,
                     pensum25,
+                    0,
+                    0,
+                    0,
+                    0,
                     new TSDateRange(DateUtil.today(), DateUtil.today())
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
@@ -330,6 +350,8 @@ describe('EbeguRestUtil', () => {
                 const restBetreuungspensum = ebeguRestUtil.betreuungspensumToRestObject({}, betreuungspensum);
                 expect(restBetreuungspensum).toBeDefined();
                 expect(restBetreuungspensum.pensum).toEqual(betreuungspensum.pensum);
+                expect(restBetreuungspensum.monatlicheHauptmahlzeiten).toEqual(betreuungspensum.monatlicheHauptmahlzeiten);
+                expect(restBetreuungspensum.monatlicheNebenmahlzeiten).toEqual(betreuungspensum.monatlicheNebenmahlzeiten);
 
                 const transformedBetreuungspensum = ebeguRestUtil.parseBetreuungspensum(new TSBetreuungspensum(),
                     restBetreuungspensum);
@@ -572,12 +594,20 @@ describe('EbeguRestUtil', () => {
                                     nichtEingetreten: boolean,
                                     monatlicheBetreuungskosten: number,
                                     pensum: number,
+                                    hauptmahlzeiten: number,
+                                    nebenmahlzeiten: number,
+                                    tarifProHauptmahlzeit: number,
+                                    tarifProNebenmahlzeit: number,
                                     gueltigkeit: TSDateRange): TSBetreuungspensum {
         const tsBetreuungspensum = new TSBetreuungspensum();
         tsBetreuungspensum.unitForDisplay = unitForDisplay;
         tsBetreuungspensum.nichtEingetreten = nichtEingetreten;
         tsBetreuungspensum.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
         tsBetreuungspensum.pensum = pensum;
+        tsBetreuungspensum.monatlicheHauptmahlzeiten = hauptmahlzeiten;
+        tsBetreuungspensum.monatlicheNebenmahlzeiten = nebenmahlzeiten;
+        tsBetreuungspensum.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+        tsBetreuungspensum.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
         tsBetreuungspensum.gueltigkeit = gueltigkeit;
         return tsBetreuungspensum;
     }

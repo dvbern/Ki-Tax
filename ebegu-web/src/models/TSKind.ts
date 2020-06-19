@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSKinderabzug} from './enums/TSKinderabzug';
 import {TSAbstractPersonEntity} from './TSAbstractPersonEntity';
@@ -29,7 +30,8 @@ export class TSKind extends TSAbstractPersonEntity {
     private _pensumFachstelle: TSPensumFachstelle;
     private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
     private _ausAsylwesen: boolean;
-    private _zemisNummer: string;
+    private _zemisNummer: string; // ZEMIS-Nummer in Format 12345678.9 | 012345678.9 | 012.345.678.9 | 012.345.678-9
+    private _zemisNummerStandardFormat: string; // ZEMIS-Nummer in Format 12345678.9
 
     public constructor() {
         super();
@@ -97,6 +99,15 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set zemisNummer(value: string) {
         this._zemisNummer = value;
+        this.zemisNummerStandardFormat = EbeguUtil.zemisNummerToStandardZemisNummer(value);
+    }
+
+    public get zemisNummerStandardFormat(): string {
+        return this._zemisNummerStandardFormat;
+    }
+
+    public set zemisNummerStandardFormat(value: string) {
+        this._zemisNummerStandardFormat = value;
     }
 
     public get ausAsylwesen(): boolean {

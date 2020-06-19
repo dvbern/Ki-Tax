@@ -34,6 +34,8 @@ import javax.persistence.UniqueConstraint;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
+import org.apache.commons.lang.NotImplementedException;
 import org.hibernate.envers.Audited;
 
 /**
@@ -41,6 +43,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
+@CheckPlatzAndAngebottyp
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
 @AssociationOverrides({
 	@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_kind_id")),
@@ -72,6 +75,28 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 
 	public void setBelegungFerieninsel(@Nullable BelegungFerieninsel belegungFerieninsel) {
 		this.belegungFerieninsel = belegungFerieninsel;
+	}
+
+	@Nullable
+	@Override
+	public Verfuegung getVerfuegung() {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht verfügt");
+	}
+
+	@Override
+	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht verfügt");
+	}
+
+	@Nullable
+	@Override
+	public Verfuegung getVerfuegungPreview() {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht berechnet");
+	}
+
+	@Override
+	public void setVerfuegungPreview(@Nullable Verfuegung verfuegung) {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht berechnet");
 	}
 
 	@Override

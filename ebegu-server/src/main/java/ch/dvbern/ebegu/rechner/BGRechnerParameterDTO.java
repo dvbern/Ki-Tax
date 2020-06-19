@@ -28,6 +28,8 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD;
@@ -35,6 +37,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
@@ -70,6 +73,12 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal minVerguenstigungProTg;
 	private BigDecimal minVerguenstigungProStd;
 
+	private BigDecimal maxTarifTagesschuleMitPaedagogischerBetreuung;
+	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
+	private BigDecimal minTarifTagesschule;
+
+	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
+
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
@@ -87,6 +96,10 @@ public final class BGRechnerParameterDTO {
 		this.setZuschlagBehinderungProStd(asBigDecimal(paramMap, ZUSCHLAG_BEHINDERUNG_PRO_STD, gesuchsperiode, gemeinde));
 		this.setMinVerguenstigungProTg(asBigDecimal(paramMap, MIN_VERGUENSTIGUNG_PRO_TG, gesuchsperiode, gemeinde));
 		this.setMinVerguenstigungProStd(asBigDecimal(paramMap, MIN_VERGUENSTIGUNG_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMaxTarifTagesschuleMitPaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
+		this.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
+		this.setMinTarifTagesschule(asBigDecimal(paramMap, MIN_TARIF, gesuchsperiode, gemeinde));
+		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterDTO() {
@@ -226,5 +239,37 @@ public final class BGRechnerParameterDTO {
 
 	public void setMinVerguenstigungProStd(BigDecimal minVerguenstigungProStd) {
 		this.minVerguenstigungProStd = minVerguenstigungProStd;
+	}
+
+	public BigDecimal getMaxTarifTagesschuleMitPaedagogischerBetreuung() {
+		return maxTarifTagesschuleMitPaedagogischerBetreuung;
+	}
+
+	public void setMaxTarifTagesschuleMitPaedagogischerBetreuung(BigDecimal maxTarifTagesschuleMitPaedagogischerBetreuung) {
+		this.maxTarifTagesschuleMitPaedagogischerBetreuung = maxTarifTagesschuleMitPaedagogischerBetreuung;
+	}
+
+	public BigDecimal getMaxTarifTagesschuleOhnePaedagogischerBetreuung() {
+		return maxTarifTagesschuleOhnePaedagogischerBetreuung;
+	}
+
+	public void setMaxTarifTagesschuleOhnePaedagogischerBetreuung(BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung) {
+		this.maxTarifTagesschuleOhnePaedagogischerBetreuung = maxTarifTagesschuleOhnePaedagogischerBetreuung;
+	}
+
+	public BigDecimal getMinTarifTagesschule() {
+		return minTarifTagesschule;
+	}
+
+	public void setMinTarifTagesschule(BigDecimal minTarifTagesschule) {
+		this.minTarifTagesschule = minTarifTagesschule;
+	}
+
+	public BGRechnerParameterGemeindeDTO getGemeindeParameter() {
+		return gemeindeParameter;
+	}
+
+	public void setGemeindeParameter(BGRechnerParameterGemeindeDTO gemeindeParameter) {
+		this.gemeindeParameter = gemeindeParameter;
 	}
 }

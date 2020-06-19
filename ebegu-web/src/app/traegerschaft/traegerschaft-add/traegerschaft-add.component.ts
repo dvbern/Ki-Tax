@@ -40,6 +40,9 @@ export class TraegerschaftAddComponent implements OnInit {
     public traegerschaft: TSTraegerschaft = undefined;
     public adminMail: string = undefined;
 
+    // this semaphore will prevent a navigation to be executed again until the process is not finished
+    public isTransitionInProgress: boolean = false;
+
     public constructor(
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
@@ -59,6 +62,10 @@ export class TraegerschaftAddComponent implements OnInit {
     }
 
     public traegerschaftEinladen(): void {
+        if (this.isTransitionInProgress) {
+            return;
+        }
+        this.isTransitionInProgress = true;
         if (!this.form.valid) {
             return;
         }
@@ -69,6 +76,7 @@ export class TraegerschaftAddComponent implements OnInit {
     private save(): void {
         this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
             .then(neueTraegerschaft => {
+                this.isTransitionInProgress = false;
                 this.traegerschaft = neueTraegerschaft;
                 this.navigateBack();
             }).catch((exception: TSExceptionReport[]) => {

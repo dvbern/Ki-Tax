@@ -14,9 +14,9 @@
   -->
 
 <!--suppress ALL -->
-<div class="finanzielleSituation gesuchModul">
+<div class="finanzielleSituation gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-12">
 
             <h2>
@@ -29,7 +29,7 @@
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
             <!-- Infotext -->
-            <p class="inlineHint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
+            <p class="inline-hint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
         </div>
     </div>
     <div class="row">
@@ -193,7 +193,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHR"
                                            for="geschaeftsgewinnBasisjahr"
-                                           translate-values="{basisjahr: {{vm.model.getBasisjahr()}}}"></label>
+                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
                                                    name="geschaeftsgewinnBasisjahr"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr"
@@ -221,7 +221,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.model.getBasisjahr() - 1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus1"
@@ -241,7 +241,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.model.getBasisjahr() - 1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahrMinus1"
@@ -268,7 +268,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
                                            for="geschaeftsgewinnBasisjahrMinus2"
-                                           translate-values="{basisjahr: {{vm.model.getBasisjahr()-2}}}"></label>
+                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()-2}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
                                                    name="geschaeftsgewinnBasisjahrMinus2"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus2"

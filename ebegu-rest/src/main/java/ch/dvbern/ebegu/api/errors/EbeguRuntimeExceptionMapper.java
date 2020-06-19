@@ -40,7 +40,7 @@ public class EbeguRuntimeExceptionMapper extends AbstractEbeguExceptionMapper<Eb
 		if (exception instanceof EbeguExistingAntragException) {
 			// wollen wir das hier so handhaben?
 			EbeguExistingAntragException ebeguExistingAntragException = EbeguExistingAntragException.class.cast(exception);
-			return buildViolationReportResponse(ebeguExistingAntragException, Status.NOT_FOUND);
+			return buildViolationReportResponse(ebeguExistingAntragException, Status.CONFLICT);
 		}
 		if (exception instanceof EbeguEntityNotFoundException) {
 			// wollen wir das hier so handhaben?

@@ -31,14 +31,13 @@
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
             [allowedRoles]="getMitarbeiterVisibleRoles()"
-            [editMode]="true"> <!-- this is the edit view -->
+            [editMode]="editMode"> <!-- this is the edit view -->
         </dv-stammdaten-header>
 
         <mat-tab-group dynamicHeight [(selectedIndex)]="currentTab">
             <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}" ngForm="gemeinde_stammdaten">
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
-                                             [(keineBeschwerdeAdresse)]="keineBeschwerdeAdresse"
                                              [editMode]="editMode"
                                              [tageschuleEnabledForMandant]="tageschuleEnabledForMandant">
                 </dv-edit-gemeinde-stammdaten>
@@ -50,6 +49,7 @@
                                      [beguStartStr]="beguStartStr"
                                      [editMode]="editModeForBG()"
                                      [(altBGAdresse)]="altBGAdresse"
+                                     [(keineBeschwerdeAdresse)]="keineBeschwerdeAdresse"
                                      [beguStartDatum]="beguStartDatum">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
@@ -60,7 +60,10 @@
                                      [editMode]="editModeForTSFI()"
                                      [(altTSAdresse)]="altTSAdresse"
                                      [tsAnmeldungenStartStr]="tsAnmeldungenStartStr"
-                                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum">
+                                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
+                                     [externalClients]="externalClients"
+                                     [isSuperAdmin]="isSuperAdmin()"
+                                     [(usernameScolaris)]="usernameScolaris">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"

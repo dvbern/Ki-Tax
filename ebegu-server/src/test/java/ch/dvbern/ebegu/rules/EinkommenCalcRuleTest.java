@@ -17,10 +17,10 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
@@ -37,9 +37,9 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.EINSTELLUNG_MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -59,9 +59,9 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-		assertEquals(1, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -74,10 +74,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, (new BigDecimal("180000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-		assertEquals(2, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_MSG));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	/**
@@ -86,7 +86,8 @@ public class EinkommenCalcRuleTest {
 	 */
 	@Test
 	public void testAcceptedEKV() {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.TAGESSCHULE, 100, new BigDecimal(1000));
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA,
+			100, new BigDecimal(1000));
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
@@ -120,25 +121,29 @@ public class EinkommenCalcRuleTest {
 
 		VerfuegungZeitabschnitt abschnittErstesHalbjahrEKV1 = result.get(0);
 		assertEquals(25000, abschnittErstesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBgCalculationInputAsiv().getBemerkungenMap();
+		VerfuegungsBemerkungList bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBemerkungenList();
 		assertNotNull(bemerkungenAbschnitt2);
-		assertEquals(2, bemerkungenAbschnitt2.size());
-		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
-		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		assertEquals(2, bemerkungenAbschnitt2.uniqueSize());
+		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
 		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_1;
-		assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
+		VerfuegungsBemerkung bemerkungEkvAccept1 = bemerkungenAbschnitt2.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
+		assertNotNull(bemerkungEkvAccept1);
+		assertTrue(bemerkungEkvAccept1.getTranslated().contains(bemerkungEKV1));
 
 		VerfuegungZeitabschnitt abschnittZweitesHalbjahrEKV1 = result.get(1);
 		assertEquals(20000, abschnittZweitesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBgCalculationInputAsiv().getBemerkungenMap();
+		VerfuegungsBemerkungList bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBemerkungenList();
 		assertNotNull(bemerkungenAbschnitt3);
-		assertEquals(2, bemerkungenAbschnitt3.size());
-		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
-		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		assertEquals(2, bemerkungenAbschnitt3.uniqueSize());
+		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
 		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_2;
-		assertTrue(bemerkungenAbschnitt3.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV2));
+		VerfuegungsBemerkung bemerkungEkvAccept2 = bemerkungenAbschnitt3.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
+		assertNotNull(bemerkungEkvAccept2);
+		assertTrue(bemerkungEkvAccept2.getTranslated().contains(bemerkungEKV2));
 	}
 
 	@Test
@@ -151,10 +156,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, (new BigDecimal("0.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-		assertEquals(2, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -164,14 +169,14 @@ public class EinkommenCalcRuleTest {
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(0, (new BigDecimal("159000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-		assertEquals(3, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
+		assertTrue(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		assertEquals(3, result.get(0).getBemerkungenList().uniqueSize());
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_MSG));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {
@@ -187,7 +192,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
-		Assert.assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(massgebendesEinkommen);
 		if (sozialhilfeempfaenger) {

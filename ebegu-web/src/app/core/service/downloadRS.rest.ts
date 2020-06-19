@@ -14,6 +14,7 @@
  */
 
 import {IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSMahnung} from '../../../models/TSMahnung';
@@ -149,8 +150,11 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenBenutzerhandbuch(): IPromise<TSDownloadFile> {
-        return this.http.get(`${this.serviceURL}/BENUTZERHANDBUCH`)
+    public getAccessTokenNotrechtvorlage(
+        language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
+        const languageEnc = encodeURIComponent(language);
+        const angebotTypEnc = encodeURIComponent(angebotTyp);
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGE/${languageEnc}/${angebotTypEnc}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
@@ -265,6 +269,7 @@ export class DownloadRS {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
     }
+
     public openDownload(blob: Blob, filename: string): void {
         // tslint:disable-next-line
         if (typeof this.$window.navigator.msSaveBlob !== 'undefined') {
@@ -284,5 +289,13 @@ export class DownloadRS {
         a.click();
         this.$window.URL.revokeObjectURL(url);
         a.remove();
+    }
+
+    public getAccessTokenRueckforderungDokument(rueckForderungDokumentId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/rueckforderungDokument`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
     }
 }

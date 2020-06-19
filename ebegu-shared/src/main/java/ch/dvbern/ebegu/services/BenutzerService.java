@@ -93,6 +93,8 @@ public interface BenutzerService {
 	@Nonnull
 	void erneutEinladen(@Nonnull Benutzer eingeladener);
 
+	void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer);
+
 	@Nonnull
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
 
@@ -170,6 +172,15 @@ public interface BenutzerService {
 	Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde);
 
 	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG, Admin_BG, Sachbearbeiter_TS, Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 *
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getBenutzerTsBgOrGemeinde(Gemeinde gemeinde);
+
+	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
 	 *
@@ -185,6 +196,14 @@ public interface BenutzerService {
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	Collection<Benutzer> getAllBenutzerBgOrGemeinde();
+
+	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG, Sachbearbeiter_TS, Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
+	 *
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getAllBenutzerBgTsOrGemeinde();
 
 	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder

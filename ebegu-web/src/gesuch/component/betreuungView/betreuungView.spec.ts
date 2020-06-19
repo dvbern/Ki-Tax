@@ -106,9 +106,9 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(Promise.resolve([]));
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
-            .and.returnValue(Promise.resolve(gesuchModelManager.getActiveInstitutionenList()));
+            .and.returnValue($q.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
             gesuchModelManager,
@@ -240,7 +240,7 @@ describe('betreuungView', () => {
         });
         describe('platzAbweisen()', () => {
             it('must change the status of the Betreuung to ABGEWIESEN and restore initial values of Betreuung', () => {
-                spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.when({}));
+                spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.resolve(new TSBetreuung()));
                 spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.stub();
                 betreuungView.model.grundAblehnung = 'mein Grund';
                 expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
@@ -263,7 +263,7 @@ describe('betreuungView', () => {
         });
         describe('platzAnfordern()', () => {
             it('must change the status of the Betreuung to WARTEN', () => {
-                spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.when({}));
+                spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.resolve(new TSBetreuung()));
                 betreuungView.model.vertrag = true;
                 // betreuung.timestampErstellt = undefined;
                 betreuungView.model.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
@@ -366,17 +366,6 @@ describe('betreuungView', () => {
                 expect(betreuungView.showInstitutionenList()).toBe(true);
                 expect(betreuungView.showInstitutionenAsText()).toBe(false);
             });
-            it('should not showInstitutionenList and not showInstitutionenAsText for TAGESSCHULE alte Gesuchsperiode',
-                () => {
-                    // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                    spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(false);
-                    spyOn(betreuungView, 'isEnabled').and.returnValue(true);
-                    spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
-                    spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
-
-                    expect(betreuungView.showInstitutionenList()).toBe(false);
-                    expect(betreuungView.showInstitutionenAsText()).toBe(false);
-                });
             it('should showInstitutionenList and not showInstitutionenAsText for enabled TAGESSCHULE neue Gesuchsperiode',
                 () => {
                     // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
@@ -430,7 +419,7 @@ describe('betreuungView', () => {
         betreuungView.model.vertrag = true;
         spyOn($state, 'go');
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
-        spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.returnValue({});
+        spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.callFake(b => b);
         betreuungView.platzAnfordern();
         $rootScope.$apply();
         // tslint:disable-next-line:no-unbound-method

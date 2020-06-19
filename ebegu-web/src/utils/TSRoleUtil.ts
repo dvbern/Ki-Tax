@@ -211,6 +211,8 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
         ];
     }
 
@@ -230,6 +232,17 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
+        ];
+    }
+
+    public static getAdministratorBgTsGemeindeOrMandantRole(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -441,6 +454,17 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getGemeindeOrBGOrTSRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+        ];
+    }
+
     public static getGemeindeOrBGRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.ADMIN_GEMEINDE,
@@ -456,6 +480,13 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
+        ];
+    }
+
+    public static getGemeindeOnlyRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
         ];
     }
 
@@ -545,5 +576,17 @@ export class TSRoleUtil {
 
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
+    }
+
+    public static getAllRolesForNotrecht(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        ];
     }
 }

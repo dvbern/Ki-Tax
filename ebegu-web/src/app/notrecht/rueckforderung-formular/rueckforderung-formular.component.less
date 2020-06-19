@@ -1,0 +1,91 @@
+/*
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+@import (reference) '../../../style/variables.less';
+
+.bisher-form {
+    display: inline-block;
+    width: 100%;
+}
+
+.dv-bisher {
+    background-color: @contrast;
+    border-color: @contrast-light;
+    clear: both;
+    display: inline-block;
+    font-size: 1.6rem;
+    height: auto;
+    margin: 1rem 0 0;
+    min-height: 2.3rem;
+    padding: 0 0 0 1rem;
+    width: 100%;
+
+    span:first-child {
+        font-style: italic;
+        font-weight: 400;
+    }
+
+    span {
+        color: @contrast-darkest;
+        font-size: 1.3rem;
+        letter-spacing: 0.1rem;
+        line-height: 1rem;
+    }
+}
+
+
+.download-file {
+    margin-top: 2rem;
+
+    span {
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+}
+
+::ng-deep .notrecht {
+    .checkbox-with-tooltip {
+        display: flex;
+
+        dv-tooltip {
+            align-items: center;
+            display: flex;
+            padding-left: 0.75rem;
+        }
+    }
+
+    .mt-5 {
+        margin-top: 5rem;
+    }
+
+    label.mat-checkbox-layout {
+        margin-top: 0.8rem;
+    }
+
+    label.long-label {
+        white-space: nowrap;
+    }
+}
+
+
+.status-header {
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: initial;
+    position: absolute;
+    right: 15px;
+}
+

@@ -31,6 +31,7 @@ import {
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
 import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterungView/einkommensverschlechterungView';
@@ -46,6 +47,8 @@ import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
+import {SozialhilfeZeitraumListViewComponentConfig} from './component/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
+import {SozialhilfeZeitraumViewComponentConfig} from './component/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
 import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
@@ -86,8 +89,11 @@ export const GESUCH_JS_MODULE =
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
+        .component('sozialhilfeZeitraumListView', new SozialhilfeZeitraumListViewComponentConfig())
+        .component('sozialhilfeZeitraumView', new SozialhilfeZeitraumViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
         .component('dvBetreuungInput', new BetreuungInputComponentConfig())
         .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
+        .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
 ;

@@ -102,9 +102,9 @@ public class LastenausgleichBerechnungCSVConverterTest {
 
 		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData);
 
-		String csvExpected = "bfs;kibon_Belegung;kibon_Gutscheine;kibon_Anrechenbar;kibon_Erhebung;kibon_Revision;kibon_Selbstbehalt\n"
-			+ "351;1000;16376470.59;15176470.59;13341176.47;0;3035294.12\n"
-			+ "546;100;1417647.06;1517647.06;1114117.65;-899747.06;303529.41\n";
+		String csvExpected = "BFS-Nr.;kibon_Belegung;kibon_Gutscheine;kibon_Erhebung;kibon_Selbstbehalt\n"
+			+ "351;1000;16376470.59;13341176.47;3035294.12\n"
+			+ "546;100;1417647.06;214370.59;303529.41\n";
 
 		Assert.assertEquals(csvExpected, lastenausgleichCSV);
 	}
@@ -176,9 +176,9 @@ public class LastenausgleichBerechnungCSVConverterTest {
 
 		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData);
 
-		String csvExpected = "bfs;kibon_Belegung;kibon_Gutscheine;kibon_Anrechenbar;kibon_Erhebung;kibon_Revision;kibon_Selbstbehalt\n"
-			+ "351;33.33;7256.50;999.90;6256.50;0;1000.00\n"
-			+ "546;0;0;0;0;-6256.50;0\n";
+		String csvExpected = "BFS-Nr.;kibon_Belegung;kibon_Gutscheine;kibon_Erhebung;kibon_Selbstbehalt\n"
+			+ "351;33.33;7256.50;6256.50;1000.00\n"
+			+ "546;0;0;-6256.50;0\n";
 
 		Assert.assertEquals(csvExpected, lastenausgleichCSV);
 	}

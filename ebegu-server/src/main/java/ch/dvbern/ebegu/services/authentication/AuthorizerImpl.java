@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -70,6 +71,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -126,6 +128,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private InstitutionStammdatenService stammdatenService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller need to
@@ -427,14 +432,41 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkWriteAuthorization(@Nullable Verfuegung verfuegung) {
-		//nur sachbearbeiter ja und admins duefen verfuegen
-		if (verfuegung != null && !principalBean.isCallerInAnyOfRole(
-			SUPER_ADMIN,
-			ADMIN_BG,
-			SACHBEARBEITER_BG,
-			ADMIN_GEMEINDE,
-			SACHBEARBEITER_GEMEINDE)) {
-			throwViolation(verfuegung);
+		if (verfuegung == null) {
+			return;
+		}
+		boolean isTagesschule = verfuegung.getPlatz().getBetreuungsangebotTyp().isTagesschule();
+		if (isTagesschule) {
+			// Der Gesuchsteller darf seine eigene Verfügung speichern: Wenn er eine Mutation macht
+			// wird im Vorgängergesuch eine Verfügung erstellt
+			if (isGSOwner(() -> extractGesuch(verfuegung.getPlatz()).getFall())) {
+				return;
+			}
+			// Tagesschulen werden neu "verfuegt", wenn die Module akzeptiert werden und das Gesuch schon
+			// verfügt/abgeschlossen war. Damit müssen alle Rollen, die Module akzeptieren dürfen, auch
+			// die Verfügung speichern dürfen!
+			if (!principalBean.isCallerInAnyOfRole(
+							SUPER_ADMIN,
+							ADMIN_GEMEINDE,
+							SACHBEARBEITER_GEMEINDE,
+							ADMIN_TS,
+							SACHBEARBEITER_TS,
+							ADMIN_INSTITUTION,
+							SACHBEARBEITER_INSTITUTION,
+							ADMIN_TRAEGERSCHAFT,
+							SACHBEARBEITER_INSTITUTION)) {
+				throwViolation(verfuegung);
+			}
+		} else {
+			// Bei BGs bleiben weiterhin die Admins/Sachbearbeiter BG/Gemeinde berechtigt
+			if (!principalBean.isCallerInAnyOfRole(
+							SUPER_ADMIN,
+							ADMIN_BG,
+							SACHBEARBEITER_BG,
+							ADMIN_GEMEINDE,
+							SACHBEARBEITER_GEMEINDE)) {
+				throwViolation(verfuegung);
+			}
 		}
 	}
 
@@ -495,9 +527,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE)) {
-			return userHasSameGemeindeAsPrincipal(benutzer)
-				|| benutzer.getInstitution() != null
-				|| benutzer.getTraegerschaft() != null;
+			Set<Gemeinde> gemeindenOfUser = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
+			return (userHasSameGemeindeAsPrincipal(benutzer))
+				|| (benutzer.getInstitution() != null
+					&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser)
+						|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return benutzer.getRole().isRoleMandant()
@@ -513,6 +547,22 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		return false;
+	}
+
+	private boolean tagesschuleBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+		if (stammdaten == null || stammdaten.getInstitutionStammdatenTagesschule() == null) {
+			return false;
+		}
+		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
+	}
+
+	private boolean ferieninselBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+		if (stammdaten == null || stammdaten.getInstitutionStammdatenFerieninsel() == null) {
+			return false;
+		}
+		return userGemeinden.contains(stammdaten.getInstitutionStammdatenFerieninsel().getGemeinde());
 	}
 
 	private boolean userBelongsToInstitutionOfPrincipal(@Nonnull Benutzer benutzer) {
@@ -550,11 +600,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationForAnyBetreuungen(@Nullable Collection<Betreuung> betreuungen) {
-		if (betreuungen != null && !betreuungen.isEmpty()
-			&& betreuungen.stream().noneMatch(this::isReadAuthorized)) {
+	public <T extends AbstractPlatz> void checkReadAuthorizationForAnyPlaetze(@Nullable Collection<T> plaetze) {
+		if (plaetze != null && !plaetze.isEmpty()
+			&& plaetze.stream().noneMatch(this::isReadAuthorized)) {
 			throw new EJBAccessException(
-				"Access Violation user is not allowed for any of these betreuungen");
+				"Access Violation user is not allowed for any of these plaetze");
 		}
 	}
 
@@ -878,8 +928,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return persistence.find(Gesuch.class, gesuchID);
 	}
 
-	private Gesuch extractGesuch(Betreuung betreuung) {
-		return betreuung.extractGesuch();
+	private Gesuch extractGesuch(AbstractPlatz platz) {
+		return platz.extractGesuch();
 	}
 
 	@Nullable

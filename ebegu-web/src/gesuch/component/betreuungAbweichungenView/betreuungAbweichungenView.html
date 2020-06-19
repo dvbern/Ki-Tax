@@ -15,10 +15,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="abweichungenView betreuungView gesuchModul">
+<div class="abweichungen-view betreuung-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-8">
             <h2>
                 <span>{{vm.getKindModel().kindJA.getFullName()}} / </span><span
@@ -30,7 +30,7 @@
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
         </div>
         <div class="col-md-4 text-right">
-            <h2 class="ebeguH2" aria-hidden>
+            <h2 class="ebegu-h2" aria-hidden>
                 {{vm.model.bgNummer}}
             </h2>
         </div>
@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div class="row marginTop40">
+    <div class="row margin-top-40">
         <div class="col-md-12">
             <span> {{vm.getHelpText()}}</span>
         </div>
@@ -50,7 +50,7 @@
     <form role="form" name="vm.form" class="" novalidate
           unsaved-warning-form>
 
-        <div class="row marginTop40">
+        <div class="row margin-top-40">
             <div class="col-md-12 table-responsive">
 
                 <table class="table">
@@ -59,6 +59,12 @@
                         <th data-translate="MONTH"></th>
                         <th>{{vm.getInputFormatTitle()}}</th>
                         <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
+                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                            data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
+                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                            data-translate="MONATLICHE_NEBENMAHLZEITEN"></th>
+                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                            data-translate="MONATLICHE_MAHLZEITEN_KOSTEN"></th>
                         <th>
                             <span data-translate="STATUS"></span>
                             <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
@@ -77,7 +83,7 @@
                                    ng-model="vm.getAbweichung($index).pensum"
                                    class="form-control  dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="vm.getAbweichung($index).monatlicheBetreuungskosten !== null && vm.getAbweichung($index).monatlicheBetreuungskosten >= 0"
+                                   ng-required="vm.isRowRequired($index)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    step="0.25"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglichesPensum}}">
@@ -90,9 +96,36 @@
                                    ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
                                    dv-max-length class="form-control dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="vm.getAbweichung($index).pensum !== null && vm.getAbweichung($index).pensum >= 0"
+                                   ng-required="vm.isRowRequired($index)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheKosten}}">
+                        </td>
+                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                            <input aria-describedby="hauptmahlzeiten-{{$index}}-error"
+                                   id="hauptmahlzeiten-{{$index}}" type="number"
+                                   name="hauptmahlzeiten-{{$index}}"
+                                   ng-change="vm.updateStatus({{$index}})"
+                                   ng-model="vm.getAbweichung($index).monatlicheHauptmahlzeiten"
+                                   dv-max-length class="form-control dv-input-container-medium"
+                                   ng-disabled="{{vm.isDisabled($index)}}"
+                                   step="1"
+                                   ng-required="vm.isRowRequired($index)"
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheHauptmahlzeiten}}">
+                        </td>
+                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                            <input aria-describedby="nebenmahlzeiten-{{$index}}-error"
+                                   id="nebenmahlzeiten-{{$index}}" type="number"
+                                   name="nebenmahlzeiten-{{$index}}"
+                                   ng-change="vm.updateStatus({{$index}})"
+                                   ng-model="vm.getAbweichung($index).monatlicheNebenmahlzeiten"
+                                   dv-max-length class="form-control dv-input-container-medium"
+                                   ng-disabled="{{vm.isDisabled($index)}}"
+                                   step="1"
+                                   ng-required="vm.isRowRequired($index)"
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheNebenmahlzeiten}}">
+                        </td>
+                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                            {{vm.getMonthlyMahlzeitenKosten($index)}}
                         </td>
                         <td>
                             <span class="fa {{vm.getIcon($index)}}" aria-hidden="true" title="{{vm.getIconTooltip($index)}}"></span>

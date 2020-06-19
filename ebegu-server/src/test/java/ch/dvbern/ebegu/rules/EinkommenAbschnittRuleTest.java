@@ -52,7 +52,7 @@ public class EinkommenAbschnittRuleTest {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_FINANZIELLE_SITUATION, null, null);
 
 		Assert.assertEquals(1, zeitabschnitte.size());
-		Assert.assertEquals(0, EINKOMMEN_FINANZIELLE_SITUATION.compareTo(zeitabschnitte.get(0).getMassgebendesEinkommen()));
+		Assert.assertEquals(0, EINKOMMEN_FINANZIELLE_SITUATION.compareTo(zeitabschnitte.get(0).getRelevantBgCalculationInput().getMassgebendesEinkommen()));
 	}
 
 	@Test
@@ -143,8 +143,8 @@ public class EinkommenAbschnittRuleTest {
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 			verfuegungZeitabschnitt.getBgCalculationResultAsiv().roundAllValues();
 			ExpectedResult expectedResult = expectedResults[i++];
-			Assert.assertEquals(MathUtil.DEFAULT.from(expectedResult.massgebendesEinkommen), verfuegungZeitabschnitt.getMassgebendesEinkommen());
-			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getEinkommensjahr());
+			Assert.assertTrue(MathUtil.isSame(expectedResult.massgebendesEinkommen, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getMassgebendesEinkommen()));
+			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getEinkommensjahr());
 			Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getBemerkungen());
 		}
 	}
@@ -174,7 +174,7 @@ public class EinkommenAbschnittRuleTest {
 			TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), ekv2, false);
 		}
 		TestDataUtil.calculateFinanzDaten(gesuch);
-		List<VerfuegungZeitabschnitt> zeitabschnitte = einkommenAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = einkommenAbschnittRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		zeitabschnitte = einkommenCalcRule.calculate(betreuung, zeitabschnitte);
 		Assert.assertNotNull(zeitabschnitte);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitte);

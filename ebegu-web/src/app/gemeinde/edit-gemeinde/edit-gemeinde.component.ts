@@ -27,6 +27,8 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
+import {TSExternalClient} from '../../../models/TSExternalClient';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSTextRessource} from '../../../models/TSTextRessource';
@@ -71,6 +73,9 @@ export class EditGemeindeComponent implements OnInit {
     public tsAnmeldungenStartDatum: Moment;
     public fiAnmeldungenStartDatum: Moment;
     private readonly startDatumFormat = 'DD.MM.YYYY';
+    private initiallyAssignedClients: TSExternalClient[];
+    public externalClients: TSExternalClientAssignment;
+    public usernameScolaris: string;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -104,10 +109,22 @@ export class EditGemeindeComponent implements OnInit {
         this.currentTab = 0;
     }
 
+    private fetchExternalClients(gemeindeId: string): void {
+        this.gemeindeRS.getExternalClients(gemeindeId)
+            .then(externalClients => this.initExternalClients(externalClients));
+    }
+
+    private initExternalClients(externalClients: TSExternalClientAssignment): void {
+        this.externalClients = externalClients;
+        // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
+        this.initiallyAssignedClients = [...externalClients.assignedClients];
+    }
+
     private loadStammdaten(): void {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.initializeEmptyUnrequiredFields(stammdaten);
+                this.fetchExternalClients(this.gemeindeId);
                 if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
                     stammdaten.adresse = new TSAdresse();
                 }
@@ -123,17 +140,23 @@ export class EditGemeindeComponent implements OnInit {
                     this.fiAnmeldungenStartDatum = stammdaten.gemeinde.ferieninselanmeldungenStartdatum;
                     this.fiAnmeldungenStartStr = this.fiAnmeldungenStartDatum.format(this.startDatumFormat);
                 }
+
+                this.initialFIValue = stammdaten.gemeinde.angebotFI;
+
+                if (EbeguUtil.isNotNullOrUndefined(stammdaten.usernameScolaris)) {
+                    this.usernameScolaris = stammdaten.usernameScolaris;
+                }
                 return stammdaten;
             }));
 
         this.stammdaten$.subscribe(stammdaten => {
-            this.initialBGValue = stammdaten.gemeinde.angebotBG;
-            this.initialTSValue = stammdaten.gemeinde.angebotTS;
-            this.initialFIValue = stammdaten.gemeinde.angebotFI;
-        },
-        err => {
-            LOG.error(err);
-        });
+                this.initialBGValue = stammdaten.gemeinde.angebotBG;
+                this.initialTSValue = stammdaten.gemeinde.angebotTS;
+                this.initialFIValue = stammdaten.gemeinde.angebotFI;
+            },
+            err => {
+                LOG.error(err);
+            });
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
@@ -191,8 +214,11 @@ export class EditGemeindeComponent implements OnInit {
             this.setViewMode();
 
             this.errorService.clearAll();
-
             this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
+            stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
+            stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
+                ? undefined
+                : this.usernameScolaris;
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
                 if (this.fileToUpload) {
@@ -203,7 +229,12 @@ export class EditGemeindeComponent implements OnInit {
                 }
             });
 
-            this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
+            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
+                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
+                    this.loadStammdaten();
+                }
+                this.updateExternalClients();
+            });
 
             // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
             // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
@@ -211,10 +242,31 @@ export class EditGemeindeComponent implements OnInit {
         });
     }
 
+    private updateExternalClients(): void {
+        // the removed assigned clients need to be added in the available clients
+        this.initiallyAssignedClients.forEach(initiallyAssignedClient => {
+            if (this.externalClients.assignedClients.length === 0 || this.externalClients.assignedClients.filter(
+                assignedClient => assignedClient.id === initiallyAssignedClient.id).length === 0) {
+                this.externalClients.availableClients.push(initiallyAssignedClient);
+            }
+        });
+        this.initiallyAssignedClients = this.externalClients.assignedClients;
+        // the newly added assigned clients need to be removed from the available clients
+        this.externalClients.assignedClients.forEach(assignedClient => {
+            if (this.externalClients.availableClients.filter(
+                availableClient => availableClient.id === assignedClient.id).length > 0) {
+                const clientIndex = this.externalClients.availableClients.indexOf(assignedClient);
+                this.externalClients.availableClients.splice(clientIndex, 1);
+            }
+        });
+    }
+
     private setEmptyUnrequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
-        if (this.keineBeschwerdeAdresse) {
-            // Reset Beschwerdeadresse if not used
+        if (this.keineBeschwerdeAdresse || !stammdaten.standardRechtsmittelbelehrung) {
+            // Reset Beschwerdeadresse if not used:
+            // Wenn nicht angewählt, oder wenn nicht Standard-Rechtsmittelbelehrung
             stammdaten.beschwerdeAdresse = undefined;
+
         }
         if (!this.altBGAdresse) {
             // Reset BGAdresse if not used
@@ -223,6 +275,9 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.altTSAdresse) {
             // Reset BGAdresse if not used
             stammdaten.tsAdresse = undefined;
+        }
+        if (!this.usernameScolaris) {
+            stammdaten.usernameScolaris = undefined;
         }
         if (stammdaten.standardRechtsmittelbelehrung) {
             // reset custom Rechtsmittelbelehrung if checkbox not checked
@@ -257,7 +312,7 @@ export class EditGemeindeComponent implements OnInit {
 
         this.forms.forEach((form, index) => {
             // do not override the index of the first error found!
-            if (!form.valid && errorIndex === undefined) {
+            if (!form.disabled && !form.valid && errorIndex === undefined) {
                 errorIndex = index - 1;
             }
         });
@@ -331,6 +386,10 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public isGemeindeEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeOrMandantRole());
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

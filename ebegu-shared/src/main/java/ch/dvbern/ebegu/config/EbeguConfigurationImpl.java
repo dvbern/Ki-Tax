@@ -50,6 +50,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_DUMMY_LOGIN_ENABLED = "ebegu.dummy.login.enabled";
 	private static final String EBEGU_ZAHLUNGEN_TEST_MODE = "ebegu.zahlungen.test.mode";
 	private static final String EBEGU_PERSONENSUCHE_DISABLED = "ebegu.personensuche.disabled";
+	private static final String EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE = "ebegu.personensuche.use.dummyservice";
 	private static final String EBEGU_PERSONENSUCHE_ENDPOINT = "ebegu.personensuche.endpoint";
 	private static final String EBEGU_PERSONENSUCHE_WSDL = "ebegu.personensuche.wsdl";
 	private static final String EBEGU_PERSONENSUCHE_USERNAME = "ebegu.personensuche.username";
@@ -66,13 +67,18 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_PERSONENSUCHE_GERES_ENDPOINT = "ebegu.personensuche.geres.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_GERES_WSDL = "ebegu.personensuche.geres.wsdl";
 
+
+	public static final String EBEGU_KITAX_HOST = "ebegu.kitax.host";
+	public static final String EBEGU_KITAX_ENDPOINT = "ebegu.kitax.endpoint";
+
 	public static final String EBEGU_LOGIN_PROVIDER_API_URL = "ebegu.login.provider.api.url";
 	private static final String EBEGU_LOGIN_API_ALLOW_REMOTE = "ebegu.login.api.allow.remote";
 	private static final String EBEGU_LOGIN_API_INTERNAL_USER = "ebegu.login.api.internal.user";
 	private static final String EBEGU_LOGIN_API_INTERNAL_PASSWORD = "ebegu.login.api.internal.password";
 	private static final String EBEGU_FORCE_COOKIE_SECURE_FLAG = "ebegu.force.cookie.secure.flag";
-	private static final String EBEGU_LOGIN_API_SCHULAMT_USER = "ebegu.login.api.schulamt.user";
-	private static final String EBEGU_LOGIN_API_SCHULAMT_PASSWORD = "ebegu.login.api.schulamt.password";
+	private static final String EBEGU_LOGIN_API_KEYCLOACK_CLIENT = "ebegu.login.api.keycloack.client";
+	private static final String EBEGU_LOGIN_API_KEYCLOACK_PASSWORD = "ebegu.login.api.keycloack.password";
+	private static final String EBEGU_LOGIN_API_KEYCLOACK_AUTHSERVER = "ebegu.login.api.keycloack.authserver";
 	private static final String EBEGU_TESTFAELLE_ENABLED = "ebegu.testfaelle.enabled";
 	private static final String EBEGU_ADMINISTRATOR_MAIL = "ebegu.admin.mail";
 	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
@@ -153,6 +159,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
+	public boolean usePersonenSucheDummyService() {
+		return getBoolean(EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE, true);
+	}
+
+	@Override
 	public String getPersonenSucheEndpoint() {
 		return getString(EBEGU_PERSONENSUCHE_ENDPOINT);
 	}
@@ -204,13 +215,18 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
-	public String getSchulamtAPIUser() {
-		return getString(EBEGU_LOGIN_API_SCHULAMT_USER);
+	public String getKeycloackClient() {
+		return getString(EBEGU_LOGIN_API_KEYCLOACK_CLIENT);
 	}
 
 	@Override
-	public String getSchulamtAPIPassword() {
-		return getString(EBEGU_LOGIN_API_SCHULAMT_PASSWORD);
+	public String getKeycloackPassword() {
+		return getString(EBEGU_LOGIN_API_KEYCLOACK_PASSWORD);
+	}
+
+	@Override
+	public String getKeycloackAuthServer() {
+		return getString(EBEGU_LOGIN_API_KEYCLOACK_AUTHSERVER);
 	}
 
 	@Override
@@ -328,5 +344,15 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getEbeguPersonensucheGERESWsdl() {
 		return getString(EBEGU_PERSONENSUCHE_GERES_WSDL);
+	}
+
+	@Override
+	public String getKitaxHost() {
+		return getString(EBEGU_KITAX_HOST, "https://ebegu.dvbern.ch");
+	}
+
+	@Override
+	public String getKitaxEndpoint() {
+		return getString(EBEGU_KITAX_ENDPOINT, "/ebegu/api/v1/kibon/lookup");
 	}
 }

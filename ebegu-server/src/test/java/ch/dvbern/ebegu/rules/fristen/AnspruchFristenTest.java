@@ -29,12 +29,12 @@ import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -114,14 +114,13 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 75, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 0, 0);
@@ -181,14 +180,13 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 75, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 0, 0);
@@ -370,14 +368,9 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		neuesEWP.setErwerbspensumJA(new Erwerbspensum());
 		Assert.assertNotNull(neuesEWP.getErwerbspensumJA());
 		neuesEWP.getErwerbspensumJA().setPensum(neuesPensum);
+		neuesEWP.getErwerbspensumJA().setTaetigkeit(Taetigkeit.ANGESTELLT);
 		neuesEWP.getErwerbspensumJA().getGueltigkeit().setGueltigAb(stichtag);
 		gesuch.getGesuchsteller1().getErwerbspensenContainers().add(neuesEWP);
-	}
-
-	private void addBetreuung(@Nonnull KindContainer kind) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 100,  BigDecimal.valueOf(2000));
-		kind.getBetreuungen().add(betreuung);
-		betreuung.setKind(kind);
 	}
 }
 

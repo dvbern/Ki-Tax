@@ -13,7 +13,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="kommentarView">
+<div class="kommentar-view">
     <form role="form" name="vm.form" class="" novalidate layout="column">
         <!--bemerkungen intern-->
         <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
@@ -30,8 +30,10 @@
             </div>
         </div>
 
-        <div class="kommentarEwk kommentar-padding" dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForEWKAbfrage()">
+        <div class="kommentarEwk kommentar-padding"
+             dv-show-element
+             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForEWKAbfrage()"
+             dv-show-expression="vm.showGeresAbfrage()">
             <div>
                 <button type="button" ng-click="vm.toggleEwkSidenav()"
                         class="dv-btn kommentar-button" aria-label="{{'EWK_ABFRAGE_STARTEN' | translate}}">

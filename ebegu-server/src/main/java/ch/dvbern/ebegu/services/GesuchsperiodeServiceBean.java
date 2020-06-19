@@ -38,10 +38,11 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -100,9 +101,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	private DossierService dossierService;
 
 	@Inject
-	private FerieninselStammdatenService ferieninselStammdatenService;
-
-	@Inject
 	private EinstellungService einstellungService;
 
 	@Inject
@@ -110,6 +108,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private FerieninselStammdatenService ferieninselStammdatenService;
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
@@ -155,6 +156,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
 				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
 
+				// Die Einstellungen der Ferieninseln sollen ebenfalls für die neue Gesuchsperiode übernommen werden
+				ferieninselStammdatenService.copyEinstellungenFerieninselToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+
 				//Die Gemeinde Gesuchsperiode Stammdaten sollen auch für die neue Gesuchsperiode übernommen werden
 				gemeindeService.copyGesuchsperiodeGemeindeStammdaten(gesuchsperiode, lastGesuchsperiode);
 
@@ -177,7 +181,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		logStatusChange(gesuchsperiode, statusBisher);
 		// Superadmin darf alles
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)
-				&& !isStatusUebergangValid(statusBisher, gesuchsperiode.getStatus())) {
+			&& !isStatusUebergangValid(statusBisher, gesuchsperiode.getStatus())) {
 			throw new EbeguRuntimeException(
 				"saveGesuchsperiode",
 				ErrorCodeEnum.ERROR_GESUCHSPERIODE_INVALID_STATUSUEBERGANG,
@@ -200,7 +204,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		// Prüfen, dass ALLE Gesuche dieser Periode im Status "Verfügt" oder "Schulamt" sind. Sind noch
 		// Gesuce in Bearbeitung, oder in Beschwerde etc. darf nicht geschlossen werden!
 		if (GesuchsperiodeStatus.GESCHLOSSEN == gesuchsperiode.getStatus()
-				&& !gesuchService.canGesuchsperiodeBeClosed(gesuchsperiode)) {
+			&& !gesuchService.canGesuchsperiodeBeClosed(gesuchsperiode)) {
 			throw new EbeguRuntimeException(
 				"saveGesuchsperiode",
 				ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_CLOSED);
@@ -275,10 +279,17 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				removeFallIfEmpty(fall, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 			}
 			// FerieninselStammdaten dieser Gesuchsperiode loeschen
-			Collection<FerieninselStammdaten> ferieninselStammdatenList =
-				ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsPeriodeId);
-			for (FerieninselStammdaten ferieninselStammdaten : ferieninselStammdatenList) {
+			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
+				ferieninselStammdatenService.findGesuchsperiodeFerieninselByGemeindeAndPeriode(null, gesuchsPeriodeId);
+			for (GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
+			}
+
+			// EinstellungenFerieninsel dieser Gesuchsperiode loeschen
+			Collection<EinstellungenFerieninsel> einstellungenFerieninselList =
+				ferieninselStammdatenService.findEinstellungenFerieninselByGesuchsperiode(gesuchsperiode);
+			for (EinstellungenFerieninsel einstellungenFerieninsel : einstellungenFerieninselList) {
+				persistence.remove(einstellungenFerieninsel);
 			}
 
 			// EinstellungenTagesschule dieser Gesuchsperiode loeschen
@@ -291,7 +302,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			// GemeindeGesuchsperiodeStammdaten dieser Gesuchsperiode loeschen
 			Collection<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeList =
 				gemeindeService.findGemeindeStammdatenGesuchsperiode(gesuchsperiode);
-			for(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode: gemeindeStammdatenGesuchsperiodeList){
+			for (GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode :
+				gemeindeStammdatenGesuchsperiodeList) {
 				persistence.remove(gemeindeStammdatenGesuchsperiode);
 			}
 
@@ -334,27 +346,35 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV);
 	}
 
-	/**
-	 * @return all Gesuchsperioden that have a gueltigkeitBis Date that is in the future (compared to the current date)
-	 */
 	@Override
 	@Nonnull
 	@PermitAll
 	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden() {
+		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV,
+			GesuchsperiodeStatus.ENTWURF);
+	}
+
+	/**
+	 * @return all Gesuchsperiode who are in status Aktiv or Inaktiv
+	 */
+	@Override
+	@Nonnull
+	@PermitAll
+	public Collection<Gesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
 		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
 	}
 
 	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
+	public Collection<Gesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
 		@Nonnull String dossierId
 	) {
 		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() ->
-			new EbeguEntityNotFoundException("getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden",
+			new EbeguEntityNotFoundException("getAllAktivInaktivNichtVerwendeteGesuchsperioden",
 				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, dossierId)
 		);
-		final Collection<Gesuchsperiode> nichtAbgeschlossenePerioden = getAllNichtAbgeschlosseneGesuchsperioden();
+		final Collection<Gesuchsperiode> nichtAbgeschlossenePerioden = getAllAktivUndInaktivGesuchsperioden();
 
 		filterAllGesuchperiodenForDossier(dossier, nichtAbgeschlossenePerioden);
 		return nichtAbgeschlossenePerioden;
@@ -480,7 +500,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				gesuchsperiodeId)
 		);
 
-		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+		if (dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gesuchsperiode.setVerfuegungErlaeuterungenDe(content);
 			} else if (sprache == Sprache.FRANZOESISCH) {
@@ -489,8 +509,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
 				return gesuchsperiode;
 			}
-		}
-		else if(dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gesuchsperiode.setVorlageMerkblattTsDe(content);
 			} else if (sprache == Sprache.FRANZOESISCH) {
@@ -499,8 +518,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
 				return gesuchsperiode;
 			}
-		}
-		else{
+		} else {
 			return gesuchsperiode;
 		}
 		return saveGesuchsperiode(gesuchsperiode);
@@ -508,7 +526,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public Gesuchsperiode removeGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
+	public Gesuchsperiode removeGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
 
@@ -518,7 +537,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeId)
 		);
-		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+		if (dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gesuchsperiode.setVerfuegungErlaeuterungenDe(null);
 			} else if (sprache == Sprache.FRANZOESISCH) {
@@ -527,7 +546,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
 				return gesuchsperiode;
 			}
-		}	else if(dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gesuchsperiode.setVorlageMerkblattTsDe(null);
 			} else if (sprache == Sprache.FRANZOESISCH) {
@@ -536,8 +555,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
 				return gesuchsperiode;
 			}
-		}
-		else{
+		} else {
 			return gesuchsperiode;
 		}
 
@@ -548,7 +566,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
 		SACHBEARBEITER_GEMEINDE,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public boolean existDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
+	public boolean existDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
 
@@ -558,10 +577,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeId)
 		);
-		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+		if (dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
 			return gesuchsperiode.getVerfuegungErlaeuterungWithSprache(sprache).length != 0;
-		}
-		else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
 			return gesuchsperiode.getVorlageMerkblattTsWithSprache(sprache).length != 0;
 		}
 
@@ -573,12 +591,11 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	public byte[] downloadGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
 		@Nonnull DokumentTyp dokumentTyp) {
 		final Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(gesuchsperiodeId);
-		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+		if (dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
 			return gesuchsperiode
 				.map(gesuchsperiode1 -> gesuchsperiode1.getVerfuegungErlaeuterungWithSprache(sprache))
 				.orElse(null);
-		}
-		else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
 			return gesuchsperiode
 				.map(gesuchsperiode1 -> gesuchsperiode1.getVorlageMerkblattTsWithSprache(sprache))
 				.orElse(null);

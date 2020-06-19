@@ -84,6 +84,7 @@ import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -309,8 +310,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 
 			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch, sprache.getLocale());
-			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(),
-				true);
+			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 			boolean writeProtectPDF = forceCreation;
 			byte[] data = pdfService.generateFinanzielleSituation(gesuch,
 				famGroessenVerfuegung,
@@ -619,8 +619,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	private BetreuungsgutscheinEvaluator initEvaluator(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
 		List<Rule> rules =
-			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), locale);
+			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, locale);
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
@@ -673,8 +674,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			Betreuung matchedBetreuung = gesuchWithVerfuegung.extractBetreuungById(betreuung.getId());
 			if (matchedBetreuung != null) {
 				if (!manuelleBemerkungen.isEmpty()) {
-					Validate.notNull(matchedBetreuung.getVerfuegung());
-					matchedBetreuung.getVerfuegung().setManuelleBemerkungen(manuelleBemerkungen);
+					Validate.notNull(matchedBetreuung.getVerfuegungOrVerfuegungPreview());
+					matchedBetreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen(manuelleBemerkungen);
 				}
 
 				Optional<LocalDate> optVorherigeVerfuegungDate =
@@ -920,7 +921,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 					monat);
 				auszahlungDTO.setZahlungText(zahlungstext);
 
-				pain001DTO.getAuszahlungen().add(auszahlungDTO);
+				// Wenn Empfänger und Auszahler dasselbe Konto sind, soll es nicht ins PAIN File. Dies ist z.B. Gemeinde-Kitas der Fall.
+				if (!debitorIban.equals(auszahlungDTO.getZahlungsempfaegerIBAN())) {
+					pain001DTO.getAuszahlungen().add(auszahlungDTO);
+				}
 			});
 
 		return pain001DTO;

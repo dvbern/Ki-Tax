@@ -1,0 +1,511 @@
+/*
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
+import {Transition} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
+import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
+import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
+import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {UploadRS} from '../../core/service/uploadRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
+
+@Component({
+    selector: 'dv-rueckforderung-formular',
+    templateUrl: './rueckforderung-formular.component.html',
+    styleUrls: ['./rueckforderung-formular.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class RueckforderungFormularComponent implements OnInit {
+    public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
+        return this._rueckforderungZahlungenList;
+    }
+
+    @ViewChild(NgForm) private readonly form: NgForm;
+
+    public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
+
+    // Checkbox for Institution:
+    public betreuungKorrektAusgewiesen: boolean;
+    public gutscheinPlaetzenReduziert: boolean;
+    public erstattungGemaessKanton: boolean;
+    public mahlzeitenBGSubventionenGebuehrensystem: boolean;
+    public belegeEinreichenBetrageKantonZurueckfordern: boolean;
+    private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
+    private _stufe1ProvBetrag: number;
+    private _stufe2ProvBetrag: number;
+
+    public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
+
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly translate: TranslateService,
+        private readonly notrechtRS: NotrechtRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly dialog: MatDialog,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly i18nServiceRS: I18nServiceRSRest,
+        private readonly uploadRS: UploadRS,
+        private readonly cdr: ChangeDetectorRef,
+    ) {
+    }
+
+    public ngOnInit(): void {
+        const rueckforederungFormId: string = this.$transition$.params().rueckforderungId;
+
+        if (!rueckforederungFormId) {
+            return;
+        }
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
+                (response: TSRueckforderungFormular) => {
+                    this.initRueckforderungZahlungen(response);
+                    this.initDokumente(response);
+                    if (this.isPruefungKantonStufe1(response)) {
+                        this.calculateKantonProvBetrag(response, true);
+                    }
+                    if (this.isInstitutionStufe2(response)) {
+                        this.calculateInstiProvBetrag(response, false);
+                    }
+                    return response;
+                }));
+    }
+
+    public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (!this.form.valid) {
+            EbeguUtil.selectFirstInvalid();
+            return;
+        }
+        if (isNeuOrEingeladenStatus(rueckforderungFormular.status)) {
+            return;
+        }
+
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
+            text: '',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.doSave(rueckforderungFormular);
+                    this.changeDetectorRef.markForCheck();
+                },
+                () => {
+                });
+    }
+
+    private doSave(rueckforderungFormular: TSRueckforderungFormular): void {
+        // Status wechseln:
+        switch (rueckforderungFormular.status) {
+            case TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1: {
+                if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+                    break;
+                }
+                rueckforderungFormular.status = TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1;
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden = rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage = rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
+                rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung = rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
+                break;
+            }
+            case TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1: {
+                if (this.authServiceRS.isOneOfRoles(
+                    [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+                    rueckforderungFormular.status = TSRueckforderungStatus.GEPRUEFT_STUFE_1;
+                }
+                break;
+            }
+            case TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
+                if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+                    break;
+                }
+                rueckforderungFormular.status = TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
+                rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden = rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+                rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage = rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+                rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung = rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+                break;
+            }
+            default:
+                break;
+        }
+
+        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular)
+            .then((response: TSRueckforderungFormular) => {
+                this.initRueckforderungZahlungen(response);
+                return response;
+            }));
+    }
+
+    public rueckforderungAbschliessen(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            rueckforderungFormular.status = TSRueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH;
+        } else {
+            // ERROR transition not accepted
+            return;
+        }
+
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
+            text: '',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        rueckforderungFormular.status = TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1;
+                        this.changeDetectorRef.markForCheck();
+                        return;
+                    }
+                    this.doSave(rueckforderungFormular);
+                },
+                () => {
+                });
+    }
+
+    public initRueckforderungZahlungen(rueckfordeungFormular: TSRueckforderungFormular): void {
+        this._rueckforderungZahlungenList = [];
+        if (EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeBetrag)) {
+            const rueckforderungZahlungStufe1 = new TSRueckforderungZahlung();
+            rueckforderungZahlungStufe1.betrag = rueckfordeungFormular.stufe1FreigabeBetrag;
+            rueckforderungZahlungStufe1.datumErstellt = rueckfordeungFormular.stufe1FreigabeDatum;
+            rueckforderungZahlungStufe1.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_STUFE_1';
+            rueckforderungZahlungStufe1.ausgeloest =
+                EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeAusbezahltAm);
+            this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe1);
+        }
+        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungBetrag)) {
+            return;
+        }
+        const rueckforderungZahlungStufe2 = new TSRueckforderungZahlung();
+        rueckforderungZahlungStufe2.betrag = rueckfordeungFormular.stufe2VerfuegungBetrag;
+        rueckforderungZahlungStufe2.datumErstellt = rueckfordeungFormular.stufe2VerfuegungDatum;
+        rueckforderungZahlungStufe2.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_STUFE_2';
+        rueckforderungZahlungStufe2.ausgeloest =
+            EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungAusbezahltAm);
+        this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe2);
+
+    }
+
+    public enableRueckforderungAbschliessen(): boolean {
+        return this.betreuungKorrektAusgewiesen
+            && this.gutscheinPlaetzenReduziert
+            && this.erstattungGemaessKanton
+            && this.mahlzeitenBGSubventionenGebuehrensystem
+            && this.belegeEinreichenBetrageKantonZurueckfordern;
+    }
+
+    public isInstitutionStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isPruefungKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
+    public isPruefungKantonStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
+    public isGeprueftKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
+            && this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAllRolesForNotrecht())) {
+            return true;
+        }
+        return false;
+    }
+
+    public showAbsendenText(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public translateStatus(status: string): string {
+        return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
+    }
+
+    public isKitaAngebot(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
+    }
+
+    public calculateInstiProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
+        this.stufe1ProvBetrag = undefined;
+        this.stufe2ProvBetrag = undefined;
+        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
+            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
+            return;
+        }
+        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
+            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+
+        if (this.isKitaAngebot(rueckforderungFormular)
+            && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
+            if (isStufe1) {
+                this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+                return;
+            }
+            this.stufe2ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+            return;
+        }
+        const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
+            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
+            return;
+        }
+        if (isStufe1) {
+            this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+            return;
+        }
+        this.stufe2ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+        return;
+    }
+
+    public calculateKantonProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
+        this.stufe1ProvBetrag = undefined;
+        this.stufe2ProvBetrag = undefined;
+        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
+            : rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung;
+        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
+            return;
+        }
+        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
+            : rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage;
+
+        if (this.isKitaAngebot(rueckforderungFormular)
+            && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
+            if (isStufe1) {
+                this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+                return;
+            }
+            this.stufe2ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+            return;
+        }
+        const kostenuebernahmeAnzahlStunden = isStufe1
+            ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
+            : rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden;
+        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
+            return;
+        }
+        if (isStufe1) {
+            this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+            return;
+        }
+        this.stufe2ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+        return;
+    }
+
+    public get stufe1ProvBetrag(): number {
+        return this._stufe1ProvBetrag;
+    }
+
+    public set stufe1ProvBetrag(stufe1ProvBetrag: number) {
+        this._stufe1ProvBetrag = stufe1ProvBetrag;
+    }
+
+    public get stufe2ProvBetrag(): number {
+        return this._stufe2ProvBetrag;
+    }
+
+    public set stufe2ProvBetrag(stufe2ProvBetrag: number) {
+        this._stufe2ProvBetrag = stufe2ProvBetrag;
+    }
+
+    public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        const language = this.i18nServiceRS.currentLanguage();
+        const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
+        this.downloadRS.getAccessTokenNotrechtvorlage(language, angebotTyp)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public get rueckforderungDokumentTyp(): typeof TSRueckforderungDokumentTyp {
+        return TSRueckforderungDokumentTyp;
+    }
+
+    public uploadRuckforderungDokumente(event: any, rueckforderungFormularId: string,
+                                        tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp): void {
+        const files = event.target.files;
+        const filesTooBig: any[] = [];
+        const filesOk: any[] = [];
+        for (const file of files) {
+            if (file.size > MAX_FILE_SIZE) {
+                filesTooBig.push(file);
+            } else {
+                filesOk.push(file);
+            }
+        }
+        if (filesTooBig.length > 0) {
+            // DialogBox anzeigen für Files, welche zu gross sind!
+
+            let fileListString = '<ul>';
+            for (const file of filesTooBig) {
+                fileListString += '<li>';
+                fileListString += file.name;
+                fileListString += '</li>';
+            }
+            fileListString += '</ul>';
+            this.showFileTooBigDialog(fileListString);
+            return;
+        }
+        if (filesOk.length <= 0) {
+            return;
+        }
+        this.uploadRS.uploadRueckforderungsDokumente(filesOk, rueckforderungFormularId, tsRueckforderungDokumentTyp)
+            .then(rueckforderungDokumente => {
+                switch (tsRueckforderungDokumentTyp) {
+                    case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungAngabenDokumente.push(dokument));
+                        this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                        this.cdr.markForCheck();
+                        break;
+                    case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                    case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                    default:
+                        return;
+                }
+            });
+    }
+
+    private showFileTooBigDialog(text: string): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('FILE_ZU_GROSS'),
+            text: `${text}`
+        };
+        this.dialog
+            .open(DvNgOkDialogComponent, dialogConfig);
+    }
+
+    public initDokumente(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.notrechtRS.getRueckforderungDokumente(
+            rueckforderungFormular.id)
+            .then(rueckforderungDokumente => {
+                this.rueckforderungAngabenDokumente = rueckforderungDokumente.filter(
+                    dokument => dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
+                this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                this.cdr.markForCheck();
+            });
+    }
+
+    public delete(dokument: TSRueckforderungDokument): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
+            text: ''
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                userAccepted => {
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.notrechtRS.deleteRueckforderungDokument(dokument.id).then(() => {
+                        switch (dokument.rueckforderungDokumentTyp) {
+                            case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungAngabenDokumente);
+                                this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                            case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                            default:
+                                return;
+                        }
+
+                    });
+                },
+                () => {
+                }
+            );
+    }
+
+    private removeFromList(dokument: TSRueckforderungDokument,
+                           rueckforderungDokumente: TSRueckforderungDokument[]): void {
+        const idx = EbeguUtil.getIndexOfElementwithID(dokument, rueckforderungDokumente);
+        if (idx > -1) {
+            rueckforderungDokumente.splice(idx, 1);
+        }
+    }
+
+    public download(dokument: TSRueckforderungDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenRueckforderungDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public showDokumentenUpload(): boolean {
+        return false;
+    }
+}

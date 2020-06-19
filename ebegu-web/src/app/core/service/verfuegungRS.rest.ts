@@ -15,6 +15,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -84,5 +85,13 @@ export class VerfuegungRS {
                     return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
                 });
             });
+    }
+
+    public anmeldungUebernehmen(
+        betreuung: TSBetreuung
+    ): IPromise<TSBetreuung> {
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        return this.http.put(`${this.serviceURL}/anmeldung/uebernehmen`, restBetreuung)
+            .then(response => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
     }
 }

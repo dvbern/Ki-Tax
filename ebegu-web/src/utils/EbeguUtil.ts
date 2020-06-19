@@ -218,6 +218,14 @@ export class EbeguUtil {
         return this.isNotNullOrUndefined(data) && !data;
     }
 
+    public static isNullOrFalse(data: boolean): boolean {
+        return this.isNullOrUndefined(data) || !data;
+    }
+
+    public static isNotNullAndPositive(data: number): boolean {
+        return this.isNotNullOrUndefined(data) && data >= 0;
+    }
+
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
     }
@@ -303,6 +311,37 @@ export class EbeguUtil {
             list.splice(index, 1);
             EbeguUtil.handleSmarttablesUpdateBug(list);
         }
+    }
+
+    public static formatHrefUrl(url: string): string {
+        if (EbeguUtil.isNotNullOrUndefined(url) && url.startsWith('www.')) {
+            return 'http://' + url;
+        }
+        return url;
+    }
+
+    public static zemisNummerToStandardZemisNummer(zemisNummer: string): string {
+        if (!zemisNummer) {
+            return zemisNummer;
+        }
+
+        const re1 = /^0\d{8}\.\d$/m; // format 012345678.9
+        const re2 = /^\d{3}\.\d{3}\.\d{3}[.-]\d$/m; // format 012.345.678.9 | 012.345.678-9
+        let standardZemisNummer;
+        if (zemisNummer.match(re1)) {
+            standardZemisNummer = zemisNummer.slice(1);
+        } else if (zemisNummer.match(re2)) {
+            const tmp = zemisNummer
+                .replace(/[\\.-]/g, '')
+                .slice(1);
+            standardZemisNummer = `${tmp.slice(0, 8)}.${tmp.slice(-1)}`;
+        } else {
+            standardZemisNummer = zemisNummer;
+        }
+        if (!(new RegExp(CONSTANTS.PATTERN_ZEMIS_NUMMER, 'm')).test(zemisNummer)) {
+            throw new Error(`Wrong Format for ZEMIS-Nummer ${zemisNummer}`);
+        }
+        return standardZemisNummer;
     }
 
     /**

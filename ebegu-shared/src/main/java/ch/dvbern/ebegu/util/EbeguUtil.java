@@ -131,7 +131,8 @@ public final class EbeguUtil {
 		return gesuchMap;
 	}
 
-	public static boolean isSameObject(@Nullable AbstractEntity thisEntity, @Nullable AbstractEntity otherEntity) {
+	// All die isSame Methoden finde ich aber fürchterlich komplex. Besser wäre es, Comparators zu definieren.
+	public static boolean isSame(@Nullable AbstractEntity thisEntity, @Nullable AbstractEntity otherEntity) {
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && thisEntity.isSame(otherEntity));
 	}
@@ -159,6 +160,14 @@ public final class EbeguUtil {
 
 	public static boolean isNullOrFalse(@Nullable Boolean value) {
 		return value == null || !value;
+	}
+
+	public static boolean isNotNullAndTrue(@Nullable Boolean value) {
+		return value != null && value;
+	}
+
+	public static boolean isNotNullAndFalse(@Nullable Boolean value) {
+		return value != null && !value;
 	}
 
 	/**
@@ -192,6 +201,14 @@ public final class EbeguUtil {
 		return gesuch.getGesuchsteller1() == null
 			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
 			|| gesuch.getEinkommensverschlechterungInfoContainer() == null;
+	}
+
+	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
+		return gesuch.getFamiliensituationContainer() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+			&& (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
+			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger()))
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() != null;
 	}
 
 	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {

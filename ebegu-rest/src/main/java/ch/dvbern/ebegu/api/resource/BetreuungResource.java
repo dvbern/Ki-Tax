@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.Validate;
@@ -94,6 +95,8 @@ public class BetreuungResource {
 	private ResourceHelper resourceHelper;
 	@Inject
 	private GesuchService gesuchService;
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@ApiOperation(value = "Speichert eine Betreuung in der Datenbank", response = JaxBetreuung.class)
 	@Nonnull
@@ -269,31 +272,6 @@ public class BetreuungResource {
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
 
-	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
-	@Nonnull
-	@PUT
-	@Path("/schulamt/uebernehmen")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxBetreuung anmeldungSchulamtUebernehmen(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(betreuungJAXP.getId());
-		Objects.requireNonNull(betreuungJAXP.getKindId());
-
-		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
-		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
-
-		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
-		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
-		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
-
-		return converter.platzToJAX(persistedBetreuung);
-	}
-
 	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution abgelehnt", response = JaxBetreuung.class)
 	@Nonnull
 	@PUT
@@ -438,26 +416,26 @@ public class BetreuungResource {
 
 		Optional<KindContainer> kind = kindService.findKind(jaxAnmeldungDTO.getKindContainerId());
 		if (kind.isPresent()) {
-			if (BetreuungUtil.hasDuplicateAnmeldungTagesschule(jaxAnmeldungDTO.getBetreuung(),
-				kind.get().getAnmeldungenTagesschule())) {
-				throw new EbeguRuntimeException("createAnmeldung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
-			}
-			if (BetreuungUtil.hasDuplicateAnmeldungFerieninsel(jaxAnmeldungDTO.getBetreuung(),
-				kind.get().getAnmeldungenFerieninsel())) {
-				throw new EbeguRuntimeException("createAnmeldung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
-			}
-
-			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kind.get().getKindJA().getFamilienErgaenzendeBetreuung()) {
-				kind.get().getKindJA().setFamilienErgaenzendeBetreuung(true);
-				kind.get().getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
-				kind.get().getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
-				kindService.saveKind(kind.get());
+			KindContainer kindContainer = kind.get();
+			JaxBetreuung jaxBetreuung = jaxAnmeldungDTO.getBetreuung();
+			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kindContainer.getKindJA().getFamilienErgaenzendeBetreuung()) {
+				kindContainer.getKindJA().setFamilienErgaenzendeBetreuung(true);
+				kindContainer.getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
+				kindContainer.getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
+				kindService.saveKind(kindContainer);
 			}
 
-			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(jaxAnmeldungDTO.getBetreuung());
-			resourceHelper.assertGesuchStatusForBenutzerRole(kind.get().getGesuch(), convertedBetreuung);
-			convertedBetreuung.setKind(kind.get());
-			this.betreuungService.saveBetreuung(convertedBetreuung, false);
+			BetreuungsangebotTyp betreuungsangebotTyp = jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
+			switch (betreuungsangebotTyp) {
+			case TAGESSCHULE:
+				savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer, false);
+				break;
+			case FERIENINSEL:
+				savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer, false);
+				break;
+			default:
+				throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und Ferieninseln möglich");
+			}
 
 			return Response.ok().build();
 		}
@@ -541,8 +519,25 @@ public class BetreuungResource {
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung);
 
-		return converter.platzToJAX(persistedBetreuung);
+		if (convertedBetreuung.getBetreuungsangebotTyp().isTagesschule()) {
+			if (betreuungJAXP.getBelegungTagesschule() == null || betreuungJAXP.getBelegungTagesschule().getBelegungTagesschuleModule().isEmpty()) {
+				throw new EbeguRuntimeException(
+					KibonLogLevel.ERROR,
+					betreuungJAXP.getId(),
+					ErrorCodeEnum.ERROR_ANMELDUNG_KEINE_MODULE);
+			}
+			return converter.platzToJAX(this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung));
+		}
+
+		if (betreuungJAXP.getBelegungFerieninsel() == null || betreuungJAXP.getBelegungFerieninsel().getTage().isEmpty()) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.ERROR,
+				betreuungJAXP.getId(),
+				ErrorCodeEnum.ERROR_ANMELDUNG_KEINE_MODULE);
+		}
+		AnmeldungFerieninsel convertedAnmeldungFerieninsel = (AnmeldungFerieninsel) convertedBetreuung;
+		return converter.platzToJAX(this.verfuegungService.anmeldungFerieninselUebernehmen(convertedAnmeldungFerieninsel));
+
 	}
 }

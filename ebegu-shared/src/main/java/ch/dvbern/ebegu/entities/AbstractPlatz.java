@@ -42,6 +42,8 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
+import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -56,6 +58,7 @@ import org.hibernate.envers.Audited;
 	uniqueConstraints =
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_platz_kind_betreuung_nummer")
 )
+@CheckPlatzAndAngebottyp
 public abstract class AbstractPlatz extends AbstractMutableEntity implements Comparable<AbstractPlatz>, Searchable {
 
 	private static final long serialVersionUID = -9037857320548372570L;
@@ -82,6 +85,16 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	@Column(nullable = false)
 	private boolean gueltig = false;
+
+	/**
+	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
+	 */
+	@Transient
+	@Nullable
+	private Verfuegung vorgaengerVerfuegung;
+
+	@Transient
+	private boolean vorgaengerInitialized = false;
 
 
 	protected AbstractPlatz() {
@@ -131,6 +144,64 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 		this.gueltig = gueltig;
 	}
 
+	@Nullable
+	public abstract Verfuegung getVerfuegung();
+
+	public abstract void setVerfuegung(@Nullable Verfuegung verfuegung);
+
+	@Nullable
+	public abstract Verfuegung getVerfuegungPreview();
+
+	public abstract void setVerfuegungPreview(@Nullable Verfuegung verfuegung);
+
+
+	/**
+	 *
+	 * @return wenn der Status der Betreuung so ist dass eine definitive Verfuegung vorhanden ist
+	 * gibt diese zurueck.
+	 * Ansonsten wird der im verfuegungPreview gespeicherte werd zurueck gegeben
+	 */
+	@Nullable
+	public Verfuegung getVerfuegungOrVerfuegungPreview() {
+		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
+			return getVerfuegung();
+		}
+		return getVerfuegungPreview();
+	}
+
+	public void initVorgaengerVerfuegungen(
+		@Nullable Verfuegung vorgaenger,
+		@Nullable  Verfuegung vorgaengerAusbezahlt
+	) {
+		this.vorgaengerVerfuegung = vorgaenger;
+		this.vorgaengerInitialized = true;
+	}
+
+	/**
+	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
+	 */
+	@Nullable
+	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
+		if (getVerfuegung() != null) {
+			return getVerfuegung();
+		}
+		return null;
+	}
+
+	@Nullable
+	public Verfuegung getVorgaengerVerfuegung() {
+		checkVorgaengerInitialized();
+		return vorgaengerVerfuegung;
+	}
+
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	protected void checkVorgaengerInitialized() {
+		Preconditions.checkState(
+			vorgaengerInitialized,
+			"must initialize transient fields of %s via VerfuegungService#initializeVorgaengerVerfuegungen",
+			this);
+	}
+
 	/**
 	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
 	 */
@@ -172,7 +243,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			} else {
 				target.setBetreuungsstatus(this.getBetreuungsstatus());
 			}
-			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
+			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen() && target instanceof AnmeldungTagesschule){
 				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 			}
 			target.setKind(targetKindContainer);
@@ -225,6 +296,12 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	public Gesuch extractGesuch() {
 		Objects.requireNonNull(this.getKind(), "Can not extract Gesuch because Kind is null");
 		return this.getKind().getGesuch();
+	}
+
+	@Nonnull
+	@Transient
+	public Gemeinde extractGemeinde() {
+		return this.extractGesuch().extractGemeinde();
 	}
 
 	@Nonnull

@@ -44,7 +44,6 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
@@ -81,8 +80,8 @@ export class EditInstitutionComponent implements OnInit {
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     private isRegisteringInstitution: boolean = false;
-    private initName: string;
     private initiallyAssignedClients: TSExternalClient[];
+    public ebeguUtil = EbeguUtil;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -158,17 +157,8 @@ export class EditInstitutionComponent implements OnInit {
     private initModel(stammdaten: TSInstitutionStammdaten): void {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
-        this.initName = stammdaten.institution.name;
-        // editMode kann bereits true sein, wenn dies in state params ist.
         this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
         this.changeDetectorRef.markForCheck();
-
-        if (!this.isTagesschule()) {
-            return;
-        }
-        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
-            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
-        });
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {

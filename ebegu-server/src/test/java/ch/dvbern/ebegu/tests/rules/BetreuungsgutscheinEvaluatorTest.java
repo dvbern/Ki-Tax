@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -89,16 +90,18 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 	private final DateRange gesuchsperiode = new DateRange(LocalDate.of(2016, Month.AUGUST, 1), LocalDate.of(2017, Month.JULY, 31));
 
+	private KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter = TestDataUtil.geKitaxUebergangsloesungParameter();
+
 	@Test
 	public void doTestEvaluation() {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setEingangsdatum(LocalDate.of(2016, 7, 1));
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
-				LOG.info("{}", betreuung.getVerfuegung());
+				LOG.info("{}", betreuung.getVerfuegungOrVerfuegungPreview());
 			}
 		}
 	}
@@ -109,13 +112,13 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(new BigDecimal("500000")); //zu hoch -> Comment wird erzeugt
 
-		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				assertNotNull(betreuung.getVerfuegung());
-				assertNotNull(betreuung.getVerfuegung().getGeneratedBemerkungen());
-				assertFalse(betreuung.getVerfuegung().getGeneratedBemerkungen().isEmpty());
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview().getGeneratedBemerkungen());
+				assertFalse(betreuung.getVerfuegungOrVerfuegungPreview().getGeneratedBemerkungen().isEmpty());
 			}
 		}
 	}
@@ -124,7 +127,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 	public void doTestEvaluationForFamiliensituation() {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		Verfuegung verfuegung = evaluator.evaluateFamiliensituation(testgesuch, Constants.DEFAULT_LOCALE, true);
+		Verfuegung verfuegung = evaluator.evaluateFamiliensituation(testgesuch, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(verfuegung);
 		Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -205,6 +208,8 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(gueltigkeit);
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(60));
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(0);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(0);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 
 		ErweiterteBetreuungContainer erwBetContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();

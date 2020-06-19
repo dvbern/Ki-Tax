@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -34,14 +35,13 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
-public class Betreuungspensum extends AbstractDecimalPensum implements Comparable<Betreuungspensum> {
+public class Betreuungspensum extends AbstractMahlzeitenPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
 
 	@NotNull
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
-
 
 	public Betreuungspensum() {
 	}
@@ -52,6 +52,10 @@ public class Betreuungspensum extends AbstractDecimalPensum implements Comparabl
 		this.setUnitForDisplay(betPensumMitteilung.getUnitForDisplay());
 		this.setMonatlicheBetreuungskosten(betPensumMitteilung.getMonatlicheBetreuungskosten());
 		this.setNichtEingetreten(false); //can not be set through BetreuungsmitteilungPensum
+		this.setMonatlicheHauptmahlzeiten(betPensumMitteilung.getMonatlicheHauptmahlzeiten());
+		this.setMonatlicheNebenmahlzeiten(betPensumMitteilung.getMonatlicheNebenmahlzeiten());
+		this.setTarifProHauptmahlzeit(betPensumMitteilung.getTarifProHauptmahlzeit());
+		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 	}
 
 	public Betreuungspensum(DateRange gueltigkeit) {
@@ -77,7 +81,7 @@ public class Betreuungspensum extends AbstractDecimalPensum implements Comparabl
 
 	@Nonnull
 	public Betreuungspensum copyBetreuungspensum(@Nonnull Betreuungspensum target, @Nonnull AntragCopyType copyType) {
-		super.copyAbstractBetreuungspensumEntity(target, copyType);
+		super.copyAbstractBetreuungspensumMahlzeitenEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setNichtEingetreten(this.getNichtEingetreten());

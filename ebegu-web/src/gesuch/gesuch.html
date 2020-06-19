@@ -12,7 +12,9 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.getDossierId()"
+<dv-fall-toolbar [fall-id]="vm.getFallId()"
+                 [kitax-enabled]="vm.gesuchModelManager.gemeindeKonfiguration.konfigSchnittstelleKitaxEnabled"
+                 [dossier-id]="vm.getDossierId()"
                  [current-dossier]="vm.getDossier()" hide-xs hide-sm>
 </dv-fall-toolbar>
 
@@ -65,18 +67,18 @@
                    title="{{'DOKUMENTE_HOCHGELADEN'|translate}}" aria-label="{{'DOKUMENTE_HOCHGELADEN'|translate}}"></i>
                 <br>
 
-                <span class="gesuchZusatzInfo"
+                <span class="gesuch-zusatz-info"
                       data-translate="ZULETZT_BEARBEITER"
                       data-translate-value-username="{{vm.userFullName}}"></span>
                 <br>
 
                 <span ng-if="vm.gemeindeHasKontingent()"
-                      class="gesuchZusatzInfo"
+                      class="gesuch-zusatz-info"
                       data-translate="BESTEHT_KONTINGENTIERUNG"></span>
                 <br  ng-if="vm.gemeindeHasKontingent()">
 
                 <span ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
-                      class="gesuchZusatzInfo"
+                      class="gesuch-zusatz-info"
                       data-translate="GUELTIGES_GESUCH"></span>
                 <br ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig">
 
@@ -84,7 +86,7 @@
                       ng-if="vm.isGesuchGesperrt()"
                       data-translate="GESPERRT_WEGEN_BESCHWERDE"></span>
             </div>
-            <ul class="sidenav gesuchMenu">
+            <ul class="sidenav gesuch-menu">
                 <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
 
                 <li ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"

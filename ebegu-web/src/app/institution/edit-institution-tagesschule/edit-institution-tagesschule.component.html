@@ -37,13 +37,6 @@
         </div>
     </div>
 
-    <!-- Module -->
-    <div class="row">
-        <div class="col-md-6">
-            <h1 translate>INSTITUTION_ST_MODULE</h1>
-        </div>
-    </div>
-
     <dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true" id="moduleListProEinstellungen">
         <ng-container
             *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule;
@@ -58,10 +51,28 @@
                 </tab-title>
                 <tab-body>
                     <div class="row">
+                        <div class="col-xs-12" *ngIf="showTagiCheckbox(einstellungGP)">
+                            <br/>
+                            <div class="form-group">
+                                <mat-checkbox id="tagisCheckbox_{{einstellungGP?.id}}_id"
+                                              name="tagisCheckbox_{{einstellungGP?.id}}"
+                                              [(ngModel)]="einstellungGP.tagi"
+                                              [disabled]="!canEditTagi()">
+                                    {{'INSTITUTION_TAGESSCHULE_TAGIS'|translate}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                        <!-- Module -->
+                        <div class="row mt-2">
+                            <div class="col-xs-12">
+                                <h1 translate>INSTITUTION_ST_MODULE</h1>
+                            </div>
+                        </div>
                         <div class="col-xs-12">
                             <table class="table fixedtable table-hover" title="Title">
                                 <thead>
                                 <tr>
+                                    <th *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" translate>MODUL_NAME</th>
                                     <th translate>MODUL_BEZEICHNUNG</th>
                                     <th translate>MODUL_ZEITRAUM</th>
                                     <th translate>MODUL_VERPFLEGUNG</th>
@@ -72,6 +83,10 @@
                                 </thead>
                                 <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
                                 <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier">
+                                    <td *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" title="{{getModulName(group)}}"
+                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                        <span>{{getModulName(group)}}</span>
+                                    </td>
                                     <td title="{{getBezeichnung(group)}}"
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         <span>{{getBezeichnung(group)}}</span>
@@ -136,8 +151,14 @@
                                         <span translate>MODUL_HINZUFUEGEN</span>
                                     </button>
                                 </div>
-                                <div>
-                                    <a class="pointer" (click)="changeToScolaris(einstellungGP)">
+                                <div *ngIf="einstellungGP && canEditEinstellungen(einstellungGP)">
+                                    <a class="pointer" (click)="askAndChangeToScolaris(einstellungGP)">
+                                        <span>{{'SCOLARIS' | translate}}</span>
+                                    </a>
+                                </div>
+                                <div *ngIf="einstellungGP && !canEditEinstellungen(einstellungGP)">
+                                    <a class="disabled strikethrough" [title]="'WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH' |
+                                    translate">
                                         <span>{{'SCOLARIS' | translate}}</span>
                                     </a>
                                 </div>
@@ -148,10 +169,17 @@
                                 </div>
                             </div>
                             <div *ngIf="editMode && isModulTagesschuleTypScolaris(einstellungGP)">
+                                <div *ngIf="einstellungGP && !isScolarisVollstaendig(einstellungGP)">
+                                    <a class="pointer" (click)="addFehlendeScolarisModule(einstellungGP)">
+                                        <span>{{'ADD_FEHLENDE_SCOLARIS_MODULE' | translate}}</span>
+                                    </a>
+                                </div>
                                 <p>{{ 'MODULE_FUER_SCOLARIS_ERSTELLT' | translate }}
-                                    <a (click)="changeToDynamisch(einstellungGP)" class="pointer">
+                                    <a *ngIf="canEditEinstellungen(einstellungGP)"
+                                       (click)="changeToDynamisch(einstellungGP)" class="pointer">
                                         {{ 'ZURUECKWECHSELN_ZU_DYNAMISCH' | translate }}
-                                    </a></p>
+                                    </a>
+                                </p>
                             </div>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
   ~ License, or (at your option) any later version.
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
@@ -100,7 +100,7 @@ FROM kind_container
 
 WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchPeriodeID IS NULL)
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
-      AND (:allGemeinden = true OR dossier.gemeinde_id IN (:gemeindeIdList))
+      AND (:allGemeinden = true OR (HEX(dossier.gemeinde_id) IN (:gemeindeIdList)))
       AND (
         IFNULL(NichtFreigegebeneGesuch.Anzahl, 0) = 1
         OR IFNULL(Mahnungen.Anzahl, 0) = 1
@@ -265,7 +265,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 			'PRUEFUNG_STV', 'IN_BEARBEITUNG_STV', 'GEPRUEFT_STV', 'KEIN_ANGEBOT')
  	  AND gesuch.eingangsdatum BETWEEN :fromDate AND :toDate
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
-	  AND (:allGemeinden = true OR dossier.gemeinde_id IN (:gemeindeIdList))
+	  AND (:allGemeinden = true OR (HEX(dossier.gemeinde_id) IN (:gemeindeIdList)))
       AND (
         IFNULL(EingegangeneGesuch.AnzahlGesuchOnline, 0) = 1
         OR IFNULL(EingegangeneGesuch.AnzahlGesuchPapier, 0) = 1
@@ -336,8 +336,8 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum"/>
 	<entity class="ch.dvbern.ebegu.entities.BelegungTagesschule"/>
 	<entity class="ch.dvbern.ebegu.entities.ModulTagesschule"/>
-	<entity class="ch.dvbern.ebegu.entities.FerieninselStammdaten"/>
-	<entity class="ch.dvbern.ebegu.entities.FerieninselZeitraum"/>
+	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel"/>
+	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum"/>
 	<entity class="ch.dvbern.ebegu.entities.BelegungFerieninsel"/>
 	<entity class="ch.dvbern.ebegu.entities.BelegungFerieninselTag"/>
 	<entity class="ch.dvbern.ebegu.entities.Workjob"/>
@@ -360,7 +360,6 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.BetreuungspensumAbweichung"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungFerieninsel"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungTagesschule"/>
-	<entity class="ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine"/>
 	<entity class="ch.dvbern.ebegu.entities.ExternalClient"/>
 	<entity class="ch.dvbern.ebegu.outbox.OutboxEvent"/>
@@ -372,5 +371,13 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
 	<entity class="ch.dvbern.ebegu.entities.PersonensucheAuditLog"/>
 	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
+	<entity class="ch.dvbern.ebegu.entities.TSCalculationResult"/>
 	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode"/>
+	<entity class="ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer"/>
+	<entity class="ch.dvbern.ebegu.entities.SozialhilfeZeitraum"/>
+	<entity class="ch.dvbern.ebegu.entities.EinstellungenFerieninsel"/>
+	<entity class="ch.dvbern.ebegu.entities.RueckforderungFormular"/>
+	<entity class="ch.dvbern.ebegu.entities.RueckforderungDokument"/>
+	<entity class="ch.dvbern.ebegu.entities.RueckforderungMitteilung"/>
+	<entity class="ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten"/>
 </entity-mappings>

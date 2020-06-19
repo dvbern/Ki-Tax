@@ -30,6 +30,7 @@ import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
+import {TSAntragStatusHistory} from '../../models/TSAntragStatusHistory';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSBetreuung} from '../../models/TSBetreuung';
 import {TSDossier} from '../../models/TSDossier';
@@ -111,7 +112,7 @@ describe('gesuchModelManager', () => {
                     kindToWorkWith.nextNumberBetreuung = 5;
                     spyOn(kindRS, 'findKind').and.returnValue($q.when(kindToWorkWith));
                     spyOn(betreuungRS, 'saveBetreuung').and.returnValue($q.when(betreuung));
-                    spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
+                    spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
                     const bestaetigt = $q.when(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT);
                     spyOn(gesuchRS, 'getGesuchBetreuungenStatus').and.returnValue(bestaetigt);
 
@@ -146,7 +147,7 @@ describe('gesuchModelManager', () => {
                 });
             }));
             it('only updates the Gesuch because it already exists', async(() => {
-                spyOn(gesuchRS, 'updateGesuch').and.returnValue($q.when({}));
+                spyOn(gesuchRS, 'updateGesuch').and.returnValue($q.resolve(new TSGesuch()));
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
@@ -167,14 +168,15 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
                     undefined).then(gesuch => {
-                        gesuch.dossier = new TSDossier();
-                        gesuch.dossier.id = 'myId';
-                        spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-                        spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                        const user = new TSBenutzer('Emilianito', 'Camacho');
-                        gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
-                        scope.$apply();
-                        expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
+                    gesuch.dossier = new TSDossier();
+                    gesuch.dossier.id = 'myId';
+                    spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
+                    spyOn(dossierRS, 'setVerantwortlicherBG')
+                        .and.returnValue($q.resolve(gesuch.dossier) as any);
+                    const user = new TSBenutzer('Emilianito', 'Camacho');
+                    gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
+                    scope.$apply();
+                    expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
                 });
             }));
         });
@@ -231,17 +233,17 @@ describe('gesuchModelManager', () => {
         describe('saveGesuchStatus', () => {
             it('should update the status of the Gesuch im Server und Client', async(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue($q.when({}));
-                    spyOn(antragStatusHistoryRS, 'loadLastStatusChange').and.returnValue($q.when({}));
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined)
+                    .then(() => {
+                        spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue($q.resolve() as any);
+                        spyOn(antragStatusHistoryRS, 'loadLastStatusChange')
+                            .and.returnValue($q.resolve(new TSAntragStatusHistory()) as any);
 
-                    gesuchModelManager.saveGesuchStatus(TSAntragStatus.ERSTE_MAHNUNG);
+                        gesuchModelManager.saveGesuchStatus(TSAntragStatus.ERSTE_MAHNUNG);
 
-                    scope.$apply();
-                    expect(gesuchModelManager.getGesuch().status).toEqual(TSAntragStatus.ERSTE_MAHNUNG);
-                });
+                        scope.$apply();
+                        expect(gesuchModelManager.getGesuch().status).toEqual(TSAntragStatus.ERSTE_MAHNUNG);
+                    });
             }));
         });
         describe('saveVerfuegung', () => {
@@ -256,7 +258,7 @@ describe('gesuchModelManager', () => {
                     const verfuegung = new TSVerfuegung();
                     spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
 
-                    gesuchModelManager.saveVerfuegung(false);
+                    gesuchModelManager.saveVerfuegung(false, 'bemerkungen');
                     scope.$apply();
 
                     expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
@@ -402,10 +404,10 @@ describe('gesuchModelManager', () => {
 
                 const gesuch = new TSGesuch();
                 gesuch.id = '123';
-                spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue($q.when(gesuch));
+                spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue($q.resolve(gesuch));
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
-                spyOn(wizardStepManager, 'unhideStep').and.returnValue($q.when({}));
+                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
+                spyOn(wizardStepManager, 'unhideStep').and.returnValue();
 
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
@@ -422,8 +424,8 @@ describe('gesuchModelManager', () => {
                 gesuch.id = '123';
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(false);
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(gesuch));
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
-                spyOn(wizardStepManager, 'unhideStep').and.returnValue($q.when({}));
+                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
+                spyOn(wizardStepManager, 'unhideStep').and.returnValue();
 
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();

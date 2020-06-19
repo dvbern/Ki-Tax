@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -93,11 +94,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void saveVerfuegung() {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
-		Assert.assertNull(betreuung.getVerfuegung());
+		Assert.assertNull(betreuung.getVerfuegungOrVerfuegungPreview());
 		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
-		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);
+		Assert.assertEquals(persistedBetreuung.getVerfuegungOrVerfuegungPreview(), persistedVerfuegung);
+		Assert.assertNotEquals("Die (nicht gespeicherte) Betreuung darf noch nicht verfügt sein", Betreuungsstatus.VERFUEGT, betreuung.getBetreuungsstatus());
+		Assert.assertEquals("Die gespeicherte Betreuung muss jetzt verfügt sein", Betreuungsstatus.VERFUEGT, persistedBetreuung.getBetreuungsstatus());
 	}
 
 	@Test
@@ -118,7 +121,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			null,
 			gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		Assert.assertEquals(48, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
+		Assert.assertEquals(65, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);
@@ -135,7 +138,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			.getBetreuungen()
 			.iterator()
 			.next()
-			.getVerfuegung());
+			.getVerfuegungPreview());
 		checkTestfall01WaeltiDagmar(gesuch);
 	}
 
@@ -158,7 +161,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		kind.setBetreuungen(verfuegteBetr);
 		Betreuung betreuung = verfuegteBetr.iterator().next();
 		Integer betreuungNummer = betreuung.getBetreuungNummer();
-		Verfuegung verfuegung1 = betreuung.getVerfuegung();
+		Verfuegung verfuegung1 = betreuung.getVerfuegungOrVerfuegungPreview();
 		LocalDateTime timestampVerfuegt = LocalDateTime.of(2016, Month.APRIL, 1, 0, 0);
 		gesuch.setTimestampVerfuegt(timestampVerfuegt);
 		gesuch.setGueltig(true);
@@ -193,6 +196,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void getAll() {
 		Verfuegung verfuegung = insertVerfuegung();
+		Assert.assertNotNull(verfuegung.getBetreuung());
+		Assert.assertEquals(Betreuungsstatus.VERFUEGT, verfuegung.getBetreuung().getBetreuungsstatus());
+
+		Betreuung betreuung = persistence.find(Betreuung.class, verfuegung.getBetreuung().getId());
+		Assert.assertNotNull(betreuung);
+		Assert.assertEquals(Betreuungsstatus.VERFUEGT, betreuung.getBetreuungsstatus());
+
 		Verfuegung verfuegung2 = insertVerfuegung();
 		Collection<Verfuegung> allVerfuegungen = this.verfuegungService.getAllVerfuegungen();
 		Assert.assertEquals(2, allVerfuegungen.size());
@@ -248,6 +258,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private VerfuegungZeitabschnitt createGesuchWithVerfuegungZeitabschnitt() {
 		Verfuegung verfuegung = insertVerfuegung();
 		VerfuegungZeitabschnitt zeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
+		zeitabschnitt.initBGCalculationResult();
 		persistence.persist(zeitabschnitt);
 		return zeitabschnitt;
 	}

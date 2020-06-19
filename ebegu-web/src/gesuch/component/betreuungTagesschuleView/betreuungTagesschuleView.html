@@ -24,7 +24,7 @@
             	&& !vm.getBetreuungModel().keineDetailinformationen">
 
             <!-- Warnung, wenn noch keine Module definiert -->
-            <div class="marginTop30"
+            <div class="margin-top-30"
                  ng-if="vm.isTagesschuleAlreadySelected()
                     && !vm.hasTagesschuleAnyModulGroupDefined()">
                 <div class="well well-status-warten">
@@ -75,7 +75,7 @@
                 </div>
 
                 <!-- Abholung aus der Tagesschule -->
-                <div class="row marginTop20">
+                <div class="row margin-top-20">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" ng-class="{'required': vm.isGesuchstellerRole()}"
@@ -94,23 +94,6 @@
                                                    for="vm.form.abholungTagesschule.$error"></dv-error-messages>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row marginTop30" ng-if="vm.erlaeuterung !== null">
-                    <div class="col-sm-12 dv-input-container-big">
-                        <dv-input-container class="form-group">
-                            <label class="md-no-float" data-translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
-                                   for="erlaeuterung_ID">
-                            </label>
-                            <input name="erlaeuterung"
-                                   class="form-control " rows="6"
-                                   id="erlaeuterung_ID"
-                                   ng-model="vm.erlaeuterung"
-                                   ng-disabled="true"
-                                   maxlength="4000">
-                            </input>
-                        </dv-input-container>
                     </div>
                 </div>
 
@@ -143,19 +126,25 @@
                                 <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
                                      ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
                                     <md-menu>
+                                        <!-- leeres ng-click verhindert Fehler "cannot read property setAttribute of undefined"-->
                                         <md-checkbox
                                             name="modul_{{mod.modulTagesschule.identifier}}"
                                             ng-model="mod.modulTagesschule.angemeldet"
                                             aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
-                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
-                                            class="dv-ebegu-calendar--tagesschule">
+                                            ng-click=""
+                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event);"
+                                            class="dv-ebegu-calendar--tagesschule"
+                                            aria-describedby="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}">
+                                            <span class="error"
+                                                  ng-if="vm.form['modul_' + mod.modulTagesschule.identifier].$error.nointerval">X</span>
                                             <span
                                                 ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
                                         </md-checkbox>
                                         <md-menu-content width="4">
                                             <md-menu-item ng-repeat="interval in vm.getIntervalle()">
-                                                <md-button ng-click="vm.setIntervall(mod, interval)">
+                                                <md-button md-prevent-menu-close="true" ng-click="vm.setIntervall(mod,
+                                                           interval,$mdMenu)">
                                                     {{interval | translate}}
                                                 </md-button>
                                             </md-menu-item>
@@ -166,16 +155,42 @@
                         </div>
                     </div>
                 </div>
+                <div
+                    ng-repeat="group in vm.modulGroups track by group.group.identifier">
+                    <div
+                        ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
+                        <div class="dv-error-messages"
+                             ng-if="vm.form['modul_' + mod.modulTagesschule.identifier].$error.nointerval">
+                            <div id="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}" class="error">
+                                {{"ERROR_NO_INTERVAL" | translate}}
+                                "{{vm.getModulBezeichnungInLanguage(group.group)}}"
+                                ({{mod.modulTagesschule.wochentag | translate}}
+                                {{vm.getModulTimeAsString(group.group)}})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="well well-status-warten margin-top-30" ng-if="vm.showWarningModuleZugewiesen">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span data-translate="TAGESSCHULE_MODULE_AUTOMATISCH_ZUGEWIESEN"></span>
+                </div>
+
+                <div ng-if="vm.erlaeuterung !== null" class="row margin-top-20">
+                    <div class="col-xs-12">
+                        <p class="inline-hint">{{vm.erlaeuterung}}</p>
+                    </div>
+                </div>
 
                 <!-- Abweichung zweites Semester und Bemerkungen -->
-                <div class="row marginTop30">
+                <div class="row margin-top-30">
                     <div class="col-sm-12 dv-input-container-question">
-                        <md-checkbox class="checkbox marginTop20"
+                        <md-checkbox class="checkbox margin-top-20"
                                      ng-model="vm.betreuung.belegungTagesschule.abweichungZweitesSemester"
                                      name="abweichungZweitesSemester"
                                      id="abweichungZweitesSemester"
                                      aria-label="{{'BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX' | translate}}"
-                                     ng-disabled="vm.isGesuchReadonly()">
+                                     ng-disabled="!vm.isAnmeldungTSEditable()">
                             <span data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"></span>
                         </md-checkbox>
                         <dv-input-container class="form-group">
@@ -183,7 +198,7 @@
                                    ng-class="{'required': vm.betreuung.belegungTagesschule.abweichungZweitesSemester}"
                                    data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG" for="bemerkung_ID">
                             </label>
-                            <p class="inlineHint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
+                            <p class="inline-hint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
                             <textarea aria-describedby="bemerkung_ID-error"
                                       name="bemerkung"
                                       class="form-control " rows="6"
@@ -196,7 +211,7 @@
                         </dv-input-container>
                     </div>
                 </div>
-                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
+                <div class="row margin-top-30" ng-if="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox"
                                      ng-model="vm.agbTSAkzeptiert"
@@ -224,7 +239,7 @@
         <div ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()">
 
             <!-- Hinweis, dass Tageschulanmeldung noch nicht freigeschaltet -->
-            <div class="marginTop30" ng-if="!vm.isTageschulenAnmeldungAktiv()">
+            <div class="margin-top-30" ng-if="!vm.isTageschulenAnmeldungAktiv()">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation " aria-hidden="true"></i>
                     <span>{{vm.getTagesschuleAnmeldungNotYetReadyText()}}</span>
@@ -232,7 +247,7 @@
             </div>
 
             <!-- Hinweis, wenn keine Module ausgewaehlt -->
-            <div class="marginTop30"
+            <div class="margin-top-30"
                  ng-if="vm.showErrorMessageNoModule === true && !vm.getBetreuungModel().keineDetailinformationen">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
@@ -240,14 +255,14 @@
                 </div>
             </div>
 
-            <div class="marginTop30" ng-if="vm.showNochNichtFreigegeben === true">
+            <div class="margin-top-30" ng-if="vm.showNochNichtFreigegeben === true">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                     <span data-translate="WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN"></span>
                 </div>
             </div>
 
-            <div class="marginTop30" ng-if="vm.showMutiert === true">
+            <div class="margin-top-30" ng-if="vm.showMutiert === true">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                     <span data-translate="WARN_ANGEBOT_MUTIERT"></span>
@@ -262,65 +277,64 @@
         wenn wir die Direktive benutzen wollen muessen wir viel anpassen, daher lohnt es sich die Buttons direkt zu erstellen-->
     <!-- Buttons fuer JA/SCH und Gesuchsteller -->
     <!--todo verbesserung in eigene Direktive da in betreuungFerieninsel dupliziert-->
-    <div class="dv-navigation">
-        <div class="dv-navigation-item"
-             dv-show-element
+    <div class="dv-navigation dv-navigation-flex">
+        <span dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
              dv-show-expression="vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
             <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
-                <span data-translate="{{vm.getButtonTextSpeichern()}}"></span>
+                <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
-        </div>
+        </span>
 
-        <div class="dv-navigation-flex"
-             dv-show-element
+        <span dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
              dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig">
 
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmelden()"
+            <dv-loading-button button-click="vm.anmelden()"
                                type="submit"
                                button-class="save">
-                <span data-translate="{{vm.getButtonTextSpeichern()}}"></span>
+                <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtAblehnen()"
+            <dv-loading-button button-click="vm.anmeldungSchulamtAblehnen()"
                                type="button"
                                button-class="save">
-                <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
+                <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
-        </div>
+        </span>
 
-        <div class="dv-navigation-flex"
-             dv-show-element
+        <span dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.saveAnmeldungSchulamtUebernehmen()"
-                               type="button"
-                               button-class="save">
-                <span data-translate="SCHULAMT_ANMELDUNG_AKZEPTIEREN"></span>
-            </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.saveAnmeldungSchulamtAblehnen()"
-                               type="button"
-                               button-class="save">
-                <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
-            </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
-                               type="button"
-                               button-class="save">
-                <span data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
-            </dv-loading-button>
-        </div>
+
+                <dv-loading-button button-disabled="vm.showErrorMessageNoModule"
+                                   button-click="vm.saveAnmeldungSchulamtUebernehmen()"
+                                   type="button"
+                                   button-class="save">
+                    <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_AKZEPTIEREN"></span>
+                </dv-loading-button>
+
+                <dv-loading-button button-click="vm.saveAnmeldungSchulamtAblehnen()"
+                                   type="button"
+                                   button-class="save">
+                    <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
+                </dv-loading-button>
+
+                <dv-loading-button
+                                   button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
+                                   type="button"
+                                   button-class="save">
+                    <span class="uppercase" data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
+                </dv-loading-button>
+
+        </span>
         <!-- Abbrechen: Immer vorhanden -->
-        <dv-loading-button class="dv-navigation-item"
-                           button-click="vm.cancel()"
-                           button-class="cancel-button"
-                           type="reset">
-            <span data-translate="ABBRECHEN"></span>
-        </dv-loading-button>
+        <span>
+            <dv-loading-button button-click="vm.cancel()"
+                               button-class="cancel-button"
+                               type="reset">
+                <span class="uppercase" data-translate="ABBRECHEN"></span>
+            </dv-loading-button>
+        </span>
     </div>
 
 </div>

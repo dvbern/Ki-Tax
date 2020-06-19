@@ -17,14 +17,14 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-.abweichungenView {
+.abweichungen-view {
     .table input[type=number] {
         background: @contrast-lightest;
 
         &[disabled], &:disabled {
             .DisabledInput();
-            -webkit-text-fill-color: @contrast-darkest;
             .ebeguDisabledPlaceholder();
+            -webkit-text-fill-color: @contrast-darkest;
         }
     }
 

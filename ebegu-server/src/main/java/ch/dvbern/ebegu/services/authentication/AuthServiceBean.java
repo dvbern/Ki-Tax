@@ -240,4 +240,24 @@ public class AuthServiceBean implements AuthService {
 			return 0;
 		}
 	}
+
+	@Override
+	public Collection<String> findActiveSince(int secondsSinceLastActivity) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> activeQuery = criteriaBuilder.createQuery(String.class);
+		Root<AuthorisierterBenutzer> root = activeQuery.from(AuthorisierterBenutzer.class);
+		activeQuery.select(root.get(AuthorisierterBenutzer_.username));
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime lastActivityCutoff = now.minus(secondsSinceLastActivity, ChronoUnit.SECONDS);
+
+		ParameterExpression<LocalDateTime> cutOffTimeParam = criteriaBuilder.parameter(LocalDateTime.class, "cutoff");
+		Predicate predicateActive = criteriaBuilder.greaterThanOrEqualTo(root.get(AuthorisierterBenutzer_.lastLogin), cutOffTimeParam);
+		activeQuery.where(predicateActive);
+		TypedQuery<String> tq = entityManager.createQuery(activeQuery);
+
+		tq.setParameter("cutoff", lastActivityCutoff);
+
+		return tq.getResultList();
+
+	}
 }

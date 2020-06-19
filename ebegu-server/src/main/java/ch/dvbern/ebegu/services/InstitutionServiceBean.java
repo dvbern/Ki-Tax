@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -54,7 +55,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections4.map.HashedMap;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -113,7 +114,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Inject
 	private Authorizer authorizer;
 
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
@@ -147,35 +147,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			authorizer.checkReadAuthorizationInstitution(institution);
 		}
 		return Optional.ofNullable(institution);
-	}
-
-	@Nonnull
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
-	public Institution activateInstitution(@Nonnull String institutionId) {
-		Institution institution = findInstitution(institutionId, true).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"activateInstitution",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-		authorizer.checkWriteAuthorizationInstitution(institution);
-		institution.setStatus(InstitutionStatus.AKTIV);
-		return updateInstitution(institution);
-	}
-
-	@Override
-	// same as activateInstitution but without ADMIN_INSTITUTION
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
-	public Institution setInstitutionInactive(@Nonnull String institutionId) {
-		Objects.requireNonNull(institutionId);
-
-		final InstitutionStammdaten institutionStammdaten =
-			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, true);
-		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
-
-		institutionStammdaten.setInactive();
-		final InstitutionStammdaten mergedInstitutionstammdaten = persistence.merge(institutionStammdaten);
-		return mergedInstitutionstammdaten.getInstitution();
 	}
 
 	@Override
@@ -254,7 +225,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	private boolean isAllowedForMode(
-		@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Benutzer benutzer, boolean editMode, boolean restrictedForSCH
+		@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Benutzer benutzer, boolean editMode,
+		boolean restrictedForSCH
 	) {
 		if (editMode) {
 			return authorizer.isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
@@ -302,6 +274,51 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			return getAllInstitutionen();
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH) {
+		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
+
+		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
+		if (benutzerOptional.isPresent()) {
+			Benutzer benutzer = benutzerOptional.get();
+			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)
+				&& benutzer.getInstitution() != null) {
+				if (benutzer.getInstitution() != null) {
+					institutionInstitutionStammdatenMap.put(benutzer.getInstitution(),
+						institutionStammdatenService.fetchInstitutionStammdatenByInstitution(benutzer.getInstitution().getId(), false));
+				}
+			} else {
+				if (EnumUtil.isOneOf(
+					benutzer.getRole(),
+					UserRole.ADMIN_TRAEGERSCHAFT,
+					UserRole.SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
+					// Hier suchen wir direkt die Institutionen die sind mit der Traegerschaft verbundet
+					institutionStammdatenService.getAllInstitutionStammdatenForTraegerschaft(benutzer.getTraegerschaft()).forEach(institutionStammdaten -> {
+							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+								institutionStammdaten);
+					});
+				} else if (benutzer.getRole().isRoleGemeindeabhaengig()) {
+					// Hier gibt schon in getAllInstitutionStammdaten der GemeindeListe predicate
+					institutionStammdatenService.getAllInstitutionStammdaten().forEach(institutionStammdaten -> {
+						if (isAllowedForMode(institutionStammdaten, benutzer, true, restrictedForSCH)) {
+							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+								institutionStammdaten);
+						}
+					});
+				} else {
+					// Hier muss man ja alles lesen fuer der Mandant
+					institutionStammdatenService.getAllInstitutionStammdaten().forEach(institutionStammdaten -> {
+							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+								institutionStammdaten);
+					});
+				}
+			}
+		}
+		return institutionInstitutionStammdatenMap;
 	}
 
 	@Override

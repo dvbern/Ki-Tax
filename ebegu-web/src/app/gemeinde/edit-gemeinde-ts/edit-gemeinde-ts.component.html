@@ -42,8 +42,7 @@
                                                    [(ngModel)]="stammdaten.tsAdresse.organisation"
                                                    [maxlength]="255"
                                                    class="form-control"
-                                                   required
-                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                                   required>
                                             <dv-error-messages [errorObject]="nameAnschriftTS.errors"
                                                                inputId="anschrift_ts_id"></dv-error-messages>
                                         </div>
@@ -105,6 +104,40 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <!-- Alternative Email -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label translate for="email_ts_id">ALTERNATIVE_EMAIL
+                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
+                                        </label>
+                                        <input id="email_ts_id" type="text" name="email_ts_id"
+											   #nameEmailTS="ngModel"
+                                               [(ngModel)]="stammdaten.tsEmail"
+                                               [pattern]="CONSTANTS.PATTERN_EMAIL"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameEmailTS.errors"
+                                                           inputId="email_ts_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Alternative Telefonnummer -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label translate for="telefonnummer_ts_id">ALTERNATIVE_TELEFONNUMMER
+                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
+                                        </label>
+                                        <input id="telefonnummer_ts_id" type="text" name="telefonnummer_ts_id"
+											   #nameTelefonnummerTS="ngModel"
+                                               [(ngModel)]="stammdaten.tsTelefon"
+                                               [pattern]="CONSTANTS.PATTERN_PHONE"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameTelefonnummerTS.errors"
+                                                           inputId="telefonnummer_ts_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,7 +172,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="form-group checkbox-with-tooltip">
                         <mat-checkbox id="benachrichtigungTsEmailAuto_id"
                                       name="benachrichtigungTsEmailAuto_id"
@@ -148,6 +181,31 @@
                         </mat-checkbox>
                         <dv-tooltip id="benachrichtigungTsEmailAuto_tooltip"
                                     [text]="'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP' | translate"></dv-tooltip>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <dv-external-client-multiselect
+                        [externalClients]="externalClients">
+                    </dv-external-client-multiselect>
+                </div>
+                <div *ngIf="isSuperAdmin" class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label translate for="anschrift_ts_id">SCOLARIS_USERNAME</label>
+                                <input id="username_scolaris_id"
+                                       type="text"
+                                       name="username_scolaris_id"
+                                       [(ngModel)]="usernameScolaris"
+                                       [maxlength]="255"
+                                       class="form-control"
+                                       #usernameScolarisTS='ngModel'
+                                       (ngModelChange)="usernameScolarisHasChange($event)">
+                                <dv-error-messages [errorObject]="usernameScolarisTS.errors"
+                                                   inputId="username_scolaris_id"></dv-error-messages>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -182,6 +240,8 @@
                                 <p>{{stammdaten.tsAdresse.strasse}}
                                     {{stammdaten.tsAdresse.hausnummer}}</p>
                                 <p>{{stammdaten.tsAdresse.plz}} {{stammdaten.tsAdresse.ort}}</p>
+                                <p *ngIf="stammdaten.tsEmail">{{stammdaten.tsEmail}}</p>
+                                <p *ngIf="stammdaten.tsTelefon">{{stammdaten.tsTelefon}}</p>
                             </div>
                         </div>
                     </ng-template>
@@ -205,7 +265,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">
                         {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
                     </h3>
@@ -213,6 +273,23 @@
                         {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
                     </h3>
                     <p></p>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-external-client-assignment [externalClients]="externalClients">
+                        </dv-external-client-assignment>
+                    </div>
+                </div>
+                <div *ngIf="isSuperAdmin && isUsernameScolarisNotNullOrUndefined()" class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>SCOLARIS_USERNAME</h3>
+                                <p>{{usernameScolaris}}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="mt-2">

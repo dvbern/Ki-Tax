@@ -24,14 +24,19 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Berechnet die hoehe des ErwerbspensumRule eines bestimmten Erwerbspensums
@@ -39,16 +44,23 @@ import ch.dvbern.ebegu.types.DateRange;
  * Die weiteren Rules müssen diesen Wert gegebenenfalls korrigieren.
  * Verweis 16.9.2
  */
-public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
+public abstract class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+	protected final int zuschlagErwerbspensum;
+
+	protected ErwerbspensumAbschnittRule(
+		@Nonnull RuleValidity validity,
+		@Nonnull DateRange validityPeriod,
+		int zuschlagErwerbspensum,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validity, validityPeriod, locale);
+		this.zuschlagErwerbspensum = zuschlagErwerbspensum;
 	}
 
 	@Override
-	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		return super.createVerfuegungsZeitabschnitte(platz);
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	/**
@@ -72,10 +84,21 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 			.filter(Objects::nonNull)
 			.map(erwerbspensumJA -> toVerfuegungZeitabschnitt(gesuch, erwerbspensumJA, gs2))
 			.filter(Objects::nonNull)
-			.forEach(ewpAbschnitte::add);
+			.forEach(zeitabschnitt -> {
+				ewpAbschnitte.add(zeitabschnitt);
+			});
 
+		// Fuer den Zuschlag muss IMMER ein Abschnitt erstellt werden, unabhaengig von den Erwerbspensen
+		VerfuegungZeitabschnitt abschnittZuschlagEWP = createZeitabschnittWithinValidityPeriodOfRule(validityPeriod());
+		setErwerbspensumZuschlag(abschnittZuschlagEWP, zuschlagErwerbspensum);
+		ewpAbschnitte.add(abschnittZuschlagEWP);
 		return ewpAbschnitte;
 	}
+
+	/**
+	 * Setzt den ErwerbspensumZuschlag auf dem gewuenschten Input-Objekt: Entweder auf Asiv *und* Gemeinde oder nur Gemeinde.
+	 */
+	protected abstract void setErwerbspensumZuschlag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt,  int zuschlagErwerbspensum);
 
 	/**
 	 * Konvertiert ein Erwerbspensum in einen Zeitabschnitt von entsprechender dauer und erwerbspensumGS1 (falls gs2=false)
@@ -83,38 +106,31 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	 */
 	@Nullable
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Gesuch gesuch, @Nonnull Erwerbspensum erwerbspensum, boolean gs2) {
-		final DateRange gueltigkeit = new DateRange(erwerbspensum.getGueltigkeit());
+		if (getValidTaetigkeiten().contains(erwerbspensum.getTaetigkeit())) {
+			final DateRange gueltigkeit = new DateRange(erwerbspensum.getGueltigkeit());
 
-		// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
-		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
-		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
+			Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+			Familiensituation familiensituation = gesuch.extractFamiliensituation();
 
-		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
-			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
-		}
-		if (gs2 && !gesuch.isMutation()) {
-			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
-		}
-		if (!gs2) {
-			return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum);
+			if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
+				getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
+				return createZeitAbschnitt(gueltigkeit, erwerbspensum, false);
+			}
+			if (gs2 && !gesuch.isMutation()) {
+				return createZeitAbschnitt(gueltigkeit, erwerbspensum, false);
+			}
+			if (!gs2) {
+				return createZeitAbschnitt(gueltigkeit, erwerbspensum, true);
+			}
 		}
 		return null;
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getBgCalculationInputAsiv().getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.getBgCalculationInputAsiv().setErwerbspensumGS1(erwerbspensum.getPensum());
-		return zeitabschnitt;
-	}
+	protected abstract List<Taetigkeit> getValidTaetigkeiten();
 
-	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getBgCalculationInputAsiv().getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.getBgCalculationInputAsiv().setErwerbspensumGS2(erwerbspensum.getPensum());
-		return zeitabschnitt;
-	}
+	@Nullable
+	protected abstract VerfuegungZeitabschnitt createZeitAbschnitt(
+		@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum, boolean isGesuchsteller1);
 }

@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,17 +27,18 @@ import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import org.hibernate.envers.Audited;
 
 /**
@@ -46,6 +46,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
+@CheckPlatzAndAngebottyp
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
 @AssociationOverrides({
 	@AssociationOverride(name = "kind", joinColumns = @JoinColumn(name = "kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id")),
@@ -67,10 +68,15 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "anmeldungTagesschule", fetch =
-		FetchType.LAZY)
-	@OrderBy("gueltigkeit ASC")
-	private Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new TreeSet<>();
+	@Nullable
+	@Valid
+	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
+	private Verfuegung verfuegung;
+
+	@Transient
+	@Nullable
+	private Verfuegung verfuegungPreview;
+
 
 	public AnmeldungTagesschule() {
 	}
@@ -91,6 +97,28 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 
 	public void setKeineDetailinformationen(boolean keineDetailinformationen) {
 		this.keineDetailinformationen = keineDetailinformationen;
+	}
+
+	@Override
+	@Nullable
+	public Verfuegung getVerfuegung() {
+		return verfuegung;
+	}
+
+	@Override
+	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
+		this.verfuegung = verfuegung;
+	}
+
+	@Override
+	@Nullable
+	public Verfuegung getVerfuegungPreview() {
+		return verfuegungPreview;
+	}
+
+	@Override
+	public void setVerfuegungPreview(@Nullable Verfuegung verfuegungPreview) {
+		this.verfuegungPreview = verfuegungPreview;
 	}
 
 	@Override
@@ -126,6 +154,11 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
 			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			if (target.isKeineDetailinformationen()) {
+				// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
+				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+			}
+			target.setVerfuegung(null);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -147,12 +180,19 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		}
 	}
 
-	public Set<AnmeldungTagesschuleZeitabschnitt> getAnmeldungTagesschuleZeitabschnitts() {
-		return anmeldungTagesschuleZeitabschnitts;
-	}
-
-	public void setAnmeldungTagesschuleZeitabschnitts(Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts) {
-		this.anmeldungTagesschuleZeitabschnitts.clear();
-		this.anmeldungTagesschuleZeitabschnitts.addAll(anmeldungTagesschuleZeitabschnitts);
+	public boolean isTagesschuleTagi() {
+		// Bei Keine-Detailinformationen gehen wir davon aus, dass es eine normale Tagesschule ist
+		if (isKeineDetailinformationen()) {
+			return false;
+		}
+		final InstitutionStammdatenTagesschule stammdatenTagesschule = this.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
+		Objects.requireNonNull(stammdatenTagesschule);
+		final Set<EinstellungenTagesschule> einstellungenTagesschule = stammdatenTagesschule.getEinstellungenTagesschule();
+		for (EinstellungenTagesschule einstellung : einstellungenTagesschule) {
+			if (einstellung.getGesuchsperiode().equals(this.extractGesuchsperiode())) {
+				return einstellung.isTagi();
+			}
+		}
+		return false;
 	}
 }

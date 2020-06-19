@@ -19,13 +19,13 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {getAemterForFilter, TSAmt} from '../../../models/enums/TSAmt';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 
@@ -53,7 +53,7 @@ export class PosteingangViewController implements IController {
 
     public itemsByPage: number = 20;
     public numberOfPages: number = 1;
-    public selectedAmt: string;
+    public selectedVerantwortung: string;
     public selectedMitteilungsstatus: TSMitteilungStatus;
     public includeClosed: boolean = false;
     public gemeindenList: Array<TSGemeinde> = [];
@@ -86,10 +86,6 @@ export class PosteingangViewController implements IController {
         });
     }
 
-    public isCurrentUserSchulamt(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
-    }
-
     private updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
@@ -101,8 +97,8 @@ export class PosteingangViewController implements IController {
             );
     }
 
-    public getAemter(): Array<TSAmt> {
-        return getAemterForFilter();
+    public getVerantwortungList(): Array<string> {
+        return [TSVerantwortung.VERANTWORTUNG_BG, TSVerantwortung.VERANTWORTUNG_TS];
     }
 
     public getMitteilungsStatus(): Array<TSMitteilungStatus> {
@@ -134,7 +130,7 @@ export class PosteingangViewController implements IController {
         this.totalResultCount = result.totalResultSize ? result.totalResultSize.toString() : '0';
     }
 
-    public showBgOrTS(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

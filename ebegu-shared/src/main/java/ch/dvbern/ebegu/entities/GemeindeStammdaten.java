@@ -18,8 +18,10 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,7 +33,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -42,11 +46,14 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckKontodatenGemeinde;
+import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 
+import static ch.dvbern.ebegu.enums.ExternalClientType.GEMEINDE_SCOLARIS_SERVICE;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 
@@ -61,6 +68,7 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 		@UniqueConstraint(columnNames = "ts_adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id")
 	}
 )
+@CheckKontodatenGemeinde
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
@@ -140,16 +148,16 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true)
 	private String logoType;
 
-	@NotNull
-	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String kontoinhaber;
 
-	@NotNull
-	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String bic;
 
-	@NotNull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	@Embedded
 	@Valid
 	private IBAN iban;
@@ -197,6 +205,41 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Nullable
 	@Column(nullable = true)
 	private String standardDokUnterschriftName2;
+
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private String usernameScolaris;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String bgTelefon;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String bgEmail;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String tsTelefon;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String tsEmail;
+
+	@Nonnull
+	@ManyToMany
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "gemeinde_stammdaten_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "external_client_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_external_clients_gemeinde_stammdaten_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_external_clients_external_client_id")
+	)
+	private @Valid @NotNull Set<@ExternalClientOfType(type = GEMEINDE_SCOLARIS_SERVICE)ExternalClient> externalClients =
+		new HashSet<>();
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -311,29 +354,32 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.logoType = logoType;
 	}
 
+	@Nullable
 	@SuppressFBWarnings("NM_CONFUSING")
 	public String getKontoinhaber() {
 		return kontoinhaber;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
-	public void setKontoinhaber(String kontoinhaber) {
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
 		this.kontoinhaber = kontoinhaber;
 	}
 
+	@Nullable
 	public String getBic() {
 		return bic;
 	}
 
-	public void setBic(String bic) {
+	public void setBic(@Nullable String bic) {
 		this.bic = bic;
 	}
 
+	@Nullable
 	public IBAN getIban() {
 		return iban;
 	}
 
-	public void setIban(IBAN iban) {
+	public void setIban(@Nullable IBAN iban) {
 		this.iban = iban;
 	}
 
@@ -416,6 +462,36 @@ public class GemeindeStammdaten extends AbstractEntity {
 			return tsAdresse;
 		}
 		return adresse;
+	}
+
+	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG Email (falls gesetzt), sonst die allgemeinen Angaben
+	 * Fuer *reine* TS-Angebote verwenden wir die TS Email (falls gesetzt), sonst die allgemeinen Angaben
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
+	 */
+	public String getEmailForGesuch(Gesuch gesuch) {
+		if (bgEmail != null && !bgEmail.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			return bgEmail;
+		}
+		if (tsEmail != null && !tsEmail.equals("") && gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return tsEmail;
+		}
+		return mail;
+	}
+
+	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
+	 * Fuer *reine* TS-Angebote verwenden wir die TS Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
+	 */
+	public String getTelefonForGesuch(Gesuch gesuch) {
+		if (bgTelefon != null && !bgTelefon.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			return bgTelefon;
+		}
+		if (tsTelefon != null && !tsTelefon.equals("") && gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return tsTelefon;
+		}
+		return telefon;
 	}
 
 	/**
@@ -540,5 +616,62 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setStandardDokSignature(@Nonnull Boolean standardDokSignature) {
 		this.standardDokSignature = standardDokSignature;
+	}
+
+	@Nullable
+	public String getUsernameScolaris() {
+		return usernameScolaris;
+	}
+
+	public void setUsernameScolaris(@Nullable String usernameScolaris) {
+		this.usernameScolaris = usernameScolaris;
+	}
+
+	/**
+	 * The data of this institution can be accessed by any ExternalClient in this set. E.g. via the exchange service
+	 */
+	@Nonnull
+	public Set<ExternalClient> getExternalClients() {
+		return externalClients;
+	}
+
+	public void setExternalClients(@Nonnull Set<ExternalClient> externalClients) {
+		this.externalClients = externalClients;
+	}
+
+	@Nullable
+	public String getBgTelefon() {
+		return bgTelefon;
+	}
+
+	public void setBgTelefon(@Nullable String bgTelefon) {
+		this.bgTelefon = bgTelefon;
+	}
+
+	@Nullable
+	public String getBgEmail() {
+		return bgEmail;
+	}
+
+	public void setBgEmail(@Nullable String bgEmail) {
+		this.bgEmail = bgEmail;
+	}
+
+	@Nullable
+	public String getTsTelefon() {
+		return tsTelefon;
+	}
+
+	public void setTsTelefon(@Nullable String tsTelefon) {
+		this.tsTelefon = tsTelefon;
+	}
+
+	@Nullable
+	public String getTsEmail() {
+		return tsEmail;
+	}
+
+	public void setTsEmail(@Nullable String tsEmail) {
+		this.tsEmail = tsEmail;
 	}
 }

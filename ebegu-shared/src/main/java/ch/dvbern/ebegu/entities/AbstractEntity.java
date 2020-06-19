@@ -40,14 +40,19 @@ import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
 import ch.dvbern.ebegu.util.Constants;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.de.GermanNormalizationFilterFactory;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
-@SuppressWarnings("ClassReferencesSubclass")
 @MappedSuperclass
 @Audited
 @EntityListeners(AbstractEntityListener.class)
@@ -101,6 +106,15 @@ import org.hibernate.envers.Audited;
 	name = "string-uuid-binary",
 	typeClass = StringUUIDType.class
 )
+@AnalyzerDef(
+	name = "EBEGUGermanAnalyzer",
+	tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+	filters = {
+		@TokenFilterDef(factory = StandardFilterFactory.class),
+		@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+		@TokenFilterDef(factory = GermanNormalizationFilterFactory.class)
+	}
+)
 public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = -979317154050183445L;
@@ -141,7 +155,7 @@ public abstract class AbstractEntity implements Serializable {
 	@Transient
 	private boolean skipPreUpdate = false;
 
-	public AbstractEntity() {
+	protected AbstractEntity() {
 		//da wir teilweise schon eine id brauchen bevor die Entities gespeichert werden initialisieren wir die uuid hier
 		id = UUID.randomUUID().toString();
 	}
@@ -151,7 +165,8 @@ public abstract class AbstractEntity implements Serializable {
 		return id;
 	}
 
-	public void setId(@Nullable String id) {
+	@SuppressWarnings("NullableProblems")
+	public void setId(@Nonnull String id) {
 		this.id = id;
 	}
 
@@ -211,15 +226,17 @@ public abstract class AbstractEntity implements Serializable {
 		this.skipPreUpdate = skipPreUpdate;
 	}
 
-	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-	@SuppressFBWarnings(value = "BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS", justification = "Es wird Hibernate.getClass genutzt um von Proxies (LazyInit) die konkrete Klasse zu erhalten")
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) {
 			return true;
 		}
 
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+		if (!(o instanceof AbstractEntity)) {
+			return false;
+		}
+
+		if (!Hibernate.getClass(this).equals(Hibernate.getClass(o))) {
 			return false;
 		}
 

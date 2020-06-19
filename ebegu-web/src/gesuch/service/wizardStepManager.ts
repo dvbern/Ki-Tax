@@ -17,6 +17,7 @@ import {IPromise, IQService} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
+import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
@@ -24,9 +25,9 @@ import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TS
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSGesuch} from '../../models/TSGesuch';
 import {TSWizardStep} from '../../models/TSWizardStep';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {WizardStepRS} from './WizardStepRS.rest';
-import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 
 const LOG = LogFactory.createLog('WizardStepManager');
 
@@ -151,11 +152,6 @@ export class WizardStepManager {
         this.allowedSteps = [];
         this.allowedSteps.push(TSWizardStepName.FAMILIENSITUATION);
         this.allowedSteps.push(TSWizardStepName.GESUCHSTELLER);
-        this.allowedSteps.push(TSWizardStepName.UMZUG);
-        this.allowedSteps.push(TSWizardStepName.KINDER);
-        this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
-        this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-        this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
     }
 
     private setAllAllowedSteps(): void {
@@ -276,6 +272,7 @@ export class WizardStepManager {
         if (!step) {
             return false;
         }
+
         return step.wizardStepStatus !== TSWizardStepStatus.UNBESUCHT;
     }
 
@@ -284,9 +281,9 @@ export class WizardStepManager {
      */
     public isNextStepEnabled(gesuch: TSGesuch): boolean {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())
-            && this.currentStepName === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG) {
-            // Dies ist ein Hack. Das Problem ist, dass der Step EKV der letzte fuer das Steueramt ist, und da er
-            // substeps hat, ist es sehr schwierig zu wissen, wann man darf und wann nicht. Wir sollten die ganze
+            && this.currentStepName === TSWizardStepName.GESUCHSTELLER) {
+            // Dies ist ein Hack. Das Problem ist, dass der Step GESUCHSTELLER der letzte fuer das Steueramt ist, und
+            // da er substeps hat, ist es sehr schwierig zu wissen, wann man darf und wann nicht. Wir sollten die ganze
             // Funktionalitaet von Steps verbessern
             return true;
         }
@@ -374,6 +371,9 @@ export class WizardStepManager {
      *  - Der Status von VERFUEGEN wird gar nicht beruecksichtigt
      */
     public areAllStepsOK(gesuch: TSGesuch): boolean {
+        if (EbeguUtil.isNullOrUndefined(gesuch)) {
+            return false;
+        }
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.wizardSteps.length; i++) {
             if (this.wizardSteps[i].wizardStepName === TSWizardStepName.BETREUUNG) {

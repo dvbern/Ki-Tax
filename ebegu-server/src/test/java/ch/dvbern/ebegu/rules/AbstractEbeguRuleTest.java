@@ -45,8 +45,8 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractEbeguRuleTest {
 
 	private final DateRange defaultGueltigkeit = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
-	private final ErwerbspensumAbschnittRule erwerbspensumRule =
-		new ErwerbspensumAbschnittRule(defaultGueltigkeit, Constants.DEFAULT_LOCALE);
+	private final ErwerbspensumAsivAbschnittRule erwerbspensumRule =
+		new ErwerbspensumAsivAbschnittRule(defaultGueltigkeit, 20, Constants.DEFAULT_LOCALE);
 
 	private static final LocalDate DATUM_1 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.APRIL, 1);
 	private static final LocalDate DATUM_2 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.SEPTEMBER, 1);
@@ -63,18 +63,27 @@ public class AbstractEbeguRuleTest {
 			BigDecimal.valueOf(50)));
 		betreuungspensen.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		betreuungspensen = erwerbspensumRule.mergeZeitabschnitte(betreuungspensen);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuungspensen) {
+			verfuegungZeitabschnitt.initBGCalculationResult();
+		}
 		// 01.01.1900 - DATUM2-1: 50, DATUM2 - DATUM4: 70, DATUM4+1 - 31.12.9999: 50
 
 		List<VerfuegungZeitabschnitt> erwerbspensen = new ArrayList<>();
 		erwerbspensen.add(createErwerbspensum(DATUM_1, DATUM_3, 40));
 		erwerbspensen.add(createErwerbspensum(DATUM_2, DATUM_4, 60));
 		erwerbspensen = erwerbspensumRule.mergeZeitabschnitte(erwerbspensen);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : erwerbspensen) {
+			verfuegungZeitabschnitt.initBGCalculationResult();
+		}
 		// DATUM1 - DATUM2-1: 40, DATUM2 - DATUM3: 100, DATUM3+1 - DATUM 4: 60
 
 		List<VerfuegungZeitabschnitt> alles = new ArrayList<>();
 		alles.addAll(betreuungspensen);
 		alles.addAll(erwerbspensen);
 		List<VerfuegungZeitabschnitt> result = erwerbspensumRule.mergeZeitabschnitte(alles);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
+			verfuegungZeitabschnitt.initBGCalculationResult();
+		}
 		// 01.01.1900 - DATUM1-1, DATUM1 - DATUM2-1, DATUM2 - DATUM3, DATUM3+1 - DATUM 4,  DATUM4+1 - 31.12.9999
 
 		Assert.assertNotNull(result);
@@ -159,6 +168,9 @@ public class AbstractEbeguRuleTest {
 			BigDecimal.valueOf(50)));
 		zeitabschnitte.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		List<VerfuegungZeitabschnitt> result = erwerbspensumRule.mergeZeitabschnitte(zeitabschnitte);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
+			verfuegungZeitabschnitt.initBGCalculationResult();
+		}
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(3, result.size());
@@ -343,7 +355,7 @@ public class AbstractEbeguRuleTest {
 
 	private VerfuegungZeitabschnitt createBetreuungspensum(LocalDate von, LocalDate bis, BigDecimal pensum) {
 		VerfuegungZeitabschnitt zeitabschnitt1 = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt1.getBgCalculationResultAsiv().setBetreuungspensumProzent(pensum);
+		zeitabschnitt1.getBgCalculationInputAsiv().setBetreuungspensumProzent(pensum);
 		return zeitabschnitt1;
 	}
 
@@ -367,13 +379,13 @@ public class AbstractEbeguRuleTest {
 
 		final String bemerkungen = zeitabschnitt.getBemerkungen();
 		if (expectedBemerkungIfAny != null) {
-			Assert.assertFalse(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-			Assert.assertTrue(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(expectedBemerkungIfAny));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(expectedBemerkungIfAny));
 		} else {
 			assertNotNull(bemerkungen);
-			Assert.assertFalse(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-			Assert.assertEquals(1, zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().size());
-			Assert.assertTrue(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
+			Assert.assertEquals(1, zeitabschnitt.getBemerkungenList().uniqueSize());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		}
 	}
 }

@@ -33,8 +33,7 @@
         </div>
         <div class="col-md-12 table-responsive">
             <!--Tabelle-->
-            <table class="table fixedtable table-hover" id="{{vm.tableId}}"
-                   title="{{vm.tableTitle}}">
+            <table class="table fixedtable table-hover" id="{{vm.tableId}}">
                 <thead>
                 <!--Sortierspalten-->
                 <tr id="antraegeHeadRow">
@@ -62,7 +61,7 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
                     </th>
                     <th st-sort="status" class="sortable row-status uppercase" data-translate="STATUS"></th>
-                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen uppercase"
+                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumente-hochgeladen uppercase"
                         data-translate="DOKUMENTE_HOCHGELADEN_KURZ"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
@@ -75,18 +74,37 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase"
-                        data-translate="VERANTWORTLICHER_SCHULAMT"
+                    <!-- Titel Verantwortlicher ohne Schulamt -->
+                    <th st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
+                        ng-if="!vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()"
+                        data-translate="VERANTWORTLICH"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled()">
+                        title="{{'VERANTWORTLICH'|translate}}">
                     </th>
-                    <th st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
-                        data-translate="{{vm.isTagesschulangebotEnabled() ? 'VERANTWORTLICHER_JUGENDAMT' : 'VERANTWORTLICHER_OHNE_SCHULAMT'}}"
+                    <!-- Verantwortlicher bei NUR-TS -->
+                    <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase"
                         dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()"
+                        title="{{'VERANTWORTLICHER_SCHULAMT'|translate}}">
+                        <i class="fa fa-graduation-cap"></i> {{"VERANTWORTLICH"|translate}}
                     </th>
-                    <th class="row-action" ng-if="vm.isActionsVisible()"></th>
+                    <!-- Verantwortlicher bei NUR-BG -->
+                    <th ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()" st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
+                        dv-display-element
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        title="{{'VERANTWORTLICHER_JUGENDAMT'|translate}}">
+                        <i class="fa fa-gift"></i> {{"VERANTWORTLICH"|translate}}
+                    </th>
+					<!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
+                    <th ng-if="vm.isPendenzGemeindeRolle()" st-sort="verantwortlicherGemeinde" class="sortable row-ver uppercase"
+                        data-translate="VERANTWORTLICH"
+                        dv-display-element
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        title="{{'VERANTWORTLICH'|translate}}">
+                    </th>
+
                 </tr>
                 <!--Filterspalten-->
                 <tr>
@@ -203,22 +221,34 @@
                             </md-item-template>
                         </md-autocomplete>
                     </th>
+                    <!-- Verantwortlicher bei NUR-TS -->
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled()">
+                        ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()">
                         <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
                                        initial-all="true"
                                        show-selection-all="true" selected-user="vm.selectedVerantwortlicherTS"
                                        schulamt="true"></dv-userselect>
                     </th>
+                    <!-- Verantwortlicher bei NUR-BG -->
                     <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="!vm.isPendenzGemeindeRolle()">
                         <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
                                        initial-all="true"
                                        show-selection-all="true"
                                        selected-user="vm.selectedVerantwortlicherBG"></dv-userselect>
                     </th>
-                    <th ng-if="vm.isActionsVisible()"></th>
+                    <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
+                    <th dv-display-element
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                    	ng-if="vm.isPendenzGemeindeRolle()">
+                        <dv-userselect input-id="verantwortlicherGemeinde" dv-usersearch="verantwortlicherGemeinde"
+                                       initial-all="true"
+                                       show-selection-all="true" sachbearbeiter-gemeinde="true"
+                                       selected-user="vm.selectedVerantwortlicherGemeinde"></dv-userselect>
+                    </th>
+
                 </tr>
                 </thead>
                 <!--Spaltendefinitionen-->
@@ -236,7 +266,7 @@
                     <td class="ellipsis" title="{{row.antragTyp | translate}}">
                         <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer()"></i>
                         <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer()"></i>
-                        <span ng-bind="vm.getAntragTypBezeichnung(row)" class="marginLeft5"></span>
+                        <span ng-bind="vm.getAntragTypBezeichnung(row)" class="margin-left-5"></span>
                     </td>
                     <td class="ellipsis"
                         title="{{row.gesuchsperiodeString}}"
@@ -274,31 +304,30 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </td>
+                    <!-- Verantwortlicher bei NUR-TS -->
                     <td class="ellipsis" title="{{row.verantwortlicherTS}}"
                         ng-bind="row.verantwortlicherTS"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled()">
+                        ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()">
                     </td>
+                    <!-- Verantwortlicher bei NUR-BG -->
                     <td class="ellipsis" title="{{row.verantwortlicherBG}}"
                         ng-bind="row.verantwortlicherBG" dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="!vm.isPendenzGemeindeRolle()">
                     </td>
-
-
-                    <td class="ellipsis" ng-if="vm.isActionsVisible()" role="cell" tabindex="-1"
-                        ng-click="$event.stopPropagation()">
-                        <dv-loading-button type="button" button-click="vm.removeClicked(row)"
-                                           button-class="dv-btn-sm" title="{{'EINTRAG_DELETE' | translate}}"
-                                           aria-label="{{'EINTRAG_DELETE' | translate}}">
-                            <i class="fa fa-minus">
-                            </i>
-                        </dv-loading-button>
+                    <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
+                    <td class="ellipsis" title="{{vm.getVerantwortlicheBgAndTs(row)}}"
+                        ng-bind="vm.getVerantwortlicheBgAndTs(row)"
+                        dv-display-element
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="vm.isPendenzGemeindeRolle()">
                     </td>
                 </tr>
                 <tr>
                 <tr ng-if="vm.displayedCollection.length === 0">
-                    <td colspan="10" class="empty-table" data-translate="KEIN_EINTRAG">...</td>
+                    <td colspan="9" class="empty-table" data-translate="KEIN_EINTRAG">...</td>
                 </tr>
                 </tbody>
                 <tfoot>

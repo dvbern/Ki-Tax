@@ -95,6 +95,24 @@ export class ApplicationPropertyRS {
         });
     }
 
+    public isPersonensucheDisabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.personenSucheDisabled;
+        });
+    }
+
+    public getKitaxHost(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.kitaxHost;
+        });
+    }
+
+    public getKitaxUrl(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.kitaxHost + response.kitaxEndpoint;
+        });
+    }
+
     public getPublicPropertiesCached(): IPromise<TSPublicAppConfig> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_PUBLIC_APP_CONFIG);
         return this.http.get(`${this.serviceURL}/public/all`, {cache}).then(

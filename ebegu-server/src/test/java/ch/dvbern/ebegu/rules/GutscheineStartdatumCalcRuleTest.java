@@ -41,7 +41,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getKind().setGesuch(TestDataUtil.createDefaultGesuch());
 
-		rule.executeRule(betreuung, zeitabschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitabschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
 		assertEquals(0, zeitabschnitt.getAnspruchberechtigtesPensum());
@@ -57,10 +57,10 @@ public class GutscheineStartdatumCalcRuleTest {
 		VerfuegungZeitabschnitt zeitabschnitt = initZeitabschnitt(true);
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 
-		rule.executeRule(betreuung, zeitabschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitabschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
-		assertEquals(100, zeitabschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(100, zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent());
 		assertNotNull(zeitabschnitt.getBemerkungen());
 		assertTrue(zeitabschnitt.getBemerkungen().isEmpty());
 	}
@@ -68,7 +68,7 @@ public class GutscheineStartdatumCalcRuleTest {
 	@Nonnull
 	private VerfuegungZeitabschnitt initZeitabschnitt(boolean liegtNachStartdatum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
+		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		zeitabschnitt.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(liegtNachStartdatum);
 		return zeitabschnitt;
 	}

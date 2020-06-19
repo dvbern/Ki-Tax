@@ -103,7 +103,6 @@ export class GesuchModelManager {
     private betreuungIndex: number;
     private fachstellenAnspruchList: Array<TSFachstelle>;
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
-    private activInstitutionenList: Array<TSInstitutionStammdaten>;
     private activInstitutionenForGemeindeList: Array<TSInstitutionStammdaten>;
     public gemeindeStammdaten: TSGemeindeStammdaten;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
@@ -197,7 +196,6 @@ export class GesuchModelManager {
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.ewkResultat = undefined;
-        this.activInstitutionenList = undefined;
         this.activInstitutionenForGemeindeList = undefined;
 
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
@@ -245,6 +243,12 @@ export class GesuchModelManager {
         return false;
     }
 
+    public isLastGesuchsteller(): boolean {
+        return this.isGesuchsteller2Required()
+            ? this.getGesuchstellerNumber() === 2
+            : this.getGesuchstellerNumber() === 1;
+    }
+
     // tslint:disable-next-line:naming-convention
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         return gs === 2 ?
@@ -276,6 +280,9 @@ export class GesuchModelManager {
      * Loads the GemeindeKonfiguration for the current Gesuch, i.e. the current Gemeinde and Gesuchsperiode
      */
     private initGemeindeKonfiguration(): void {
+        if (EbeguUtil.isNullOrUndefined(this.gemeindeStammdaten)) {
+            return;
+        }
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
             // tslint:disable-next-line:early-exit
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
@@ -296,19 +303,6 @@ export class GesuchModelManager {
         this.fachstelleRS.getErweiterteBetreuungFachstellen().then((response: TSFachstelle[]) => {
             this.fachstellenErweiterteBetreuungList = response;
         });
-    }
-
-    /**
-     * Retrieves the list of InstitutionStammdaten for the date of today.
-     */
-    public updateActiveInstitutionenList(): void {
-        if (!this.getGesuchsperiode()) {
-            return;
-        }
-        this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
-            .then((response: TSInstitutionStammdaten[]) => {
-                this.activInstitutionenList = response;
-            });
     }
 
     /**
@@ -433,7 +427,6 @@ export class GesuchModelManager {
         return this.gesuchGenerator.createNewDossier(this.gesuch.dossier)
             .then((dossierResponse: TSDossier) => {
                 this.gesuch.dossier = angular.copy(dossierResponse);
-
                 return this.createNewGesuchForCurrentDossier();
             });
     }
@@ -443,8 +436,7 @@ export class GesuchModelManager {
      */
     private createNewGesuchForCurrentDossier(): IPromise<TSGesuch> {
         return this.gesuchGenerator.createNewGesuch(this.gesuch).then(gesuchResponse => {
-            this.gesuch = gesuchResponse;
-
+            this.setGesuch(gesuchResponse);
             return this.gesuch;
         });
     }
@@ -585,26 +577,12 @@ export class GesuchModelManager {
         return this.fachstellenErweiterteBetreuungList;
     }
 
-    public getActiveInstitutionenList(): Array<TSInstitutionStammdaten> {
-        if (this.activInstitutionenList === undefined) {
-            this.activInstitutionenList = []; // init empty while we wait for promise
-            this.updateActiveInstitutionenList();
-        }
-        return this.activInstitutionenList;
-    }
-
     public getActiveInstitutionenForGemeindeList(): Array<TSInstitutionStammdaten> {
         if (this.activInstitutionenForGemeindeList === undefined) {
             this.activInstitutionenForGemeindeList = []; // init empty while we wait for promise
             this.updateActiveInstitutionenForGemeindeList();
         }
         return this.activInstitutionenForGemeindeList;
-    }
-
-    public resetActiveInstitutionenList(): void {
-        // Der Cache muss geloescht werden, damit die Institutionen beim nächsten Aufruf neu geladen werden
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll();
-        this.updateActiveInstitutionenList();
     }
 
     public resetActiveInstitutionenForGemeindeList(): void {
@@ -818,7 +796,7 @@ export class GesuchModelManager {
             case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
                 return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.gesuch.id);
+                return this.verfuegungRS.anmeldungUebernehmen(betreuungToSave);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
@@ -1198,9 +1176,8 @@ export class GesuchModelManager {
 
     }
 
-    public saveVerfuegung(ignorieren: boolean): IPromise<TSVerfuegung> {
-        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(this.getVerfuegenToWorkWith())
-            ? '' : this.getVerfuegenToWorkWith().manuelleBemerkungen;
+    public saveVerfuegung(ignorieren: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
+        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
             manuelleBemerkungen,
             this.gesuch.id,
@@ -1270,10 +1247,12 @@ export class GesuchModelManager {
 
     public isThereAnyNotGeprueftesKind(): boolean {
         const kinderList = this.getKinderList();
-        for (const kind of kinderList) {
-            // das kind muss schon gespeichert sein damit es zahelt
-            if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
-                return true;
+        if (EbeguUtil.isNotNullOrUndefined(kinderList)) {
+            for (const kind of kinderList) {
+                // das kind muss schon gespeichert sein damit es zahelt
+                if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1616,5 +1595,35 @@ export class GesuchModelManager {
 
     public isTagesschulangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotTS();
+    }
+
+    public isFerieninselangebotEnabled(): boolean {
+        return this.authServiceRS.hasMandantAngebotFI();
+    }
+
+    public isSozialhilfeBezueger(): boolean {
+        return this.getFamiliensituation() && this.getFamiliensituation().sozialhilfeBezueger;
+    }
+
+    public isSozialhilfeBezuegerZeitraeumeRequired(): boolean {
+        return this.isSozialhilfeBezueger()
+            && (this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
+                || this.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled);
+    }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
+        return this.gesuchRS.updateAlwaysEditableProperties(properties)
+            .then(gesuchResponse => {
+                this.setGesuch(gesuchResponse);
+                return gesuchResponse;
+            });
+    }
+
+    public isTagesschuleTagisEnabled(): boolean {
+        return this.gemeindeKonfiguration.konfigTagesschuleTagisEnabled;
     }
 }

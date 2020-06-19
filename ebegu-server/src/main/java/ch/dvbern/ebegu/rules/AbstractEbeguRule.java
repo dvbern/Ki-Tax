@@ -17,11 +17,15 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,9 +33,14 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -41,6 +50,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * is of a given type
  */
 public abstract class AbstractEbeguRule implements Rule {
+
+	private RuleValidity ruleValidity;
 
 	/**
 	 * This is the name of the Rule, Can be used to create messages etc.
@@ -58,12 +69,14 @@ public abstract class AbstractEbeguRule implements Rule {
 	protected AbstractEbeguRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
+		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
-		this.validityPeriod = validityPeriod;
+		this.ruleValidity = ruleValidity;
+		this.validityPeriod = new DateRange(validityPeriod);
 		this.locale = locale;
 	}
 
@@ -79,9 +92,15 @@ public abstract class AbstractEbeguRule implements Rule {
 		return validityPeriod.getGueltigBis();
 	}
 
+	@Nonnull
 	@Override
-	public boolean isValid(@Nonnull LocalDate stichtag) {
-		return validityPeriod.contains(stichtag);
+	public DateRange validityPeriod() {
+		return validityPeriod;
+	}
+
+	@Override
+	public boolean isValid(@Nonnull DateRange dateRange) {
+		return validityPeriod.getOverlap(dateRange).isPresent();
 	}
 
 	@Override
@@ -101,16 +120,85 @@ public abstract class AbstractEbeguRule implements Rule {
 	}
 
 	/**
+	 * Stellt die Zeitabschnitte der aktuellen Rule zusammen, falls die Rule für den
+	 * aktuellen Betreuungstyp relevant ist
+	 */
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteIfApplicable(@Nonnull AbstractPlatz platz) {
+		if (isAnwendbarForAngebot(platz)) {
+			// Nach jeder AbschnittRule erhalten wir die *neuen* Zeitabschnitte zurueck. Diese müssen bei ASIV-Regeln
+			// immer eine identische ASIV und GEMEINDE-Berechnung haben!
+			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
+			// Wir duerfen nur neue Abschnitte verwenden, welche ueberhaupt gueltig sind
+			for (VerfuegungZeitabschnitt zeitabschnitt : zwischenresultate) {
+				validateZeitabschnittGueltigkeit(zeitabschnitt);
+			}
+			// Wenn es eine ASIV Rule ist, gilt sie fuer die Gemeinde genau gleich, die Ergebnisse (nur
+			// genau dieser Rule) muessen identisch sein
+			if (RuleValidity.ASIV == ruleValidity) {
+				assertSimilarAsivAndGemeindeInputs(zwischenresultate);
+			}
+			return zwischenresultate;
+		}
+		return new ArrayList<>();
+	}
+
+	protected void validateZeitabschnittGueltigkeit(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		boolean valid = true;
+		if (zeitabschnitt.getGueltigkeit().startsBefore(this.validityPeriod)) {
+			valid = false;
+		}
+		if (zeitabschnitt.getGueltigkeit().endsAfter(this.validityPeriod)) {
+			valid = false;
+		}
+		if (!valid) {
+			String msg =
+				"Regel " + this.getClass().getSimpleName() + " has invalid Zeitabschnitte. Rule " +
+					this.validityPeriod.toRangeString() + ", Abschnitt: " +
+					zeitabschnitt.getGueltigkeit().toRangeString();
+			throw new EbeguRuntimeException("validateZeitabschnittGueltigkeit", msg);
+		}
+	}
+
+	private void assertSimilarAsivAndGemeindeInputs(@Nonnull Collection<VerfuegungZeitabschnitt> zeitabschnitte) {
+		boolean hasSameInputAsivAndGemeinde = zeitabschnitte.stream()
+			.allMatch(z -> z.getBgCalculationInputAsiv().isSame(z.getBgCalculationInputGemeinde()));
+
+		if (!hasSameInputAsivAndGemeinde) {
+			throw new EbeguRuntimeException(
+				"createVerfuegungsZeitabschnitteIfApplicable",
+				"ASIV Rule setzt nicht beide Input-Objekte!");
+		}
+	}
+
+	/**
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
-	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+	abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+
+	/**
+	 * Führt die aktuelle Rule aus, falls die Rule für den
+	 * aktuellen Betreuungstyp relevant ist
+	 */
+	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit())) {
+			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
+				executeRule(platz, inputDatum);
+				if (ruleValidity == RuleValidity.GEMEINDE) {
+					// Wir verlassen uns hier darauf, dass GEMEINDE-Rules nur dann verwendet werden,
+					// wenn sich die Berechnung tatsaechlich von ASIV unterscheidet. Siehe auch
+					// ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator
+					inputDatum.getParent().setHasGemeindeSpezifischeBerechnung(true);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
 	 * Hier kann man davon ausgehen, dass die Zeitabschnitte schon validiert und gemergt sind.
 	 */
-	protected abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
+	abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData);
 
 	/**
 	 * Hauptmethode der Regelberechnung. Diese wird von Aussen aufgerufen
@@ -118,12 +206,15 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	@Override
 	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		if (!isAnwendbarForAngebot(platz)) {
+			return zeitabschnitte;
+		}
 
 		Collections.sort(zeitabschnitte);
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
 
-		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(platz);
+		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitteIfApplicable(platz);
 		Collections.sort(abschnitteCreatedInRule);
 
 		// In dieser Funktion muss sichergestellt werden, dass in der neuen Liste keine Ueberschneidungen mehr bestehen
@@ -140,10 +231,23 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Die eigentliche Rule anwenden
 		for (VerfuegungZeitabschnitt zeitabschnitt : normalizedZeitabschn) {
-			executeRule(platz, zeitabschnitt);
+			executeRuleIfApplicable(platz, zeitabschnitt);
 		}
 		return normalizedZeitabschn;
 	}
+
+	/**
+	 *
+	 * @param platz (Betreuung, Tageschhulplatz etc)
+	 * @return true wenn die Regel anwendbar ist
+	 */
+	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) {
+		Objects.requireNonNull(platz);
+		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
+		return getAnwendbareAngebote().contains(platz.getBetreuungsangebotTyp());
+	}
+
+	protected abstract List<BetreuungsangebotTyp> getAnwendbareAngebote();
 
 	/**
 	 * Prüft, dass die Zeitabschnitte innerhalb der Gesuchperiode liegen (und kürzt sie falls nötig bzw. lässt
@@ -195,7 +299,7 @@ public abstract class AbstractEbeguRule implements Rule {
 				// Gleiche Berechnungsgrundlagen: Den alten um den neuen verlängern
 				lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 				// Die Bemerkungen hinzufügen
-				lastZeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
+				lastZeitabschnitt.getBemerkungenList().addAllBemerkungen(zeitabschnitt.getBemerkungenList());
 				validZeitabschnitte.remove(indexOfLast);
 				validZeitabschnitte.add(lastZeitabschnitt);
 			} else {
@@ -301,5 +405,30 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
 		return RuleUtil.getStichtagForEreignis(ereignisdatum);
+	}
+
+	/**
+	 * Gibt eine Liste von Input-Objekten zurück, welche in CalcRules berechnet werden sollen: Wenn Typ ASIV
+	 * muss ASIV *und* Gemeinde berechnet werden, sonst nur Gemeinde.
+	 */
+	@Nonnull
+	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		if (this.ruleValidity == RuleValidity.ASIV) {
+			return Arrays.asList(zeitabschnitt.getBgCalculationInputGemeinde(), zeitabschnitt.getBgCalculationInputAsiv());
+		}
+
+		return Collections.singletonList(zeitabschnitt.getBgCalculationInputGemeinde());
+	}
+
+	@Override
+	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		// Grundsaetzlich gehen wir davon aus, dass jede Regel fuer jede Gemeinde gueltig ist.
+		// Ausnahme sind Regeln mit RuleValiditiy=GEMEINDE, fuer welche eine Einstellung gleich
+		// ist (bzw. nicht ueberschrieben) wie bei ASIV
+		if (RuleValidity.GEMEINDE == ruleValidity) {
+			throw new EbeguRuntimeException("isRelevantForGemeinde",
+				"Rule mit validity GEMEINDE muessen isRelevantForGemeinde ueberschreiben! " + this.getClass().getName());
+		}
+		return true;
 	}
 }

@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,12 +40,13 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Regelwerk;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
@@ -62,16 +66,23 @@ public class VerfuegungEventConverter {
 	private VerfuegungService verfuegungService;
 
 	@Nonnull
-	public VerfuegungVerfuegtEvent of(@Nonnull Verfuegung verfuegung) {
+	public Optional<VerfuegungVerfuegtEvent> of(@Nonnull Verfuegung verfuegung) {
 		VerfuegungEventDTO dto = toVerfuegungEventDTO(verfuegung);
+		if (dto == null) {
+			return Optional.empty();
+		}
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema());
+		Objects.requireNonNull(verfuegung.getBetreuung());
+		return Optional.of(new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema()));
 	}
 
-	@Nonnull
+	@Nullable
 	private VerfuegungEventDTO toVerfuegungEventDTO(@Nonnull Verfuegung verfuegung) {
 		Betreuung betreuung = verfuegung.getBetreuung();
+		if (betreuung == null) {
+			return null;
+		}
 		Gesuch gesuch = betreuung.extractGesuch();
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
@@ -128,6 +139,7 @@ public class VerfuegungEventConverter {
 
 		// Verrechnete Zeitabschnitte
 		Betreuung betreuung = verfuegung.getBetreuung();
+		Objects.requireNonNull(betreuung);
 		List<VerfuegungZeitabschnitt> allVerrechnet = findVorgaengerZeitabschnitte(betreuung, ignoredAbschnitte);
 		allVerrechnet.addAll(verrechnetAbschnitte);
 
@@ -163,10 +175,12 @@ public class VerfuegungEventConverter {
 	private ZeitabschnittDTO toZeitabschnittDTO(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		MathUtil ROUND = MathUtil.ZWEI_NACHKOMMASTELLE;
 
+		Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
 		return ZeitabschnittDTO.newBuilder()
 			.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb())
 			.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis())
-			.setVerfuegungNr(zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer())
+			.setVerfuegungNr(betreuung.extractGesuch().getLaufnummer())
 			.setEffektiveBetreuungPct(ROUND.from(zeitabschnitt.getBetreuungspensumProzent()))
 			.setAnspruchPct(zeitabschnitt.getAnspruchberechtigtesPensum())
 			.setVerguenstigtPct(ROUND.from(zeitabschnitt.getBgPensum()))
@@ -177,6 +191,7 @@ public class VerfuegungEventConverter {
 			.setVerfuegteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten()))
 			.setAnspruchsberechtigteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()))
 			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
+			.setRegelwerk(Regelwerk.valueOf(zeitabschnitt.getRegelwerk().name()))
 			.build();
 	}
 }

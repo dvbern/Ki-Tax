@@ -55,6 +55,10 @@ public enum Betreuungsstatus {
 		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this;
 	}
 
+	public boolean isGeschlossenSchulamt() {
+		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+	}
+
 	/**
 	 * Alle SCH-Status, die ausgeloest sind, gelten als geschlossen, da sie im Verfuegungsprozess nicht beruecksichtigt werden.
 	 */
@@ -65,7 +69,7 @@ public enum Betreuungsstatus {
 	}
 
 	public boolean isAnyStatusOfVerfuegt() {
-		return VERFUEGT == this || STORNIERT == this || SCHULAMT == this
+		return VERFUEGT == this || SCHULAMT == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this;
 	}
 
@@ -77,6 +81,14 @@ public enum Betreuungsstatus {
 		return SCHULAMT == this || SCHULAMT_ANMELDUNG_ERFASST  == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this|| SCHULAMT_ANMELDUNG_ABGELEHNT == this  || SCHULAMT_FALSCHE_INSTITUTION == this
 			|| SCHULAMT_MODULE_AKZEPTIERT == this;
+	}
+
+	public boolean isSchulamtStatusWithPotentialVerfuegung() {
+		// Tagesschule-Anmeldungen gelten als "verfügt", wenn sie übernommen sind (Normalfall)
+		// Wenn aber im EG eine Anmeldung im Status AUSGELOEST ist, und eine Mutation erstellt wird,
+		// so wird die Anmeldung des EG ebenfalls gespeichert, damit wir beim Berechnen mit dem
+		// richtigen FinSit rechnen! (siehe MutationMerger)
+		return SCHULAMT_ANMELDUNG_AUSGELOEST == this || SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
 	}
 
 	public boolean isSchulamtAnmeldungUebernommen() {

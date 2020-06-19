@@ -17,14 +17,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für den ausserordentlichen Anspruch. Sie beachtet:
@@ -34,26 +40,26 @@ import ch.dvbern.ebegu.types.DateRange;
 public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
 	public AusserordentlicherAnspruchCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
-		platz.getBetreuungsangebotTyp();
-		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch();
-			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-			// Es wird der grössere der beiden Werte genommen!
-			if (ausserordentlicherAnspruch > pensumAnspruch) {
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(ausserordentlicherAnspruch);
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-					RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
-					MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
-					getLocale());
-			}
+		@Nonnull BGCalculationInput inputData) {
+		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
+		int pensumAnspruch = inputData.getAnspruchspensumProzent();
+		// Es wird der grössere der beiden Werte genommen!
+		if (ausserordentlicherAnspruch > pensumAnspruch) {
+			inputData.setAnspruchspensumProzent(ausserordentlicherAnspruch);
+			inputData.addBemerkung(
+				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
+				getLocale());
 		}
 	}
 }

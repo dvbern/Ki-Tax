@@ -24,6 +24,7 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../../core/core.angularjs.module';
@@ -81,7 +82,7 @@ describe('DVQuicksearchList', () => {
                     TSBetreuungsangebotTyp.TAGESFAMILIEN,
                 ];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
-                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
+                    .toEqual('Kita, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController($filter,
@@ -140,8 +141,8 @@ describe('DVQuicksearchList', () => {
         mockAntrag.status = undefined;
         mockAntrag.gesuchsperiodeGueltigAb = undefined;
         mockAntrag.gesuchsperiodeGueltigBis = undefined;
-        const result = [mockAntrag];
-        spyOn(searchRS, 'getPendenzenList').and.returnValue($q.when(result));
+        spyOn(searchRS, 'getPendenzenList')
+            .and.returnValue($q.resolve(new TSAntragSearchresultDTO([mockAntrag], 1)));
         return mockAntrag;
     }
 

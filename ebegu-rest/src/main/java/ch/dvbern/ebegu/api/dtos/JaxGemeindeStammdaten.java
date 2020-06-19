@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -70,11 +71,11 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
 	private List<JaxBenutzer> benutzerListeTS; // Für die ComboBox Standardverantwortliche TS
-	@NotNull
+	@Nullable
 	private String kontoinhaber;
-	@NotNull
+	@Nullable
 	private String bic;
-	@NotNull
+	@Nullable
 	private String iban;
 	@NotNull
 	private Boolean standardRechtsmittelbelehrung;
@@ -96,11 +97,26 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String standardDokUnterschriftTitel2;
 	@Nullable
 	private String standardDokUnterschriftName2;
+	@Nullable
+	private @Valid List<String> externalClients = null;
+	@Nullable
+	private String usernameScolaris;
+	@Nullable
+	private String bgEmail;
+	@Nullable
+	private String bgTelefon;
+	@Nullable
+	private String tsEmail;
+	@Nullable
+	private String tsTelefon;
+
 
 	// ---------- Konfiguration ----------
 	@NotNull
 	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
 
+	public JaxGemeindeStammdaten() {
+	}
 
 	@Nullable
 	public String getAdministratoren() {
@@ -231,27 +247,30 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.konfigurationsListe = konfigurationsListe;
 	}
 
+	@Nullable
 	public String getKontoinhaber() {
 		return kontoinhaber;
 	}
 
-	public void setKontoinhaber(String kontoinhaber) {
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
 		this.kontoinhaber = kontoinhaber;
 	}
 
+	@Nullable
 	public String getBic() {
 		return bic;
 	}
 
-	public void setBic(String bic) {
+	public void setBic(@Nullable String bic) {
 		this.bic = bic;
 	}
 
+	@Nullable
 	public String getIban() {
 		return iban;
 	}
 
-	public void setIban(String iban) {
+	public void setIban(@Nullable String iban) {
 		this.iban = iban;
 	}
 
@@ -369,5 +388,59 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setStandardDokUnterschriftName2(@Nullable String standardDokUnterschriftName2) {
 		this.standardDokUnterschriftName2 = standardDokUnterschriftName2;
+	}
+
+	@Nullable
+	public List<String> getExternalClients() {
+		return externalClients;
+	}
+
+	public void setExternalClients(@Nullable List<String> externalClients) {
+		this.externalClients = externalClients;
+	}
+
+	@Nullable
+	public String getUsernameScolaris() {
+		return usernameScolaris;
+	}
+
+	public void setUsernameScolaris(@Nullable String usernameScolaris) {
+		this.usernameScolaris = usernameScolaris;
+	}
+
+	@Nullable
+	public String getBgEmail() {
+		return bgEmail;
+	}
+
+	public void setBgEmail(@Nullable String bgEmail) {
+		this.bgEmail = bgEmail;
+	}
+
+	@Nullable
+	public String getBgTelefon() {
+		return bgTelefon;
+	}
+
+	public void setBgTelefon(@Nullable String bgTelefon) {
+		this.bgTelefon = bgTelefon;
+	}
+
+	@Nullable
+	public String getTsEmail() {
+		return tsEmail;
+	}
+
+	public void setTsEmail(@Nullable String tsEmail) {
+		this.tsEmail = tsEmail;
+	}
+
+	@Nullable
+	public String getTsTelefon() {
+		return tsTelefon;
+	}
+
+	public void setTsTelefon(@Nullable String tsTelefon) {
+		this.tsTelefon = tsTelefon;
 	}
 }

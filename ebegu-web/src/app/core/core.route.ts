@@ -28,7 +28,6 @@ import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
-import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
@@ -50,7 +49,6 @@ appRun.$inject = [
     '$location',
     'GesuchModelManager',
     'GesuchsperiodeRS',
-    'InstitutionStammdatenRS',
     'GlobalCacheService',
     'GemeindeRS',
     'LOCALE_ID',
@@ -69,7 +67,6 @@ export function appRun(
     $location: ILocationService,
     gesuchModelManager: GesuchModelManager,
     gesuchsperiodeRS: GesuchsperiodeRS,
-    institutionsStammdatenRS: InstitutionStammdatenRS,
     globalCacheService: GlobalCacheService,
     gemeindeRS: GemeindeRS,
     LOCALE_ID: string,
@@ -111,17 +108,9 @@ export function appRun(
             mandantRS.getFirst();
         }
         // muss immer geleert werden
-        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll();
-        // muss immer geleert werden
         globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();
         // since we will need these lists anyway we already load on login
-        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then(gesuchsperioden => {
-            // tslint:disable-next-line:early-exit
-            if (gesuchsperioden.length > 0) {
-                const newestGP = gesuchsperioden[0];
-                institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
-            }
-        });
+        gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         gemeindeRS.getAllGemeinden();
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
         gesuchModelManager.updateFachstellenAnspruchList();

@@ -35,7 +35,7 @@
 
         <div class="dv-content">
             <fieldset *ngIf="editMode; else showViewMode">
-                <div class="viewSubTitle">
+                <div class="view-sub-title">
                     <h3 translate>INSTITUTION_STAMMDATEN</h3>
                     <hr class="header">
                 </div>
@@ -233,7 +233,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="externalClients" class="col-sm-6">
+                    <div *ngIf="externalClients && !isTagesschule()" class="col-sm-6">
                         <dv-external-client-multiselect
                             [externalClients]="externalClients">
                         </dv-external-client-multiselect>
@@ -278,7 +278,7 @@
 
             <ng-template #showViewMode>
                 <fieldset>
-                    <div class="viewSubTitle">
+                    <div class="view-sub-title">
                         <h3 translate>INSTITUTION_STAMMDATEN</h3>
                         <hr class="header">
                     </div>
@@ -298,7 +298,8 @@
                                 <h3>&nbsp;</h3>
                                 <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
                                 <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
-                                <p><a href="{{stammdaten.webseite}}" target="tah">{{stammdaten.webseite}}</a></p>
+                                <p><a href="{{ebeguUtil.formatHrefUrl(stammdaten.webseite)}}"
+                                      target="tah">{{stammdaten.webseite}}</a></p>
                             </div>
                         </div>
                         <!-- Öffnungszeiten -->
@@ -324,7 +325,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group">
+                            <div class="form-group" *ngIf="!isTagesschule()">
                                 <dv-external-client-assignment [externalClients]="externalClients">
                                 </dv-external-client-assignment>
                             </div>
@@ -336,6 +337,7 @@
             </ng-template>
 
         </div>
+
 
         <!-- Buttons -->
         <div class="dv-footer">

@@ -118,7 +118,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     private initDevModeParameter(): void {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             // Simulation nur fuer SuperAdmin freischalten
-            const isSuperadmin = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
+            const isSuperadmin = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
             // Die Simulation ist nur im Dev-Mode moeglich und nur, wenn das Gesuch im Status FREIGABEQUITTUNG ist
             this.showGesuchFreigebenSimulationButton =
                 (response && this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) && isSuperadmin);
@@ -142,11 +142,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public openFreigabequittungPDF(forceCreation: boolean): IPromise<void> {
         const win = this.downloadRS.prepareDownloadWindow();
-        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-            forceCreation)
+        const gesuchId = this.gesuchModelManager.getGesuch().id;
+        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(gesuchId, forceCreation)
             .then((downloadFile: TSDownloadFile) => {
                 // wir laden das Gesuch neu, da die Erstellung des Dokumentes auch Aenderungen im Gesuch verursacht
-                this.gesuchModelManager.openGesuch(this.gesuchModelManager.getGesuch().id)
+                this.gesuchModelManager.openGesuch(gesuchId)
                     .then(() => {
                         this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
                     })

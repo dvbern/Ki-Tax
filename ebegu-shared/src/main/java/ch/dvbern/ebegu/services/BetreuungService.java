@@ -72,12 +72,6 @@ public interface BetreuungService {
 	Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung);
 
 	/**
-	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_UEBERNOMMEN und sendet dem Gesuchsteller eine E-Mail.
-	 */
-	@Nonnull
-	AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung anmeldung);
-
-	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_ABGELEHNT und sendet dem Gesuchsteller eine E-Mail
 	 */
 	@Nonnull
@@ -224,4 +218,5 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
+
 }

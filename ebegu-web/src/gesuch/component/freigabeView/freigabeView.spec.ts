@@ -65,7 +65,7 @@ describe('freigabeView', () => {
 
         spyOn(applicationPropertyRS, 'isDevMode').and.returnValue($q.when(false));
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-        spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue({});
+        spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.resolve());
 
         dossier = TestDataUtil.createDossier('', undefined);
         dossier.gemeinde = TestDataUtil.createGemeindeParis();
@@ -139,36 +139,41 @@ describe('freigabeView', () => {
             controller.form.$valid = true;
 
             spyOn(dialog, 'showDialog').and.returnValue($q.when({}));
+
             const downloadFile = new TSDownloadFile();
             downloadFile.accessToken = 'token';
             downloadFile.filename = 'name';
-            spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument').and.returnValue($q.when(downloadFile));
-            spyOn(downloadRS, 'startDownload').and.returnValue($q.when({}));
-            spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.when({}));
+            spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument')
+                .and.returnValue($q.resolve(downloadFile));
+            spyOn(downloadRS, 'startDownload').and.returnValue();
+
+            const fakeWindow: any = undefined;
+            spyOn(downloadRS, 'prepareDownloadWindow').and.returnValue(fakeWindow);
+
             const gesuch = new TSGesuch();
             gesuch.id = '123';
+            spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.resolve(gesuch));
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
             controller.confirmationCallback();
             $scope.$apply();
 
-            // tslint:disable-next-line:no-unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, true);
-            // tslint:disable-next-line:no-unbound-method
-            expect(downloadRS.startDownload).toHaveBeenCalledWith(downloadFile.accessToken,
-                downloadFile.filename,
-                false,
-                jasmine.any(Object));
+            expect(downloadRS.startDownload)
+                .toHaveBeenCalledWith(downloadFile.accessToken, downloadFile.filename, false, fakeWindow);
         });
     });
     describe('openFreigabequittungPDF', () => {
         let gesuch: TSGesuch;
+        let tsDownloadFile: TSDownloadFile;
 
         beforeEach(() => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-            spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.when({}));
-            spyOn(downloadRS, 'startDownload').and.returnValue($q.when({}));
-            spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument').and.returnValue($q.when({}));
+            spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.resolve(gesuch));
+            spyOn(downloadRS, 'startDownload').and.returnValue();
+            tsDownloadFile = new TSDownloadFile();
+            spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument')
+                .and.returnValue($q.resolve(tsDownloadFile));
             gesuch = new TSGesuch();
             gesuch.id = '123';
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);

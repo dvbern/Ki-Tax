@@ -31,11 +31,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -53,7 +52,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckGesuchstellerContainerComplete(groups = AntragCompleteValidationGroup.class)
 @Entity
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 public class GesuchstellerContainer extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -8403117439764700618L;
@@ -174,6 +173,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		Erwerbspensum pensumJA = new Erwerbspensum();
 		pensumJA.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
 		pensumJA.setPensum(0);
+		pensumJA.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setErwerbspensumJA(pensumJA);
 		erwerbspensen.add(erwerbspensum);
 		return erwerbspensen;
@@ -398,7 +398,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			return false;
 		}
 		final GesuchstellerContainer otherGesuchstellerContainer = (GesuchstellerContainer) other;
-		return EbeguUtil.isSameObject(getGesuchstellerJA(), otherGesuchstellerContainer.getGesuchstellerJA());
+		return EbeguUtil.isSame(getGesuchstellerJA(), otherGesuchstellerContainer.getGesuchstellerJA());
 	}
 
 	/**

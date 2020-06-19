@@ -27,6 +27,7 @@ import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
+import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {ErrorService} from './errors/service/ErrorService';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -38,6 +39,7 @@ import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
+import {NotrechtRS} from './service/notrechtRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
@@ -243,6 +245,17 @@ export const wizardStepManagerProvider = {
     deps: ['$injector'],
 };
 
+// WizardSubStepManager
+export function wizardSubStepManagerServiceFactory(i: IInjectorService): WizardSubStepManager {
+    return i.get('WizardSubStepManager');
+}
+
+export const wizardSubStepManagerProvider = {
+    provide: WizardSubStepManager,
+    useFactory: wizardSubStepManagerServiceFactory,
+    deps: ['$injector'],
+};
+
 // FallRS
 export function fallRSServiceFactory(i: IInjectorService): FallRS {
     return i.get('FallRS');
@@ -309,6 +322,17 @@ export const mandantRSProvider = {
     deps: ['$injector'],
 };
 
+// NotrechtRS
+export function notrechtRSProviderServiceFactory(i: IInjectorService): NotrechtRS {
+    return i.get('NotrechtRS');
+}
+
+export const notrechtRSProvider = {
+    provide: NotrechtRS,
+    useFactory: notrechtRSProviderServiceFactory,
+    deps: ['$injector'],
+};
+
 // UploadRS
 export function uploadRSServiceFactory(i: IInjectorService): UploadRS {
     return i.get('UploadRS');
@@ -344,5 +368,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     einstellungRSProvider,
     supportRSProvider,
     mandantRSProvider,
-    uploadRSProvider
+    uploadRSProvider,
+    notrechtRSProvider
 ];

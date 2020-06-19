@@ -26,6 +26,7 @@ import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../constants/CONSTANTS';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -49,25 +50,10 @@ export class MitteilungRS {
         return 'MitteilungRS';
     }
 
-    public findMitteilung(mitteilungID: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(mitteilungID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-            });
-    }
-
     public sendMitteilung(mitteilung: TSMitteilung): IPromise<TSMitteilung> {
         let restMitteilung = {};
         restMitteilung = this.ebeguRestUtil.mitteilungToRestObject(restMitteilung, mitteilung);
         return this.$http.put(`${this.serviceURL}/send`, restMitteilung).then((response: any) => {
-            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-        });
-    }
-
-    public saveEntwurf(mitteilung: TSMitteilung): IPromise<TSMitteilung> {
-        let restMitteilung = {};
-        restMitteilung = this.ebeguRestUtil.mitteilungToRestObject(restMitteilung, mitteilung);
-        return this.$http.put(`${this.serviceURL}/entwurf`, restMitteilung).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
         });
     }
@@ -90,12 +76,6 @@ export class MitteilungRS {
         });
     }
 
-    public getEntwurfForCurrentRolleForBetreuung(betreuungId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/entwurf/betreuung/${betreuungId}`).then((response: any) => {
-            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-        });
-    }
-
     public getMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<Array<TSMitteilung>> {
         return this.$http.get(`${this.serviceURL}/forrole/dossier/${dossierId}`).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungen); // The response is a wrapper
@@ -114,13 +94,6 @@ export class MitteilungRS {
         });
     }
 
-    public removeEntwurf(mitteilung: TSMitteilung): IPromise<any> {
-        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(mitteilung.id)}`)
-            .then(response => {
-                return response;
-            });
-    }
-
     public setAllNewMitteilungenOfDossierGelesen(dossierId: string): IPromise<Array<TSMitteilung>> {
         return this.$http.put(`${this.serviceURL}/setallgelesen/${dossierId}`, null).then((response: any) => {
             this.$log.debug('PARSING mitteilungen REST objects ', response.data);
@@ -134,8 +107,8 @@ export class MitteilungRS {
         });
     }
 
-    public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
-        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, false);
+    public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung, withMahlzeitenverguenstigung: boolean): IPromise<TSBetreuungsmitteilung> {
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, false, withMahlzeitenverguenstigung);
         const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         return this.$http.put(`${this.serviceURL}/sendbetreuungsmitteilung`, restMitteilung).then((response: any) => {
             this.$log.debug('PARSING Betreuungsmitteilung REST object ', response.data);
@@ -157,14 +130,8 @@ export class MitteilungRS {
         });
     }
 
-    public mitteilungUebergebenAnJugendamt(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/delegation/jugendamt/${mitteilungId}`).then((response: any) => {
-            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-        });
-    }
-
-    public mitteilungUebergebenAnSchulamt(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/delegation/schulamt/${mitteilungId}`).then((response: any) => {
+    public mitteilungWeiterleiten(mitteilungId: string, userName: string): IPromise<TSMitteilung> {
+        return this.$http.get(`${this.serviceURL}/weiterleiten/${mitteilungId}/${userName}`).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
         });
     }
@@ -177,7 +144,8 @@ export class MitteilungRS {
         });
     }
 
-    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung, fromAbweichung: boolean): TSBetreuungsmitteilung {
+    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung, fromAbweichung: boolean,
+                                       withMahlzeitenverguenstigung: boolean): TSBetreuungsmitteilung {
         const mutationsmeldung = new TSBetreuungsmitteilung();
         mutationsmeldung.dossier = dossier;
         mutationsmeldung.betreuung = betreuung;
@@ -187,9 +155,9 @@ export class MitteilungRS {
         mutationsmeldung.empfaenger = dossier.fall.besitzer ? dossier.fall.besitzer : undefined;
         mutationsmeldung.subject = this.$translate.instant('MUTATIONSMELDUNG_BETREFF');
         mutationsmeldung.message = fromAbweichung
-            ? this.createNachrichtForMutationsmeldungFromAbweichung(betreuung)
-            : this.createNachrichtForMutationsmeldung(betreuung);
-        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
+            ? this.createNachrichtForMutationsmeldungFromAbweichung(betreuung, withMahlzeitenverguenstigung)
+            : this.createNachrichtForMutationsmeldung(betreuung, withMahlzeitenverguenstigung);
+        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.NEU;
         mutationsmeldung.betreuungspensen = this.extractPensenFromBetreuung(betreuung);
         return mutationsmeldung;
     }
@@ -197,7 +165,8 @@ export class MitteilungRS {
     /**
      * Erzeugt eine Nachricht mit einem Text mit allen Betreuungspensen der Betreuung.
      */
-    private createNachrichtForMutationsmeldung(betreuung: TSBetreuung): string {
+    // tslint:disable-next-line:cognitive-complexity
+    private createNachrichtForMutationsmeldung(betreuung: TSBetreuung, withMahlzeitenverguenstigung: boolean): string {
         let message = '';
         let i = 1;
         // to avoid changing something
@@ -225,13 +194,44 @@ export class MitteilungRS {
                     datumBis :
                     DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
 
-                message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                    num: i,
-                    von: datumAb,
-                    bis: datumBis,
-                    pensum: pensumJA.pensum,
-                    kosten: pensumJA.monatlicheBetreuungskosten
-                });
+                if (withMahlzeitenverguenstigung) {
+                    const hauptmahlzeiten = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.monatlicheHauptmahlzeiten)
+                        ? betpenContainer.betreuungspensumJA.monatlicheHauptmahlzeiten
+                        : 0;
+
+                    const nebenmahlzeiten = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten)
+                        ? betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten
+                        : 0;
+
+                    const tarifHaupt = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.tarifProHauptmahlzeit)
+                        ? betpenContainer.betreuungspensumJA.tarifProHauptmahlzeit
+                        : 0;
+
+                    const tarifNeben = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.tarifProNebenmahlzeit)
+                        ? betpenContainer.betreuungspensumJA.tarifProNebenmahlzeit
+                        : 0;
+
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG_MIT_TARIF', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum: pensumJA.pensum,
+                        kosten: pensumJA.monatlicheBetreuungskosten,
+                        hauptmahlzeiten,
+                        nebenmahlzeiten,
+                        tarifHaupt,
+                        tarifNeben
+                    });
+                } else {
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum: pensumJA.pensum,
+                        kosten: pensumJA.monatlicheBetreuungskosten
+                    });
+                }
+
             }
             i++;
         });
@@ -243,7 +243,7 @@ export class MitteilungRS {
      * Betreuung.
      */
     // tslint:disable-next-line:cognitive-complexity
-    private createNachrichtForMutationsmeldungFromAbweichung(betreuung: TSBetreuung): string {
+    private createNachrichtForMutationsmeldungFromAbweichung(betreuung: TSBetreuung, withMahlzeitenverguenstigung: boolean): string {
         let message = '';
         let i = 1;
 
@@ -281,13 +281,32 @@ export class MitteilungRS {
                     ? betreuungspensum.monatlicheBetreuungskosten
                     : betreuungspensum.vertraglicheKosten;
 
-                message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                    num: i,
-                    von: datumAb,
-                    bis: datumBis,
-                    pensum,
-                    kosten
-                });
+                if (withMahlzeitenverguenstigung) {
+                    const hauptmahlzeiten =  EbeguUtil.isNotNullAndPositive(betreuungspensum.monatlicheHauptmahlzeiten)
+                        ? betreuungspensum.monatlicheHauptmahlzeiten
+                        : betreuungspensum.vertraglicheHauptmahlzeiten;
+                    const nebenmahlzeiten = EbeguUtil.isNotNullAndPositive(betreuungspensum.monatlicheNebenmahlzeiten)
+                        ? betreuungspensum.monatlicheNebenmahlzeiten
+                        : betreuungspensum.vertraglicheNebenmahlzeiten;
+
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum,
+                        kosten,
+                        hauptmahlzeiten,
+                        nebenmahlzeiten
+                    });
+                } else {
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum,
+                        kosten
+                    });
+                }
             }
             i++;
         });
@@ -308,8 +327,8 @@ export class MitteilungRS {
         return pensen;
     }
 
-    public abweichungenFreigeben(betreuung: TSBetreuung, dossier: TSDossier): IPromise<any> {
-        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, true);
+    public abweichungenFreigeben(betreuung: TSBetreuung, dossier: TSDossier, withMahlzeitenverguenstigung: boolean): IPromise<any> {
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, true, withMahlzeitenverguenstigung);
         const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         const url = `${this.serviceURL}/betreuung/abweichungenfreigeben/${encodeURIComponent(betreuung.id)}`;
         return this.$http.put(url, restMitteilung)

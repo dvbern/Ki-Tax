@@ -25,6 +25,12 @@ import javax.security.auth.message.AuthStatus;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.EbeguApplicationV1;
@@ -68,8 +74,9 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 
 	private final String internalApiUser;
 	private final String internalApiPassword;
-	private final String schulamtApiUser;
-	private final String schulamtApiPassword;
+	private final String keycloackClient;
+	private final String keycloackPassword;
+	private final String keycloackAuthServer;
 
 	@SuppressWarnings("PMD.UnusedFormalParameter")
 	public CookieTokenAuthModule(String loginModuleStackName) {
@@ -79,7 +86,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	public CookieTokenAuthModule(@Nullable String internalUser, @Nullable String internalPassword,
-	@Nullable String schulamtUser, @Nullable String schulamtPassword) {
+		@Nullable String keycloackClient, @Nullable String keycloackPassword, @Nullable String keycloackAuthServer) {
 		//this is unused, just checked if this could be used to declare this module through standalone.xml instead of
 		//SamRegistrationListener
 		this.internalApiUser = internalUser;
@@ -87,27 +94,32 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 		if (internalPassword == null || internalUser == null) {
 			throw new EbeguRuntimeException("CookieTokenAuthModule initialization", "Internal API User must be set");
 		}
-		this.schulamtApiUser = schulamtUser;
-		this.schulamtApiPassword = schulamtPassword;
+		this.keycloackClient = keycloackClient;
+		this.keycloackPassword = keycloackPassword;
+		this.keycloackAuthServer = keycloackAuthServer;
 	}
 
-	public CookieTokenAuthModule(@Nullable String schulamtUser, @Nullable String schulamtPassword) {
+	public CookieTokenAuthModule(@Nullable String keycloackClient, @Nullable String keycloackPassword,
+		@Nullable String keycloackAuthServer) {
 		internalApiUser = null;
 		internalApiPassword = null;
-		schulamtApiUser = schulamtUser;
-		schulamtApiPassword = schulamtPassword;
+		this.keycloackClient = keycloackClient;
+		this.keycloackPassword = keycloackPassword;
+		this.keycloackAuthServer = keycloackAuthServer;
 	}
 
 	public CookieTokenAuthModule() {
 		internalApiUser = null;
 		internalApiPassword = null;
-		schulamtApiUser = null;
-		schulamtApiPassword = null;
+		keycloackClient = null;
+		keycloackPassword = null;
+		keycloackAuthServer = null;
 	}
 
 	@Override
-	@SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:BooleanExpressionComplexity"})
-	public AuthStatus validateHttpRequest(HttpServletRequest request, HttpServletResponse response, HttpMsgContext httpMsgContext) {
+	@SuppressWarnings({ "checkstyle:CyclomaticComplexity", "checkstyle:BooleanExpressionComplexity" })
+	public AuthStatus validateHttpRequest(HttpServletRequest request, HttpServletResponse response,
+		HttpMsgContext httpMsgContext) {
 		prepareLogvars(httpMsgContext);
 		//maybe we should do a logout first?
 		//		try {
@@ -179,7 +191,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 					}
 					if (tokenAuthenticator.authenticate(authToken)) {
 						LOG.debug("successfully logged in user: {}", tokenAuthenticator.getUserName());
-						return httpMsgContext.notifyContainerAboutLogin(tokenAuthenticator.getUserName(), tokenAuthenticator.getApplicationRoles());
+						return httpMsgContext.notifyContainerAboutLogin(tokenAuthenticator.getUserName(),
+							tokenAuthenticator.getApplicationRoles());
 					}
 
 					// Token Verification Failed
@@ -187,7 +200,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 					return setResponseUnauthorised(httpMsgContext);
 				}
 
-				LOG.warn("No Authenticator found with CDI:  {} all auth attempts will be refused", TokenAuthenticator.class.getSimpleName());
+				LOG.warn("No Authenticator found with CDI:  {} all auth attempts will be refused",
+					TokenAuthenticator.class.getSimpleName());
 			}
 
 		} catch (NoSuchElementException e) {
@@ -204,7 +218,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private AuthStatus checkAuthorizationForInternalApiAccess(HttpServletRequest request, HttpMsgContext httpMsgContext) {
+	private AuthStatus checkAuthorizationForInternalApiAccess(HttpServletRequest request,
+		HttpMsgContext httpMsgContext) {
 		if (!isInternalApiActive()) {
 			LOG.error("Call to connector API even though the properties for username and password were not defined "
 				+ " in ebegu. Please check that the system properties for username/password for the internal api are"
@@ -216,14 +231,48 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private AuthStatus checkAuthorizationForSchulamtApiAccess(HttpServletRequest request, HttpMsgContext httpMsgContext) {
+	private AuthStatus checkAuthorizationForSchulamtApiAccess(HttpServletRequest request,
+		HttpMsgContext httpMsgContext) {
 		if (!isSchulamtApiActive()) {
 			LOG.error("Call to Schulamt API even though the properties for username and password were not defined "
-				+ " in ebegu. Please check that the system properties for username/password for the schulamt api are set");
+				+ " in ebegu. Please check that the system properties for username/password for the schulamt api are "
+				+ "set");
 			return setResponseUnauthorised(httpMsgContext);
 		}
 
-		return checkAuthorizationViaBasicAuth(request, httpMsgContext, this.schulamtApiUser, this.schulamtApiPassword);
+		try {
+			String header = request.getHeader("Authorization");
+			final String[] strings = BasicAuthHelper.parseHeader(header);
+
+			if (strings == null || strings.length != 2) {
+				// Basic Auth without username/password
+				return setResponseUnauthorised(httpMsgContext);
+			}
+
+			final String scolarisGemeindeUsername = strings[0];
+			final String scolarisGemeindePasswort = strings[1];
+
+			Form form = new Form()
+				.param("grant_type", "password")
+				.param("username", scolarisGemeindeUsername)
+				.param("password", scolarisGemeindePasswort);
+
+			Response response = ClientBuilder.newClient()
+				.target(this.keycloackAuthServer)
+				.request(MediaType.APPLICATION_FORM_URLENCODED)
+				.accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", BasicAuthHelper.createHeader(this.keycloackClient, this.keycloackPassword))
+				.buildPost(Entity.form(form))
+				.invoke();
+
+			boolean validLogin = response.getStatus() == Status.OK.getStatusCode();
+			return getAuthStatus(httpMsgContext, validLogin);
+		} catch (RuntimeException e) {
+			LOG.error("Call to Schulamt API had an unrecoverable error: {}", e.getMessage());
+			throw e;
+		} catch (Exception ex) {
+			return setResponseUnauthorised(httpMsgContext);
+		}
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -290,7 +339,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			&& RestUtil.isFileDownloadRequest(request);
 		if (!request.getRequestURI().contains("/migration/")) { //migration ist ausgenommen
 			if (!isValidFileDownload && !AuthDataUtil.isValidXsrfParam(xsrfTokenHeader, xsrfTokenCookie)) {
-				LOG.debug("Could not match XSRF Token from Header and Cookie. Header:{} cookie {}", xsrfTokenHeader, xsrfTokenCookie);
+				LOG.debug("Could not match XSRF Token from Header and Cookie. Header:{} cookie {}", xsrfTokenHeader,
+					xsrfTokenCookie);
 				return false;
 			}
 		}
@@ -313,6 +363,6 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	private boolean isSchulamtApiActive() {
-		return schulamtApiPassword != null && schulamtApiUser != null;
+		return keycloackClient != null && keycloackPassword != null && keycloackAuthServer != null;
 	}
 }

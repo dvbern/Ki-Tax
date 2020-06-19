@@ -27,8 +27,6 @@ import {DialogImportFromOtherInstitution} from './edit-institution-tagesschule/d
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {ModulTagesschuleDialogComponent} from './edit-modul-tagesschule/modul-tagesschule-dialog.component';
-import {ExternalClientAssignmentComponent} from './external-client-assignment/external-client-assignment.component';
-import {ExternalClientMultiselectComponent} from './external-client-multiselect/external-client-multiselect.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
 
@@ -51,8 +49,6 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
-        ExternalClientMultiselectComponent,
-        ExternalClientAssignmentComponent,
         ModulTagesschuleDialogComponent,
         DialogImportFromOtherInstitution
     ],

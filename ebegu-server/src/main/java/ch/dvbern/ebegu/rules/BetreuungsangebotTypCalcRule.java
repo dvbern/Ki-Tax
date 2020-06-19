@@ -15,15 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Regel für Betreuungsangebot: Es werden nur die Nicht-Schulamt-Angebote berechnet.
@@ -31,18 +36,26 @@ import ch.dvbern.ebegu.types.DateRange;
 public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	public BetreuungsangebotTypCalcRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(TAGESSCHULE);
 	}
 
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
-		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
-		if (platz.getBetreuungsangebotTyp().isSchulamt()) {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
+		@Nonnull BGCalculationInput inputData) {
+		// bei tagesschule hat man grundsaetzlich 100 anspruch
+		inputData.setAnspruchspensumProzent(100);
+		inputData.addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
+		// Damit der Gesuchsteller im Entwurf die "richtigen" provisorischen Daten sieht, wird bei *noch* nicht akzeptiert
+		// nicht auf Vollkosten gesetzt, erst beim eigentlichen Ablehnen
+		if (platz.extractGesuch().getFinSitStatus() != null
+			&& platz.extractGesuch().getFinSitStatus() == FinSitStatus.ABGELEHNT) {
+			inputData.setBezahltVollkosten(true);
 		}
 	}
 }

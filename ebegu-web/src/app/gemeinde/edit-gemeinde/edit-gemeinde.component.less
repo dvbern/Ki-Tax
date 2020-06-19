@@ -18,16 +18,14 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-/deep/
-.mat-tab-label-active {
+::ng-deep .mat-tab-label-active {
     background-color: @lgrey;
     opacity: 1 !important;
 }
-/deep/
-.mat-tab-label-content {
+::ng-deep .mat-tab-label-content {
+    .ebeguFont-family();
     color: @black;
     font-weight: 600;
-    .ebeguFont-family();
 }
 
 .mat-tab-group,
@@ -36,15 +34,14 @@
 }
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
 ::ng-deep .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    height: 0px;
+    height: 0;
 }
 
-/deep/
-.checkbox-with-tooltip {
+::ng-deep .checkbox-with-tooltip {
     display: flex;
     dv-tooltip {
-        display: flex;
         align-items: center;
+        display: flex;
         padding-left: 0.75rem;
     }
 }

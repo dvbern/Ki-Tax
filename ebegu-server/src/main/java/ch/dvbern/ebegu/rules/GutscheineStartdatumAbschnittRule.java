@@ -26,12 +26,22 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 
 	public GutscheineStartdatumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	@Nonnull
@@ -69,8 +79,8 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull DateRange dateRange,
 		boolean abschnittLiegtNachBEGUStartdatum) {
 
-		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(dateRange);
-		abschnitt.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+		VerfuegungZeitabschnitt abschnitt = createZeitabschnittWithinValidityPeriodOfRule(dateRange);
+		abschnitt.setAbschnittLiegtNachBEGUStartdatumForAsivAndGemeinde(abschnittLiegtNachBEGUStartdatum);
 
 		return abschnitt;
 	}

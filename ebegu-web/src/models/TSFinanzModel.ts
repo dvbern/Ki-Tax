@@ -20,6 +20,7 @@ import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlec
 import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
 import {TSGesuch} from './TSGesuch';
+import {TSZahlungsinformationen} from './TSZahlungsinformationen';
 
 export class TSFinanzModel {
 
@@ -31,6 +32,9 @@ export class TSFinanzModel {
     private _einkommensverschlechterungContainerGS1: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungContainerGS2: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer;
+
+    private _zahlungsinformationenGS: TSZahlungsinformationen;
+    private _zahlungsinformationen: TSZahlungsinformationen;
 
     private readonly basisjahr: number;
     private readonly basisjahrPlus: number;
@@ -89,6 +93,14 @@ export class TSFinanzModel {
         this._finanzielleSituationContainerGS2 = value;
     }
 
+    public get zahlungsinformationen(): TSZahlungsinformationen {
+        return this._zahlungsinformationen;
+    }
+
+    public set zahlungsinformationen(value: TSZahlungsinformationen) {
+        this._zahlungsinformationen = value;
+    }
+
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
@@ -103,6 +115,27 @@ export class TSFinanzModel {
         if (gesuch.gesuchsteller2) {
             this.finanzielleSituationContainerGS2 = angular.copy(gesuch.gesuchsteller2.finanzielleSituationContainer);
         }
+
+        this.zahlungsinformationen = new TSZahlungsinformationen();
+        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaber;
+        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().iban;
+        this.zahlungsinformationen.abweichendeZahlungsadresse =
+            gesuch.extractFamiliensituation().abweichendeZahlungsadresse;
+        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
+        this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
+            gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
+
+        if (gesuch.extractFamiliensituationGS()) {
+            this.zahlungsinformationenGS = new TSZahlungsinformationen();
+            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaber;
+            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().iban;
+            this.zahlungsinformationenGS.abweichendeZahlungsadresse =
+                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresse;
+            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
+            this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
+                gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
+        }
+
         this.initFinSit();
     }
 
@@ -155,21 +188,32 @@ export class TSFinanzModel {
             // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
             console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
         }
-        this.resetSteuerveranlagungErhalten(gesuch);
+        this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
+
+        gesuch.extractFamiliensituation().kontoinhaber = this.zahlungsinformationen.kontoinhaber;
+        gesuch.extractFamiliensituation().iban = this.zahlungsinformationen.iban;
+        gesuch.extractFamiliensituation().abweichendeZahlungsadresse =
+            this.zahlungsinformationen.abweichendeZahlungsadresse;
+        gesuch.extractFamiliensituation().zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt =
+            this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+
         return gesuch;
     }
 
     /**
      * if gemeinsameSteuererklaerung has been set to true and steuerveranlagungErhalten ist set to true for the GS1
      * as well, then we need to set steuerveranlagungErhalten to true for the GS2 too, if it exists.
+     * the same for steuererklaerungAusgefuellt
      */
-    private resetSteuerveranlagungErhalten(gesuch: TSGesuch): void {
-        if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung
-            && gesuch.gesuchsteller1 && gesuch.gesuchsteller2
-            && gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten) {
-
-            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten = true;
+    private resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch: TSGesuch): void {
+        if (!(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2)) {
+            return;
         }
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
+            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
+            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt;
     }
 
     public copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
@@ -255,6 +299,14 @@ export class TSFinanzModel {
 
     public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
         this._einkommensverschlechterungInfoContainer = value;
+    }
+
+    public get zahlungsinformationenGS(): TSZahlungsinformationen {
+        return this._zahlungsinformationenGS;
+    }
+
+    public set zahlungsinformationenGS(value: TSZahlungsinformationen) {
+        this._zahlungsinformationenGS = value;
     }
 
     // tslint:disable-next-line:cognitive-complexity

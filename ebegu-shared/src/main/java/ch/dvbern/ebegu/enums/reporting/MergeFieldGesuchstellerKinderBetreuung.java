@@ -90,13 +90,20 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	betreuungTitle(new SimpleMergeField<>("betreuungTitle", STRING_CONVERTER)),
 	pensumTitle(new SimpleMergeField<>("pensumTitle", STRING_CONVERTER)),
 	kostenTitle(new SimpleMergeField<>("kostenTitle", STRING_CONVERTER)),
-	anspruchberechtigtTitle(new SimpleMergeField<>("anspruchberechtigtTitle", STRING_CONVERTER)),
-	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
+	anspruchberechtigtKantonTitle(new SimpleMergeField<>("anspruchberechtigtKantonTitle", STRING_CONVERTER)),
+	anspruchberechtigtGemeindeTitle(new SimpleMergeField<>("anspruchberechtigtGemeindeTitle", STRING_CONVERTER)),
+	anspruchberechtigtTotalTitle(new SimpleMergeField<>("anspruchberechtigtTotalTitle", STRING_CONVERTER)),
+	bgPensumKantonTitle(new SimpleMergeField<>("bgPensumKantonTitle", STRING_CONVERTER)),
+	bgPensumGemeindeTitle(new SimpleMergeField<>("bgPensumGemeindeTitle", STRING_CONVERTER)),
+	bgPensumTotalTitle(new SimpleMergeField<>("bgPensumTotalTitle", STRING_CONVERTER)),
 	bgPensumStdTitle(new SimpleMergeField<>("bgPensumStdTitle", STRING_CONVERTER)),
+	bgPensumZeiteinheitTitle(new SimpleMergeField<>("bgPensumZeiteinheitTitle", STRING_CONVERTER)),
 	bgMonatspensumTitle(new SimpleMergeField<>("bgMonatspensumTitle", STRING_CONVERTER)),
 	vollkostenTitle(new SimpleMergeField<>("vollkostenTitle", STRING_CONVERTER)),
 	elternbeitragTitle(new SimpleMergeField<>("elternbeitragTitle", STRING_CONVERTER)),
-	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
+	gutscheinKantonTitel(new SimpleMergeField<>("gutscheinKantonTitel", STRING_CONVERTER)),
+	gutscheinGemeindeTitel(new SimpleMergeField<>("gutscheinGemeindeTitel", STRING_CONVERTER)),
+	gutscheinTotalTitel(new SimpleMergeField<>("gutscheinTotalTitel", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	gesuchstellerKinderBetreuungTitle(new SimpleMergeField<>("gesuchstellerKinderBetreuungTitle", STRING_CONVERTER)),
 	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
@@ -172,12 +179,23 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
 	betreuungsStatus(new SimpleMergeField<>("betreuungsStatus", STRING_CONVERTER)),
 	betreuungsPensum(new SimpleMergeField<>("betreuungsPensum", PERCENT_CONVERTER)),
-	anspruchsPensum(new SimpleMergeField<>("anspruchsPensum", PERCENT_CONVERTER)),
-	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
+
+	anspruchsPensumKanton(new SimpleMergeField<>("anspruchsPensumKanton", PERCENT_CONVERTER)),
+	anspruchsPensumGemeinde(new SimpleMergeField<>("anspruchsPensumGemeinde", PERCENT_CONVERTER)),
+	anspruchsPensumTotal(new SimpleMergeField<>("anspruchsPensumTotal", PERCENT_CONVERTER)),
+
+	bgPensumKanton(new SimpleMergeField<>("bgPensumKanton", PERCENT_CONVERTER)),
+	bgPensumGemeinde(new SimpleMergeField<>("bgPensumGemeinde", PERCENT_CONVERTER)),
+	bgPensumTotal(new SimpleMergeField<>("bgPensumTotal", PERCENT_CONVERTER)),
+
 	bgStunden(new SimpleMergeField<>("bgStunden", BIGDECIMAL_CONVERTER)),
+	bgPensumZeiteinheit(new SimpleMergeField<>("bgPensumZeiteinheit", STRING_CONVERTER)),
+
 	vollkosten(new SimpleMergeField<>("vollkosten", BIGDECIMAL_CONVERTER)),
 	elternbeitrag(new SimpleMergeField<>("elternbeitrag", BIGDECIMAL_CONVERTER)),
-	verguenstigt(new SimpleMergeField<>("verguenstigt", BIGDECIMAL_CONVERTER));
+	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),
+	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
+	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

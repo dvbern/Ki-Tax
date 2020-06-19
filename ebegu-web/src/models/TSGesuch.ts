@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
@@ -342,6 +341,13 @@ export class TSGesuch extends TSAbstractAntragEntity {
         return false;
     }
 
+    public extractFamiliensituationGS(): TSFamiliensituation {
+        if (this.familiensituationContainer) {
+            return this.familiensituationContainer.familiensituationGS;
+        }
+        return undefined;
+    }
+
     public extractFamiliensituation(): TSFamiliensituation {
         if (this.familiensituationContainer) {
             return this.familiensituationContainer.familiensituationJA;
@@ -395,20 +401,6 @@ export class TSGesuch extends TSAbstractAntragEntity {
             return this.kindContainers.every(kind => {
                 return !!kind.kindJA.pensumAusserordentlicherAnspruch;
             });
-        }
-        return false;
-    }
-
-    public isThereAnyBetreuungWithErweitertemBetreuungsaufwand(): boolean {
-        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
-        for (const kind of kinderWithBetreuungList) {
-            for (const betreuung of kind.betreuungen) {
-                if (betreuung.erweiterteBetreuungContainer
-                    && betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA
-                    && EbeguUtil.isNotNullAndTrue(betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse)) {
-                        return true;
-                }
-            }
         }
         return false;
     }

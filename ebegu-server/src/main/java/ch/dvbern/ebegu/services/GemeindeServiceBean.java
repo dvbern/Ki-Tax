@@ -378,7 +378,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed(SUPER_ADMIN)
 	public void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotFI(value);
 		persistence.merge(gemeinde);
@@ -492,7 +492,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return new byte[0];
 	}
 
-	private Optional<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
+	public Optional<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
@@ -534,13 +534,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Nonnull
-	private GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode stammdaten) {
+	public GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode stammdaten) {
 		requireNonNull(stammdaten);
 		authorizer.checkWriteAuthorization(stammdaten.getGemeinde());
 		return persistence.merge(stammdaten);
 	}
 
-	private GemeindeStammdatenGesuchsperiode createGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
+	public GemeindeStammdatenGesuchsperiode createGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId) {
 		GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode = new GemeindeStammdatenGesuchsperiode();
 		Gemeinde gemeinde = findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -590,9 +590,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER })
+	@PermitAll
 	public boolean existGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);

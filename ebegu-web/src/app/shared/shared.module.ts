@@ -18,7 +18,7 @@
 import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
@@ -33,6 +33,7 @@ import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchst
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
@@ -41,6 +42,9 @@ import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
+import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
+import {FileUploadComponent} from './component/file-upload/file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
@@ -52,6 +56,9 @@ import {FullHeightContainerComponent} from './full-height-container/full-height-
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {UiViewComponent} from './ui-view/ui-view.component';
+import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
@@ -62,6 +69,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         CommonModule,
         HttpClientModule,
         FormsModule,
+        ReactiveFormsModule,
         UIRouterModule,
 
         MaterialModule,
@@ -81,6 +89,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
+        DvMitteilungDelegationComponent,
+        DvNgMitteilungDelegationDialogComponent,
+        DvBenutzerEntry,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
@@ -88,6 +99,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
         ErrorMessagesComponent,
@@ -100,21 +112,32 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         TooltipDirective,
         UiViewComponent,
         KiBonGuidedTourComponent,
-        DvNgGesuchstellerDialogComponent
+        DvNgGesuchstellerDialogComponent,
+        ExternalClientAssignmentComponent,
+        ExternalClientMultiselectComponent,
+        FileUploadComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
+        DvMitteilungDelegationComponent,
+        DvNgMitteilungDelegationDialogComponent,
+        DvBenutzerEntry,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvPosteingangComponent,
         GemeindeMultiselectComponent,
+        DvBenutzerEntry,
         NavbarComponent,
         StammdatenHeaderComponent,
         DvNgGesuchstellerDialogComponent,
+        ExternalClientAssignmentComponent,
+        ExternalClientMultiselectComponent,
+        FileUploadComponent,
     ],
     exports: [
         CommonModule,
@@ -130,13 +153,17 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
+        DvMitteilungDelegationComponent,
+        DvNgMitteilungDelegationDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
+        DvBenutzerEntry,
         DvNgHelpDialogComponent,
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,
         FullHeightContainerComponent,
@@ -146,6 +173,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         StammdatenHeaderComponent,
         UiViewComponent,
         TooltipDirective,
+        ExternalClientAssignmentComponent,
+        ExternalClientMultiselectComponent,
+        FileUploadComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

@@ -20,6 +20,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -32,6 +34,9 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
+@Table(
+	uniqueConstraints =	@UniqueConstraint(columnNames = "name", name = "UK_Traegerschaft_name")
+)
 public class Traegerschaft extends AbstractMutableEntity implements Displayable {
 
 	private static final long serialVersionUID = -8403454439884704618L;

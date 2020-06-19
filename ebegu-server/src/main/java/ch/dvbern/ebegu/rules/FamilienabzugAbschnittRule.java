@@ -37,12 +37,18 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Umsetzung der ASIV Revision
@@ -70,11 +76,16 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		BigDecimal pauschalabzugProPersonFamiliengroesse6,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 		this.pauschalabzugProPersonFamiliengroesse3 = pauschalabzugProPersonFamiliengroesse3;
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;
 		this.pauschalabzugProPersonFamiliengroesse6 = pauschalabzugProPersonFamiliengroesse6;
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Override
@@ -124,11 +135,9 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			final VerfuegungZeitabschnitt lastVerfuegungZeitabschnitt = familienAbzugZeitabschnitt.get(familienAbzugZeitabschnitt.size() - 1);
 			lastVerfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(entry.getKey().minusDays(1));
 
-			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-			verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(entry.getKey());
-			verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(calculateAbzugAufgrundFamiliengroesse(entry.getValue().getKey(), entry.getValue().getValue()));
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setFamGroesse(new BigDecimal(String.valueOf(entry.getValue().getKey())));
+			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(entry.getKey(), gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+			verfuegungZeitabschnitt.setAbzugFamGroesseForAsivAndGemeinde(calculateAbzugAufgrundFamiliengroesse(entry.getValue().getKey(), entry.getValue().getValue()));
+			verfuegungZeitabschnitt.setFamGroesseForAsivAndGemeinde(new BigDecimal(String.valueOf(entry.getValue().getKey())));
 
 			familienAbzugZeitabschnitt.add(verfuegungZeitabschnitt);
 		}
@@ -217,7 +226,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	public List<VerfuegungZeitabschnitt> createInitialenFamilienAbzug(Gesuch gesuch) {
-		VerfuegungZeitabschnitt initialFamAbzug = new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
+		VerfuegungZeitabschnitt initialFamAbzug = createZeitabschnittWithinValidityPeriodOfRule(gesuch.getGesuchsperiode().getGueltigkeit());
 		//initial gilt die Familiengroesse die am letzten Tag vor dem Start der neuen Gesuchsperiode vorhanden war
 		Double famGrBeruecksichtigungAbzug = 0.0;
 		Integer famGrAnzahlPersonen = 0;
@@ -229,8 +238,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		BigDecimal abzugAufgrundFamiliengroesse = getAbzugFamGroesse(gesuch, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
-		initialFamAbzug.getBgCalculationResultAsiv().setAbzugFamGroesse(abzugAufgrundFamiliengroesse);
-		initialFamAbzug.getBgCalculationResultAsiv().setFamGroesse(new BigDecimal(String.valueOf(famGrBeruecksichtigungAbzug)));
+		initialFamAbzug.setAbzugFamGroesseForAsivAndGemeinde(abzugAufgrundFamiliengroesse);
+		initialFamAbzug.setFamGroesseForAsivAndGemeinde(new BigDecimal(String.valueOf(famGrBeruecksichtigungAbzug)));
 
 		List<VerfuegungZeitabschnitt> initialFamAbzugList = new ArrayList<>();
 		initialFamAbzugList.add(initialFamAbzug);

@@ -15,14 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_MSG;
 
 /**
@@ -39,22 +45,23 @@ import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_MSG;
 public class EinreichungsfristCalcRule extends AbstractCalcRule {
 
 	public EinreichungsfristCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+		@Nonnull BGCalculationInput inputData
 	) {
-		if (platz.getBetreuungsangebotTyp().isJugendamt()) {
-			if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
-				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-					verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
-				}
-			}
+		if (inputData.isZuSpaetEingereicht()) {
+			inputData.setAnspruchspensumProzent(0);
+			inputData.addBemerkung(EINREICHUNGSFRIST_MSG, getLocale());
 		}
 	}
 }

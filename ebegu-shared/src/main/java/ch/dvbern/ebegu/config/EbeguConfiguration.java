@@ -85,9 +85,14 @@ public interface EbeguConfiguration {
 	boolean getIsZahlungenTestMode();
 
 	/**
-	 * Gibt zurueck, ob der Dummy-Service für die EWK-Abfragen benutzt werden soll.
+	 * Gibt zurueck, ob die Personensuche über GERES generell angeboten werden soll
 	 */
 	boolean isPersonenSucheDisabled();
+
+	/**
+	 * Gibt zurueck, ob der Dummy-Service für die EWK-Abfragen benutzt werden soll.
+	 */
+	boolean usePersonenSucheDummyService();
 
 	/**
 	 * Gibt den Endpoint des EWK-Services zurueck.
@@ -135,12 +140,17 @@ public interface EbeguConfiguration {
 	/**
 	 * @return den Benutzernamen des Schulamt API users
 	 */
-	String getSchulamtAPIUser();
+	String getKeycloackClient();
 
 	/**
 	 * @return das Benutzerpasswort fuer den Schulamt API USER
 	 */
-	String getSchulamtAPIPassword();
+	String getKeycloackPassword();
+
+	/**
+	 * @return die URL fuer den Keycloak Server
+	 */
+	String getKeycloackAuthServer();
 
 	/**
 	 * @return by default the secure flag of cookies will be set based on the incoming request. To force the application
@@ -271,4 +281,8 @@ public interface EbeguConfiguration {
 	 * @return null oder wsdl url
 	 */
 	String getEbeguPersonensucheGERESWsdl();
+
+	String getKitaxHost();
+
+	String getKitaxEndpoint();
 }

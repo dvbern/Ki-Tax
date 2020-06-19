@@ -15,15 +15,19 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.AsyncResult;
@@ -50,10 +54,13 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -137,13 +144,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+	public void sendInfoSchulamtAnmeldungTagesschuleUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
-			"InfoSchulamtAnmeldungUebernommen",
+			"InfoSchulamtAnmeldungTagesschuleUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(abstractAnmeldung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleUebernommen(abstractAnmeldung, gesuchsteller, adr, sprache),
 			AntragStatus.values()
 		);
 	}
@@ -159,6 +166,19 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				gesuchsteller,
 				adr,
 				sprache),
+			AntragStatus.values()
+		);
+	}
+
+	@Override
+	public void sendInfoSchulamtAnmeldungFerieninselUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		sendMail(
+			abstractAnmeldung.extractGesuch(),
+			"InfoSchulamtAnmeldungFerieninselUebernommen",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getInfoSchulamtAnmeldungFerieninselUebernommen(abstractAnmeldung, gesuchsteller, adr,
+					sprache),
 			AntragStatus.values()
 		);
 	}
@@ -464,21 +484,25 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	public void sendSupportAnfrage(@Nonnull SupportAnfrageDTO supportAnfrageDTO) {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalArgumentException());
 
-		String subject = "Supportanfrage KiBon: " + supportAnfrageDTO.getId();
+		String subject = "Supportanfrage KiBon von " + benutzer.getFullName();
 		StringBuilder content = new StringBuilder();
-		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
-		content.append("Erstellt am: ")
-			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
-			.append(Constants.LINE_BREAK);
+
+		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
+		content.append(Constants.LINE_BREAK);
+
 		content.append("Benutzer: ")
 			.append(benutzer.getUsername())
 			.append(" (")
 			.append(benutzer.getFullName())
 			.append(')')
 			.append(Constants.LINE_BREAK);
+		content.append("Email:").append(benutzer.getEmail()).append(Constants.LINE_BREAK);
 		content.append("Rolle: ").append(benutzer.getRole()).append(Constants.LINE_BREAK);
 		content.append(Constants.LINE_BREAK);
-		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
+		content.append("Erstellt am: ")
+			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
+			.append(Constants.LINE_BREAK);
+		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
 
 		try {
 			String supportMail = ebeguConfiguration.getSupportMail();
@@ -568,13 +592,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+	public void sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
-			"InfoSchulamtAnmeldungAkzeptiert",
+			"InfoSchulamtAnmeldungTagesschuleAkzeptiert",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
 			AntragStatus.values()
 		);
 	}
@@ -605,5 +629,68 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		} else {
 			LOG.warn("skipping setInfoGemeineAngebotAktiviert because Mitteilungsempfaenger is null");
 		}
+	}
+
+	@Override
+	public void sendNotrechtGenerischeMitteilung(
+		@Nonnull RueckforderungMitteilung mitteilung,
+		@Nonnull String empfaengerMail,
+		@Nonnull List<RueckforderungStatus> statusList
+	) {
+		if (StringUtils.isNotEmpty(empfaengerMail)) {
+			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(
+				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt());
+			String statusAsString = statusList.stream()
+				.map(RueckforderungStatus::name)
+				.collect(Collectors.joining(","));
+			try {
+				sendMessageWithTemplate(mail, empfaengerMail);
+				LOG.debug("Email fuer NotrechtGenerischeMitteilung wurde versendet an {} für Status {}",
+					empfaengerMail, statusAsString);
+			} catch (Exception e) {
+				logExceptionAccordingToEnvironment(
+					e,
+					"Mail NotrechtGenerischeMitteilung konnte nicht verschickt werden fuer Empfaenger ",
+					empfaengerMail);
+			}
+		} else {
+			LOG.warn("skipping NotrechtGenerischeMitteilung because Mitteilungsempfaenger is null");
+		}
+	}
+
+	@Nullable
+	@Override
+	public String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
+		String mailaddress = institutionStammdaten.getMail();
+		try {
+			if (StringUtils.isNotEmpty(mailaddress) && rueckforderungFormular.getStufe1FreigabeBetrag() != null) {
+				BigDecimal betrag1 = null;
+				if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+					Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+					betrag1 = rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage();
+				} else {
+					Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+					betrag1 = rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden();
+				}
+				BigDecimal betrag2 = rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung();
+				final String betrag1AsString = Constants.CURRENCY_FORMAT.format(betrag1);
+				final String betrag2AsString = Constants.CURRENCY_FORMAT.format(betrag2);
+				String message = mailTemplateConfig
+					.getNotrechtBestaetigungPruefungStufe1(institutionStammdaten,
+						betrag1AsString, betrag2AsString);
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer NotrechtBestaetigungPruefungStufe1 wurde versendet an {}", mailaddress);
+				return message;
+			} else {
+				LOG.warn("Skipping NotrechtBestaetigungPruefungStufe1 because E-Mail of Institution is null");
+			}
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail NotrechtBestaetigungPruefungStufe1 konnte nicht verschickt werden fuer Institution",
+				institutionStammdaten.getInstitution().getName());
+		}
+		return null;
 	}
 }

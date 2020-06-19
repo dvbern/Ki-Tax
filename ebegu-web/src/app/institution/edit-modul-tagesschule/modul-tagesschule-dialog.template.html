@@ -17,8 +17,11 @@
 <form role="form"
 	  #form="ngForm"
       [ngClass]="{'ng-submitted': form.submitted}"
+      (ngSubmit)="save()"
       novalidate>
-    <mat-dialog-content class="modul-tagesschule-dialog">
+    <mat-dialog-content
+        [ngClass]="{'modul-tagesschule-dialog': isModulErfassungDynamisch(), 'modul-tagesschule-dialog-scolaris':
+        !isModulErfassungDynamisch()}">
 
         <div *ngIf="modulTagesschuleGroup">
             <div class="col-md-12 popup-error-message">
@@ -29,15 +32,14 @@
                     </div>
                 </div>
             </div>
-            <div class="dv-content">
-                <div class="col-md-6" *ngIf="!isModulErfassungDynamisch()">
-                    <div class="form-group">
-                        <label translate>MODUL_NAME</label>
-                        {{modulTagesschuleGroup.modulTagesschuleName}}
-                    </div>
+            <div class="col-md-12" *ngIf="!isModulErfassungDynamisch()">
+                <div class="form-group">
+                    <label translate>MODUL_NAME</label>
+                    {{modulTagesschuleGroup.modulTagesschuleName}}
                 </div>
-                <!-- TODO team müssen die Modulbezeichnungen wirklich für ALLE in beiden Sprachen erfasst werden -->
-                <div class="col-md-3" *ngIf="isModulErfassungDynamisch()">
+            </div>
+            <div class="dv-content">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label translate for="bezeichnungDe" class="required">MODUL_BEZEICHNUNG_DE</label>
                         <input id="bezeichnungDe" type="text" name="bezeichnungDe"
@@ -49,7 +51,7 @@
                                            inputId="bezeichnungDe"></dv-error-messages>
                     </div>
                 </div>
-                <div class="col-md-3" *ngIf="isModulErfassungDynamisch()">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label translate for="bezeichnungFr" class="required">MODUL_BEZEICHNUNG_FR</label>
                         <input id="bezeichnungFr" type="text" name="bezeichnungFr"
@@ -180,7 +182,7 @@
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button type="button" class="dv-btn" (click)="save()" [textContent]="'OK' | translate"></button>
+            <button type="submit" class="dv-btn" [textContent]="'OK' | translate"></button>
             <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
         </div>
     </mat-dialog-actions>

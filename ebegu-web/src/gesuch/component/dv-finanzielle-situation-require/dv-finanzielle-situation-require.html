@@ -18,7 +18,7 @@
 <div class="row">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
-            <span class="ebeguH1 required">
+            <span class="ebegu-h1 required">
                 <span data-translate="FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER"
                       translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></span>
             </span>
@@ -42,11 +42,12 @@
 <div class="row"ng-if="vm.showFinanzielleSituationDeklarieren()">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
-            <span class="ebeguH1 required">
-                <span data-translate="FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT"
-                      translate-values="{maxEinkommen: vm.getMaxMassgebendesEinkommen()}"></span>
+            <span class="ebegu-h1 required">
+                <span data-translate="FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT"></span>
+                <dv-tooltip input-id="verguenstigungGewuenscht" text="'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_HELP' | translate:{maxEinkommen: vm.getMaxMassgebendesEinkommen()}"></dv-tooltip>
             </span>
             <dv-radio-container name="verguenstigungGewuenscht" class="input-element"
+                                id="verguenstigungGewuenscht"
                                 ng-model="vm.verguenstigungGewuenscht"
                                 ng-required="true" class="radio" ng-change="vm.setFinanziellesituationRequired()"
                                 dv-enable-element
@@ -55,7 +56,7 @@
                                 aria-label="{{vm.getLabel()}}"
                                 aria-described-by="verguenstigungGewuenscht-error"
                                 true-option-label="{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate}}"
-                                false-option-label="{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN' | translate}}"
+                                false-option-label="{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN' | translate}}">
             </dv-radio-container>
             <dv-error-messages input-id="verguenstigungGewuenscht"
                                for="vm.form.verguenstigungGewuenscht.$error"

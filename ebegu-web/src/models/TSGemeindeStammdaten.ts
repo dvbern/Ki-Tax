@@ -33,7 +33,11 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public gemeinde: TSGemeinde;
     public adresse: TSAdresse;
     public bgAdresse: TSAdresse;
+    public bgTelefon: string;
+    public bgEmail: string;
     public tsAdresse: TSAdresse;
+    public tsTelefon: string;
+    public tsEmail: string;
     public beschwerdeAdresse: TSAdresse;
     public mail: string;
     public telefon: string;
@@ -57,6 +61,8 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public standardDokUnterschriftName2: string;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
+    public externalClients: string[];
+    public usernameScolaris: string;
 
     public getGemeindeKonfigurationForGesuchsperiode(gesuchsperiode: TSGesuchsperiode): TSGemeindeKonfiguration {
         for (const konfigurationsListeElement of this.konfigurationsListe) {

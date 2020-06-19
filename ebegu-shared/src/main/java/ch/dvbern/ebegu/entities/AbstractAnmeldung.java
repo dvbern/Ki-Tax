@@ -44,7 +44,7 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 	@Nullable
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
-	private AnmeldungMutationZustand anmeldungMutationZustand;
+	private AnmeldungMutationZustand anmeldungMutationZustand = AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN;
 
 
 	public AbstractAnmeldung() {
@@ -74,7 +74,9 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 				this.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 			} else {
 				target.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				target.setGueltig(true); // Bei Anmeldungen ist immer die neueste "gültig"
 				this.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
+				this.setGueltig(false);
 			}
 			break;
 		case ERNEUERUNG:

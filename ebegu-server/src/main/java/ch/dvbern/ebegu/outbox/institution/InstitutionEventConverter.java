@@ -27,9 +27,9 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.institution.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
 @ApplicationScoped
 public class InstitutionEventConverter {

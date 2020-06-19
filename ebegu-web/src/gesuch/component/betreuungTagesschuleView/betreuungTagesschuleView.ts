@@ -34,6 +34,7 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
+import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
@@ -113,8 +114,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public isAnmeldenClicked: boolean = false;
     public erlaeuterung: string = null;
     public agbVorhanden: boolean;
+    private _showWarningModuleZugewiesen: boolean = false;
+    public isScolaris: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
+
+    public lastModifiedModul?: TSBelegungTagesschuleModul;
 
     public constructor(
         $state: StateService,
@@ -149,9 +154,20 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             if (newValue === oldValue) {
                 return;
             }
-            this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+            if (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION) && newValue.institution.id !== oldValue.institution.id) {
+                this.modulGroups = TagesschuleUtil.initModuleTagesschuleAfterInstitutionChange(this.getBetreuungModel(), oldValue, this.gesuchModelManager.getGesuchsperiode(), false);
+                this._showWarningModuleZugewiesen = true;
+            } else {
+                this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+            }
+
             if (this.betreuung.institutionStammdaten) {
-                this.loadErlaeuterungForTagesschule();
+                this.loadEinstellungPropertiesForTagesschule();
+            }
+        });
+        this.$scope.$on('$mdMenuClose', () => {
+            if (this.lastModifiedModul.modulTagesschule.angemeldet) {
+                this.form['modul_' + this.lastModifiedModul.modulTagesschule.identifier].$setValidity('nointerval', (this.lastModifiedModul.intervall !== undefined));
             }
         });
     }
@@ -160,7 +176,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
 
         if (this.betreuung.institutionStammdaten) {
-            this.loadErlaeuterungForTagesschule();
+            this.loadEinstellungPropertiesForTagesschule();
         }
         if (this.betreuung.isEnabled()) {
             this.minEintrittsdatum = this.getMinErsterSchultag();
@@ -191,9 +207,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
-    private loadErlaeuterungForTagesschule(): void {
+    private loadEinstellungPropertiesForTagesschule(): void {
+        const stammdatenTagesschule = this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule;
+        if (!stammdatenTagesschule) {
+            return;
+        }
         const tsEinstellungenTagesschule =
-            this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+            stammdatenTagesschule.einstellungenTagesschule
                 .filter((einstellung: TSEinstellungenTagesschule) =>
                     einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
                 .pop();
@@ -201,6 +221,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return;
         }
         this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
+        this.isScolaris = (tsEinstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS);
     }
 
     public getWeekDays(): TSDayOfWeek[] {
@@ -253,6 +274,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.showErrorMessageNoModule = true;
                 return undefined;
             }
+            this.showErrorMessageNoModule = false;
             // Falls es "ohne Details" ist, muessen die Module entfernt werden
             if (this.betreuung.keineDetailinformationen) {
                 this.getBetreuungModel().belegungTagesschule = undefined;
@@ -267,6 +289,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                     this.onSave();
                 });
             }
+            this.showWarningModuleZugewiesen = false;
             this.onSave();
         }
         return undefined;
@@ -282,10 +305,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
-        if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
-            return group.bezeichnung.textFranzoesisch;
+        if (group.bezeichnung.textDeutsch && group.bezeichnung.textFranzoesisch) {
+            if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
+                return group.bezeichnung.textFranzoesisch;
+            }
+            return group.bezeichnung.textDeutsch;
         }
-        return group.bezeichnung.textDeutsch;
+        return this.$translate.instant(group.modulTagesschuleName);
     }
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
@@ -318,14 +344,18 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
                     ev: Event): any {
+        this.toggleWarnungModule();
+        this.lastModifiedModul = modul;
         if (!modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
             modul.intervall = undefined;
+            this.form['modul_' + modul.modulTagesschule.identifier].$setValidity('nointerval', true);
             return;
         }
         if (belegungGroup.group.intervall === TSModulTagesschuleIntervall.WOECHENTLICH) {
             // Es gibt keine Auswahl für dieses Modul, es ist immer Wöchentlich
             modul.intervall = TSBelegungTagesschuleModulIntervall.WOECHENTLICH;
+            this.form['modul_' + modul.modulTagesschule.identifier].$setValidity('nointerval', true);
             return;
         }
         $mdMenu.open(ev);
@@ -335,15 +365,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSBelegungTagesschuleModulIntervallValues();
     }
 
-    public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
+    public setIntervall(modul: TSBelegungTagesschuleModul,
+                        intervall: TSBelegungTagesschuleModulIntervall, $mdMenu: any): void {
         modul.intervall = intervall;
+        $mdMenu.close();
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        if (this.form.$valid) {
-            this.preSave();
-            this.anmeldungSchulamtUebernehmen();
+        if (!this.form.$valid || !this.isThereAnyAnmeldung()) {
+            this.showErrorMessageNoModule = true;
+            return undefined;
         }
+        this.showErrorMessageNoModule = false;
+        this.preSave();
+        this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
+
     }
 
     public saveAnmeldungSchulamtAblehnen(): void {
@@ -361,14 +397,18 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private getMinErsterSchultag(): moment.Moment {
-        return this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
-            this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
-            TSMandant.earliestDateOfTSAnmeldung
-        );
+        if (this.getBetreuungModel() && this.getBetreuungModel().belegungTagesschule) {
+            this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
+                TSMandant.earliestDateOfTSAnmeldung
+            );
+            return this.getBetreuungModel().belegungTagesschule.eintrittsdatum;
+        }
+        return undefined;
     }
 
     public downloadGemeindeGesuchsperiodeDokument(): void {
-        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        const sprache = this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache;
         this.gemeindeRS.downloadGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
             sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
@@ -381,12 +421,34 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private existMerkblattAnmeldungTS(): void {
-        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        const sprache = this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache;
         this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
             sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
             result => {
                 this.agbVorhanden = result;
             });
+    }
+
+    public set showWarningModuleZugewiesen(value: boolean) {
+        this._showWarningModuleZugewiesen = value;
+    }
+
+    public get showWarningModuleZugewiesen(): boolean {
+        return this._showWarningModuleZugewiesen;
+    }
+
+    private toggleWarnungModule(): void {
+        // Wir koennen hier nicht "isThereAnyAnmeldung()" verwenden, da dieses das nach preSave()
+        // abgefuellte Modell beachtet!
+        for (const group of this.modulGroups) {
+            for (const belegungModul of group.module) {
+                if (belegungModul.modulTagesschule.angemeldet) {
+                    this.showErrorMessageNoModule = false;
+                    return;
+                }
+            }
+        }
+        this.showErrorMessageNoModule = true;
     }
 }

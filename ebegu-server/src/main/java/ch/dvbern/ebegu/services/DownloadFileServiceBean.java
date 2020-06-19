@@ -114,6 +114,7 @@ public class DownloadFileServiceBean implements DownloadFileService {
 		deleteLongTermAccessTokens();
 		// Auch die physischen Files loeschen
 		fileSaverService.deleteAllFilesInTempReportsFolder();
+		fileSaverService.deleteAllFilesInTempNotverordnungFolder();
 	}
 
 	private void deleteShortTermAccessTokens() {

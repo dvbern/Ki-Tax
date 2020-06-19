@@ -18,20 +18,36 @@
 package ch.dvbern.ebegu.errors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.ApplicationException;
 
-import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 
+@ApplicationException(rollback = false)
 public class BenutzerExistException extends EbeguRuntimeException {
 
 	private static final long serialVersionUID = 430436378419395145L;
 
-	public <T extends AbstractEntity> BenutzerExistException(
+	@Nullable
+	private String existingFallId;
+
+	public BenutzerExistException(
 		@Nonnull KibonLogLevel logLevel,
 		@Nonnull String benutzerName,
 		@Nonnull String fullName,
-		@Nonnull ErrorCodeEnum errorCodeEnum) {
+		@Nonnull ErrorCodeEnum errorCodeEnum,
+		@Nullable String existingFallId) {
 
 		super(logLevel, null, errorCodeEnum,  benutzerName, fullName);
+		this.existingFallId = existingFallId;
+	}
+
+	@Nullable
+	public String getExistingFallId() {
+		return existingFallId;
+	}
+
+	public void setExistingFallId(@Nullable String existingFallId) {
+		this.existingFallId = existingFallId;
 	}
 }

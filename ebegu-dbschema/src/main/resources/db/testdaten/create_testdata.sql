@@ -252,3 +252,282 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 gp.id                              as gesuchsperiode_id,
 			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
 	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED' as einstellung_key,
+			 'true' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT' as einstellung_key,
+			 '6' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT' as einstellung_key,
+			 '3' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN' as einstellung_key,
+			 '51000' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT' as einstellung_key,
+			 '3' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT' as einstellung_key,
+			 '1' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN' as einstellung_key,
+			 '70000' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT' as einstellung_key,
+			 '0' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT' as einstellung_key,
+			 '0' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED' as einstellung_key,
+			 'true' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+-- GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+		  '2020-01-01 00:00:00'              as timestamp_erstellt,
+		  '2020-01-01 00:00:00'              as timestamp_mutiert,
+		  'flyway'                           as user_erstellt,
+		  'flyway'                           as user_mutiert,
+		  0                                  as version,
+		  'GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED' as einstellung_key,
+		  'true' 								as value,
+		  UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+		  gp.id                              as gesuchsperiode_id,
+		  UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+
+-- Tagesschule Gemeinde Paris
+INSERT INTO institution (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,name,status,mandant_id,traegerschaft_id,stammdaten_check_required,event_published) VALUES (UNHEX(REPLACE('f44a68f2-dda2-4bf2-936a-68e20264b610', '-', '')),'2020-02-28 09:48:18','2020-02-28 10:11:35','flyway','flyway',0,null,'Tagesschule Paris','AKTIV', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')),null,false,true);
+INSERT INTO adresse (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,gueltig_ab,gueltig_bis,gemeinde,hausnummer,land,organisation,ort,plz,strasse,zusatzzeile) VALUES (UNHEX(REPLACE('a805a101-4200-473a-accc-bbb423ea1937', '-', '')),'2020-02-28 09:48:18','2020-02-28 10:11:35','flyway','flyway',1,null,'1000-01-01','9999-12-31',null,'2','CH','Tageschule Paris','Paris','3000','Pariser Strasse',null);
+INSERT INTO institution_stammdaten_tagesschule (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,gemeinde_id) VALUES (UNHEX(REPLACE('0f763946-3a59-4aa6-9694-4754e58e8871', '-', '')),'2020-02-28 09:48:18','2020-02-28 09:48:18','flyway','flyway',0,UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')));
+INSERT INTO institution_stammdaten (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,gueltig_ab,gueltig_bis,betreuungsangebot_typ,mail,oeffnungszeiten,telefon,webseite,adresse_id,institution_id,institution_stammdaten_ferieninsel_id,institution_stammdaten_tagesschule_id,send_mail_wenn_offene_pendenzen,institution_stammdaten_betreuungsgutscheine_id) VALUES (UNHEX(REPLACE('0f1c6b9e-37de-4c10-8ddc-9514fb840f5e', '-', '')),'2020-02-28 09:48:18','2020-02-28 09:48:18','flyway','flyway',0,null,'2020-08-01','9999-12-31','TAGESSCHULE','test@mailbucket.dvbern.ch',null,null,null,UNHEX(REPLACE('a805a101-4200-473a-accc-bbb423ea1937', '-', '')),UNHEX(REPLACE('f44a68f2-dda2-4bf2-936a-68e20264b610', '-', '')),null,UNHEX(REPLACE('0f763946-3a59-4aa6-9694-4754e58e8871', '-', '')),true,null);
+INSERT INTO einstellungen_tagesschule (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,
+                                       modul_tagesschule_typ,gesuchsperiode_id,institution_stammdaten_tagesschule_id,
+                                       erlaeuterung)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+		  '2020-01-01 00:00:00'              as timestamp_erstellt,
+		  '2020-01-01 00:00:00'              as timestamp_mutiert,
+		  'flyway'                           as user_erstellt,
+		  'flyway'                           as user_mutiert,
+		  0                                  as version,
+		  'DYNAMISCH' as  modul_tagesschule_typ,
+		  gp.id   							 as gesuchsperiode_id,
+		  UNHEX(REPLACE('0f763946-3a59-4aa6-9694-4754e58e8871','-', '')) as institution_stammdaten_tagesschule_id,
+		  null as erlaeuterung
+	  from gesuchsperiode as gp) as tmp;
+
+# Tagis fuer Paris aktivvieren
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED' as einstellung_key,
+			 'true' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+
+# Minimale Erwerbspensen fuer Paris ueberschreiben: 15%/30% anstatt 20%/40% fuer Vorschulkinder/EingeschulteKinder
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' as einstellung_key,
+			 '15' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT' as einstellung_key,
+			 '30' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+INSERT INTO ebegu.gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde_id, gesuchsperiode_id, merkblatt_anmeldung_tagesschule_de, merkblatt_anmeldung_tagesschule_fr) VALUES
+# PARIS
+(UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null),
+# LONDON
+(UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null);
+
+# PARIS
+INSERT INTO ebegu.gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
+(UNHEX(REPLACE('54086b1a-6901-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-09-01', 'HERBSTFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
+(UNHEX(REPLACE('4ea68aa1-6901-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-06-01', 'SOMMERFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
+(UNHEX(REPLACE('9c19b314-6900-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-01-01', 'SPORTFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
+(UNHEX(REPLACE('36665051-6901-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-04-01', 'FRUEHLINGSFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', '')));
+# LONDON
+INSERT INTO ebegu.gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
+(UNHEX(REPLACE('a3e774d0-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-09-01', 'HERBSTFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
+(UNHEX(REPLACE('9ea7ae08-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-06-01', 'SOMMERFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
+(UNHEX(REPLACE('90cb89be-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-01-01', 'SPORTFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
+(UNHEX(REPLACE('9989a3f8-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-04-01', 'FRUEHLINGSFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', '')));
