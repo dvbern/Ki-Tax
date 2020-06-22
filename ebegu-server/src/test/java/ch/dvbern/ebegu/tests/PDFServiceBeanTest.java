@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.mocks.ApplicationPropertyServiceMock;
 import ch.dvbern.ebegu.mocks.DokumentGrundServiceMock;
 import ch.dvbern.ebegu.mocks.DossierServiceBeanMock;
 import ch.dvbern.ebegu.mocks.EbeguVorlageServiceMock;
@@ -45,6 +46,7 @@ import ch.dvbern.ebegu.mocks.GemeindeServiceMock;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -102,6 +104,9 @@ public class PDFServiceBeanTest {
 
 	@InjectIntoMany
 	DokumentenverzeichnisEvaluator dokumentenverzeichnisEvaluator = new DokumentenverzeichnisEvaluator();
+
+	@InjectIntoMany
+	ApplicationPropertyService applicationPropertyService = new ApplicationPropertyServiceMock();
 
 	private Gesuch gesuch_1GS, gesuch_2GS, gesuch_Schulamt;
 
