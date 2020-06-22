@@ -1036,7 +1036,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (EbeguUtil.isNullOrUndefined(this.getBetreuungModel()) || !isJugendamt(this.getBetreuungModel().getAngebotTyp())) {
+        if (EbeguUtil.isNullOrUndefined(this.getBetreuungModel())
+            || EbeguUtil.isNullOrUndefined(isJugendamt(this.getBetreuungModel().getAngebotTyp()))) {
             return;
         }
         if (!(!this.getBetreuungModel().isNew() &&
