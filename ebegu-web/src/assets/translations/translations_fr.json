@@ -2052,5 +2052,8 @@
     "ALTERNATIVE_EMAIL": "Adresse email alternative",
     "ANGABEN_VON_STAMMDATEN": "Si ce champ est laissé vide, les données de base seront reprise",
     "BETREUUNG_HINT_UNTERMONATLICH": "Les indications suivantes s'appliquent: si la date de début ou de fin de la prise en charge ne se trouve pas au début ou à la fin d'un mois, on doit quand même saisir les valeurs pour un mois complet. <br>&nbsp;",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN": "",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

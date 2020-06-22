@@ -59,6 +59,7 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public standardDokUnterschriftName: string;
     public standardDokUnterschriftTitel2: string;
     public standardDokUnterschriftName2: string;
+    public tsVerantwortlicherNachVerfuegungBenachrichtigen: boolean;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public externalClients: string[];

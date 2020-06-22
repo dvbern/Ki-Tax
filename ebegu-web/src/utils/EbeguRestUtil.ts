@@ -928,6 +928,8 @@ export class EbeguRestUtil {
             restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
             restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
             restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
+            restStammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen =
+                stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             restStammdaten.externalClients = stammdaten.externalClients || null;
             restStammdaten.usernameScolaris = stammdaten.usernameScolaris;
 
@@ -989,6 +991,8 @@ export class EbeguRestUtil {
             stammdatenTS.standardDokUnterschriftName = stammdatenFromServer.standardDokUnterschriftName;
             stammdatenTS.standardDokUnterschriftTitel2 = stammdatenFromServer.standardDokUnterschriftTitel2;
             stammdatenTS.standardDokUnterschriftName2 = stammdatenFromServer.standardDokUnterschriftName2;
+            stammdatenTS.tsVerantwortlicherNachVerfuegungBenachrichtigen =
+                stammdatenFromServer.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
 
             return stammdatenTS;

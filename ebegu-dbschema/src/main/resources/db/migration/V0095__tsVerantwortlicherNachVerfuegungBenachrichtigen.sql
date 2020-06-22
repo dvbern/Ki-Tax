@@ -1,0 +1,2 @@
+ALTER TABLE ebegu.gemeinde_stammdaten ADD COLUMN ts_verantwortlicher_nach_verfuegung_benachrichtigen bit not null default false;
+ALTER TABLE ebegu.gemeinde_stammdaten_aud ADD COLUMN ts_verantwortlicher_nach_verfuegung_benachrichtigen bit not null default false;
