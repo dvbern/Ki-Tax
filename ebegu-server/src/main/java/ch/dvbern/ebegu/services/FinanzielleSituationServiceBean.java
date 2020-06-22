@@ -112,11 +112,19 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull String gesuchId
 	) {
 		// Die eigentliche FinSit speichern
+		final boolean isNew = finanzielleSituation.isNew();
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
+		if (isNew) {
+			// Die FinSit war neu und muss noch mit dem GS 1 verknuepft werden
+			Objects.requireNonNull(gesuch.getGesuchsteller1());
+			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(finanzielleSituationPersisted);
+			gesuch = persistence.merge(gesuch);
+		}
 
 		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
 		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
-		Gesuch gesuch = saveFinanzielleSituationFelderAufGesuch(
+		gesuch = saveFinanzielleSituationFelderAufGesuch(
 			sozialhilfebezueger,
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
@@ -125,7 +133,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			kontoinhaber,
 			abweichendeZahlungsadresse,
 			zahlungsadresse,
-			gesuchId
+			gesuch
 		);
 
 		wizardStepService.updateSteps(
@@ -147,9 +155,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nullable String kontoinhaber,
 		boolean abweichendeZahlungsadresse,
 		@Nullable Adresse zahlungsadresse,
-		@Nonnull String gesuchId
+		@Nonnull Gesuch gesuch
 	) {
-		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
 		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
 		Objects.requireNonNull(familiensituationContainer);
 		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
