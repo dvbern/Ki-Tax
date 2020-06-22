@@ -76,6 +76,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	private String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
 
+	private boolean stadtBernAsivConfiguered = false;
+
 	private TagesschuleRechner rechner = new TagesschuleRechner();
 
 
@@ -156,7 +158,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
-		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, VerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung);
+		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(
+			getFirstBetreuung(gesuch), stammdaten, VerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, stadtBernAsivConfiguered);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
@@ -172,7 +175,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung);
+		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(
+			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, stadtBernAsivConfiguered);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
@@ -189,7 +193,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung);
+		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(
+			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, stadtBernAsivConfiguered);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
