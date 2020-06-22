@@ -694,7 +694,7 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
-        let html = `<span class="marginTop20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+        let html = `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.gemeinde.name}</span><br>
                     <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
@@ -706,9 +706,9 @@ export class DossierToolbarController implements IDVFocusableController {
     private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdatenSummary): string {
         let html = '';
         if (stammdaten.adresse.organisation === stammdaten.institution.name) {
-            html += `<span class="marginTop20">${stammdaten.institution.name}</span><br>`;
+            html += `<span class="margin-top-20">${stammdaten.institution.name}</span><br>`;
         } else {
-            html += `<span class="marginTop20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+            html += `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.institution.name}</span><br>`;
         }
         html += `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>

@@ -18,5 +18,7 @@
 package ch.dvbern.ebegu.enums;
 
 public enum RueckforderungDokumentTyp {
-	NACHWEIS_XXX // TODO: korrekte Gründe einfügen, sobald bekannt
+	ANGABEN_DOKUMENTE,
+	KOMMUNIKATION_DOKUMENTE,
+	EINSATZPLAENE_DOKUMENTE
 }

@@ -87,11 +87,11 @@ td, th {
             outline-offset: 0;
         }
         &.disabled-row, &.disabled-row:hover {
+            background: @contrast;
+            cursor: default;
             &:focus {
                 outline: none;
             }
-            background: @contrast;
-            cursor: default;
             & > td {
                 border-color: @contrast-dark;
             }
@@ -102,19 +102,19 @@ td, th {
 table, .table > tbody, .table > thead, .table > thead:first-child {
     & > tr {
         & > td {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             .ebeguH3();
-            position: relative;
-            line-height: 3rem;
-            height: 6rem;
             border: 1px solid @contrast;
             border-left: none;
             border-right: none;
-            vertical-align: middle;
-            padding: 0 0.8rem 0;
             color: @contrast-darkest;
+            height: 6rem;
+            line-height: 3rem;
+            overflow: hidden;
+            padding: 0 0.8rem 0;
+            position: relative;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            white-space: nowrap;
             .dvb-loading-button {
                 text-align: end;
             }
@@ -125,18 +125,17 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
         }
 
         & > th, & > th:empty {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             .ebeguLabel();
-            height: 5rem;
-            vertical-align: middle;
             border: 1px solid @contrast;
             border-left: none;
-            border-right: none;
             border-radius: 0;
-            padding: 0 0.25rem 0;
+            border-right: none;
             color: @contrast-darkest;
+            height: 5rem;
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            vertical-align: middle;
             span {
                 .ebeguP();
                 line-height: 0;
@@ -146,14 +145,14 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
     & > tr:first-child {
         & > th, & > th:empty {
             .ebeguLabel();
-            height: 4rem;
-            vertical-align: middle;
             border: 1px solid @contrast-darkest;
             border-left: none;
-            border-right: none;
             border-radius: 0;
-            padding: 0 0.8rem 0;
+            border-right: none;
             color: @contrast-darkest;
+            height: 4rem;
+            padding: 0 0.8rem 0;
+            vertical-align: middle;
             span {
                 .ebeguP();
                 line-height: 0;
@@ -168,7 +167,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
     }
 }
 
-.gesuchstellerDashboardView {
+.gesuchsteller-dashboard-view {
     table {
         min-width: 100%;
     }
@@ -183,25 +182,25 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
         & > tr, & > tr:first-child {
             & > td {
                 .ebeguLabel();
-                height: 5rem;
-                vertical-align: middle;
-                padding: 0 0.8rem 0;
                 border: 1px solid rgba(220, 220, 220, 0.2);
                 border-left: none;
                 border-right: none;
                 color: @contrast-lightest;
+                height: 5rem;
+                padding: 0 0.8rem 0;
+                vertical-align: middle;
             }
             & > th, & > th:empty {
                 .ebeguH3();
-                position: relative;
-                line-height: 3rem;
-                height: 5rem;
-                vertical-align: middle;
-                padding: 0 0.8rem 0;
                 border: 1px solid @contrast-lightest;
                 border-left: none;
                 border-right: none;
                 color: @contrast-lightest;
+                height: 5rem;
+                line-height: 3rem;
+                padding: 0 0.8rem 0;
+                position: relative;
+                vertical-align: middle;
                 span {
                     .ebeguP();
                     line-height: 0;

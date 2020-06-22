@@ -117,6 +117,7 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
@@ -207,6 +208,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
@@ -5305,5 +5307,23 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungMitteilung.setInhalt(jaxRueckforderungMitteilung.getInhalt());
 
 		return rueckforderungMitteilung;
+	}
+
+	@Nonnull
+	public List<JaxRueckforderungDokument> rueckforderungDokumentListToJax(@Nonnull List<RueckforderungDokument> rueckforderungDokumentList) {
+		return rueckforderungDokumentList.stream()
+			.map(this::rueckforderungDokumentToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxRueckforderungDokument rueckforderungDokumentToJax(@Nonnull RueckforderungDokument rueckforderungDokument) {
+		JaxRueckforderungDokument jaxRueckforderungDokument = new JaxRueckforderungDokument();
+		convertFileToJax(rueckforderungDokument, jaxRueckforderungDokument);
+
+		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());
+		jaxRueckforderungDokument.setTimestampUpload(rueckforderungDokument.getTimestampUpload());
+
+		return jaxRueckforderungDokument;
 	}
 }

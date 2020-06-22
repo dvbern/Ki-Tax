@@ -15,16 +15,16 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-.zahlungView {
+.zahlung-view {
     padding: 3rem;
     .symbol {
         padding: 0 0 0 1em;
 
         .dvb-loading-button, button {
             display: block;
-            width: 100%;
             height: 100%;
             text-align: left;
+            width: 100%;
 
         }
         &.text-center {
@@ -33,37 +33,37 @@
             }
         }
     }
-    .mitteilung_neu, .mitteilung_alt {
+    .mitteilung-neu, .mitteilung-alt {
         td:first-child {
             padding-left: 3rem;
         }
     }
 
-    .mitteilung_neu {
+    .mitteilung-neu {
         td {
             font-weight: 900;
         }
         td:first-child {
             &:before {
-                position: absolute;
-                top: 0;
-                left: 1rem;
-                height: 100%;
-                font-family: FontAwesome;
-                content: "\f111";
                 color: @primary;
-                font-size: 1.2rem;
-                text-align: center;
+                content: '\f111';
                 display: inline-block;
+                font-family: FontAwesome, sans-serif;
+                font-size: 1.2rem;
+                height: 100%;
+                left: 1rem;
                 line-height: 6rem;
+                position: absolute;
+                text-align: center;
+                top: 0;
                 vertical-align: middle;
             }
         }
     }
 
     #betragTotalZahlung, .numeric-column {
-        text-align: right;
         padding-right: 5em;
+        text-align: right;
     }
 
     .warning-negative-zahlungen {

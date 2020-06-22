@@ -12,22 +12,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-@import "../../../../../style/variables.less";
-@import "../../../../../style/mixins.less";
+@import '../../../../../style/variables.less';
+@import '../../../../../style/mixins.less';
 
 .dvb-error-messages-panel {
+    background-color: @primary-dark;
+    border-bottom: none;
+    color: @contrast-lightest;
+    display: none;
+    font-weight: bold;
+    left: 0;
+    padding: 0.5rem 0;
+    position: fixed;
+    right: 0;
+    top: @page-start;
+    z-index: @z-index-error;
+
     .container {
-        margin-top: @small-abstand;
-        margin-bottom: @small-abstand;
-        display: flex;
         align-items: flex-start;
+        display: flex;
         justify-content: space-between;
+        margin-bottom: @small-abstand;
+        margin-top: @small-abstand;
         .alarm-icon {
             margin-right: @small-abstand;
         }
         div {
-            line-height: 2rem;
             flex: 1;
+            line-height: 2rem;
         }
         .close-icon {
             margin-left: @small-abstand;
@@ -38,25 +50,14 @@
             vertical-align: middle;
         }
         a {
+            color: @color-contrast-bright-on-hover;
+            line-height: 2rem;
+
             :hover {
                 cursor: pointer;
             }
-            line-height: 2rem;
-            color: @color-contrast-bright-on-hover;
-
         }
     }
-    position: fixed;
-    top: @page-start;
-    right: 0;
-    left: 0;
-    z-index: @z-index-error;
-    background-color: @primary-dark;
-    padding: 0.5rem 0;
-    border-bottom: none;
-    color: @contrast-lightest;
-    font-weight: bold;
-    display: none;
 }
 
 .dvb-error-messages-panel.info {

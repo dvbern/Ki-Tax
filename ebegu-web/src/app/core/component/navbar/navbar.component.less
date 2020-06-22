@@ -24,8 +24,8 @@
             > a {
                 color: @contrast-lightest;
                 &:hover, &:focus {
-                    color: @primary-light;
                     background-color: @primary;
+                    color: @primary-light;
                 }
             }
             > .divider {
@@ -44,50 +44,49 @@
 .navbar {
     border: none;
     border-radius: 0;
-    margin: 0;
     height: @navbar-height;
+    margin: 0;
 }
 
 ::ng-deep .navbar-default {
-    z-index: @z-index-navbar;
     background-color: @primary;
     border-color: @primary;
+    z-index: @z-index-navbar;
 
     .navbar-nav {
-        width: 100%;
-        text-align: center;
         .ebeguCapitalize();
         font-size: 1.6rem;
         letter-spacing: 0.15rem;
+        text-align: center;
+        width: 100%;
         > li {
-            float: none;
             display: inline-block;
-            padding-left: 6rem;
-            padding-rigth: 6rem;
+            float: none;
             height: @navbar-height;
+            padding-left: 6rem;
             a {
-                font-size: 1.6rem;
-                line-height: @navbar-height;
-                height: @navbar-height;
-                padding: 0;
-                box-sizing: border-box;
                 .ebeguNormal();
+                box-sizing: border-box;
+                color: @contrast-lightest;
+                font-size: 1.6rem;
+                height: @navbar-height;
+                letter-spacing: 0.15rem;
+                line-height: @navbar-height;
+                padding: 0;
                 text-align: center;
                 text-decoration: none;
-                letter-spacing: 0.15rem;
-                color: @contrast-lightest;
                 &:hover, &:focus {
                     color: @primary-light;
                 }
             }
             &.active {
                 a, > a:hover, > a:focus {
-                    display: inline-block;
-                    box-sizing: border-box;
                     .ebeguBold();
-                    border-bottom: 0.5rem solid @contrast-lightest;
-                    color: @contrast-lightest;
                     background-color: @primary;
+                    border-bottom: 0.5rem solid @contrast-lightest;
+                    box-sizing: border-box;
+                    color: @contrast-lightest;
+                    display: inline-block;
                 }
             }
         }
@@ -117,47 +116,47 @@
         }
         > .active {
             > a, > a:hover, > a:focus {
-                color: @primary-light;
                 background-color: @primary;
+                color: @primary-light;
             }
         }
     }
 }
 
 .dv-ng-navbar-wrapper {
+    align-items: flex-start;
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
     height: 100%;
     justify-content: stretch;
 }
 
 .dv-btn.dv-ng-navbar-button {
-    letter-spacing: 0.116rem;
-    height: 100%;
     font-size: 1.6rem;
+    height: 100%;
+    letter-spacing: 0.116rem;
     .fa {
         margin-right: 1rem;
     }
 }
 
 .dv-navbar-header {
-    float: unset;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    align-items: center;
     bottom: 0;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    float: unset;
     justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .dv-ng-navbar-element {
+    cursor: pointer;
     height: 100%;
     margin-left: auto;
-    cursor: pointer;
 
     &-fall-eroeffnen {
         &:extend(.dv-ng-navbar-element);

@@ -408,7 +408,9 @@ public class FinanzielleSituationRechner {
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahr,
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1,
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus2) {
-
+		if (geschaeftsgewinnBasisjahr == null) {
+			return BigDecimal.ZERO;
+		}
 		BigDecimal total = BigDecimal.ZERO;
 		BigDecimal anzahlJahre = BigDecimal.ZERO;
 		if (geschaeftsgewinnBasisjahrMinus2 != null) {
@@ -419,10 +421,10 @@ public class FinanzielleSituationRechner {
 			total = total.add(geschaeftsgewinnBasisjahrMinus1);
 			anzahlJahre = anzahlJahre.add(BigDecimal.ONE);
 		}
-		if (geschaeftsgewinnBasisjahr != null) {
-			total = total.add(geschaeftsgewinnBasisjahr);
-			anzahlJahre = anzahlJahre.add(BigDecimal.ONE);
-		}
+
+		total = total.add(geschaeftsgewinnBasisjahr);
+		anzahlJahre = anzahlJahre.add(BigDecimal.ONE);
+
 		if (anzahlJahre.intValue() > 0) {
 			final BigDecimal divided = total.divide(anzahlJahre, RoundingMode.HALF_UP);
 			// Durschnitt darf NIE kleiner als 0 sein

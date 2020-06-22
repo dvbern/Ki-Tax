@@ -17,17 +17,17 @@
 
 .dv-btn {
     .ebeguNormal();
-    white-space: nowrap;
-    font-size: 1.4rem;
-    text-align: center;
-    letter-spacing: 0.2rem;
-    border: none;
     background: @primary;
+    border: none;
     color: @contrast-lightest;
-    padding: 0 1.5rem 0;
+    font-size: 1.4rem;
+    height: 4rem;
+    letter-spacing: 0.2rem;
     outline: 2px solid transparent;
     outline-offset: 0;
-    height: 4rem;
+    padding: 0 1.5rem 0;
+    text-align: center;
+    white-space: nowrap;
     span {
         line-height: inherit;
         text-align: center;
@@ -53,8 +53,8 @@
 
     }
     &[disabled], &[disabled]:hover {
-        color: @contrast-lightest;
         background: @contrast;
+        color: @contrast-lightest;
     }
 }
 
@@ -102,9 +102,10 @@ dv-navigation {
 }
 
 .btn-link {
-    font-size: 1.4rem;
-    color: @contrast-darkest;
     background: transparent;
+    color: @contrast-darkest;
+    font-size: 1.4rem;
+    letter-spacing: 0.1rem;
     &:hover, &:active {
         background: transparent;
         color: @contrast-darkest;
@@ -122,15 +123,14 @@ dv-navigation {
             text-decoration: underline;
         }
     }
-    letter-spacing: 0.1rem;
     span {
         line-height: normal;
     }
     &[disabled], &[disabled]:hover {
 
         background: none;
-        outline: 0;
         box-shadow: none;
+        outline: 0;
         &:focus {
             outline: 2px solid @contrast-darkest;
 
@@ -140,14 +140,14 @@ dv-navigation {
 }
 
 .dv-btn-sm {
+    border-radius: 0;
     height: 3rem;
+    letter-spacing: normal;
     padding-left: 1rem;
     padding-right: 1rem;
-    letter-spacing: normal;
     span {
         line-height: 3rem;
     }
-    border-radius: 0;
 }
 
 .dv-btn-bg {
@@ -160,35 +160,36 @@ dv-navigation {
 }
 
 .dv-btn-operation {
-    &.centered-btn {
-        width: 100%;
-    }
+
     background: transparent;
     color: @contrast-darkest;
     letter-spacing: 0.1rem;
     padding: 0;
+    &.centered-btn {
+        width: 100%;
+    }
     .fa {
         vertical-align: middle;
     }
     &.active, &:active {
+        background: transparent;
+        color: @contrast-darkest;
         .fa {
             color: @primary;
         }
-        background: transparent;
-        color: @contrast-darkest;
 
     }
     &:hover, &:focus {
-        outline: 2px solid @contrast-darkest;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-        .fa {
-            outline: 0;
-            color: @primary;
-        }
 
         background: transparent;
+        -webkit-box-shadow: none;
+        box-shadow: none;
         color: @contrast-darkest;
+        outline: 2px solid @contrast-darkest;
+        .fa {
+            color: @primary;
+            outline: 0;
+        }
     }
 
     &:active, &:hover {
@@ -197,11 +198,11 @@ dv-navigation {
     }
 
     &[disabled], &[disabled]:hover {
+        background: transparent;
+        color: @contrast-dark;
         .fa {
             color: @contrast-dark;
         }
-        color: @contrast-dark;
-        background: transparent;
     }
 
 }
@@ -211,9 +212,9 @@ a.dv-btn {
     display: block;
     text-decoration: none;
     span {
-        text-decoration: none;
         line-height: 4rem;
         text-align: center;
+        text-decoration: none;
     }
 }
 
@@ -229,11 +230,11 @@ a.dv-btn {
 .dv-btn-operation--white {
     color: @contrast-lightest;
     &.active, &:active {
+        background: transparent;
+        color: @contrast-lightest;
         .fa {
             color: @primary;
         }
-        background: transparent;
-        color: @contrast-lightest;
 
     }
 }

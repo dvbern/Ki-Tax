@@ -452,7 +452,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showInstitutionenAsText(): boolean {
-        return !this.showInstitutionenList();
+        return !this.showInstitutionenList() && !this.model.keineDetailinformationen;
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
@@ -652,7 +652,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
             tsBetreuungspensum.tarifProHauptmahlzeit = 0;
             tsBetreuungspensum.tarifProNebenmahlzeit = 0;
-        } else {
+        } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
+            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten Institution,
+            // dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die Tarife auf dem Modul hinterlegt sind)
             tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
             tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
@@ -927,7 +929,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
-            || this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse;
+            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
     }
 
     public showFalscheAngaben(): boolean {
@@ -1076,7 +1079,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
         const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
         const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const isNew = this.getBetreuungModel().isNew();
+        const isNew = this.getBetreuungModel() && this.getBetreuungModel().isNew();
         if (!isNew) {
             const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
             const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
@@ -1204,7 +1207,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.provisorischeBetreuung || this.getBetreuungModel().keineDetailinformationen;
+        return this.provisorischeBetreuung ||
+            (this.getBetreuungModel() && this.getBetreuungModel().keineDetailinformationen);
     }
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {

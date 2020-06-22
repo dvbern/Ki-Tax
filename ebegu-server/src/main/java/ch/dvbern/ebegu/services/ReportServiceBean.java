@@ -106,6 +106,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -1396,8 +1397,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgPensumKanton(bgPensumKanton);
 		row.setBgPensumGemeinde(bgPensumGemeinde);
 		row.setBgPensumTotal(bgPensumTotal);
-
 		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
+		// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
+		// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
+		PensumUnits zeiteinheit = betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ? PensumUnits.DAYS : PensumUnits.HOURS;
+		row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale));
+
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton

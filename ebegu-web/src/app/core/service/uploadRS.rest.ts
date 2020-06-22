@@ -15,14 +15,17 @@
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class UploadRS {
 
     public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q', 'base64'];
     public serviceURL: string;
+    private readonly NOT_SUCCESS = 'Upload File: NOT SUCCESS';
 
     public constructor(
         public http: IHttpService,
@@ -64,14 +67,39 @@ export class UploadRS {
         }).then((response: any) => {
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
         }, (response: any) => {
-            console.log('Upload File: NOT SUCCESS');
+            console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
-            const loaded: number = evt.loaded;
-            const total: number = evt.total;
-            const progressPercentage = 100 * loaded / total;
-            console.log(`progress: ${progressPercentage}% `);
-            this.q.defer().notify();
+            this.notifyCallbackByUpload(evt);
+        });
+    }
+
+    public uploadRueckforderungsDokumente(files: any, rueckforderungFormularId: string,
+                                          rueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
+    ): IPromise<TSRueckforderungDokument[]> {
+        const names: string [] = [];
+        for (const file of files) {
+            if (file) {
+                const encodedFilename = this.base64.encode(file.name);
+                names.push(encodedFilename);
+            }
+        }
+        return this.upload.upload({
+            url: `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
+            method: 'POST',
+            headers: {
+                'x-filename': names.join(';'),
+            },
+            data: {
+                file: files
+            },
+        }).then((response: any) => {
+            return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
+        }, (response: any) => {
+            console.log(this.NOT_SUCCESS);
+            return this.q.reject(response);
+        }, (evt: any) => {
+            this.notifyCallbackByUpload(evt);
         });
     }
 
@@ -86,7 +114,7 @@ export class UploadRS {
         }).then((response: any) => {
             return response.data;
         }, (response: any) => {
-            console.log('Upload File: NOT SUCCESS');
+            console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         });
     }
@@ -110,5 +138,13 @@ export class UploadRS {
 
     public getServiceName(): string {
         return 'UploadRS';
+    }
+
+    private notifyCallbackByUpload(evt: any): void {
+        const loaded: number = evt.loaded;
+        const total: number = evt.total;
+        const progressPercentage = 100 * loaded / total;
+        console.log(`progress: ${progressPercentage}% `);
+        this.q.defer().notify();
     }
 }

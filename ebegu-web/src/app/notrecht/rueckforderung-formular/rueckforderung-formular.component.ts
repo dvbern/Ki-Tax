@@ -24,15 +24,20 @@ import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {UploadRS} from '../../core/service/uploadRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 
 @Component({
@@ -60,6 +65,8 @@ export class RueckforderungFormularComponent implements OnInit {
     private _stufe1ProvBetrag: number;
     private _stufe2ProvBetrag: number;
 
+    public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
@@ -69,6 +76,8 @@ export class RueckforderungFormularComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly i18nServiceRS: I18nServiceRSRest,
+        private readonly uploadRS: UploadRS,
+        private readonly cdr: ChangeDetectorRef,
     ) {
     }
 
@@ -82,6 +91,7 @@ export class RueckforderungFormularComponent implements OnInit {
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
                     this.initRueckforderungZahlungen(response);
+                    this.initDokumente(response);
                     if (this.isPruefungKantonStufe1(response)) {
                         this.calculateKantonProvBetrag(response, true);
                     }
@@ -371,5 +381,131 @@ export class RueckforderungFormularComponent implements OnInit {
             .catch(() => {
                 win.close();
             });
+    }
+
+    public get rueckforderungDokumentTyp(): typeof TSRueckforderungDokumentTyp {
+        return TSRueckforderungDokumentTyp;
+    }
+
+    public uploadRuckforderungDokumente(event: any, rueckforderungFormularId: string,
+                                        tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp): void {
+        const files = event.target.files;
+        const filesTooBig: any[] = [];
+        const filesOk: any[] = [];
+        for (const file of files) {
+            if (file.size > MAX_FILE_SIZE) {
+                filesTooBig.push(file);
+            } else {
+                filesOk.push(file);
+            }
+        }
+        if (filesTooBig.length > 0) {
+            // DialogBox anzeigen für Files, welche zu gross sind!
+
+            let fileListString = '<ul>';
+            for (const file of filesTooBig) {
+                fileListString += '<li>';
+                fileListString += file.name;
+                fileListString += '</li>';
+            }
+            fileListString += '</ul>';
+            this.showFileTooBigDialog(fileListString);
+            return;
+        }
+        if (filesOk.length <= 0) {
+            return;
+        }
+        this.uploadRS.uploadRueckforderungsDokumente(filesOk, rueckforderungFormularId, tsRueckforderungDokumentTyp)
+            .then(rueckforderungDokumente => {
+                switch (tsRueckforderungDokumentTyp) {
+                    case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungAngabenDokumente.push(dokument));
+                        this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                        this.cdr.markForCheck();
+                        break;
+                    case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                    case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                    default:
+                        return;
+                }
+            });
+    }
+
+    private showFileTooBigDialog(text: string): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('FILE_ZU_GROSS'),
+            text: `${text}`
+        };
+        this.dialog
+            .open(DvNgOkDialogComponent, dialogConfig);
+    }
+
+    public initDokumente(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.notrechtRS.getRueckforderungDokumente(
+            rueckforderungFormular.id)
+            .then(rueckforderungDokumente => {
+                this.rueckforderungAngabenDokumente = rueckforderungDokumente.filter(
+                    dokument => dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
+                this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                this.cdr.markForCheck();
+            });
+    }
+
+    public delete(dokument: TSRueckforderungDokument): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
+            text: ''
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                userAccepted => {
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.notrechtRS.deleteRueckforderungDokument(dokument.id).then(() => {
+                        switch (dokument.rueckforderungDokumentTyp) {
+                            case TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungAngabenDokumente);
+                                this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                            case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                            default:
+                                return;
+                        }
+
+                    });
+                },
+                () => {
+                }
+            );
+    }
+
+    private removeFromList(dokument: TSRueckforderungDokument,
+                           rueckforderungDokumente: TSRueckforderungDokument[]): void {
+        const idx = EbeguUtil.getIndexOfElementwithID(dokument, rueckforderungDokumente);
+        if (idx > -1) {
+            rueckforderungDokumente.splice(idx, 1);
+        }
+    }
+
+    public download(dokument: TSRueckforderungDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenRueckforderungDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public showDokumentenUpload(): boolean {
+        return false;
     }
 }

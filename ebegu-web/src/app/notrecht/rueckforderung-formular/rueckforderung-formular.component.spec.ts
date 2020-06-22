@@ -23,6 +23,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {UploadRS} from '../../core/service/uploadRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
@@ -38,6 +39,7 @@ describe('RueckforderungFormularComponent', () => {
     const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['findRueckforderungFormular']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
     const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
+    const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadRueckforderungsDokumente']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -55,6 +57,7 @@ describe('RueckforderungFormularComponent', () => {
                 {provide: NotrechtRS, useValue: notrechtRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: UploadRS, useValue: uploadRSSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,

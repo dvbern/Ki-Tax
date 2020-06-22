@@ -21,12 +21,12 @@
 }
 
 .full-height-container {
-    min-height: 100%;
     background: @lgrey;
-    padding: 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
+    min-height: 100%;
+    padding: 2.5rem;
 
     ::ng-deep & {
         > * {
@@ -49,11 +49,11 @@
         .dv-footer {
             // make sure to position of the child element with this class is at the bottom
             align-self: flex-end;
+            display: flex;
+            justify-content: center;
             padding-bottom: 2.5rem;
             padding-top: 3rem;
             width: 100%;
-            display: flex;
-            justify-content: center;
 
             & > * {
                 margin: 0 0.75em;
