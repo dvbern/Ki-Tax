@@ -66,15 +66,6 @@
                 </md-button>
             </md-menu-item>
 
-            <!-- Ferieninsel -->
-            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
-                <md-button ui-sref-active="active"
-                           ui-sref="admin.ferieninsel"
-                           aria-label="{{'FERIENINSEL' | translate}}">
-                    <a href="#" ng-click="$event.preventDefault();" data-translate="FERIENINSEL" aria-hidden></a>
-                </md-button>
-            </md-menu-item>
-
             <!-- Institutionen -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getInstitutionProfilRoles()">
                 <md-button ui-sref-active="active"
