@@ -363,10 +363,10 @@
                                 <td class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="result" ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()">
+                                <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
-                                <td class="result" ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()">
+                                <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
                             </tr>
@@ -385,8 +385,8 @@
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th class="result" data-translate="VERGUENSTIGUNG"></th>
-                                <th ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()" class="result" data-translate="VERGUENSTIGUNG_HAUPTMAHLZEITEN"></th>
-                                <th ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()" class="result" data-translate="VERGUENSTIGUNG_NEBENMAHLZEITEN"></th>
+                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_HAUPTMAHLZEITEN"></th>
+                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_NEBENMAHLZEITEN"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
@@ -431,11 +431,11 @@
                                     ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
-                                    ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()"
+                                    ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungHauptmahlzeitTotal | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Nebenmahlzeiten -->
                                 <td class="result"
-                                    ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()"
+                                    ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungNebenmahlzeitTotal | currency : '' : 2"></td>
                             </tr>
                             </tbody>
