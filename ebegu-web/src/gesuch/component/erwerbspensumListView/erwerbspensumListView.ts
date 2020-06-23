@@ -91,18 +91,16 @@ export class ErwerbspensumListViewController
     }
 
     private initViewModel(): void {
-        this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
-            this.erwerbspensumRequired = response;
-            if (this.isSaveDisabled()) {
-                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.ERWERBSPENSUM,
-                    TSWizardStepStatus.IN_BEARBEITUNG);
-            } else {
-                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.ERWERBSPENSUM,
-                    TSWizardStepStatus.OK);
-            }
-        });
+        this.erwerbspensumRequired = this.getGesuch().hasAnyJugendamtAngebot();
+        if (this.isSaveDisabled()) {
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.ERWERBSPENSUM,
+                TSWizardStepStatus.IN_BEARBEITUNG);
+        } else {
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.ERWERBSPENSUM,
+                TSWizardStepStatus.OK);
+        }
         this.setShowInfoAusserordentlichenAnspruchIfPossible();
         this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id).then(gemeindeDaten => {
             this.gemeindeTelefon = gemeindeDaten.telefon;

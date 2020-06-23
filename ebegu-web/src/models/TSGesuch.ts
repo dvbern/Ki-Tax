@@ -17,7 +17,7 @@ import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
-    getSchulamtBetreuungsangebotTypValues,
+    getSchulamtBetreuungsangebotTypValues, isJugendamt,
     isOfAnyBetreuungsangebotTyp,
     TSBetreuungsangebotTyp,
 } from './enums/TSBetreuungsangebotTyp';
@@ -401,6 +401,24 @@ export class TSGesuch extends TSAbstractAntragEntity {
             return this.kindContainers.every(kind => {
                 return !!kind.kindJA.pensumAusserordentlicherAnspruch;
             });
+        }
+        return false;
+    }
+
+    /**
+     * Gibt true zurueck wenn mindestens ein Kind ein Angebot KITA oder TFO hat
+     */
+    public hasAnyJugendamtAngebot(): boolean {
+        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
+        for (const kind of kinderWithBetreuungList) {
+            // tslint:disable-next-line:early-exit
+            if (kind.betreuungen && kind.betreuungen.length > 0) {
+                for (const platz of kind.betreuungen) {
+                    if (isJugendamt(platz.getAngebotTyp())) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
