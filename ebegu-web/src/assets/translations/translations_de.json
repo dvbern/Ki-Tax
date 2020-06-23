@@ -130,7 +130,7 @@
     "KORRESPONDENZSPRACHE_HELP": "Die Korrespondenz erfolgt nur in der gewünschten Sprache, falls die Gemeinde diese Sprache auch anbietet. Ansonsten erfolgt die Korrespondenz in der von der Gemeinde angegebenen Sprache",
     "DUBLETTEN": "Potenzielle Dubletten",
     "UMZUG": "geplanter Umzug",
-    "NICHT_IN_GEMEINDE_WOHNHAFT": "Nicht in {{gemeinde}} wohnhaft",
+    "NICHT_IN_GEMEINDE_WOHNHAFT": "Diese Adresse gehört nicht zur politischen Gemeinde {{gemeinde}}",
     "NICHT_IN_GEMEINDE_WOHNHAFT_HELP": "Definiert, ob der zivilrechtliche Wohnsitz in der Gemeinde liegt. Durch aktivieren dieses Häkchens entfällt der Anspruch auf einen Betreuungsgutschein gemäss Art. 34b Abs. 1 Bst. c ASIV.",
     "TELEFON_AUSLAND": "Telefon Ausland",
     "KEIN_EINTRAG": "Es ist aktuell kein Eintrag vorhanden",
