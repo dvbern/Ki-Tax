@@ -86,6 +86,10 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 				if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
 					inputData.setAnspruchspensumRest(roundedPensumFachstelle);
 				}
+				inputData.addBemerkung(
+					MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
+					getLocale(),
+					roundedPensumFachstelle);
 			}
 		}
 	}
