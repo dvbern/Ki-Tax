@@ -91,7 +91,7 @@ export class ErwerbspensumListViewController
     }
 
     private initViewModel(): void {
-        this.erwerbspensumRequired = this.getGesuch().hasAnyJugendamtAngebot();
+        this.erwerbspensumRequired = this.getGesuch() && this.getGesuch().hasAnyJugendamtAngebot();
         if (this.isSaveDisabled()) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.ERWERBSPENSUM,
