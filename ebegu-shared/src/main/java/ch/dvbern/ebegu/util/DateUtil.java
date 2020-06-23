@@ -103,4 +103,12 @@ public final class DateUtil {
 			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
 			.count();
 	}
+
+	/**
+	 * Prueft, ob zwei Datum im selben Monat (desselben Jahres) liegen
+	 */
+	public static boolean isSameMonthAndYear(@Nonnull LocalDate dateOne, @Nonnull LocalDate dateTwo) {
+		return dateOne.getYear() == dateTwo.getYear()
+			&& dateOne.getMonth() == dateTwo.getMonth();
+	}
 }
