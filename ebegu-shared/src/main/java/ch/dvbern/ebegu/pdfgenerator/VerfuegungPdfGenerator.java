@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
@@ -179,7 +179,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			document.add(createVerfuegungTable());
 
 			// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
-			if (!stadtBernAsivConfigured && KitaxUebergangsloesungParameter.isGemeindeWithKitaxUebergangsloesung(gemeindeStammdaten.getGemeinde())) {
+			if (!stadtBernAsivConfigured && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeindeStammdaten.getGemeinde())) {
 				document.add(createErklaerungstextFEBR());
 			}
 
