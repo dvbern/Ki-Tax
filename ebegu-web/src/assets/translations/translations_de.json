@@ -2058,5 +2058,8 @@
     "TS_DIALOG_FIRSTMODUL_TEXT": "Falls Sie die Software Scolaris zum Verwalten Ihrer Tagesschule verwenden, oder in Zukunft verwenden werden, müssen Sie die Module für Scolaris erstellen. Ansonsten können die Module später nicht korrekt synchronisiert werden",
     "TS_DIALOG_FIRSTMODUL_ACTION1": "Dynamische Module erstellen",
     "TS_DIALOG_FIRSTMODUL_ACTION2": "Scolaris Module erstellen",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN": "Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "Verantwortlicher Tagesschule wird per Email informiert, nachdem ein Mischgesuch verfügt wurde",
+    "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "Nachdem ein Mischgesuch durch den Verantwortlichen Betreuungsgutscheine abgeschlossen wurde, erhält der Verantwortliche Tagesschulen eine Email. Dies ist bei manchen Gemeinden für interne Prozesse notwendig.<br>Empfohlene Einstellung: Aus.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

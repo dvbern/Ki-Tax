@@ -26,7 +26,6 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 
 /**
@@ -157,11 +156,5 @@ public final class KitaxUebergangsloesungParameter {
 
 	public void setStadtBernAsivConfiguered(boolean stadtBernAsivConfiguered) {
 		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
-	}
-
-	public static boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
-		// Zum Testen behandeln wir Paris wie Bern
-		long bfsNummer = gemeinde.getBfsNummer();
-		return bfsNummer == 351 || bfsNummer == 99998;
 	}
 }

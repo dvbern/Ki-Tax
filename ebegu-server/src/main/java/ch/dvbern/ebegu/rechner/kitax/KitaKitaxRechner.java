@@ -44,10 +44,6 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
-	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Kita TAGE
-	// 100% = 20 days => 1% = 0.2 days
-	public static final BigDecimal MULTIPLIER_KITA = MathUtil.DEFAULT.fromNullSafe(0.2);
-
 	public KitaKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,

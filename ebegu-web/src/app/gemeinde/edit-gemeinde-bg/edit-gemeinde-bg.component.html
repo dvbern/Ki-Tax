@@ -164,6 +164,22 @@
                         </div>
                     </div>
 
+                    <!--            Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde. (wird nur angezeigt wenn Mischgesuche möglich sind) -->
+                    <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
+                        <div class="form-group checkbox-with-tooltip">
+                            <div>
+                            <mat-checkbox id="verantwortlicherTSInformieren_id" name="standardDokSignature_id"
+                                          [(ngModel)]="stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
+                                {{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN'|translate}}
+                            </mat-checkbox>
+                            </div>
+                            <div class="tooltip-margin">
+                            <dv-tooltip id="verantwortlicherTSInformieren_tooltip"
+                                        [text]="'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP'|translate"></dv-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Betreuungsgutscheine anbieten ab -->
                     <div class="form-group mt-5">
                         <h3 translate>BEGU_START</h3>
@@ -1109,11 +1125,11 @@
                     </div>
                     <!--            standard Fusszeile bei Verfügungen verwenden-->
                     <div>
-                        <div class="form-group">
+                        <div>
                             <div *ngIf="stammdaten.standardDokSignature">
                                 <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
                             </div>
-                            <div *ngIf="!stammdaten.standardDokSignature">
+                            <div *ngIf="!stammdaten.standardDokSignature" class="form-group">
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
@@ -1132,6 +1148,12 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <!--            Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde. (wird nur angezeigt wenn Mischgesuche möglich sind) -->
+                    <div *ngIf="stammdaten.gemeinde.angebotTS && stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
+                        <div>
+                            <h3>{{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA'|translate}}</h3>
                         </div>
                     </div>
 
