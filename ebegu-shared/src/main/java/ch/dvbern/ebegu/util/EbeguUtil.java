@@ -331,4 +331,9 @@ public final class EbeguUtil {
 		return Eingangsart.ONLINE == gesuch.getEingangsart() &&
 			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus());
 	}
+
+	@Nonnull
+	public static String preProcessString(@Nonnull String username) {
+		return username.toLowerCase().trim();
+	}
 }
