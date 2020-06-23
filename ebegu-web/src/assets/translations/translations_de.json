@@ -1172,7 +1172,7 @@
     "ZAHLUNG_FAELLIGKEITSDATUM": "Fälligkeitsdatum (für die Bank)",
     "ZAHLUNG_GENERIERT": "Generiert",
     "ZAHLUNG_BESCHRIEB": "Beschrieb",
-    "ZAHLUNG_DETAILPOSITIONEN": "Detailpositionen",
+    "ZAHLUNG_DETAILPOSITIONEN": "Zahlungsdatei (Excel)",
     "ZAHLUNG_ERSTELLEN": "Zahlung Erstellen",
     "ZAHLUNG_UEBERSICHT": "Überischt",
     "ZAHLUNGSLAUF_INFO_1": "Im ersten Zahlungslauf eines Kalendermonats wird von allen verfügten Gesuchen der aktuelle Kalendermonat ausbezahlt (Reguläre Zahlung). Zusätzlich werden alle seit dem letzten Zahlungslauf verfügten Gesuche überprüft: Falls diese eine  rückwirkende Korrektur zur Folge hatten, wird diese Korrektur ebenfalls in den Zahlunslauf übernommen. Diese Korrekturen können negativ sein, werden aber mit der regulären Zahlung verrechnet. Falls ein weiterer Zahlungslauf im selben Kalendermonat erstellt wird, werden nur noch die Korrekturen seit dem letzten Zahlungslauf ausgeführt. Normalerweise empfehlen wir daher, nur einmal pro Monat einen Zahlungslauf zu erstellen, da sonst das Total des Auszahlung negativ werden kann.",
