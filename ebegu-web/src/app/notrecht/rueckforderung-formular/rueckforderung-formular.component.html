@@ -21,10 +21,10 @@
           *ngIf="rueckforderungFormular$ | async as rueckforderungFormular"
           (ngSubmit)="saveRueckforderungFormular(rueckforderungFormular)"
           novalidate>
-        <div class="notrecht adminModul" flex="auto">
+        <div class="notrecht admin-modul" flex="auto">
             <div class="col-md-8 col-md-offset-2">
 
-                <div class="row viewTitle">
+                <div class="row view-title">
                     <div class="col-md-12">
                         <h2>{{'RUECKFORDERUNGSFORMULARE_DETAIL' | translate: {
 							name:
@@ -279,7 +279,7 @@
                                            class="form-control"
                                            (blur)="calculateInstiProvBetrag(rueckforderungFormular, false)"
                                            required>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
@@ -288,7 +288,7 @@
                                             <span>{{rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage}}</span>
                                         </div>
                                     </div>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
@@ -316,7 +316,7 @@
                                            class="form-control"
                                            (blur)="calculateInstiProvBetrag(rueckforderungFormular, false)"
                                            required>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
@@ -351,7 +351,7 @@
                                            class="form-control"
                                            (blur)="calculateInstiProvBetrag(rueckforderungFormular, false)"
                                            required>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
@@ -401,7 +401,7 @@
                                            class="form-control"
                                            (blur)="calculateKantonProvBetrag(rueckforderungFormular, false)"
                                            required>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
@@ -443,7 +443,7 @@
                                            class="form-control"
                                            (blur)="calculateKantonProvBetrag(rueckforderungFormular, false)"
                                            required>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
@@ -485,7 +485,7 @@
                                            class="form-control"
                                            (blur)="calculateKantonProvBetrag(rueckforderungFormular, false)"
                                            required>
-                                    <div class="bisherForm">
+                                    <div class="bisher-form">
                                         <div
                                             class="dv-bisher"
                                             *ngIf="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
@@ -669,7 +669,7 @@
             <div class="col-md-8 col-md-offset-2" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h3 translate class="marginTop30">RUECKFORDERUNG_ZAHLUNGEN</h3>
+                        <h3 translate class="margin-top-30">RUECKFORDERUNG_ZAHLUNGEN</h3>
                         <div class="table-responsive">
                             <table class="table">
                                 <tr>
@@ -693,7 +693,7 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h2 translate class="marginTop50">DOKUMENTE</h2>
+                        <h2 translate class="margin-top-50">DOKUMENTE</h2>
                         <hr class="header"/>
                         <div class="download-file">
                             <a (click)="downloadVorlage(rueckforderungFormular);">
@@ -728,7 +728,7 @@
         </div>
 
         <!-- Buttons -->
-        <div class="dv-footer marginTop50">
+        <div class="dv-footer margin-top-50">
             <dv-loading-button
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"
                 [type]="'submit'"

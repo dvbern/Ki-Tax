@@ -98,32 +98,32 @@
                 </div>
 
                 <!-- TS-Module -->
-                <div class="dv-ebegu-calendar__wrapper-tagesschule" ng-if="vm.isTagesschuleAlreadySelected()">
+                <div class="dv-ebegu-calendar-wrapper-tagesschule" ng-if="vm.isTagesschuleAlreadySelected()">
 
                     <!-- Header mit Wochentagen -->
-                    <div class="dv-ebegu-calendar__row--tagesschule">
-                        <div class="dv-ebegu-calendar__wrapper-small-blank"></div>
-                        <div class="dv-ebegu-calendar__wrapper">
-                            <div class="dv-ebegu-calendar__container-weekdays">
-                                <div class="dv-ebegu-calendar__weekday dv-ebegu-calendar__weekday--{{day}}"
+                    <div class="dv-ebegu-calendar-row--tagesschule">
+                        <div class="dv-ebegu-calendar-wrapper-small-blank"></div>
+                        <div class="dv-ebegu-calendar-wrapper">
+                            <div class="dv-ebegu-calendar-container-weekdays">
+                                <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
                                      ng-repeat="day in vm.getWeekDays()">{{ day | translate}}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="dv-ebegu-calendar__row--tagesschule"
+                    <div class="dv-ebegu-calendar-row--tagesschule"
                          ng-repeat="group in vm.modulGroups track by group.group.identifier">
                         <!-- Gruppe (Name und Zeit) -->
-                        <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
-                            <span class="dv-ebegu-calendar__module-name"
+                        <div class="dv-ebegu-calendar-wrapper-small dv-ebegu-calendar-module">
+                            <span class="dv-ebegu-calendar-module-name"
                                   ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
-                            <span class="dv-ebegu-calendar__module-time"
+                            <span class="dv-ebegu-calendar-module-time"
                                   ng-bind="vm.getModulTimeAsString(group.group)"></span>
                         </div>
-                        <div class="dv-ebegu-calendar__wrapper">
-                            <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
+                        <div class="dv-ebegu-calendar-wrapper">
+                            <div class="dv-ebegu-calendar-container dv-ebegu-calendar-container--no-margin">
 
-                                <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
+                                <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--1"
                                      ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
                                     <md-menu>
                                         <!-- leeres ng-click verhindert Fehler "cannot read property setAttribute of undefined"-->

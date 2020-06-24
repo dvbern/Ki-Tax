@@ -425,7 +425,7 @@
     "KINDER_UEBERPRUEFEN_HINT": "Die Kinder-Stammdaten wurden aus dem letztjährigen Antrag übernommen. Der Kinderabzug, die Schulklasse sowie weitere Daten müssen in jeder Periode neu gesetzt werden. Öffnen Sie die Detailangaben zu den Kindern und ergänzen Sie die fehlenden Informationen.",
     "BETREUUNG_TOOLTIP_REQUIRED": "Es muss mindestens ein Betreuungsangebot erfasst werden",
     "ERWERBSPENSUM_TOOLTIP_REQUIRED": "Es muss mindestens ein Beschäftigungspensum erfasst werden",
-    "ERWERBSPENSEN_NOT_REQUIRED": "Diese Angaben sind für Tagesschulanmeldungen {{undFerieninseln}}oder wenn die Kinder ausserordentliche Betreuungsaufwand haben nicht notwendig",
+    "ERWERBSPENSEN_NOT_REQUIRED": "Diese Angaben sind für Tagesschulanmeldungen {{undFerieninseln}} nicht notwendig",
     "UND_FERIENINSELN": "und Ferieninseln ",
     "KINDER_NOCH_KEINE": "noch keine Kinder erfasst",
     "BETREUUNGEN_NOCH_KEINE": "noch keine Betreuung für dieses Kind erfasst",
