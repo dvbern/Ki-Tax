@@ -476,8 +476,8 @@ public class Betreuung extends AbstractPlatz {
 			LocalDate von = pensum.getGueltigkeit().getGueltigAb();
 			LocalDate bis = pensum.getGueltigkeit().getGueltigBis();
 
-			if ((von.isBefore(abweichungVon) || von.getMonth() == abweichungVon.getMonth())
-				&& (bis.isAfter(abweichungBis) || bis.getMonth() == abweichungBis.getMonth())) {
+			if ((von.isBefore(abweichungVon) || DateUtil.isSameMonthAndYear(von, abweichungVon))
+				&& (bis.isAfter(abweichungBis) || DateUtil.isSameMonthAndYear(bis, abweichungBis))) {
 				//HIT!!
 				if (von.isBefore(abweichungVon)) {
 					von = abweichungVon;

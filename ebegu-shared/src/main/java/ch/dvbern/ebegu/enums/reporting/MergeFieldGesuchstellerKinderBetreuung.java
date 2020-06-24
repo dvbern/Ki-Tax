@@ -97,6 +97,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	bgPensumGemeindeTitle(new SimpleMergeField<>("bgPensumGemeindeTitle", STRING_CONVERTER)),
 	bgPensumTotalTitle(new SimpleMergeField<>("bgPensumTotalTitle", STRING_CONVERTER)),
 	bgPensumStdTitle(new SimpleMergeField<>("bgPensumStdTitle", STRING_CONVERTER)),
+	bgPensumZeiteinheitTitle(new SimpleMergeField<>("bgPensumZeiteinheitTitle", STRING_CONVERTER)),
 	bgMonatspensumTitle(new SimpleMergeField<>("bgMonatspensumTitle", STRING_CONVERTER)),
 	vollkostenTitle(new SimpleMergeField<>("vollkostenTitle", STRING_CONVERTER)),
 	elternbeitragTitle(new SimpleMergeField<>("elternbeitragTitle", STRING_CONVERTER)),
@@ -188,6 +189,8 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	bgPensumTotal(new SimpleMergeField<>("bgPensumTotal", PERCENT_CONVERTER)),
 
 	bgStunden(new SimpleMergeField<>("bgStunden", BIGDECIMAL_CONVERTER)),
+	bgPensumZeiteinheit(new SimpleMergeField<>("bgPensumZeiteinheit", STRING_CONVERTER)),
+
 	vollkosten(new SimpleMergeField<>("vollkosten", BIGDECIMAL_CONVERTER)),
 	elternbeitrag(new SimpleMergeField<>("elternbeitrag", BIGDECIMAL_CONVERTER)),
 	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),

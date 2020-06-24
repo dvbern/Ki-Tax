@@ -4736,6 +4736,7 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setStandardDokUnterschriftName(jaxStammdaten.getStandardDokUnterschriftName());
 		stammdaten.setStandardDokUnterschriftTitel2(jaxStammdaten.getStandardDokUnterschriftTitel2());
 		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
+		stammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(jaxStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
 		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
@@ -4838,6 +4839,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setStandardDokUnterschriftName(stammdaten.getStandardDokUnterschriftName());
 		jaxStammdaten.setStandardDokUnterschriftTitel2(stammdaten.getStandardDokUnterschriftTitel2());
 		jaxStammdaten.setStandardDokUnterschriftName2(stammdaten.getStandardDokUnterschriftName2());
+		jaxStammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(stammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
