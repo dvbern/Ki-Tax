@@ -397,7 +397,8 @@
                                       dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                       dv-enable-expression="vm.isPensumEditable()">
 
-                                <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"></p>
+                                <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
+                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
