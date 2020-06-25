@@ -80,7 +80,15 @@ public interface EbeguVorlageService {
 
 	/**
 	 * Gibt die richtige Notrecht-Vorlage fuer die Sprache und den Angebotstyp zurueck
+	 * Oeffentliche Institutionen
 	 */
 	@Nullable
-	Vorlage getVorlageNotrecht(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp);
+	Vorlage getVorlageNotrechtOeffentlicheInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp);
+
+	/**
+	 * Gibt die richtige Notrecht-Vorlage fuer die Sprache und den Angebotstyp zurueck
+	 * Private Institutionen
+	 */
+	@Nullable
+	Vorlage getVorlageNotrechtPrivateInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp);
 }

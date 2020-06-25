@@ -25,6 +25,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
+import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
 import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
@@ -370,11 +371,36 @@ export class RueckforderungFormularComponent implements OnInit {
         this._stufe2ProvBetrag = stufe2ProvBetrag;
     }
 
-    public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
+    public showVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Wenn noch nicht ausgefuellt, werden beide angezeigt
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH;
+    }
+
+    public downloadVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): void {
         const win = this.downloadRS.prepareDownloadWindow();
         const language = this.i18nServiceRS.currentLanguage();
         const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
-        this.downloadRS.getAccessTokenNotrechtvorlage(language, angebotTyp)
+        this.downloadRS.getAccessTokenNotrechtvorlageOeffentlicheInstitutionen(language, angebotTyp)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public showVorlagePrivateInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Wenn noch nicht ausgefuellt, werden beide angezeigt
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public downloadVorlagePrivateInstitutionen(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        const language = this.i18nServiceRS.currentLanguage();
+        const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
+        this.downloadRS.getAccessTokenNotrechtvorlagePrivateInstitutionen(language, angebotTyp)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
