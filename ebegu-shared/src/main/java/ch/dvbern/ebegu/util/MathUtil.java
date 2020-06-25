@@ -252,6 +252,17 @@ public enum MathUtil {
 		return subtractNullSafe(value, subtrahend);
 	}
 
+	@Nonnull
+	public BigDecimal subtractMultiple(@Nonnull BigDecimal value, @Nonnull BigDecimal... subtrahends) {
+		BigDecimal result = value;
+		for (BigDecimal subtrahend : subtrahends) {
+			if (subtrahend != null) {
+				result = subtract(result, subtrahend);
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
