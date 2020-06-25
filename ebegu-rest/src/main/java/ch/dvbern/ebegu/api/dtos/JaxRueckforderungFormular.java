@@ -111,7 +111,7 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private LocalDate extendedEinreichefrist = null;
 
-	@Nonnull
+	@Nullable
 	private LocalDate relevantEinreichungsfrist;
 
 	@Nullable
@@ -360,12 +360,12 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 		this.extendedEinreichefrist = extendedEinreichefrist;
 	}
 
-	@Nonnull
+	@Nullable
 	public LocalDate getRelevantEinreichungsfrist() {
 		return relevantEinreichungsfrist;
 	}
 
-	public void setRelevantEinreichungsfrist(@Nonnull LocalDate relevantEinreichungsfrist) {
+	public void setRelevantEinreichungsfrist(@Nullable LocalDate relevantEinreichungsfrist) {
 		this.relevantEinreichungsfrist = relevantEinreichungsfrist;
 	}
 

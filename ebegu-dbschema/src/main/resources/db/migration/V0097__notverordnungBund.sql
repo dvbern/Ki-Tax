@@ -4,8 +4,8 @@ alter table rueckforderung_formular add betrag_entgangene_elternbeitraege decima
 alter table rueckforderung_formular add corona_erwerbsersatz_beantragt bit;
 alter table rueckforderung_formular add corona_erwerbsersatz_betrag decimal(19,2);
 alter table rueckforderung_formular add corona_erwerbsersatz_definitiv_verfuegt bit;
-alter table rueckforderung_formular add corona_erwerbsersatz_kein_antrag_begruendung varchar(255);
-alter table rueckforderung_formular add corona_erwerbsersatz_sonstiges varchar(255);
+alter table rueckforderung_formular add corona_erwerbsersatz_kein_antrag_begruendung varchar(4000);
+alter table rueckforderung_formular add corona_erwerbsersatz_sonstiges varchar(4000);
 alter table rueckforderung_formular add extended_einreichefrist date;
 alter table rueckforderung_formular add institution_typ varchar(255);
 alter table rueckforderung_formular add kurzarbeit_beantragt bit;
@@ -20,8 +20,8 @@ alter table rueckforderung_formular_aud add betrag_entgangene_elternbeitraege de
 alter table rueckforderung_formular_aud add corona_erwerbsersatz_beantragt bit;
 alter table rueckforderung_formular_aud add corona_erwerbsersatz_betrag decimal(19,2);
 alter table rueckforderung_formular_aud add corona_erwerbsersatz_definitiv_verfuegt bit;
-alter table rueckforderung_formular_aud add corona_erwerbsersatz_kein_antrag_begruendung varchar(255);
-alter table rueckforderung_formular_aud add corona_erwerbsersatz_sonstiges varchar(255);
+alter table rueckforderung_formular_aud add corona_erwerbsersatz_kein_antrag_begruendung varchar(4000);
+alter table rueckforderung_formular_aud add corona_erwerbsersatz_sonstiges varchar(4000);
 alter table rueckforderung_formular_aud add extended_einreichefrist date;
 alter table rueckforderung_formular_aud add institution_typ varchar(255);
 alter table rueckforderung_formular_aud add kurzarbeit_beantragt bit;
