@@ -263,7 +263,7 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </td>
-                    <td class="ellipsis" title="{{row.antragTyp | translate}}">
+                    <td class="ellipsis" title="{{vm.getAntragTypBezeichnung(row)}}">
                         <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer()"></i>
                         <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer()"></i>
                         <span ng-bind="vm.getAntragTypBezeichnung(row)" class="margin-left-5"></span>
