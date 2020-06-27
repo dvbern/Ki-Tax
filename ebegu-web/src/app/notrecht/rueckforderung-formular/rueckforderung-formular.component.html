@@ -43,6 +43,7 @@
                     </div>
                 </div>
                 <fieldset>
+                    <!-- Stufe 1 Institution -->
                     <div class="form-group" *ngIf="isInstitutionStufe1(rueckforderungFormular)">
                         <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
@@ -115,6 +116,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Stufe 1 Kanton -->
                     <div class="form-group" *ngIf="isPruefungKantonStufe1(rueckforderungFormular)">
                         <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
@@ -266,6 +268,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Stufe 2 Institution und Kanton -->
                     <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular) ||
                     isPruefungKantonStufe2(rueckforderungFormular)">
                         <mat-radio-group name="institutionTyp"
@@ -285,6 +288,7 @@
                         </dv-error-messages>
                         <div *ngIf="rueckforderungFormular.institutionTyp ==
                         getRueckforderungInstitutionTypOffentlich()">
+                            <!-- Stufe 2 Institution offentlich -->
                             <div *ngIf="isInstitutionStufe2(rueckforderungFormular)">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
@@ -409,6 +413,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Stufe 2 Kanton offentlich -->
                             <div *ngIf="isPruefungKantonStufe2(rueckforderungFormular)">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
@@ -553,9 +558,8 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
+                        <!-- Stufe 2 Privat Institution und Kanton -->
                         <div *ngIf="rueckforderungFormular.institutionTyp ==
                         getRueckforderungInstitutionTypPrivat()">
                             <div class="row">
