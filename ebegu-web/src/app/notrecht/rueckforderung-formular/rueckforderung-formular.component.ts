@@ -378,11 +378,36 @@ export class RueckforderungFormularComponent implements OnInit {
         this._stufe2ProvBetrag = stufe2ProvBetrag;
     }
 
-    public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
+    public showVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Wenn noch nicht ausgefuellt, werden beide angezeigt
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH;
+    }
+
+    public downloadVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): void {
         const win = this.downloadRS.prepareDownloadWindow();
         const language = this.i18nServiceRS.currentLanguage();
         const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
-        this.downloadRS.getAccessTokenNotrechtvorlage(language, angebotTyp)
+        this.downloadRS.getAccessTokenNotrechtvorlageOeffentlicheInstitutionen(language, angebotTyp)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public showVorlagePrivateInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Wenn noch nicht ausgefuellt, werden beide angezeigt
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public downloadVorlagePrivateInstitutionen(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        const language = this.i18nServiceRS.currentLanguage();
+        const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
+        this.downloadRS.getAccessTokenNotrechtvorlagePrivateInstitutionen(language, angebotTyp)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
