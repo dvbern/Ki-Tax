@@ -690,59 +690,59 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div *ngIf="!rueckforderungFormular.kurzarbeitDefinitivVerfuegt &&
-                                rueckforderungFormular.kurzarbeitDefinitivVerfuegt != null">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="long-label">
-                                                    {{'RUECKFORDERUNGFORMULAR_BERUEUNDUNG_INFO' |
-														translate}}</label>
+                            </div>
+                            <div *ngIf="!rueckforderungFormular.kurzarbeitBeantragt  &&
+                                rueckforderungFormular.kurzarbeitBeantragt != null">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="long-label">
+                                                {{'RUECKFORDERUNGFORMULAR_BERUEUNDUNG_INFO' |
+													translate}}</label>
 
-                                                <label class="required long-label"
-                                                       for="kurzarbeitKeinAntragBegruendung_stufe2_privat_id">
-                                                    {{'RUECKFORDERUNGFORMULAR_KEINANTRAG_BEGRUENDUNG' |
-														translate}}</label>
-                                                <textarea md-no-autogrow
-                                                          class="form-control"
-                                                          rows="6"
-                                                          required
-                                                          maxlength="4000"
-                                                          id="kurzarbeitKeinAntragBegruendung_stufe2_privat_id"
-														  #kurzarbeitKeinAntragBegruendung="ngModel"
-                                                          name="kurzarbeitKeinAntragBegruendung_stufe2_privat"
-                                                          [(ngModel)]="rueckforderungFormular.kurzarbeitKeinAntragBegruendung"
-                                                          required>
+                                            <label class="required long-label"
+                                                   for="kurzarbeitKeinAntragBegruendung_stufe2_privat_id">
+                                                {{'RUECKFORDERUNGFORMULAR_KEINANTRAG_BEGRUENDUNG' |
+													translate}}</label>
+                                            <textarea md-no-autogrow
+                                                      class="form-control"
+                                                      rows="6"
+                                                      required
+                                                      maxlength="4000"
+                                                      id="kurzarbeitKeinAntragBegruendung_stufe2_privat_id"
+													  #kurzarbeitKeinAntragBegruendung="ngModel"
+                                                      name="kurzarbeitKeinAntragBegruendung_stufe2_privat"
+                                                      [(ngModel)]="rueckforderungFormular.kurzarbeitKeinAntragBegruendung"
+                                                      required>
                                                 </textarea>
-                                                <dv-error-messages
-                                                    [errorObject]="kurzarbeitKeinAntragBegruendung.errors"
-                                                    inputId="kurzarbeitKeinAntragBegruendung_id">
-                                                </dv-error-messages>
-                                            </div>
+                                            <dv-error-messages
+                                                [errorObject]="kurzarbeitKeinAntragBegruendung.errors"
+                                                inputId="kurzarbeitKeinAntragBegruendung_id">
+                                            </dv-error-messages>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="required long-label"
-                                                       for="kurzarbeitSonstiges_stufe2_privat_id">
-                                                    {{'RUECKFORDERUNGFORMULAR_SONSTIGES_BEGRUENDUNG' | translate}}</label>
-                                                <textarea md-no-autogrow
-                                                          class="form-control"
-                                                          rows="6"
-                                                          required
-                                                          maxlength="4000"
-                                                          id="kurzarbeitSonstiges_stufe2_privat_id"
-														  #kurzarbeitSonstiges="ngModel"
-                                                          name="kurzarbeitSonstiges_stufe2_privat"
-                                                          [(ngModel)]="rueckforderungFormular.kurzarbeitSonstiges"
-                                                          required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="required long-label"
+                                                   for="kurzarbeitSonstiges_stufe2_privat_id">
+                                                {{'RUECKFORDERUNGFORMULAR_SONSTIGES_BEGRUENDUNG' | translate}}</label>
+                                            <textarea md-no-autogrow
+                                                      class="form-control"
+                                                      rows="6"
+                                                      required
+                                                      maxlength="4000"
+                                                      id="kurzarbeitSonstiges_stufe2_privat_id"
+													  #kurzarbeitSonstiges="ngModel"
+                                                      name="kurzarbeitSonstiges_stufe2_privat"
+                                                      [(ngModel)]="rueckforderungFormular.kurzarbeitSonstiges"
+                                                      required>
                                                 </textarea>
-                                                <dv-error-messages
-                                                    [errorObject]="kurzarbeitSonstiges.errors"
-                                                    inputId="kurzarbeitSonstiges_id">
-                                                </dv-error-messages>
-                                            </div>
+                                            <dv-error-messages
+                                                [errorObject]="kurzarbeitSonstiges.errors"
+                                                inputId="kurzarbeitSonstiges_id">
+                                            </dv-error-messages>
                                         </div>
                                     </div>
                                 </div>
@@ -813,60 +813,60 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div *ngIf="!rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt &&
-                                rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt != null">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="long-label">
-                                                    {{'RUECKFORDERUNGFORMULAR_BERUEUNDUNG_INFO' |
-														translate}}</label>
+                            </div>
+                            <div *ngIf="!rueckforderungFormular.coronaErwerbsersatzBeantragt &&
+                                rueckforderungFormular.coronaErwerbsersatzBeantragt != null">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="long-label">
+                                                {{'RUECKFORDERUNGFORMULAR_BERUEUNDUNG_INFO' |
+													translate}}</label>
 
-                                                <label class="required long-label"
-                                                       for="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat_id">
-                                                    {{'RUECKFORDERUNGFORMULAR_KEINANTRAG_BEGRUENDUNG' |
-														translate}}</label>
-                                                <textarea md-no-autogrow
-                                                          class="form-control"
-                                                          rows="6"
-                                                          required
-                                                          maxlength="4000"
-                                                          id="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat_id"
-														  #coronaErwerbsersatzKeinAntragBegruendung="ngModel"
-                                                          name="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat"
-                                                          [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzKeinAntragBegruendung"
-                                                          required>
+                                            <label class="required long-label"
+                                                   for="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat_id">
+                                                {{'RUECKFORDERUNGFORMULAR_KEINANTRAG_BEGRUENDUNG' |
+													translate}}</label>
+                                            <textarea md-no-autogrow
+                                                      class="form-control"
+                                                      rows="6"
+                                                      required
+                                                      maxlength="4000"
+                                                      id="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat_id"
+													  #coronaErwerbsersatzKeinAntragBegruendung="ngModel"
+                                                      name="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat"
+                                                      [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzKeinAntragBegruendung"
+                                                      required>
                                                 </textarea>
-                                                <dv-error-messages
-                                                    [errorObject]="coronaErwerbsersatzKeinAntragBegruendung.errors"
-                                                    inputId="coronaErwerbsersatzKeinAntragBegruendung_id">
-                                                </dv-error-messages>
-                                            </div>
+                                            <dv-error-messages
+                                                [errorObject]="coronaErwerbsersatzKeinAntragBegruendung.errors"
+                                                inputId="coronaErwerbsersatzKeinAntragBegruendung_id">
+                                            </dv-error-messages>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="required long-label"
-                                                       for="coronaErwerbsersatzSonstiges_stufe2_privat_id">
-                                                    {{'RUECKFORDERUNGFORMULAR_SONSTIGES_BEGRUENDUNG' | translate}}</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="required long-label"
+                                                   for="coronaErwerbsersatzSonstiges_stufe2_privat_id">
+                                                {{'RUECKFORDERUNGFORMULAR_SONSTIGES_BEGRUENDUNG' | translate}}</label>
 
-                                                <textarea md-no-autogrow
-                                                          class="form-control"
-                                                          rows="6"
-                                                          required
-                                                          maxlength="4000"
-                                                          id="coronaErwerbsersatzSonstiges_stufe2_privat_id"
-														  #coronaErwerbsersatzSonstiges="ngModel"
-                                                          name="kurzarbeitSonstiges_stufe2_privat"
-                                                          [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzSonstiges"
-                                                          required>
+                                            <textarea md-no-autogrow
+                                                      class="form-control"
+                                                      rows="6"
+                                                      required
+                                                      maxlength="4000"
+                                                      id="coronaErwerbsersatzSonstiges_stufe2_privat_id"
+													  #coronaErwerbsersatzSonstiges="ngModel"
+                                                      name="kurzarbeitSonstiges_stufe2_privat"
+                                                      [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzSonstiges"
+                                                      required>
                                                 </textarea>
-                                                <dv-error-messages
-                                                    [errorObject]="coronaErwerbsersatzSonstiges.errors"
-                                                    inputId="coronaErwerbsersatzSonstiges_id">
-                                                </dv-error-messages>
-                                            </div>
+                                            <dv-error-messages
+                                                [errorObject]="coronaErwerbsersatzSonstiges.errors"
+                                                inputId="coronaErwerbsersatzSonstiges_id">
+                                            </dv-error-messages>
                                         </div>
                                     </div>
                                 </div>
