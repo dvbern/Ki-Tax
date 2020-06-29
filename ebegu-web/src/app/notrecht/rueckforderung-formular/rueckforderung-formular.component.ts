@@ -114,6 +114,7 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.showMessageFehlendeDokumente = false;
         if (!this.form.valid) {
             EbeguUtil.selectFirstInvalid();
             return;
@@ -537,7 +538,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
                 this.rueckforderungErwerbsersatzDokumente = rueckforderungDokumente.filter(
                     dokument =>
-                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE);
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE);
                 this.rueckforderungErwerbsersatzDokumente = [].concat(this.rueckforderungErwerbsersatzDokumente);
                 this.cdr.markForCheck();
             });
