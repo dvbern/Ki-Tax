@@ -171,11 +171,11 @@ public class NotrechtResource {
 			throw new EbeguRuntimeException("update", "Action not allowed for this user");
 		}
 
-		// Zahlungen generieren
-		zahlungenGenerieren(rueckforderungFormularToMerge, statusFromDB);
-
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
+
+		// Zahlungen generieren
+		zahlungenGenerieren(rueckforderungFormularToMerge, statusFromDB);
 
 		if (isStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular.getStatus())) {
 			try {
@@ -206,17 +206,6 @@ public class NotrechtResource {
 					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
 			}
 		}
-		if(modifiedRueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
-		 && applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
-		){
-			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
-			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
-			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
-			modifiedRueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
-			modifiedRueckforderungFormular =
-				this.rueckforderungFormularService.save(modifiedRueckforderungFormular);
-		}
-
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 

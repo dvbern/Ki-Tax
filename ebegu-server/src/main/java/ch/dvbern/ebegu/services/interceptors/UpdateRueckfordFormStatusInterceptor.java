@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.services.interceptors;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
@@ -65,25 +64,12 @@ public class UpdateRueckfordFormStatusInterceptor {
 				} else {
 					if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
 							&& RueckforderungStatus.EINGELADEN == rueckforderungFormular.getStatus()) {
-						changeRueckforderungFormularStatus(rueckforderungFormular,
-							RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1);
+						// Beim Speichern wird automatisch der richtige Status gesetzt
+						rueckforderungFormularService.save(rueckforderungFormular);
 					}
 				}
 			}
 		}
 		return ctx.proceed();
-	}
-
-	private void changeRueckforderungFormularStatus(
-		@Nonnull RueckforderungFormular rueckforderungFormular,
-		@Nonnull RueckforderungStatus newStatus
-	) {
-		rueckforderungFormular.setStatus(newStatus);
-		rueckforderungFormularService.save(rueckforderungFormular);
-
-		if (configuration.getIsDevmode() || LOG.isDebugEnabled()) {
-			LOG.info("RueckforderungFormular wurde in den Status {} gesetzt. ID {}", newStatus,
-				rueckforderungFormular.getId());
-		}
 	}
 }

@@ -29,26 +29,27 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.interceptor.Interceptors;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -79,6 +80,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private PrincipalBean principalBean;
+
+	@Inject
+	private Authorizer authorizer;
 
 	@Nonnull
 	@Override
@@ -174,6 +178,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
+		changeStatusAndCopyFields(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
 		return mergedRueckforderungFormular;
 	}
@@ -216,11 +221,66 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
 			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
-			formular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(formular.getStufe1KantonKostenuebernahmeAnzahlStunden());
-			formular.setStufe2InstitutionKostenuebernahmeAnzahlTage(formular.getStufe1KantonKostenuebernahmeAnzahlTage());
-			formular.setStufe2InstitutionKostenuebernahmeBetreuung(formular.getStufe1KantonKostenuebernahmeBetreuung());
-			formular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
 			save(formular);
+		}
+	}
+
+	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
+		switch (rueckforderungFormular.getStatus()) {
+		case EINGELADEN: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1);
+			}
+			break;
+		}
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_1: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+				rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1);
+				rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
+				rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlTage());
+				rueckforderungFormular.setStufe1KantonKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeBetreuung());
+			}
+			break;
+		}
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+				RueckforderungStatus nextStatus = rueckforderungFormular.getStatus();
+				if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
+					nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
+				} else {
+					// Definitiv ist es, wenn es entweder gar nicht beantragt wurde, oder schon verfuegt ist
+					if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
+						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
+					} else {
+						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH;
+					}
+				}
+				rueckforderungFormular.setStatus(nextStatus);
+				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
+				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
+				rueckforderungFormular.setStufe2KantonKostenuebernahmeBetreuung(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeBetreuung());
+			}
+			break;
+		}
+		case IN_PRUEFUNG_KANTON_STUFE_1: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+				rueckforderungFormular.setStatus(RueckforderungStatus.GEPRUEFT_STUFE_1);
+			}
+			break;
+		}
+		case GEPRUEFT_STUFE_1: {
+			if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+					&& principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
