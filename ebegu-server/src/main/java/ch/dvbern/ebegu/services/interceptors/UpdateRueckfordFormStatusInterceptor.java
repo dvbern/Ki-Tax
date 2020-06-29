@@ -22,7 +22,6 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -45,8 +44,6 @@ public class UpdateRueckfordFormStatusInterceptor {
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
 
-	@Inject
-	private EbeguConfiguration configuration;
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	@AroundInvoke

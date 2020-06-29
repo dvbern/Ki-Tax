@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
@@ -91,9 +90,6 @@ public class NotrechtResource {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
 
 	@Inject
 	private RueckforderungDokumentService rueckforderungDokumentService;
