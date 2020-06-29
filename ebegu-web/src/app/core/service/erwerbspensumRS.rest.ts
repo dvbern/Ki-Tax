@@ -70,4 +70,11 @@ export class ErwerbspensumRS {
                 return response;
             });
     }
+
+    public isErwerbspensumRequired(gesuchId: string): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/required/${encodeURIComponent(gesuchId)}`)
+            .then((response: any) => {
+                return JSON.parse(response.data);
+            });
+    }
 }
