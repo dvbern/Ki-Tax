@@ -65,10 +65,10 @@ export class TraegerschaftAddComponent implements OnInit {
         if (this.isTransitionInProgress) {
             return;
         }
-        this.isTransitionInProgress = true;
         if (!this.form.valid) {
             return;
         }
+        this.isTransitionInProgress = true;
         this.errorService.clearAll();
         this.save();
     }
@@ -76,9 +76,7 @@ export class TraegerschaftAddComponent implements OnInit {
     private save(): void {
         this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
             .then(neueTraegerschaft => {
-                this.isTransitionInProgress = false;
-                this.traegerschaft = neueTraegerschaft;
-                this.navigateBack();
+                this.createTraegerschaftSuccessCallback(neueTraegerschaft);
             }).catch((exception: TSExceptionReport[]) => {
             if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
@@ -92,6 +90,7 @@ export class TraegerschaftAddComponent implements OnInit {
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
                             if (answer !== true) {
+                                this.isTransitionInProgress = false;
                                 return;
                             }
                             this.log.warn(`Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen`
@@ -111,6 +110,8 @@ export class TraegerschaftAddComponent implements OnInit {
                         this.persistTraegerschaft();
                     }
                 );
+            } else {
+                this.isTransitionInProgress = false;
             }
         });
     }
@@ -118,9 +119,14 @@ export class TraegerschaftAddComponent implements OnInit {
     private persistTraegerschaft(): void {
         this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
             .then(neueTraegerschaft => {
-                this.traegerschaft = neueTraegerschaft;
-                this.navigateBack();
+                this.createTraegerschaftSuccessCallback(neueTraegerschaft);
             });
+    }
+
+    private createTraegerschaftSuccessCallback(neueTraegerschaft: TSTraegerschaft): void {
+        this.isTransitionInProgress = false;
+        this.traegerschaft = neueTraegerschaft;
+        this.navigateBack();
     }
 
     private navigateBack(): void {

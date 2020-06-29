@@ -150,11 +150,21 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenNotrechtvorlage(
+    public getAccessTokenNotrechtvorlageOeffentlicheInstitutionen(
         language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
         const languageEnc = encodeURIComponent(language);
         const angebotTypEnc = encodeURIComponent(angebotTyp);
-        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGE/${languageEnc}/${angebotTypEnc}`)
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGEOEFFENTLICH/${languageEnc}/${angebotTypEnc}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getAccessTokenNotrechtvorlagePrivateInstitutionen(
+        language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
+        const languageEnc = encodeURIComponent(language);
+        const angebotTypEnc = encodeURIComponent(angebotTyp);
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGEPRIVAT/${languageEnc}/${angebotTypEnc}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });

@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -303,19 +302,7 @@ public class NotrechtResource {
 	) {
 		// Kanton hat der Stufe 1 eingaben geprueft
 		if (isStufe1Geprueft(statusFromDB, rueckforderungFormular.getStatus())) {
-			BigDecimal freigabeBetrag;
-			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
-				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
-				freigabeBetrag =
-					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage();
-			} else {
-				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
-				freigabeBetrag =
-					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden();
-			}
-			Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
-			freigabeBetrag = freigabeBetrag.add(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
-			rueckforderungFormular.setStufe1FreigabeBetrag(freigabeBetrag);
+			rueckforderungFormular.setStufe1FreigabeBetrag(rueckforderungFormular.calculateFreigabeBetragStufe1());
 			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
 		}
 	}
