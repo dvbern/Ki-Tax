@@ -56,12 +56,16 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
-    // Checkbox for Institution:
+    // Checkbox for Institution Stufe 1:
     public betreuungKorrektAusgewiesen: boolean;
     public gutscheinPlaetzenReduziert: boolean;
     public erstattungGemaessKanton: boolean;
     public mahlzeitenBGSubventionenGebuehrensystem: boolean;
     public belegeEinreichenBetrageKantonZurueckfordern: boolean;
+    // Checkbox for Institution Stufe 2:
+    public elternbeitraegeNichtInRechnung: boolean;
+    public notwendigenInformationenLiefern: boolean;
+
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
     private _stufe2ProvBetrag: number;
@@ -221,12 +225,15 @@ export class RueckforderungFormularComponent implements OnInit {
 
     }
 
-    public enableRueckforderungAbschliessen(): boolean {
-        return this.betreuungKorrektAusgewiesen
-            && this.gutscheinPlaetzenReduziert
-            && this.erstattungGemaessKanton
-            && this.mahlzeitenBGSubventionenGebuehrensystem
-            && this.belegeEinreichenBetrageKantonZurueckfordern;
+    public enableRueckforderungAbsenden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (this.isInstitutionStufe1(rueckforderungFormular)) {
+            return this.betreuungKorrektAusgewiesen
+                && this.gutscheinPlaetzenReduziert
+                && this.erstattungGemaessKanton
+                && this.mahlzeitenBGSubventionenGebuehrensystem
+                && this.belegeEinreichenBetrageKantonZurueckfordern;
+        }
+        return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern;
     }
 
     public isInstitutionStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
@@ -533,5 +540,13 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public showDokumentenUpload(): boolean {
         return false;
+    }
+
+    public getRueckforderungInstitutionTypOffentlich(): TSRueckforderungInstitutionTyp {
+        return TSRueckforderungInstitutionTyp.OEFFENTLICH;
+    }
+
+    public getRueckforderungInstitutionTypPrivat(): TSRueckforderungInstitutionTyp {
+        return TSRueckforderungInstitutionTyp.PRIVAT;
     }
 }
