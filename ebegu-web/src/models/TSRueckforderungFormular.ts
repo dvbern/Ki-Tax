@@ -16,6 +16,7 @@
  */
 
 import * as moment from 'moment';
+import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
@@ -44,6 +45,22 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe2VerfuegungBetrag: number;
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
+    public institutionTyp: TSRueckforderungInstitutionTyp;
+    public extendedEinreichefrist: moment.Moment;
+    public relevantEinreichungsfrist: moment.Moment;
+    public betragEntgangeneElternbeitraege: number;
+    public betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten: number; // Kita in TAGE, TFO in STUNDEN
+    public anzahlNichtAngeboteneEinheiten: number; // Kita in TAGE, TFO in STUNDEN
+    public kurzarbeitBeantragt: boolean;
+    public kurzarbeitBetrag: number;
+    public kurzarbeitDefinitivVerfuegt: boolean;
+    public kurzarbeitKeinAntragBegruendung: string;
+    public kurzarbeitSonstiges: string;
+    public coronaErwerbsersatzBeantragt: boolean;
+    public coronaErwerbsersatzBetrag: number;
+    public coronaErwerbsersatzDefinitivVerfuegt: boolean;
+    public coronaErwerbsersatzKeinAntragBegruendung: string;
+    public coronaErwerbsersatzSonstiges: string;
 
     public constructor() {
         super();

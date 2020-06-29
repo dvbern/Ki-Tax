@@ -170,8 +170,21 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	@Override
 	@PermitAll
 	@Nullable
-	public Vorlage getVorlageNotrecht(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
-		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlage(language, angebotTyp);
+	public Vorlage getVorlageNotrechtOeffentlicheInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlageOeffentlicheInstitutionen(language, angebotTyp);
+		return getVorlage(language, key);
+	}
+
+	@Override
+	@PermitAll
+	@Nullable
+	public Vorlage getVorlageNotrechtPrivateInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlagePrivateInstitutionen(language, angebotTyp);
+		return getVorlage(language, key);
+	}
+
+	@Nullable
+	private Vorlage getVorlage(@Nonnull String language, @Nullable EbeguVorlageKey key) {
 		if (key == null) {
 			return null;
 		}

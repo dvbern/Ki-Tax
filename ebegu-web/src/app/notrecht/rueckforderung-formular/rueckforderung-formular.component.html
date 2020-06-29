@@ -695,11 +695,19 @@
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">DOKUMENTE</h2>
                         <hr class="header"/>
-                        <div class="download-file">
-                            <a (click)="downloadVorlage(rueckforderungFormular);">
+                        <div class="download-file" *ngIf="showVorlageOeffentlicheInstitutionen(rueckforderungFormular)">
+                            <a (click)="downloadVorlageOeffentlicheInstitutionen(rueckforderungFormular);">
                                 <span class="fa fa-download"></span>
-                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA</span>
-                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO</span>
+                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA_OEFFENTLICH</span>
+                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO_OEFFENTLICH</span>
+                            </a>
+                        </div>
+
+                        <div class="download-file" *ngIf="showVorlagePrivateInstitutionen(rueckforderungFormular)">
+                            <a (click)="downloadVorlagePrivateInstitutionen(rueckforderungFormular);">
+                                <span class="fa fa-download"></span>
+                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA_PRIVAT</span>
+                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO_PRIVAT</span>
                             </a>
                         </div>
                     </div>
