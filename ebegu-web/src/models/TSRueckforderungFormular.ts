@@ -16,6 +16,7 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSAbstractEntity} from './TSAbstractEntity';
@@ -232,5 +233,17 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set stufe2VerfuegungAusbezahltAm(value: moment.Moment) {
         this._stufe2VerfuegungAusbezahltAm = value;
+    }
+
+    public isKurzarbeitProzessBeendet(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.kurzarbeitBeantragt)
+        || EbeguUtil.isNotNullAndFalse(this.kurzarbeitBeantragt)
+        || (EbeguUtil.isNotNullAndTrue(this.kurzarbeitDefinitivVerfuegt));
+    }
+
+    public isCoronaErwerbsersatzProzessBeendet(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.coronaErwerbsersatzBeantragt)
+            || EbeguUtil.isNotNullAndFalse(this.coronaErwerbsersatzBeantragt)
+            || (EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzDefinitivVerfuegt));
     }
 }

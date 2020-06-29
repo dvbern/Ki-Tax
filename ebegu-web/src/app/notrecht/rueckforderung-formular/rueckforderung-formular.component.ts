@@ -204,6 +204,12 @@ export class RueckforderungFormularComponent implements OnInit {
         return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern;
     }
 
+    public enableRueckforderungDefinitivAbsenden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.isInstitutionStufe2Definitiv(rueckforderungFormular)
+            && rueckforderungFormular.isKurzarbeitProzessBeendet()
+            && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet();
+    }
+
     public isInstitutionStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
@@ -220,8 +226,25 @@ export class RueckforderungFormularComponent implements OnInit {
         return false;
     }
 
+    public isInstitutionStufe2Definitiv(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
     public isPruefungKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
+    public isPruefungKantonStufe2Provisorisch(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH
             && this.authServiceRS.isOneOfRoles(
                 [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;

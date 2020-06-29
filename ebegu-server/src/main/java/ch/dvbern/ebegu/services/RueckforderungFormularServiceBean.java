@@ -279,6 +279,17 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			}
 			break;
 		}
+		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV);
+			}
+			break;
+		}
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+				rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
+			}
+		}
 		default:
 			break;
 		}
