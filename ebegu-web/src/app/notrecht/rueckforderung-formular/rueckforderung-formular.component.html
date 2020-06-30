@@ -1174,6 +1174,10 @@
                 || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
+            <button *ngIf="showButtonResetStatus(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
+                    (click)="resetStatus(rueckforderungFormular)">
+                <span translate>RUECKFORDERUNG_RESET_STATUS</span>
+            </button>
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"

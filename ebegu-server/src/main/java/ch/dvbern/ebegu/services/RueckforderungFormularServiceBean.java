@@ -44,9 +44,11 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -146,7 +148,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		if(currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
-			return allRueckforderungFormulare.stream().collect(Collectors.toList());
+			return new ArrayList<>(allRueckforderungFormulare);
 		}
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
@@ -209,7 +211,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return persistence.persist(formular);
 	}
 
-	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void initializePhase2() {
@@ -223,6 +224,20 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
 			save(formular);
 		}
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id) {
+		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetStatusToInBearbeitungInstitutionPhase2",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Rueckfordungsformular invalid: " + id));
+		rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+		// Wir verwenden explizit nicht die save() methode, da diese u.U.  automatisch Statusuebergaenge initialisiert
+		return persistence.merge(rueckforderungFormular);
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")

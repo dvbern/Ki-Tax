@@ -60,6 +60,8 @@ public interface RueckforderungFormularService {
 	@Nonnull
 	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
 
-	@Nonnull
 	void initializePhase2();
+
+	@Nonnull
+	RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id);
 }

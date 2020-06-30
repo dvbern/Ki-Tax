@@ -2088,5 +2088,8 @@
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BEANTRAGT": "Haben Sie ein Gesuch um Corona-Erwerbsersatzentschädigung eingereicht?",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BETRAG": "Falls ja, wie hoch ist die ausbezahlte Entschädigung für die Zeit vom 17.03.2020 bis 17.06.2020?",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_DEFINITIV_VERFUEGT": "",
+    "RUECKFORDERUNG_RESET_STATUS": "Zurück an die Institution",
+    "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Antrag zur Bearbeitung an die Institution zurückgeben",
+    "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Wollen Sie den Antrag an die Institution zurückgeben? Dies kann nicht rückgängig gemacht werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

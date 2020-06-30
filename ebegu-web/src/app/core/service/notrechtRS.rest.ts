@@ -115,6 +115,16 @@ export class NotrechtRS {
         return this.$http.post(`${this.serviceURL}/initializePhase2`, {});
     }
 
+    public resetStatus(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        const data = `${encodeURIComponent(rueckforderungFormular.id)}`;
+        return this.$http.post(`${this.serviceURL}/resetStatus`, data).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
     public getRueckforderungDokumente(rueckforderungFormularID: string): IPromise<TSRueckforderungDokument[]> {
         return this.$http.get(`${this.serviceURL}/dokumente/${encodeURIComponent(rueckforderungFormularID)}`, {})
             .then(response => {
