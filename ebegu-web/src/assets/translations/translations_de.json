@@ -2086,6 +2086,10 @@
     "RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE": "Einsatzpläne für die Zeit vom 17. März bis 16. Mai, aus denen ersichtlich ist, welches Personal einsatzbereit war. Einsatzpläne für die Zeit vom 17. März bis 16. Mai, aus denen ersichtlich ist, welches Personal einsatzbereit war. ",
     "RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT": "Verfügung Kurzarbeitsentschädigung (falls Betrag KAE schon def. verfügt)",
     "RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ": "Verfügung Corona-EO (falls Betrag schon def. verfügt)",
-    "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument pro Kategorie hochgeladen werden",
+    "RUECKFORDERUNG_FEHLENDE_DOKUMENTE": "Es muss mindestens ein Dokument pro Kategorie hochgeladen werden",
+    "RUECKFORDERUNG_WARNING_FRIST_ERREICHT": "Achtung, die Einreichungsfrist würde erreicht, es ist nicht mehr möglich die Ruckforderungsformular zu absenden. Bitte kontaktieren Sie der Kanton für Fragen.",
+    "RUECKFORDERUNG_VERLAENGERUNG_TITLE": "Einreichungsfrist verlängern?",
+    "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für dieser Institution verlängern? Dieser Frist wird nur bei private Institution gilten!",
+    "RUECKFORDERUNG_FRIST_VERLAENGERN": "Einreichungsfrist verlängern",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

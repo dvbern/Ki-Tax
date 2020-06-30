@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -62,6 +64,7 @@ import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -179,9 +182,11 @@ public class NotrechtResource {
 
 		if (isStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular.getStatus())) {
 			try {
-				// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als RueckforderungsMitteilung zu
+				// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als
+				// RueckforderungsMitteilung zu
 				// speichern, wird hier der generierte HTML-Inhalt des Mails zurueckgegeben
-				final String mailText = mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
+				final String mailText =
+					mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
 				if (mailText != null) {
 					// Wir wollen nur den body speichern
 					String content = StringUtils.substringBetween(mailText, "<body>", "</body>");
@@ -206,9 +211,9 @@ public class NotrechtResource {
 					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
 			}
 		}
-		if(modifiedRueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
-		 && applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
-		){
+		if (modifiedRueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
+			&& applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+		) {
 			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
 			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
@@ -338,8 +343,8 @@ public class NotrechtResource {
 
 		RueckforderungDokument rueckforderungDokument =
 			rueckforderungDokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"removeRueckforderungDokument",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
+				"removeRueckforderungDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
 
 		rueckforderungDokumentService.removeDokument(rueckforderungDokument);
 
@@ -350,5 +355,33 @@ public class NotrechtResource {
 		@Nonnull RueckforderungStatus rueckforderungStatusNeu) {
 		return rueckforderungStatusOld == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
 			&& rueckforderungStatusNeu == RueckforderungStatus.GEPRUEFT_STUFE_1;
+	}
+
+	@ApiOperation(value = "Set die EinreicheFrist fuer das Ruechforderungformular", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@GET
+	@Path("/einreicheFrist")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular saveRueckforderungFormularEinreicheFrist(
+		@QueryParam("rueckforderungFormularId") String rueckforderungFormularId,
+		@QueryParam("extendedEinreichefrist") String extendedEinreichefrist) throws EbeguRuntimeException {
+
+		LocalDate extendedEinreichefristdatum = DateUtil.parseStringToDateOrReturnNow(extendedEinreichefrist);
+		Objects.requireNonNull(rueckforderungFormularId);
+
+		RueckforderungFormular rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveRueckforderungFormularEinreicheFrist",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularId));
+
+		rueckforderungFormular.setExtendedEinreichefrist(extendedEinreichefristdatum);
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			rueckforderungFormularService.save(rueckforderungFormular);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 }
