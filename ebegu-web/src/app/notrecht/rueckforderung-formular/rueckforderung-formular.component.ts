@@ -292,10 +292,10 @@ export class RueckforderungFormularComponent implements OnInit {
             case TSRueckforderungInstitutionTyp.OEFFENTLICH:
                 return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
             case TSRueckforderungInstitutionTyp.PRIVAT:
-                if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenSentBackToInstitution)) {
-                    return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV');
-                }
                 if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
+                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenSentBackToInstitution)) {
+                        return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV');
+                    }
                     return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
                 }
                 return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG');

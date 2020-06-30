@@ -225,6 +225,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		switch (rueckforderungFormular.getStatus()) {
