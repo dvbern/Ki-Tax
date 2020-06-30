@@ -66,7 +66,11 @@ export class RueckforderungFormularComponent implements OnInit {
     public elternbeitraegeNichtInRechnung: boolean;
     public notwendigenInformationenLiefern: boolean;
 
-    public showMessageFehlendeDokumente: boolean = false;
+    public showMessageFehlendeDokumenteAngaben: boolean = false;
+    public showMessageFehlendeDokumenteKommunikation: boolean = false;
+    public showMessageFehlendeDokumenteEinsatzplaene: boolean = false;
+    public showMessageFehlendeDokumenteKurzarbeit: boolean = false;
+    public showMessageFehlendeDokumenteErwerbsersatz: boolean = false;
 
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
@@ -114,7 +118,11 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
-        this.showMessageFehlendeDokumente = false;
+        this.showMessageFehlendeDokumenteAngaben = false;
+        this.showMessageFehlendeDokumenteKommunikation = false;
+        this.showMessageFehlendeDokumenteEinsatzplaene = false;
+        this.showMessageFehlendeDokumenteKurzarbeit = false;
+        this.showMessageFehlendeDokumenteErwerbsersatz = false;
         if (!this.form.valid) {
             EbeguUtil.selectFirstInvalid();
             return;
@@ -123,7 +131,6 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
         if (this.isInstitutionStufe2(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
-            this.showMessageFehlendeDokumente = true;
             return;
         }
 
@@ -631,17 +638,29 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     private validateDokumente(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        let valid = this.rueckforderungAngabenDokumente.length > 0
-            && this.rueckforderungEinsatzplaeneDokumente.length > 0
-            && this.rueckforderungKommunikationDokumente.length > 0;
+        let valid = true;
+        if (this.rueckforderungAngabenDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteAngaben = true;
+            valid = false;
+        }
+        if (this.rueckforderungEinsatzplaeneDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteEinsatzplaene = true;
+            valid = false;
+        }
+        if (this.rueckforderungKommunikationDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteKommunikation = true;
+            valid = false;
+        }
         if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypOffentlich()) {
             return valid;
         }
-        if (rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt) {
-            valid = valid && this.rueckforderungErwerbsersatzDokumente.length > 0;
+        if (rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt && this.rueckforderungErwerbsersatzDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteErwerbsersatz = true;
+            valid = false;
         }
-        if (rueckforderungFormular.kurzarbeitDefinitivVerfuegt) {
-            valid = valid && this.rueckforderungKurzarbeitDokumente.length > 0;
+        if (rueckforderungFormular.kurzarbeitDefinitivVerfuegt && this.rueckforderungKurzarbeitDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteKurzarbeit = true;
+            valid = false;
         }
         return valid;
     }

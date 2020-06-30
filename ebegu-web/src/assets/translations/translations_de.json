@@ -2086,6 +2086,6 @@
     "RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE": "Einsatzpläne für die Zeit vom 17. März bis 16. Mai, aus denen ersichtlich ist, welches Personal einsatzbereit war. ",
     "RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT": "Verfügung Kurzarbeitsentschädigung (falls Betrag KAE schon def. verfügt)",
     "RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ": "Verfügung Corona-EO (falls Betrag schon def. verfügt)",
-    "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument pro Kategorie hochgeladen werden",
+    "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument hochgeladen werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
