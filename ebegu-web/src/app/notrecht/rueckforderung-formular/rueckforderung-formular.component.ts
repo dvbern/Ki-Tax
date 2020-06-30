@@ -651,16 +651,15 @@ export class RueckforderungFormularComponent implements OnInit {
             this.showMessageFehlendeDokumenteKommunikation = true;
             valid = false;
         }
-        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypOffentlich()) {
-            return valid;
-        }
-        if (rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt && this.rueckforderungErwerbsersatzDokumente.length === 0) {
-            this.showMessageFehlendeDokumenteErwerbsersatz = true;
-            valid = false;
-        }
-        if (rueckforderungFormular.kurzarbeitDefinitivVerfuegt && this.rueckforderungKurzarbeitDokumente.length === 0) {
-            this.showMessageFehlendeDokumenteKurzarbeit = true;
-            valid = false;
+        if (rueckforderungFormular.institutionTyp !== this.getRueckforderungInstitutionTypOffentlich()) {
+            if (rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt && this.rueckforderungErwerbsersatzDokumente.length === 0) {
+                this.showMessageFehlendeDokumenteErwerbsersatz = true;
+                valid = false;
+            }
+            if (rueckforderungFormular.kurzarbeitDefinitivVerfuegt && this.rueckforderungKurzarbeitDokumente.length === 0) {
+                this.showMessageFehlendeDokumenteKurzarbeit = true;
+                valid = false;
+            }
         }
         return valid;
     }
