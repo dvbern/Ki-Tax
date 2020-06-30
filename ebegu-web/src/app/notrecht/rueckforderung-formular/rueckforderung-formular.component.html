@@ -1118,7 +1118,6 @@
             </div>
         </div>
 
-
         <!-- Dokumenten -->
         <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
             <div class="row">
@@ -1126,6 +1125,9 @@
                     <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
                 </h1>
                 <hr class="header"/>
+                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
+                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
                     [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
@@ -1135,6 +1137,64 @@
                     [files]="rueckforderungAngabenDokumente"
                 >
                 </dv-file-upload>
+            </div>
+            <div class="row">
+                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKommunikation">
+                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                </div>
+                <dv-file-upload
+                    (download)="download($event[0],$event[1])"
+                    [title]="'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION'"
+                    (delete)="delete($event)"
+                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                    rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
+                    [files]="rueckforderungKommunikationDokumente"
+                >
+                </dv-file-upload>
+            </div>
+            <div class="row">
+                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteEinsatzplaene">
+                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                </div>
+                <dv-file-upload
+                    (download)="download($event[0],$event[1])"
+                    [title]="'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE'"
+                    (delete)="delete($event)"
+                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                    rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
+                    [files]="rueckforderungEinsatzplaeneDokumente"
+                >
+                </dv-file-upload>
+            </div>
+            <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
+                <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
+                    <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
+                        <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                    </div>
+                    <dv-file-upload
+                        (download)="download($event[0],$event[1])"
+                        [title]="'RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT'"
+                        (delete)="delete($event)"
+                        (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                    rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
+                        [files]="rueckforderungKurzarbeitDokumente"
+                    >
+                    </dv-file-upload>
+                </div>
+                <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
+                    <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
+                        <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                    </div>
+                    <dv-file-upload
+                        (download)="download($event[0],$event[1])"
+                        [title]="'RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ'"
+                        (delete)="delete($event)"
+                        (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                    rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
+                        [files]="rueckforderungErwerbsersatzDokumente"
+                    >
+                    </dv-file-upload>
+                </div>
             </div>
         </div>
 
