@@ -5197,6 +5197,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+		jaxFormular.setHasBeenSentBackToInstitution(rueckforderungFormular.isHasBeenSentBackToInstitution());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 		jaxFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
@@ -5256,6 +5257,7 @@ public class JaxBConverter extends AbstractConverter {
 				);
 		rueckforderungFormular.setInstitutionStammdaten(institutionStammdaten);
 		rueckforderungFormular.setStatus(rueckforderungFormularJax.getStatus());
+		rueckforderungFormular.setHasBeenSentBackToInstitution(rueckforderungFormularJax.isHasBeenSentBackToInstitution());
 
 		rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1KantonKostenuebernahmeAnzahlStunden());
 		rueckforderungFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1InstitutionKostenuebernahmeAnzahlStunden());

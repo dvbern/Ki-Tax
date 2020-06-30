@@ -37,9 +37,14 @@
                         <hr class="header">
                     </div>
                 </div>
-                <div class="row" *ngIf="showAbsendenText(rueckforderungFormular)">
+                <div class="row" *ngIf="showConfirmationAfterInBearbeitungInstitutionStufe1(rueckforderungFormular)">
                     <div class="col-md-12">
-                        {{'RUECKFORDERUNG_ABSENDENTEXT' | translate }}
+                        {{'CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_1' | translate }}
+                    </div>
+                </div>
+                <div class="row" *ngIf="showConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        {{vm.getTextConfirmationAfterInBearbeitungInstitutionStufe2()}}
                     </div>
                 </div>
                 <fieldset>

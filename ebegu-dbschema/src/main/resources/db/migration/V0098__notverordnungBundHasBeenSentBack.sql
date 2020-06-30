@@ -1,0 +1,2 @@
+alter table rueckforderung_formular add has_been_sent_back_to_institution BIT not null default false;
+alter table rueckforderung_formular_aud add has_been_sent_back_to_institution BIT;
