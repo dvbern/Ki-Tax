@@ -193,12 +193,12 @@ public class RueckforderungFormular extends AbstractEntity {
 	private Boolean kurzarbeitDefinitivVerfuegt;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String kurzarbeitKeinAntragBegruendung;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String kurzarbeitSonstiges;
 
@@ -215,12 +215,12 @@ public class RueckforderungFormular extends AbstractEntity {
 	private Boolean coronaErwerbsersatzDefinitivVerfuegt;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String coronaErwerbsersatzKeinAntragBegruendung;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
 
