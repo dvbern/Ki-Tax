@@ -40,11 +40,16 @@ INSERT INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user
 								 default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite, beschwerde_adresse_id, korrespondenzsprache,
 								 logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
 								 benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
-								 standard_dok_signature) VALUES(UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('4a7afba9-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'bss@bern.ch', '+41 31 321 61 11', 'https://www.bern.ch', null, 'DE_FR', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'Paris Kontoinhaber', true, true, true, true);
+								 standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen) VALUES(UNHEX(REPLACE
+								     ('4a7d313f-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
+								                                                                                       '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('4a7afba9-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'bss@bern.ch', '+41 31 321 61 11', 'https://www.bern.ch', null, 'DE_FR', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'Paris Kontoinhaber', true, true, true, true, true);
 INSERT INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzer_id,
 								 default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite, beschwerde_adresse_id, korrespondenzsprache,
 								 logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
-								 benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto, standard_dok_signature) VALUES (UNHEX(REPLACE('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'info@ostermundigen.ch', '+41 31 930 14 14', 'https://www.ostermundigen.ch', null, 'DE', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'London Kontoinhaber', true, true, true, true);
+								 benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
+                                 standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen) VALUES (UNHEX(REPLACE
+                                     ('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
+                                                                                                                        '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'info@ostermundigen.ch', '+41 31 930 14 14', 'https://www.ostermundigen.ch', null, 'DE', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'London Kontoinhaber', true, true, true, true, false);
 
 UPDATE sequence SET current_value = 2 WHERE sequence_type = 'GEMEINDE_NUMMER';
 

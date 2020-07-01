@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-@nodeModules: ~"../node_modules";
+@nodeModules: ~'../node_modules';
 
 @import '~angular-material/angular-material.css';
 @import '~bootstrap/less/bootstrap';
@@ -21,7 +21,6 @@
 //@fa-font-path: "~font-awesome/fonts/";
 
 @import 'style/atoms/button.less';
-@import 'style/atoms/input.less';
 @import 'style/atoms/checkbox.less';
 @import 'style/atoms/radio.less';
 @import 'style/molecules/table.less';
@@ -30,6 +29,7 @@
 @import 'style/variables.less';
 @import 'style/mixins.less';
 @import 'style/typography.less';
+
 /*this must be import before all angularjs styles*/
 @import 'style/atoms/input.less';
 
@@ -40,16 +40,16 @@
 .access-for-all-title {
     display: block;
     font-size: 0;
-    width: 0;
     height: 0;
     margin: 0;
     padding: 0;
+    width: 0;
 }
 
 dv-posteingang {
-    width: 100%;
-    height: 100%;
     display: block;
+    height: 100%;
+    width: 100%;
 }
 
 .fixedtable {
@@ -74,8 +74,8 @@ dv-bisher, .dv-bisher {
 }
 
 body {
-    font-size: 1.6rem;
     .ebeguFont-family();
+    font-size: 1.6rem;
     .starter-template {
         padding: 4rem 1.5rem;
         text-align: center;
@@ -85,21 +85,21 @@ body {
     }
 
     app-root {
-        height: 100%;
-        position: fixed;
-        left: 0;
-        right: 0;
         display: flex;
         flex-direction: column;
+        height: 100%;
+        left: 0;
         max-height: 100vh;
+        position: fixed;
+        right: 0;
     }
 }
 
 .ui-absolute-view {
     display: flex;
     flex: 1 1 auto;
-    overflow: hidden;
     flex-direction: column;
+    overflow: hidden;
 
     ui-view-ng-upgrade {
         display: flex;
@@ -114,10 +114,10 @@ body {
         max-width: 100%;
 
         & > * {
-            width: 100%;
             height: auto;
-            overflow-y: auto;
             overflow-x: hidden;
+            overflow-y: auto;
+            width: 100%;
         }
     }
 }
@@ -136,10 +136,10 @@ body {
 }
 
 .dv-progressbar {
-    position: fixed;
-    width: 100%;
     height: 0.5rem;
+    position: fixed;
     top: 5rem;
+    width: 100%;
     z-index: @z-index-progressbar;
 
     .md-container {
@@ -153,61 +153,58 @@ body {
 }
 
 #Intro {
-    top: 0;
-    height: @navbar-height;
-    min-height: @navbar-height;
-    width: 100%;
+    align-content: flex-end;
     display: flex;
     flex: 0 0 auto;
     flex-direction: row;
-    align-content: flex-end;
+    height: @navbar-height;
+    min-height: @navbar-height;
+    top: 0;
+    width: 100%;
     z-index: (@z-index-error+1);
 }
 
 dv-home-icon, dv-countdown, dv-downloadmenu {
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: @navbar-height;
     &:nth-child(2) {
         margin-left: auto;
     }
-    display: flex;
-    width: @navbar-height;
-    text-align: center;
-    justify-content: center;
-    align-content: center;
-}
-
-dv-pulldown-user-menu {
 }
 
 .logo-bern {
     background-image: url('assets/images/logo-kibon-bern.svg');
+    background-position: left 0.7rem center;
     background-repeat: no-repeat;
     background-size: Auto @navbar-height;
-    background-position: left 0.7rem center;
 }
 
 .logo-house, .dv-countdown-countdown {
+    height: @navbar-height;
+    line-height: @navbar-height;
+    padding: 0;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
-    user-select: none;
     -o-user-select: none;
+    user-select: none;
     vertical-align: middle;
-    padding: 0;
-    height: @navbar-height;
     width: @navbar-height;
-    line-height: @navbar-height;
     &:hover, &:focus:hover {
         background: @contrast;
-        outline: 0;
         -webkit-box-shadow: none;
         box-shadow: none;
+        outline: 0;
     }
     &:focus {
-        outline: 2px solid @contrast-darkest !important;
         background: @contrast;
-        outline-offset: -1rem;
         -webkit-box-shadow: none;
         box-shadow: none;
+        outline: 2px solid @contrast-darkest !important;
+        outline-offset: -1rem;
     }
 }
 
@@ -220,23 +217,23 @@ dv-pulldown-user-menu {
     .ebeguBold();
     .ebeguCapitalize();
     .ebeguVertical(middle);
-    font-size: 1.6rem;
     color: @contrast-darkest;
+    font-size: 1.6rem;
     letter-spacing: 0.1rem;
+    position: relative;
     text-align: center;
     width: 15rem;
-    position: relative;
 }
 
-.userMenu {
-    background-size: Auto 4rem;
+.user-menu {
     background-position: right 2rem center;
+    background-size: Auto 4rem;
     float: right;
 }
 
 .empty-table {
-    font-style: italic;
     color: gray;
+    font-style: italic;
 }
 
 .form-horizontal {
@@ -253,13 +250,11 @@ form {
                 .ErrorInput();
             }
         }
-    }
-    &.ng-submitted {
         dv-valueinput.input-element.ng-invalid {
-                form-control {
-                    .ErrorInput();
-                }
+            form-control {
+                .ErrorInput();
             }
+        }
     }
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
@@ -268,11 +263,11 @@ form {
         }
     }
     dv-valueinput.input-element{
-    &.ng-invalid.ng-touched {
-        .form-control {
-            .ErrorInput();
+        &.ng-invalid.ng-touched {
+            .form-control {
+                .ErrorInput();
+            }
         }
-    }
     }
 }
 
@@ -303,9 +298,9 @@ md-dialog.md-default-theme, md-dialog {
 }
 
 .md-virtual-repeat-container.md-autocomplete-suggestions-container {
+    box-shadow: none;
     max-height: 99999999px !important;
     z-index: @z-index-mobile-toolbar;
-    box-shadow: none;
 }
 
 .md-autocomplete-suggestions-container.md-default-theme, .md-autocomplete-suggestions-container {
@@ -318,7 +313,7 @@ md-dialog.md-default-theme, md-dialog {
         color: @contrast-lightest;
         font-weight: bold;
     }
-    .allresultsLink {
+    .allresults-link {
         background: transparent;
         color: @contrast-lightest;
     }
@@ -328,6 +323,11 @@ md-dialog.md-default-theme, md-dialog {
 }
 
 dv-quicksearchbox {
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    min-width: 43rem;
+    text-align: center;
     md-autocomplete, md-autocomplete input:not(.md-input) {
         background: @contrast-light;
         height: @navbar-height;
@@ -340,27 +340,27 @@ dv-quicksearchbox {
 
             input::-webkit-input-placeholder {
                 color: @contrast-darkest;
+                font-family: FontAwesome, sans-serif;
                 opacity: 1 !important;
                 text-align: right;
-                font-family: FontAwesome;
             }
             input:-moz-placeholder {
                 color: @contrast-darkest;
+                font-family: FontAwesome, sans-serif;
                 opacity: 1 !important;
                 text-align: right;
-                font-family: FontAwesome;
             }
             input::-moz-placeholder {
                 color: @contrast-darkest;
+                font-family: FontAwesome, sans-serif;
                 opacity: 1 !important;
                 text-align: right;
-                font-family: FontAwesome;
             }
             input:-ms-input-placeholder {
                 color: @contrast-darkest;
+                font-family: FontAwesome, sans-serif;
                 opacity: 1 !important;
                 text-align: right;
-                font-family: FontAwesome;
             }
 
         }
@@ -373,11 +373,7 @@ dv-quicksearchbox {
             background-color: @contrast-light;
         }
     }
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-content: center;
-    min-width: 43rem;
+
     .md-whiteframe-z1 {
         box-shadow: none;
     }
@@ -389,29 +385,29 @@ dv-quicksearchbox {
     }
 }
 
-.betreuungView,
+.betreuung-view,
 .dv-antrag-list{
     md-autocomplete {
-        height: 4rem;
         border-radius: 0;
+        height: 4rem;
         padding: 0;
         :focus {
+            box-shadow: none /*@secondary-dark*/;
             outline: 2px solid @contrast-darkest;
             outline-offset: 0;
-            box-shadow: none /*@secondary-dark*/;
         }
     }
 
     md-autocomplete-wrap {
-        height: 4rem !important;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
+        height: 4rem !important;
 
         button {
-            width: 15px;
-            height: 15px;
             font-size: 1rem;
+            height: 15px;
+            width: 15px;
             //display: none;
         }
 
@@ -422,19 +418,19 @@ dv-quicksearchbox {
     }
 
     md-autocomplete input:not(.md-input) {
-        pointer: cursor;
-        height: 4rem;
-        padding-left: 1rem;
-        font-weight: 700;
-        font-style: normal;
-        font-size: 1.6rem;
-        letter-spacing: 0.1rem;
-        line-height: 2rem;
-        border: none;
+        .ebeguPlaceholder();
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-        .ebeguPlaceholder();
+        border: none;
+        cursor: pointer;
+        font-size: 1.6rem;
+        font-style: normal;
+        font-weight: 700;
+        height: 4rem;
+        letter-spacing: 0.1rem;
+        line-height: 2rem;
+        padding-left: 1rem;
     }
 
     md-autocomplete input.ng-touched.ng-invalid {
@@ -460,19 +456,19 @@ dv-quicksearchbox {
     //border: 1px solid blue;
 
     .md-autocomplete-suggestions li {
-        height: 4rem;
-        padding: 0 0 0 1rem;
-        margin: 0;
-        line-height: 4rem;
         color: @black;
         font-size: 1.7rem;
+        height: 4rem;
+        line-height: 4rem;
+        margin: 0;
+        padding: 0 0 0 1rem;
     }
 
     .md-autocomplete-suggestions {
         li:hover,
         li:focus{
-            color: @black;
             background: @grey;
+            color: @black;
         }
     }
 
@@ -483,80 +479,80 @@ dv-quicksearchbox {
 
 .skiplinks {
     display: block !important;
-    .skiplinks__list {
-        list-style: none;
+    .skiplinks-list {
         height: 0;
+        list-style: none;
         margin: 0;
     }
     .skip {
-        position: fixed;
-        z-index: 108;
-        top: -1000px;
-        left: -1000px;
         height: 1px;
-        width: 1px;
-        text-align: left;
+        left: -1000px;
         overflow: hidden;
+        position: fixed;
+        text-align: left;
+        top: -1000px;
+        width: 1px;
+        z-index: 108;
         &:active,
         &:focus,
         &:hover {
-            left: 0;
-            top: 0;
-            width: auto;
-            height: @navbar-height;
-            line-height: 3rem;
-            overflow: visible;
+            background: @primary;
             border-bottom: 2px solid @contrast-darkest;
             border-right: 2px solid @contrast-darkest;
             box-shadow: none;
-            outline: none;
-            background: @primary;
+            color: @contrast-lightest;
+            display: block;
             font-size: 1.8rem;
             font-weight: bold;
-            display: block;
+            height: @navbar-height;
+            left: 0;
+            line-height: 3rem;
+            outline: none;
+            overflow: visible;
             padding: 1rem;
-            color: @contrast-lightest;
             text-decoration: none;
+            top: 0;
+            width: auto;
         }
     }
 
 }
 
-.row-button__th, .row-button__td {
-    width: 0;
-    padding: 0 !important;
+.row-button-th, .row-button-td {
     margin: 0 !important;
+    padding: 0 !important;
+    width: 0;
 
 }
 
-.row-button__button {
-    position: fixed;
-    z-index: 108;
-    top: -1000px;
-    left: -1000px;
+.row-button-button {
     height: 1px;
-    width: 1px;
-    text-align: left;
+    left: -1000px;
     overflow: hidden;
+    position: fixed;
+    text-align: left;
+    top: -1000px;
+    width: 1px;
+    z-index: 108;
     &:active,
     &:focus,
     &:hover {
-        position: static;
-
-        height: 100%;
-        width: 100%;
-        line-height: 3rem;
-        overflow: visible;
+        background: @primary;
         border: 2px solid @contrast-darkest;
         box-shadow: none;
-        outline: none;
-        background: @primary;
+        color: @contrast-lightest;
+        display: block;
         font-size: 1.8rem;
         font-weight: bold;
-        display: block;
+
+        height: 100%;
+        line-height: 3rem;
+        outline: none;
+        overflow: visible;
         padding: 0;
-        color: @contrast-lightest;
+        position: static;
         text-decoration: none;
+        width: 100%;
     }
 }
 
@@ -565,32 +561,32 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
 }
 
 .dv-dialog-text {
-    letter-spacing: normal;
     font-size: 1.6rem;
+    letter-spacing: normal;
     line-height: 50px;
 }
 
 .dv-dialog-compact-text {
-    letter-spacing: normal;
     font-size: 1.6rem;
+    letter-spacing: normal;
     line-height: 25px;
 }
 
 .dv-dialog-actions {
+    align-items: stretch;
     display: flex;
     flex-direction: row;
-    align-items: stretch;
     justify-content: center;
     width: 100%;
 
     .dv-btn {
-        text-transform: uppercase;
+        flex-basis:auto;
         flex-grow:1;
         flex-shrink:0;
-        flex-basis:auto;
         // flex:1; is not the same in IE11 as in other browsers:
         margin: 0 0.75em;
         max-width: 25rem;
+        text-transform: uppercase;
     }
 }
 @media all and (-ms-high-contrast:none) {
@@ -613,10 +609,11 @@ html.cdk-global-scrollblock {
 
 // IE11 hack for vertically centering table contents
 // no other fix available due to (yet?) buggy implementation of flexbox
+/*stylelint-disable*/
 _:-ms-fullscreen, .mat-cell {
     padding-top: 15px;
 }
-
+/*stylelint-enable*/
 .mat-cell-clickable {
     cursor: pointer;
 }
@@ -631,15 +628,15 @@ _:-ms-fullscreen, .mat-cell {
 }
 
 .environment {
-    font-weight: bold;
-    font-size: 3.6rem;
-    position: fixed;
-    width: 10rem;
-    text-align: center;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
     display: none;
+    font-size: 3.6rem;
+    font-weight: bold;
+    left: 0;
+    margin: 0 auto;
+    position: fixed;
+    right: 0;
+    text-align: center;
+    width: 10rem;
     // IE11 needs z-index
     z-index: 999;
 }
@@ -650,11 +647,9 @@ _:-ms-fullscreen, .mat-cell {
     width: 100%;
 
     button {
-        width: auto;
-        max-width: 250px;
-    }
-    button {
         margin: 1rem 0 0 1rem;
+        max-width: 250px;
+        width: auto;
     }
     span {
         margin: 1rem;

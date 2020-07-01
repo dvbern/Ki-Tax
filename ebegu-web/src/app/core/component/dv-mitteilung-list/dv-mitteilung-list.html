@@ -14,7 +14,7 @@
   -->
 
 <div class="dv-mitteilung-list">
-    <div class="row viewTitle" ng-if="vm.getCurrentMitteilung()">
+    <div class="row view-title" ng-if="vm.getCurrentMitteilung()">
         <div class="col-xs-12 col-md-10 col-md-offset-1">
             <h1>
                 <span ng-if="!vm.betreuung && !vm.isCurrentUserAmt()"
@@ -26,7 +26,7 @@
                       data-translate="NEUE_MITTEILUNG_BETREUUNG"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
                       data-translate-value-kind="{{vm.betreuung.kindFullname}} / {{vm.betreuung.institutionStammdaten.institution.name}}"></span>
-                <span ng-if="vm.betreuung" class="pull-right BGNummer">{{vm.getBgNummer()}}</span>
+                <span ng-if="vm.betreuung" class="pull-right bg-nummer">{{vm.getBgNummer()}}</span>
 
             </h1>
             <hr class="header"/>
@@ -73,7 +73,7 @@
                     </div>
 
                     <!--Send Buttons / Abbrechen -->
-                    <div class="row marginTop20">
+                    <div class="row margin-top-20">
                         <div class="col-xs-12">
                             <dv-loading-button button-click="vm.sendMitteilung()" type="submit"
                                                button-class="pull-right">
@@ -86,7 +86,7 @@
             </div>
 
             <!--Alle Mitteilungen-->
-            <div class="row viewTitle marginTop50">
+            <div class="row view-title margin-top-50">
                 <div class="col-xs-12">
                     <h1>
                         <span data-translate="ALLE_MITTEILUNGEN"></span>
@@ -96,15 +96,15 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <dv-accordion class="mitteilungenList" allow-multiple-sections="true"
+                    <dv-accordion class="mitteilungen-list" allow-multiple-sections="true"
                                   selected-tab-id="vm.paramSelectedMitteilungId">
                         <div ng-if="vm.allMitteilungen.length === 0">
                             <span data-translate="MITTEILUNGEN_NOCH_KEINE"></span>
                         </div>
                         <dv-accordion-tab
                             ng-repeat="mitteilung in vm.allMitteilungen"
-                            ng-class="{'mitteilungItem': true,
-                            'isSender': vm.isCurrentUserTypTheSenderTyp(mitteilung),
+                            ng-class="{'mitteilung-item': true,
+                            'is-sender': vm.isCurrentUserTypTheSenderTyp(mitteilung),
                             'institution': vm.isSenderTypInstitution(mitteilung),
                             'gemeinde': vm.isSenderTypGemeinde(mitteilung),
                             'schulamt': vm.isSenderTypGemeinde(mitteilung),
@@ -159,7 +159,7 @@
                                         <span class="uppercase" data-translate="MUTATIONSMELDUNG_APPLY"></span>
                                     </dv-loading-button>
                                     <span ng-if="vm.isBetreuungsmitteilungApplied(mitteilung)"
-                                          class="inlineHint applied"
+                                          class="inline-hint applied"
                                           data-translate="MUTATIONSMELDUNG_APPLIED"></span>
                                 </div>
                             </tab-body>

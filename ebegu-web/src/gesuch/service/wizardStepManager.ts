@@ -25,6 +25,7 @@ import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TS
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSGesuch} from '../../models/TSGesuch';
 import {TSWizardStep} from '../../models/TSWizardStep';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {WizardStepRS} from './WizardStepRS.rest';
 
@@ -370,6 +371,9 @@ export class WizardStepManager {
      *  - Der Status von VERFUEGEN wird gar nicht beruecksichtigt
      */
     public areAllStepsOK(gesuch: TSGesuch): boolean {
+        if (EbeguUtil.isNullOrUndefined(gesuch)) {
+            return false;
+        }
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.wizardSteps.length; i++) {
             if (this.wizardSteps[i].wizardStepName === TSWizardStepName.BETREUUNG) {

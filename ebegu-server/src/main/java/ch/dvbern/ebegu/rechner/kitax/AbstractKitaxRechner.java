@@ -38,6 +38,8 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
+import static ch.dvbern.ebegu.util.MathUtil.EXACT;
+
 /**
  * Superklasse für BG-Rechner
  */
@@ -47,7 +49,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	protected KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten;
 	protected Locale locale;
 
-	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
+	protected static final BigDecimal ZWOELF = MathUtil.EXACT.fromNullSafe(12);
 	protected static final BigDecimal NEUN = MathUtil.EXACT.from(9L);
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
@@ -102,6 +104,18 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		long nettoarbeitstageMonat = workDaysBetween(monatsanfang, monatsende);
 		long nettoarbeitstageIntervall = workDaysBetween(von, bis);
 		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoarbeitstageIntervall), MathUtil.EXACT.from(nettoarbeitstageMonat));
+	}
+
+	/**
+	 * Berechnet den Anteil des Verguenstigten Pensums am effektiven Betreuungspensum
+	 */
+	protected BigDecimal calculateAnteilVerguenstigtesPensumAmBetreuungspensum(@Nonnull BGCalculationInput input) {
+		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
+		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
+			anteilVerguenstigesPensumAmBetreuungspensum = EXACT.divide(input.getBgPensumProzent(), betreuungspensum);
+		}
+		return anteilVerguenstigesPensumAmBetreuungspensum;
 	}
 
 	/**

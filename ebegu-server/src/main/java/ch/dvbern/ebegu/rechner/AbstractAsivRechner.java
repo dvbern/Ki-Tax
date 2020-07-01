@@ -125,7 +125,7 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
-		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 
 		return result;
 	}

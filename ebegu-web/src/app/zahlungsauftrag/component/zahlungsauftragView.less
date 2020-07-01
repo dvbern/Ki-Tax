@@ -15,7 +15,7 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-.zahlungsauftragView {
+.zahlungsauftrag-view {
     padding: 3rem;
     .zahlungsauftrag-percent-5 {
         width: 5%;
@@ -41,9 +41,9 @@
 
         .dvb-loading-button, button {
             display: block;
-            width: 100%;
             height: 100%;
             text-align: left;
+            width: 100%;
 
         }
         &.text-center {
@@ -54,14 +54,14 @@
     }
     .zahlungen-form {
         background: @contrast-light;
-        padding-top: 4rem;
-        padding-bottom: 1rem;
         margin-bottom: 4rem;
+        padding-bottom: 1rem;
+        padding-top: 4rem;
     }
 
     #betragTotalAuftrag, .numeric-column {
-        text-align: right;
         padding-right: 5em;
+        text-align: right;
     }
 
     .warning-negative-zahlungen {

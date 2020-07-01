@@ -109,7 +109,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String tsEmail;
 	@Nullable
 	private String tsTelefon;
-
+	@NotNull
+	private Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -388,6 +389,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setStandardDokUnterschriftName2(@Nullable String standardDokUnterschriftName2) {
 		this.standardDokUnterschriftName2 = standardDokUnterschriftName2;
+	}
+
+	public Boolean getTsVerantwortlicherNachVerfuegungBenachrichtigen() {
+		return tsVerantwortlicherNachVerfuegungBenachrichtigen;
+	}
+
+	public void setTsVerantwortlicherNachVerfuegungBenachrichtigen(Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen) {
+		this.tsVerantwortlicherNachVerfuegungBenachrichtigen = tsVerantwortlicherNachVerfuegungBenachrichtigen;
 	}
 
 	@Nullable

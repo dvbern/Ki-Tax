@@ -21,28 +21,24 @@ dv-helpmenu {
 }
 
 .dv-helpmenu-question {
+    cursor: pointer;
+    font-size: 1.33333em !important;
+    height: @navbar-height;
+    line-height: @navbar-height !important;
+    padding: 0 0 0 2rem;
+    right: 0;
     top: 0;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
-    user-select: none;
     -o-user-select: none;
+    user-select: none;
     vertical-align: middle;
-    padding: 0;
-    height: @navbar-height;
     width: @navbar-height;
-    line-height: @navbar-height !important;
-    font-size: 1.33333em !important;
-    cursor: pointer;
     &:hover {
         background-color: @contrast-light;
     }
     &:focus {
         outline: none;
     }
-}
-
-.dv-helpmenu-question {
-    padding-left: 2rem;
-    right: 0;
 }

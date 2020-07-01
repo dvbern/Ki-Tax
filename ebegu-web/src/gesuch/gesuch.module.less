@@ -16,23 +16,23 @@
 @import (reference) '../style/mixins.less';
 
 #ewk {
-    display: flex;
-    color: @contrast-darkest;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    z-index: @z-index-sidenav;
-    width: 57rem;
-    min-width: 55rem;
-    max-width: 100%;
     background: @contrast-lightest;
-    top: (@navbar-height*2) + 4rem;
+    color: @contrast-darkest;
+    display: flex;
+    max-width: 100%;
+    min-width: 55rem;
+    overflow-x: hidden;
+    overflow-y: scroll;
     padding: 2rem;
+    text-overflow: ellipsis;
+    top: (@navbar-height*2) + 4rem;
+    width: 57rem;
+    z-index: @z-index-sidenav;
 }
 
 .ewk-content {
-    padding: 0;
     overflow: unset;
+    padding: 0;
 }
 
 .ewk-button {
@@ -55,9 +55,9 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
         & > .dv-accordion-tab-title {
             color: @success;
             &:after {
-                font-family: FontAwesome;
-                content: "\f00c";
+                content: '\f00c';
                 float: right;
+                font-family: FontAwesome, sans-serif;
             }
             &.tab-open, &:hover {
                 background: @success-light;
@@ -67,10 +67,10 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
     }
 
     & > .dv-accordion-tab-title {
-        padding: 1rem;
-        color: @contrast-darkest;
         background: @contrast-lightest;
         border-top: 1px solid @contrast-darkest;
+        color: @contrast-darkest;
+        padding: 1rem;
 
         &.tab-open, &:hover {
             background: @contrast-light;
@@ -79,14 +79,14 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
         }
     }
     & > .dv-accordion-tab-content {
-        overflow: hidden;
-        opacity: 1;
+        background: @contrast-light;
         display: block;
-        width: 100%;
         height: auto;
         max-height: 500rem;
-        background: @contrast-light;
+        opacity: 1;
+        overflow: hidden;
         padding: 0 2rem 0;
+        width: 100%;
         & > tab-body > * {
             margin: 0;
             .ewk-label {
@@ -98,7 +98,7 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
                 -ms-user-select: none; /* Internet Explorer/Edge */
                 user-select: none;
                 &:after {
-                    content: " : "
+                    content: ' : '
                 }
             }
 
@@ -111,8 +111,8 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
             max-height: 0;
         }
         &.ng-hide-remove {
-            transition: all 1s ease;
             max-height: 0;
+            transition: all 1s ease;
         }
         &.ng-hide-remove.ng-hide-remove-active {
             max-height: 500rem;
@@ -123,50 +123,50 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
 dv-accordion.ewksubsub,
 dv-accordion.ewksub {
     .dv-accordion-tab-title {
-        color: @contrast-darkest;
+        .ebeguBold();
         background: transparent;
-        width: auto;
-        padding-left: 2rem;
+        color: @contrast-darkest;
         margin-left: -2rem;
         margin-right: -2rem;
-        .ebeguBold();
+        padding-left: 2rem;
         -webkit-touch-callout: none; /* iOS Safari */
+        transition: none;
         -webkit-user-select: none; /* Safari*/
         -khtml-user-select: none; /* Konqueror */
         -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none;
-        transition: none;
+        width: auto;
         &:before {
-            font-family: FontAwesome;
-            content: "\f0fe";
+            content: '\f0fe';
+            font-family: FontAwesome, sans-serif;
         }
         &.tab-open {
-            color: @contrast-darkest;
             background: @contrast-light;
+            color: @contrast-darkest;
             &:before {
-                font-family: FontAwesome;
-                content: "\f146";
+                content: '\f146';
+                font-family: FontAwesome, sans-serif;
             }
         }
     }
     .dv-accordion-tab-content {
-        overflow: hidden;
-        opacity: 1;
-        display: block;
-        width: auto;
-        height: auto;
-        max-height: 50rem;
         background: @contrast-light;
-        padding-left: 4rem;
+        display: block;
+        height: auto;
         margin-left: -2rem;
         margin-right: -2rem;
+        max-height: 50rem;
+        opacity: 1;
+        overflow: hidden;
+        padding-left: 4rem;
+        width: auto;
         & > tab-body > * {
             margin: 0;
             .ewk-label {
                 .ebeguBold();
                 &:after {
-                    content: " : "
+                    content: ' : '
                 }
             }
 
@@ -179,8 +179,8 @@ dv-accordion.ewksub {
             max-height: 0;
         }
         &.ng-hide-remove {
-            transition: all 1s ease;
             max-height: 0;
+            transition: all 1s ease;
         }
         &.ng-hide-remove.ng-hide-remove-active {
             max-height: 50rem;
@@ -191,21 +191,21 @@ dv-accordion.ewksub {
 
 dv-accordion.ewksubsub {
     .dv-accordion-tab-content {
-        padding-left: 6rem;
         margin-left: -4rem;
         margin-right: 0;
+        padding-left: 6rem;
     }
     .dv-accordion-tab-title {
-        color: @contrast-darkest;
         background: transparent;
-        width: auto;
-        padding-left: 4rem;
+        color: @contrast-darkest;
         margin-left: -4rem;
         margin-right: 0;
+        padding-left: 4rem;
+        width: auto;
     }
 }
 
-.mainTitle {
+.main-title {
     margin-top: 0;
 }
 
@@ -216,20 +216,20 @@ dv-accordion.ewksubsub {
 }
 
 .mobile-sidenav-scroll {
-    overflow-y: auto;
     flex: 1;
+    overflow-y: auto;
 }
 
 .mobile-sidenav-toggle {
-    flex: 0 0 auto;
     .ebeguBold();
-    height: @navbar-height;
-    position: relative;
     background: @contrast-lightest;
+    border-bottom: 0.1rem @contrast solid;
+    border-top: 0.1rem @contrast solid;
     box-sizing: border-box;
     color: @contrast-darkest;
-    border-top: .1rem @contrast solid;
-    border-bottom: .1rem @contrast solid;
+    flex: 0 0 auto;
+    height: @navbar-height;
+    position: relative;
     &.mobile-open {
         border-left: 0.7rem @primary solid;
     }
@@ -242,15 +242,15 @@ dv-accordion.ewksubsub {
             outline: none;
         }
         span {
-            letter-spacing: 0.15rem;
-            font-size: 1.6rem;
             display: none;
+            font-size: 1.6rem;
+            letter-spacing: 0.15rem;
             &.gesuch-name, &.active-element, &.fa-angle-down {
-                overflow: hidden;
                 display: block;
                 max-width: 40%;
-                white-space: nowrap;
+                overflow: hidden;
                 text-overflow: ellipsis;
+                white-space: nowrap;
             }
             &.active-element {
                 color: @primary;
@@ -260,43 +260,43 @@ dv-accordion.ewksubsub {
 
             }
             &.fa-angle-down {
-                max-width: 5%;
-                font-size: 2rem;
-                overflow: visible;
                 display: block;
+                font-size: 2rem;
+                max-width: 5%;
+                overflow: visible;
             }
 
         }
     }
     button {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        width: 100%;
-        max-width: unset;
-        height: auto;
-        display: block;
         background: transparent;
+        bottom: 0;
         color: @contrast-darkest;
-
-        &.active, &:active, &:hover, &:focus,
-        &[disabled], &[disabled]:hover {
-            outline: 0;
-            background: transparent;
-            color: @contrast-darkest;
-        }
+        display: block;
+        height: auto;
+        left: 0;
+        max-width: unset;
+        position: absolute;
+        right: 0;
         //IE Fallback
         text-align: right;
         text-align: end;
+        top: 0;
+        width: 100%;
+
+        &.active, &:active, &:hover, &:focus,
+        &[disabled], &[disabled]:hover {
+            background: transparent;
+            color: @contrast-darkest;
+            outline: 0;
+        }
         &.mobile-sidenav-close {
             padding: 0 1.5rem 0;
         }
         span {
             font-size: 2rem;
-            line-height: @navbar-height;
             height: @navbar-height;
+            line-height: @navbar-height;
         }
     }
 }
@@ -304,37 +304,35 @@ dv-accordion.ewksubsub {
 #gesuchContainer {
 
     background: @contrast-light;
-    overflow-y: scroll;
+    display: block;
     flex: 1 1 auto;
     min-width: 3rem;
-    display: block;
+    overflow-y: scroll;
     position: relative;
-
-    dv-navigation, .dv-navigation {
-        padding: 0 3rem;
-    }
 
     dv-navigation, .dv-navigation {
         bottom: 4rem;
         left: 0;
+        margin: 0;
+        padding: 0 3rem;
+        position: absolute;
         right: 0;
         transform: unset;
-        position: absolute;
-        margin: 0;
+
 
         dv-navigation, .dv-navigation {
-            position: static;
             flex: 1;
             padding: 0;
+            position: static;
         }
     }
 
     .dv-navigation,
     .dv-navigation-flex {
+        align-items: center;
 
         display: flex;
         flex-direction: row-reverse;
-        align-items: center;
         justify-content: space-between;
 
     }
@@ -346,43 +344,34 @@ dv-accordion.ewksubsub {
         flex: 1;
 
         .dv-navigation-item {
-            padding: .75rem;
+            padding: 0.75rem;
         }
     }
-
-    @media only screen
-    and (min-device-width: 320px)
-    and (max-device-width: 700px) {
-        .dv-navigation-flex {
-            flex-wrap: wrap-reverse;
-        }
-    }
-
 
     .dv-navigation--verfuegen-list {
         flex-direction: row;
     }
 
-    .betreuungView .dv-navigation-flex span,
-    .verfuegenListView .dv-navigation-flex .ie11-fix,
-    .verfuegenView .dv-navigation-flex .ie11-fix{
+    .betreuung-view .dv-navigation-flex span,
+    .verfuegen-list-view .dv-navigation-flex .ie11-fix,
+    .verfuegen-view .dv-navigation-flex .ie11-fix{
+        align-items: center;
         display: flex;
         flex-direction: row-reverse;
-        align-items: center;
         justify-content: space-between;
     }
 
-    .betreuungView .dv-navigation-flex dv-loading-button,
-    .verfuegenListView .dv-navigation-flex dv-loading-button,
-    .verfuegenView .dv-navigation-flex dv-loading-button {
-        padding: .75rem;
+    .betreuung-view .dv-navigation-flex dv-loading-button,
+    .verfuegen-list-view .dv-navigation-flex dv-loading-button,
+    .verfuegen-view .dv-navigation-flex dv-loading-button {
+        padding: 0.75rem;
     }
 
     .dv-navigation--verfuegen {
+        flex-direction: row;
         dv-navigation, .dv-navigation-flex, .dv-navigation {
             flex: 0;
         }
-        flex-direction: row;
         .dv-navigation-flex {
             flex-direction: row-reverse;
         }
@@ -393,42 +382,47 @@ dv-accordion.ewksubsub {
         & > * {
             height: 1px;
             min-height: 100%;
-            .gesuchModul {
+            .gesuch-modul {
                 min-height: 100%;
-                & div {
-
-                }
             }
+        }
+    }
+
+    @media only screen
+        and (min-device-width: 320px)
+        and (max-device-width: 700px) {
+        .dv-navigation-flex {
+            flex-wrap: wrap-reverse;
         }
     }
 }
 
 #kommentarContainer {
-    flex: 0 0 auto;
     background: @contrast-lightest;
-    width: 45rem;
+    bottom: 0;
+    flex: 0 0 auto;
     padding: 0;
     right: 0;
-    bottom: 0;
+    width: 45rem;
 }
 
-.fixedToolbar {
+.fixed-toolbar {
     position: fixed;
-    width: 100%;
     top: 10rem;
+    width: 100%;
     z-index: @z-index-toolbar;
 }
 
-.gesuchModul {
+.gesuch-modul {
     padding: 5rem 3rem 10rem;
-    &.betreuungView {
+    position: relative;
+    &.betreuung-view {
         padding: 5rem 3rem 14rem;
         .well {
             margin-left: -3rem;
             margin-right: -3rem;
         }
     }
-    position: relative;
 
     & div:not(.md-container):not(.md-off):not(.md-on):not(.md-icon) {
         position: static;
@@ -443,29 +437,30 @@ dv-accordion.ewksubsub {
     position: relative !important;
     div {
         .ebeguH3();
-        line-height: 6rem;
-        height: 100% !important;
         display: block;
-        position: relative !important;
+        height: 100% !important;
+        line-height: 6rem;
         margin: 0;
         overflow: hidden;
+        position: relative !important;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .betreuung-bar {
-        position: absolute;
-        left: 0.8rem;
-        bottom: 0;
-        width: 3rem;
-        height: 0.5rem;
         border-bottom: 0.5rem solid;
+        bottom: 0;
+        height: 0.5rem;
+        left: 0.8rem;
+        position: absolute;
+        width: 3rem;
 
     }
-    &.verfuegenView .betreuung-bar {
+    &.verfuegen-view .betreuung-bar {
         left: 0;
     }
-    &.verfuegenView.NICHT_EINGETRETEN {
+    /*stylelint-disable*/
+    &.verfuegen-view.NICHT_EINGETRETEN {
         border-bottom: 1px solid @contrast-darkest;
     }
 
@@ -497,29 +492,29 @@ dv-accordion.ewksubsub {
 
 .BESTAETIGT {
 }
-
+/*stylelint-enable*/
 .right-side {
     background-color: #ECF1F4;
 }
 
 .gesuch-status {
-    margin: 5rem 2.5rem 2.5rem 2.5rem;
     color: @contrast-darkest;
+    margin: 5rem 2.5rem 2.5rem 2.5rem;
 
     .status {
         .ebeguBold();
         font-size: 1.4rem;
         letter-spacing: 0.1rem;
     }
-    .gesuchZusatzInfo {
+    .gesuch-zusatz-info {
         .ebeguItalic();
         font-size: 1.2rem;
         letter-spacing: 0.1rem;
     }
     .gesperrt {
+        color: red;
         font-size: 1.2rem;
         letter-spacing: 0.1rem;
-        color: red;
     }
     .uploaded-document {
         margin-left: 0.5rem;

@@ -117,6 +117,7 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
@@ -207,6 +208,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
@@ -4734,6 +4736,7 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setStandardDokUnterschriftName(jaxStammdaten.getStandardDokUnterschriftName());
 		stammdaten.setStandardDokUnterschriftTitel2(jaxStammdaten.getStandardDokUnterschriftTitel2());
 		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
+		stammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(jaxStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
 		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
@@ -4836,6 +4839,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setStandardDokUnterschriftName(stammdaten.getStandardDokUnterschriftName());
 		jaxStammdaten.setStandardDokUnterschriftTitel2(stammdaten.getStandardDokUnterschriftTitel2());
 		jaxStammdaten.setStandardDokUnterschriftName2(stammdaten.getStandardDokUnterschriftName2());
+		jaxStammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(stammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
@@ -5212,6 +5216,22 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setStufe2VerfuegungBetrag(rueckforderungFormular.getStufe2VerfuegungBetrag());
 		jaxFormular.setStufe2VerfuegungDatum(rueckforderungFormular.getStufe2VerfuegungDatum());
 		jaxFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormular.getStufe2VerfuegungAusbezahltAm());
+		jaxFormular.setInstitutionTyp(rueckforderungFormular.getInstitutionTyp());
+		jaxFormular.setExtendedEinreichefrist(rueckforderungFormular.getExtendedEinreichefrist());
+		jaxFormular.setRelevantEinreichungsfrist(rueckforderungFormular.getRelevantEinreichungsfrist());
+		jaxFormular.setBetragEntgangeneElternbeitraege(rueckforderungFormular.getBetragEntgangeneElternbeitraege());
+		jaxFormular.setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(rueckforderungFormular.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten());
+		jaxFormular.setAnzahlNichtAngeboteneEinheiten(rueckforderungFormular.getAnzahlNichtAngeboteneEinheiten());
+		jaxFormular.setKurzarbeitBeantragt(rueckforderungFormular.getKurzarbeitBeantragt());
+		jaxFormular.setKurzarbeitBetrag(rueckforderungFormular.getKurzarbeitBetrag());
+		jaxFormular.setKurzarbeitDefinitivVerfuegt(rueckforderungFormular.getKurzarbeitDefinitivVerfuegt());
+		jaxFormular.setKurzarbeitKeinAntragBegruendung(rueckforderungFormular.getKurzarbeitKeinAntragBegruendung());
+		jaxFormular.setKurzarbeitSonstiges(rueckforderungFormular.getKurzarbeitSonstiges());
+		jaxFormular.setCoronaErwerbsersatzBeantragt(rueckforderungFormular.getCoronaErwerbsersatzBeantragt());
+		jaxFormular.setCoronaErwerbsersatzBetrag(rueckforderungFormular.getCoronaErwerbsersatzBetrag());
+		jaxFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormular.getCoronaErwerbsersatzDefinitivVerfuegt());
+		jaxFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormular.getCoronaErwerbsersatzKeinAntragBegruendung());
+		jaxFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormular.getCoronaErwerbsersatzSonstiges());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
@@ -5256,6 +5276,21 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setStufe2VerfuegungDatum(rueckforderungFormularJax.getStufe2VerfuegungDatum());
 		rueckforderungFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormularJax.getStufe2VerfuegungAusbezahltAm());
 		rueckforderungFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToEntity(rueckforderungFormularJax.getRueckforderungMitteilungen(), rueckforderungFormular.getRueckforderungMitteilungen()));
+		rueckforderungFormular.setInstitutionTyp(rueckforderungFormularJax.getInstitutionTyp());
+		rueckforderungFormular.setExtendedEinreichefrist(rueckforderungFormularJax.getExtendedEinreichefrist());
+		rueckforderungFormular.setBetragEntgangeneElternbeitraege(rueckforderungFormularJax.getBetragEntgangeneElternbeitraege());
+		rueckforderungFormular.setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(rueckforderungFormularJax.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten());
+		rueckforderungFormular.setAnzahlNichtAngeboteneEinheiten(rueckforderungFormularJax.getAnzahlNichtAngeboteneEinheiten());
+		rueckforderungFormular.setKurzarbeitBeantragt(rueckforderungFormularJax.getKurzarbeitBeantragt());
+		rueckforderungFormular.setKurzarbeitBetrag(rueckforderungFormularJax.getKurzarbeitBetrag());
+		rueckforderungFormular.setKurzarbeitDefinitivVerfuegt(rueckforderungFormularJax.getKurzarbeitDefinitivVerfuegt());
+		rueckforderungFormular.setKurzarbeitKeinAntragBegruendung(rueckforderungFormularJax.getKurzarbeitKeinAntragBegruendung());
+		rueckforderungFormular.setKurzarbeitSonstiges(rueckforderungFormularJax.getKurzarbeitSonstiges());
+		rueckforderungFormular.setCoronaErwerbsersatzBeantragt(rueckforderungFormularJax.getCoronaErwerbsersatzBeantragt());
+		rueckforderungFormular.setCoronaErwerbsersatzBetrag(rueckforderungFormularJax.getCoronaErwerbsersatzBetrag());
+		rueckforderungFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormularJax.getCoronaErwerbsersatzDefinitivVerfuegt());
+		rueckforderungFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormularJax.getCoronaErwerbsersatzKeinAntragBegruendung());
+		rueckforderungFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormularJax.getCoronaErwerbsersatzSonstiges());
 
 		return rueckforderungFormular;
 	}
@@ -5305,5 +5340,23 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungMitteilung.setInhalt(jaxRueckforderungMitteilung.getInhalt());
 
 		return rueckforderungMitteilung;
+	}
+
+	@Nonnull
+	public List<JaxRueckforderungDokument> rueckforderungDokumentListToJax(@Nonnull List<RueckforderungDokument> rueckforderungDokumentList) {
+		return rueckforderungDokumentList.stream()
+			.map(this::rueckforderungDokumentToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxRueckforderungDokument rueckforderungDokumentToJax(@Nonnull RueckforderungDokument rueckforderungDokument) {
+		JaxRueckforderungDokument jaxRueckforderungDokument = new JaxRueckforderungDokument();
+		convertFileToJax(rueckforderungDokument, jaxRueckforderungDokument);
+
+		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());
+		jaxRueckforderungDokument.setTimestampUpload(rueckforderungDokument.getTimestampUpload());
+
+		return jaxRueckforderungDokument;
 	}
 }

@@ -36,6 +36,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import org.hibernate.envers.Audited;
@@ -153,6 +154,10 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
 			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			if (target.isKeineDetailinformationen()) {
+				// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
+				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+			}
 			target.setVerfuegung(null);
 			break;
 		case ERNEUERUNG:
@@ -180,10 +185,14 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		if (isKeineDetailinformationen()) {
 			return false;
 		}
-		Objects.requireNonNull(getBelegungTagesschule());
-		Set<BelegungTagesschuleModul> belegungTagesschuleModulList = getBelegungTagesschule().getBelegungTagesschuleModule();
-		BelegungTagesschuleModul belegungTagesschuleModul = belegungTagesschuleModulList.iterator().next();
-		ModulTagesschuleGroup modulTagesschuleGroup = belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup();
-		return modulTagesschuleGroup.getEinstellungenTagesschule().isTagi();
+		final InstitutionStammdatenTagesschule stammdatenTagesschule = this.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
+		Objects.requireNonNull(stammdatenTagesschule);
+		final Set<EinstellungenTagesschule> einstellungenTagesschule = stammdatenTagesschule.getEinstellungenTagesschule();
+		for (EinstellungenTagesschule einstellung : einstellungenTagesschule) {
+			if (einstellung.getGesuchsperiode().equals(this.extractGesuchsperiode())) {
+				return einstellung.isTagi();
+			}
+		}
+		return false;
 	}
 }

@@ -21,53 +21,55 @@
 ::ng-deep dv-accordion {
     overflow: hidden;
     dv-accordion-tab {
-        width: 100%;
-        height: auto;
         display: block;
+        height: auto;
+        width: 100%;
         .dv-accordion-tab-title {
+            background: transparent;
+            border-bottom: 1px solid @contrast-darkest;
+            height: auto;
+            letter-spacing: 0.15rem;
+            margin: 0;
+            min-height: 4rem;
+            opacity: 1;
+            transition: all 0.5s ease;
+            width: 100%;
             &:focus {
                 outline: none;
             }
-            opacity: 1;
-            width: 100%;
-            height: auto;
-            min-height: 4rem;
-            background: transparent;
-            letter-spacing: 0.15rem;
-            margin: 0;
-            border-bottom: 1px solid @contrast-darkest;
-            transition: all 0.5s ease;
             & > * {
                 display: flex;
                 flex-direction: row;
             }
             &.message-header {
-                flex: 1;
                 display: flex;
+                flex: 1;
                 flex-direction: row;
                 flex-wrap: wrap;
             }
             .fa.fa-angle-right {
-                margin-right: 1rem;
-                margin-top: 1rem;
+                color: @red;
                 font-size: 2rem;
                 font-weight: 800;
-                color: @red;
+                margin-right: 1rem;
+                margin-top: 1rem;
                 transition: all 0.5s ease;
             }
             &:after {
-                content: "";
+                content: '';
                 display: block;
-                width: 0;
                 height: 0;
                 margin: 0 auto;
                 transition: all 0.5s ease;
+                width: 0;
             }
             &.tab-open {
                 background: transparent;
+
                 .message-header {
                     font-weight: bold;
                 }
+
                 .fa.fa-angle-right {
                     transform: rotate(90deg);
                 }
@@ -75,16 +77,16 @@
         }
         .dv-accordion-tab-content {
             .ebeguP();
+            background: transparent;
             color: @contrast-darkest;
-            overflow: hidden;
-            overflow-y: auto;
-            opacity: 1;
             display: block;
-            width: 100%;
             height: auto;
             max-height: none;
-            background: transparent;
+            opacity: 1;
+            overflow: hidden;
+            overflow-y: auto;
             padding-bottom: 3rem;
+            width: 100%;
             & > tab-body > * {
                 margin: 2rem 0 3rem;
             }
@@ -95,31 +97,31 @@
                 text-decoration: line-through;
             }
             &.ng-hide-add {
-                overflow: hidden;
                 max-height: 60rem;
+                overflow: hidden;
                 transition: all 0.5s ease;
             }
             &.ng-hide-add.ng-hide-add-active {
-                overflow: hidden;
                 max-height: 0;
+                overflow: hidden;
             }
             &.ng-hide-remove {
+                max-height: 0;
                 overflow: hidden;
                 transition: all 1s ease;
-                max-height: 0;
             }
             &.ng-hide-remove.ng-hide-remove-active {
-                overflow: hidden;
                 max-height: 60rem;
+                overflow: hidden;
             }
         }
     }
 }
 
 ::ng-deep .mat-tooltip {
-    font-weight: 400;
-    font-style: normal;
     font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 400;
     letter-spacing: 0.1rem;
 }
 
@@ -136,9 +138,9 @@ table.mahlzeitenverguenstigung-table {
     margin: 0 0 2rem 0;
 
     th, td {
-        padding-top: 1rem;
-        padding-right: 2rem;
         border-bottom: 1px solid @dgrey;
+        padding-right: 2rem;
+        padding-top: 1rem;
     }
 
     th.align-right, td.align-right {
@@ -158,14 +160,19 @@ table.mahlzeitenverguenstigung-table {
 
     .title-row {
         th {
-            width: 10%;
-            vertical-align: top;
             border-top: none;
             text-align: right;
+            vertical-align: top;
+            width: 10%;
         }
     }
 
     .form-group, dv-error-messages {
         margin-bottom: 0;
     }
+}
+
+.tooltip-margin {
+    margin-bottom: 3rem;
+    margin-top: 0.8rem;
 }

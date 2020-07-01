@@ -106,6 +106,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -129,11 +130,13 @@ import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleDataRow;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleExcelConverter;
-import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -208,7 +211,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private InstitutionenExcelConverter institutionenExcelConverter;
 
 	@Inject
-	private ZahlungAuftragExcelConverter zahlungAuftragExcelConverter;
+	private ZahlungAuftragDetailsExcelConverter zahlungAuftragDetailsExcelConverter;
+
+	@Inject
+	private ZahlungAuftragTotalsExcelConverter zahlungAuftragTotalsExcelConverter;
 
 	@Inject
 	private ZahlungAuftragPeriodeExcelConverter zahlungAuftragPeriodeExcelConverter;
@@ -934,23 +940,41 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
 
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
-
+		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+		List<Zahlung> zahlungenBerechtigt = reportData.stream()
+			.filter(zahlung -> {
+				// Filtere nur die erlaubten Instituionsdaten
+				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
+				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
+			}).collect(Collectors.toList());
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(
-			reportData,
+		// Blatt Details
+		Sheet sheetDetails = workbook.getSheet(reportVorlage.getDataSheetName());
+		ExcelMergerDTO excelMergerDTO = zahlungAuftragDetailsExcelConverter.toExcelMergerDTO(
+			zahlungenBerechtigt,
 			locale,
-			principalBean.discoverMostPrivilegedRole(),
-			allowedInst,
 			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
 			datumGeneriert,
 			datumFaellig,
 			gemeinde
 		);
+		mergeData(sheetDetails, excelMergerDTO, reportVorlage.getMergeFields());
+		zahlungAuftragDetailsExcelConverter.applyAutoSize(sheetDetails);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		zahlungAuftragExcelConverter.applyAutoSize(sheet);
+		// Blatt Totals
+		Sheet sheetTotals = workbook.getSheet("Totals");
+		ExcelMergerDTO excelMergerTotalsDTO = zahlungAuftragTotalsExcelConverter.toExcelMergerDTO(
+			zahlungenBerechtigt,
+			locale,
+			ServerMessageUtil.getMessage("Reports_totalZahlungenTitle", locale, bezeichnung),
+			datumGeneriert,
+			datumFaellig,
+			gemeinde
+		);
+		mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
+		zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
 
 		byte[] bytes = createWorkbook(workbook);
 
@@ -1396,8 +1420,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgPensumKanton(bgPensumKanton);
 		row.setBgPensumGemeinde(bgPensumGemeinde);
 		row.setBgPensumTotal(bgPensumTotal);
-
 		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
+		// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
+		// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
+		PensumUnits zeiteinheit = betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ? PensumUnits.DAYS : PensumUnits.HOURS;
+		row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale));
+
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton

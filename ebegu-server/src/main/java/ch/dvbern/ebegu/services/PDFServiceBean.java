@@ -99,6 +99,9 @@ public class PDFServiceBean implements PDFService {
 	private EinstellungService einstellungService;
 
 	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
 	private Authorizer authorizer;
 
 	@Nonnull
@@ -114,11 +117,13 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
+		// Bei Nicht-Eintreten soll der FEBR-Erklaerungstext gar nicht erscheinen, es ist daher egal,
+		// was wir mitgeben
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			false);
+			false, false);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
@@ -250,12 +255,15 @@ public class PDFServiceBean implements PDFService {
 			showInfoKontingentierung = einstellungKontingentierung.getValueAsBoolean();
 		}
 
+		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured();
+
 		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
 			art,
-			showInfoKontingentierung);
+			showInfoKontingentierung,
+			stadtBernAsivConfigured);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 

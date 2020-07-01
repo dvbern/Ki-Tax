@@ -42,10 +42,6 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
-	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Tagesfamilien STUNDEN
-	// 100% = 220 hours => 1% = 2.2 hours
-	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.DEFAULT.fromNullSafe(2.44);
-
 	public TageselternKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
@@ -81,8 +77,8 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 		// Zwischenresultate
 		BigDecimal anteilMonat = calculateAnteilMonat(von, bis);
-		BigDecimal anzahlTageProMonat = MathUtil.EXACT.divide(kitaxParameter.getMaxTageKita(), ZWOELF);
-		BigDecimal betreuungsstundenProMonat = MathUtil.EXACT.multiply(anzahlTageProMonat, kitaxParameter.getMaxStundenProTagKita(), bgPensum);
+		BigDecimal anzahlTageProMonat = MathUtil.EXACT.divideNullSafe(kitaxParameter.getMaxTageKita(), ZWOELF);
+		BigDecimal betreuungsstundenProMonat = MathUtil.EXACT.multiplyNullSafe(anzahlTageProMonat, kitaxParameter.getMaxStundenProTagKita(), bgPensum);
 		BigDecimal betreuungsstundenIntervall = MathUtil.EXACT.multiply(betreuungsstundenProMonat, anteilMonat);
 
 		// Kosten Betreuungsstunde
@@ -122,7 +118,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		// Wir rechnen im Kitax-Rechner mit den berechneten Vollkosten, nicht mit denjenigen, die auf der Platzbestaetigung angegeben wurden.
 		result.setVollkosten(vollkosten);
 
-		BigDecimal betreuungsstundenProMonat100Prozent = MathUtil.EXACT.multiply(anzahlTageProMonat,
+		BigDecimal betreuungsstundenProMonat100Prozent = MathUtil.EXACT.multiplyNullSafe(anzahlTageProMonat,
 			kitaxParameter.getMaxStundenProTagKita());
 
 		BigDecimal multiplierPensum = MathUtil.EXACT.divide(result.getBetreuungspensumProzent(), BigDecimal.valueOf(100));
@@ -133,10 +129,14 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		result.setZeiteinheit(PensumUnits.HOURS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
 		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierPensum, betreuungsstundenProMonat100Prozent));
-		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiply(multiplierAnspruch, betreuungsstundenProMonat100Prozent));
-		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiply(multiplierBgPensum, betreuungsstundenProMonat100Prozent));
+		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierAnspruch, betreuungsstundenProMonat100Prozent));
+		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierBgPensum, betreuungsstundenProMonat100Prozent));
 
-		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
+		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
+		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
+		// Pensum reduzieren.
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = calculateAnteilVerguenstigtesPensumAmBetreuungspensum(input);
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);

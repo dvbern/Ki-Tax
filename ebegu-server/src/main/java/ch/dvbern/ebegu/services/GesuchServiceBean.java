@@ -1024,14 +1024,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchOptional.isPresent()) {
 			Gesuch gesuch = gesuchOptional.get();
 
-			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH
+			if (gesuch.getTyp() == AntragTyp.MUTATION
 				|| Eingangsart.ONLINE != gesuch.getEingangsart()
 				|| gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
-				throw new EbeguRuntimeException(KibonLogLevel.NONE, "antragZurueckziehen", "Only Online Erstgesuche "
+				throw new EbeguRuntimeException(KibonLogLevel.WARN, "antragZurueckziehen", "Only Online Erst-/Erneuerungsgesuche "
 					+ "can be reverted");
 			}
 
-			LOG.warn("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
+			LOG.info("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
 
 			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
@@ -1959,6 +1959,27 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				setGesuchAndVorgaengerUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
 			}
 
+			Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
+			Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId())
+				.orElseThrow(() -> new EbeguRuntimeException("postGesuchVerfuegen",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					gesuch.extractGemeinde().getId()));
+
+			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG ist
+			// und falls Einstellung gesetzt ist
+			if (gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen()
+				&& verantwortlicherTS != null
+				&& verantwortlicherBG != null
+				&& !verantwortlicherBG.getId().equals(verantwortlicherTS.getId())) {
+				try {
+					mailService.sendInfoGesuchVerfuegtVerantwortlicherTS(gesuch, verantwortlicherTS);
+				} catch (MailException e) {
+					LOG.error("Mail InfoGesuchVerfuegtVerantwortlicherTS konnte nicht versendet werden fuer Gesuch {}",
+						gesuch.getId(), e);
+				}
+			}
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
 			gesuch.setGueltig(true);
 		}

@@ -176,15 +176,4 @@ public class ErwerbspensumResource {
 		erwerbspensumService.removeErwerbspensum(converter.toEntityId(erwerbspensumContIDJAXPId), gesuch);
 		return Response.ok().build();
 	}
-
-	@ApiOperation(value = "Returns true, if the declaration of Erwerbspensum is required for the given Gesuch", response = Boolean.class)
-	@GET
-	@Path("/required/{gesuchId}")
-	@Consumes(MediaType.WILDCARD)
-	public boolean isErwerbspensumRequired(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Objects.requireNonNull(gesuchJAXPId.getId());
-		Gesuch gesuch = gesuchService.findGesuch(gesuchJAXPId.getId()).orElseThrow(()
-			-> new EbeguEntityNotFoundException("isErwerbspensumRequired", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJAXPId.getId()));
-		return erwerbspensumService.isErwerbspensumRequired(gesuch);
-	}
 }

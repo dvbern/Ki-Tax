@@ -63,7 +63,7 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public focusSidenav(): void {
-        angular.element('.sidenav.gesuchMenu button').first().focus();
+        angular.element('.sidenav.gesuch-menu button').first().focus();
     }
 
     /**

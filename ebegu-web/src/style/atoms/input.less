@@ -17,12 +17,14 @@
 
 //    error styling
 md-input-container {
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
 .contrast {
-    .dvDatepicker, dvTimePicker {
+    /*stylelint-disable*/
+    .dv-datepicker, dv-timepicker {
+        /*stylelint-enable*/
         background: @contrast-light;
     }
 }
@@ -32,9 +34,24 @@ md-input-container {
     .ebeguDisabledPlaceholder();
 }
 
-input[type="text"], input[type="number"], input[type="email"], textarea, textarea.md-input, .form-control, .dv-select-style select {
+input[type='text'], input[type='number'], input[type='email'], textarea, textarea.md-input, .form-control, .dv-select-style select {
+    .ebeguPlaceholder();
+    .ebeguSemi-bold();
+    .ebeguH1();
+    -moz-appearance: textfield; // spinner in firefox sieht doof aus -> disable
+    background: @contrast-lightest;
+    border: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0) /*@secondary-dark*/;
+
+    color: @contrast-darkest;
+    height: 4rem;
+    margin: 0;
+    outline: 0;
+    padding: 0 0 0 1rem;
+    transition: background 0.5s ease;
     width: 100%;
-    transition: background .5s ease;
     &.dv-mat-datepicker {
         width: calc(100% - 30px);
     }
@@ -42,59 +59,45 @@ input[type="text"], input[type="number"], input[type="email"], textarea, textare
         background: @contrast-lighter;
     }
     &[disabled], &:disabled {
+        .ebeguDisabledPlaceholder();
         .DisabledInput();
         -webkit-text-fill-color: @contrast-darkest;
-        .ebeguDisabledPlaceholder();
     }
-    .ebeguPlaceholder();
-    .ebeguSemi-bold();
-    .ebeguH1();
-    padding: 0 0 0 1rem;
-    margin: 0;
-    height: 4rem;
-    border: 0;
-    background: @contrast-lightest;
-    border: none;
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0) /*@secondary-dark*/;
-    outline: 0;
-    border-radius: 0;
 
-    color: @contrast-darkest;
-    -moz-appearance: textfield; // spinner in firefox sieht doof aus -> disable
 
     &:focus {
+        box-shadow: none /*@secondary-dark*/;
         outline: 2px solid @contrast-darkest;
         outline-offset: 0;
-        box-shadow: none /*@secondary-dark*/;
     }
 }
 
-input[type="number"] {
+input[type='number'] {
+    -moz-appearance: textfield;
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
 
-    -moz-appearance: textfield;
 }
 
 .dv-select-style {
-    position: relative !important;
-    display: block;
     background: none;
+    display: block;
+    position: relative !important;
     &.dv-dialog-select {
         select {
             background: @contrast-lighter;
         }
     }
     select {
-        width: 100%;
-        margin: 0;
-        outline: none;
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
+        margin: 0;
+        outline: none;
+        width: 100%;
         &[disabled], &:disabled {
             .DisabledInput();
         }
@@ -103,31 +106,31 @@ input[type="number"] {
         }
     }
     &::after {
-        content: " \F107";
-        font-family: FontAwesome;
-        font-size: 1.6rem;
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        z-index: 2;
-        pointer-events: none;
+        content: ' \F107';
         display: none;
+        font-family: FontAwesome, sans-serif;
+        font-size: 1.6rem;
+        pointer-events: none;
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        z-index: 2;
     }
 }
 
 @supports ( -webkit-appearance: none ) or ( appearance: none )
-	or ( ( -moz-appearance: none ) and ( mask-type: alpha ) ) {
+    or ( ( -moz-appearance: none ) and ( mask-type: alpha ) ) {
 
     .dv-select-style::after {
         display: block;
     }
 
     .dv-select-style select {
-        padding-right: 2em;
-        border: none;
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
+        border: none;
+        padding-right: 2em;
     }
 }
 
@@ -140,17 +143,20 @@ input[type="number"] {
         display: block;
     }
     .dv-select-style select {
-        overflow: -moz-hidden-unscrollable;
-        padding-right: .4em;
         border: none;
+
         /* Firefox < 4 */
         min-width: 6em;
-        width: 130%;
+
         /* Firefox 4-15 */
-        min-width: -moz-calc(0em);
-        width: -moz-calc(100% + 2.4em);
+        min-width: -moz-calc(0);
+
         /* Firefox 16+ */
         min-width: calc(0em);
+        overflow: -moz-hidden-unscrollable;
+        padding-right: 0.4em;
+        width: 130%;
+        width: -moz-calc(100% + 2.4em);
         width: calc(100% + 2.4em);
     }
     @supports ( mask-type: alpha ) {
@@ -160,8 +166,8 @@ input[type="number"] {
 
         .dv-select-style select {
             -moz-appearance: none;
-            width: 100%;
             padding-right: 2em;
+            width: 100%;
         }
     }
 }
@@ -181,8 +187,8 @@ input[type="number"] {
     }
 
     .dv-select-style select {
-        padding-right: 2em;
         border: none;
+        padding-right: 2em;
     }
 
     .dv-select-style::after {
@@ -191,16 +197,16 @@ input[type="number"] {
 }
 
 textarea.md-input, textarea.form-control {
-    padding: 1rem;
     .ebeguNormal();
+    padding: 1rem;
     .md-input-focused & {
         padding: 1rem;
     }
 }
 
 input.filter {
+    margin-bottom: 2em;
     outline-style: solid;
     outline-width: 2px;
-    margin-bottom: 2em;
 }
 

@@ -32,8 +32,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -47,8 +45,6 @@ import static java.util.Objects.requireNonNull;
  * Verweis 16.8 Der zivilrechtliche Wohnsitz
  */
 public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
-
-	private static final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class);
 
 	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
@@ -111,8 +107,6 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 						result.add(zeitabschnitt);
 					}
 				} else {
-					// Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!
-					LOG.warn("Zweiter Adressen-Abschnitt mit gleichen Daten: Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!");
 					result.add(zeitabschnitt);
 				}
 			}
