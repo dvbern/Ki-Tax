@@ -26,11 +26,13 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensumAbweichung} from '../../../models/TSBetreuungspensumAbweichung';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -41,6 +43,7 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 
@@ -78,6 +81,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public institution: string;
     public isSavingData: boolean; // Semaphore
     public dvDialog: DvDialog;
+    private existingMutationsmeldung: TSBetreuungsmitteilung;
 
     public constructor(
         private readonly $state: StateService,
@@ -125,6 +129,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
         this.loadAbweichungen();
+
+        this.mitteilungRS.getNewestBetreuungsmitteilung(this.model.id)
+            .then((response: TSBetreuungsmitteilung) => {
+                this.existingMutationsmeldung = response;
+            });
     }
 
     public getKindModel(): TSKindContainer {
@@ -214,10 +223,36 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         });
     }
 
-    public freigeben(): void {
+    /**
+     * Prueft dass das Objekt existingMutationsMeldung existiert und dass es ein sentDatum hat. Das wird gebraucht,
+     * um zu vermeiden, dass ein leeres Objekt als gueltiges Objekt erkannt wird.
+     * Ausserdem muss die Meldung nicht applied sein und nicht den Status ERLEDIGT haben
+     */
+    public hasNotAppliedMutationsmeldung(): boolean {
+        return this.existingMutationsmeldung !== undefined && this.existingMutationsmeldung !== null
+            && this.existingMutationsmeldung.sentDatum !== undefined && this.existingMutationsmeldung.sentDatum !== null
+            && !this.existingMutationsmeldung.applied && !this.existingMutationsmeldung.isErledigt();
+    }
+
+    public preFreigeben(): void {
         if (!this.isGesuchValid()) {
             return;
         }
+        if (this.hasNotAppliedMutationsmeldung()) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+                deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {   // User confirmed removal
+                this.freigeben();
+            });
+        } else {
+            this.freigeben();
+        }
+    }
+
+    public freigeben(): void {
         this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier(),
             this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled)
             .then(result => {

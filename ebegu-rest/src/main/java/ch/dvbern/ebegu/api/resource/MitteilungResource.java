@@ -118,6 +118,20 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
+		Objects.requireNonNull(mitteilungJAXP);
+		Objects.requireNonNull(mitteilungJAXP.getBetreuung());
+		Objects.requireNonNull(mitteilungJAXP.getBetreuung().getId());
+
+		Betreuung betreuung =
+			betreuungService.findBetreuung(mitteilungJAXP.getBetreuung().getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
+				"sendBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				mitteilungJAXP.getBetreuung()
+			));
+
+		// we first clear all the Mutationsmeldungen for the current Betreuung
+		mitteilungService.removeExistingBetreuungsmitteilungenForBetreuung(betreuung);
+
 		Betreuungsmitteilung betreuungsmitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
 		Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 		return converter.betreuungsmitteilungToJAX(persistedMitteilung);
@@ -436,6 +450,8 @@ public class MitteilungResource {
 		}
 
 		Betreuung betreuung = betreuungOpt.get();
+
+		mitteilungService.removeExistingBetreuungsmitteilungenForBetreuung(betreuung);
 
 		if (betreuung.getBetreuungspensumAbweichungen() == null) {
 			return null;

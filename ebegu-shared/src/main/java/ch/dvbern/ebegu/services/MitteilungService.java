@@ -70,6 +70,11 @@ public interface MitteilungService {
 	Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key);
 
 	/**
+	 * Löscht alle existierenden Mutationsmeldung für eine Betreuung
+	 */
+	void removeExistingBetreuungsmitteilungenForBetreuung (Betreuung betreuung);
+
+	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
 	 */
 	@Nonnull

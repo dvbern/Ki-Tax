@@ -359,6 +359,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return Optional.ofNullable(mitteilung);
 	}
 
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
+	public void removeExistingBetreuungsmitteilungenForBetreuung (Betreuung betreuung) {
+		Collection<Betreuungsmitteilung> existing = findAllBetreuungsmitteilungenForBetreuung(betreuung);
+		existing.forEach(e -> persistence.remove(e));
+	}
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })

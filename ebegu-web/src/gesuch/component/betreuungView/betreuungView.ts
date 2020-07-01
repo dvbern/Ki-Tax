@@ -1293,7 +1293,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 
