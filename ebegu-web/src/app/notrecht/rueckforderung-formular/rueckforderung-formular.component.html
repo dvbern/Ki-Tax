@@ -271,13 +271,15 @@
                     <!-- Stufe 2 Institution und Kanton -->
                     <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular) ||
                     isPruefungKantonStufe2(rueckforderungFormular)">
+                        <label class="required long-label bold-label">
+                            {{'RUECKFORDERUNGFORMULAR_INSTITUTION_TYP' | translate}}</label>
                         <mat-radio-group name="institutionTyp"
 										 #institutionTyp="ngModel"
                                          [(ngModel)]="rueckforderungFormular.institutionTyp"
                                          required>
                             <mat-radio-button
                                 [value]="getRueckforderungInstitutionTypOffentlich()">{{'INSTITUTION_TYP_OFFENTLICH'|translate}}</mat-radio-button>
-                            &nbsp;
+                            &nbsp;&nbsp;
                             <mat-radio-button
                                 [value]="getRueckforderungInstitutionTypPrivat()">{{'INSTITUTION_TYP_PRIVAT'|translate}}
                             </mat-radio-button>
@@ -293,7 +295,7 @@
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label"
+                                            <label class="required long-label margin-top-30"
                                                    for="anzahl_plaetze_stufe2_insti_in_tage_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE' | translate}}</label>
                                             <input id="anzahl_plaetze_stufe2_insti_in_tage_id" type="number"
@@ -329,7 +331,8 @@
                                 <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label" for="anzahl_stunden_stufe2_insti_id">
+                                            <label class="required long-label margin-top-30"
+                                                   for="anzahl_stunden_stufe2_insti_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN' | translate}}</label>
                                             <input id="anzahl_stunden_stufe2_insti_id" type="number"
                                                    name="anzahl_stunden_stufe2_insti"
@@ -418,7 +421,7 @@
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label"
+                                            <label class="required long-label margin-top-30"
                                                    for="anzahl_plaetze_stufe2_kanton_in_tage_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE' | translate}}</label>
                                             <input id="anzahl_plaetze_stufe2_kanton_in_tage_id" type="number"
@@ -461,7 +464,8 @@
                                 <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label" for="anzahl_stunden_stufe2_kanton_id">
+                                            <label class="required long-label margin-top-30"
+                                                   for="anzahl_stunden_stufe2_kanton_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN' | translate}}</label>
                                             <input id="anzahl_stunden_stufe2_kanton_id" type="number"
                                                    name="anzahl_stunden_stufe2_kanton"
@@ -565,7 +569,8 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="required long-label" for="elternbeitraege_stufe2_privat_id">
+                                        <label class="required long-label margin-top-30"
+                                               for="elternbeitraege_stufe2_privat_id">
                                             {{'RUECKFORDERUNGFORMULAR_ELTERNBEITRAEGE' | translate}}</label>
                                         <input id="elternbeitraege_stufe2_privat_id" type="number"
                                                name="elternbeitraege_stufe2_privat"
@@ -636,7 +641,7 @@
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                            &nbsp;
+                                            &nbsp;&nbsp;
                                             <mat-radio-button
                                                 [value]="false">{{'LABEL_NEIN'|translate}}
                                             </mat-radio-button>
@@ -678,7 +683,7 @@
                                                              required>
                                                 <mat-radio-button
                                                     [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                                &nbsp;
+                                                &nbsp;&nbsp;
                                                 <mat-radio-button
                                                     [value]="false">{{'LABEL_NEIN'|translate}}
                                                 </mat-radio-button>
@@ -756,7 +761,7 @@
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                            &nbsp;
+                                            &nbsp;&nbsp;
                                             <mat-radio-button
                                                 [value]="false">{{'LABEL_NEIN'|translate}}
                                             </mat-radio-button>
@@ -799,7 +804,7 @@
                                                              required>
                                                 <mat-radio-button
                                                     [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                                &nbsp;
+                                                &nbsp;&nbsp;
                                                 <mat-radio-button
                                                     [value]="false">{{'LABEL_NEIN'|translate}}
                                                 </mat-radio-button>
@@ -1014,9 +1019,8 @@
                                             {{ 'BESTAETIGEN' | translate }}
                                         </mat-checkbox>
                                     </div>
-                                    <span class="mt-5">
-                                    {{'NOTWENDIGEN_INFORMATIONEN_LIEFERN'|translate}}
-                                </span>
+                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN' | translate">
+                                    </span>
                                     <div class="form-group">
                                         <mat-checkbox id="notwendigenInformationenLiefernCbx_id"
                                                       name="notwendigenInformationenLiefernCbx_id"
@@ -1116,84 +1120,93 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Dokumenten -->
-        <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
-            <div class="row">
-                <h1>
-                    <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
-                </h1>
-                <hr class="header"/>
-                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
-                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                </div>
-                <dv-file-upload
-                    (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
-                    (delete)="delete($event)"
-                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
-                    [files]="rueckforderungAngabenDokumente"
-                >
-                </dv-file-upload>
-            </div>
-            <div class="row">
-                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKommunikation">
-                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                </div>
-                <dv-file-upload
-                    (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION'"
-                    (delete)="delete($event)"
-                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
-                    [files]="rueckforderungKommunikationDokumente"
-                >
-                </dv-file-upload>
-            </div>
-            <div class="row">
-                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteEinsatzplaene">
-                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                </div>
-                <dv-file-upload
-                    (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE'"
-                    (delete)="delete($event)"
-                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
-                    [files]="rueckforderungEinsatzplaeneDokumente"
-                >
-                </dv-file-upload>
-            </div>
-            <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
-                <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
-                    <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
-                        <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+            <!-- Dokumenten -->
+            <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="margin-top-50">
+                            <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
+                        </h2>
+                        <hr class="header"/>
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
+                            [files]="rueckforderungAngabenDokumente"
+                        >
+                        </dv-file-upload>
                     </div>
-                    <dv-file-upload
-                        (download)="download($event[0],$event[1])"
-                        [title]="'RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT'"
-                        (delete)="delete($event)"
-                        (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
-                        [files]="rueckforderungKurzarbeitDokumente"
-                    >
-                    </dv-file-upload>
                 </div>
-                <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
-                    <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
-                        <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKommunikation">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION'"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
+                            [files]="rueckforderungKommunikationDokumente"
+                        >
+                        </dv-file-upload>
                     </div>
-                    <dv-file-upload
-                        (download)="download($event[0],$event[1])"
-                        [title]="'RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ'"
-                        (delete)="delete($event)"
-                        (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
-                        [files]="rueckforderungErwerbsersatzDokumente"
-                    >
-                    </dv-file-upload>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteEinsatzplaene">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE'"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
+                            [files]="rueckforderungEinsatzplaeneDokumente"
+                        >
+                        </dv-file-upload>
+                    </div>
+                </div>
+                <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
+                    <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
+                        <div class="col-sm-12">
+                            <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
+                                <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                            </div>
+                            <dv-file-upload
+                                (download)="download($event[0],$event[1])"
+                                [title]="'RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT'"
+                                (delete)="delete($event)"
+                                (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                    rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
+                                [files]="rueckforderungKurzarbeitDokumente"
+                            >
+                            </dv-file-upload>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
+                        <div class="col-sm-12">
+                            <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
+                                <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                            </div>
+                            <dv-file-upload
+                                (download)="download($event[0],$event[1])"
+                                [title]="'RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ'"
+                                (delete)="delete($event)"
+                                (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                    rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
+                                [files]="rueckforderungErwerbsersatzDokumente"
+                            >
+                            </dv-file-upload>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

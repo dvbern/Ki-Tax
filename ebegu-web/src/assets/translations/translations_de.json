@@ -2064,8 +2064,8 @@
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "Verantwortlicher Tagesschule wird per Email informiert, nachdem ein Mischgesuch verfügt wurde",
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "Nachdem ein Mischgesuch durch den Verantwortlichen Betreuungsgutscheine abgeschlossen wurde, erhält der Verantwortliche Tagesschulen eine Email. Dies ist bei manchen Gemeinden für interne Prozesse notwendig.<br>Empfohlene Einstellung: Aus.",
     "ELTERN_BEITRAGE_NICHT_IN_RECHNUNG": "Hiermit bestätigen wir, dass wir die Elternbeiträge für die Betreuung für die eine Ausfallentschädigung beantragt wird nicht in Rechnung gestellt, zurückerstattet oder verrechnet haben.",
-    "NOTWENDIGEN_INFORMATIONEN_LIEFERN": "Die Trägerschaft, vertreten durch die zeichnungsberechtigte/n Person/en, bestätigt die Richtigkeit und Vollständigkeit der in diesem Formular und den Beilagen gemachten Angaben. Sie verpflichtet sich, den zuständigen Behörden die für die Überprüfung der Angaben notwendigen Informationen zu liefern. Sie nimmt davon Kenntnis, dass Angaben zu den erhaltenen Finanzhilfen (Ausfallentschädigungen) veröffentlicht werden. Eltern können ebenfall kontaktiert werden um Angaben zu plausibilisieren.",
-    "INSTITUTION_TYP_OFFENTLICH": "Offentlich",
+    "NOTWENDIGEN_INFORMATIONEN_LIEFERN": "Die Trägerschaft, vertreten durch die zeichnungsberechtigte/n Person/en, bestätigt die <b>Richtigkeit und Vollständigkeit</b> der in diesem Formular und den Beilagen gemachten Angaben. Sie verpflichtet sich, den zuständigen Behörden die für die Überprüfung der Angaben notwendigen Informationen zu liefern. Sie nimmt davon Kenntnis, dass Angaben zu den erhaltenen Finanzhilfen (Ausfallentschädigungen) veröffentlicht werden. Eltern können ebenfall kontaktiert werden um Angaben zu plausibilisieren.",
+    "INSTITUTION_TYP_OFFENTLICH": "Öffentlich",
     "INSTITUTION_TYP_PRIVAT": "Privat",
     "RUECKFORDERUNGFORMULAR_ELTERNBEITRAEGE": "Betrag entgangene Elternbeiträge",
     "RUECKFORDERUNGFORMULAR_NICHT_ANGEBOTENE_TAGE": "Davon für nicht angebotene Tage",
@@ -2087,5 +2087,6 @@
     "RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT": "Verfügung Kurzarbeitsentschädigung (falls Betrag KAE schon def. verfügt)",
     "RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ": "Verfügung Corona-EO (falls Betrag schon def. verfügt)",
     "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument hochgeladen werden",
+    "RUECKFORDERUNGFORMULAR_INSTITUTION_TYP" : "Art der Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
