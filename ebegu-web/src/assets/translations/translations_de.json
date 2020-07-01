@@ -2052,5 +2052,7 @@
     "ALTERNATIVE_EMAIL": "Alternative Email Adresse",
     "ANGABEN_VON_STAMMDATEN": "Falls dieses Feld leer gelassen wird, werden die Angaben der Stammdaten übernommen",
     "BETREUUNG_HINT_UNTERMONATLICH": "Für die folgenden Angaben gilt: Falls das von- oder bis-Datum der Betreuung nicht auf einer Monatsgrenze liegt, müssen die Werte trotzdem für einen ganzen Monat erfasst werden. <br>&nbsp;",
+    "MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE": "Es gibt bereits eine Mutationsmeldung zu dieser Betreuung, welche die Gemeinde noch nicht bearbeitet hat.",
+    "MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY": "Wollen Sie diese Meldung überschreiben?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
