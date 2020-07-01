@@ -48,7 +48,7 @@
                         <th st-sort="eingangsdatum" st-sort-default="reverse" class="sortable row-geandert uppercase"
                             data-translate="EINGANG"></th>
                         <th st-sort="status" class="sortable row-status uppercase" data-translate="STATUS"></th>
-                        <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen uppercase"
+                        <th st-sort="dokumenteHochgeladen" class="sortable row-dokumente-hochgeladen uppercase"
                             data-translate="DOKUMENTE_HOCHGELADEN_KURZ"></th>
                         <th st-sort="angebote" class="sortable row-angebot uppercase" data-translate="ANGEBOT"></th>
                         <th st-sort="institutionen[0]" class="sortable row-inst uppercase"
@@ -168,7 +168,7 @@
                         <td class="ellipsis" title="{{row.antragTyp | translate}}">
                             <i class="fa fa-desktop" aria-hidden="true" ng-show="vm.showOnlineGesuchIcon(row)"></i>
                             <i class="fa fa-file-text-o" aria-hidden="true" ng-show="vm.showPapierGesuchIcon(row)"></i>
-                            <span ng-bind="row.antragTyp | translate" class="marginLeft5"></span>
+                            <span ng-bind="row.antragTyp | translate" class="margin-left-5"></span>
                         </td>
                         <td class="ellipsis"
                             title="{{row.gesuchsperiodeString}}"

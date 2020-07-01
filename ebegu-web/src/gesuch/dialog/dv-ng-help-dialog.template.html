@@ -23,7 +23,7 @@
         <p><a href="tel:+41 31 633 78 83">+41 31 633 78 83</a></p>
     </div>
 
-    <div class="marginTop40">
+    <div class="margin-top-40">
         <h2 [textContent]="'FACHLICHE_HILFE_TS' | translate"></h2>
         <p [textContent]="'MANDANT_DIREKTION_TS' | translate"></p>
         <p [textContent]="'MANDANT_ADRESSE_STRASSE_BKD' | translate"></p>
@@ -32,7 +32,7 @@
         <p><a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{'MANDANT_TEL_BKD' | translate}}</a></p>
     </div>
 
-    <div class="marginTop40">
+    <div class="margin-top-40">
         <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
         <p>DV Bern AG</p>
         <a href="" (click)="openSupportanfrage()">
@@ -42,7 +42,7 @@
         <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
     </div>
 
-    <div class="marginTop40">
+    <div class="margin-top-40">
         <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
         <p>
             <a href="" (click)="startTour()">
@@ -51,7 +51,7 @@
         </p>
     </div>
 
-    <div class="marginTop40" *ngIf="hasRoleGemeinde || hasRoleInstitution">
+    <div class="margin-top-40" *ngIf="hasRoleGemeinde || hasRoleInstitution">
         <h2>Blog</h2>
         <p *ngIf="hasRoleMandant">
             <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_MANDANT_LINK' | translate}}">
@@ -72,7 +72,7 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions class="marginTop40" layout-align="center center">
+<mat-dialog-actions class="margin-top-40" layout-align="center center">
     <div class="dv-dialog-actions">
         <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
     </div>

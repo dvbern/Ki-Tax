@@ -19,32 +19,32 @@ mitteilungen-view {
     height: 100%;
 }
 
-.mitteilungenView, .betreuungMitteilungView {
+.mitteilungen-view, .betreuung-mitteilung-view {
+    background: @contrast-light;
+    height: 100%;
+    padding: 5rem 2rem 5rem;
     h1 {
         font-size: 2rem;
     }
-    padding: 5rem 2rem 5rem;
-    background: @contrast-light;
-    height: 100%;
     .message-textarea {
         height: 25rem;
         resize: none;
     }
-    .BGNummer {
+    .bg-nummer {
         .ebeguH3();
         margin: 0;
         padding-left: 2rem;
     }
     dv-accordion {
-        overflow: visible;
         display: flex;
         flex-direction: column;
+        overflow: visible;
         dv-accordion-tab {
-            width: 100%;
-            height: auto;
             display: block;
+            height: auto;
             margin-bottom: 2rem;
-            &.isSender {
+            width: 100%;
+            &.is-sender {
                 margin-left: auto;
             }
             &.institution {
@@ -69,32 +69,33 @@ mitteilungen-view {
                 color: black;
             }
             .dv-accordion-tab-title {
+
+                background: @contrast-lightest;
+                font-size: 1.3rem;
+                height: auto;
+                letter-spacing: 0.15rem;
+                margin: 0;
+                min-height: 8rem;
+                opacity: 1;
+                padding: 0 2rem 0;
+                transition: all 0.5s ease;
+                width: 100%;
                 md-checkbox {
                     margin: 0;
                 }
                 &:focus {
                     outline: 2px solid @contrast-darkest;
                 }
-                opacity: 1;
-                padding: 0 2rem 0;
-                width: 100%;
-                min-height: 8rem;
-                height: auto;
-                background: @contrast-lightest;
-                font-size: 1.3rem;
-                letter-spacing: 0.15rem;
-                margin: 0;
-                transition: all 0.5s ease;
                 & > * {
                     display: flex;
                     flex-direction: row;
                 }
                 & .message-header {
-                    flex: 1;
-                    padding: 1rem 0 1rem;
                     display: flex;
+                    flex: 1;
                     flex-direction: row;
                     flex-wrap: wrap;
+                    padding: 1rem 0 1rem;
 
                     .subject-container {
                         align-self: stretch;
@@ -109,39 +110,39 @@ mitteilungen-view {
                     }
                 }
                 .message-delegation {
-                    margin: auto 3rem;
                     display: flex;
                     flex-direction: column;
+                    margin: auto 3rem;
                 }
                 .message-checkbox {
-                    margin: auto 0 auto auto;
                     display: flex;
                     flex-direction: column;
+                    margin: auto 0 auto auto;
                 }
                 & .arrow {
-                    color: black;
-                    min-height: 8rem;
-                    height: auto;
-                    width: auto;
-                    vertical-align: middle;
-                    text-align: center;
-                    display: flex;
                     align-items: center;
+                    color: black;
+                    display: flex;
+                    height: auto;
                     justify-content: center;
+                    min-height: 8rem;
+                    text-align: center;
+                    vertical-align: middle;
+                    width: auto;
                     i {
                         font-size: 2.4rem;
                         transition: all 0.5s ease;
                     }
                 }
                 &:after {
-                    content: "";
-                    display: block;
-                    width: 0;
-                    height: 0;
                     background: 0;
-                    margin: 0 auto 0;
                     border-bottom: 1px solid @contrast;
+                    content: '';
+                    display: block;
+                    height: 0;
+                    margin: 0 auto 0;
                     transition: all 0.5s ease;
+                    width: 0;
 
                 }
                 &.tab-open {
@@ -159,16 +160,16 @@ mitteilungen-view {
             }
             .dv-accordion-tab-content {
                 .ebeguP();
+                background: @contrast-lightest;
                 color: @contrast-darkest;
-                overflow: hidden;
-                overflow-y: auto;
-                opacity: 1;
                 display: block;
-                width: 100%;
                 height: auto;
                 max-height: 60rem;
-                background: @contrast-lightest;
+                opacity: 1;
+                overflow: hidden;
+                overflow-y: auto;
                 padding: 0 2rem 0;
+                width: 100%;
                 & > tab-body > * {
                     margin: 2rem 0 3rem;
                 }
@@ -182,29 +183,29 @@ mitteilungen-view {
                     }
                 }
                 &.ng-hide-add {
-                    overflow: hidden;
                     max-height: 60rem;
+                    overflow: hidden;
                     transition: all 0.5s ease;
                 }
                 &.ng-hide-add.ng-hide-add-active {
-                    overflow: hidden;
                     max-height: 0;
+                    overflow: hidden;
                 }
                 &.ng-hide-remove {
+                    max-height: 0;
                     overflow: hidden;
                     transition: all 1s ease;
-                    max-height: 0;
                 }
                 &.ng-hide-remove.ng-hide-remove-active {
-                    overflow: hidden;
                     max-height: 60rem;
+                    overflow: hidden;
                 }
             }
         }
     }
-    .mitteilungenList {
+    .mitteilungen-list {
 
-        .mitteilungItem {
+        .mitteilung-item {
             background: transparent;
         }
 

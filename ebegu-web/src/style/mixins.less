@@ -18,16 +18,16 @@
     -webkit-@{property}: @value;
     -khtml-@{property}: @value;
     -moz-@{property}: @value;
-        @{property}: @value;
+    @{property}: @value;
 }
 
 .ebeguPlaceholder-specs() {
     .ebeguNormal();
+    color: @contrast-dark;
     font-size: 1.4rem;
+    height: 4rem;
     letter-spacing: 0.1rem;
     line-height: normal;
-    height: 4rem;
-    color: @contrast-dark;
 }
 
 .ebeguPlaceholder() {
@@ -71,27 +71,27 @@
 }
 
 .ebeguFont-family() {
-    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 }
 
 .ebeguNormal() {
-    font-weight: 400;
     font-style: normal;
+    font-weight: 400;
 }
 
 .ebeguItalic() {
-    font-weight: 400;
     font-style: italic;
+    font-weight: 400;
 }
 
 .ebeguSemi-bold() {
-    font-weight: 600;
     font-style: normal;
+    font-weight: 600;
 }
 
 .ebeguBold() {
-    font-weight: 700;
     font-style: normal;
+    font-weight: 700;
 }
 
 .ebeguCapitalize() {
@@ -99,20 +99,20 @@
 }
 
 .ebeguVertical(@a) when (@a=middle) {
+    left: 50%;
     position: absolute;
     top: 50%;
-    left: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
 
 .ebeguH1() {
     .ebeguBold();
+    display: inline-block;
     font-size: 1.6rem;
     letter-spacing: 0.1rem;
-    line-height: 2.0rem;
-    margin-top: 0;
+    line-height: 2rem;
     margin-bottom: 1rem;
-    display: inline-block;
+    margin-top: 0;
 }
 
 .ebeguH2() {
@@ -120,8 +120,8 @@
     font-size: 2rem;
     letter-spacing: 0.15rem;
     line-height: 2rem;
-    margin-top: 1rem;
     margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 .ebeguH3() {
@@ -129,21 +129,21 @@
     font-size: 1.4rem;
     letter-spacing: 0.1rem;
     line-height: 2.5rem;
-    margin-top: 2rem;
     margin-bottom: 1rem;
+    margin-top: 2rem;
 }
 
 .ebeguLabel() {
     .ebeguNormal();
     font-size: 1.4rem;
+    height: auto;
     letter-spacing: 0.1rem;
     line-height: normal;
-    min-height: 3rem;
-    height: auto;
-    text-align: left;
-    padding: 0;
     margin: 0;
+    min-height: 3rem;
+    padding: 0;
     position: static;
+    text-align: left;
     white-space: normal;
 }
 
@@ -152,33 +152,33 @@
     font-size: 1.4rem;
     letter-spacing: 0.135rem;
     line-height: 2.8rem;
-    text-align: left;
     margin-bottom: 0;
+    text-align: left;
 }
 
 .ebeguSmall-text() {
     .ebeguNormal();
     font-size: 1.2rem;
     letter-spacing: 0.1rem;
-    line-height: 2.0rem;
+    line-height: 2rem;
 }
 
 .ebeguA() {
     .ebeguNormal();
     font-size: 1.3rem;
     letter-spacing: 0.1rem;
-    line-height: 2.0rem;
+    line-height: 2rem;
     text-decoration: underline;
 }
 
 .menu-item-link() {
     font-size: 1.6rem;
+    height: 4rem !important;
     letter-spacing: 0.15rem;
     line-height: 4rem;
-    text-decoration: none;
-    height: 4rem !important;
     min-width: unset;
     text-align: left;
+    text-decoration: none;
     span {
         text-align: left;
     }
@@ -188,8 +188,8 @@
 }
 
 .ErrorInput() {
-    border-color: @state-danger-text;
     background-color: @background-error-color;
+    border-color: @state-danger-text;
 }
 
 .DisabledInput() {

@@ -1,5 +1,10 @@
 package ch.dvbern.ebegu.reporting.zahlungauftrag;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -11,11 +16,6 @@ import org.easymock.EasyMockRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
 
 @RunWith(EasyMockRunner.class)
 public class ZahlungAuftragExcelConverterTest {
@@ -37,7 +37,7 @@ public class ZahlungAuftragExcelConverterTest {
 		zahlungspositionen.add(notInvertedZahlungsposition);
 		zahlungspositionen.add(createZahlungsposition(sameBG, sameAb, sameBis, sameBgPensum, BigDecimal.valueOf(1)));
 
-		ZahlungAuftragExcelConverter converter = new ZahlungAuftragExcelConverter();
+		ZahlungAuftragDetailsExcelConverter converter = new ZahlungAuftragDetailsExcelConverter();
 		List<Zahlungsposition> filteredList = converter.filterZahlungspositionenMitSummeUngleich0(zahlungspositionen);
 		Assert.assertEquals(2, filteredList.size());
 		Assert.assertEquals(notInvertedZahlungsposition, filteredList.get(0));

@@ -101,6 +101,8 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal bgPensumTotal;
 
 	@Nullable private BigDecimal bgStunden;
+	@Nullable private String bgPensumZeiteinheit;
+
 	@Nullable private BigDecimal vollkosten;
 	@Nullable private BigDecimal elternbeitrag;
 	@Nullable private BigDecimal verguenstigungKanton;
@@ -650,6 +652,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setBgStunden(@Nullable BigDecimal bgStunden) {
 		this.bgStunden = bgStunden;
+	}
+
+	@Nullable
+	public String getBgPensumZeiteinheit() {
+		return bgPensumZeiteinheit;
+	}
+
+	public void setBgPensumZeiteinheit(@Nullable String bgPensumZeiteinheit) {
+		this.bgPensumZeiteinheit = bgPensumZeiteinheit;
 	}
 
 	@Nullable

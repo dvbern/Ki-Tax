@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.ExportService;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -128,6 +129,9 @@ public class DownloadResource {
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private RueckforderungDokumentService rueckforderungDokumentService;
 
 
 	@SuppressWarnings("ConstantConditions")
@@ -222,16 +226,32 @@ public class DownloadResource {
 	@ApiOperation("Erstellt ein Token f&uuml;r den Download einer Vorlage fuer die Notrecht Rueckforderung")
 	@Nonnull
 	@GET
-	@Path("/NOTRECHTVORLAGE/{language}/{angebotTyp}")
+	@Path("/NOTRECHTVORLAGEOEFFENTLICH/{language}/{angebotTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getDokumentAccessTokenNotrechtvorlage(
+	public Response getDokumentAccessTokenNotrechtvorlageOeffentlicheInstitutionen(
 		@Nonnull @Valid @PathParam("language") String language,
 		@Nonnull @Valid @PathParam("angebotTyp") BetreuungsangebotTyp angebotTyp,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
 
 		String ip = getIP(request);
-		FileMetadata vorlageNotrecht = ebeguVorlageService.getVorlageNotrecht(language, angebotTyp);
+		FileMetadata vorlageNotrecht = ebeguVorlageService.getVorlageNotrechtOeffentlicheInstitutionen(language, angebotTyp);
+		return getFileDownloadResponse(uriInfo, ip, vorlageNotrecht);
+	}
+
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download einer Vorlage fuer die Notrecht Rueckforderung")
+	@Nonnull
+	@GET
+	@Path("/NOTRECHTVORLAGEPRIVAT/{language}/{angebotTyp}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDokumentAccessTokenNotrechtvorlagePrivateInstitutionen(
+		@Nonnull @Valid @PathParam("language") String language,
+		@Nonnull @Valid @PathParam("angebotTyp") BetreuungsangebotTyp angebotTyp,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
+
+		String ip = getIP(request);
+		FileMetadata vorlageNotrecht = ebeguVorlageService.getVorlageNotrechtPrivateInstitutionen(language, angebotTyp);
 		return getFileDownloadResponse(uriInfo, ip, vorlageNotrecht);
 	}
 
@@ -566,5 +586,26 @@ public class DownloadResource {
 		WriteProtectedDokument persistedDokument = generatedDokumentService
 			.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, mitTarif, forceCreation);
 		return getFileDownloadResponse(uriInfo, ip, persistedDokument);
+	}
+
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download eines Dokumentes.")
+	@Nonnull
+	@GET
+	@Path("/{dokumentId}/rueckforderungDokument")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDokumentAccessTokenRueckforderungDokument(
+		@Nonnull @Valid @PathParam("dokumentId") JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
+
+		String ip = getIP(request);
+
+		requireNonNull(jaxId.getId());
+		String id = converter.toEntityId(jaxId);
+
+		final FileMetadata dokument = rueckforderungDokumentService.findDokument(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
+
+		return getFileDownloadResponse(uriInfo, ip, dokument);
 	}
 }

@@ -13,10 +13,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="betreuungView gesuchModul">
+<div class="betreuung-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-8">
             <h2>
                 <!--eventuell nummer noch anders lesen per methode-->
@@ -31,7 +31,7 @@
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
         </div>
         <div class="col-md-4 text-right">
-            <h2 class="ebeguH2" aria-hidden>
+            <h2 class="ebegu-h2" aria-hidden>
                 {{vm.model.bgNummer}}
             </h2>
         </div>
@@ -43,7 +43,7 @@
     </div>
 
 
-    <div class="row marginTop40">
+    <div class="row margin-top-40">
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" novalidate
                   unsaved-warning-form>
@@ -119,7 +119,7 @@
                     </div>
 
                     <!-- Keine Detailangaben zur Anmeldung -->
-                    <div class="row marginBottom20 marginTop20" dv-show-element
+                    <div class="row margin-bottom-20 margin-top-20" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                          dv-show-expression="vm.isTagesschule() && vm.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung()">
                         <div class="col-xs-12 dv-input-container-question">
@@ -364,9 +364,6 @@
                                              dv-enable-expression="vm.isBetreuungsstatusWarten()">
                                     <span>{{vm.getBetreuungInGemeindeLabel()}}</span>
                                 </md-checkbox>
-                                <dv-bisher gs="vm.getErweiterteBetreuungGS().betreuungInGemeinde"
-                                           ja="vm.getErweiterteBetreuungJA().betreuungInGemeinde"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -376,7 +373,7 @@
                 <fieldset ng-disabled="vm.isGesuchReadonly() && !vm.isMutationsmeldungStatus">
                     <!--Diese Felder werden fuer Betreuungsangebottyp TAGESSCHULE ausgeblendet. Fuer alle anderen eingeblendet-->
                     <!--Nur Institutionen duerfen neue Pensen eintragen. Bei anderen Rollen werden nur die existierenden Pensen angezeigt-->
-                    <div class="marginTop20" ng-if="!vm.isSchulamt()">
+                    <div class="margin-top-20" ng-if="!vm.isSchulamt()">
 
                         <div class="row" dv-show-element
                              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
@@ -397,7 +394,8 @@
                                       dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                       dv-enable-expression="vm.isPensumEditable()">
 
-                                <p class="inlineHint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"></p>
+                                <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
+                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
@@ -586,7 +584,7 @@
                                     </betreuung-override-warning>
 
                                     <!--Betreuungspensum entfernen. Wird nur angezeigt wenn status=AUSSTEHEND und es mehrere Betreuungspensen gibt und role=institution-->
-                                    <div class="row marginBottom60 dv-input-container-medium" dv-show-element
+                                    <div class="row margin-bottom-60 dv-input-container-medium" dv-show-element
                                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                          dv-show-expression="($index > 0) || (vm.getBetreuungspensen().length > 1)">
                                         <div class="col-md-12">
@@ -622,11 +620,11 @@
                                 </div>
 
                                 <!--grund Ablehnung-->
-                                <div class="row marginTop20" dv-show-element
+                                <div class="row margin-top-20" dv-show-element
                                      dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()">
                                     <div class="col-md-12 dv-input-container-medium">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float inlineHint" for="grundAblehnung"
+                                            <label class="md-no-float inline-hint" for="grundAblehnung"
                                                    data-translate="GRUND_ABLEHNUNG"></label>
                                             <textarea md-no-autogrow class="form-control" rows="6" id="grundAblehnung"
                                                       ng-model="vm.getBetreuungModel().grundAblehnung"
@@ -729,7 +727,7 @@
 
                         <!--Hint-->
                         <div ng-if="vm.isProvisorischeBetreuung()">
-                            <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT2"
+                            <p class="inline-hint margin-top-20" data-translate="BETREUUNGSPENSUM_HINT2"
                                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                                dv-show-expression="!vm.isSchulamt()"></p>
                         </div>

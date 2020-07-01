@@ -18,7 +18,7 @@
     <md-toolbar flex="100">
         <md-menu-bar flex="100" layout="row" layout-align="start center">
             <h1 class="access-for-all-title" data-translate="AFA_TOOLBAR"></h1>
-            <span class="gesuchName"><span ng-bind="vmgs.getGesuchName()" title="{{vmgs.getBesitzer()}}"></span></span>
+            <span class="gesuch-name"><span ng-bind="vmgs.getGesuchName()" title="{{vmgs.getBesitzer()}}"></span></span>
             <span flex="40"></span>
             <md-menu ng-if="vmgs.showGesuchPeriodeNavigationMenu()">
                 <button ng-click="$mdMenu.open()"
@@ -41,8 +41,8 @@
                 </md-menu-content>
             </md-menu>
 
-            <span class="gesuchNotLoaded" ng-if="!vmgs.showGesuchPeriodeNavigationMenu() && !vmgs.isDashboardScreen"
-                  ng-bind="vmgs.getCurrentGesuchsperiode()"></span>
+            <span class="gesuch-not-loaded" ng-if="!vmgs.showGesuchPeriodeNavigationMenu() && !vmgs.isDashboardScreen"
+				  ng-bind="vmgs.getCurrentGesuchsperiode()"></span>
 
             <!--Gesuchstyp-->
             <md-menu ng-if="vmgs.showAntragTypListNavigationMenu()">
@@ -65,8 +65,8 @@
                 </md-menu-content>
             </md-menu>
 
-            <span class="gesuchNotLoaded" ng-if="!vmgs.showAntragTypListNavigationMenu() && !vmgs.isDashboardScreen"
-                  ng-bind="vmgs.getAntragTyp()"></span>
+            <span class="gesuch-not-loaded" ng-if="!vmgs.showAntragTypListNavigationMenu() && !vmgs.isDashboardScreen"
+				  ng-bind="vmgs.getAntragTyp()"></span>
 
             <span flex=""></span>
 

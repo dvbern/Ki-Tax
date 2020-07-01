@@ -295,15 +295,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return undefined;
     }
 
-    private isThereAnyAnmeldung(): boolean {
-        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
-        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
-            return moduleTagessule
-                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
-        }
-        return false;
-    }
-
     public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
         if (group.bezeichnung.textDeutsch && group.bezeichnung.textFranzoesisch) {
             if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
@@ -439,16 +430,33 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private toggleWarnungModule(): void {
-        // Wir koennen hier nicht "isThereAnyAnmeldung()" verwenden, da dieses das nach preSave()
-        // abgefuellte Modell beachtet!
+        this.showErrorMessageNoModule = !this.isThereAnyAnmeldung();
+    }
+
+    private isThereAnyAnmeldung(): boolean {
+        // Das Modell, welches mit dem GUI verknuepft ist, ist nicht dasselbe, das dann (nach preSave())
+        // gespeichert wird, wir muessen beide abfragen!
+        return this.isThereAnyAnmeldungSaveModel() || this.isThereAnyAnmeldungInputModel();
+    }
+
+    private isThereAnyAnmeldungInputModel(): boolean {
+        // Ermittelt, ob im InputModel, also noch bevor preSave() aufgerufen wird, eine Anmeldung vorhanden ist
         for (const group of this.modulGroups) {
             for (const belegungModul of group.module) {
                 if (belegungModul.modulTagesschule.angemeldet) {
-                    this.showErrorMessageNoModule = false;
-                    return;
+                    return true;
                 }
             }
         }
-        this.showErrorMessageNoModule = true;
+        return false;
+    }
+
+    private isThereAnyAnmeldungSaveModel(): boolean {
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
+        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
+            return moduleTagessule
+                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
+        }
+        return false;
     }
 }

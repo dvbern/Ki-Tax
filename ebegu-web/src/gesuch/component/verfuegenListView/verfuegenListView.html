@@ -13,12 +13,12 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="verfuegenListView gesuchModul">
+<div class="verfuegen-list-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
     <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
 
-        <div class="row viewTitle">
+        <div class="row view-title">
             <div class="col-md-12">
                 <h2>{{vm.getTitle()}}</h2>
                 <hr class="header"/>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="row marginTop40" ng-show="vm.hasNichtBerechenbareBetreuungen()"
+                <div class="row margin-top-40" ng-show="vm.hasNichtBerechenbareBetreuungen()"
                      dv-show-element
                      dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
                     <div class="col-md-12">
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <!--FinSitStatus-->
-                <div class="row marginTop30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchsteller()">
+                <div class="row margin-top-30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchsteller()">
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
                             <dv-radio-container name="finSitStatus" class="input-element"
@@ -160,7 +160,7 @@
 
 
                 <!-- Liste der bisherige Mahnungen -->
-                <div class="row text-left marginTop20" ng-if="vm.getMahnungList().length > 0">
+                <div class="row text-left margin-top-20" ng-if="vm.getMahnungList().length > 0">
                     <div class="col-md-12">
                         <h2 data-translate="MAHNUNGEN"></h2>
                         <hr class="header"/>
@@ -182,12 +182,12 @@
                 </div>
 
                 <!-- Mahnungsdetails, neue Mahnung erstellen -->
-                <div class="row text-left marginTop20"
+                <div class="row text-left margin-top-20"
                      ng-if="vm.showErsteMahnungAusloesen() || vm.showZweiteMahnungAusloesen()">
                     <div class="col-md-12">
-                        <h3 class="ebeguH2" data-translate="ERSTE_MAHNUNG" ng-if="vm.showErsteMahnungAusloesen()"></h3>
-                        <h3 class="ebeguH2" data-translate="ZWEITE_MAHNUNG"
-                            ng-if="vm.showZweiteMahnungAusloesen()"></h3>
+                        <h3 class="ebegu-h2" data-translate="ERSTE_MAHNUNG" ng-if="vm.showErsteMahnungAusloesen()"></h3>
+                        <h3 class="ebegu-h2" data-translate="ZWEITE_MAHNUNG"
+							ng-if="vm.showZweiteMahnungAusloesen()"></h3>
                         <hr class="header"/>
                         <div class="row">
                             <dv-input-container class="col-md-12 form-group kommentar-feld">

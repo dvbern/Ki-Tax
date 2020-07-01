@@ -15,8 +15,8 @@
 @import (reference) 'variables.less';
 
 @media @mq-xs {
-    .gesuchModul {
-        &.betreuungView {
+    .gesuch-modul {
+        &.betreuung-view {
             padding: 5rem 3rem 10rem;
             .well {
                 margin-left: -3rem;
@@ -32,42 +32,42 @@
         }
     }
 
-    .gesuchstellerDashboardView {
-        .dashboardHeader {
-            margin-top: 20rem !important;
+    .gesuchsteller-dashboard-view {
+        .dashboard-header {
             align-items: stretch;
+            margin-top: 20rem !important;
         }
         .gdashboard-panel + .gdashboard-panel {
             padding-left: 6rem;
         }
         .gdashboard-panel {
             display: flex;
-            text-align: center;
             flex-direction: column;
             justify-content: flex-start;
-            max-width: 38rem;
             margin: 0;
+            max-width: 38rem;
+            text-align: center;
             &:not(:last-of-type) {
-                padding-right: 6rem;
                 border-right: 1px solid @contrast;
+                padding-right: 6rem;
                 &:not(:first-of-type) {
-                    padding-left: 6rem;
                     max-width: 38rem;
+                    padding-left: 6rem;
                 }
             }
-            .gdashboard-panel__button {
+            .gdashboard-panel-button {
                 &--margin {
-                    margin-top: 5rem;
                     margin-bottom: 5rem;
+                    margin-top: 5rem;
 
                 }
                 &--ansehen {
                     margin-bottom: -5rem;
                 }
-                &--margin + .gdashboard-panel__text {
+                &--margin + .gdashboard-panel-text {
                     margin-top: -5rem;
                 }
-                &--ansehen + .gdashboard-panel__text {
+                &--ansehen + .gdashboard-panel-text {
                     margin-top: 5rem;
                 }
             }
@@ -87,8 +87,8 @@
     }
 
     .dv-input-container-medium-label {
-        width: 30rem;
         padding-right: 32px;
+        width: 30rem;
     }
 
     .dv-input-container-medium-select {
@@ -100,19 +100,19 @@
     }
 
     .dv-input-container-question {
-        min-width: 30rem;
         max-width: 100%;
+        min-width: 30rem;
         width: auto;
     }
 
-    /*  .gesuchModul {
+    /*  .gesuch-modul {
           padding-bottom: 10rem;
       }*/
     #sidenavContainer {
-        width: 35.5rem;
-        min-width: 35.5rem;
         max-width: 35.5rem;
+        min-width: 35.5rem;
         right: unset;
+        width: 35.5rem;
         li {
             width: 35.5rem;
             &:before {
@@ -129,9 +129,9 @@
 }
 
 @media @mq-sm {
-    .gesuchModul {
+    .gesuch-modul {
         padding: 5rem 2.5rem 10rem 5rem;
-        &.betreuungView {
+        &.betreuung-view {
             padding: 5rem 2.5rem 10rem 5rem;
 
             .well {
@@ -141,7 +141,7 @@
         }
     }
 
-    .mitteilungenView {
+    .mitteilungen-view {
         padding: 6rem;
         dv-accordion {
             dv-accordion-tab {
@@ -162,7 +162,7 @@
             justify-content: center;
 
             .dv-navigation-item {
-                padding: .75rem;
+                padding: 0.75rem;
             }
 
         }
@@ -204,18 +204,18 @@
 }
 
 @media only screen
-and (min-device-width: 320px)
-and (max-device-width: 568px)
-and (-webkit-min-device-pixel-ratio: 2), only screen
-and (min-device-width: 375px)
-and (max-device-width: 667px)
-and (-webkit-min-device-pixel-ratio: 2), only screen
-and (min-device-width: 414px)
-and (max-device-width: 736px)
-and (-webkit-min-device-pixel-ratio: 3), only screen
-and (max-device-width: 640px), only screen
-and (max-device-width: 667px), only screen
-and (max-width: 480px) {
+    and (min-device-width: 320px)
+    and (max-device-width: 568px)
+    and (-webkit-min-device-pixel-ratio: 2), only screen
+    and (min-device-width: 375px)
+    and (max-device-width: 667px)
+    and (-webkit-min-device-pixel-ratio: 2), only screen
+    and (min-device-width: 414px)
+    and (max-device-width: 736px)
+    and (-webkit-min-device-pixel-ratio: 3), only screen
+    and (max-device-width: 640px), only screen
+    and (max-device-width: 667px), only screen
+    and (max-width: 480px) {
 
     h2 {
         line-height: 2.4rem;
@@ -239,24 +239,24 @@ and (max-width: 480px) {
     }
 
     .dv-input-container-question {
-        width: 100%;
         margin-bottom: 4rem;
+        width: 100%;
     }
 
-    .gesuchModul {
+    .gesuch-modul {
         padding: 5rem 3rem 13rem;
     }
     .dv-error-messages {
-        min-height: 3rem;
         height: auto;
         line-height: normal;
+        min-height: 3rem;
     }
     dv-eingabe-basisjahr {
-        position: relative;
+        display: inline-block;
         height: 2.5rem;
         margin: 0;
         margin-top: -2.5rem;
-        display: inline-block;
+        position: relative;
     }
 
     html {
@@ -264,21 +264,21 @@ and (max-width: 480px) {
     }
 
     .dv-ebegu-calendar {
-        &__module {
+        &-module {
             padding: 1rem;
         }
-        &__weekday {
-            padding: 0;
+        &-weekday {
+            min-width: 0;
             //  font-size: 1rem;
             overflow: hidden;
+            padding: 0;
             text-overflow: ellipsis;
-            min-width: 0;
         }
-        &__container-weekdays {
+        &-container-weekdays {
             flex-wrap: nowrap;
 
         }
-        &__date {
+        &-date {
             &--day {
                 font-size: 1.3rem !important;
                 margin-top: auto !important;

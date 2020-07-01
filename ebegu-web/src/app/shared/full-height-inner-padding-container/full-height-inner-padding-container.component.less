@@ -21,11 +21,11 @@
 }
 
 .full-height-inner-padding-container {
-    min-height: 100%;
     background: @white;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
+    min-height: 100%;
 
     ::ng-deep & {
         > * {
@@ -35,10 +35,10 @@
             flex-grow: 1;
         }
         .dv-content {
+            background: @lgrey;
             // make sure the child element with this class grows to full height
             flex-grow: 1;
             padding: 0 2.5rem;
-            background: @lgrey;
             .well {
                 margin-left: -2.5rem;
                 margin-right: -2.5rem;
@@ -48,11 +48,11 @@
         .dv-footer {
             // make sure to position of the child element with this class is at the bottom
             align-self: flex-end;
-            padding: 3rem 2.5rem 2.5rem;
             background: @lgrey;
-            width: 100%;
             display: flex;
             justify-content: center;
+            padding: 3rem 2.5rem 2.5rem;
+            width: 100%;
 
             & > * {
                 margin: 0 0.75em;

@@ -19,23 +19,23 @@ dv-accordion {
     overflow: hidden;
     dv-accordion-tab {
         .dv-accordion-tab-title {
+            background: darkgrey;
+            color: black;
+            display: block;
+            margin: 0;
             position: relative;
-            z-index: 1;
             -webkit-touch-callout: default; /* iOS Safari */
+            transition: none !important;
             -webkit-user-select: text; /* Safari*/
             -khtml-user-select: text; /* Konqueror */
             -moz-user-select: text; /* Firefox */
             -ms-user-select: text; /* Internet Explorer/Edge */
             user-select: text;
+            width: 100%;
+            z-index: 1;
             &:focus {
                 outline: 2px solid @contrast-darkest;
             }
-            display: block;
-            width: 100%;
-            background: darkgrey;
-            color: black;
-            margin: 0;
-            transition: none !important;
             &.tab-open {
                 background: grey;
                 color: black;
@@ -47,12 +47,12 @@ dv-accordion {
             }
         }
         .dv-accordion-tab-content {
-            overflow: hidden;
+            background: lightblue;
             display: block;
-            width: 100%;
             height: auto;
             max-height: 15rem;
-            background: lightblue;
+            overflow: hidden;
+            width: 100%;
             &.ng-hide-add {
                 max-height: 15rem;
                 transition: none !important;
@@ -61,8 +61,8 @@ dv-accordion {
                 max-height: 0;
             }
             &.ng-hide-remove {
-                transition: all 1s ease;
                 max-height: 0;
+                transition: all 1s ease;
             }
             &.ng-hide-remove.ng-hide-remove-active {
                 max-height: 15rem;

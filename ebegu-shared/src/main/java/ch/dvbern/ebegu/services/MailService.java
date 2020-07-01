@@ -169,6 +169,10 @@ public interface MailService {
 	 * Sendet eine Email mit der Information, dass ein Angebot für eine Gemeinde aktiviert wurde
 	 */
 	void sendInfoGemeineAngebotAktiviert(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeAngebotTyp angebot);
+	/**
+	 * schickt eine email an den Verantwortlichen Tagesschule und informiert, dass das Gesuch verfuegt wurde
+	 */
+	void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS) throws MailException;
 
 	void sendNotrechtGenerischeMitteilung(
 		@Nonnull RueckforderungMitteilung mitteilung,

@@ -35,7 +35,7 @@
         </div>
 
         <!-- Hinweis, wenn Ferien einen Ausweichstandort haben -->
-        <div class="marginTop30" ng-if="vm.hasAusweichstandort() && !vm.isAnmeldungNichtFreigegeben()">
+        <div class="margin-top-30" ng-if="vm.hasAusweichstandort() && !vm.isAnmeldungNichtFreigegeben()">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation " aria-hidden="true"></i>
                 <span data-translate="WARN_FERIEN_AUSWEICHSTANDORT"
@@ -54,26 +54,26 @@
             <div class="row"
                  ng-if="!vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
                 <div class="col-sm-12 dv-input-container-medium form-group">
-                    <div class="dv-ebegu-calendar__container">
-                        <div class="dv-ebegu-calendar__container-weekdays">
-                            <div class="dv-ebegu-calendar__weekday dv-ebegu-calendar__weekday--{{day}}"
+                    <div class="dv-ebegu-calendar-container">
+                        <div class="dv-ebegu-calendar-container-weekdays">
+                            <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
                                  ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
                             </div>
                         </div>
-                        <break class="dv-ebegu-calendar__break"
+                        <break class="dv-ebegu-calendar-break"
                                ng-repeat-start="tag in vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung"
                                ng-if="tag.tag.weekday()==0"></break>
-                        <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--{{tag.tag.weekday()+1}}">
+                        <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
                             <md-checkbox ng-model="tag.angemeldet"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          class="dv-ebegu-calendar">
-                                <span class="dv-ebegu-calendar__date--day"
+                                <span class="dv-ebegu-calendar-date--day"
                                       data-translate="{{tag.tag | amDateFormat : 'DD.MM'}}"></span>
-                                <span class="dv-ebegu-calendar__date--year"
+                                <span class="dv-ebegu-calendar-date--year"
                                       data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
                             </md-checkbox>
                         </div>
-                        <break class="dv-ebegu-calendar__break" ng-repeat-end
+                        <break class="dv-ebegu-calendar-break" ng-repeat-end
                                ng-if="vm.displayBreak(tag, $index,vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung)"></break>
                     </div>
                 </div>
@@ -81,29 +81,29 @@
             <div class="row" ng-if="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <!-- Abgeschickt: Liste der gewaehlten Tage readonly -->
-                    <div class="dv-ebegu-calendar__container">
-                        <div class="dv-ebegu-calendar__container-weekdays">
-                            <div class="dv-ebegu-calendar__weekday"
+                    <div class="dv-ebegu-calendar-container">
+                        <div class="dv-ebegu-calendar-container-weekdays">
+                            <div class="dv-ebegu-calendar-weekday"
                                  ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
                             </div>
                         </div>
-                        <break class="dv-ebegu-calendar__break"
+                        <break class="dv-ebegu-calendar-break"
                                ng-repeat-start="tag in vm.betreuung.belegungFerieninsel.tage"
                                ng-if="tag.tag.weekday()==0"></break>
-                        <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--{{tag.tag.weekday()+1}}">
+                        <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
                             <md-checkbox ng-disabled="true" ng-model="isDisabled" aria-checked="true"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          class="dv-ebegu-calendar">
-                                <span class="dv-ebegu-calendar__date--day"
+                                <span class="dv-ebegu-calendar-date--day"
                                       data-translate="{{tag.tag | amDateFormat : 'DD.MM'}}"></span>
-                                <span class="dv-ebegu-calendar__date--year"
+                                <span class="dv-ebegu-calendar-date--year"
                                       data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
 
                             </md-checkbox>
                         </div>
-                        <div class="dv-ebegu-calendar__row--week"
+                        <div class="dv-ebegu-calendar-row--week"
                              ng-if="vm.displayWeekRow(tag, $index,vm.betreuung.belegungFerieninsel.tage)"></div>
-                        <break class="dv-ebegu-calendar__break" ng-repeat-end
+                        <break class="dv-ebegu-calendar-break" ng-repeat-end
                                ng-if="vm.displayBreak(tag, $index,vm.betreuung.belegungFerieninsel.tage)"></break>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
         </div>
 
         <!-- Hinweis, dass Tageschulanmeldung noch nicht freigeschaltet -->
-        <div class="marginTop30" ng-if="!vm.isFerieninselAnmeldungAktiv()">
+        <div class="margin-top-30" ng-if="!vm.isFerieninselAnmeldungAktiv()">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation " aria-hidden="true"></i>
                 <span>{{vm.getFerieninselAnmeldungNotYetReadyText()}}</span>
@@ -120,7 +120,7 @@
         </div>
 
         <!-- Hinweis, wenn Ferien noch nicht buchbar -->
-        <div class="marginTop30" ng-if="vm.isAnmeldungNichtFreigegeben()">
+        <div class="margin-top-30" ng-if="vm.isAnmeldungNichtFreigegeben()">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation " aria-hidden="true"></i>
                 <span data-translate="WARN_FERIEN_NOCH_NICHT_BUCHBAR"></span>
@@ -128,7 +128,7 @@
         </div>
 
         <!-- Hinweis, wenn Anmeldeschluss schon abgelaufen -->
-        <div class="marginTop30" ng-if="vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled()">
+        <div class="margin-top-30" ng-if="vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled()">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation " aria-hidden="true"></i>
                 <span data-translate="WARN_FERIEN_NICHT_MEHR_BUCHBAR"></span>
@@ -136,21 +136,21 @@
         </div>
 
         <!-- Hinweis, wenn keine Tage ausgewaehlt -->
-        <div class="marginTop30" ng-if="vm.showErrorMessage === true">
+        <div class="margin-top-30" ng-if="vm.showErrorMessage === true">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation " aria-hidden="true"></i>
                 <span data-translate="WARN_FERIEN_KEINE_TAGE_GEWAEHLT"></span>
             </div>
         </div>
 
-        <div class="marginTop30" ng-if="vm.showNochNichtFreigegeben === true">
+        <div class="margin-top-30" ng-if="vm.showNochNichtFreigegeben === true">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation" aria-hidden="true"></i>
                 <span data-translate="WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN"></span>
             </div>
         </div>
 
-        <div class="marginTop30" ng-if="vm.showMutiert === true">
+        <div class="margin-top-30" ng-if="vm.showMutiert === true">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation" aria-hidden="true"></i>
                 <span data-translate="WARN_ANGEBOT_MUTIERT"></span>

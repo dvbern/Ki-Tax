@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
@@ -71,6 +72,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
 	private static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
+	private static final String VERFUEGUNG_ERKLAERUNG_FEBR = "PdfGeneration_Verfuegung_Erklaerung_FEBR";
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
 	private static final String PENSUM_TITLE = "PdfGeneration_Verfuegung_PensumTitle";
@@ -120,6 +122,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private final Betreuung betreuung;
 	private final boolean kontingentierungEnabledAndEntwurf;
+	private final boolean stadtBernAsivConfigured;
 
 	@Nonnull
 	private final Art art;
@@ -128,13 +131,15 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
-		boolean kontingentierungEnabledAndEntwurf
+		boolean kontingentierungEnabledAndEntwurf,
+		boolean stadtBernAsivConfigured
 	) {
 		super(betreuung.extractGesuch(), stammdaten);
 
 		this.betreuung = betreuung;
 		this.art = art;
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
+		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
 	}
 
 	@Nonnull
@@ -172,6 +177,12 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
 			document.add(paragraphWithSupertext);
 			document.add(createVerfuegungTable());
+
+			// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
+			if (!stadtBernAsivConfigured && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeindeStammdaten.getGemeinde())) {
+				document.add(createErklaerungstextFEBR());
+			}
+
 			addBemerkungenIfAvailable(document);
 			break;
 		case KEIN_ANSPRUCH:
@@ -612,5 +623,19 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			return PdfUtil.printBigDecimal(abschnitt.getVerfuegteAnzahlZeiteinheiten());
 		}
 		return PdfUtil.printPercent(abschnitt.getBgPensum());
+	}
+
+	@Nonnull
+	private PdfPTable createErklaerungstextFEBR() {
+		PdfPTable table = new PdfPTable(1);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
+		PdfPTable innerTable = new PdfPTable(1);
+		innerTable.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
+		innerTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		innerTable.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		innerTable.addCell(PdfUtil.createParagraph(translate(VERFUEGUNG_ERKLAERUNG_FEBR), 2));
+		table.addCell(innerTable);
+		table.setSpacingAfter(15);
+		return table;
 	}
 }
