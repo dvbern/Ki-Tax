@@ -18,6 +18,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {MaterialModule} from '../../material.module';
 import {SharedModule} from '../../shared.module';
@@ -27,6 +28,9 @@ import {FileUploadComponent} from './file-upload.component';
 describe('FileUploadComponent', () => {
     let component: FileUploadComponent;
     let fixture: ComponentFixture<FileUploadComponent>;
+
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -39,6 +43,7 @@ describe('FileUploadComponent', () => {
                 providers: [
                     WindowRef,
                     {provide: NgForm, useValue: new NgForm([], [])},
+                    {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
                 ],
             }
         ).compileComponents();
