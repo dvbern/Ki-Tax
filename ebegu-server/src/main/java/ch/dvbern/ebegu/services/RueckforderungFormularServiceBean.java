@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,9 +48,12 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -77,6 +81,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private MailService mailService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -275,6 +282,12 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		case IN_PRUEFUNG_KANTON_STUFE_1: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 				rueckforderungFormular.setStatus(RueckforderungStatus.GEPRUEFT_STUFE_1);
+				// Zahlungen ausloesen
+				rueckforderungFormular.setStufe1FreigabeBetrag(rueckforderungFormular.calculateFreigabeBetragStufe1());
+				rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
+				// Bestaetigung schicken
+				createBestaetigungStufe1Geprueft(rueckforderungFormular);
+
 				// Falls unterdessen die Phase zwei bereits aktiviert wurde, wollen wir mit "geprueft" der Phase zwei direkt in die Bearbeitung
 				// Institution Phase 2 wechseln, da wir sonst auf "geprueft" blockiert bleiben
 				if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
@@ -314,6 +327,36 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		default:
 			break;
+		}
+	}
+
+	private void createBestaetigungStufe1Geprueft(@Nonnull RueckforderungFormular modifiedRueckforderungFormular) {
+		try {
+			// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als RueckforderungsMitteilung zu
+			// speichern, wird hier der generierte HTML-Inhalt des Mails zurueckgegeben
+			final String mailText = mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
+			if (mailText != null) {
+				// Wir wollen nur den body speichern
+				String content = StringUtils.substringBetween(mailText, "<body>", "</body>");
+				// remove any newlines or tabs (leading or trailing whitespace doesn't matter)
+				content = content.replaceAll("(\\t|\\n)", "");
+				// boil down remaining whitespace to a single space
+				content = content.replaceAll("\\s+", " ");
+				content = content.trim();
+
+				final String betreff = "Corona-Finanzierung für Kitas und  TFO: Zahlung freigegeben / "
+					+ "Corona - financement pour les crèches et les parents de jour: Versement libéré";
+				RueckforderungMitteilung mitteilung = new RueckforderungMitteilung();
+				mitteilung.setBetreff(betreff);
+				mitteilung.setInhalt(content);
+				mitteilung.setAbsender(principalBean.getBenutzer());
+				mitteilung.setSendeDatum(LocalDateTime.now());
+				mitteilung = persistence.persist(mitteilung);
+				addMitteilung(modifiedRueckforderungFormular, mitteilung);
+			}
+		} catch (MailException e) {
+			throw new EbeguRuntimeException("update",
+				"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
 		}
 	}
 }
