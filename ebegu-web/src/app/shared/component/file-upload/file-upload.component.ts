@@ -35,6 +35,7 @@ import {DateUtil} from '../../../../utils/DateUtil';
 export class FileUploadComponent implements OnChanges {
 
     @Input() public title: string;
+    @Input() public readOnly: boolean;
     @Output() public readonly download: EventEmitter<any> = new EventEmitter();
     @Output() public readonly delete: EventEmitter<any> = new EventEmitter();
     @Output() public readonly uploadFile: EventEmitter<any> = new EventEmitter();
