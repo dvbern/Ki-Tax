@@ -146,7 +146,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		if(currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
-			return allRueckforderungFormulare.stream().collect(Collectors.toList());
+			return new ArrayList<>(allRueckforderungFormulare);
 		}
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
@@ -218,7 +218,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return persistence.persist(formular);
 	}
 
-	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void initializePhase2() {
@@ -234,6 +233,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		switch (rueckforderungFormular.getStatus()) {
@@ -310,6 +310,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
 				rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
 			}
+			break;
 		}
 		default:
 			break;
