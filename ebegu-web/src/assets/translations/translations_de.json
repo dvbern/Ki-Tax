@@ -2084,5 +2084,11 @@
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BEANTRAGT": "Haben Sie ein Gesuch um Corona-Erwerbsersatzentschädigung eingereicht?",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BETRAG": "Falls ja, wie hoch ist die ausbezahlte Entschädigung für die Zeit vom 17.03.2020 bis 17.06.2020?",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_DEFINITIV_VERFUEGT": "",
+    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN": "Das ausgefüllte Excel für die Zeit vom 17. März bis am 16. Mai",
+    "RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION": "Die Kommunikation mit den Eltern (alle Rundschreiben, Rundmails, interne Sprachregelungen) bezüglich der Betreuung zwischen dem 17. März und 16. Mai 2020.",
+    "RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE": "Einsatzpläne für die Zeit vom 17. März bis 16. Mai, aus denen ersichtlich ist, welches Personal einsatzbereit war. ",
+    "RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT": "Verfügung Kurzarbeitsentschädigung (falls Betrag KAE schon def. verfügt)",
+    "RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ": "Verfügung Corona-EO (falls Betrag schon def. verfügt)",
+    "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument hochgeladen werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

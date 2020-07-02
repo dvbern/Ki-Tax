@@ -66,11 +66,21 @@ export class RueckforderungFormularComponent implements OnInit {
     public elternbeitraegeNichtInRechnung: boolean;
     public notwendigenInformationenLiefern: boolean;
 
+    public showMessageFehlendeDokumenteAngaben: boolean = false;
+    public showMessageFehlendeDokumenteKommunikation: boolean = false;
+    public showMessageFehlendeDokumenteEinsatzplaene: boolean = false;
+    public showMessageFehlendeDokumenteKurzarbeit: boolean = false;
+    public showMessageFehlendeDokumenteErwerbsersatz: boolean = false;
+
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
     private _stufe2ProvBetrag: number;
 
     public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
+    public rueckforderungKommunikationDokumente?: TSRueckforderungDokument[];
+    public rueckforderungEinsatzplaeneDokumente?: TSRueckforderungDokument[];
+    public rueckforderungKurzarbeitDokumente?: TSRueckforderungDokument[];
+    public rueckforderungErwerbsersatzDokumente?: TSRueckforderungDokument[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -108,11 +118,19 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.showMessageFehlendeDokumenteAngaben = false;
+        this.showMessageFehlendeDokumenteKommunikation = false;
+        this.showMessageFehlendeDokumenteEinsatzplaene = false;
+        this.showMessageFehlendeDokumenteKurzarbeit = false;
+        this.showMessageFehlendeDokumenteErwerbsersatz = false;
         if (!this.form.valid) {
             EbeguUtil.selectFirstInvalid();
             return;
         }
         if (isNeuOrEingeladenStatus(rueckforderungFormular.status)) {
+            return;
+        }
+        if (this.isInstitutionStufe2(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
             return;
         }
 
@@ -450,7 +468,33 @@ export class RueckforderungFormularComponent implements OnInit {
                         this.cdr.markForCheck();
                         break;
                     case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungKommunikationDokumente.push(dokument));
+                        this.rueckforderungKommunikationDokumente =
+                            [].concat(this.rueckforderungKommunikationDokumente);
+                        this.cdr.markForCheck();
+                        break;
                     case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungEinsatzplaeneDokumente.push(dokument));
+                        this.rueckforderungEinsatzplaeneDokumente =
+                            [].concat(this.rueckforderungEinsatzplaeneDokumente);
+                        this.cdr.markForCheck();
+                        break;
+                    case TSRueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungKurzarbeitDokumente.push(dokument));
+                        this.rueckforderungKurzarbeitDokumente =
+                            [].concat(this.rueckforderungKurzarbeitDokumente);
+                        this.cdr.markForCheck();
+                        break;
+                    case TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungErwerbsersatzDokumente.push(dokument));
+                        this.rueckforderungErwerbsersatzDokumente =
+                            [].concat(this.rueckforderungErwerbsersatzDokumente);
+                        this.cdr.markForCheck();
+                        break;
                     default:
                         return;
                 }
@@ -472,8 +516,29 @@ export class RueckforderungFormularComponent implements OnInit {
             rueckforderungFormular.id)
             .then(rueckforderungDokumente => {
                 this.rueckforderungAngabenDokumente = rueckforderungDokumente.filter(
-                    dokument => dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
                 this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+
+                this.rueckforderungKommunikationDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE);
+                this.rueckforderungKommunikationDokumente = [].concat(this.rueckforderungKommunikationDokumente);
+
+                this.rueckforderungEinsatzplaeneDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE);
+                this.rueckforderungEinsatzplaeneDokumente = [].concat(this.rueckforderungEinsatzplaeneDokumente);
+
+                this.rueckforderungKurzarbeitDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE);
+                this.rueckforderungKurzarbeitDokumente = [].concat(this.rueckforderungKurzarbeitDokumente);
+
+                this.rueckforderungErwerbsersatzDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE);
+                this.rueckforderungErwerbsersatzDokumente = [].concat(this.rueckforderungErwerbsersatzDokumente);
                 this.cdr.markForCheck();
             });
     }
@@ -499,7 +564,29 @@ export class RueckforderungFormularComponent implements OnInit {
                                 this.cdr.markForCheck();
                                 break;
                             case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungKommunikationDokumente);
+                                this.rueckforderungKommunikationDokumente =
+                                    [].concat(this.rueckforderungKommunikationDokumente);
+                                this.cdr.markForCheck();
+                                break;
                             case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungEinsatzplaeneDokumente);
+                                this.rueckforderungEinsatzplaeneDokumente =
+                                    [].concat(this.rueckforderungEinsatzplaeneDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungKurzarbeitDokumente);
+                                this.rueckforderungKurzarbeitDokumente =
+                                    [].concat(this.rueckforderungKurzarbeitDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungErwerbsersatzDokumente);
+                                this.rueckforderungErwerbsersatzDokumente =
+                                    [].concat(this.rueckforderungErwerbsersatzDokumente);
+                                this.cdr.markForCheck();
+                                break;
                             default:
                                 return;
                         }
@@ -531,7 +618,7 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public showDokumentenUpload(): boolean {
-        return false;
+        return true;
     }
 
     public getRueckforderungInstitutionTypOffentlich(): TSRueckforderungInstitutionTyp {
@@ -540,5 +627,32 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public getRueckforderungInstitutionTypPrivat(): TSRueckforderungInstitutionTyp {
         return TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    private validateDokumente(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        let valid = true;
+        if (this.rueckforderungAngabenDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteAngaben = true;
+            valid = false;
+        }
+        if (this.rueckforderungEinsatzplaeneDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteEinsatzplaene = true;
+            valid = false;
+        }
+        if (this.rueckforderungKommunikationDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteKommunikation = true;
+            valid = false;
+        }
+        if (rueckforderungFormular.institutionTyp !== this.getRueckforderungInstitutionTypOffentlich()) {
+            if (rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt && this.rueckforderungErwerbsersatzDokumente.length === 0) {
+                this.showMessageFehlendeDokumenteErwerbsersatz = true;
+                valid = false;
+            }
+            if (rueckforderungFormular.kurzarbeitDefinitivVerfuegt && this.rueckforderungKurzarbeitDokumente.length === 0) {
+                this.showMessageFehlendeDokumenteKurzarbeit = true;
+                valid = false;
+            }
+        }
+        return valid;
     }
 }
