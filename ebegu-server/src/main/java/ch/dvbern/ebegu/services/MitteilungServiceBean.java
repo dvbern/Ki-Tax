@@ -362,9 +362,35 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
-	public void removeExistingBetreuungsmitteilungenForBetreuung (Betreuung betreuung) {
-		Collection<Betreuungsmitteilung> existing = findAllBetreuungsmitteilungenForBetreuung(betreuung);
+	public void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung) {
+		Collection<Betreuungsmitteilung> existing = findOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 		existing.forEach(e -> persistence.remove(e));
+	}
+
+	@Nonnull
+	private Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
+		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
+		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
+
+		Predicate predicateBetreuung = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
+		predicates.add(predicateBetreuung);
+
+		final Predicate predicateNotApplied = cb.equal(root.get(Betreuungsmitteilung_.APPLIED), Boolean.FALSE);
+		predicates.add(predicateNotApplied);
+
+		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<Betreuungsmitteilung> tq = persistence.getEntityManager().createQuery(query);
+
+		tq.setParameter("betreuunParam", betreuung);
+		return tq.getResultList();
 	}
 
 	@Nonnull

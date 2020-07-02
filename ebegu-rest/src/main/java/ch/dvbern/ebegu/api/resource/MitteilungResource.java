@@ -130,7 +130,7 @@ public class MitteilungResource {
 			));
 
 		// we first clear all the Mutationsmeldungen for the current Betreuung
-		mitteilungService.removeExistingBetreuungsmitteilungenForBetreuung(betreuung);
+		mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 
 		Betreuungsmitteilung betreuungsmitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
 		Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
@@ -451,7 +451,7 @@ public class MitteilungResource {
 
 		Betreuung betreuung = betreuungOpt.get();
 
-		mitteilungService.removeExistingBetreuungsmitteilungenForBetreuung(betreuung);
+		mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 
 		if (betreuung.getBetreuungspensumAbweichungen() == null) {
 			return null;
