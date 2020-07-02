@@ -143,6 +143,7 @@ public class NotrechtResource {
 		JaxRueckforderungFormular.class)
 	@Nullable
 	@PUT
+	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxRueckforderungFormular update(
@@ -150,6 +151,39 @@ public class NotrechtResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
+		Objects.requireNonNull(rueckforderungFormularJAXP.getId());
+
+		RueckforderungFormular rueckforderungFormularFromDB =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularJAXP.getId()));
+
+		RueckforderungFormular rueckforderungFormularToMerge =
+			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
+				rueckforderungFormularFromDB);
+
+		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
+			throw new EbeguRuntimeException("update", "Action not allowed for this user");
+		}
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
+
+		// Zahlungen und Bestaetigungen sind ohne Status-Wechsel nicht relevant
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
+
+	@ApiOperation(value = "Updates a RueckforderungFormular in the database", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Path("/updateWithStatusChange")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular updateAndChangeStatusIfNecessary(
+		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
 		Objects.requireNonNull(rueckforderungFormularJAXP.getId());
 
 		RueckforderungFormular rueckforderungFormularFromDB =
@@ -167,12 +201,19 @@ public class NotrechtResource {
 			throw new EbeguRuntimeException("update", "Action not allowed for this user");
 		}
 
+		rueckforderungFormularToMerge = this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
 		RueckforderungFormular modifiedRueckforderungFormular =
-			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
+			this.rueckforderungFormularService.saveAndChangeStatusIfNecessary(rueckforderungFormularToMerge);
 
 		// Zahlungen generieren
 		zahlungenGenerieren(rueckforderungFormularToMerge, statusFromDB);
+		// Bestaetigungs-Mail und -Mitteilung
+		createBestaetigungStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular);
 
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
+
+	private void createBestaetigungStufe1Geprueft(RueckforderungStatus statusFromDB, RueckforderungFormular modifiedRueckforderungFormular) {
 		if (isStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular.getStatus())) {
 			try {
 				// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als RueckforderungsMitteilung zu
@@ -202,7 +243,6 @@ public class NotrechtResource {
 					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
 			}
 		}
-		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",

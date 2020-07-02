@@ -178,9 +178,18 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
-		changeStatusAndCopyFields(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
 		return mergedRueckforderungFormular;
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public RueckforderungFormular saveAndChangeStatusIfNecessary(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		Objects.requireNonNull(rueckforderungFormular);
+		changeStatusAndCopyFields(rueckforderungFormular);
+		return save(rueckforderungFormular);
 	}
 
 	@Nonnull
@@ -221,7 +230,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
 			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
-			save(formular);
+			saveAndChangeStatusIfNecessary(formular);
 		}
 	}
 
@@ -266,6 +275,16 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		case IN_PRUEFUNG_KANTON_STUFE_1: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 				rueckforderungFormular.setStatus(RueckforderungStatus.GEPRUEFT_STUFE_1);
+				// Falls unterdessen die Phase zwei bereits aktiviert wurde, wollen wir mit "geprueft" der Phase zwei direkt in die Bearbeitung
+				// Institution Phase 2 wechseln, da wir sonst auf "geprueft" blockiert bleiben
+				if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+					&& principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+					// Und dann direkt zum naechsten Status wechseln
+					rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+				}
 			}
 			break;
 		}

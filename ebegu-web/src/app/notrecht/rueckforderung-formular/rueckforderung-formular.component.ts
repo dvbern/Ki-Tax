@@ -126,16 +126,17 @@ export class RueckforderungFormularComponent implements OnInit {
                     if (answer !== true) {
                         return;
                     }
-                    this.doSave(rueckforderungFormular);
+                    this.doSave(rueckforderungFormular, true);
                     this.changeDetectorRef.markForCheck();
                 },
                 () => {
                 });
     }
 
-    private doSave(rueckforderungFormular: TSRueckforderungFormular): void {
+    private doSave(rueckforderungFormular: TSRueckforderungFormular, doSaveStatusChange: boolean): void {
         // Den Status sollte sicherheitshalber im Backend geprueft und gesetzt werden
-        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular)
+        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(
+                rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
                 this.initRueckforderungZahlungen(response);
                 return response;
@@ -163,7 +164,7 @@ export class RueckforderungFormularComponent implements OnInit {
                         this.changeDetectorRef.markForCheck();
                         return;
                     }
-                    this.doSave(rueckforderungFormular);
+                    this.doSave(rueckforderungFormular, true);
                 },
                 () => {
                 });
