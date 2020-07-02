@@ -176,7 +176,7 @@ public class NotrechtResource {
 
 		RueckforderungFormular rueckforderungFormularFromDB =
 			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
-				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				.orElseThrow(() -> new EbeguEntityNotFoundException("updateAndChangeStatusIfNecessary", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					rueckforderungFormularJAXP.getId()));
 
 		RueckforderungFormular rueckforderungFormularToMerge =
@@ -184,7 +184,7 @@ public class NotrechtResource {
 				rueckforderungFormularFromDB);
 
 		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
-			throw new EbeguRuntimeException("update", "Action not allowed for this user");
+			throw new EbeguRuntimeException("updateAndChangeStatusIfNecessary", "Action not allowed for this user");
 		}
 
 		rueckforderungFormularToMerge = this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
