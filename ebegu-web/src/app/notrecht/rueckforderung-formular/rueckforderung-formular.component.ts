@@ -663,4 +663,29 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         return valid;
     }
+
+    public getDokumenteKommunikationTitle(rueckforderungFormular: TSRueckforderungFormular): string {
+        if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+            return 'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_PRIVAT';
+        }
+        return 'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_OEFFENTLICH';
+    }
+
+    // ist nicht identisch => return von anderem string
+    // tslint:disable-next-line:no-identical-functions
+    public getDokumenteEinsatzplaeneTitle(rueckforderungFormular: TSRueckforderungFormular): string {
+        if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+            return 'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_PRIVAT';
+        }
+        return 'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_OEFFENTLICH';
+    }
+
+    // ist nicht identisch => return von anderem string
+    // tslint:disable-next-line:no-identical-functions
+    public getDokumenteAngabenTitle(rueckforderungFormular: TSRueckforderungFormular): string {
+        if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+            return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT';
+        }
+        return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH';
+    }
 }
