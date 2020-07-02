@@ -2087,5 +2087,7 @@
     "RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT": "Verfügung Kurzarbeitsentschädigung (falls Betrag KAE schon def. verfügt)",
     "RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ": "Verfügung Corona-EO (falls Betrag schon def. verfügt)",
     "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument hochgeladen werden",
+    "MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE": "Es gibt bereits eine Mutationsmeldung zu dieser Betreuung, welche die Gemeinde noch nicht bearbeitet hat.",
+    "MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY": "Wollen Sie diese Meldung überschreiben?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
