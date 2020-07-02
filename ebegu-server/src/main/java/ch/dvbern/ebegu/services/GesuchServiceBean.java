@@ -972,7 +972,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				if (anmeldung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
 					anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 					if (anmeldung.getVorgaengerId() != null) {
-						anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
+						// Falls es eine Vorgaenger-Anmeldung gibt, diese auf MUTIERT setzen, damit
+						// sie nicht mehr bearbeitet werden kann
+						AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(anmeldung.getVorgaengerId())
+							.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"resetMutierteAnmeldungen",
+								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+								anmeldung.getVorgaengerId()));
+						vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
 					}
 				}
 			}
