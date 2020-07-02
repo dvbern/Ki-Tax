@@ -279,7 +279,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				// Institution Phase 2 wechseln, da wir sonst auf "geprueft" blockiert bleiben
 				if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
 					&& principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
-					// Und dann direkt zum naechsten Status wechseln
+					// Direkt zum naechsten Status wechseln. In der Audit-Tabelle wird nur der neue Status sein
+					// Finde ich aber okay, da es auch nur 1 Benutzeraktion war, die von Status IN_PRUEFUNG_KANTON_STUFE_1
+					// zu IN_BEARBEITUNG_INSTITUTION_STUFE_2 gefuehrt hat.
 					rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
 					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
