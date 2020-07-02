@@ -238,18 +238,19 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         if (!this.isGesuchValid()) {
             return;
         }
-        if (this.hasNotAppliedMutationsmeldung()) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
-                deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
-                parentController: undefined,
-                elementID: undefined,
-            }).then(() => {   // User confirmed removal
-                this.freigeben();
-            });
-        } else {
+
+        if (!this.hasNotAppliedMutationsmeldung()) {
             this.freigeben();
         }
+
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+            deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {   // User confirmed removal
+            this.freigeben();
+        });
     }
 
     public freigeben(): void {
