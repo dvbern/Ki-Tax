@@ -133,6 +133,10 @@ public enum UserRole {
 		return Arrays.asList(ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
 	}
 
+	public static List<UserRole> getMandantSuperadminRoles() {
+		return Arrays.asList(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+	}
+
 	public static List<UserRole> getJugendamtSuperadminRoles() {
 		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SUPER_ADMIN);
 	}

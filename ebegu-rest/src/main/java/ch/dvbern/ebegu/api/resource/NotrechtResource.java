@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,16 +55,11 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
-import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
 
 import static java.util.Objects.requireNonNull;
 
@@ -85,15 +79,6 @@ public class NotrechtResource {
 
 	@Inject
 	private PrincipalBean principalBean;
-
-	@Inject
-	private MailService mailService;
-
-	@Inject
-	private Persistence persistence;
-
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
 
 	@Inject
 	private RueckforderungDokumentService rueckforderungDokumentService;
@@ -147,6 +132,7 @@ public class NotrechtResource {
 		JaxRueckforderungFormular.class)
 	@Nullable
 	@PUT
+	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxRueckforderungFormular update(
@@ -161,8 +147,6 @@ public class NotrechtResource {
 				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					rueckforderungFormularJAXP.getId()));
 
-		RueckforderungStatus statusFromDB = rueckforderungFormularFromDB.getStatus();
-
 		RueckforderungFormular rueckforderungFormularToMerge =
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
 				rueckforderungFormularFromDB);
@@ -171,51 +155,41 @@ public class NotrechtResource {
 			throw new EbeguRuntimeException("update", "Action not allowed for this user");
 		}
 
-		// Zahlungen generieren
-		zahlungenGenerieren(rueckforderungFormularToMerge, statusFromDB);
-
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
 
-		if (isStufe1Geprueft(statusFromDB, modifiedRueckforderungFormular.getStatus())) {
-			try {
-				// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als RueckforderungsMitteilung zu
-				// speichern, wird hier der generierte HTML-Inhalt des Mails zurueckgegeben
-				final String mailText = mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
-				if (mailText != null) {
-					// Wir wollen nur den body speichern
-					String content = StringUtils.substringBetween(mailText, "<body>", "</body>");
-					// remove any newlines or tabs (leading or trailing whitespace doesn't matter)
-					content = content.replaceAll("(\\t|\\n)", "");
-					// boil down remaining whitespace to a single space
-					content = content.replaceAll("\\s+", " ");
-					content = content.trim();
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
 
-					final String betreff = "Corona-Finanzierung für Kitas und  TFO: Zahlung freigegeben / "
-						+ "Corona - financement pour les crèches et les parents de jour: Versement libéré";
-					RueckforderungMitteilung mitteilung = new RueckforderungMitteilung();
-					mitteilung.setBetreff(betreff);
-					mitteilung.setInhalt(content);
-					mitteilung.setAbsender(principalBean.getBenutzer());
-					mitteilung.setSendeDatum(LocalDateTime.now());
-					mitteilung = persistence.persist(mitteilung);
-					rueckforderungFormularService.addMitteilung(modifiedRueckforderungFormular, mitteilung);
-				}
-			} catch (MailException e) {
-				throw new EbeguRuntimeException("update",
-					"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
-			}
+	@ApiOperation(value = "Updates a RueckforderungFormular in the database", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Path("/updateWithStatusChange")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular updateAndChangeStatusIfNecessary(
+		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+		Objects.requireNonNull(rueckforderungFormularJAXP.getId());
+
+		RueckforderungFormular rueckforderungFormularFromDB =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("updateAndChangeStatusIfNecessary", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularJAXP.getId()));
+
+		RueckforderungFormular rueckforderungFormularToMerge =
+			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
+				rueckforderungFormularFromDB);
+
+		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
+			throw new EbeguRuntimeException("updateAndChangeStatusIfNecessary", "Action not allowed for this user");
 		}
-		if(modifiedRueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
-		 && applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
-		){
-			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
-			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
-			modifiedRueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(modifiedRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
-			modifiedRueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
-			modifiedRueckforderungFormular =
-				this.rueckforderungFormularService.save(modifiedRueckforderungFormular);
-		}
+
+		rueckforderungFormularToMerge = this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
+		RueckforderungFormular modifiedRueckforderungFormular =
+			this.rueckforderungFormularService.saveAndChangeStatusIfNecessary(rueckforderungFormularToMerge);
 
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
@@ -296,17 +270,6 @@ public class NotrechtResource {
 		return Response.ok().build();
 	}
 
-	private void zahlungenGenerieren(
-		@Nonnull RueckforderungFormular rueckforderungFormular,
-		@Nonnull RueckforderungStatus statusFromDB
-	) {
-		// Kanton hat der Stufe 1 eingaben geprueft
-		if (isStufe1Geprueft(statusFromDB, rueckforderungFormular.getStatus())) {
-			rueckforderungFormular.setStufe1FreigabeBetrag(rueckforderungFormular.calculateFreigabeBetragStufe1());
-			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
-		}
-	}
-
 	@ApiOperation(value = "Gibt alle Rückforderungsdokumente zurück, die die aktuelle RueckforderungForm",
 		responseContainer = "List", response = JaxRueckforderungFormular.class)
 	@GET
@@ -344,11 +307,5 @@ public class NotrechtResource {
 		rueckforderungDokumentService.removeDokument(rueckforderungDokument);
 
 		return Response.ok().build();
-	}
-
-	private boolean isStufe1Geprueft(@Nonnull RueckforderungStatus rueckforderungStatusOld,
-		@Nonnull RueckforderungStatus rueckforderungStatusNeu) {
-		return rueckforderungStatusOld == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-			&& rueckforderungStatusNeu == RueckforderungStatus.GEPRUEFT_STUFE_1;
 	}
 }

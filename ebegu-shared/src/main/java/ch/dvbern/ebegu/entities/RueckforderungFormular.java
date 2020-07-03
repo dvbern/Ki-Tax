@@ -680,4 +680,22 @@ public class RueckforderungFormular extends AbstractEntity {
 		}
 		return isPrivateInstitution() ? einreichungsfristPrivatStufe2 : einreichungsfristOeffentlichStufe2;
 	}
+
+	/**
+	 * Der Prozess ist beendet, wenn entweder gar keine Kurzarbeit beantragt wurde, oder diese bereits definitiv verfuegt ist.
+	 */
+	public boolean isKurzarbeitProzessBeendet() {
+		return getKurzarbeitBeantragt() == null
+			|| !getKurzarbeitBeantragt()
+			|| (getKurzarbeitBeantragt() && getKurzarbeitDefinitivVerfuegt() != null && getKurzarbeitDefinitivVerfuegt());
+	}
+
+	/**
+	 * Der Prozess ist beendet, wenn entweder gar kein CoronaErwerbsersatz beantragt wurde, oder dieser bereits definitiv verfuegt ist.
+	 */
+	public boolean isCoronaErwerbsersatzProzessBeendet() {
+		return getCoronaErwerbsersatzBeantragt() == null
+			|| !getCoronaErwerbsersatzBeantragt()
+			|| (getCoronaErwerbsersatzBeantragt() && getCoronaErwerbsersatzDefinitivVerfuegt() != null && getCoronaErwerbsersatzDefinitivVerfuegt());
+	}
 }
