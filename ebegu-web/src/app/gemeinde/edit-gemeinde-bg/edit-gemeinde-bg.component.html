@@ -164,11 +164,11 @@
                         </div>
                     </div>
 
-                    <!--            Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde. (wird nur angezeigt wenn Mischgesuche möglich sind) -->
+                    <!-- Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde. (wird nur angezeigt wenn Mischgesuche möglich sind) -->
                     <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
                         <div class="form-group checkbox-with-tooltip">
                             <div>
-                            <mat-checkbox id="verantwortlicherTSInformieren_id" name="standardDokSignature_id"
+                            <mat-checkbox id="verantwortlicherTSInformieren_id" name="verantwortlicherTSInformieren_id"
                                           [(ngModel)]="stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
                                 {{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN'|translate}}
                             </mat-checkbox>

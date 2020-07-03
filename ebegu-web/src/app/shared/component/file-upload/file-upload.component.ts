@@ -21,18 +21,20 @@ import {
     EventEmitter,
     Input,
     OnChanges,
-    SimpleChanges
+    SimpleChanges, OnInit
 } from '@angular/core';
 import {Moment} from 'moment';
 import {TSFile} from '../../../../models/TSFile';
 import {DateUtil} from '../../../../utils/DateUtil';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 
 @Component({
     selector: 'dv-file-upload',
     templateUrl: './file-upload.component.html',
+    styleUrls: ['./file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FileUploadComponent implements OnChanges {
+export class FileUploadComponent implements OnChanges, OnInit {
 
     @Input() public title: string;
     @Input() public readOnly: boolean;
@@ -42,7 +44,18 @@ export class FileUploadComponent implements OnChanges {
 
     @Input() public files: TSFile[];
 
-    public constructor() {
+    public allowedMimetypes: string = '';
+
+    public constructor(
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {}
+
+    public ngOnInit(): void {
+        this.applicationPropertyRS.getAllowedMimetypes().then(response => {
+            if (response !== undefined) {
+                this.allowedMimetypes = response;
+            }
+        });
     }
 
     public onDownload<T extends TSFile>(file: T, attachment: boolean): void {

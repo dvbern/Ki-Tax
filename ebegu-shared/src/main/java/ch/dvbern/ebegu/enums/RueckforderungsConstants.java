@@ -17,16 +17,10 @@
 
 package ch.dvbern.ebegu.enums;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
-import ch.dvbern.ebegu.util.MathUtil;
-
 public interface RueckforderungsConstants {
-
-	BigDecimal entschaedigungProTagKita = MathUtil.DEFAULT.from(25);
-	BigDecimal entschaedigungProStundeTfo = MathUtil.DEFAULT.from(2); // TODO (team) wieviel ist es bei TFO?
 
 	LocalDate einreichungsfristOeffentlichStufe2 = LocalDate.of(2020, Month.JULY, 31);
 	LocalDate einreichungsfristPrivatStufe2 = LocalDate.of(2020, Month.JULY, 17);
