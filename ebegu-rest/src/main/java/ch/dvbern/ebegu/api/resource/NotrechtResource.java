@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,7 +61,6 @@ import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
 import ch.dvbern.ebegu.util.DateUtil;
-import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 

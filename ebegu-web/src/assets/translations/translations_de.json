@@ -2095,7 +2095,6 @@
     "RUECKFORDERUNG_FEHLENDE_DOKUMENTE" : "Es muss mindestens ein Dokument hochgeladen werden",
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE": "Es gibt bereits eine Mutationsmeldung zu dieser Betreuung, welche die Gemeinde noch nicht bearbeitet hat.",
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY": "Wollen Sie diese Meldung überschreiben?",
-    "RUECKFORDERUNG_FEHLENDE_DOKUMENTE": "Es muss mindestens ein Dokument hochgeladen werden",
     "RUECKFORDERUNG_WARNING_FRIST_ERREICHT": "Achtung, die Einreichungsfrist würde erreicht, es ist nicht mehr möglich die Ruckforderungsformular zu absenden. Bitte kontaktieren Sie der Kanton für Fragen.",
     "RUECKFORDERUNG_VERLAENGERUNG_TITLE": "Einreichungsfrist verlängern?",
     "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für dieser Institution verlängern? Dieser Frist wird nur bei private Institution gilten!",
