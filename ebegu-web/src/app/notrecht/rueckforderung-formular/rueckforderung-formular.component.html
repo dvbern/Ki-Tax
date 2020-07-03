@@ -1135,7 +1135,7 @@
                 </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
+                    [title]="getDokumenteAngabenTitle(rueckforderungFormular)"
                     (delete)="delete($event)"
                     (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                     rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
@@ -1149,7 +1149,7 @@
                 </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION'"
+                    [title]="getDokumenteKommunikationTitle(rueckforderungFormular)"
                     (delete)="delete($event)"
                     (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                     rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
@@ -1163,7 +1163,7 @@
                 </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE'"
+                    [title]="getDokumenteEinsatzplaeneTitle(rueckforderungFormular)"
                     (delete)="delete($event)"
                     (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                     rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
