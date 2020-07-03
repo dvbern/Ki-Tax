@@ -116,6 +116,9 @@ export class RueckforderungFormularComponent implements OnInit {
                     if (this.isInstitutionStufe2(response)) {
                         this.calculateInstiProvBetrag(response, false);
                     }
+                    if (this.isInstitutionStufe1ReadOnly(response)) {
+                        this.calculateInstiProvBetrag(response, true);
+                    }
                     return response;
                 }));
     }
@@ -157,7 +160,7 @@ export class RueckforderungFormularComponent implements OnInit {
     private doSave(rueckforderungFormular: TSRueckforderungFormular, doSaveStatusChange: boolean): void {
         // Den Status sollte sicherheitshalber im Backend geprueft und gesetzt werden
         this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(
-                rueckforderungFormular, doSaveStatusChange)
+            rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
                 this.readOnly = this.initReadOnly(response);
                 this.initRueckforderungZahlungen(response);
@@ -678,6 +681,9 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     private initReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.GEPRUEFT_STUFE_1) {
+            return true;
+        }
         if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
             || rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
             || rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV)
@@ -706,6 +712,15 @@ export class RueckforderungFormularComponent implements OnInit {
         if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
             || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH)
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isKantonStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;
         }
         return false;
