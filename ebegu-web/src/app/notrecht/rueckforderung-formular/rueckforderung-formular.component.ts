@@ -221,7 +221,8 @@ export class RueckforderungFormularComponent implements OnInit {
                 && this.gutscheinPlaetzenReduziert
                 && this.erstattungGemaessKanton
                 && this.mahlzeitenBGSubventionenGebuehrensystem
-                && this.belegeEinreichenBetrageKantonZurueckfordern;
+                && this.belegeEinreichenBetrageKantonZurueckfordern
+                && !this.fristSchonErreicht(rueckforderungFormular);
         }
         return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern;
     }
@@ -637,19 +638,16 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public fristSchonErreicht(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if (this.isInstitutionStufe2(rueckforderungFormular)) {
-            const currentDate = moment();
-            if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypOffentlich()) {
-                return !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
+        const currentDate = moment();
+        let fristabgelaufen = false;
+        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
+            if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) {
+                fristabgelaufen = !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'));
             }
-            if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
-                if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) {
-                    return !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'));
-                }
-                return !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
-            }
+            fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
         }
-        return false;
+        fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
+        return fristabgelaufen;
     }
 
     public fristVerlaengern(rueckforderungFormular: TSRueckforderungFormular): void {

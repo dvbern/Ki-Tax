@@ -1231,7 +1231,8 @@
                 || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
-            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
+            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()
+                    && rueckforderungFormular.institutionTyp === 'PRIVAT'"
                     (click)="fristVerlaengern(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
             </button>
