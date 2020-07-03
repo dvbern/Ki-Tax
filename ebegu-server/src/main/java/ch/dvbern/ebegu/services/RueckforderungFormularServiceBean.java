@@ -252,8 +252,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"Rueckfordungsformular invalid: " + id));
 		rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
-		// Wir verwenden explizit nicht die save() methode, da diese u.U.  automatisch Statusuebergaenge initialisiert
-		return persistence.merge(rueckforderungFormular);
+		return save(rueckforderungFormular);
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
