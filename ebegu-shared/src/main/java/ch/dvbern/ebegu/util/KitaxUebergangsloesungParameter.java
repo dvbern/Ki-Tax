@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -76,15 +78,9 @@ public final class KitaxUebergangsloesungParameter {
 		KitaxUebergangsloesungInstitutionOeffnungszeiten dto =
 			oeffnungszeitenMap.get(kitaName.toLowerCase(Locale.GERMAN).trim());
 
-		// we use the default parameters if there is no mapping
 		if (dto == null) {
-			dto = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
-			dto.setOeffnungsstunden(BigDecimal.valueOf(11.5));
-			dto.setOeffnungstage(BigDecimal.valueOf(240));
-			dto.setNameKibon(kitaName);
-			dto.setDummyParams(true);
+			throw new EbeguRuntimeException("getOeffnungszeiten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, kitaName);
 		}
-
 		return dto;
 	}
 
