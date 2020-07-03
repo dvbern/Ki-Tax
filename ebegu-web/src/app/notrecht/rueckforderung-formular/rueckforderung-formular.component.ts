@@ -645,8 +645,9 @@ export class RueckforderungFormularComponent implements OnInit {
                 fristabgelaufen = !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'));
             }
             fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
+        } else {
+            fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
         }
-        fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
         return fristabgelaufen;
     }
 
