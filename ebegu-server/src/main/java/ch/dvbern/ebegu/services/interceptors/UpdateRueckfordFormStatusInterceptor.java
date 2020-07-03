@@ -62,7 +62,7 @@ public class UpdateRueckfordFormStatusInterceptor {
 					if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
 							&& RueckforderungStatus.EINGELADEN == rueckforderungFormular.getStatus()) {
 						// Beim Speichern wird automatisch der richtige Status gesetzt
-						rueckforderungFormularService.save(rueckforderungFormular);
+						rueckforderungFormularService.saveAndChangeStatusIfNecessary(rueckforderungFormular);
 					}
 				}
 			}

@@ -55,6 +55,9 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
+	RueckforderungFormular saveAndChangeStatusIfNecessary(RueckforderungFormular rueckforderungFormular);
+
+	@Nonnull
 	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status);
 
 	@Nonnull

@@ -70,13 +70,14 @@ export class NotrechtRS {
     }
 
     public saveRueckforderungFormular(
-        rueckforderungFormular: TSRueckforderungFormular
+        rueckforderungFormular: TSRueckforderungFormular,
+        changeStatusIfNecessary: boolean
     ): IPromise<TSRueckforderungFormular> {
         let restRueckforderungFormular = {};
         restRueckforderungFormular =
             this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
-
-        return this.$http.put(this.serviceURL, restRueckforderungFormular).then((response: any) => {
+        const url = changeStatusIfNecessary ? `${this.serviceURL}/updateWithStatusChange` : `${this.serviceURL}/update`;
+        return this.$http.put(url, restRueckforderungFormular).then((response: any) => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             },
         );
