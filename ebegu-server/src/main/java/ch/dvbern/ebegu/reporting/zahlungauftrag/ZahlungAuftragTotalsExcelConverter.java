@@ -86,7 +86,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				Institution institution = institutionStammdaten.getInstitution();
 				final Traegerschaft traegerschaft = institution.getTraegerschaft();
 				final IBAN iban = institutionStammdaten.extractIban();
-				final Adresse adresse = institutionStammdaten.extractAdresseKontoinhaber();
+
 
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institutionStammdaten.getInstitution().getName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institutionId, institution.getId());
@@ -100,13 +100,15 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, iban.getIban());
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, institutionStammdaten.extractKontoinhaber());
-				if (adresse != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.organisation, adresse.getOrganisation());
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.strasse, adresse.getStrasse());
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.hausnummer, adresse.getHausnummer());
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.plz, adresse.getPlz());
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.ort, adresse.getOrt());
+				Adresse adresse = institutionStammdaten.extractAdresseKontoinhaber();
+				if (adresse == null) {
+					adresse = institutionStammdaten.getAdresse();
 				}
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.organisation, adresse.getOrganisation());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.strasse, adresse.getStrasse());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.hausnummer, adresse.getHausnummer());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.plz, adresse.getPlz());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.ort, adresse.getOrt());
 			});
 		return excelMerger;
 	}
@@ -115,7 +117,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAmTitle, ServerMessageUtil.getMessage("Reports_faelligAmTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionNameTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionIdTitle, ServerMessageUtil.getMessage("Reports_institutionIdTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTypTitle, ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
@@ -126,7 +128,8 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.organisationTitle, ServerMessageUtil.getMessage("Reports_organisationTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.strasseTitle, ServerMessageUtil.getMessage("Reports_strasseTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.hausnummerTitle, ServerMessageUtil.getMessage("Reports_hausnummerTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle",
+			locale).toUpperCase(locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale));
 	}
 }

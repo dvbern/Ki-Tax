@@ -124,7 +124,7 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten; // Kita in TAGE, TFO in STUNDEN
 
 	@Nullable
-	private BigDecimal anzahlNichtAngeboteneEinheiten; // Kita in TAGE, TFO in STUNDEN
+	private BigDecimal anzahlNichtAngeboteneEinheiten; // Neu: Rueckerstattung fuer nicht angebotene Einheiten
 
 	@Nullable
 	private Boolean kurzarbeitBeantragt;

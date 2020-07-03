@@ -275,8 +275,10 @@
                         </div>
                     </div>
                     <!-- Stufe 2 Institution und Kanton -->
-                    <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular) ||
-                    isPruefungKantonStufe2(rueckforderungFormular)">
+                    <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular)
+                                || isInstitutionStufe2Definitiv(rueckforderungFormular)
+                                || isPruefungKantonStufe2(rueckforderungFormular)
+                                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)">
                         <mat-radio-group name="institutionTyp"
 										 #institutionTyp="ngModel"
                                          [(ngModel)]="rueckforderungFormular.institutionTyp"
@@ -420,7 +422,8 @@
                                 </div>
                             </div>
                             <!-- Stufe 2 Kanton offentlich -->
-                            <div *ngIf="isPruefungKantonStufe2(rueckforderungFormular)">
+                            <div *ngIf="isPruefungKantonStufe2(rueckforderungFormular)
+                                    || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
@@ -1005,7 +1008,8 @@
                         </div>
                     </div>
                     <div class="row"
-                         *ngIf="isInstitutionStufe2(rueckforderungFormular)">
+                         *ngIf="isInstitutionStufe2(rueckforderungFormular)
+                               || isInstitutionStufe2(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
@@ -1035,7 +1039,8 @@
                         </div>
                     </div>
                     <div class="row"
-                         *ngIf="isPruefungKantonStufe2(rueckforderungFormular)">
+                         *ngIf="isPruefungKantonStufe2(rueckforderungFormular)
+                            || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
@@ -1136,7 +1141,7 @@
                 </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
+                    [title]="getDokumenteAngabenTitle(rueckforderungFormular)"
                     (delete)="delete($event)"
                     (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                     rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
@@ -1150,7 +1155,7 @@
                 </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION'"
+                    [title]="getDokumenteKommunikationTitle(rueckforderungFormular)"
                     (delete)="delete($event)"
                     (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                     rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
@@ -1164,7 +1169,7 @@
                 </div>
                 <dv-file-upload
                     (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE'"
+                    [title]="getDokumenteEinsatzplaeneTitle(rueckforderungFormular)"
                     (delete)="delete($event)"
                     (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                     rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
@@ -1212,11 +1217,18 @@
                 [buttonDisabled]="!enableRueckforderungAbsenden(rueckforderungFormular) || fristSchonErreicht(rueckforderungFormular)">
                 <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
+            <dv-loading-button
+                *ngIf="isInstitutionStufe2Definitiv(rueckforderungFormular)"
+                [type]="'submit'"
+                [buttonDisabled]="!enableRueckforderungDefinitivAbsenden(rueckforderungFormular)">
+                <span translate>LABEL_ABSENDEN</span>
+            </dv-loading-button>
             <button type="button" class="dv-btn cancel-button" *ngIf="isInstitutionStufe1(rueckforderungFormular)"
                     (click)="rueckforderungAbschliessen(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN</span>
             </button>
-            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
+            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)
+                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
             <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
