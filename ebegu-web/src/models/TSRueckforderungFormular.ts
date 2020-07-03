@@ -52,7 +52,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public relevantEinreichungsfrist: moment.Moment;
     public betragEntgangeneElternbeitraege: number;
     public betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten: number; // Kita in TAGE, TFO in STUNDEN
-    public anzahlNichtAngeboteneEinheiten: number; // Kita in TAGE, TFO in STUNDEN
+    public anzahlNichtAngeboteneEinheiten: number; // Neu: Rueckerstattung fuer nicht angebotene Einheiten
     public kurzarbeitBeantragt: boolean;
     public kurzarbeitBetrag: number;
     public kurzarbeitDefinitivVerfuegt: boolean;
