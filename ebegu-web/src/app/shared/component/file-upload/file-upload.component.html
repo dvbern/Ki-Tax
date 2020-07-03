@@ -15,9 +15,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 <div>
-    <table class="table" width="100%">
-        <tr>
-            <td>{{title | translate}}</td>
+    <table class="table outer-table" width="100%">
+        <tr [ngClass]="{'file-required': files?.length === 0, 'file-uploaded': files?.length > 0}"
+        (click)="fileInput.click()">
+            <td style="white-space: pre-wrap;">{{title | translate}}</td>
             <td width="2%"
                 class="symbol"
                 tabindex="-1"
@@ -25,11 +26,10 @@
                 colspan="2">
                 <input type="file" multiple style="display: none"
 					   #fileInput
-                       accept="application/pdf"
+                       [accept]="allowedMimetypes"
                        (change)="onUploadFile($event);$event.stopPropagation()"/>
                 <button mat-raised-button
                         type="button"
-                        (click)="fileInput.click()"
                         class="dv-btn fa fa-upload dv-btn-operation"
                         title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                         [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
@@ -37,9 +37,9 @@
                 </button>
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
-                <table class="table" width="100%">
+        <tr *ngIf="files?.length">
+            <td colspan="5" class="no-padding">
+                <table class="table inner-table" width="100%">
                     <thead>
                     <th translate="DATEINAME">
                     </th>

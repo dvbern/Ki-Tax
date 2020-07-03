@@ -48,9 +48,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import static ch.dvbern.ebegu.enums.RueckforderungsConstants.einreichungsfristOeffentlichStufe2;
 import static ch.dvbern.ebegu.enums.RueckforderungsConstants.einreichungsfristPrivatStufe2;
-import static ch.dvbern.ebegu.enums.RueckforderungsConstants.entschaedigungProStundeTfo;
-import static ch.dvbern.ebegu.enums.RueckforderungsConstants.entschaedigungProTagKita;
-import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 @Entity
 @Audited
@@ -182,7 +179,7 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal anzahlNichtAngeboteneEinheiten; // Kita in TAGE, TFO in STUNDEN
+	private BigDecimal anzahlNichtAngeboteneEinheiten; // Neu: Rueckerstattung fuer nicht angebotene Einheiten
 
 	@Nullable
 	@Column(nullable = true)
@@ -197,12 +194,12 @@ public class RueckforderungFormular extends AbstractEntity {
 	private Boolean kurzarbeitDefinitivVerfuegt;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String kurzarbeitKeinAntragBegruendung;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String kurzarbeitSonstiges;
 
@@ -219,12 +216,12 @@ public class RueckforderungFormular extends AbstractEntity {
 	private Boolean coronaErwerbsersatzDefinitivVerfuegt;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String coronaErwerbsersatzKeinAntragBegruendung;
 
 	@Nullable
-	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
+	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
 
@@ -638,6 +635,8 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	public BigDecimal calculateFreigabeBetragStufe2() {
 		Objects.requireNonNull(getInstitutionTyp());
+
+		// (1) Oeffentlich
 		if (!isPrivateInstitution()) {
 			BigDecimal freigabeBetrag;
 			if (getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
@@ -649,36 +648,36 @@ public class RueckforderungFormular extends AbstractEntity {
 			}
 			Objects.requireNonNull(getStufe2KantonKostenuebernahmeBetreuung());
 			return MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
-		} else {
+		}
+
+		// (2) Privat
+		Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
+		Objects.requireNonNull(getKurzarbeitBeantragt());
+
+		// (2.1) Privat mit Kurzarbeit
+		if (getKurzarbeitBeantragt()) {
+			// EntgangeBeitraege - bereits erhaltene Kurzarbeit - evtl. bereits erhaltene Corona Erwerbsersatz
 			Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
-			Objects.requireNonNull(getKurzarbeitBeantragt());
-			if (getKurzarbeitBeantragt()) {
-				// EntgangeBeitraege - bereits erhaltene Kurzarbeit - evtl. bereits erhaltene Corona Erwerbsersatz
-				Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
-				Objects.requireNonNull(getKurzarbeitBetrag());
-				return MathUtil.DEFAULT.subtractMultiple(
-					getBetragEntgangeneElternbeitraege(),
-					getKurzarbeitBetrag(),
-					getCoronaErwerbsersatzBetrag());
-			}
-			if (getAnzahlNichtAngeboteneEinheiten() == null || !MathUtil.isPositive(getAnzahlNichtAngeboteneEinheiten())) {
-				// Keine nicht-angebotenen Tage
-				return MathUtil.DEFAULT.subtractMultiple(
-					getBetragEntgangeneElternbeitraege(),
-					getCoronaErwerbsersatzBetrag());
-			}
-			// Nicht angebotene Tage
-			BigDecimal entschaedigungProEinheit = getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()
-				? entschaedigungProTagKita
-				: entschaedigungProStundeTfo;
-			final BigDecimal entschaedigungNichtAngeboteneEinheiten
-				= MathUtil.DEFAULT.multiply(getAnzahlNichtAngeboteneEinheiten(), entschaedigungProEinheit);
+			Objects.requireNonNull(getKurzarbeitBetrag());
 			return MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
-				getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
-				entschaedigungNichtAngeboteneEinheiten,
+				getKurzarbeitBetrag(),
 				getCoronaErwerbsersatzBetrag());
 		}
+
+		// (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
+		if (getAnzahlNichtAngeboteneEinheiten() == null || !MathUtil.isPositive(getAnzahlNichtAngeboteneEinheiten())) {
+			// Keine nicht-angebotenen Tage
+			return MathUtil.DEFAULT.subtractMultiple(
+				getBetragEntgangeneElternbeitraege(),
+				getCoronaErwerbsersatzBetrag());
+		}
+		// (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
+		return MathUtil.DEFAULT.subtractMultiple(
+			getBetragEntgangeneElternbeitraege(),
+			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
+			getAnzahlNichtAngeboteneEinheiten(),
+			getCoronaErwerbsersatzBetrag());
 	}
 
 	/**

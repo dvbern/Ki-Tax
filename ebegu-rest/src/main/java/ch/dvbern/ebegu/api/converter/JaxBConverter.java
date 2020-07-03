@@ -3392,7 +3392,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		// Achtung: Hier sollten nur Daten aus dem RelevantBGCalculation*Result* verwendet werden, da die Daten aus den
-		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr zugaenglich
+		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr
+		// zugaenglich
 		// sind. Ausnahme sind Daten, die ZUM VERFUEGEN gebraucht werden, wie z.B.
 		// getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten()
 
@@ -5353,7 +5354,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxRueckforderungDokument rueckforderungDokumentToJax(@Nonnull RueckforderungDokument rueckforderungDokument) {
-		JaxRueckforderungDokument jaxRueckforderungDokument = new JaxRueckforderungDokument();
+		JaxRueckforderungDokument jaxRueckforderungDokument =
+			convertAbstractVorgaengerFieldsToJAX(rueckforderungDokument, new JaxRueckforderungDokument());
 		convertFileToJax(rueckforderungDokument, jaxRueckforderungDokument);
 
 		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());

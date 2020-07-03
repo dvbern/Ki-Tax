@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,9 +48,12 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -77,6 +81,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private MailService mailService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -146,7 +153,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		if(currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
-			return allRueckforderungFormulare.stream().collect(Collectors.toList());
+			return new ArrayList<>(allRueckforderungFormulare);
 		}
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
@@ -178,9 +185,18 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
-		changeStatusAndCopyFields(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
 		return mergedRueckforderungFormular;
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public RueckforderungFormular saveAndChangeStatusIfNecessary(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		Objects.requireNonNull(rueckforderungFormular);
+		changeStatusAndCopyFields(rueckforderungFormular);
+		return save(rueckforderungFormular);
 	}
 
 	@Nonnull
@@ -209,7 +225,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return persistence.persist(formular);
 	}
 
-	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void initializePhase2() {
@@ -221,7 +236,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
 			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
-			save(formular);
+			saveAndChangeStatusIfNecessary(formular);
 		}
 	}
 
@@ -270,6 +285,24 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		case IN_PRUEFUNG_KANTON_STUFE_1: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 				rueckforderungFormular.setStatus(RueckforderungStatus.GEPRUEFT_STUFE_1);
+				// Zahlungen ausloesen
+				rueckforderungFormular.setStufe1FreigabeBetrag(rueckforderungFormular.calculateFreigabeBetragStufe1());
+				rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
+				// Bestaetigung schicken
+				createBestaetigungStufe1Geprueft(rueckforderungFormular);
+
+				// Falls unterdessen die Phase zwei bereits aktiviert wurde, wollen wir mit "geprueft" der Phase zwei direkt in die Bearbeitung
+				// Institution Phase 2 wechseln, da wir sonst auf "geprueft" blockiert bleiben
+				if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+					&& principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+					// Direkt zum naechsten Status wechseln. In der Audit-Tabelle wird nur der neue Status sein
+					// Finde ich aber okay, da es auch nur 1 Benutzeraktion war, die von Status IN_PRUEFUNG_KANTON_STUFE_1
+					// zu IN_BEARBEITUNG_INSTITUTION_STUFE_2 gefuehrt hat.
+					rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+					rueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+				}
 			}
 			break;
 		}
@@ -297,6 +330,36 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		default:
 			break;
+		}
+	}
+
+	private void createBestaetigungStufe1Geprueft(@Nonnull RueckforderungFormular modifiedRueckforderungFormular) {
+		try {
+			// Als Hack, weil im Nachhinein die Anforderung kam, das Mail auch noch als RueckforderungsMitteilung zu
+			// speichern, wird hier der generierte HTML-Inhalt des Mails zurueckgegeben
+			final String mailText = mailService.sendNotrechtBestaetigungPruefungStufe1(modifiedRueckforderungFormular);
+			if (mailText != null) {
+				// Wir wollen nur den body speichern
+				String content = StringUtils.substringBetween(mailText, "<body>", "</body>");
+				// remove any newlines or tabs (leading or trailing whitespace doesn't matter)
+				content = content.replaceAll("(\\t|\\n)", "");
+				// boil down remaining whitespace to a single space
+				content = content.replaceAll("\\s+", " ");
+				content = content.trim();
+
+				final String betreff = "Corona-Finanzierung für Kitas und  TFO: Zahlung freigegeben / "
+					+ "Corona - financement pour les crèches et les parents de jour: Versement libéré";
+				RueckforderungMitteilung mitteilung = new RueckforderungMitteilung();
+				mitteilung.setBetreff(betreff);
+				mitteilung.setInhalt(content);
+				mitteilung.setAbsender(principalBean.getBenutzer());
+				mitteilung.setSendeDatum(LocalDateTime.now());
+				mitteilung = persistence.persist(mitteilung);
+				addMitteilung(modifiedRueckforderungFormular, mitteilung);
+			}
+		} catch (MailException e) {
+			throw new EbeguRuntimeException("update",
+				"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
 		}
 	}
 }
