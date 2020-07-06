@@ -59,6 +59,8 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
+    public readOnly: boolean;
+
     // Checkbox for Institution Stufe 1:
     public betreuungKorrektAusgewiesen: boolean;
     public gutscheinPlaetzenReduziert: boolean;
@@ -108,6 +110,7 @@ export class RueckforderungFormularComponent implements OnInit {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
+                    this.readOnly = this.initReadOnly(response);
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
                     if (this.isPruefungKantonStufe1(response)) {
@@ -115,6 +118,9 @@ export class RueckforderungFormularComponent implements OnInit {
                     }
                     if (this.isInstitutionStufe2(response)) {
                         this.calculateInstiProvBetrag(response, false);
+                    }
+                    if (this.isInstitutionStufe1ReadOnly(response)) {
+                        this.calculateInstiProvBetrag(response, true);
                     }
                     return response;
                 }));
@@ -159,6 +165,7 @@ export class RueckforderungFormularComponent implements OnInit {
         this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(
             rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
+                this.readOnly = this.initReadOnly(response);
                 this.initRueckforderungZahlungen(response);
                 return response;
             }));
@@ -294,14 +301,6 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public isKantonBenutzer(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
-    }
-
-    public showAbsendenText(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            return true;
-        }
-        return false;
     }
 
     public translateStatus(status: string): string {
@@ -711,6 +710,61 @@ export class RueckforderungFormularComponent implements OnInit {
             return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT';
         }
         return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH';
+    }
+
+    private initReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.GEPRUEFT_STUFE_1) {
+            return true;
+        }
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV)
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH)
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe1ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH)
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
+    public isKantonStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
     }
 
     public isInstitutionTypNullOrPrivat(rueckforderungFormular: TSRueckforderungFormular): boolean {
