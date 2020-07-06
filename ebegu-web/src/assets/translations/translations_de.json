@@ -2096,5 +2096,9 @@
     "RUECKFORDERUNGFORMULAR_INSTITUTION_TYP" : "Art der Institution",
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE": "Es gibt bereits eine Mutationsmeldung zu dieser Betreuung, welche die Gemeinde noch nicht bearbeitet hat.",
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY": "Wollen Sie diese Meldung überschreiben?",
+    "RUECKFORDERUNG_WARNING_FRIST_ERREICHT": "Achtung, die Einreichungsfrist wurde erreicht, es ist nicht mehr möglich das Rückforderungsformular zu absenden. Bitte kontaktieren Sie bei Fragen den Kanton.",
+    "RUECKFORDERUNG_VERLAENGERUNG_TITLE": "Einreichungsfrist verlängern?",
+    "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für diese Institution verlängern? Dieser Frist wird nur bei private Institution gilten!",
+    "RUECKFORDERUNG_FRIST_VERLAENGERN": "Einreichungsfrist verlängern",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
