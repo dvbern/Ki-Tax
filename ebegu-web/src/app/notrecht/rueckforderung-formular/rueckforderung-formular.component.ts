@@ -69,6 +69,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public belegeEinreichenBetrageKantonZurueckfordern: boolean;
     // Checkbox for Institution Stufe 2:
     public elternbeitraegeNichtInRechnung: boolean;
+    public verpflegungskostenKorrektAbgezogen: boolean;
     public notwendigenInformationenLiefern: boolean;
 
     public showMessageFehlendeDokumenteAngaben: boolean = false;
@@ -229,6 +230,10 @@ export class RueckforderungFormularComponent implements OnInit {
                 && this.erstattungGemaessKanton
                 && this.mahlzeitenBGSubventionenGebuehrensystem
                 && this.belegeEinreichenBetrageKantonZurueckfordern;
+        }
+        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
+            return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern
+                && this.verpflegungskostenKorrektAbgezogen;
         }
         return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern;
     }
