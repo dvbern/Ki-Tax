@@ -219,7 +219,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
+                    <div class="form-group" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)
+                        || isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular)">
                         <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -977,7 +978,8 @@
                     <!-- Checkbox -->
                     <div class="row"
                          *ngIf="isGeprueftKantonStufe1(rueckforderungFormular) ||
-                         isPruefungKantonStufe1(rueckforderungFormular) || isInstitutionStufe1ReadOnly(rueckforderungFormular)">
+                         isPruefungKantonStufe1(rueckforderungFormular) || isInstitutionStufe1ReadOnly(rueckforderungFormular)
+                         || isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular)">
                         <div class="col-sm-12">
                             <span class="mt-5">{{'BETREUUNG_KORREKT_AUSGEWIESEN'|translate}}
                                 <dv-tooltip id="betreuungKorrektAusgewiesenCbxReadOnly-tooltip"
