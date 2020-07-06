@@ -788,4 +788,32 @@ export class RueckforderungFormularComponent implements OnInit {
         return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
             || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
     }
+
+    public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
+        console.warn('clicket');
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.rueckforderungFormular$ = from(this.notrechtRS.resetStatus(rueckforderungFormular)
+                        .then((response: TSRueckforderungFormular) => {
+                            this.changeDetectorRef.markForCheck();
+                            return response;
+                        }));
+                },
+                () => {
+                });
+    }
+
+    public showButtonResetStatus(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
+            && (this.isPruefungKantonStufe2(rueckforderungFormular)
+                || this.isPruefungKantonStufe2Provisorisch(rueckforderungFormular));
+    }
 }

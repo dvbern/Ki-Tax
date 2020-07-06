@@ -45,11 +45,13 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -238,6 +240,19 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
 			saveAndChangeStatusIfNecessary(formular);
 		}
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id) {
+		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetStatusToInBearbeitungInstitutionPhase2",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Rueckfordungsformular invalid: " + id));
+		rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
+		return save(rueckforderungFormular);
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")

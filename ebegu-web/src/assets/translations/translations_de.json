@@ -2104,5 +2104,8 @@
     "RUECKFORDERUNG_VERLAENGERUNG_TITLE": "Einreichungsfrist verlängern?",
     "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für diese Institution verlängern? Dieser Frist wird nur bei private Institution gilten!",
     "RUECKFORDERUNG_FRIST_VERLAENGERN": "Einreichungsfrist verlängern",
+    "RUECKFORDERUNG_RESET_STATUS": "Zurück an die Institution",
+    "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Antrag zur Bearbeitung an die Institution zurückgeben",
+    "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Wollen Sie den Antrag an die Institution zurückgeben? Dies kann nicht rückgängig gemacht werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
