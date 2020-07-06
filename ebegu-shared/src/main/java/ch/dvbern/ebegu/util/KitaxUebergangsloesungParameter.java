@@ -79,7 +79,7 @@ public final class KitaxUebergangsloesungParameter {
 			oeffnungszeitenMap.get(kitaName.toLowerCase(Locale.GERMAN).trim());
 
 		if (dto == null) {
-			throw new EbeguRuntimeException("getOeffnungszeiten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, kitaName);
+			throw new EbeguRuntimeException("getOeffnungszeiten", ErrorCodeEnum.ERROR_OEFFNUNGSZEITEN_NOT_FOUND, kitaName);
 		}
 		return dto;
 	}
