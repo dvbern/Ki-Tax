@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,6 +36,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -58,6 +60,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
+import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -314,11 +317,39 @@ public class NotrechtResource {
 
 		RueckforderungDokument rueckforderungDokument =
 			rueckforderungDokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"removeRueckforderungDokument",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
+				"removeRueckforderungDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
 
 		rueckforderungDokumentService.removeDokument(rueckforderungDokument);
 
 		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Set die EinreicheFrist fuer das Ruechforderungformular", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@GET
+	@Path("/einreicheFrist")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular saveRueckforderungFormularEinreicheFrist(
+		@QueryParam("rueckforderungFormularId") String rueckforderungFormularId,
+		@QueryParam("extendedEinreichefrist") String extendedEinreichefrist) throws EbeguRuntimeException {
+
+		LocalDate extendedEinreichefristdatum = DateUtil.parseStringToDateOrReturnNow(extendedEinreichefrist);
+		Objects.requireNonNull(rueckforderungFormularId);
+
+		RueckforderungFormular rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveRueckforderungFormularEinreicheFrist",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularId));
+
+		rueckforderungFormular.setExtendedEinreichefrist(extendedEinreichefristdatum);
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			rueckforderungFormularService.save(rueckforderungFormular);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 }
