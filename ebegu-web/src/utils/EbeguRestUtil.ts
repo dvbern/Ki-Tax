@@ -3884,6 +3884,7 @@ export class EbeguRestUtil {
         rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
         rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
+        rueckforderungFormular.hasBeenSentBackToInstitution = rueckforderungFormularFromServer.hasBeenSentBackToInstitution;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlStunden;
         rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
@@ -3915,9 +3916,9 @@ export class EbeguRestUtil {
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
         rueckforderungFormular.institutionTyp = rueckforderungFormularFromServer.institutionTyp;
         rueckforderungFormular.extendedEinreichefrist =
-            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
         rueckforderungFormular.relevantEinreichungsfrist =
-            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
         rueckforderungFormular.betragEntgangeneElternbeitraege = rueckforderungFormularFromServer.betragEntgangeneElternbeitraege;
         rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
             rueckforderungFormularFromServer.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
@@ -3963,6 +3964,7 @@ export class EbeguRestUtil {
         rueckforderungFormularRest.institutionStammdaten = this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
         rueckforderungFormularRest.rueckforderungMitteilungen = this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
         rueckforderungFormularRest.status = rueckforderungFormularTS.status;
+        rueckforderungFormularRest.hasBeenSentBackToInstitution = rueckforderungFormularTS.hasBeenSentBackToInstitution;
         rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlStunden;
         rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;
@@ -3994,9 +3996,9 @@ export class EbeguRestUtil {
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
         rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
         rueckforderungFormularRest.extendedEinreichefrist =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.extendedEinreichefrist);
+            DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);
         rueckforderungFormularRest.relevantEinreichungsfrist =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.relevantEinreichungsfrist);
+            DateUtil.momentToLocalDate(rueckforderungFormularTS.relevantEinreichungsfrist);
         rueckforderungFormularRest.betragEntgangeneElternbeitraege = rueckforderungFormularTS.betragEntgangeneElternbeitraege;
         rueckforderungFormularRest.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
             rueckforderungFormularTS.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;

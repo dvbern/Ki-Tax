@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,6 +36,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -58,6 +60,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
+import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -218,17 +221,14 @@ public class NotrechtResource {
 		return jaxRueckforderungFormular;
 	}
 
-	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular) {
+	private boolean checkStatusErlaubtFuerRole(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
 			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())) {
 			return true;
 		}
-		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
+		return principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
 			UserRole.SUPER_ADMIN)
-			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())) {
-			return true;
-		}
-		return false;
+			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus());
 	}
 
 	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
@@ -260,7 +260,7 @@ public class NotrechtResource {
 		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
 	}
 
-	@ApiOperation(value = "Aktiviert der Phase 2 und setzt die entsprechende Status fuer die Ruckforderungsformular "
+	@ApiOperation("Aktiviert der Phase 2 und setzt die entsprechende Status fuer die Ruckforderungsformular "
 		+ "die schon mit Phase 1 durch sind")
 	@Nullable
 	@POST
@@ -268,6 +268,22 @@ public class NotrechtResource {
 	public Response initializePhase2() {
 		rueckforderungFormularService.initializePhase2();
 		return Response.ok().build();
+	}
+
+	@ApiOperation("Setzt den Status des Formulars zurueck auf 'In Bearbeitung Institution Phase 2'")
+	@Nonnull
+	@POST
+	@Path("/resetStatus")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(
+		@Nonnull @NotNull String formularId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(formularId);
+		RueckforderungFormular formular = rueckforderungFormularService.resetStatusToInBearbeitungInstitutionPhase2(formularId);
+		return converter.rueckforderungFormularToJax(formular);
 	}
 
 	@ApiOperation(value = "Gibt alle Rückforderungsdokumente zurück, die die aktuelle RueckforderungForm",
@@ -301,11 +317,39 @@ public class NotrechtResource {
 
 		RueckforderungDokument rueckforderungDokument =
 			rueckforderungDokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"removeRueckforderungDokument",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
+				"removeRueckforderungDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
 
 		rueckforderungDokumentService.removeDokument(rueckforderungDokument);
 
 		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Set die EinreicheFrist fuer das Ruechforderungformular", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@GET
+	@Path("/einreicheFrist")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular saveRueckforderungFormularEinreicheFrist(
+		@QueryParam("rueckforderungFormularId") String rueckforderungFormularId,
+		@QueryParam("extendedEinreichefrist") String extendedEinreichefrist) throws EbeguRuntimeException {
+
+		LocalDate extendedEinreichefristdatum = DateUtil.parseStringToDateOrReturnNow(extendedEinreichefrist);
+		Objects.requireNonNull(rueckforderungFormularId);
+
+		RueckforderungFormular rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveRueckforderungFormularEinreicheFrist",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularId));
+
+		rueckforderungFormular.setExtendedEinreichefrist(extendedEinreichefristdatum);
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			rueckforderungFormularService.save(rueckforderungFormular);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 }
