@@ -299,25 +299,8 @@ export class RueckforderungFormularComponent implements OnInit {
         return false;
     }
 
-    public showConfirmationAfterInBearbeitungInstitutionStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            return true;
-        }
-        return false;
-    }
-
     public isKantonBenutzer(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
-    }
-
-    public showConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
-            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH)
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            return true;
-        }
-        return false;
     }
 
     public getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular: TSRueckforderungFormular): string {
