@@ -157,7 +157,7 @@ export class RueckforderungFormularComponent implements OnInit {
     private doSave(rueckforderungFormular: TSRueckforderungFormular, doSaveStatusChange: boolean): void {
         // Den Status sollte sicherheitshalber im Backend geprueft und gesetzt werden
         this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(
-                rueckforderungFormular, doSaveStatusChange)
+            rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
                 this.initRueckforderungZahlungen(response);
                 return response;
@@ -640,10 +640,9 @@ export class RueckforderungFormularComponent implements OnInit {
         const currentDate = moment();
         let fristabgelaufen = false;
         if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
-            if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) {
-                fristabgelaufen = !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'));
-            }
-            fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
+            fristabgelaufen = (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) ?
+                !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'))
+                : !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
         } else {
             fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
         }
@@ -712,5 +711,10 @@ export class RueckforderungFormularComponent implements OnInit {
             return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT';
         }
         return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH';
+    }
+
+    public isInstitutionTypNullOrPrivat(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
     }
 }
