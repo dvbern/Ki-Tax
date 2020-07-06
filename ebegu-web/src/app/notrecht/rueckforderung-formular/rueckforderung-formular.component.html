@@ -23,7 +23,13 @@
           novalidate>
         <div class="notrecht admin-modul" flex="auto">
             <div class="col-md-8 col-md-offset-2">
-
+                <div class="row" *ngIf="fristSchonErreicht(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        <div class="well well-status-warten">
+                            <span>{{'RUECKFORDERUNG_WARNING_FRIST_ERREICHT' | translate }}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="row view-title">
                     <div class="col-md-12">
                         <h2>{{'RUECKFORDERUNGSFORMULARE_DETAIL' | translate: {
@@ -1260,7 +1266,7 @@
             <dv-loading-button
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"
                 [type]="'submit'"
-                [buttonDisabled]="!enableRueckforderungAbsenden(rueckforderungFormular)">
+                [buttonDisabled]="!enableRueckforderungAbsenden(rueckforderungFormular) || fristSchonErreicht(rueckforderungFormular)">
                 <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
             <dv-loading-button
@@ -1277,6 +1283,11 @@
                 || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
+            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()
+                    && isInstitutionTypNullOrPrivat(rueckforderungFormular)"
+                    (click)="fristVerlaengern(rueckforderungFormular);">
+                <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
+            </button>
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"

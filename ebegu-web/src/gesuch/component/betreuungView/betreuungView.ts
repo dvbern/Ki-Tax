@@ -1056,7 +1056,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
         if (!(!this.getBetreuungModel().isNew() &&
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+            (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())))) {
             return;
         }
         this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
