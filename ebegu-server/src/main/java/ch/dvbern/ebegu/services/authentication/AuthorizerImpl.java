@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
@@ -1283,6 +1284,36 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkMandantMatches(institutionStammdaten.getInstitution());
 		if (!isWriteAuthorizationInstitutionStammdaten(institutionStammdaten)) {
 			throwViolation(institutionStammdaten);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		switch (rueckforderungFormular.getStatus()) {
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV:{
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		case IN_PRUEFUNG_KANTON_STUFE_1:
+		case IN_PRUEFUNG_KANTON_STUFE_2:
+		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH: {
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 

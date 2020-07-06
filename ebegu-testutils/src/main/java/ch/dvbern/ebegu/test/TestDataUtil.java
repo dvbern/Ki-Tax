@@ -2130,19 +2130,26 @@ public final class TestDataUtil {
 			.forEach(b -> b.initVorgaengerVerfuegungen(null, null));
 	}
 
+	@Nonnull
 	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
-		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
-		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(240));
-		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
-		oeffnungszeiten.setNameKibon("Kita Aaregg");
-		oeffnungszeiten.setNameKitax("Kita Aaregg");
 		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> collection = new ArrayList<>();
-		collection.add(oeffnungszeiten);
+		collection.add(createKitaxOeffnungszeiten("Kita Aaregg"));
+		collection.add(createKitaxOeffnungszeiten("Testinstitution"));
 		// Fuer Tests gehen wir im Allgemeinen davon aus, dass Bern (Paris) bereits in der Vergangenheit zu ASIV gewechselt hat
 		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
 			LocalDate.of(2000, Month.JANUARY, 1),
 			true,
 			collection);
 		return parameter;
+	}
+
+	@Nonnull
+	private static KitaxUebergangsloesungInstitutionOeffnungszeiten createKitaxOeffnungszeiten(@Nonnull String name) {
+		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
+		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(240));
+		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
+		oeffnungszeiten.setNameKibon(name);
+		oeffnungszeiten.setNameKitax(name);
+		return oeffnungszeiten;
 	}
 }

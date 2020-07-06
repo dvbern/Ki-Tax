@@ -23,7 +23,13 @@
           novalidate>
         <div class="notrecht admin-modul" flex="auto">
             <div class="col-md-8 col-md-offset-2">
-
+                <div class="row" *ngIf="fristSchonErreicht(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        <div class="well well-status-warten">
+                            <span>{{'RUECKFORDERUNG_WARNING_FRIST_ERREICHT' | translate }}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="row view-title">
                     <div class="col-md-12">
                         <h2>{{'RUECKFORDERUNGSFORMULARE_DETAIL' | translate: {
@@ -37,14 +43,15 @@
                         <hr class="header">
                     </div>
                 </div>
-                <div class="row" *ngIf="showAbsendenText(rueckforderungFormular)">
+                <div class="row" *ngIf="isInstitutionStufe1ReadOnly(rueckforderungFormular)">
                     <div class="col-md-12">
                         {{'RUECKFORDERUNG_ABSENDENTEXT' | translate }}
                     </div>
                 </div>
                 <fieldset>
                     <!-- Stufe 1 Institution -->
-                    <div class="form-group" *ngIf="isInstitutionStufe1(rueckforderungFormular)">
+                    <div class="form-group" *ngIf="isInstitutionStufe1(rueckforderungFormular) ||
+                    isInstitutionStufe1ReadOnly(rueckforderungFormular)">
                         <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -56,6 +63,7 @@
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
                                            class="form-control"
                                            (blur)="calculateInstiProvBetrag(rueckforderungFormular, true)"
+                                           [disabled]="readOnly"
                                            required>
                                     <dv-error-messages
                                         [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlTage.errors"
@@ -75,6 +83,7 @@
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden"
                                            class="form-control"
                                            (blur)="calculateInstiProvBetrag(rueckforderungFormular, true)"
+                                           [disabled]="readOnly"
                                            required>
                                     <dv-error-messages
                                         [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlStunden.errors"
@@ -94,6 +103,7 @@
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
                                            class="form-control"
                                            (blur)="calculateInstiProvBetrag(rueckforderungFormular, true)"
+                                           [disabled]="readOnly"
                                            required>
                                     <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
                                                        inputId="kostenuebernahme_betreuung_stuf1_insti_id">
@@ -215,7 +225,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
+                    <div class="form-group" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)
+                        || isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular)">
                         <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -269,15 +280,22 @@
                         </div>
                     </div>
                     <!-- Stufe 2 Institution und Kanton -->
-                    <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular) ||
-                    isPruefungKantonStufe2(rueckforderungFormular)">
+                    <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular)
+                                || isInstitutionStufe2Definitiv(rueckforderungFormular)
+                                || isPruefungKantonStufe2(rueckforderungFormular)
+                                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)
+                                || isInstitutionStufe2ReadOnly(rueckforderungFormular)
+                                || isKantonStufe2ReadOnly(rueckforderungFormular)">
+                        <label class="required long-label">
+                            {{'RUECKFORDERUNGFORMULAR_INSTITUTION_TYP' | translate}}</label>
                         <mat-radio-group name="institutionTyp"
 										 #institutionTyp="ngModel"
                                          [(ngModel)]="rueckforderungFormular.institutionTyp"
+                                         [disabled]="readOnly"
                                          required>
                             <mat-radio-button
                                 [value]="getRueckforderungInstitutionTypOffentlich()">{{'INSTITUTION_TYP_OFFENTLICH'|translate}}</mat-radio-button>
-                            &nbsp;
+                            &nbsp;&nbsp;
                             <mat-radio-button
                                 [value]="getRueckforderungInstitutionTypPrivat()">{{'INSTITUTION_TYP_PRIVAT'|translate}}
                             </mat-radio-button>
@@ -289,11 +307,13 @@
                         <div *ngIf="rueckforderungFormular.institutionTyp ==
                         getRueckforderungInstitutionTypOffentlich()">
                             <!-- Stufe 2 Institution offentlich -->
-                            <div *ngIf="isInstitutionStufe2(rueckforderungFormular)">
+                            <div
+                                *ngIf="isInstitutionStufe2(rueckforderungFormular) || isInstitutionStufe2ReadOnly(rueckforderungFormular)
+                               ">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label"
+                                            <label class="required long-label margin-top-30"
                                                    for="anzahl_plaetze_stufe2_insti_in_tage_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE' | translate}}</label>
                                             <input id="anzahl_plaetze_stufe2_insti_in_tage_id" type="number"
@@ -302,6 +322,7 @@
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage"
                                                    class="form-control"
                                                    (blur)="calculateInstiProvBetrag(rueckforderungFormular, false)"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
                                                 <div
@@ -329,7 +350,8 @@
                                 <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label" for="anzahl_stunden_stufe2_insti_id">
+                                            <label class="required long-label margin-top-30"
+                                                   for="anzahl_stunden_stufe2_insti_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN' | translate}}</label>
                                             <input id="anzahl_stunden_stufe2_insti_id" type="number"
                                                    name="anzahl_stunden_stufe2_insti"
@@ -337,6 +359,7 @@
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden"
                                                    class="form-control"
                                                    (blur)="calculateInstiProvBetrag(rueckforderungFormular, false)"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
                                                 <div
@@ -374,6 +397,7 @@
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung"
                                                    class="form-control"
                                                    (blur)="calculateInstiProvBetrag(rueckforderungFormular, false)"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
                                                 <div
@@ -414,11 +438,13 @@
                                 </div>
                             </div>
                             <!-- Stufe 2 Kanton offentlich -->
-                            <div *ngIf="isPruefungKantonStufe2(rueckforderungFormular)">
+                            <div *ngIf="isPruefungKantonStufe2(rueckforderungFormular)
+                                    || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)
+                                    || isKantonStufe2ReadOnly(rueckforderungFormular)">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label"
+                                            <label class="required long-label margin-top-30"
                                                    for="anzahl_plaetze_stufe2_kanton_in_tage_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE' | translate}}</label>
                                             <input id="anzahl_plaetze_stufe2_kanton_in_tage_id" type="number"
@@ -427,6 +453,7 @@
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage"
                                                    class="form-control"
                                                    (blur)="calculateKantonProvBetrag(rueckforderungFormular, false)"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
                                                 <div
@@ -461,7 +488,8 @@
                                 <div class="row" *ngIf="!isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="required long-label" for="anzahl_stunden_stufe2_kanton_id">
+                                            <label class="required long-label margin-top-30"
+                                                   for="anzahl_stunden_stufe2_kanton_id">
                                                 {{'RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN' | translate}}</label>
                                             <input id="anzahl_stunden_stufe2_kanton_id" type="number"
                                                    name="anzahl_stunden_stufe2_kanton"
@@ -469,6 +497,7 @@
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden"
                                                    class="form-control"
                                                    (blur)="calculateKantonProvBetrag(rueckforderungFormular, false)"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
                                                 <div
@@ -512,6 +541,7 @@
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung"
                                                    class="form-control"
                                                    (blur)="calculateKantonProvBetrag(rueckforderungFormular, false)"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
                                                 <div
@@ -565,13 +595,15 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="required long-label" for="elternbeitraege_stufe2_privat_id">
+                                        <label class="required long-label margin-top-30"
+                                               for="elternbeitraege_stufe2_privat_id">
                                             {{'RUECKFORDERUNGFORMULAR_ELTERNBEITRAEGE' | translate}}</label>
                                         <input id="elternbeitraege_stufe2_privat_id" type="number"
                                                name="elternbeitraege_stufe2_privat"
 											   #betragEntgangeneElternbeitraege="ngModel"
                                                [(ngModel)]="rueckforderungFormular.betragEntgangeneElternbeitraege"
                                                class="form-control"
+                                               [disabled]="readOnly"
                                                required>
                                         <dv-error-messages [errorObject]="betragEntgangeneElternbeitraege.errors"
                                                            inputId="betragEntgangeneElternbeitraege_id">
@@ -595,6 +627,7 @@
 											#betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten="ngModel"
                                             [(ngModel)]="rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten"
                                             class="form-control"
+                                            [disabled]="readOnly"
                                             required>
                                         <dv-error-messages
                                             [errorObject]="betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten.errors"
@@ -618,6 +651,7 @@
 											   #anzahlNichtAngeboteneEinheiten="ngModel"
                                                [(ngModel)]="rueckforderungFormular.anzahlNichtAngeboteneEinheiten"
                                                class="form-control"
+                                               [disabled]="readOnly"
                                                required>
                                         <dv-error-messages [errorObject]="anzahlNichtAngeboteneEinheiten.errors"
                                                            inputId="anzahlNichtAngeboteneEinheiten_id">
@@ -633,10 +667,11 @@
                                         <mat-radio-group name="kurzarbeitBeantragt"
 														 #kurzarbeitBeantragt="ngModel"
                                                          [(ngModel)]="rueckforderungFormular.kurzarbeitBeantragt"
+                                                         [disabled]="readOnly"
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                            &nbsp;
+                                            &nbsp;&nbsp;
                                             <mat-radio-button
                                                 [value]="false">{{'LABEL_NEIN'|translate}}
                                             </mat-radio-button>
@@ -660,6 +695,7 @@
 												   #kurzarbeitBetrag="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.kurzarbeitBetrag"
                                                    class="form-control"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <dv-error-messages [errorObject]="kurzarbeitBetrag.errors"
                                                                inputId="kurzarbeitBetrag_id">
@@ -675,10 +711,11 @@
                                             <mat-radio-group name="kurzarbeitDefinitivVerfuegt"
 															 #kurzarbeitDefinitivVerfuegt="ngModel"
                                                              [(ngModel)]="rueckforderungFormular.kurzarbeitDefinitivVerfuegt"
+                                                             [disabled]="readOnly"
                                                              required>
                                                 <mat-radio-button
                                                     [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                                &nbsp;
+                                                &nbsp;&nbsp;
                                                 <mat-radio-button
                                                     [value]="false">{{'LABEL_NEIN'|translate}}
                                                 </mat-radio-button>
@@ -712,6 +749,7 @@
 													  #kurzarbeitKeinAntragBegruendung="ngModel"
                                                       name="kurzarbeitKeinAntragBegruendung_stufe2_privat"
                                                       [(ngModel)]="rueckforderungFormular.kurzarbeitKeinAntragBegruendung"
+                                                      [disabled]="readOnly"
                                                       required>
                                                 </textarea>
                                             <dv-error-messages
@@ -735,6 +773,7 @@
 													  #kurzarbeitSonstiges="ngModel"
                                                       name="kurzarbeitSonstiges_stufe2_privat"
                                                       [(ngModel)]="rueckforderungFormular.kurzarbeitSonstiges"
+                                                      [disabled]="readOnly"
                                                       required>
                                                 </textarea>
                                             <dv-error-messages
@@ -753,10 +792,11 @@
                                         <mat-radio-group name="coronaErwerbsersatzBeantragt"
 														 #coronaErwerbsersatzBeantragt="ngModel"
                                                          [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzBeantragt"
+                                                         [disabled]="readOnly"
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                            &nbsp;
+                                            &nbsp;&nbsp;
                                             <mat-radio-button
                                                 [value]="false">{{'LABEL_NEIN'|translate}}
                                             </mat-radio-button>
@@ -780,6 +820,7 @@
 												   #coronaErwerbsersatzBetrag="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzBetrag"
                                                    class="form-control"
+                                                   [disabled]="readOnly"
                                                    required>
                                             <dv-error-messages [errorObject]="coronaErwerbsersatzBetrag.errors"
                                                                inputId="coronaErwerbsersatzBetrag_id">
@@ -796,10 +837,11 @@
                                             <mat-radio-group name="coronaErwerbsersatzDefinitivVerfuegt"
 															 #coronaErwerbsersatzDefinitivVerfuegt="ngModel"
                                                              [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt"
+                                                             [disabled]="readOnly"
                                                              required>
                                                 <mat-radio-button
                                                     [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
-                                                &nbsp;
+                                                &nbsp;&nbsp;
                                                 <mat-radio-button
                                                     [value]="false">{{'LABEL_NEIN'|translate}}
                                                 </mat-radio-button>
@@ -833,6 +875,7 @@
 													  #coronaErwerbsersatzKeinAntragBegruendung="ngModel"
                                                       name="coronaErwerbsersatzKeinAntragBegruendung_stufe2_privat"
                                                       [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzKeinAntragBegruendung"
+                                                      [disabled]="readOnly"
                                                       required>
                                                 </textarea>
                                             <dv-error-messages
@@ -857,6 +900,7 @@
 													  #coronaErwerbsersatzSonstiges="ngModel"
                                                       name="kurzarbeitSonstiges_stufe2_privat"
                                                       [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzSonstiges"
+                                                      [disabled]="readOnly"
                                                       required>
                                                 </textarea>
                                             <dv-error-messages
@@ -883,7 +927,8 @@
                                     <div class="form-group">
                                         <mat-checkbox id="betreuungKorrektAusgewiesenCbx_id"
                                                       name="betreuungKorrektAusgewiesenCbx_id"
-                                                      [(ngModel)]="betreuungKorrektAusgewiesen" required>
+                                                      [(ngModel)]="betreuungKorrektAusgewiesen"
+                                                      required>
                                             {{ 'BESTAETIGEN' | translate }}
                                         </mat-checkbox>
                                     </div>
@@ -939,7 +984,8 @@
                     <!-- Checkbox -->
                     <div class="row"
                          *ngIf="isGeprueftKantonStufe1(rueckforderungFormular) ||
-                         isPruefungKantonStufe1(rueckforderungFormular)">
+                         isPruefungKantonStufe1(rueckforderungFormular) || isInstitutionStufe1ReadOnly(rueckforderungFormular)
+                         || isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular)">
                         <div class="col-sm-12">
                             <span class="mt-5">{{'BETREUUNG_KORREKT_AUSGEWIESEN'|translate}}
                                 <dv-tooltip id="betreuungKorrektAusgewiesenCbxReadOnly-tooltip"
@@ -999,7 +1045,8 @@
                         </div>
                     </div>
                     <div class="row"
-                         *ngIf="isInstitutionStufe2(rueckforderungFormular)">
+                         *ngIf="isInstitutionStufe2(rueckforderungFormular)
+                               || isInstitutionStufe2Definitiv(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
@@ -1014,9 +1061,8 @@
                                             {{ 'BESTAETIGEN' | translate }}
                                         </mat-checkbox>
                                     </div>
-                                    <span class="mt-5">
-                                    {{'NOTWENDIGEN_INFORMATIONEN_LIEFERN'|translate}}
-                                </span>
+                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN' | translate">
+                                    </span>
                                     <div class="form-group">
                                         <mat-checkbox id="notwendigenInformationenLiefernCbx_id"
                                                       name="notwendigenInformationenLiefernCbx_id"
@@ -1029,7 +1075,10 @@
                         </div>
                     </div>
                     <div class="row"
-                         *ngIf="isPruefungKantonStufe2(rueckforderungFormular)">
+                         *ngIf="isPruefungKantonStufe2(rueckforderungFormular)
+                            || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)
+                            || isInstitutionStufe2ReadOnly(rueckforderungFormular)
+                            || isKantonStufe2ReadOnly(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
@@ -1116,84 +1165,98 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Dokumenten -->
-        <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
-            <div class="row">
-                <h1>
-                    <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
-                </h1>
-                <hr class="header"/>
-                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
-                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                </div>
-                <dv-file-upload
-                    (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_ANGABEN'"
-                    (delete)="delete($event)"
-                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
-                    [files]="rueckforderungAngabenDokumente"
-                >
-                </dv-file-upload>
-            </div>
-            <div class="row">
-                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKommunikation">
-                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                </div>
-                <dv-file-upload
-                    (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION'"
-                    (delete)="delete($event)"
-                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
-                    [files]="rueckforderungKommunikationDokumente"
-                >
-                </dv-file-upload>
-            </div>
-            <div class="row">
-                <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteEinsatzplaene">
-                    <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                </div>
-                <dv-file-upload
-                    (download)="download($event[0],$event[1])"
-                    [title]="'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE'"
-                    (delete)="delete($event)"
-                    (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
-                    [files]="rueckforderungEinsatzplaeneDokumente"
-                >
-                </dv-file-upload>
-            </div>
-            <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
-                <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
-                    <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
-                        <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+            <!-- Dokumenten -->
+            <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="margin-top-50">
+                            <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
+                        </h2>
+                        <hr class="header"/>
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="getDokumenteAngabenTitle(rueckforderungFormular)"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
+                            [files]="rueckforderungAngabenDokumente"
+                            [readOnly]="readOnly"
+                        >
+                        </dv-file-upload>
                     </div>
-                    <dv-file-upload
-                        (download)="download($event[0],$event[1])"
-                        [title]="'RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT'"
-                        (delete)="delete($event)"
-                        (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
-                        [files]="rueckforderungKurzarbeitDokumente"
-                    >
-                    </dv-file-upload>
                 </div>
-                <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
-                    <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
-                        <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKommunikation">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="getDokumenteKommunikationTitle(rueckforderungFormular)"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
+                            [files]="rueckforderungKommunikationDokumente"
+                            [readOnly]="readOnly"
+                        >
+                        </dv-file-upload>
                     </div>
-                    <dv-file-upload
-                        (download)="download($event[0],$event[1])"
-                        [title]="'RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ'"
-                        (delete)="delete($event)"
-                        (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
-                    rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
-                        [files]="rueckforderungErwerbsersatzDokumente"
-                    >
-                    </dv-file-upload>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteEinsatzplaene">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="getDokumenteEinsatzplaeneTitle(rueckforderungFormular)"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
+                            [files]="rueckforderungEinsatzplaeneDokumente"
+                            [readOnly]="readOnly"
+                        >
+                        </dv-file-upload>
+                    </div>
+                </div>
+                <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
+                    <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
+                        <div class="col-sm-12">
+                            <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
+                                <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                            </div>
+                            <dv-file-upload
+                                (download)="download($event[0],$event[1])"
+                                [title]="'RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT'"
+                                (delete)="delete($event)"
+                                (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                    rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
+                                [files]="rueckforderungKurzarbeitDokumente"
+                                [readOnly]="readOnly"
+                            >
+                            </dv-file-upload>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
+                        <div class="col-sm-12">
+                            <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
+                                <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                            </div>
+                            <dv-file-upload
+                                (download)="download($event[0],$event[1])"
+                                [title]="'RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ'"
+                                (delete)="delete($event)"
+                                (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                    rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
+                                [files]="rueckforderungErwerbsersatzDokumente"
+                                [readOnly]="readOnly"
+                            >
+                            </dv-file-upload>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1203,16 +1266,28 @@
             <dv-loading-button
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"
                 [type]="'submit'"
-                [buttonDisabled]="!enableRueckforderungAbsenden(rueckforderungFormular)">
+                [buttonDisabled]="!enableRueckforderungAbsenden(rueckforderungFormular) || fristSchonErreicht(rueckforderungFormular)">
+                <span translate>LABEL_ABSENDEN</span>
+            </dv-loading-button>
+            <dv-loading-button
+                *ngIf="isInstitutionStufe2Definitiv(rueckforderungFormular)"
+                [type]="'submit'"
+                [buttonDisabled]="!enableRueckforderungDefinitivAbsenden(rueckforderungFormular)">
                 <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
             <button type="button" class="dv-btn cancel-button" *ngIf="isInstitutionStufe1(rueckforderungFormular)"
                     (click)="rueckforderungAbschliessen(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN</span>
             </button>
-            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
+            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)
+                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
+            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()
+                    && isInstitutionTypNullOrPrivat(rueckforderungFormular)"
+                    (click)="fristVerlaengern(rueckforderungFormular);">
+                <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
+            </button>
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"
