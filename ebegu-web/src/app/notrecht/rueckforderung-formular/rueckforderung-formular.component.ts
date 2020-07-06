@@ -79,7 +79,8 @@ export class RueckforderungFormularComponent implements OnInit {
 
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _stufe1ProvBetrag: number;
-    private _stufe2ProvBetrag: number;
+    private _stufe2ProvBetragOeffentlich: number;
+    private _stufe2ProvBetragPrivat: number;
 
     public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
     public rueckforderungKommunikationDokumente?: TSRueckforderungDokument[];
@@ -114,7 +115,7 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
                     if (this.isPruefungKantonStufe1(response)) {
-                        this.calculateKantonProvBetrag(response, true);
+                        this.calculateKantonProvBetragOeffentlich(response, true);
                     }
                     if (this.isInstitutionStufe2(response)) {
                         this.calculateInstiProvBetrag(response, false);
@@ -313,7 +314,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public calculateInstiProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
         this.stufe1ProvBetrag = undefined;
-        this.stufe2ProvBetrag = undefined;
+        this.stufe2ProvBetragOeffentlich = undefined;
         const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
             : rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
@@ -328,7 +329,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
                 return;
             }
-            this.stufe2ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+            this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
             return;
         }
         const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
@@ -340,13 +341,14 @@ export class RueckforderungFormularComponent implements OnInit {
             this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
             return;
         }
-        this.stufe2ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+        this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
         return;
     }
 
-    public calculateKantonProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
+    public calculateKantonProvBetragOeffentlich(rueckforderungFormular: TSRueckforderungFormular,
+                                                isStufe1: boolean): void {
         this.stufe1ProvBetrag = undefined;
-        this.stufe2ProvBetrag = undefined;
+        this.stufe2ProvBetragOeffentlich = undefined;
         const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
             : rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung;
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
@@ -361,7 +363,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
                 return;
             }
-            this.stufe2ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+            this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
             return;
         }
         const kostenuebernahmeAnzahlStunden = isStufe1
@@ -374,7 +376,7 @@ export class RueckforderungFormularComponent implements OnInit {
             this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
             return;
         }
-        this.stufe2ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+        this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
         return;
     }
 
@@ -386,12 +388,56 @@ export class RueckforderungFormularComponent implements OnInit {
         this._stufe1ProvBetrag = stufe1ProvBetrag;
     }
 
-    public get stufe2ProvBetrag(): number {
-        return this._stufe2ProvBetrag;
+    public get stufe2ProvBetragOeffentlich(): number {
+        return this._stufe2ProvBetragOeffentlich;
     }
 
-    public set stufe2ProvBetrag(stufe2ProvBetrag: number) {
-        this._stufe2ProvBetrag = stufe2ProvBetrag;
+    public set stufe2ProvBetragOeffentlich(stufe2ProvBetrag: number) {
+        this._stufe2ProvBetragOeffentlich = stufe2ProvBetrag;
+    }
+
+    public calculateKantonProvBetragPrivat(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.stufe2ProvBetragPrivat = null;
+        // (2.1) Privat mit Kurzarbeit
+        if (rueckforderungFormular.kurzarbeitBeantragt) {
+            if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
+                || EbeguUtil.isNullOrUndefined(rueckforderungFormular.kurzarbeitBetrag)) {
+                return;
+            }
+            this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
+                - rueckforderungFormular.kurzarbeitBetrag
+                - rueckforderungFormular.coronaErwerbsersatzBetrag;
+            return;
+        }
+        // (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
+        if (!rueckforderungFormular.anzahlNichtAngeboteneEinheiten) {
+            if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
+                || EbeguUtil.isNullOrUndefined(rueckforderungFormular.coronaErwerbsersatzBetrag)) {
+                return;
+            }
+            this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
+                - rueckforderungFormular.coronaErwerbsersatzBetrag;
+            return;
+        }
+        // (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
+            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten)
+            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.anzahlNichtAngeboteneEinheiten)
+            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.coronaErwerbsersatzBetrag)) {
+            return;
+        }
+        this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
+            - rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten
+            - rueckforderungFormular.anzahlNichtAngeboteneEinheiten
+            - rueckforderungFormular.coronaErwerbsersatzBetrag;
+    }
+
+    public get stufe2ProvBetragPrivat(): number {
+        return this._stufe2ProvBetragPrivat;
+    }
+
+    public set stufe2ProvBetragPrivat(value: number) {
+        this._stufe2ProvBetragPrivat = value;
     }
 
     public showVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
