@@ -48,6 +48,8 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nonnull
 	private RueckforderungStatus status;
 
+	private boolean hasBeenSentBackToInstitution = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
+
 	@Nullable
 	private RueckforderungInstitutionTyp institutionTyp = null;
 
@@ -172,6 +174,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStatus(@Nonnull RueckforderungStatus status) {
 		this.status = status;
+	}
+
+	public boolean isHasBeenSentBackToInstitution() {
+		return hasBeenSentBackToInstitution;
+	}
+
+	public void setHasBeenSentBackToInstitution(boolean hasBeenSentBackToInstitution) {
+		this.hasBeenSentBackToInstitution = hasBeenSentBackToInstitution;
 	}
 
 	@Nullable

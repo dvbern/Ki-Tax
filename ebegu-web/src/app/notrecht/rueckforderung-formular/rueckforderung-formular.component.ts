@@ -303,6 +303,23 @@ export class RueckforderungFormularComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
+    public getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular: TSRueckforderungFormular): string {
+        switch (rueckforderungFormular.institutionTyp) {
+            case TSRueckforderungInstitutionTyp.OEFFENTLICH:
+                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
+            case TSRueckforderungInstitutionTyp.PRIVAT:
+                if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
+                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenSentBackToInstitution)) {
+                        return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV');
+                    }
+                    return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
+                }
+                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG');
+            default:
+                return '';
+        }
+    }
+
     public translateStatus(status: string): string {
         return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
     }
