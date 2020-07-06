@@ -1,0 +1,59 @@
+<!--
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<h2 mat-dialog-title [textContent]="'RUECKFORDERUNG_VERLAENGERUNG_TITLE' | translate"></h2>
+<form role="form"
+	  #form="ngForm"
+      [ngClass]="{'ng-submitted': form.submitted}"
+      (ngSubmit)="save()"
+      novalidate>
+    <mat-dialog-content [ngClass]="'rueckforderung-verlaengerung-dialog'">
+        <div *ngIf="rueckforderungFormular">
+            <div class="dv-content">
+                    <div class="form-group">
+                        <div class="dv-dialog-compact-text">
+                            <span [textContent]="'RUECKFORDERUNG_VERLAENGERUNG_TEXT' | translate"></span>
+                            <br/>&nbsp;
+                        </div>
+                        <div>
+                            <input class="dv-mat-datepicker"
+                                   type="text"
+                                   name="privat_frist"
+                                   id="privat_frist_id"
+                                   aria-describedby="privat_frist_id"
+                                   [matDatepicker]="privat_frist"
+                                   [disabled]="false"
+                                   required
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                   [(ngModel)]="rueckforderungFormular.extendedEinreichefrist">
+                            <mat-datepicker-toggle matSuffix [for]="privat_frist"></mat-datepicker-toggle>
+                            <mat-datepicker #privat_frist></mat-datepicker>
+                            <dv-error-messages inputId="privat_frist_id"
+                                               [errorObject]="form.controls.privat_frist_id?.errors">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <div class="dv-dialog-actions">
+            <button type="submit" class="dv-btn" [textContent]="'OK' | translate"></button>
+            <button type="button" class="dv-btn cancel-button" (click)="close()"
+                    [textContent]="'CANCEL' | translate"></button>
+        </div>
+    </mat-dialog-actions>
+</form>

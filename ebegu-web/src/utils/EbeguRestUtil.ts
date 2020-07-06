@@ -3916,9 +3916,9 @@ export class EbeguRestUtil {
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
         rueckforderungFormular.institutionTyp = rueckforderungFormularFromServer.institutionTyp;
         rueckforderungFormular.extendedEinreichefrist =
-            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
         rueckforderungFormular.relevantEinreichungsfrist =
-            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
         rueckforderungFormular.betragEntgangeneElternbeitraege = rueckforderungFormularFromServer.betragEntgangeneElternbeitraege;
         rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
             rueckforderungFormularFromServer.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
@@ -3996,9 +3996,9 @@ export class EbeguRestUtil {
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
         rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
         rueckforderungFormularRest.extendedEinreichefrist =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.extendedEinreichefrist);
+            DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);
         rueckforderungFormularRest.relevantEinreichungsfrist =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.relevantEinreichungsfrist);
+            DateUtil.momentToLocalDate(rueckforderungFormularTS.relevantEinreichungsfrist);
         rueckforderungFormularRest.betragEntgangeneElternbeitraege = rueckforderungFormularTS.betragEntgangeneElternbeitraege;
         rueckforderungFormularRest.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
             rueckforderungFormularTS.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
