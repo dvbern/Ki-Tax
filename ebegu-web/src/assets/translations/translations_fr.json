@@ -2065,5 +2065,6 @@
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "Après que le responsable pour les bon de gardes aie terminé une demande mixte, le responsable pour les écoles à journée continue reçoit un email. Cela est nécessaire dans certaine commune pour leur processus interne.<br> Réglage recommandé: désactivé.",
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE": "",
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY": "",
+    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Voraussichtliche Ausfallentschädigung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

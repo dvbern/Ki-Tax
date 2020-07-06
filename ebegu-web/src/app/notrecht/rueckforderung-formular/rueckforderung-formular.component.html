@@ -428,7 +428,7 @@
                                         <div class="form-group">
                                             <label class="required long-label" translate
                                                    for="kostenuebernahme_prov_betrag_stuf2_insti_id">
-                                                {{'RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG' | translate}}</label>
+                                                {{'RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG' | translate}}</label>
                                             <input id="kostenuebernahme_prov_betrag_stuf2_insti_id" type="number"
                                                    name="kostenuebernahme_prov_betrag_stuf2_insti"
                                                    [(ngModel)]="stufe2ProvBetragOeffentlich"
@@ -579,7 +579,7 @@
                                         <div class="form-group">
                                             <label class="required long-label" translate
                                                    for="kostenuebernahme_prov_betrag_stuf2_kanton_id">
-                                                {{'RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG' | translate}}</label>
+                                                {{'RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG' | translate}}</label>
                                             <input id="kostenuebernahme_prov_betrag_stuf2_kanton_id" type="number"
                                                    name="kostenuebernahme_prov_betrag_stuf2_kanton"
                                                    [(ngModel)]="stufe2ProvBetragOeffentlich"
@@ -604,7 +604,7 @@
                                                [(ngModel)]="rueckforderungFormular.betragEntgangeneElternbeitraege"
                                                class="form-control"
                                                [disabled]="readOnly"
-                                               (blur)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                               (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
                                                required>
                                         <dv-error-messages [errorObject]="betragEntgangeneElternbeitraege.errors"
                                                            inputId="betragEntgangeneElternbeitraege_id">
@@ -629,7 +629,7 @@
                                             [(ngModel)]="rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten"
                                             class="form-control"
                                             [disabled]="readOnly"
-                                            (blur)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                            (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
                                             required>
                                         <dv-error-messages
                                             [errorObject]="betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten.errors"
@@ -654,7 +654,7 @@
                                                [(ngModel)]="rueckforderungFormular.anzahlNichtAngeboteneEinheiten"
                                                class="form-control"
                                                [disabled]="readOnly"
-                                               (blur)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                               (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
                                                required>
                                         <dv-error-messages [errorObject]="anzahlNichtAngeboteneEinheiten.errors"
                                                            inputId="anzahlNichtAngeboteneEinheiten_id">
@@ -671,7 +671,7 @@
 														 #kurzarbeitBeantragt="ngModel"
                                                          [(ngModel)]="rueckforderungFormular.kurzarbeitBeantragt"
                                                          [disabled]="readOnly"
-                                                         (ngModelChange)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                                         (ngModelChange)="calculateProvBetragPrivat(rueckforderungFormular)"
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
@@ -700,7 +700,7 @@
                                                    [(ngModel)]="rueckforderungFormular.kurzarbeitBetrag"
                                                    class="form-control"
                                                    [disabled]="readOnly"
-                                                   (blur)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                                   (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
                                                    required>
                                             <dv-error-messages [errorObject]="kurzarbeitBetrag.errors"
                                                                inputId="kurzarbeitBetrag_id">
@@ -798,7 +798,7 @@
 														 #coronaErwerbsersatzBeantragt="ngModel"
                                                          [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzBeantragt"
                                                          [disabled]="readOnly"
-                                                         (ngModelChange)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                                         (ngModelChange)="calculateProvBetragPrivat(rueckforderungFormular)"
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
@@ -826,7 +826,7 @@
 												   #coronaErwerbsersatzBetrag="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzBetrag"
                                                    class="form-control"
-                                                   (blur)="calculateKantonProvBetragPrivat(rueckforderungFormular)"
+                                                   (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <dv-error-messages [errorObject]="coronaErwerbsersatzBetrag.errors"
@@ -924,7 +924,7 @@
                                     <div class="form-group">
                                         <label class="required long-label" translate
                                                for="prov_betrag_stufe2_privat_id">
-                                            {{'RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG' | translate}}</label>
+                                            {{'RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG' | translate}}</label>
                                         <input id="prov_betrag_stufe2_privat_id" type="number"
                                                name="prov_betrag_stufe2_privat"
                                                [(ngModel)]="stufe2ProvBetragPrivat"

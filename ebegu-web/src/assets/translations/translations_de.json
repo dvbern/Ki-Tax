@@ -2100,5 +2100,6 @@
     "RUECKFORDERUNG_VERLAENGERUNG_TITLE": "Einreichungsfrist verlängern?",
     "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für diese Institution verlängern? Dieser Frist wird nur bei private Institution gilten!",
     "RUECKFORDERUNG_FRIST_VERLAENGERN": "Einreichungsfrist verlängern",
+    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Voraussichtliche Ausfallentschädigung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

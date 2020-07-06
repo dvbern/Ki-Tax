@@ -396,7 +396,7 @@ export class RueckforderungFormularComponent implements OnInit {
         this._stufe2ProvBetragOeffentlich = stufe2ProvBetrag;
     }
 
-    public calculateKantonProvBetragPrivat(rueckforderungFormular: TSRueckforderungFormular): void {
+    public calculateProvBetragPrivat(rueckforderungFormular: TSRueckforderungFormular): void {
         this.stufe2ProvBetragPrivat = null;
         // (2.1) Privat mit Kurzarbeit
         if (rueckforderungFormular.kurzarbeitBeantragt) {
