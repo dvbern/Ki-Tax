@@ -24,12 +24,12 @@
     <md-content id="gesuchContainer" class="_md flex">
         <div>
             <div>
-                <div class="createAngebotView gesuchModul betreuungView" flex="auto">
+                <div class="create-angebot-view gesuch-modul betreuung-view" flex="auto">
                     <h1 class="access-for-all-title" data-translate="AFA_DASHBOARD"></h1>
-                    <div class="dashboardHeader">
+                    <div class="dashboard-header">
 
-                        <div class="row viewTitle marginTop40">
-                            <div class="dv-input-container-medium col-md-12 createAngebotView--centered-col">
+                        <div class="row view-title margin-top-40">
+                            <div class="dv-input-container-medium col-md-12 create-angebot-view--centered-col">
                                 <h2>
 
                                     <span ng-if="vm.ts" data-translate="TAGESSCHULE_ERFASSEN"
@@ -40,8 +40,8 @@
                             </div>
                         </div>
 
-                        <div class="row marginTop40">
-                            <div class="dv-input-container-medium col-md-12 createAngebotView--centered-col">
+                        <div class="row margin-top-40">
+                            <div class="dv-input-container-medium col-md-12 create-angebot-view--centered-col">
                                 <form role="form" name="vm.form" class="" novalidate
                                       unsaved-warning-form>
 
@@ -49,7 +49,7 @@
                                     <!-- Kind -->
                                     <div class="row">
                                         <div class="col-sm-12 dv-input-container-medium form-group">
-                                            <label class="ebeguH1 required" data-translate="KIND_WAEHLEN" for="kind">
+                                            <label class="ebegu-h1 required" data-translate="KIND_WAEHLEN" for="kind">
                                             </label>
 
                                             <div class="dv-select-style">
@@ -69,7 +69,7 @@
                                     <div class="row">
                                         <div class="col-xs-12 dv-input-container-question">
                                             <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
-                                                <span class="ebeguH1 required">
+                                                <span class="ebegu-h1 required">
                                                     <span>{{vm.getTextSprichtAmtssprache()}}</span>
                                                     <dv-tooltip input-id="sprichtAmtssprache"
                                                                 text="'SPRICHT_AMTSSPRACHE_HELP' | translate"></dv-tooltip>
@@ -92,7 +92,7 @@
                                     <div class="row">
                                         <div class="col-xs-12 dv-input-container-question">
                                             <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
-                                                <span class="ebeguH1 required">
+                                                <span class="ebegu-h1 required">
                                                     <span data-translate="EINSCHULUNG"
                                                           data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
                                                     </span>
@@ -117,7 +117,7 @@
                                     <div class="row">
                                         <div class="col-sm-12 dv-input-container-medium form-group"
                                              ng-if="vm.showInstitutionSelect()">
-                                            <label class="ebeguH1 required" data-translate="INSTITUTION"
+                                            <label class="ebegu-h1 required" data-translate="INSTITUTION"
                                                    for="institution">
                                             </label>
                                             <div class="dv-select-style">

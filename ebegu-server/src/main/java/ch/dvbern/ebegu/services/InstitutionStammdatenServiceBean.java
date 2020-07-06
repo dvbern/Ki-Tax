@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -192,6 +193,33 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	@Nonnull
+	@PermitAll
+	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
+			JoinType.LEFT);
+		List<Predicate> predicates = new ArrayList<>();
+
+		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+
+		Predicate predicateTraegerschaft = cb.equal(joinInstitution.get(Institution_.traegerschaft), trageschaft);
+		predicates.add(predicateTraegerschaft);
+		Predicate predicateMandant = PredicateHelper.getPredicateMandant(cb, joinInstitution.get(Institution_.mandant)
+			, currentBenutzer);
+		predicates.add(predicateMandant);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
+		return typedQuery.getResultList();
+	}
+
+	@Override
+	@Nonnull
 	@RolesAllowed(SUPER_ADMIN)
 	public Collection<InstitutionStammdaten> getAllInstitonStammdatenForBatchjobs() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -211,41 +239,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			persistence.remove(institutionStammdatenToRemove);
 		}
-	}
-
-	@Override
-	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(
-		@Nonnull String gesuchsperiodeId) {
-
-		Objects.requireNonNull(gesuchsperiodeId);
-		Benutzer currentBenutzer = principalBean.getBenutzer();
-		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
-				gesuchsperiodeId,
-				currentBenutzer.extractGemeindenForUser());
-		}
-
-		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		query.select(root);
-		List<Predicate> predicates = new ArrayList<>();
-
-		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
-		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
-
-		// InstStammdaten Ende muss NACH GP Start sein
-		// InstStammdaten Start muss VOR GP Ende sein
-		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
-		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-
-		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
-		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
-		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
-		return typedQuery.getResultList();
 	}
 
 	@Override

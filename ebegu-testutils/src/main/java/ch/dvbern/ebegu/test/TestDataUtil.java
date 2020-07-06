@@ -76,8 +76,6 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -95,6 +93,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -108,7 +107,34 @@ import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.FachstelleName;
+import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
+import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.enums.MitteilungStatus;
+import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
+import ch.dvbern.ebegu.enums.ModulTagesschuleName;
+import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
+import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.WizardStepName;
+import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -133,13 +159,23 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHL
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_TAGIS_ENABLED;
@@ -153,16 +189,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -2056,20 +2082,6 @@ public final class TestDataUtil {
 		return antragSearch;
 	}
 
-	@Nonnull
-	// TODO: FERIENINSEL ANPASSEN
-	public static GemeindeStammdatenGesuchsperiodeFerieninsel createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
-		GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = new GemeindeStammdatenGesuchsperiodeFerieninsel();
-		stammdaten.setFerienname(Ferienname.SOMMERFERIEN);
-		stammdaten.setAnmeldeschluss(LocalDate.now().plusMonths(1));
-		List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<>();
-		GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraum = new GemeindeStammdatenGesuchsperiodeFerieninselZeitraum();
-		zeitraum.setGueltigkeit(new DateRange(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3)));
-		zeitraumList.add(zeitraum);
-		stammdaten.setZeitraumList(zeitraumList);
-		return stammdaten;
-	}
-
 	public static BelegungFerieninsel createDefaultBelegungFerieninsel() {
 		BelegungFerieninsel belegungFerieninsel = new BelegungFerieninsel();
 		belegungFerieninsel.setFerienname(Ferienname.SOMMERFERIEN);
@@ -2119,7 +2131,18 @@ public final class TestDataUtil {
 	}
 
 	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
+		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
+		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(240));
+		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
+		oeffnungszeiten.setNameKibon("Kita Aaregg");
+		oeffnungszeiten.setNameKitax("Kita Aaregg");
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> collection = new ArrayList<>();
+		collection.add(oeffnungszeiten);
 		// Fuer Tests gehen wir im Allgemeinen davon aus, dass Bern (Paris) bereits in der Vergangenheit zu ASIV gewechselt hat
-		return new KitaxUebergangsloesungParameter(LocalDate.of(2000, Month.JANUARY, 1), true);
+		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
+			LocalDate.of(2000, Month.JANUARY, 1),
+			true,
+			collection);
+		return parameter;
 	}
 }

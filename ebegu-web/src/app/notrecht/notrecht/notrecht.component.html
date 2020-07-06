@@ -15,11 +15,11 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="notrecht adminModul" flex="auto">
+<div class="notrecht admin-modul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
 
         <h1 class="access-for-all-title" translate>CORONA_FINANZIERUNG</h1>
-        <div class="viewTitle">
+        <div class="view-title">
             <h2 translate>CORONA_FINANZIERUNG</h2>
             <hr class="header">
         </div>
@@ -121,6 +121,10 @@
 
             <button class="dv-btn" (click)="sendMitteilung(false)" *ngIf="showMitteilungSenden()" translate>
                 NOTVERORDNUNG_MITTEILUNG_SENDEN
+            </button>
+
+            <button class="dv-btn" (click)="initializePhase2()" *ngIf="isSuperAdmin()" translate>
+                NOTVERORDNUNG_INITIALISIEREN_PHASE2
             </button>
         </div>
     </div>

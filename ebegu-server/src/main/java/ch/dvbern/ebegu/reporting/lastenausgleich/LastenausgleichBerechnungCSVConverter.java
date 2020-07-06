@@ -103,12 +103,10 @@ public class LastenausgleichBerechnungCSVConverter {
 
 	private String generateCSVHeader() {
 		return convertToCSVLine(new String[] {
-			"bfs",
+			"BFS-Nr.",
 			"kibon_Belegung",
 			"kibon_Gutscheine",
-			"kibon_Anrechenbar",
 			"kibon_Erhebung",
-			"kibon_Revision",
 			"kibon_Selbstbehalt"
 		});
 	}
@@ -118,9 +116,7 @@ public class LastenausgleichBerechnungCSVConverter {
 			row.getBfsNummer(),
 			row.getTotalBelegung().toString(),
 			row.getTotalGutscheine().toString(),
-			row.getTotalAnrechenbar().toString(),
-			row.getEingabeLastenausgleich().toString(),
-			row.getTotalRevision().toString(),
+			row.getEingabeLastenausgleich().add(row.getTotalRevision()).toString(),
 			row.getSelbstbehaltGemeinde().toString()
 		});
 	}

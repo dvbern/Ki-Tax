@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.dto;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -153,6 +155,7 @@ public class BGCalculationInput {
 
 	private BigDecimal verguenstigungNebenmahlzeitenTotal = BigDecimal.ZERO;
 
+	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -207,6 +210,7 @@ public class BGCalculationInput {
 		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 		this.ruleValidity = toCopy.ruleValidity;
+		this.pensumUnit = toCopy.pensumUnit;
 	}
 
 	@Nonnull
@@ -529,12 +533,12 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtMitBetreuung);
 	}
 
-	public void setTsAnzVerpflegungenMitBetreuung(int anzVerpflegungen) {
-		this.tsInputMitBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+	public void setVerpflegungskostenUndMahlzeitenMitBetreuung(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.tsInputMitBetreuung.setVerpflegungskostenUndMahlzeiten(verpflegungskostenUndMahlzeiten);
 	}
 
-	public void setTsAnzVerpflegungenOhneBetreuung(int anzVerpflegungen) {
-		this.tsInputOhneBetreuung.setAnzVerpflegungen(anzVerpflegungen);
+	public void setVerpflegungskostenUndMahlzeitenOhneBetreuung(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.tsInputOhneBetreuung.setVerpflegungskostenUndMahlzeiten(verpflegungskostenUndMahlzeiten);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
@@ -795,6 +799,12 @@ public class BGCalculationInput {
 			einschulungTyp == other.einschulungTyp &&
 			betreuungsangebotTyp == other.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
+			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, other.verguenstigungHauptmahlzeitenTotal) &&
+			MathUtil.isSame(verguenstigungNebenmahlzeitenTotal, other.verguenstigungNebenmahlzeitenTotal) &&
+			MathUtil.isSame(tarifHauptmahlzeit, other.tarifHauptmahlzeit) &&
+			MathUtil.isSame(tarifNebenmahlzeit, other.tarifNebenmahlzeit) &&
+			MathUtil.isSame(anzahlHauptmahlzeiten, other.anzahlHauptmahlzeiten) &&
+			MathUtil.isSame(anzahlNebenmahlzeiten, other.anzahlNebenmahlzeiten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == other.anspruchspensumProzent &&
@@ -856,5 +866,13 @@ public class BGCalculationInput {
 	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
 		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleValidity, msgKey, locale, args);
 		this.getParent().getBemerkungenList().addBemerkung(bemerkung);
+	}
+
+	public PensumUnits getPensumUnit() {
+		return pensumUnit;
+	}
+
+	public void setPensumUnit(PensumUnits pensumUnit) {
+		this.pensumUnit = pensumUnit;
 	}
 }

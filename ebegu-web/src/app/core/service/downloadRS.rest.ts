@@ -150,11 +150,21 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenNotrechtvorlage(
+    public getAccessTokenNotrechtvorlageOeffentlicheInstitutionen(
         language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
         const languageEnc = encodeURIComponent(language);
         const angebotTypEnc = encodeURIComponent(angebotTyp);
-        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGE/${languageEnc}/${angebotTypEnc}`)
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGEOEFFENTLICH/${languageEnc}/${angebotTypEnc}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getAccessTokenNotrechtvorlagePrivateInstitutionen(
+        language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
+        const languageEnc = encodeURIComponent(language);
+        const angebotTypEnc = encodeURIComponent(angebotTyp);
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGEPRIVAT/${languageEnc}/${angebotTypEnc}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
@@ -269,6 +279,7 @@ export class DownloadRS {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
     }
+
     public openDownload(blob: Blob, filename: string): void {
         // tslint:disable-next-line
         if (typeof this.$window.navigator.msSaveBlob !== 'undefined') {
@@ -288,5 +299,13 @@ export class DownloadRS {
         a.click();
         this.$window.URL.revokeObjectURL(url);
         a.remove();
+    }
+
+    public getAccessTokenRueckforderungDokument(rueckForderungDokumentId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/rueckforderungDokument`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
     }
 }

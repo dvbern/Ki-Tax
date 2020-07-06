@@ -46,7 +46,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat-start="row in table" class="dokument-grund-row">
+                <tr ng-repeat-start="row in table" class="dokument-grund-row"
+                    ngf-select="vm.uploadAnhaenge($files, row)"
+                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                    aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                    ng-disabled="vm.isDokumenteUploadDisabled()">
 
                     <!--with and without tag-->
                     <td  style="white-space: normal !important;" headers="{{vm.tableId +'-dok'}}" ng-bind="vm.getDokumentText(row)"

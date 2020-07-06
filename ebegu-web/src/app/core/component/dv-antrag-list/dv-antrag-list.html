@@ -61,7 +61,7 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
                     </th>
                     <th st-sort="status" class="sortable row-status uppercase" data-translate="STATUS"></th>
-                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen uppercase"
+                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumente-hochgeladen uppercase"
                         data-translate="DOKUMENTE_HOCHGELADEN_KURZ"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
@@ -263,10 +263,10 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </td>
-                    <td class="ellipsis" title="{{row.antragTyp | translate}}">
+                    <td class="ellipsis" title="{{vm.getAntragTypBezeichnung(row)}}">
                         <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer()"></i>
                         <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer()"></i>
-                        <span ng-bind="vm.getAntragTypBezeichnung(row)" class="marginLeft5"></span>
+                        <span ng-bind="vm.getAntragTypBezeichnung(row)" class="margin-left-5"></span>
                     </td>
                     <td class="ellipsis"
                         title="{{row.gesuchsperiodeString}}"

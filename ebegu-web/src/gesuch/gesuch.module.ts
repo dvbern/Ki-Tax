@@ -31,6 +31,7 @@ import {
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
 import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterungView/einkommensverschlechterungView';
@@ -94,4 +95,5 @@ export const GESUCH_JS_MODULE =
         .component('dvBetreuungInput', new BetreuungInputComponentConfig())
         .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
+        .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
 ;

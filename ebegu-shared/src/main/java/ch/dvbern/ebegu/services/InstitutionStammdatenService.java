@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -63,12 +64,6 @@ public interface InstitutionStammdatenService {
 
 	/**
 	 * @param gesuchsperiodeId Id der gewuenschten Gesuchsperiode
-	 * @return Alle aktiven InstitutionStammdaten bei denen eine Ueberschneidung der Gueltigkeit zwischen datumVon und datumBis liegt
-	 */
-	Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(@Nonnull String gesuchsperiodeId);
-
-	/**
-	 * @param gesuchsperiodeId Id der gewuenschten Gesuchsperiode
 	 * @param gemeindeId Id der gewuenschten Gemeinde
 	 * @return Alle aktiven InstitutionStammdaten bei denen eine Ueberschneidung der Gueltigkeit zwischen datumVon und
 	 * datumBis liegt und die (falls TS oder FI) zur übergebenen Gemeinde gehören
@@ -95,4 +90,6 @@ public interface InstitutionStammdatenService {
 	 * Tagesschulen zurückgegeben.
 	 */
 	Collection<InstitutionStammdaten> getTagesschulenForCurrentBenutzer();
+
+	Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft);
 }

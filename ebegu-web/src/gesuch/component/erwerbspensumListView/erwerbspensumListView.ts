@@ -32,6 +32,7 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
@@ -56,6 +57,7 @@ export class ErwerbspensumListViewController
         '$scope',
         'AuthServiceRS',
         '$timeout',
+        '$translate',
         'GemeindeRS'
     ];
 
@@ -76,6 +78,7 @@ export class ErwerbspensumListViewController
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
+        private readonly $translate: ITranslateService,
         private readonly gemeindeRS: GemeindeRS,
     ) {
         super(gesuchModelManager,
@@ -88,18 +91,16 @@ export class ErwerbspensumListViewController
     }
 
     private initViewModel(): void {
-        this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
-            this.erwerbspensumRequired = response;
-            if (this.isSaveDisabled()) {
-                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.ERWERBSPENSUM,
-                    TSWizardStepStatus.IN_BEARBEITUNG);
-            } else {
-                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.ERWERBSPENSUM,
-                    TSWizardStepStatus.OK);
-            }
-        });
+        this.erwerbspensumRequired = this.getGesuch() && this.getGesuch().hasAnyJugendamtAngebot();
+        if (this.isSaveDisabled()) {
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.ERWERBSPENSUM,
+                TSWizardStepStatus.IN_BEARBEITUNG);
+        } else {
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.ERWERBSPENSUM,
+                TSWizardStepStatus.OK);
+        }
         this.setShowInfoAusserordentlichenAnspruchIfPossible();
         this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id).then(gemeindeDaten => {
             this.gemeindeTelefon = gemeindeDaten.telefon;
@@ -207,5 +208,17 @@ export class ErwerbspensumListViewController
 
     public setFocusBack(elementID: string): void {
         angular.element('#' + elementID).first().focus();
+    }
+
+    public getErwerbspensumNotRequired(): string {
+        const fiActive = this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
+        let undFerieninselnTxt = '';
+        if (fiActive) {
+            undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
+        }
+        return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
+            undFerieninseln: undFerieninselnTxt
+        });
     }
 }

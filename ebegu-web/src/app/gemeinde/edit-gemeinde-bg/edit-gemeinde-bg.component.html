@@ -164,6 +164,22 @@
                         </div>
                     </div>
 
+                    <!-- Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde. (wird nur angezeigt wenn Mischgesuche möglich sind) -->
+                    <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
+                        <div class="form-group checkbox-with-tooltip">
+                            <div>
+                            <mat-checkbox id="verantwortlicherTSInformieren_id" name="verantwortlicherTSInformieren_id"
+                                          [(ngModel)]="stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
+                                {{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN'|translate}}
+                            </mat-checkbox>
+                            </div>
+                            <div class="tooltip-margin">
+                            <dv-tooltip id="verantwortlicherTSInformieren_tooltip"
+                                        [text]="'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP'|translate"></dv-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Betreuungsgutscheine anbieten ab -->
                     <div class="form-group mt-5">
                         <h3 translate>BEGU_START</h3>
@@ -211,8 +227,7 @@
                                                    [(ngModel)]="stammdaten.bgAdresse.organisation"
                                                    [maxlength]="255"
                                                    class="form-control"
-                                                   required
-                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                                   required>
                                             <dv-error-messages [errorObject]="nameAnschriftBG.errors"
                                                                inputId="anschrift_bg_id"></dv-error-messages>
                                         </div>
@@ -271,6 +286,40 @@
                                                [maxlength]="255" class="form-control" required>
                                         <dv-error-messages [errorObject]="nameOrtBG.errors"
                                                            inputId="ort_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Alternative Email -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label translate for="email_bg_id">ALTERNATIVE_EMAIL
+                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
+                                        </label>
+                                        <input id="email_bg_id" type="text" name="email_bg_id"
+											   #nameEmailBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgEmail"
+                                               [pattern]="CONSTANTS.PATTERN_EMAIL"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameEmailBG.errors"
+                                                           inputId="email_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Alternative Telefonnummer -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label translate for="telefonnummer_bg_id">ALTERNATIVE_TELEFONNUMMER
+                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
+                                        </label>
+                                        <input id="telefonnummer_bg_id" type="text" name="telefonnummer_bg_id"
+											   #nameTelefonnummerBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgTelefon"
+                                               [pattern]="CONSTANTS.PATTERN_PHONE"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameTelefonnummerBG.errors"
+                                                           inputId="telefonnummer_bg_id"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -1076,11 +1125,11 @@
                     </div>
                     <!--            standard Fusszeile bei Verfügungen verwenden-->
                     <div>
-                        <div class="form-group">
+                        <div>
                             <div *ngIf="stammdaten.standardDokSignature">
                                 <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
                             </div>
-                            <div *ngIf="!stammdaten.standardDokSignature">
+                            <div *ngIf="!stammdaten.standardDokSignature" class="form-group">
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
@@ -1099,6 +1148,12 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <!--            Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde. (wird nur angezeigt wenn Mischgesuche möglich sind) -->
+                    <div *ngIf="stammdaten.gemeinde.angebotTS && stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
+                        <div>
+                            <h3>{{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA'|translate}}</h3>
                         </div>
                     </div>
 
@@ -1135,6 +1190,8 @@
                                     <p>{{stammdaten.bgAdresse.strasse}}
                                         {{stammdaten.bgAdresse.hausnummer}}</p>
                                     <p>{{stammdaten.bgAdresse.plz}} {{stammdaten.bgAdresse.ort}}</p>
+                                    <p *ngIf="stammdaten.bgEmail">{{stammdaten.bgEmail}}</p>
+                                    <p *ngIf="stammdaten.bgTelefon">{{stammdaten.bgTelefon}}</p>
                                 </div>
                             </div>
                         </ng-template>

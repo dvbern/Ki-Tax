@@ -22,15 +22,15 @@ h1, h2, h3, label, label:after, p, a {
     }
 }
 
-h1, .ebeguH1 {
+h1, .ebegu-h1 {
     .ebeguH1();
 }
 
-md-dialog .md-dialog-content h2, h2, .ebeguH2 {
+md-dialog .md-dialog-content h2, h2, .ebegu-h2 {
     .ebeguH2();
 }
 
-h3, .ebeguH3 {
+h3, .ebegu-h3 {
     .ebeguH3();
 }
 
@@ -53,24 +53,24 @@ a {
 
 md-input-container label:not(.md-container-ignore), label {
     .ebeguLabel();
-    display: block;
     color: @danger;
+    display: block;
     &:after {
         .ebeguLabel();
-        display: inline-block;
         color: @danger;
+        display: inline-block;
     }
 }
 
 md-input-container:not(.md-input-invalid).md-input-has-value, md-input-container, md-input-container:not(.md-input-invalid).md-input-focused, md-input-container:not(.md-input-focused):not(.md-input-invalid), .form-group {
     label, label.md-required {
         .ebeguLabel();
-        display: block;
         color: @contrast-darkest;
+        display: block;
         &:after {
             .ebeguLabel();
-            display: inline-block;
             color: @contrast-darkest;
+            display: inline-block;
         }
     }
 }
@@ -78,28 +78,28 @@ md-input-container:not(.md-input-invalid).md-input-has-value, md-input-container
 md-input-container label:not(.md-container-ignore).md-required {
     &:after {
         .ebeguLabel();
-        display: inline-block;
         color: @contrast-darkest;
+        display: inline-block;
     }
 }
 
 .mat-datepicker-toggle {
     background: @contrast-light;
     display: block;
-    width: 4rem;
     float: right;
     height: 4rem;
+    width: 4rem;
     .mat-icon-button {
-        height: 4rem;
-        width: 4rem;
-        line-height: 2.0rem;
         font-size: 1rem;
+        height: 4rem;
+        line-height: 2rem;
+        width: 4rem;
     }
 }
 
 .form-group {
-    margin: 0 0 3rem;
     display: block;
+    margin: 0 0 3rem;
 }
 
 .dv-view {
@@ -107,8 +107,8 @@ md-input-container label:not(.md-container-ignore).md-required {
 }
 
 .ellipsis {
-    width: 5rem;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 5rem;
 }

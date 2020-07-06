@@ -18,6 +18,8 @@
 package ch.dvbern.ebegu.dto;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -42,7 +44,7 @@ public class TSCalculationInput {
 
 	@NotNull
 	@Nonnull
-	private Integer anzVerpflegungen = 0;
+	private Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten = new HashMap<>();
 
 	public TSCalculationInput() {
 	}
@@ -51,21 +53,26 @@ public class TSCalculationInput {
 		this.betreuungszeitProWoche = other.betreuungszeitProWoche;
 		this.verpflegungskosten = other.verpflegungskosten;
 		this.verpflegungskostenVerguenstigt = other.verpflegungskostenVerguenstigt;
-		this.anzVerpflegungen = other.anzVerpflegungen;
+		this.verpflegungskostenUndMahlzeiten = other.verpflegungskostenUndMahlzeiten;
 	}
 
 	public void add(@Nonnull TSCalculationInput other) {
 		this.betreuungszeitProWoche = this.betreuungszeitProWoche + other.betreuungszeitProWoche;
 		this.verpflegungskosten = MathUtil.DEFAULT.addNullSafe(this.verpflegungskosten, other.verpflegungskosten);
 		this.verpflegungskostenVerguenstigt = MathUtil.DEFAULT.addNullSafe(this.verpflegungskostenVerguenstigt, other.verpflegungskostenVerguenstigt);
-		this.anzVerpflegungen = this.anzVerpflegungen + other.anzVerpflegungen;
+		Map<BigDecimal, Integer> merged = new HashMap<>();
+
+		merged.putAll(this.verpflegungskostenUndMahlzeiten);
+		merged.putAll(other.verpflegungskostenUndMahlzeiten);
+
+		this.verpflegungskostenUndMahlzeiten = merged;
 	}
 
 	public boolean isSame(@Nonnull TSCalculationInput other) {
 		return Objects.equals(this.betreuungszeitProWoche, other.betreuungszeitProWoche)
 			&& MathUtil.isSame(this.verpflegungskosten, other.verpflegungskosten)
 			&& MathUtil.isSame(this.verpflegungskostenVerguenstigt, other.verpflegungskostenVerguenstigt)
-			&& Objects.equals(this.anzVerpflegungen, other.anzVerpflegungen);
+			&& Objects.equals(this.verpflegungskostenUndMahlzeiten, other.verpflegungskostenUndMahlzeiten);
 	}
 
 	@Nonnull
@@ -83,7 +90,6 @@ public class TSCalculationInput {
 			.add("betreuungszeitProWoche=" + betreuungszeitProWoche)
 			.add("verpflegungskosten=" + verpflegungskosten)
 			.add("verpflegungskostenVerguenstigt=" + verpflegungskostenVerguenstigt)
-			.add("anzVerpflegungen=" + anzVerpflegungen)
 			.toString();
 	}
 
@@ -115,11 +121,11 @@ public class TSCalculationInput {
 	}
 
 	@Nonnull
-	public Integer getAnzVerpflegungen() {
-		return anzVerpflegungen;
+	public Map<BigDecimal, Integer> getVerpflegungskostenUndMahlzeiten() {
+		return verpflegungskostenUndMahlzeiten;
 	}
 
-	public void setAnzVerpflegungen(@Nonnull Integer anzVerpflegungen) {
-		this.anzVerpflegungen = anzVerpflegungen;
+	public void setVerpflegungskostenUndMahlzeiten(@Nonnull Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.verpflegungskostenUndMahlzeiten = verpflegungskostenUndMahlzeiten;
 	}
 }

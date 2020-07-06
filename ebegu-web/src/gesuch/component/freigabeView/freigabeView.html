@@ -13,11 +13,11 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="freigabeView gesuchModul">
+<div class="freigabe-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row" ng-if="vm.isGesuchFreigegeben()">
         <div class="col-md-12">
-            <div class="row viewTitle">
+            <div class="row view-title">
                 <div class="col-md-12">
                     <h2>
                         <span data-translate="FREIGABEQUITTUNG_DRUCKEN_TITLE"></span>
@@ -43,7 +43,7 @@
                     </p>
                 </div>
             </div>
-            <div class="row marginTop50" ng-if="vm.isThereFreigabequittung()">
+            <div class="row margin-top-50" ng-if="vm.isThereFreigabequittung()">
                 <div class="col-md-12">
                     <dv-loading-button type="button" button-class="btn-link link-underline"
                                        button-click="vm.openFreigabequittungPDF(false)">
@@ -54,7 +54,7 @@
             </div>
 
             <!-- Simulationsbutton fuer Quittung einlesen -->
-            <div class="row marginTop50" ng-if="vm.isFreigabequittungAusstehend()">
+            <div class="row margin-top-50" ng-if="vm.isFreigabequittungAusstehend()">
                 <span class="col-md-12" ng-if="vm.showGesuchFreigebenSimulationButton">
                     <dv-loading-button type="button" button-click="vm.gesuchFreigeben()">
                         <span data-translate="ANTRAG_FREIGEBEN_SIMULIEREN"></span>
@@ -67,7 +67,7 @@
 
     <div class="row" ng-if="!vm.isGesuchFreigegeben()">
         <div class="col-md-12" ng-if="!vm.canBeFreigegeben()">
-            <div class="row viewTitle">
+            <div class="row view-title">
                 <div class="col-md-12">
                     <h2>
                         <span data-translate="FREIGABEQUITTUNG_DRUCKEN_TITLE"></span>
@@ -88,9 +88,9 @@
                     <a ui-sref="gesuch.verfuegen({gesuchId: vm.getGesuchId()})" data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK"></a>
                 </div>
             </div>
-            <div class="marginTop40" ng-if="vm.isThereAnyAbgewieseneBetreuung()">
+            <div class="margin-top-40" ng-if="vm.isThereAnyAbgewieseneBetreuung()">
                 <div class="well well-status-warten">
-                    <p class="ebeguH3" data-translate="HINT_BETREUUNGEN_LOESCHEN"></p>
+                    <p class="ebegu-h3" data-translate="HINT_BETREUUNGEN_LOESCHEN"></p>
                 </div>
             </div>
         </div>
@@ -99,7 +99,7 @@
 
             <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
 
-                <div class="row viewTitle">
+                <div class="row view-title">
                     <div class="col-md-12">
                         <h2>
                             <span data-translate="FREIGABEQUITTUNG_DRUCKEN_TITLE"></span>
@@ -112,7 +112,7 @@
 
                 </div>
 
-                <div class="row marginTop30">
+                <div class="row margin-top-30">
                     <div class="col-md-4">
 
                     </div>

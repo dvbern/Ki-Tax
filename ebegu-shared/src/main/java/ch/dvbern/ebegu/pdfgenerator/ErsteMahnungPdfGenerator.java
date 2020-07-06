@@ -66,10 +66,25 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 	private String getKinderAndAngebote() {
 		List<String> listAngebot = new ArrayList<>();
 		for (KindContainer kindContainer : getGesuch().getKindContainers()) {
-			listAngebot.addAll(
+			List<String> betreuungenList = new ArrayList<>();
+
+			betreuungenList.addAll(
 				kindContainer.getBetreuungen().stream()
-					.map(betreuung -> betreuung.getKind().getKindJA().getFullName() + " (" + betreuung.getInstitutionStammdaten().getInstitution().getName() + ')')
+					.map(betreuung -> betreuung.getInstitutionStammdaten().getInstitution().getName())
 					.collect(Collectors.toList()));
+			betreuungenList.addAll(
+				kindContainer.getAnmeldungenTagesschule().stream()
+					.map(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName())
+					.collect(Collectors.toList()));
+			betreuungenList.addAll(
+				kindContainer.getAnmeldungenFerieninsel().stream()
+					.map(anmeldungFerieninsel -> anmeldungFerieninsel.getInstitutionStammdaten().getInstitution().getName())
+					.collect(Collectors.toList()));
+
+			String betreuungStr = kindContainer.getKindJA().getFullName() + " (";
+			betreuungStr += String.join(", ", betreuungenList);
+			betreuungStr += ")";
+			listAngebot.add(betreuungStr);
 		}
 		// we need to separate elements by COMMA and the last one by AND
 		StringBuilder angebot = new StringBuilder();

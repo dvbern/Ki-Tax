@@ -521,10 +521,23 @@ public class BetreuungResource {
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
 
 		if (convertedBetreuung.getBetreuungsangebotTyp().isTagesschule()) {
+			if (betreuungJAXP.getBelegungTagesschule() == null || betreuungJAXP.getBelegungTagesschule().getBelegungTagesschuleModule().isEmpty()) {
+				throw new EbeguRuntimeException(
+					KibonLogLevel.ERROR,
+					betreuungJAXP.getId(),
+					ErrorCodeEnum.ERROR_ANMELDUNG_KEINE_MODULE);
+			}
 			return converter.platzToJAX(this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung));
-		} else {
-			AnmeldungFerieninsel convertedAnmeldungFerieninsel = (AnmeldungFerieninsel) convertedBetreuung;
-			return converter.platzToJAX(this.verfuegungService.anmeldungFerieninselUebernehmen(convertedAnmeldungFerieninsel));
 		}
+
+		if (betreuungJAXP.getBelegungFerieninsel() == null || betreuungJAXP.getBelegungFerieninsel().getTage().isEmpty()) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.ERROR,
+				betreuungJAXP.getId(),
+				ErrorCodeEnum.ERROR_ANMELDUNG_KEINE_MODULE);
+		}
+		AnmeldungFerieninsel convertedAnmeldungFerieninsel = (AnmeldungFerieninsel) convertedBetreuung;
+		return converter.platzToJAX(this.verfuegungService.anmeldungFerieninselUebernehmen(convertedAnmeldungFerieninsel));
+
 	}
 }

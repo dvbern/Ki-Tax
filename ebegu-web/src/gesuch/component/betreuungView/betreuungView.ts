@@ -315,6 +315,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    public displayBetreuungsPensumChangeWarning(): boolean {
+        return this.form.$dirty && this.isMutationsmeldungStatus;
+    }
+
     // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
@@ -448,7 +452,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showInstitutionenAsText(): boolean {
-        return !this.showInstitutionenList();
+        return !this.showInstitutionenList() && !this.model.keineDetailinformationen;
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
@@ -648,7 +652,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
             tsBetreuungspensum.tarifProHauptmahlzeit = 0;
             tsBetreuungspensum.tarifProNebenmahlzeit = 0;
-        } else {
+        } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
+            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten Institution,
+            // dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die Tarife auf dem Modul hinterlegt sind)
             tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
             tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
@@ -923,7 +929,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
-            || this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse;
+            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
     }
 
     public showFalscheAngaben(): boolean {
@@ -963,28 +970,44 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return super.isMutationsmeldungAllowed(this.getBetreuungModel(), this.isNewestGesuch);
     }
 
-    public mutationsmeldungSenden(): void {
+    public preMutationsmeldungSenden(): void {
         // send mutationsmeldung (dummy copy)
         if (!(this.isGesuchValid() && this.mutationsmeldungModel)) {
             return;
         }
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'MUTATIONSMELDUNG_CONFIRMATION',
-            deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
-            parentController: undefined,
-            elementID: undefined,
-        }).then(() => {   // User confirmed removal
-            this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-                this.mutationsmeldungModel,
-                this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
 
-                this.form.$setUntouched();
-                this.form.$setPristine();
-                // reset values. is needed??????
-                this.isMutationsmeldungStatus = false;
-                this.mutationsmeldungModel = undefined;
-                this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        if (this.showExistingBetreuungsmitteilungInfoBox()) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+                deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {   // User confirmed removal
+                this.mutationsmeldungSenden();
             });
+        } else {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_CONFIRMATION',
+                deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+                this.mutationsmeldungSenden();
+            });
+        }
+    }
+
+    public mutationsmeldungSenden(): void {
+        this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
+            this.mutationsmeldungModel,
+            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
+
+            this.form.$setUntouched();
+            this.form.$setPristine();
+            // reset values. is needed??????
+            this.isMutationsmeldungStatus = false;
+            this.mutationsmeldungModel = undefined;
+            this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         });
     }
 
@@ -1072,7 +1095,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
         const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
         const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const isNew = this.getBetreuungModel().isNew();
+        const isNew = this.getBetreuungModel() && this.getBetreuungModel().isNew();
         if (!isNew) {
             const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
             const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
@@ -1200,7 +1223,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.provisorischeBetreuung || this.getBetreuungModel().keineDetailinformationen;
+        return this.provisorischeBetreuung ||
+            (this.getBetreuungModel() && this.getBetreuungModel().keineDetailinformationen);
     }
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {
@@ -1234,6 +1258,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getBetreuungInGemeindeLabel(): string {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())) {
+            return '';
+        }
         return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
             {gemeinde: this.gesuchModelManager.getGemeinde().name});
     }
@@ -1266,7 +1293,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 
@@ -1293,5 +1320,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isMahlzeitenverguenstigungActive(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+    // ausserdem soll die Meldung nicht gezeigt werden, wenn ein neues Betreuungspensum hinzugefügt wird
+    public showOverrideWarning(betreuungspensum: TSBetreuungspensum): boolean {
+        return !betreuungspensum.isNew() &&
+            (this.isMutationsmeldungStatus || this.isMutation());
     }
 }

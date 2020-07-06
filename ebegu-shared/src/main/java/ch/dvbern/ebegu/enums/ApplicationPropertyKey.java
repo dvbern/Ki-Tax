@@ -82,4 +82,9 @@ public enum ApplicationPropertyKey {
 	 */
 	STADT_BERN_ASIV_CONFIGURED,
 
+	/**
+	 * Wenn TRUE ist die zweite Phase aktiv
+	 */
+	KANTON_NOTVERORDNUNG_PHASE_2_AKTIV,
+
 }

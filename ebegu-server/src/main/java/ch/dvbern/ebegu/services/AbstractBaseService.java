@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,9 +32,11 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -60,6 +63,9 @@ public abstract class AbstractBaseService {
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
 	@PermitAll
@@ -85,9 +91,11 @@ public abstract class AbstractBaseService {
 	@PermitAll
 	@Nonnull
 	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten = criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
 		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
 			applicationPropertyService.getStadtBernAsivStartDatum(),
-			applicationPropertyService.isStadtBernAsivConfigured()
+			applicationPropertyService.isStadtBernAsivConfigured(),
+			oeffnungszeiten
 		);
 		return parameter;
 	}

@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
@@ -50,6 +51,7 @@ public class EmptyKitaxRechner extends AbstractRechner {
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
+		input.getParent().setRegelwerk(Regelwerk.FEBR);
 		result.setAnspruchspensumProzent(0);
 		result.setVerguenstigungHauptmahlzeitenTotal(BigDecimal.ZERO);
 		result.setVerguenstigungNebenmahlzeitenTotal(BigDecimal.ZERO);

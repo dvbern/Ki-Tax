@@ -920,9 +920,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
-			}
-			if ((dominantType == BetreuungsangebotTyp.KITA || dominantType == BetreuungsangebotTyp.TAGESSCHULE)
-				&& EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(wizardStep.getGesuch(), wizardStep.getWizardStepName())
+			} else if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(wizardStep.getGesuch(), wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 					|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {

@@ -13,16 +13,16 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="testdatenView testdatenModul">
+<div class="testdaten-view testdatenModul">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
 
-            <div class="viewTitle marginTop10">
+            <div class="view-title margin-top-10">
                 <h2 [textContent]="'TESTFAELLE_EINFUEGEN' | translate"></h2>
             </div>
 
             <!--selecton fuer parameter die bestimmen wie die testfaelle erzeugt werden-->
-            <div class="row marginTop10">
+            <div class="row margin-top-10">
                 <div class="col-sm-3">
                     <mat-radio-group name="creationType" [(ngModel)]="creationType" required>
                         <mat-radio-button value="warten">Betreuungen mit Zustand &#034;warten&#034;</mat-radio-button>
@@ -64,7 +64,7 @@
             </div>
 
             <!--Liste der Faelle-->
-            <div class="row marginTop30">
+            <div class="row margin-top-30">
                 <ul>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('1')">
@@ -189,8 +189,8 @@
             </div>
 
             <!--Gesuche eines GS loeschen-->
-            <h2 class="marginTop20">Gesuchstellerfälle löschen</h2>
-            <div class="row marginTop30">
+            <h2 class="margin-top-20">Gesuchstellerfälle löschen</h2>
+            <div class="row margin-top-30">
                 <div class="col-sm-7 ">
                     <label class="md-no-float" for="gesuchsteller">
                         Gesuchsteller dessen Fälle gelöscht werden sollen
@@ -209,8 +209,8 @@
                 </div>
             </div>
 
-            <h2 class="marginTop20">Gesuchsperiode inkl. Gesuche löschen</h2>
-            <div class="row marginTop30">
+            <h2 class="margin-top-20">Gesuchsperiode inkl. Gesuche löschen</h2>
+            <div class="row margin-top-30">
                 <div class="col-sm-7 ">
                     <label class="md-no-float" for="periodeLoeschen">
                         <span>Gesuchsperiode, die gelöscht werden soll</span>
@@ -230,7 +230,7 @@
             </div>
 
             <!-- Mutieren: Heirat / Scheidung -->
-            <h2 class="marginTop20">Mutieren</h2>
+            <h2 class="margin-top-20">Mutieren</h2>
             <div class="row">
                 <div class="col-sm-2 dv-input-container-small">
                     <label class="md-no-float" for="dossierid">Dossier-Id:</label>
@@ -269,7 +269,7 @@
             </div>
 
             <!-- Verfuegen -->
-            <h2 class="marginTop20">Verfügen</h2>
+            <h2 class="margin-top-20">Verfügen</h2>
             <div class="row">
                 <div class="col-md-12 dv-input-container-small">
                     <label class="md-no-float" for="verfuegenGesuchid">Gesuch-Id:</label>
@@ -285,7 +285,7 @@
             </div>
 
             <!-- Test der Mailvorlagen -->
-            <h2 class="marginTop20">Mails versenden</h2>
+            <h2 class="margin-top-20">Mails versenden</h2>
             <div class="row">
                 <div class="col-md-12 dv-input-container-small">
                     <label class="md-no-float" for="mailadresse">Mailadresse:</label>
@@ -301,7 +301,7 @@
             </div>
 
             <!-- Schulungsdaten -->
-            <h2 class="marginTop20">Schulung</h2>
+            <h2 class="margin-top-20">Schulung</h2>
             <div class="row">
                 <div class="col-md-12">
                     <button dvNgDebounceClick (debounceClick)="resetSchulungsdaten()"
@@ -316,7 +316,7 @@
             </div>
 
             <!-- Tutorial-Daten -->
-            <h2 class="marginTop20" translate>TUTORIAL_TITLE</h2>
+            <h2 class="margin-top-20" translate>TUTORIAL_TITLE</h2>
             <div class="row">
                 <div class="col-md-12">
                     <button dvNgDebounceClick (debounceClick)="createTutorialdaten()"

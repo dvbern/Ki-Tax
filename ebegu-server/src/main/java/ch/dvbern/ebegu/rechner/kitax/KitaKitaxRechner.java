@@ -27,12 +27,16 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
@@ -40,17 +44,20 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
-	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Kita TAGE
-	// 100% = 20 days => 1% = 0.2 days
-	public static final BigDecimal MULTIPLIER_KITA = MathUtil.DEFAULT.fromNullSafe(0.2);
-
-	public KitaKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
-		super(kitaxParameter, locale);
+	public KitaKitaxRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
+		super(kitaxParameter, oeffnungszeiten, locale);
 	}
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
 		if (!input.isBetreuungInGemeinde()) {
 			input.setAnspruchspensumProzent(0);
@@ -65,9 +72,10 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Benoetigte Daten
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
 		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
-		BigDecimal oeffnungsstunden = kitaxParameter.getOeffnungsstundenKita();
-		BigDecimal oeffnungstage = kitaxParameter.getOeffnungstageKita();
-		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(input.getBgPensumProzent());
+
+		BigDecimal oeffnungsstunden = oeffnungszeiten.getOeffnungsstunden();
+		BigDecimal oeffnungstage = oeffnungszeiten.getOeffnungstage();
+		BigDecimal bgPensum = EXACT.pctToFraction(input.getBgPensumProzent());
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 
 		// Inputdaten validieren
@@ -81,7 +89,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 
 		// Abgeltung pro Tag: Abgeltung des Kantons plus Beitrag der Stadt
 		final BigDecimal beitragStadtProTagJahr = kitaxParameter.getBeitragStadtProTagJahr();
-		BigDecimal abgeltungProTag = MathUtil.EXACT.add(kitaxParameter.getBeitragKantonProTag(), beitragStadtProTagJahr);
+		BigDecimal abgeltungProTag = EXACT.add(kitaxParameter.getBeitragKantonProTag(), beitragStadtProTagJahr);
 		// Massgebendes Einkommen: Minimum und Maximum berücksichtigen
 
 		BigDecimal massgebendesEinkommenBerechnet = (massgebendesEinkommen.max(kitaxParameter.getMinMassgebendesEinkommen())).min(kitaxParameter.getMaxMassgebendesEinkommen());
@@ -90,28 +98,28 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal oeffnungsstundenBerechnet = oeffnungsstunden.min(kitaxParameter.getMaxStundenProTagKita());
 
 		// Vollkosten
-		BigDecimal vollkostenZaehler = MathUtil.EXACT.multiply(abgeltungProTag, oeffnungsstundenBerechnet, oeffnungstageBerechnet, bgPensum);
-		BigDecimal vollkostenNenner = MathUtil.EXACT.multiply(kitaxParameter.getMaxStundenProTagKita(), ZWOELF);
-		BigDecimal vollkosten = MathUtil.EXACT.divide(vollkostenZaehler, vollkostenNenner);
+		BigDecimal vollkostenZaehler = EXACT.multiply(abgeltungProTag, oeffnungsstundenBerechnet, oeffnungstageBerechnet, bgPensum);
+		BigDecimal vollkostenNenner = EXACT.multiply(kitaxParameter.getMaxStundenProTagKita(), ZWOELF);
+		BigDecimal vollkosten = EXACT.divide(vollkostenZaehler, vollkostenNenner);
 
 		// Elternbeitrag
-		BigDecimal kostenProStundeMaxMinusMin = MathUtil.EXACT.subtract(kitaxParameter.getKostenProStundeMaximalKitaTagi(), kitaxParameter.getKostenProStundeMinimal());
-		BigDecimal massgebendesEinkommenMinusMin = MathUtil.EXACT.subtract(massgebendesEinkommenBerechnet, kitaxParameter.getMinMassgebendesEinkommen());
-		BigDecimal massgebendesEinkommenMaxMinusMin = MathUtil.EXACT.subtract(kitaxParameter.getMaxMassgebendesEinkommen(), kitaxParameter.getMinMassgebendesEinkommen());
-		BigDecimal param1 = MathUtil.EXACT.multiply(kostenProStundeMaxMinusMin, massgebendesEinkommenMinusMin);
-		BigDecimal param2 = MathUtil.EXACT.multiply(kitaxParameter.getKostenProStundeMinimal(), massgebendesEinkommenMaxMinusMin);
-		BigDecimal param1Plus2 = MathUtil.EXACT.add(param1, param2);
-		BigDecimal elternbeitragZaehler = MathUtil.EXACT.multiply(param1Plus2, NEUN, ZWANZIG, bgPensum, oeffnungstageBerechnet, oeffnungsstundenBerechnet);
-		BigDecimal elternbeitragNenner = MathUtil.EXACT.multiply(massgebendesEinkommenMaxMinusMin, ZWEIHUNDERTVIERZIG, kitaxParameter.getMaxStundenProTagKita());
-		BigDecimal elternbeitrag = MathUtil.EXACT.divide(elternbeitragZaehler, elternbeitragNenner);
+		BigDecimal kostenProStundeMaxMinusMin = EXACT.subtract(kitaxParameter.getKostenProStundeMaximalKitaTagi(), kitaxParameter.getKostenProStundeMinimal());
+		BigDecimal massgebendesEinkommenMinusMin = EXACT.subtract(massgebendesEinkommenBerechnet, kitaxParameter.getMinMassgebendesEinkommen());
+		BigDecimal massgebendesEinkommenMaxMinusMin = EXACT.subtract(kitaxParameter.getMaxMassgebendesEinkommen(), kitaxParameter.getMinMassgebendesEinkommen());
+		BigDecimal param1 = EXACT.multiply(kostenProStundeMaxMinusMin, massgebendesEinkommenMinusMin);
+		BigDecimal param2 = EXACT.multiply(kitaxParameter.getKostenProStundeMinimal(), massgebendesEinkommenMaxMinusMin);
+		BigDecimal param1Plus2 = EXACT.add(param1, param2);
+		BigDecimal elternbeitragZaehler = EXACT.multiply(param1Plus2, NEUN, ZWANZIG, bgPensum, oeffnungstageBerechnet, oeffnungsstundenBerechnet);
+		BigDecimal elternbeitragNenner = EXACT.multiply(massgebendesEinkommenMaxMinusMin, ZWEIHUNDERTVIERZIG, kitaxParameter.getMaxStundenProTagKita());
+		BigDecimal elternbeitrag = EXACT.divide(elternbeitragZaehler, elternbeitragNenner);
 
 		// Runden und auf Zeitabschnitt zurückschreiben
-		BigDecimal vollkostenIntervall = MathUtil.EXACT.multiply(vollkosten, faktor, anteilMonat);
+		BigDecimal vollkostenIntervall = EXACT.multiply(vollkosten, faktor, anteilMonat);
 		BigDecimal elternbeitragIntervall;
 		if (input.isBezahltVollkosten()) {
 			elternbeitragIntervall = vollkostenIntervall;
 		} else {
-			elternbeitragIntervall = MathUtil.EXACT.multiply(elternbeitrag, anteilMonat);
+			elternbeitragIntervall = EXACT.multiply(elternbeitrag, anteilMonat);
 		}
 
 		Objects.requireNonNull(elternbeitragIntervall);
@@ -126,10 +134,18 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Resultat erstellen
 		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
 
-		handleUntermonatlicheMahlzeitenverguenstigung(result, anteilMonat);
+		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
+		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
+		// Pensum reduzieren.
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = calculateAnteilVerguenstigtesPensumAmBetreuungspensum(input);
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);
+
+		if (oeffnungszeiten.isDummyParams()) {
+			input.addBemerkung(MsgKey.NO_MATCHING_FROM_KITAX, locale, oeffnungstageBerechnet, oeffnungsstundenBerechnet);
+		}
 
 		return Optional.of(result);
 	}
@@ -159,9 +175,15 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in TAGE berechnen
 		result.setZeiteinheit(PensumUnits.DAYS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_KITA));
-		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_KITA));
-		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_KITA));
+		BigDecimal tageProMonat = EXACT.divide(oeffnungszeiten.getOeffnungstage(), BigDecimal.valueOf(12));
+
+		BigDecimal multiplierPensum = EXACT.divide(result.getBetreuungspensumProzent(), BigDecimal.valueOf(100));
+		BigDecimal multiplierAnspruch =	EXACT.divide(EXACT.from(result.getAnspruchspensumProzent()), BigDecimal.valueOf(100));
+		BigDecimal multiplierBgPensum = EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
+
+		result.setBetreuungspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierPensum));
+		result.setAnspruchspensumZeiteinheit(EXACT.multiply(tageProMonat, multiplierAnspruch));
+		result.setBgPensumZeiteinheit(EXACT.multiply(tageProMonat, multiplierBgPensum));
 
 		return result;
 	}

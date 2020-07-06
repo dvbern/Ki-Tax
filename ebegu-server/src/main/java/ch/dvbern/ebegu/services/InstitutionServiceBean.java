@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -64,6 +65,7 @@ import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections4.map.HashedMap;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -111,7 +113,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private Authorizer authorizer;
-
 
 	@Nonnull
 	@Override
@@ -224,7 +225,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	private boolean isAllowedForMode(
-		@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Benutzer benutzer, boolean editMode, boolean restrictedForSCH
+		@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Benutzer benutzer, boolean editMode,
+		boolean restrictedForSCH
 	) {
 		if (editMode) {
 			return authorizer.isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
@@ -272,6 +274,51 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			return getAllInstitutionen();
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH) {
+		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
+
+		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
+		if (benutzerOptional.isPresent()) {
+			Benutzer benutzer = benutzerOptional.get();
+			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)
+				&& benutzer.getInstitution() != null) {
+				if (benutzer.getInstitution() != null) {
+					institutionInstitutionStammdatenMap.put(benutzer.getInstitution(),
+						institutionStammdatenService.fetchInstitutionStammdatenByInstitution(benutzer.getInstitution().getId(), false));
+				}
+			} else {
+				if (EnumUtil.isOneOf(
+					benutzer.getRole(),
+					UserRole.ADMIN_TRAEGERSCHAFT,
+					UserRole.SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
+					// Hier suchen wir direkt die Institutionen die sind mit der Traegerschaft verbundet
+					institutionStammdatenService.getAllInstitutionStammdatenForTraegerschaft(benutzer.getTraegerschaft()).forEach(institutionStammdaten -> {
+							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+								institutionStammdaten);
+					});
+				} else if (benutzer.getRole().isRoleGemeindeabhaengig()) {
+					// Hier gibt schon in getAllInstitutionStammdaten der GemeindeListe predicate
+					institutionStammdatenService.getAllInstitutionStammdaten().forEach(institutionStammdaten -> {
+						if (isAllowedForMode(institutionStammdaten, benutzer, true, restrictedForSCH)) {
+							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+								institutionStammdaten);
+						}
+					});
+				} else {
+					// Hier muss man ja alles lesen fuer der Mandant
+					institutionStammdatenService.getAllInstitutionStammdaten().forEach(institutionStammdaten -> {
+							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+								institutionStammdaten);
+					});
+				}
+			}
+		}
+		return institutionInstitutionStammdatenMap;
 	}
 
 	@Override

@@ -44,7 +44,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
@@ -94,7 +93,7 @@ import org.hibernate.search.annotations.Indexed;
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
 )
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
 public class Betreuung extends AbstractPlatz {
 
@@ -477,8 +476,8 @@ public class Betreuung extends AbstractPlatz {
 			LocalDate von = pensum.getGueltigkeit().getGueltigAb();
 			LocalDate bis = pensum.getGueltigkeit().getGueltigBis();
 
-			if ((von.isBefore(abweichungVon) || von.getMonth() == abweichungVon.getMonth())
-				&& (bis.isAfter(abweichungBis) || bis.getMonth() == abweichungBis.getMonth())) {
+			if ((von.isBefore(abweichungVon) || DateUtil.isSameMonthAndYear(von, abweichungVon))
+				&& (bis.isAfter(abweichungBis) || DateUtil.isSameMonthAndYear(bis, abweichungBis))) {
 				//HIT!!
 				if (von.isBefore(abweichungVon)) {
 					von = abweichungVon;

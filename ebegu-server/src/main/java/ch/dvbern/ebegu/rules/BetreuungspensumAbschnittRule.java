@@ -33,6 +33,8 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.KitaxUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -44,8 +46,12 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
-	public BetreuungspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	private final KitaxUebergangsloesungParameter kitaxParameter;
+
+	public BetreuungspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale, KitaxUebergangsloesungParameter kitaxParameter) {
 		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
+
+		this.kitaxParameter = kitaxParameter;
 	}
 
 	@Override
@@ -55,14 +61,71 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		Betreuung betreuung = (Betreuung) platz;
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
-		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
-			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum, betreuung));
+
+		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
+			&& betreuung.getBetreuungsangebotTyp().isJugendamt();
+
+
+		// es handelt sich um FEBR und wir müssen die Pensen gemäss dem alten System umrechnen.
+		if (possibleKitaxRechner) {
+
+			List<Betreuungspensum> pensenToUse = new ArrayList<>();
+
+			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
+
+				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
+
+				if (KitaxUtil.isCompletePensumASIV(kitaxParameter, betreuungspensum)) {
+					pensenToUse.add(betreuungspensum);
+					continue;
+				}
+
+				boolean recalculationNecessary = false;
+
+				// Eine Kopie erstellen, da die Daten nicht veraendert werden duerfen!
+				Betreuungspensum copy = initBetreuungspensumCopy(betreuungspensum);
+
+				// das komplette Pensum liegt innerhalb von FEBR
+				if (kitaxParameter.getStadtBernAsivStartDate().isAfter(betreuungspensum.getGueltigkeit().getGueltigBis())) {
+					recalculationNecessary = true;
+				}
+
+				if (KitaxUtil.isPensumMixedFEBRandASIV(kitaxParameter, betreuungspensum)) {
+					recalculationNecessary = true;
+					copy.getGueltigkeit().setGueltigBis(kitaxParameter.getStadtBernAsivStartDate().minusDays(1l));
+
+					Betreuungspensum restPensumAsiv = initBetreuungspensumCopy(betreuungspensum);
+					restPensumAsiv.getGueltigkeit().setGueltigAb(kitaxParameter.getStadtBernAsivStartDate());
+					restPensumAsiv.getGueltigkeit().setGueltigBis(betreuungspensum.getGueltigkeit().getGueltigBis());
+					restPensumAsiv.setPensum(betreuungspensum.getPensum());
+					pensenToUse.add(restPensumAsiv);
+				}
+
+				if (recalculationNecessary) {
+					String kitaName = betreuung.getInstitutionStammdaten().getInstitution().getName();
+					final BigDecimal convertedPensum = KitaxUtil.recalculatePensumKonvertierung(kitaName, kitaxParameter, betreuungspensum);
+					copy.setPensum(convertedPensum);
+					pensenToUse.add(copy);
+				}
+			}
+
+			for (Betreuungspensum pensum : pensenToUse) {
+				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensum, betreuung));
+			}
+
+			pensenToUse.clear();
+		} else {
+			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
+				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
+				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum, betreuung));
+			}
 		}
+
 		return betreuungspensumAbschnitte;
 	}
 
@@ -76,10 +139,11 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Betreuung betreuung
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(betreuungspensum.getGueltigkeit());
+
 		// Eigentliches Betreuungspensum
 		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(betreuungspensum.getPensum());
 		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
-
+		zeitabschnitt.setPensumUnitForAsivAndGemeinde(betreuungspensum.getUnitForDisplay());
 		// Anzahl Haupt und Nebenmahlzeiten übernehmen
 		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(BigDecimal.valueOf(betreuungspensum.getMonatlicheHauptmahlzeiten()));
 		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(BigDecimal.valueOf(betreuungspensum.getMonatlicheNebenmahlzeiten()));
@@ -111,5 +175,19 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				getLocale());
 		}
 		return zeitabschnitt;
+	}
+
+	private Betreuungspensum initBetreuungspensumCopy(Betreuungspensum original) {
+		// das pensum muss kopiert werden, ansonsten wird es in der DB überschrieben
+		Betreuungspensum copy = new Betreuungspensum();
+		copy.setMonatlicheBetreuungskosten(original.getMonatlicheBetreuungskosten());
+		copy.setMonatlicheHauptmahlzeiten(original.getMonatlicheHauptmahlzeiten());
+		copy.setMonatlicheNebenmahlzeiten(original.getMonatlicheNebenmahlzeiten());
+		copy.setTarifProHauptmahlzeit(original.getTarifProHauptmahlzeit());
+		copy.setTarifProNebenmahlzeit(original.getTarifProNebenmahlzeit());
+		copy.setGueltigkeit(original.getGueltigkeit());
+//		copy.setPensum(original.getPensum());
+
+		return copy;
 	}
 }

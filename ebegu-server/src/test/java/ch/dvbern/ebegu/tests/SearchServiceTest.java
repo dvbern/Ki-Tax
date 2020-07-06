@@ -17,11 +17,14 @@ package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.dto.suchfilter.lucene.LuceneUtil;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -40,6 +43,9 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.lucene.analysis.Analyzer;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -73,10 +79,14 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 
+	private Analyzer analyzer;
+
 	@Before
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(persistence.getEntityManager());
+		this.analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer("EBEGUGermanAnalyzer");
 	}
 
 	@Test
@@ -377,4 +387,39 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		return persistence.merge(dossier);
 	}
 
+	@Test
+	public void testNormalization() throws Exception {
+		String testquery = "Bäckerin  Aepfel Äpfel Meier löblichster Stuehle";
+		List<String> strings = LuceneUtil.tokenizeString(analyzer, testquery);
+		List<String> expectedTokens = new ArrayList<>();
+		Collections.addAll(expectedTokens, "backerin", "apfel", "apfel", "meier", "loblichster", "stuhle");
+		Assert.assertEquals(expectedTokens, strings);
+	}
+
+	@Test
+	public void testNoStopwordsAreRemoved() throws Exception {
+		String testquery = "Maximilian von und zu Habsburg";
+		List<String> strings = LuceneUtil.tokenizeString(analyzer, testquery);
+		List<String> expectedTokens = new ArrayList<>();
+		Collections.addAll(expectedTokens, "maximilian", "von", "und", "zu", "habsburg");
+		Assert.assertEquals(expectedTokens, strings);
+	}
+
+	@Test
+	public void testLowercaseNormalization() throws Exception {
+		String testquery = "MAX Haus mauS";
+		List<String> strings = LuceneUtil.tokenizeString(analyzer, testquery);
+		List<String> expectedTokens = new ArrayList<>();
+		Collections.addAll(expectedTokens, "max", "haus", "maus");
+		Assert.assertEquals(expectedTokens, strings);
+	}
+
+	@Test
+	public void testTokenizationOfSpecialChars() throws Exception {
+		String testquery = "test@äöü.example.com 123-3456 123.456 mueller-meier 'test' \"test\"";
+		List<String> strings = LuceneUtil.tokenizeString(analyzer, testquery);
+		List<String> expectedTokens = new ArrayList<>();
+		Collections.addAll(expectedTokens, "test", "aou.example.com", "123", "3456", "123.456", "muller", "meier", "test", "test");
+		Assert.assertEquals(expectedTokens, strings);
+	}
 }

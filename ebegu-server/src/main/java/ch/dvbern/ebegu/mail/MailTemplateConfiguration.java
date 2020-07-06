@@ -390,6 +390,19 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
 	}
 
+
+	public String getInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch,
+		@Nonnull String mailaddressTS,
+		@Nonnull List<Sprache> sprachen) {
+
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS);
+		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
+		paramMap.put(GESUCH, gesuch);
+
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS, sprachen),
+			paramMap);
+	}
+
 	private void addContentInLanguage(
 		@Nonnull Benutzer einladender,
 		@Nonnull Einladung einladung,

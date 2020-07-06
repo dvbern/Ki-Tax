@@ -19,10 +19,14 @@ package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -30,79 +34,112 @@ import ch.dvbern.ebegu.entities.Gemeinde;
  */
 public final class KitaxUebergangsloesungParameter {
 
-	private BigDecimal oeffnungsstundenKita = MathUtil.DEFAULT.from(11.5); 	// TODO KITAX woher? Achtung: Der Test beruht auf diesen Daten!
-	private BigDecimal oeffnungstageKita = MathUtil.DEFAULT.from(240); 		// TODO KITAX woher? Achtung: Der Test beruht auf diesen Daten!
+	private static final MathUtil MATH = MathUtil.DEFAULT;
 
-	private BigDecimal beitragKantonProTag = MathUtil.DEFAULT.from(111.15);
-	private BigDecimal beitragStadtProTagJahr = MathUtil.DEFAULT.from(8.00);
+	private final @Nonnull Map<String, KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeitenMap = new HashMap<>();
 
-	private BigDecimal maxTageKita = MathUtil.DEFAULT.from(244);
-	private BigDecimal maxStundenProTagKita = MathUtil.DEFAULT.from(11.5);
+	private final @Nonnull BigDecimal beitragKantonProTag = MATH.from(111.15);
+	private final @Nonnull BigDecimal beitragStadtProTagJahr = MATH.from(8.00);
 
-	private BigDecimal kostenProStundeMaximalKitaTagi = MathUtil.DEFAULT.from(12.35);
-	private BigDecimal kostenProStundeMaximalTageseltern = MathUtil.DEFAULT.from(9.49);
-	private BigDecimal kostenProStundeMinimal = MathUtil.DEFAULT.from(0.79);
+	private final @Nonnull BigDecimal maxTageKita = MATH.from(244);
+	private final @Nonnull BigDecimal maxStundenProTagKita = MATH.from(11.5);
 
-	private BigDecimal maxMassgebendesEinkommen = MathUtil.DEFAULT.from(160000);
-	private BigDecimal minMassgebendesEinkommen = MathUtil.DEFAULT.from(43000);
+	private final @Nonnull BigDecimal kostenProStundeMaximalKitaTagi = MATH.from(12.35);
+	private final @Nonnull BigDecimal kostenProStundeMaximalTageseltern = MATH.from(9.49);
+	private final @Nonnull BigDecimal kostenProStundeMinimal = MATH.from(0.79);
+
+	private int minEWP = 0; // Gilt fuer alle Schulstufen. Zuschlaege/Rundungen werden im Korrekturmodus gemacht
 
 	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
+
+	private final @Nonnull BigDecimal maxMassgebendesEinkommen = MATH.from(160000);
+	private final @Nonnull BigDecimal minMassgebendesEinkommen = MATH.from(43000);
 
 	private LocalDate stadtBernAsivStartDate = null;
 	private boolean isStadtBernAsivConfiguered = false;
 
 
-	public KitaxUebergangsloesungParameter(@Nonnull LocalDate stadtBernAsivStartDate, boolean isStadtBernAsivConfiguered) {
+	public KitaxUebergangsloesungParameter(
+		@Nonnull LocalDate stadtBernAsivStartDate,
+		boolean isStadtBernAsivConfiguered,
+		@Nonnull Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten
+	) {
 		this.stadtBernAsivStartDate = stadtBernAsivStartDate;
 		this.isStadtBernAsivConfiguered = isStadtBernAsivConfiguered;
+		for (KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeit : oeffnungszeiten) {
+			oeffnungszeitenMap.put(oeffnungszeit.getNameKibon().toLowerCase(Locale.GERMAN).trim(), oeffnungszeit);
+		}
 	}
 
-	public BigDecimal getOeffnungsstundenKita() {
-		return oeffnungsstundenKita;
+	@Nonnull
+	public KitaxUebergangsloesungInstitutionOeffnungszeiten getOeffnungszeiten(@Nonnull String kitaName) {
+		KitaxUebergangsloesungInstitutionOeffnungszeiten dto =
+			oeffnungszeitenMap.get(kitaName.toLowerCase(Locale.GERMAN).trim());
+
+		// we use the default parameters if there is no mapping
+		if (dto == null) {
+			dto = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
+			dto.setOeffnungsstunden(BigDecimal.valueOf(11.5));
+			dto.setOeffnungstage(BigDecimal.valueOf(240));
+			dto.setNameKibon(kitaName);
+			dto.setDummyParams(true);
+		}
+
+		return dto;
 	}
 
-	public BigDecimal getOeffnungstageKita() {
-		return oeffnungstageKita;
-	}
-
+	@Nonnull
 	public BigDecimal getBeitragKantonProTag() {
 		return beitragKantonProTag;
 	}
 
+	@Nonnull
 	public BigDecimal getBeitragStadtProTagJahr() {
 		return beitragStadtProTagJahr;
 	}
 
+	@Nonnull
 	public BigDecimal getMaxTageKita() {
 		return maxTageKita;
 	}
 
+	@Nonnull
 	public BigDecimal getMaxStundenProTagKita() {
 		return maxStundenProTagKita;
 	}
 
+	@Nonnull
 	public BigDecimal getKostenProStundeMaximalKitaTagi() {
 		return kostenProStundeMaximalKitaTagi;
 	}
 
+	@Nonnull
 	public BigDecimal getKostenProStundeMaximalTageseltern() {
 		return kostenProStundeMaximalTageseltern;
 	}
 
+	@Nonnull
 	public BigDecimal getKostenProStundeMinimal() {
 		return kostenProStundeMinimal;
 	}
 
+	@Nonnull
 	public BigDecimal getMaxMassgebendesEinkommen() {
 		return maxMassgebendesEinkommen;
 	}
 
+	@Nonnull
 	public BigDecimal getMinMassgebendesEinkommen() {
 		return minMassgebendesEinkommen;
 	}
 
+	@Nonnull
 	public BigDecimal getBabyFaktor() {
 		return babyFaktor;
+	}
+
+	public int getMinEWP() {
+		return minEWP;
 	}
 
 	public LocalDate getStadtBernAsivStartDate() {
@@ -119,11 +156,5 @@ public final class KitaxUebergangsloesungParameter {
 
 	public void setStadtBernAsivConfiguered(boolean stadtBernAsivConfiguered) {
 		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
-	}
-
-	public boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
-		// Zum Testen behandeln wir Paris wie Bern
-		long bfsNummer = gemeinde.getBfsNummer();
-		return bfsNummer == 351 || bfsNummer == 99998;
 	}
 }

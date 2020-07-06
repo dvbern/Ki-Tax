@@ -42,8 +42,7 @@
                                                    [(ngModel)]="stammdaten.tsAdresse.organisation"
                                                    [maxlength]="255"
                                                    class="form-control"
-                                                   required
-                                                   placeholder="{{'GEMEINDE_ANSCHRIFT_PLACEHOLDER'|translate}}">
+                                                   required>
                                             <dv-error-messages [errorObject]="nameAnschriftTS.errors"
                                                                inputId="anschrift_ts_id"></dv-error-messages>
                                         </div>
@@ -102,6 +101,40 @@
                                                [maxlength]="255" class="form-control" required>
                                         <dv-error-messages [errorObject]="nameOrtTS.errors"
                                                            inputId="ort_ts_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Alternative Email -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label translate for="email_ts_id">ALTERNATIVE_EMAIL
+                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
+                                        </label>
+                                        <input id="email_ts_id" type="text" name="email_ts_id"
+											   #nameEmailTS="ngModel"
+                                               [(ngModel)]="stammdaten.tsEmail"
+                                               [pattern]="CONSTANTS.PATTERN_EMAIL"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameEmailTS.errors"
+                                                           inputId="email_ts_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Alternative Telefonnummer -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label translate for="telefonnummer_ts_id">ALTERNATIVE_TELEFONNUMMER
+                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
+                                        </label>
+                                        <input id="telefonnummer_ts_id" type="text" name="telefonnummer_ts_id"
+											   #nameTelefonnummerTS="ngModel"
+                                               [(ngModel)]="stammdaten.tsTelefon"
+                                               [pattern]="CONSTANTS.PATTERN_PHONE"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameTelefonnummerTS.errors"
+                                                           inputId="telefonnummer_ts_id"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -207,6 +240,8 @@
                                 <p>{{stammdaten.tsAdresse.strasse}}
                                     {{stammdaten.tsAdresse.hausnummer}}</p>
                                 <p>{{stammdaten.tsAdresse.plz}} {{stammdaten.tsAdresse.ort}}</p>
+                                <p *ngIf="stammdaten.tsEmail">{{stammdaten.tsEmail}}</p>
+                                <p *ngIf="stammdaten.tsTelefon">{{stammdaten.tsTelefon}}</p>
                             </div>
                         </div>
                     </ng-template>

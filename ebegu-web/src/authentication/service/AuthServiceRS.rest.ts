@@ -26,6 +26,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import {HttpBuffer} from './HttpBuffer';
@@ -268,6 +269,9 @@ export class AuthServiceRS {
     }
 
     public getVisibleRolesForPrincipal(): ReadonlyArray<TSRole> {
+        if (EbeguUtil.isNullOrUndefined(this.getPrincipal())) {
+            return [];
+        }
         const isTagesschuleEnabled = this.getPrincipal().mandant.angebotTS;
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:

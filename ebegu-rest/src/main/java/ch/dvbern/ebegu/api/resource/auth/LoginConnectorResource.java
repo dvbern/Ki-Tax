@@ -245,7 +245,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			String bemerkung =
 				"ExternalUUID uebernommen von Benutzer: username=" + duplicatedBenutzer.getUsername()
 					+ " externalUUID= " + duplicatedBenutzer.getExternalUUID() + ". Bei diesem wurde die externalUUID gelöscht" ;
-			LOG.warn(bemerkung);
+			LOG.info(bemerkung);
 			existingBenutzer.addBemerkung(bemerkung);
 		}
 

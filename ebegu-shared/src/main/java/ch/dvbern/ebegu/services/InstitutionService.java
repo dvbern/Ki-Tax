@@ -16,12 +16,14 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -31,7 +33,8 @@ public interface InstitutionService {
 
 	/**
 	 * Aktualisiert die Institution in der DB
-	 *  @param institution Die Institution als DTO
+	 *
+	 * @param institution Die Institution als DTO
 	 */
 	@Nonnull
 	Institution updateInstitution(@Nonnull Institution institution);
@@ -72,15 +75,19 @@ public interface InstitutionService {
 
 	/**
 	 * Gibt alle aktiven Institutionen zurueck, fuer welche der aktuell eingeloggte Benutzer *schreib*-berechtigt ist.
-	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden. Dieses Parameter
-	 * gilt nur fuer die Rolen vom Schulamt
+	 *
+	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden.
+	 *                            Dieses Parameter
+	 *                         gilt nur fuer die Rolen vom Schulamt
 	 */
 	Collection<Institution> getInstitutionenEditableForCurrentBenutzer(boolean restrictedForSCH);
 
 	/**
 	 * Gibt alle aktiven Institutionen zurueck, fuer welche der aktuell eingeloggte Benutzer *lese*-berechtigt ist.
-	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden. Dieses Parameter
-	 * gilt nur fuer die Rolen vom Schulamt
+	 *
+	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden.
+	 *                            Dieses Parameter
+	 *                         gilt nur fuer die Rolen vom Schulamt
 	 */
 	Collection<Institution> getInstitutionenReadableForCurrentBenutzer(boolean restrictedForSCH);
 
@@ -90,7 +97,8 @@ public interface InstitutionService {
 	BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId);
 
 	/**
-	 * Will take all Institutions and check whether its Stammdaten has to be checked (stammdaten haven't been saved for a long time) or not.
+	 * Will take all Institutions and check whether its Stammdaten has to be checked (stammdaten haven't been saved
+	 * for a long time) or not.
 	 * If it does it will set the Flag stammdatenCheckRequired to true. It will set it to false otherwise.
 	 */
 	void calculateStammdatenCheckRequired();
@@ -111,4 +119,6 @@ public interface InstitutionService {
 	void removeInstitution(@Nonnull String institutionId);
 
 	void saveExternalClients(@Nonnull Institution institution, @Nonnull Collection<ExternalClient> externalClients);
+
+	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH);
 }

@@ -117,6 +117,7 @@ import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSRueckforderungDokument} from '../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../models/TSRueckforderungFormular';
 import {TSRueckforderungMitteilung} from '../models/TSRueckforderungMitteilung';
 import {TSSozialhilfeZeitraum} from '../models/TSSozialhilfeZeitraum';
@@ -901,6 +902,10 @@ export class EbeguRestUtil {
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.bgAdresse = this.adresseToRestObject({}, stammdaten.bgAdresse);
             restStammdaten.tsAdresse = this.adresseToRestObject({}, stammdaten.tsAdresse);
+            restStammdaten.bgEmail = (stammdaten.bgEmail) ? stammdaten.bgEmail : null;
+            restStammdaten.bgTelefon = (stammdaten.bgTelefon) ? stammdaten.bgTelefon : null;
+            restStammdaten.tsEmail = (stammdaten.tsEmail) ? stammdaten.tsEmail : null;
+            restStammdaten.tsTelefon = (stammdaten.tsTelefon) ? stammdaten.tsTelefon : null;
             if (stammdaten.gemeinde.angebotBG) {
                 restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             }
@@ -923,6 +928,8 @@ export class EbeguRestUtil {
             restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
             restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
             restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
+            restStammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen =
+                stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             restStammdaten.externalClients = stammdaten.externalClients || null;
             restStammdaten.usernameScolaris = stammdaten.usernameScolaris;
 
@@ -972,6 +979,10 @@ export class EbeguRestUtil {
             }
             stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
             stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
+            stammdatenTS.bgEmail = stammdatenFromServer.bgEmail;
+            stammdatenTS.bgTelefon = stammdatenFromServer.bgTelefon;
+            stammdatenTS.tsEmail = stammdatenFromServer.tsEmail;
+            stammdatenTS.tsTelefon = stammdatenFromServer.tsTelefon;
             stammdatenTS.benachrichtigungBgEmailAuto = stammdatenFromServer.benachrichtigungBgEmailAuto;
             stammdatenTS.benachrichtigungTsEmailAuto = stammdatenFromServer.benachrichtigungTsEmailAuto;
             stammdatenTS.standardDokSignature = stammdatenFromServer.standardDokSignature;
@@ -980,6 +991,8 @@ export class EbeguRestUtil {
             stammdatenTS.standardDokUnterschriftName = stammdatenFromServer.standardDokUnterschriftName;
             stammdatenTS.standardDokUnterschriftTitel2 = stammdatenFromServer.standardDokUnterschriftTitel2;
             stammdatenTS.standardDokUnterschriftName2 = stammdatenFromServer.standardDokUnterschriftName2;
+            stammdatenTS.tsVerantwortlicherNachVerfuegungBenachrichtigen =
+                stammdatenFromServer.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
 
             return stammdatenTS;
@@ -3900,6 +3913,28 @@ export class EbeguRestUtil {
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
         rueckforderungFormular.stufe2VerfuegungAusbezahltAm =
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
+        rueckforderungFormular.institutionTyp = rueckforderungFormularFromServer.institutionTyp;
+        rueckforderungFormular.extendedEinreichefrist =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
+        rueckforderungFormular.relevantEinreichungsfrist =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
+        rueckforderungFormular.betragEntgangeneElternbeitraege = rueckforderungFormularFromServer.betragEntgangeneElternbeitraege;
+        rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
+            rueckforderungFormularFromServer.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+        rueckforderungFormular.anzahlNichtAngeboteneEinheiten = rueckforderungFormularFromServer.anzahlNichtAngeboteneEinheiten;
+        rueckforderungFormular.kurzarbeitBeantragt = rueckforderungFormularFromServer.kurzarbeitBeantragt;
+        rueckforderungFormular.kurzarbeitBetrag = rueckforderungFormularFromServer.kurzarbeitBetrag;
+        rueckforderungFormular.kurzarbeitDefinitivVerfuegt = rueckforderungFormularFromServer.kurzarbeitDefinitivVerfuegt;
+        rueckforderungFormular.kurzarbeitKeinAntragBegruendung = rueckforderungFormularFromServer.kurzarbeitKeinAntragBegruendung;
+        rueckforderungFormular.kurzarbeitSonstiges = rueckforderungFormularFromServer.kurzarbeitSonstiges;
+        rueckforderungFormular.coronaErwerbsersatzBeantragt =
+            rueckforderungFormularFromServer.coronaErwerbsersatzBeantragt;
+        rueckforderungFormular.coronaErwerbsersatzBetrag = rueckforderungFormularFromServer.coronaErwerbsersatzBetrag;
+        rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt = rueckforderungFormularFromServer.coronaErwerbsersatzDefinitivVerfuegt;
+        rueckforderungFormular.coronaErwerbsersatzKeinAntragBegruendung =
+            rueckforderungFormularFromServer.coronaErwerbsersatzKeinAntragBegruendung;
+        rueckforderungFormular.coronaErwerbsersatzSonstiges =
+            rueckforderungFormularFromServer.coronaErwerbsersatzSonstiges;
         return rueckforderungFormular;
     }
 
@@ -3957,6 +3992,28 @@ export class EbeguRestUtil {
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
         rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
+        rueckforderungFormularRest.extendedEinreichefrist =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.extendedEinreichefrist);
+        rueckforderungFormularRest.relevantEinreichungsfrist =
+            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.relevantEinreichungsfrist);
+        rueckforderungFormularRest.betragEntgangeneElternbeitraege = rueckforderungFormularTS.betragEntgangeneElternbeitraege;
+        rueckforderungFormularRest.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
+            rueckforderungFormularTS.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+        rueckforderungFormularRest.anzahlNichtAngeboteneEinheiten = rueckforderungFormularTS.anzahlNichtAngeboteneEinheiten;
+        rueckforderungFormularRest.kurzarbeitBeantragt = rueckforderungFormularTS.kurzarbeitBeantragt;
+        rueckforderungFormularRest.kurzarbeitBetrag = rueckforderungFormularTS.kurzarbeitBetrag;
+        rueckforderungFormularRest.kurzarbeitDefinitivVerfuegt = rueckforderungFormularTS.kurzarbeitDefinitivVerfuegt;
+        rueckforderungFormularRest.kurzarbeitKeinAntragBegruendung = rueckforderungFormularTS.kurzarbeitKeinAntragBegruendung;
+        rueckforderungFormularRest.kurzarbeitSonstiges = rueckforderungFormularTS.kurzarbeitSonstiges;
+        rueckforderungFormularRest.coronaErwerbsersatzBeantragt =
+            rueckforderungFormularTS.coronaErwerbsersatzBeantragt;
+        rueckforderungFormularRest.coronaErwerbsersatzBetrag = rueckforderungFormularTS.coronaErwerbsersatzBetrag;
+        rueckforderungFormularRest.coronaErwerbsersatzDefinitivVerfuegt = rueckforderungFormularTS.coronaErwerbsersatzDefinitivVerfuegt;
+        rueckforderungFormularRest.coronaErwerbsersatzKeinAntragBegruendung =
+            rueckforderungFormularTS.coronaErwerbsersatzKeinAntragBegruendung;
+        rueckforderungFormularRest.coronaErwerbsersatzSonstiges =
+            rueckforderungFormularTS.coronaErwerbsersatzSonstiges;
         return rueckforderungFormularRest;
     }
 
@@ -3973,5 +4030,28 @@ export class EbeguRestUtil {
         rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
         rueckforderungMitteilungRest.sendeDatum = DateUtil.momentToLocalDateTime(rueckforderungMitteilungTS.sendeDatum);
         return rueckforderungMitteilungRest;
+    }
+
+    public parseRueckforderungDokumente(data: any): TSRueckforderungDokument[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseRueckforderungDokument(new TSRueckforderungDokument(), item))
+            : [this.parseRueckforderungDokument(new TSRueckforderungDokument(), data)];
+    }
+
+    public parseRueckforderungDokument(dokument: TSRueckforderungDokument,
+                                       dokumentFromServer: any): TSRueckforderungDokument {
+        if (dokumentFromServer) {
+            this.parseAbstractMutableEntity(dokument, dokumentFromServer);
+            dokument.filename = dokumentFromServer.filename;
+            dokument.filepfad = dokumentFromServer.filepfad;
+            dokument.filesize = dokumentFromServer.filesize;
+            dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+            dokument.rueckforderungDokumentTyp = dokumentFromServer.rueckforderungDokumentTyp;
+            return dokument;
+        }
+        return undefined;
     }
 }

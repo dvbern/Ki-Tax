@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
@@ -80,28 +81,40 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
 		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0) {
 
-			BigDecimal kostenMitBetreuung = inputData.getTsInputMitBetreuung().getVerpflegungskosten();
-			BigDecimal kostenOhneBetreuung = inputData.getTsInputOhneBetreuung().getVerpflegungskosten();
-			int anzVerpflegungenMitBetreuung = inputData.getTsInputMitBetreuung().getAnzVerpflegungen();
-			int anzVerpflegungenOhneBetreuung = inputData.getTsInputOhneBetreuung().getAnzVerpflegungen();
+			Map<BigDecimal, Integer> kostenUndAnzMahlzeitenMitBetreuung =
+				inputData.getTsInputMitBetreuung().getVerpflegungskostenUndMahlzeiten();
+			Map<BigDecimal, Integer> kostenUndAnzMahlzeitenOhneBetreuung =
+				inputData.getTsInputOhneBetreuung().getVerpflegungskostenUndMahlzeiten();
 
+			BigDecimal verguenstigungMitBetreuung = BigDecimal.ZERO;
+			BigDecimal verguenstigungOhneBetreuung = BigDecimal.ZERO;
 
-			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
-					kostenMitBetreuung,
+			for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeitenMitBetreuung.entrySet()) {
+				BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+					entry.getKey(),
 					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
 
-			BigDecimal verguenstigungEffektivOhneBetreuung =
-				mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
-					kostenOhneBetreuung,
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
-
-			if (kostenMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(anzVerpflegungenMitBetreuung)));
-				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigungEffektivMitBetreuung);
+				verguenstigungMitBetreuung = MathUtil.DEFAULT.addNullSafe(verguenstigungMitBetreuung,
+					verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
 			}
-			if (kostenOhneBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
-				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungEffektivOhneBetreuung.multiply(BigDecimal.valueOf(anzVerpflegungenOhneBetreuung)));
-				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale(), verguenstigungEffektivOhneBetreuung);
+
+			for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeitenOhneBetreuung.entrySet()) {
+				BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+					entry.getKey(),
+					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+
+				verguenstigungOhneBetreuung = MathUtil.DEFAULT.addNullSafe(verguenstigungOhneBetreuung,
+					verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
+			}
+
+
+			if (verguenstigungMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
+				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigungMitBetreuung);
+				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale());
+			}
+			if (verguenstigungOhneBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
+				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungOhneBetreuung);
+				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale());
 			}
 		}
 	}

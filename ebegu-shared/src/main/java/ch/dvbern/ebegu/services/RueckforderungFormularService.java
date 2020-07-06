@@ -59,4 +59,7 @@ public interface RueckforderungFormularService {
 
 	@Nonnull
 	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
+
+	@Nonnull
+	void initializePhase2();
 }

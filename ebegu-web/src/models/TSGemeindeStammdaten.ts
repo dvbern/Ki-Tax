@@ -33,7 +33,11 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public gemeinde: TSGemeinde;
     public adresse: TSAdresse;
     public bgAdresse: TSAdresse;
+    public bgTelefon: string;
+    public bgEmail: string;
     public tsAdresse: TSAdresse;
+    public tsTelefon: string;
+    public tsEmail: string;
     public beschwerdeAdresse: TSAdresse;
     public mail: string;
     public telefon: string;
@@ -55,6 +59,7 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public standardDokUnterschriftName: string;
     public standardDokUnterschriftTitel2: string;
     public standardDokUnterschriftName2: string;
+    public tsVerantwortlicherNachVerfuegungBenachrichtigen: boolean;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public externalClients: string[];

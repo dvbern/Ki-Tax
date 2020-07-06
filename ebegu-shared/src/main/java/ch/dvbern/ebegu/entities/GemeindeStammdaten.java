@@ -206,9 +206,34 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true)
 	private String standardDokUnterschriftName2;
 
+	@Nonnull
+	@NotNull
+	@Column(nullable = false)
+	private Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen = false;
+
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String usernameScolaris;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String bgTelefon;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String bgEmail;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String tsTelefon;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String tsEmail;
 
 	@Nonnull
 	@ManyToMany
@@ -445,6 +470,36 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG Email (falls gesetzt), sonst die allgemeinen Angaben
+	 * Fuer *reine* TS-Angebote verwenden wir die TS Email (falls gesetzt), sonst die allgemeinen Angaben
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
+	 */
+	public String getEmailForGesuch(Gesuch gesuch) {
+		if (bgEmail != null && !bgEmail.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			return bgEmail;
+		}
+		if (tsEmail != null && !tsEmail.equals("") && gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return tsEmail;
+		}
+		return mail;
+	}
+
+	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
+	 * Fuer *reine* TS-Angebote verwenden wir die TS Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
+	 */
+	public String getTelefonForGesuch(Gesuch gesuch) {
+		if (bgTelefon != null && !bgTelefon.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			return bgTelefon;
+		}
+		if (tsTelefon != null && !tsTelefon.equals("") && gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return tsTelefon;
+		}
+		return telefon;
+	}
+
+	/**
 	 * Wir suchen einen Benutzer aufgrund der Betreuungen des übergebenen Gesuchs.
 	 * Falls *reines* BG Gesuch verwenden wir den BG-Benutzer, falls dieser die richtige Rolle hat
 	 * Falls *reines* TS Gesuch verwenden wir den TS-Benutzer, falls dieser die richtige Rolle hat
@@ -568,6 +623,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.standardDokSignature = standardDokSignature;
 	}
 
+	@Nonnull
+	public Boolean getTsVerantwortlicherNachVerfuegungBenachrichtigen() {
+		return tsVerantwortlicherNachVerfuegungBenachrichtigen;
+	}
+
+	public void setTsVerantwortlicherNachVerfuegungBenachrichtigen(@Nonnull Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen) {
+		this.tsVerantwortlicherNachVerfuegungBenachrichtigen = tsVerantwortlicherNachVerfuegungBenachrichtigen;
+	}
+
 	@Nullable
 	public String getUsernameScolaris() {
 		return usernameScolaris;
@@ -587,5 +651,41 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setExternalClients(@Nonnull Set<ExternalClient> externalClients) {
 		this.externalClients = externalClients;
+	}
+
+	@Nullable
+	public String getBgTelefon() {
+		return bgTelefon;
+	}
+
+	public void setBgTelefon(@Nullable String bgTelefon) {
+		this.bgTelefon = bgTelefon;
+	}
+
+	@Nullable
+	public String getBgEmail() {
+		return bgEmail;
+	}
+
+	public void setBgEmail(@Nullable String bgEmail) {
+		this.bgEmail = bgEmail;
+	}
+
+	@Nullable
+	public String getTsTelefon() {
+		return tsTelefon;
+	}
+
+	public void setTsTelefon(@Nullable String tsTelefon) {
+		this.tsTelefon = tsTelefon;
+	}
+
+	@Nullable
+	public String getTsEmail() {
+		return tsEmail;
+	}
+
+	public void setTsEmail(@Nullable String tsEmail) {
+		this.tsEmail = tsEmail;
 	}
 }

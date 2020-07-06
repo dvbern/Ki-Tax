@@ -15,6 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
+import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
@@ -26,11 +27,13 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
     declarations: [
         FallToolbarComponent,
         DvSwitchComponent,
+        BetreuungOverrideWarningComponent,
         DvEingabeBasisjahrComponent
     ],
     entryComponents: [
         FallToolbarComponent,
         DvSwitchComponent,
+        BetreuungOverrideWarningComponent,
         DvEingabeBasisjahrComponent
     ],
 })

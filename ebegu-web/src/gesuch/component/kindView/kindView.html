@@ -13,9 +13,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="kindView gesuchModul">
+<div class="kindView gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-12">
             <h2>
                 <span data-translate="KIND"></span> {{vm.getContainer() ? vm.getContainer().kindNummer : ''}}
@@ -25,7 +25,7 @@
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
-            <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
+            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT"></p>
         </div>
     </div>
     <div class="row">
@@ -118,7 +118,7 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <dv-input-container class="form-group">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="KINDERABZUG"
                                           data-translate-value-jahr="{{vm.getBasisjahrPlus1()}}"></span>
                                     <dv-tooltip input-id="kinderabzugErstesHalbjahr"
@@ -145,7 +145,7 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <dv-input-container class="form-group">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="KINDERABZUG"
                                           data-translate-value-jahr="{{vm.getBasisjahrPlus2()}}"></span>
                                     <dv-tooltip input-id="kinderabzugZweitesHalbjahr"
@@ -173,7 +173,7 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span ng-if="vm.hasAngebotBGOnly()"
                                           data-translate="FAM_ERGAENZENDE_BETREUUNG"></span>
                                     <span ng-if="vm.hasAngebotTSOnly()"
@@ -184,7 +184,7 @@
                                 <!-- TODO @Franzi warum ist der check anders bei der Text als bei der Checkbox? -->
                                 <span
                                     ng-if="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && vm.hasKindBetreuungen()"
-                                    class="inlineHint"
+                                    class="inline-hint"
                                     data-translate="FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE"></span>
 
                                 <dv-radio-container name="familienErgaenzendeBetreuung" class="input-element"
@@ -211,7 +211,7 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group" ng-show="vm.getModel().familienErgaenzendeBetreuung">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span>{{vm.getTextSprichtAmtssprache()}}</span>
                                     <dv-tooltip input-id="sprichtAmtssprache"
                                                 text="'SPRICHT_AMTSSPRACHE_HELP' | translate"></dv-tooltip>
@@ -240,7 +240,7 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group" ng-if="vm.getModel().familienErgaenzendeBetreuung">
-                                <span class="ebeguH1 required">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="EINSCHULUNG"
                                           data-translate-value-jahr="{{vm.getYearEinschulung()}}">
                                     </span>

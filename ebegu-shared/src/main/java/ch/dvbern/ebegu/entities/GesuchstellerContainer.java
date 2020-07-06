@@ -32,7 +32,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -53,7 +52,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckGesuchstellerContainerComplete(groups = AntragCompleteValidationGroup.class)
 @Entity
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 public class GesuchstellerContainer extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -8403117439764700618L;

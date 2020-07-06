@@ -32,6 +32,7 @@ import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
 
@@ -55,6 +56,8 @@ export class EditGemeindeComponentBG implements OnInit {
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
+
+    public readonly CONSTANTS = CONSTANTS;
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;

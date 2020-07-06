@@ -15,10 +15,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="abweichungenView betreuungView gesuchModul">
+<div class="abweichungen-view betreuung-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
-    <div class="row viewTitle">
+    <div class="row view-title">
         <div class="col-md-8">
             <h2>
                 <span>{{vm.getKindModel().kindJA.getFullName()}} / </span><span
@@ -30,7 +30,7 @@
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
         </div>
         <div class="col-md-4 text-right">
-            <h2 class="ebeguH2" aria-hidden>
+            <h2 class="ebegu-h2" aria-hidden>
                 {{vm.model.bgNummer}}
             </h2>
         </div>
@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div class="row marginTop40">
+    <div class="row margin-top-40">
         <div class="col-md-12">
             <span> {{vm.getHelpText()}}</span>
         </div>
@@ -50,7 +50,7 @@
     <form role="form" name="vm.form" class="" novalidate
           unsaved-warning-form>
 
-        <div class="row marginTop40">
+        <div class="row margin-top-40">
             <div class="col-md-12 table-responsive">
 
                 <table class="table">
@@ -139,7 +139,7 @@
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
               dv-show-expression="vm.isFreigabeAllowed()">
-            <dv-loading-button button-click="vm.freigeben()" type="submit">
+            <dv-loading-button button-click="vm.preFreigeben()" type="submit">
                 <span class="uppercase" data-translate="FREIGEBEN"></span>
             </dv-loading-button>
         </span>

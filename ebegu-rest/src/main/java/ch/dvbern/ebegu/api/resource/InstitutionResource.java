@@ -362,11 +362,8 @@ public class InstitutionResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxInstitutionListDTO> getInstitutionenListDTOEditableForCurrentBenutzer() {
-		Map<Institution,InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
-		institutionService.getInstitutionenEditableForCurrentBenutzer(true)
-			.forEach(institution -> {
-				institutionInstitutionStammdatenMap.put(institution,institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId(),false));
-			});
+		Map<Institution,InstitutionStammdaten> institutionInstitutionStammdatenMap =
+			institutionService.getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(true);
 
 		return institutionInstitutionStammdatenMap.entrySet().stream().map(map -> converter.institutionListDTOToJAX(map))
 			.collect(Collectors.toList());

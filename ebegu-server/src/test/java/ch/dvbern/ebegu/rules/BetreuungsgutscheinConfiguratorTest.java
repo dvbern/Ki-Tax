@@ -114,10 +114,11 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 		evaluator = createEvaluator(gesuchsperiodeOfEvaluator, gemeindeParis);
 
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeParis, einstellungenGemaessAsiv, kitaxParams, GERMAN);
-		// Keine zusaetzliche Regel erwartet
-		Assert.assertEquals(ANZAHL_RULES_ASIV, rules.size());
+		// ErwerbspensumGemeindeCalcRule wird bei Paris/Bern immer hinzugefuegt, wegen dem MinEWP bei FEBR,
+		// welches nicht ueber eine Einstellung geloest ist
+		Assert.assertEquals(ANZAHL_RULES_ASIV + 1, rules.size());
 		assertContainsRule(rules, ErwerbspensumGemeindeAbschnittRule.class, 0);
-		assertContainsRule(rules, ErwerbspensumGemeindeCalcRule.class, 0);
+		assertContainsRule(rules, ErwerbspensumGemeindeCalcRule.class, 1);
 	}
 
 	@Test

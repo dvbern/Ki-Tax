@@ -276,13 +276,14 @@
     </div>
     <div class="row">
         <div class="col-sm-6">
-            <div class="form-group">
+            <div class="form-group" *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit
+             || stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit">
                 <h3 translate>TARIFE_MAHLZEITEN</h3>
-                <p translate
+                <p translate *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit"
                    [translateParams]="{value: stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit}">
                     TARIF_PRO_HAUPTMAHLZEIT_READONLY
                 </p>
-                <p translate
+                <p translate *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit"
                    [translateParams]="{value: stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit}">
                     TARIF_PRO_NEBENMAHLZEIT_READONLY
                 </p>

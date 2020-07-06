@@ -21,6 +21,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
@@ -28,6 +29,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.KitaxUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +88,7 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
 		AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
-		final boolean possibleKitaxRechner = kitaxParameter.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
+		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
 			&& platz.getBetreuungsangebotTyp().isJugendamt();
 		// Den richtigen Rechner anwerfen
 		zeitabschnitte.forEach(zeitabschnitt -> {
@@ -95,7 +97,10 @@ public class BetreuungsgutscheinExecutor {
 			AbstractRechner rechnerToUse = null;
 			if (possibleKitaxRechner) {
 				if (zeitabschnitt.getGueltigkeit().endsBefore(kitaxParameter.getStadtBernAsivStartDate())) {
-					rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, locale);
+					String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
+					KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten =
+						kitaxParameter.getOeffnungszeiten(kitaName);
+					rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
 				} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 					// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
 					// koennen wir den normalen ASIV Rechner verwenden.

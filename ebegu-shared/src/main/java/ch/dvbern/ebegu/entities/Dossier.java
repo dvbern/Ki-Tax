@@ -28,7 +28,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
@@ -42,7 +41,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Audited
 @Entity
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gemeinde_id" }, name = "UK_dossier_fall_gemeinde"),
 	indexes = {

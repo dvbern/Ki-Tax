@@ -16,31 +16,31 @@
  */
 @import (reference) '../../../style/variables.less';
 
-.bisherForm {
-    width: 100%;
+.bisher-form {
     display: inline-block;
+    width: 100%;
 }
 
 .dv-bisher {
-    font-size: 1.6rem;
-    clear: both;
     background-color: @contrast;
-    width: 100%;
-    min-height: 2.3rem;
-    height: auto;
-    padding: 0 0 0 1rem;
-    margin: 1rem 0 0;
-    display: inline-block;
     border-color: @contrast-light;
+    clear: both;
+    display: inline-block;
+    font-size: 1.6rem;
+    height: auto;
+    margin: 1rem 0 0;
+    min-height: 2.3rem;
+    padding: 0 0 0 1rem;
+    width: 100%;
 
     span:first-child {
-        font-weight: 400;
         font-style: italic;
+        font-weight: 400;
     }
 
     span {
-        font-size: 1.3rem;
         color: @contrast-darkest;
+        font-size: 1.3rem;
         letter-spacing: 0.1rem;
         line-height: 1rem;
     }
@@ -51,8 +51,8 @@
     margin-top: 2rem;
 
     span {
-        margin-right: 1rem;
         cursor: pointer;
+        margin-right: 1rem;
     }
 }
 
@@ -61,8 +61,8 @@
         display: flex;
 
         dv-tooltip {
-            display: flex;
             align-items: center;
+            display: flex;
             padding-left: 0.75rem;
         }
     }
@@ -78,14 +78,18 @@
     label.long-label {
         white-space: nowrap;
     }
+
+    label.bold-label {
+        font-weight: bold;
+    }
 }
 
 
 .status-header {
     font-size: 1.5rem;
-    position: absolute;
-    right: 15px;
     font-style: italic;
     font-weight: initial;
+    position: absolute;
+    right: 15px;
 }
 

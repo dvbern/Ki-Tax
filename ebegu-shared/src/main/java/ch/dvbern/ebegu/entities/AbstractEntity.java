@@ -41,10 +41,17 @@ import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.de.GermanNormalizationFilterFactory;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
 @MappedSuperclass
 @Audited
@@ -98,6 +105,15 @@ import org.hibernate.envers.Audited;
 @TypeDef(
 	name = "string-uuid-binary",
 	typeClass = StringUUIDType.class
+)
+@AnalyzerDef(
+	name = "EBEGUGermanAnalyzer",
+	tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+	filters = {
+		@TokenFilterDef(factory = StandardFilterFactory.class),
+		@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+		@TokenFilterDef(factory = GermanNormalizationFilterFactory.class)
+	}
 )
 public abstract class AbstractEntity implements Serializable {
 

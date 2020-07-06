@@ -23,21 +23,21 @@
 @bp-xxlg: 2561px; // 2560px
 
 //Media-Queries
-@mq-xs: ~"only screen and (min-width: @{bp-xs})";
-@mq-sm: ~"only screen and (min-width: @{bp-sm})";
-@mq-md: ~"(min-width: @{bp-md})";
-@mq-lg: ~"(min-width: @{bp-lg})";
-@mq-xlg: ~"(min-width: @{bp-xlg}) and (max-width:@{bp-xxlg})";
-@mq-xxlg: ~"(min-width: @{bp-xxlg})";
-@mq-d-md: ~"(min-device-width: @{bp-sm})";
-@mq-d-lg: ~"(min-device-width: @{bp-md})";
-@mq-d-xlg: ~"(min-device-width: @{bp-lg})";
-@mq-d-xxlg: ~"(min-device-width: @{bp-xlg})";
-@mq-d-xxxlg: ~"(min-device-width: @{bp-xxlg})";
-@mq-retina: ~"(-webkit-min-device-pixel-ratio: 2) and(min-resolution: 192dpi)";
-@mq-portrait: ~"and (orientation: portrait)";
-@mq-landscape: ~"and (orientation: landscape)";
-@mq-max-sm: ~"and (max-width: @{bp-sm})";
+@mq-xs: ~'only screen and (min-width: @{bp-xs})';
+@mq-sm: ~'only screen and (min-width: @{bp-sm})';
+@mq-md: ~'(min-width: @{bp-md})';
+@mq-lg: ~'(min-width: @{bp-lg})';
+@mq-xlg: ~'(min-width: @{bp-xlg}) and (max-width:@{bp-xxlg})';
+@mq-xxlg: ~'(min-width: @{bp-xxlg})';
+@mq-d-md: ~'(min-device-width: @{bp-sm})';
+@mq-d-lg: ~'(min-device-width: @{bp-md})';
+@mq-d-xlg: ~'(min-device-width: @{bp-lg})';
+@mq-d-xxlg: ~'(min-device-width: @{bp-xlg})';
+@mq-d-xxxlg: ~'(min-device-width: @{bp-xxlg})';
+@mq-retina: ~'(-webkit-min-device-pixel-ratio: 2) and(min-resolution: 192dpi)';
+@mq-portrait: ~'and (orientation: portrait)';
+@mq-landscape: ~'and (orientation: landscape)';
+@mq-max-sm: ~'and (max-width: @{bp-sm})';
 
 @background-color: @white;
 @background-error-color: #ffe6e6;
@@ -58,6 +58,7 @@
 @purple: #9013FE;
 @blue: #68ACFC;
 @anthracite: #A4A4A4;
+
 /*Dark*/
 @ddgrey: #4a4a4a;
 @dgrey: #858585;
@@ -65,12 +66,14 @@
 @dgreen: #109457;
 @dorange: #c4841c;
 @dblue: #4A90E2;
+
 /*Light*/
 @lgrey: #E5E5E5;
 @lred: #F0C3CB;
 @lgreen: #B5E9D1;
 @lorange: #F7E4C5;
 @lblue: #ECF2F4;
+
 /*Lighter*/
 @llgrey: #E5E5E5;
 //Theming
@@ -108,6 +111,7 @@
 @danger-light: @lred;
 @danger: @red;
 @danger-dark: @dred;
+
 /* Contrast Color für Error Handling */
 @color-contrast-hue: 359;
 @color-contrast: hsl(@color-contrast-hue, 100%, 67%);
@@ -116,6 +120,7 @@
 @color-contrast-middle: hsl(@color-contrast-hue, 100%, 87%);
 @color-contrast-bright: hsl(@color-contrast-hue, 100%, 94%);
 @color-contrast-bright-on-hover: white;
+
 /* Abstände */
 @small-abstand: 1rem;
 @smaller-abstand: @small-abstand / 2;
@@ -123,6 +128,7 @@
 @big-abstand: 5*@small-abstand;
 @padding-base-horizontal: @small-abstand;
 @padding-base-vertical: @small-abstand;
+
 /*Navbar */
 @navbar-height: 5rem;
 
@@ -143,4 +149,3 @@
 @z-index-dialog: 110;
 @z-index-error: 106;
 
-/**/

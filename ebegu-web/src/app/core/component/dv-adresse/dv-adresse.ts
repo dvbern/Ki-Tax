@@ -87,7 +87,7 @@ export class DvAdresseController {
     }
 
     public showDatumVon(): boolean {
-        return this.adresse.showDatumVon;
+        return this.adresse && this.adresse.showDatumVon;
     }
 
     public getModel(): TSAdresseContainer {

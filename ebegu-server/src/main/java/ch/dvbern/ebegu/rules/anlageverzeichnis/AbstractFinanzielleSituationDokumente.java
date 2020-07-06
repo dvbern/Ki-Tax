@@ -97,11 +97,6 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation != null) {
-			if (!abstractFinanzielleSituation.getSteuerveranlagungErhalten()
-				&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt()
-				&& dokumentTyp != DokumentTyp.STEUERERKLAERUNG) {
-				return false;
-			}
 			switch (dokumentTyp) {
 			case STEUERVERANLAGUNG:
 				return abstractFinanzielleSituation.getSteuerveranlagungErhalten();
@@ -150,14 +145,4 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	protected abstract boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
 
 	protected abstract boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
-
-	protected boolean isSozialhilfeempfaenger(@Nullable Familiensituation familiensituation) {
-		if (familiensituation != null &&
-			familiensituation.getSozialhilfeBezueger() != null &&
-			familiensituation.getSozialhilfeBezueger()
-		) {
-			return true;
-		}
-		return false;
-	}
 }

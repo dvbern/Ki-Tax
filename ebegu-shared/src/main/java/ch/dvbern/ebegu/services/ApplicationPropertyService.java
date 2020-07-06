@@ -115,4 +115,11 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean isStadtBernAsivConfigured();
+
+	/**
+	 * Wenn TRUE ist die zweite Phase von der Notverordnung aktiv
+	 */
+	@Nonnull
+	Boolean isKantonNotverordnungPhase2Aktiviert();
+
 }

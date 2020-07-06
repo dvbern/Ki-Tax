@@ -274,6 +274,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.showErrorMessageNoModule = true;
                 return undefined;
             }
+            this.showErrorMessageNoModule = false;
             // Falls es "ohne Details" ist, muessen die Module entfernt werden
             if (this.betreuung.keineDetailinformationen) {
                 this.getBetreuungModel().belegungTagesschule = undefined;
@@ -292,15 +293,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.onSave();
         }
         return undefined;
-    }
-
-    private isThereAnyAnmeldung(): boolean {
-        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
-        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
-            return moduleTagessule
-                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
-        }
-        return false;
     }
 
     public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
@@ -343,6 +335,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
                     ev: Event): any {
+        this.toggleWarnungModule();
         this.lastModifiedModul = modul;
         if (!modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
@@ -370,10 +363,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        if (this.form.$valid) {
-            this.preSave();
-            this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
+        if (!this.form.$valid || !this.isThereAnyAnmeldung()) {
+            this.showErrorMessageNoModule = true;
+            return undefined;
         }
+        this.showErrorMessageNoModule = false;
+        this.preSave();
+        this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
+
     }
 
     public saveAnmeldungSchulamtAblehnen(): void {
@@ -430,5 +427,36 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public get showWarningModuleZugewiesen(): boolean {
         return this._showWarningModuleZugewiesen;
+    }
+
+    private toggleWarnungModule(): void {
+        this.showErrorMessageNoModule = !this.isThereAnyAnmeldung();
+    }
+
+    private isThereAnyAnmeldung(): boolean {
+        // Das Modell, welches mit dem GUI verknuepft ist, ist nicht dasselbe, das dann (nach preSave())
+        // gespeichert wird, wir muessen beide abfragen!
+        return this.isThereAnyAnmeldungSaveModel() || this.isThereAnyAnmeldungInputModel();
+    }
+
+    private isThereAnyAnmeldungInputModel(): boolean {
+        // Ermittelt, ob im InputModel, also noch bevor preSave() aufgerufen wird, eine Anmeldung vorhanden ist
+        for (const group of this.modulGroups) {
+            for (const belegungModul of group.module) {
+                if (belegungModul.modulTagesschule.angemeldet) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private isThereAnyAnmeldungSaveModel(): boolean {
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
+        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
+            return moduleTagessule
+                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
+        }
+        return false;
     }
 }

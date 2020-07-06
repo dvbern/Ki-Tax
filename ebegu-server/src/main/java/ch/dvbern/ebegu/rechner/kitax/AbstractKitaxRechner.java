@@ -30,11 +30,15 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
 /**
  * Superklasse für BG-Rechner
@@ -42,24 +46,32 @@ import ch.dvbern.ebegu.util.MathUtil;
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
 	protected KitaxUebergangsloesungParameter kitaxParameter;
+	protected KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten;
 	protected Locale locale;
 
-	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
+	protected static final BigDecimal ZWOELF = MathUtil.EXACT.fromNullSafe(12);
 	protected static final BigDecimal NEUN = MathUtil.EXACT.from(9L);
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
 
-	protected AbstractKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
+	protected AbstractKitaxRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
 		this.kitaxParameter = kitaxParameter;
+		this.oeffnungszeiten = oeffnungszeiten;
 		this.locale = locale;
 	}
 
 	@Nonnull
 	@Override
 	protected BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+
 		// Die ASIV Berechnung muss ausgenullt werden
 		BGCalculationResult resultAsiv = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, resultAsiv);
+		input.getParent().setRegelwerk(Regelwerk.FEBR);
 		// Anspruch nach ASIV muss fuer Kitax-Rechner immer 0 sein
 		resultAsiv.setAnspruchspensumProzent(0);
 		return resultAsiv;
@@ -92,6 +104,18 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		long nettoarbeitstageMonat = workDaysBetween(monatsanfang, monatsende);
 		long nettoarbeitstageIntervall = workDaysBetween(von, bis);
 		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoarbeitstageIntervall), MathUtil.EXACT.from(nettoarbeitstageMonat));
+	}
+
+	/**
+	 * Berechnet den Anteil des Verguenstigten Pensums am effektiven Betreuungspensum
+	 */
+	protected BigDecimal calculateAnteilVerguenstigtesPensumAmBetreuungspensum(@Nonnull BGCalculationInput input) {
+		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
+		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
+			anteilVerguenstigesPensumAmBetreuungspensum = EXACT.divide(input.getBgPensumProzent(), betreuungspensum);
+		}
+		return anteilVerguenstigesPensumAmBetreuungspensum;
 	}
 
 	/**

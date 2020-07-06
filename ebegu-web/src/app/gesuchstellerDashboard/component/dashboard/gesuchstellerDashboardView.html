@@ -22,9 +22,9 @@
                                is-dashboard-screen="{{true}}">
 </dossier-toolbar-gesuchsteller>
 
-<div class="gesuchstellerDashboardView" flex="auto">
+<div class="gesuchsteller-dashboard-view" flex="auto">
     <h1 class="access-for-all-title" data-translate="AFA_DASHBOARD"></h1>
-    <div class="dashboardHeader" flex="100" layout="row" layout-align="center center" layout-margin
+    <div class="dashboard-header" flex="100" layout="row" layout-align="center center" layout-margin
          layout-xs="column"
          layout-align-xs="space-between center">
 
@@ -32,26 +32,26 @@
              ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
              ng-if="vm.activeGesuchsperiodenList.length > 0">
 
-            <span class="gdashboard-panel__gesuchstring">
+            <span class="gdashboard-panel-gesuchstring">
                 <span data-translate="PERIODE"></span>
                 <span>{{periode.gesuchsperiodeString}}</span>
             </span>
-            <span class="gdashboard-panel__gesuchrange" flex="nogrow">
+            <span class="gdashboard-panel-gesuchrange" flex="nogrow">
                 <span>{{periode.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YY'}} – {{periode.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YY'}}</span>
             </span>
 
-            <dv-loading-button class="gdashboard-panel__button--ansehen"
+            <dv-loading-button class="gdashboard-panel-button--ansehen"
                                ng-if="vm.displayAnsehenButton(periode)"
                                type="button"
                                button-click="vm.openAntrag(periode, true)"
-                               button-class="dvb-loading-button gdashboard-panel__button">
+                               button-class="dvb-loading-button gdashboard-panel-button">
                 {{'GS_ANSEHEN' | translate}}
             </dv-loading-button>
 
-            <dv-loading-button class="gdashboard-panel__button--margin"
+            <dv-loading-button class="gdashboard-panel-button--margin"
                                ng-if="vm.getButtonText(periode)" type="button"
                                button-click="vm.openAntrag(periode)"
-                               button-class="dvb-loading-button gdashboard-panel__button">
+                               button-class="dvb-loading-button gdashboard-panel-button">
                 {{vm.getButtonText(periode)}}
             </dv-loading-button>
 
@@ -59,7 +59,7 @@
             <dv-loading-button type="button"
                                ng-if="vm.showAnmeldungFerieninselCreate(periode)"
                                button-click="vm.createFerieninsel(periode)"
-                               button-class="dvb-loading-button gdashboard-panel__button">
+                               button-class="dvb-loading-button gdashboard-panel-button">
 
                 {{'FERIENINSEL_ANMELDEN' | translate}}
             </dv-loading-button>
@@ -67,7 +67,7 @@
             <dv-loading-button type="button"
                                ng-if="vm.showAnmeldungTagesschuleCreate(periode) && !vm.hasOnlyFerieninsel(periode)"
                                button-click="vm.createTagesschule(periode)"
-                               button-class="dvb-loading-button gdashboard-panel__button">
+                               button-class="dvb-loading-button gdashboard-panel-button">
                 {{'TAGESSCHULE_ANMELDEN' | translate}}
             </dv-loading-button>
 

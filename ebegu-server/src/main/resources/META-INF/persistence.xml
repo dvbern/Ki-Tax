@@ -39,6 +39,13 @@
 			<!--nur ein prozess benutzt unseren index (?)-->
 			<!--<property name="hibernate.search.default.exclusive_index_use" value="true"/>-->
 
+			<!-- fuer Lokale Tests mit elasticsearch in einen docker container -->
+			<!--<property name="hibernate.search.default.indexmanager" value="elasticsearch"/>
+			<property name="hibernate.search.default.elasticsearch.host" value="http://127.0.0.1:9200"/>
+			<property name="hibernate.search.default.elasticsearch.username" value="elastikibon"/>
+			<property name="hibernate.search.default.elasticsearch.password" value="test123"/>
+			<property name="hibernate.search.default.elasticsearch.required_index_status" value="green"/>-->
+
 			<!--<property name="hibernate.search.default.indexBase"-->
 			<!--value="/home/homa/java/JBoss/wildfly-10.1.0.Final-ebegu/standalone/data/lucene"/>-->
 

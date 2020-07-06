@@ -623,4 +623,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
     }
+
+    public showMahlzeitenverguenstigung(): boolean {
+        return this.isMahlzeitenverguenstigungEnabled()
+            && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole());
+    }
 }

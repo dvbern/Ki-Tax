@@ -19,16 +19,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.lucene.document.Document;
-import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
+import org.hibernate.search.bridge.MetadataProvidingFieldBridge;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
+import org.hibernate.search.bridge.spi.FieldMetadataBuilder;
+import org.hibernate.search.bridge.spi.FieldType;
 
 /**
  * This FieldBridge ats LocalDate values as strings to the Index.
  * Note that it is not a {@link TwoWayFieldBridge} so queries on fields that use this bridge have to
  * be marked as to not use the FieldBridge
  */
-public class EbeguLocalDateBridge implements FieldBridge {
+public class EbeguLocalDateBridge implements MetadataProvidingFieldBridge {
 
 	private static final DateTimeFormatter DF_FULL = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	private static final DateTimeFormatter DF_SHORT1 = DateTimeFormatter.ofPattern("d.M.yyyy");
@@ -47,4 +49,10 @@ public class EbeguLocalDateBridge implements FieldBridge {
 		}
 	}
 
+	@Override
+	public void configureFieldMetadata(String s, FieldMetadataBuilder fieldMetadataBuilder) {
+		fieldMetadataBuilder
+			.field( s, FieldType.STRING )
+			.sortable( true );
+	}
 }

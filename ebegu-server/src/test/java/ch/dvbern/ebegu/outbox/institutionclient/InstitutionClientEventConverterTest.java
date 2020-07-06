@@ -21,9 +21,9 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.enums.ExternalClientType;
-import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
