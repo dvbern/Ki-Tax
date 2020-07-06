@@ -84,6 +84,10 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private RueckforderungStatus status = RueckforderungStatus.NEU;
 
+	@NotNull
+	@Column(nullable = false)
+	private boolean hasBeenSentBackToInstitution = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
+
 	@Nullable
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
@@ -248,6 +252,14 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStatus(@Nonnull RueckforderungStatus status) {
 		this.status = status;
+	}
+
+	public boolean isHasBeenSentBackToInstitution() {
+		return hasBeenSentBackToInstitution;
+	}
+
+	public void setHasBeenSentBackToInstitution(boolean hasBeenSentBackToInstitution) {
+		this.hasBeenSentBackToInstitution = hasBeenSentBackToInstitution;
 	}
 
 	@Nullable

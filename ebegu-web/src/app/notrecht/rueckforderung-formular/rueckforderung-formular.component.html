@@ -45,7 +45,12 @@
                 </div>
                 <div class="row" *ngIf="isInstitutionStufe1ReadOnly(rueckforderungFormular)">
                     <div class="col-md-12">
-                        {{'RUECKFORDERUNG_ABSENDENTEXT' | translate }}
+                        {{'CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_1' | translate }}
+                    </div>
+                </div>
+                <div class="row" *ngIf="isInstitutionStufe2ReadOnly(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        {{getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular)}}
                     </div>
                 </div>
                 <fieldset>
@@ -1287,6 +1292,10 @@
                     && isInstitutionTypNullOrPrivat(rueckforderungFormular)"
                     (click)="fristVerlaengern(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
+            </button>
+            <button *ngIf="showButtonResetStatus(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
+                    (click)="resetStatus(rueckforderungFormular)">
+                <span translate>RUECKFORDERUNG_RESET_STATUS</span>
             </button>
             <button type="button"
                     class="dv-btn cancel-button"

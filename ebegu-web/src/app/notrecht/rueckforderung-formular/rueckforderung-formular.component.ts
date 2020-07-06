@@ -303,6 +303,23 @@ export class RueckforderungFormularComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
+    public getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular: TSRueckforderungFormular): string {
+        switch (rueckforderungFormular.institutionTyp) {
+            case TSRueckforderungInstitutionTyp.OEFFENTLICH:
+                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
+            case TSRueckforderungInstitutionTyp.PRIVAT:
+                if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
+                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenSentBackToInstitution)) {
+                        return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV');
+                    }
+                    return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
+                }
+                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG');
+            default:
+                return '';
+        }
+    }
+
     public translateStatus(status: string): string {
         return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
     }
@@ -770,5 +787,33 @@ export class RueckforderungFormularComponent implements OnInit {
     public isInstitutionTypNullOrPrivat(rueckforderungFormular: TSRueckforderungFormular): boolean {
         return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
             || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
+        console.warn('clicket');
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.rueckforderungFormular$ = from(this.notrechtRS.resetStatus(rueckforderungFormular)
+                        .then((response: TSRueckforderungFormular) => {
+                            this.changeDetectorRef.markForCheck();
+                            return response;
+                        }));
+                },
+                () => {
+                });
+    }
+
+    public showButtonResetStatus(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
+            && (this.isPruefungKantonStufe2(rueckforderungFormular)
+                || this.isPruefungKantonStufe2Provisorisch(rueckforderungFormular));
     }
 }
