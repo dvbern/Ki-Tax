@@ -221,8 +221,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 && this.gutscheinPlaetzenReduziert
                 && this.erstattungGemaessKanton
                 && this.mahlzeitenBGSubventionenGebuehrensystem
-                && this.belegeEinreichenBetrageKantonZurueckfordern
-                && !this.fristSchonErreicht(rueckforderungFormular);
+                && this.belegeEinreichenBetrageKantonZurueckfordern;
         }
         return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern;
     }
