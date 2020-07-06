@@ -20,6 +20,7 @@ import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStat
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
+import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class NotrechtRS {
@@ -70,13 +71,14 @@ export class NotrechtRS {
     }
 
     public saveRueckforderungFormular(
-        rueckforderungFormular: TSRueckforderungFormular
+        rueckforderungFormular: TSRueckforderungFormular,
+        changeStatusIfNecessary: boolean
     ): IPromise<TSRueckforderungFormular> {
         let restRueckforderungFormular = {};
         restRueckforderungFormular =
             this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
-
-        return this.$http.put(this.serviceURL, restRueckforderungFormular).then((response: any) => {
+        const url = changeStatusIfNecessary ? `${this.serviceURL}/updateWithStatusChange` : `${this.serviceURL}/update`;
+        return this.$http.put(url, restRueckforderungFormular).then((response: any) => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             },
         );
@@ -106,9 +108,9 @@ export class NotrechtRS {
 
         return this.$http.post(`${this.serviceURL}/einladung`, restRueckforderungMitteilung)
             .then(() => {
-                return;
-            },
-        );
+                    return;
+                },
+            );
     }
 
     public initializePhase2(): IHttpPromise<any> {
@@ -127,5 +129,20 @@ export class NotrechtRS {
         return this.$http.delete(url).then((response: any) => {
             return response.data;
         });
+    }
+
+    public saveRueckforderungFormularEinreicheFrist(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        return this.$http.get(`${this.serviceURL}/einreicheFrist`,
+            {
+                params: {
+                    rueckforderungFormularId: rueckforderungFormular.id,
+                    extendedEinreichefrist: DateUtil.momentToLocalDate(rueckforderungFormular.extendedEinreichefrist),
+                },
+            }).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
     }
 }

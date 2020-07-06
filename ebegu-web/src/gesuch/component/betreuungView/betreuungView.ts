@@ -970,28 +970,44 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return super.isMutationsmeldungAllowed(this.getBetreuungModel(), this.isNewestGesuch);
     }
 
-    public mutationsmeldungSenden(): void {
+    public preMutationsmeldungSenden(): void {
         // send mutationsmeldung (dummy copy)
         if (!(this.isGesuchValid() && this.mutationsmeldungModel)) {
             return;
         }
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'MUTATIONSMELDUNG_CONFIRMATION',
-            deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
-            parentController: undefined,
-            elementID: undefined,
-        }).then(() => {   // User confirmed removal
-            this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-                this.mutationsmeldungModel,
-                this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
 
-                this.form.$setUntouched();
-                this.form.$setPristine();
-                // reset values. is needed??????
-                this.isMutationsmeldungStatus = false;
-                this.mutationsmeldungModel = undefined;
-                this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        if (this.showExistingBetreuungsmitteilungInfoBox()) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+                deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {   // User confirmed removal
+                this.mutationsmeldungSenden();
             });
+        } else {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_CONFIRMATION',
+                deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+                this.mutationsmeldungSenden();
+            });
+        }
+    }
+
+    public mutationsmeldungSenden(): void {
+        this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
+            this.mutationsmeldungModel,
+            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
+
+            this.form.$setUntouched();
+            this.form.$setPristine();
+            // reset values. is needed??????
+            this.isMutationsmeldungStatus = false;
+            this.mutationsmeldungModel = undefined;
+            this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         });
     }
 
@@ -1277,7 +1293,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 
