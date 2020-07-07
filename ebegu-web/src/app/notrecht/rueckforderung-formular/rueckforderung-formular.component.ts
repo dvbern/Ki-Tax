@@ -439,8 +439,7 @@ export class RueckforderungFormularComponent implements OnInit {
         // (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
         if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
             || EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten)
-            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.anzahlNichtAngeboteneEinheiten)
-            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.coronaErwerbsersatzBetrag)) {
+            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.anzahlNichtAngeboteneEinheiten)) {
             return;
         }
         this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
