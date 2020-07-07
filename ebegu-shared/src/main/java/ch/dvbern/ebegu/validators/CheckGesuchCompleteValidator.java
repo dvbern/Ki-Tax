@@ -15,10 +15,15 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.util.List;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,16 +49,36 @@ public class CheckGesuchCompleteValidator implements ConstraintValidator<CheckGe
 			LOG.error("FamiliensituationContainer is empty for Gesuch {}", gesuch.getId());
 			valid = false;
 		}
+		List<AbstractPlatz> allPlaetze = gesuch.extractAllPlaetze();
+		if(allPlaetze.size() <= 0){
+			LOG.error("There is no Platz for this Gesuch {}", gesuch.getId());
+			valid = false;
+		}
+		else{
+			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
+			if (dominantType != BetreuungsangebotTyp.FERIENINSEL) {
+				if (!EbeguUtil.isFamilienSituationVollstaendig(gesuch)) {
+					LOG.error("Familiensituation is incomplete for this Gesuch {}", gesuch.getId());
+					valid = false;
+				} else if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
+					if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(gesuch, null)) {
+						LOG.error("FinanzielleSituation is incomplete for this Gesuch {}", gesuch.getId());
+						valid = false;
+					}
+				}
+			}
+		}
+
 		// Gesuchsteller 1
 		if (gesuch.getGesuchsteller1() == null) {
-			LOG.error("FamiliensituationContainer is empty for Gesuch {}", gesuch.getId());
+			LOG.error("Gesuchsteller 1 is empty for Gesuch {}", gesuch.getId());
 			valid = false;
 		}
 		// Gesuchsteller 2
 		if (gesuch.getFamiliensituationContainer().getFamiliensituationJA()
 			.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
 			if (gesuch.getGesuchsteller2() == null) {
-				LOG.error("FamiliensituationContainer is empty for Gesuch {}", gesuch.getId());
+				LOG.error("Gesuchsteller 2 is empty for Gesuch {}", gesuch.getId());
 				valid = false;
 			}
 		}

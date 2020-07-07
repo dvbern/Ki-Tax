@@ -31,20 +31,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import com.google.common.base.Strings;
@@ -198,10 +203,69 @@ public final class EbeguUtil {
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() == null);
 	}
 
-	public static boolean isFinanzielleSituationNotIntroduced(@Nonnull Gesuch gesuch) {
-		return gesuch.getGesuchsteller1() == null
+	public static boolean isFinanzielleSituationNotIntroducedOrIncomplete(@Nonnull Gesuch gesuch,
+		@Nullable WizardStepName wizardStepName) {
+		if (gesuch.getGesuchsteller1() == null
 			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
-			|| gesuch.getEinkommensverschlechterungInfoContainer() == null;
+			|| gesuch.getEinkommensverschlechterungInfoContainer() == null) {
+			return true;
+		}
+
+		boolean finSitGS1Ok = true;
+		boolean finSitGS2Ok = true;
+		boolean einkommensverschlechterungGS1Ok = true;
+		boolean einkommensverschlechterungGS2Ok = true;
+
+		if (wizardStepName == null || wizardStepName == WizardStepName.FINANZIELLE_SITUATION) {
+			finSitGS1Ok =
+				isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
+
+			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
+				finSitGS2Ok =
+					isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA());
+			}
+		}
+		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
+			&& gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
+			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
+					return false;
+				}
+				einkommensverschlechterungGS1Ok =
+					isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
+				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+					einkommensverschlechterungGS2Ok =
+						isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
+				}
+			}
+			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
+					return false;
+				}
+				einkommensverschlechterungGS1Ok = einkommensverschlechterungGS1Ok &&
+					isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
+
+				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+					einkommensverschlechterungGS2Ok = einkommensverschlechterungGS2Ok &&
+						isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
+				}
+			}
+		}
+		return !finSitGS1Ok || !finSitGS2Ok || !einkommensverschlechterungGS1Ok || !einkommensverschlechterungGS2Ok;
+	}
+
+	private static boolean isFinanzielleSituationVollstaendig(@Nonnull FinanzielleSituation finanzielleSituation) {
+		return isAbstractFinanzielleSituationVollstaendig(finanzielleSituation)
+			&& ((finanzielleSituation.getGeschaeftsgewinnBasisjahr() == null && finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() == null
+			&& finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() == null) || (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null && finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null
+			&& finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null));
+	}
+
+	private static boolean isAbstractFinanzielleSituationVollstaendig(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return finanzielleSituation.getSchulden() != null && finanzielleSituation.getBruttovermoegen() != null
+			&& finanzielleSituation.getNettolohn() != null && finanzielleSituation.getFamilienzulage() != null
+			&& finanzielleSituation.getErsatzeinkommen() != null && finanzielleSituation.getErhalteneAlimente() != null
+			&& finanzielleSituation.getGeleisteteAlimente() != null;
 	}
 
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
@@ -231,13 +295,16 @@ public final class EbeguUtil {
 	}
 
 	/**
-	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed language for the Gemeinde
+	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed
+	 * language for the Gemeinde
 	 * In any other case it will return the first language that is allowed by the Gemeinde.
-	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should return one language or another
+	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should
+	 * return one language or another
 	 * for this reason it will return just the first language it finds.
 	 */
 	@Nonnull
-	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeService gemeindeService) {
 		final List<Sprache> gemeindeSprachen = extractGemeindeSprachenFromGesuch(gesuch, gemeindeService);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
 
@@ -249,13 +316,16 @@ public final class EbeguUtil {
 	}
 
 	/**
-	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed language for the Gemeinde
+	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed
+	 * language for the Gemeinde
 	 * In any other case it will return the first language that is allowed by the Gemeinde.
-	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should return one language or another
+	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should
+	 * return one language or another
 	 * for this reason it will return just the first language it finds.
 	 */
 	@Nonnull
-	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten gemeindeStammdaten) {
+	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeStammdaten gemeindeStammdaten) {
 		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gemeindeStammdaten);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
 
@@ -280,8 +350,9 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	private static List<Sprache> extractGemeindeSprachenFromGesuch(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
-		return  extractGemeindeSprachen(gesuch.getDossier().getGemeinde(), gemeindeService);
+	private static List<Sprache> extractGemeindeSprachenFromGesuch(@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeService gemeindeService) {
+		return extractGemeindeSprachen(gesuch.getDossier().getGemeinde(), gemeindeService);
 	}
 
 	/**
@@ -290,7 +361,8 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	public static List<Sprache> extractGemeindeSprachen(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeService gemeindeService) {
+	public static List<Sprache> extractGemeindeSprachen(@Nonnull Gemeinde gemeinde,
+		@Nonnull GemeindeService gemeindeService) {
 		final String gemeindeId = gemeinde.getId();
 		final GemeindeStammdaten gemeindeStammdatenOpt = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -336,5 +408,24 @@ public final class EbeguUtil {
 	@Nonnull
 	public static String preProcessString(@Nonnull String username) {
 		return username.toLowerCase(Locale.GERMAN).trim();
+	}
+
+	/**
+	 * Von allen Betreuungen der Liste gib den Typ zurueck der Betreuung, die ueber die anderen dominiert.
+	 * KITA > TAGESSCHULE > FERINEINSEL
+	 */
+	@Nonnull
+	public static BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<AbstractPlatz> betreuungenFromGesuch) {
+		BetreuungsangebotTyp dominantType = BetreuungsangebotTyp.FERIENINSEL; // less dominant type
+		for (AbstractPlatz betreuung : betreuungenFromGesuch) {
+			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+				dominantType = BetreuungsangebotTyp.TAGESSCHULE;
+			}
+			if (!betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
+				dominantType = BetreuungsangebotTyp.KITA;
+				break;
+			}
+		}
+		return dominantType;
 	}
 }
