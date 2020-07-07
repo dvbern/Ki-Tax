@@ -45,7 +45,7 @@ export class BetreuungInputComponent implements IController {
     public pensumContainer: TSBetreuungspensumContainer;
     public isDisabled: boolean = false;
     public id: string;
-    public step: number = 0.25;
+    public step: number = 0.01;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
