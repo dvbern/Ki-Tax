@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -402,6 +403,11 @@ public final class EbeguUtil {
 	public static boolean isKorrekturmodusGemeinde(@Nonnull Gesuch gesuch) {
 		return Eingangsart.ONLINE == gesuch.getEingangsart() &&
 			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus());
+	}
+
+	@Nonnull
+	public static String preProcessString(@Nonnull String username) {
+		return username.toLowerCase(Locale.GERMAN).trim();
 	}
 
 	/**

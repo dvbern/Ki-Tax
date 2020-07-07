@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BenutzerChangedEntityListener;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -140,7 +141,7 @@ public class Benutzer extends AbstractMutableEntity {
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.username = EbeguUtil.preProcessString(username);
 	}
 
 	@Nullable
@@ -178,7 +179,7 @@ public class Benutzer extends AbstractMutableEntity {
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = EbeguUtil.preProcessString(email);
 	}
 
 	public Set<Berechtigung> getBerechtigungen() {
