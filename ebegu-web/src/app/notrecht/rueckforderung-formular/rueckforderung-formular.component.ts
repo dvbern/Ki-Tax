@@ -57,6 +57,9 @@ export class RueckforderungFormularComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
+    private einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-18');
+    private einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-08-01');
+
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
     public readOnly: boolean;
@@ -710,10 +713,10 @@ export class RueckforderungFormularComponent implements OnInit {
         let fristabgelaufen = false;
         if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
             fristabgelaufen = (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) ?
-                !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'))
-                : !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
+                currentDate.isAfter(rueckforderungFormular.extendedEinreichefrist)
+                : !currentDate.isBefore(this.einreicheFristPrivatDefault);
         } else {
-            fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
+            fristabgelaufen = !currentDate.isBefore(this.einreicheFristOeffentlich);
         }
         return fristabgelaufen;
     }
@@ -736,12 +739,30 @@ export class RueckforderungFormularComponent implements OnInit {
             && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
     }
 
-    public getFristVerlaengertText(rueckforderungFormular: TSRueckforderungFormular): string {
-            const extendedEinreichefristValue = DateUtil.momentToLocalDateFormat(
-                rueckforderungFormular.extendedEinreichefrist, 'DD.MM.YYYY');
-            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
-                datum: extendedEinreichefristValue,
+    public getFristBis(rueckforderungFormular: TSRueckforderungFormular): string {
+        const fristVerlaengert = EbeguUtil.isNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
+        const relevantFristPrivat = fristVerlaengert
+            ? this.einreicheFristPrivatDefault : rueckforderungFormular.extendedEinreichefrist;
+        const einreichtungsfristPrivat = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
+        const einreichungsfristOeffentlich = DateUtil.momentToLocalDateFormat(this.einreicheFristOeffentlich, 'DD.MM.YYYY');
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)) {
+            // Wir wissen noch nicht, ob privat oder oeffentlich
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE', {
+                oeffentlich: einreichungsfristOeffentlich,
+                private: einreichtungsfristPrivat,
             });
+        }
+        const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+        const relevantFrist = isPrivat
+        ? relevantFristPrivat : einreichungsfristOeffentlich;
+        if (fristVerlaengert && isPrivat) {
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
+                frist: rueckforderungFormular.extendedEinreichefrist,
+            });
+        }
+        return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD', {
+            frist: relevantFrist,
+        });
     }
 
     private validateDokumente(rueckforderungFormular: TSRueckforderungFormular): boolean {
