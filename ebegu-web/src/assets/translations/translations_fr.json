@@ -2109,5 +2109,6 @@
     "RUECKFORDERUNG_RESET_STATUS": "Retour à l'institution",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Retourner la demande à l'institution pour traitement",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Voulez-vous retourner la demande à l'institution? Vous ne pourrez plus revenir en arrière",
+    "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Le délais de soumission a été modifié, le formulaire peut être envoyé jusqu'au {{datum}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

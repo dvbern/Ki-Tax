@@ -30,6 +30,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" *ngIf="!fristSchonErreicht(rueckforderungFormular) &&
+                fristVerlaengert(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        <div class="well well-status-bestaetigt">
+                            <i class="fa fa-info" aria-hidden="true"></i>
+                            <span>{{getFristVerlaengertText(rueckforderungFormular)}}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="row view-title">
                     <div class="col-md-12">
                         <h2>{{'RUECKFORDERUNGSFORMULARE_DETAIL' | translate: {
@@ -44,12 +53,12 @@
                     </div>
                 </div>
                 <div class="row" *ngIf="isInstitutionStufe1ReadOnly(rueckforderungFormular)">
-                    <div class="col-md-12">
+                    <div class="col-md-12 margin-bottom-20">
                         {{'CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_1' | translate }}
                     </div>
                 </div>
                 <div class="row" *ngIf="isInstitutionStufe2ReadOnly(rueckforderungFormular)">
-                    <div class="col-md-12">
+                    <div class="col-md-12 margin-bottom-20">
                         {{getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular)}}
                     </div>
                 </div>
@@ -1362,8 +1371,7 @@
                 || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
-            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()
-                    && isInstitutionTypNullOrPrivat(rueckforderungFormular)"
+            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
                     (click)="fristVerlaengern(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
             </button>

@@ -682,6 +682,20 @@ export class RueckforderungFormularComponent implements OnInit {
             }));
     }
 
+    public fristVerlaengert(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT)
+            && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
+    }
+
+    public getFristVerlaengertText(rueckforderungFormular: TSRueckforderungFormular): string {
+            const extendedEinreichefristValue = DateUtil.momentToLocalDateFormat(
+                rueckforderungFormular.extendedEinreichefrist, 'DD.MM.YYYY');
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
+                datum: extendedEinreichefristValue,
+            });
+    }
+
     private validateDokumente(rueckforderungFormular: TSRueckforderungFormular): boolean {
         let valid = true;
         if (this.rueckforderungAngabenDokumente.length === 0) {
@@ -787,11 +801,6 @@ export class RueckforderungFormularComponent implements OnInit {
             return true;
         }
         return false;
-    }
-
-    public isInstitutionTypNullOrPrivat(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
-            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
     }
 
     public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
