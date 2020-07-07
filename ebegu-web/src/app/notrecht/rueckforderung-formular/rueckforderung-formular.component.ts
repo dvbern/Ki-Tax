@@ -740,28 +740,27 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public getFristBis(rueckforderungFormular: TSRueckforderungFormular): string {
-        const fristVerlaengert = EbeguUtil.isNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
+        const fristVerlaengert = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
         const relevantFristPrivat = fristVerlaengert
-            ? this.einreicheFristPrivatDefault : rueckforderungFormular.extendedEinreichefrist;
-        const einreichtungsfristPrivat = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
-        const einreichungsfristOeffentlich = DateUtil.momentToLocalDateFormat(this.einreicheFristOeffentlich, 'DD.MM.YYYY');
+            ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristPrivatDefault;
+        const privatRelevantText = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
+        const oeffentlichText = DateUtil.momentToLocalDateFormat(this.einreicheFristOeffentlich, 'DD.MM.YYYY');
         if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)) {
             // Wir wissen noch nicht, ob privat oder oeffentlich
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE', {
-                oeffentlich: einreichungsfristOeffentlich,
-                private: einreichtungsfristPrivat,
+                oeffentlich: oeffentlichText,
+                private: privatRelevantText,
             });
         }
         const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
-        const relevantFrist = isPrivat
-        ? relevantFristPrivat : einreichungsfristOeffentlich;
+        const relevantText = isPrivat ? relevantFristPrivat : oeffentlichText;
         if (fristVerlaengert && isPrivat) {
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
-                frist: rueckforderungFormular.extendedEinreichefrist,
+                frist: privatRelevantText,
             });
         }
         return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD', {
-            frist: relevantFrist,
+            frist: relevantText,
         });
     }
 
