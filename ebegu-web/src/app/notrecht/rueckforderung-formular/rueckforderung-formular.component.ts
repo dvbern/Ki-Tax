@@ -127,6 +127,13 @@ export class RueckforderungFormularComponent implements OnInit {
                     if (this.isInstitutionStufe1ReadOnly(response)) {
                         this.calculateInstiProvBetrag(response, true);
                     }
+                    if (response.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+                        this.calculateProvBetragPrivat(response);
+                    }
+                    if (response.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH) {
+                        this.calculateKantonProvBetragOeffentlich(response, false);
+                        this.calculateInstiProvBetrag(response, false);
+                    }
                     return response;
                 }));
     }
