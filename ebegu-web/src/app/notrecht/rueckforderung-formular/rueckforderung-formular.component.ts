@@ -733,12 +733,6 @@ export class RueckforderungFormularComponent implements OnInit {
             }));
     }
 
-    public fristVerlaengert(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        return (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
-            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT)
-            && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
-    }
-
     public getFristBis(rueckforderungFormular: TSRueckforderungFormular): string {
         const fristVerlaengert = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
         const relevantFristPrivat = fristVerlaengert
@@ -753,7 +747,7 @@ export class RueckforderungFormularComponent implements OnInit {
             });
         }
         const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
-        const relevantText = isPrivat ? relevantFristPrivat : oeffentlichText;
+        const relevantText = isPrivat ? privatRelevantText : oeffentlichText;
         if (fristVerlaengert && isPrivat) {
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
                 frist: privatRelevantText,
