@@ -57,6 +57,9 @@ export class RueckforderungFormularComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
+    private readonly einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-18');
+    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-08-01');
+
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
     public readOnly: boolean;
@@ -142,6 +145,9 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
         if (this.isInstitutionStufe2(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
+            return;
+        }
+        if (this.isInstitutionStufe2Definitiv(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
             return;
         }
 
@@ -707,10 +713,10 @@ export class RueckforderungFormularComponent implements OnInit {
         let fristabgelaufen = false;
         if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
             fristabgelaufen = (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) ?
-                !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.add(1, 'days'))
-                : !currentDate.isBefore(DateUtil.localDateToMoment('2020-07-18'));
+                currentDate.isAfter(rueckforderungFormular.extendedEinreichefrist)
+                : !currentDate.isBefore(this.einreicheFristPrivatDefault);
         } else {
-            fristabgelaufen = !currentDate.isBefore(DateUtil.localDateToMoment('2020-08-01'));
+            fristabgelaufen = !currentDate.isBefore(this.einreicheFristOeffentlich);
         }
         return fristabgelaufen;
     }
@@ -727,18 +733,29 @@ export class RueckforderungFormularComponent implements OnInit {
             }));
     }
 
-    public fristVerlaengert(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        return (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
-            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT)
-            && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
-    }
-
-    public getFristVerlaengertText(rueckforderungFormular: TSRueckforderungFormular): string {
-            const extendedEinreichefristValue = DateUtil.momentToLocalDateFormat(
-                rueckforderungFormular.extendedEinreichefrist, 'DD.MM.YYYY');
-            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
-                datum: extendedEinreichefristValue,
+    public getFristBis(rueckforderungFormular: TSRueckforderungFormular): string {
+        const fristVerlaengert = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
+        const relevantFristPrivat = fristVerlaengert
+            ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristPrivatDefault;
+        const privatRelevantText = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
+        const oeffentlichText = DateUtil.momentToLocalDateFormat(this.einreicheFristOeffentlich, 'DD.MM.YYYY');
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)) {
+            // Wir wissen noch nicht, ob privat oder oeffentlich
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE', {
+                oeffentlich: oeffentlichText,
+                private: privatRelevantText,
             });
+        }
+        const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+        const relevantText = isPrivat ? privatRelevantText : oeffentlichText;
+        if (fristVerlaengert && isPrivat) {
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
+                frist: privatRelevantText,
+            });
+        }
+        return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD', {
+            frist: relevantText,
+        });
     }
 
     private validateDokumente(rueckforderungFormular: TSRueckforderungFormular): boolean {
@@ -874,5 +891,45 @@ export class RueckforderungFormularComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
             && (this.isPruefungKantonStufe2(rueckforderungFormular)
                 || this.isPruefungKantonStufe2Provisorisch(rueckforderungFormular));
+    }
+
+    public getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): string {
+        // Wir zeigen dies grundsaetzlich nur bei Institutionszustaenden an
+        if (this.isInstitutionStufe1(rueckforderungFormular)) {
+            // (1) Die Frist ist abgelaufen
+            if (this.fristSchonErreicht(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_FRIST_ABGELAUFEN';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        if (this.isInstitutionStufe2(rueckforderungFormular)) {
+            // (1) Die Frist ist abgelaufen
+            if (this.fristSchonErreicht(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_FRIST_ABGELAUFEN';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        if (this.isInstitutionStufe2Definitiv(rueckforderungFormular)) {
+            // (1) Kurzarbeits- und/oder CoronaErsatzentschaedigung nicht verfuegt
+            if (!this.enableRueckforderungDefinitivAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_KA_CE_NICHT_VERFUEGT';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        return null;
+    }
+
+    public showWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return !EbeguUtil.isEmptyStringNullOrUndefined(
+            this.getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular));
     }
 }

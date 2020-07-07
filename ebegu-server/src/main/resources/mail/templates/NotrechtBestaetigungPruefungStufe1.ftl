@@ -42,7 +42,7 @@ Content-Type: text/html;charset=utf-8
 	<p>
 		<b>
 			Bitte beachten Sie: Die zweite Stufe müssen Sie bis spätestens 17. Juli (privat betriebene Institutionen)
-			bzw. 31. Juli 2020 (von der öffentlichen Handbetriebene Institutionen) freigeben.
+			bzw. 31. Juli 2020 (von der öffentlichen Hand betriebene Institutionen) freigeben.
 		</b>
 	</p>
 	<p>

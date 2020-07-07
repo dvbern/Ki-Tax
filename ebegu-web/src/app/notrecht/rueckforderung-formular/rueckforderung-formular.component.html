@@ -30,12 +30,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" *ngIf="!fristSchonErreicht(rueckforderungFormular) &&
-                fristVerlaengert(rueckforderungFormular)">
+                <div class="row" *ngIf="!fristSchonErreicht(rueckforderungFormular)">
                     <div class="col-md-12">
                         <div class="well well-status-bestaetigt">
                             <i class="fa fa-info" aria-hidden="true"></i>
-                            <span>{{getFristVerlaengertText(rueckforderungFormular)}}</span>
+                            <span>{{getFristBis(rueckforderungFormular)}}</span>
                         </div>
                     </div>
                 </div>
@@ -919,7 +918,7 @@
                                                       maxlength="2000"
                                                       id="coronaErwerbsersatzSonstiges_stufe2_privat_id"
 													  #coronaErwerbsersatzSonstiges="ngModel"
-                                                      name="kurzarbeitSonstiges_stufe2_privat"
+                                                      name="coronaErwerbsersatzSonstiges_stufe2_privat"
                                                       [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzSonstiges"
                                                       [disabled]="readOnly"
                                                       required>
@@ -1366,6 +1365,14 @@
                             </dv-file-upload>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="showWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular)">
+            <div class="col-md-12">
+                <div class="well well-status-warten">
+                    <span>{{getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular) | translate }}</span>
                 </div>
             </div>
         </div>
