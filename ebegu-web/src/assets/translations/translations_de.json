@@ -2111,5 +2111,8 @@
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Wollen Sie den Antrag an die Institution zurückgeben? Dies kann nicht rückgängig gemacht werden",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Die Einreichungsfrist wurde auf das Datum {{datum}} angepasst",
     "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Voraussichtliche Ausfallentschädigung",
+    "FREIGABE_DISABLED_FRIST_ABGELAUFEN": "Ihr Antrag kann nicht mehr freigegeben werden, da die Frist bereits abgelaufen ist",
+    "FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN": "Bitte bestätigen Sie Ihre Angeben um den Antrag freigeben zu können",
+    "FREIGABE_DISABLED_KA_CE_NICHT_VERFUEGT": "Ihr Antrag kann nicht definitiv freigegeben werden, bevor nicht alle Verfügungen (Kurzarbeit und/oder Corona Erwerbsersatz) vorhanden sind",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

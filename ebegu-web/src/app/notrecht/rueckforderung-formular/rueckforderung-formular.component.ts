@@ -144,6 +144,9 @@ export class RueckforderungFormularComponent implements OnInit {
         if (this.isInstitutionStufe2(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
             return;
         }
+        if (this.isInstitutionStufe2Definitiv(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
+            return;
+        }
 
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
@@ -874,5 +877,45 @@ export class RueckforderungFormularComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
             && (this.isPruefungKantonStufe2(rueckforderungFormular)
                 || this.isPruefungKantonStufe2Provisorisch(rueckforderungFormular));
+    }
+
+    public getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): string {
+        // Wir zeigen dies grundsaetzlich nur bei Institutionszustaenden an
+        if (this.isInstitutionStufe1(rueckforderungFormular)) {
+            // (1) Die Frist ist abgelaufen
+            if (this.fristSchonErreicht(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_FRIST_ABGELAUFEN';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        if (this.isInstitutionStufe2(rueckforderungFormular)) {
+            // (1) Die Frist ist abgelaufen
+            if (this.fristSchonErreicht(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_FRIST_ABGELAUFEN';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        if (this.isInstitutionStufe2Definitiv(rueckforderungFormular)) {
+            // (1) Kurzarbeits- und/oder CoronaErsatzentschaedigung nicht verfuegt
+            if (!this.enableRueckforderungDefinitivAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_KA_CE_NICHT_VERFUEGT';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        return null;
+    }
+
+    public showWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return !EbeguUtil.isEmptyStringNullOrUndefined(
+            this.getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular));
     }
 }

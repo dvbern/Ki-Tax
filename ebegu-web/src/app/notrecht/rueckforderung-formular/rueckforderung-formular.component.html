@@ -1370,6 +1370,14 @@
             </div>
         </div>
 
+        <div class="row" *ngIf="showWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular)">
+            <div class="col-md-12">
+                <div class="well well-status-warten">
+                    <span>{{getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular) | translate }}</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Buttons -->
         <div class="dv-footer margin-top-50">
             <dv-loading-button
