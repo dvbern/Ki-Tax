@@ -2107,5 +2107,6 @@
     "RUECKFORDERUNG_RESET_STATUS": "Zurück an die Institution",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Antrag zur Bearbeitung an die Institution zurückgeben",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Wollen Sie den Antrag an die Institution zurückgeben? Dies kann nicht rückgängig gemacht werden",
+    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Voraussichtliche Ausfallentschädigung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
