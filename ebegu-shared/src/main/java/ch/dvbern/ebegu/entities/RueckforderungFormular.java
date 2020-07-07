@@ -676,8 +676,8 @@ public class RueckforderungFormular extends AbstractEntity {
 		return MathUtil.DEFAULT.subtractMultiple(
 			getBetragEntgangeneElternbeitraege(),
 			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
-			getAnzahlNichtAngeboteneEinheiten(),
-			getCoronaErwerbsersatzBetrag());
+			getCoronaErwerbsersatzBetrag())
+			.add(getAnzahlNichtAngeboteneEinheiten());
 	}
 
 	/**

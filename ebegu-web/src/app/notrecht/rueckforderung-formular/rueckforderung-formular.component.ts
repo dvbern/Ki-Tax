@@ -421,7 +421,7 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
             - rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten
-            - rueckforderungFormular.anzahlNichtAngeboteneEinheiten
+            + rueckforderungFormular.anzahlNichtAngeboteneEinheiten
             - rueckforderungFormular.coronaErwerbsersatzBetrag;
     }
 
