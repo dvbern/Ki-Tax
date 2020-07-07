@@ -221,17 +221,14 @@ public class NotrechtResource {
 		return jaxRueckforderungFormular;
 	}
 
-	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular) {
+	private boolean checkStatusErlaubtFuerRole(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
 			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())) {
 			return true;
 		}
-		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
+		return principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
 			UserRole.SUPER_ADMIN)
-			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())) {
-			return true;
-		}
-		return false;
+			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus());
 	}
 
 	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
@@ -263,7 +260,7 @@ public class NotrechtResource {
 		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
 	}
 
-	@ApiOperation(value = "Aktiviert der Phase 2 und setzt die entsprechende Status fuer die Ruckforderungsformular "
+	@ApiOperation("Aktiviert der Phase 2 und setzt die entsprechende Status fuer die Ruckforderungsformular "
 		+ "die schon mit Phase 1 durch sind")
 	@Nullable
 	@POST
@@ -271,6 +268,22 @@ public class NotrechtResource {
 	public Response initializePhase2() {
 		rueckforderungFormularService.initializePhase2();
 		return Response.ok().build();
+	}
+
+	@ApiOperation("Setzt den Status des Formulars zurueck auf 'In Bearbeitung Institution Phase 2'")
+	@Nonnull
+	@POST
+	@Path("/resetStatus")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(
+		@Nonnull @NotNull String formularId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(formularId);
+		RueckforderungFormular formular = rueckforderungFormularService.resetStatusToInBearbeitungInstitutionPhase2(formularId);
+		return converter.rueckforderungFormularToJax(formular);
 	}
 
 	@ApiOperation(value = "Gibt alle Rückforderungsdokumente zurück, die die aktuelle RueckforderungForm",
