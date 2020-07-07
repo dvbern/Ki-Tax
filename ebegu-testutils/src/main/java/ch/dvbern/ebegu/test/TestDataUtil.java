@@ -489,6 +489,12 @@ public final class TestDataUtil {
 		finanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
 		finanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 		finanzielleSituation.setNettolohn(BigDecimal.valueOf(100000));
+		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
+		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
+		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
+		finanzielleSituation.setFamilienzulage(BigDecimal.ZERO);
+		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
+		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 		return finanzielleSituation;
 	}
 
@@ -1024,6 +1030,25 @@ public final class TestDataUtil {
 		final EinkommensverschlechterungInfo einkommensverschlechterungInfo = new EinkommensverschlechterungInfo();
 		einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
+		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
+		return einkommensverschlechterungInfo;
+	}
+
+	public static EinkommensverschlechterungInfoContainer createEinkommensverschlechterungsInfoContainerOhneVerschlechterung(Gesuch gesuch) {
+		final EinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer =
+			new EinkommensverschlechterungInfoContainer();
+		einkommensverschlechterungInfoContainer.setEinkommensverschlechterungInfoJA(
+			createEinkommensverschlechterungsInfoOhneVerschlechterung());
+		einkommensverschlechterungInfoContainer.setGesuch(gesuch);
+		gesuch.setEinkommensverschlechterungInfoContainer(einkommensverschlechterungInfoContainer);
+
+		return einkommensverschlechterungInfoContainer;
+	}
+
+	public static EinkommensverschlechterungInfo createEinkommensverschlechterungsInfoOhneVerschlechterung() {
+		final EinkommensverschlechterungInfo einkommensverschlechterungInfo = new EinkommensverschlechterungInfo();
+		einkommensverschlechterungInfo.setEinkommensverschlechterung(false);
+		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(false);
 		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		return einkommensverschlechterungInfo;
 	}
@@ -1948,6 +1973,52 @@ public final class TestDataUtil {
 		return gesuchService.updateGesuch(verfuegenGesuch, true, null);
 	}
 
+	public static Gesuch persistNewCompleteGesuchInStatus(
+		@Nonnull AntragStatus status, @Nonnull Persistence persistence,
+		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
+
+		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.setStatus(status);
+		gesuch.setGesuchsperiode(persistEntity(persistence, gesuchsperiode));
+		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
+		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
+		gesuch.setGesuchsteller1(gesuchsteller1);
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
+		TestDataUtil.createEinkommensverschlechterungsInfoContainerOhneVerschlechterung(gesuch);
+
+		Gesuch createdGesuch = gesuchService.createGesuch(gesuch);
+
+		//Kind und kindContainer und Betreuung sonst gewisse Status sind nicht erlaubt
+		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
+
+		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
+		Objects.requireNonNull(betreuung.getKind().getKindGS());
+		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
+		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
+		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
+
+		KindContainer kindContainer = betreuung.getKind();
+		kindContainer.getBetreuungen().add(betreuung);
+		kindContainer.setGesuch(gesuch);
+
+		persistence.persist(kindContainer);
+
+		gesuch.setKindContainers(new HashSet<>());
+		gesuch.getKindContainers().add(kindContainer);
+
+		// Achtung: im createGesuch wird die Eingangsart und der Status aufgrund des eingeloggten Benutzers nochmals neu berechnet!
+		createdGesuch.setStatus(status);
+		return persistence.merge(createdGesuch);
+	}
+
 	public static Gesuch persistNewGesuchInStatus(
 		@Nonnull AntragStatus status, @Nonnull Persistence persistence,
 		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
@@ -2059,19 +2130,26 @@ public final class TestDataUtil {
 			.forEach(b -> b.initVorgaengerVerfuegungen(null, null));
 	}
 
+	@Nonnull
 	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
-		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
-		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(240));
-		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
-		oeffnungszeiten.setNameKibon("Kita Aaregg");
-		oeffnungszeiten.setNameKitax("Kita Aaregg");
 		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> collection = new ArrayList<>();
-		collection.add(oeffnungszeiten);
+		collection.add(createKitaxOeffnungszeiten("Kita Aaregg"));
+		collection.add(createKitaxOeffnungszeiten("Testinstitution"));
 		// Fuer Tests gehen wir im Allgemeinen davon aus, dass Bern (Paris) bereits in der Vergangenheit zu ASIV gewechselt hat
 		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
 			LocalDate.of(2000, Month.JANUARY, 1),
 			true,
 			collection);
 		return parameter;
+	}
+
+	@Nonnull
+	private static KitaxUebergangsloesungInstitutionOeffnungszeiten createKitaxOeffnungszeiten(@Nonnull String name) {
+		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
+		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(240));
+		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
+		oeffnungszeiten.setNameKibon(name);
+		oeffnungszeiten.setNameKitax(name);
+		return oeffnungszeiten;
 	}
 }

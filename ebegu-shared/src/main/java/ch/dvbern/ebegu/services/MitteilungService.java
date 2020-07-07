@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
@@ -31,7 +30,6 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -68,6 +66,11 @@ public interface MitteilungService {
 	 */
 	@Nonnull
 	Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key);
+
+	/**
+	 * Löscht alle offenen Mutationsmeldung für eine Betreuung
+	 */
+	void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung);
 
 	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.

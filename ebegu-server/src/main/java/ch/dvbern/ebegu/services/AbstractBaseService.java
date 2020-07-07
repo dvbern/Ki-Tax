@@ -103,35 +103,43 @@ public abstract class AbstractBaseService {
 	protected void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		platz.setGueltig(true);
-		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(platz);
-		if (vorgaengerVerfuegungOptional.isPresent()) {
-			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOptional.get();
-			Objects.requireNonNull(vorgaengerVerfuegung.getPlatz());
-			vorgaengerVerfuegung.getPlatz().setGueltig(false);
+		Optional<AbstractPlatz> vorgaengerPlatzOptional = findVorgaengerPlatz(platz);
+		if (vorgaengerPlatzOptional.isPresent()) {
+			AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
+			vorgaengerPlatz.setGueltig(false);
 		}
+	}
+
+	/**
+	 * @return gibt die Betreuung/Anmeldunbg der vorherigen verfuegten Betreuung zurueck.
+	 */
+	@Nonnull
+	protected Optional<AbstractPlatz> findVorgaengerPlatz(@Nonnull AbstractPlatz abstractPlatz) {
+		Objects.requireNonNull(abstractPlatz, "abstractPlatz darf nicht null sein");
+		if (abstractPlatz.getVorgaengerId() == null) {
+			return Optional.empty();
+		}
+
+		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
+		// Leseberechtigt bin, fuer die Mutation aber schon!
+		AbstractPlatz vorgaengerPlatz = persistence.find(abstractPlatz.getClass(), abstractPlatz.getVorgaengerId());
+		if (vorgaengerPlatz != null) {
+			if (vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
+				return Optional.of(vorgaengerPlatz);
+			}
+			return findVorgaengerPlatz(vorgaengerPlatz);
+		}
+		return Optional.empty();
 	}
 
 	/**
 	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
 	 */
 	@Nonnull
-	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz betreuung) {
-		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-		if (betreuung.getVorgaengerId() == null) {
-			return Optional.empty();
-		}
-
-		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
-		// Leseberechtigt bin, fuer die Mutation aber schon!
-		AbstractPlatz vorgaengerbetreuung = persistence.find(betreuung.getClass(), betreuung.getVorgaengerId());
-		if (vorgaengerbetreuung != null) {
-			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
-				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
-				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
-			}
-			return findVorgaengerVerfuegung(vorgaengerbetreuung);
-		}
-		return Optional.empty();
+	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz abstractPlatz) {
+		final Optional<AbstractPlatz> vorgaengerPlatz = findVorgaengerPlatz(abstractPlatz);
+		return vorgaengerPlatz.map(AbstractPlatz::getVerfuegung);
 	}
 
 	protected void logExceptionAccordingToEnvironment(@Nonnull Exception e, @Nonnull String message, @Nonnull String arg) {
