@@ -445,7 +445,7 @@
     "FACHSTELLE": "Service spécialisé",
     "INVOLVIERTE_FACHSTELLE": "Le besoin linguistique ou social de l'enfant a été confirmé par un service spécialisé (requis uniquement pour les demandes de bons de garde).",
     "KIND_AUS_ASYLWESEN": "Un numéro SYMIC a été attribué à l’enfant (possible pour les étrangères et étrangers, les requérantes et requérants d’asile ainsi que les personnes admises à titre provisoire ou réfugiées – requis uniquement pour les demandes de bons de garde)",
-    "KIND_AUS_ASYLWESEN_HELP": "En principe, les communes prennent en charge une franchise de 20% pour les bons de garde. Exceptions (probablement à compter du 1er août 2020) :</br></br><ul><li>Requérantes ou requérants d’asile</li><li>Personnes admises à titre provisoire relevant de la compétence des partenaires régionaux</li><li>Personnes réfugiées admises à titre provisoire relevant de la compétence des partenaires régionaux</li><li>Personnes réfugiées relevant de la compétence des partenaires régionaux</li></ul></br>Le numéro SYMIC permet de contrôler si l’enfant appartient à l’une des catégories susmentionnées.",
+    "KIND_AUS_ASYLWESEN_HELP": "En principe, les communes prennent en charge une franchise de 20% pour les bons de garde. Exceptions (à compter du 1er août 2020) :</br></br><ul><li>Requérantes ou requérants d’asile</li><li>Personnes admises à titre provisoire relevant de la compétence des partenaires régionaux</li><li>Personnes réfugiées admises à titre provisoire relevant de la compétence des partenaires régionaux</li><li>Personnes réfugiées relevant de la compétence des partenaires régionaux</li></ul></br>Le numéro SYMIC permet de contrôler si l’enfant appartient à l’une des catégories susmentionnées.",
     "ZEMIS_NUMMER": "Numéro SYMIC",
     "ZEMIS_NUMMER_PLACEHOLDER": "00000000.0",
     "KINDERABZUG": "Ferez-vous valoir une déduction pour vos enfants pour l'année {{jahr}} ?",
@@ -2110,6 +2110,6 @@
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Retourner la demande à l'institution pour traitement",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Voulez-vous retourner la demande à l'institution? Vous ne pourrez plus revenir en arrière",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Le délais de soumission a été modifié, le formulaire peut être envoyé jusqu'au {{datum}}",
-    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Voraussichtliche Ausfallentschädigung",
+    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Indemnisation probable",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
