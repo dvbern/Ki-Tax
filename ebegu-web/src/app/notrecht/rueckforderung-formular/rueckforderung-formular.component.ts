@@ -118,21 +118,15 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.readOnly = this.initReadOnly(response);
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
-                    if (this.isPruefungKantonStufe1(response)) {
-                        this.calculateKantonProvBetragOeffentlich(response, true);
-                    }
-                    if (this.isInstitutionStufe2(response)) {
-                        this.calculateInstiProvBetrag(response, false);
-                    }
-                    if (this.isInstitutionStufe1ReadOnly(response)) {
-                        this.calculateInstiProvBetrag(response, true);
-                    }
-                    if (response.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+                    if (EbeguUtil.isNullOrUndefined(response.institutionTyp)) {
+                        // Wir sind in Stufe 1
+                        this.calculateProvisorischerBetrag(response, true);
+                    } else if (response.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+                        // Stufe 2 Privat
                         this.calculateProvBetragPrivat(response);
-                    }
-                    if (response.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH) {
-                        this.calculateKantonProvBetragOeffentlich(response, false);
-                        this.calculateInstiProvBetrag(response, false);
+                    } else {
+                        // Stufe 2 Oeffentlich oder unbekannt
+                        this.calculateProvisorischerBetrag(response, false);
                     }
                     return response;
                 }));
@@ -347,7 +341,7 @@ export class RueckforderungFormularComponent implements OnInit {
         return rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
     }
 
-    public calculateInstiProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
+    public calculateProvisorischerBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
         this.stufe1ProvBetrag = undefined;
         this.stufe2ProvBetragOeffentlich = undefined;
         const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
@@ -369,41 +363,6 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
             : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
-            return;
-        }
-        if (isStufe1) {
-            this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-            return;
-        }
-        this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-        return;
-    }
-
-    public calculateKantonProvBetragOeffentlich(rueckforderungFormular: TSRueckforderungFormular,
-                                                isStufe1: boolean): void {
-        this.stufe1ProvBetrag = undefined;
-        this.stufe2ProvBetragOeffentlich = undefined;
-        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
-            : rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
-            return;
-        }
-        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
-            : rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage;
-
-        if (this.isKitaAngebot(rueckforderungFormular)
-            && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
-            if (isStufe1) {
-                this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-                return;
-            }
-            this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-            return;
-        }
-        const kostenuebernahmeAnzahlStunden = isStufe1
-            ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
-            : rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden;
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
             return;
         }
