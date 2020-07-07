@@ -30,6 +30,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" *ngIf="!fristSchonErreicht(rueckforderungFormular) &&
+                fristVerlaengert(rueckforderungFormular)">
+                    <div class="col-md-12">
+                        <div class="well well-status-bestaetigt">
+                            <i class="fa fa-info" aria-hidden="true"></i>
+                            <span>{{getFristVerlaengertText(rueckforderungFormular)}}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="row view-title">
                     <div class="col-md-12">
                         <h2>{{'RUECKFORDERUNGSFORMULARE_DETAIL' | translate: {
@@ -44,12 +53,12 @@
                     </div>
                 </div>
                 <div class="row" *ngIf="isInstitutionStufe1ReadOnly(rueckforderungFormular)">
-                    <div class="col-md-12">
+                    <div class="col-md-12 margin-bottom-20">
                         {{'CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_1' | translate }}
                     </div>
                 </div>
                 <div class="row" *ngIf="isInstitutionStufe2ReadOnly(rueckforderungFormular)">
-                    <div class="col-md-12">
+                    <div class="col-md-12 margin-bottom-20">
                         {{getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular)}}
                     </div>
                 </div>
@@ -1075,22 +1084,59 @@
                                || isInstitutionStufe2Definitiv(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
-                            <div class="row mt-5">
+                            <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ==
+                                getRueckforderungInstitutionTypOffentlich()">
                                 <div class="col-sm-12">
-                                <span class="mt-5">
-                                    {{'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG'|translate}}
+                                <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_OFFENTLICH' |
+                                    translate">
                                 </span>
                                     <div class="form-group">
-                                        <mat-checkbox id="elternbeitraegeNichtInRechnungCbx_id"
+                                        <mat-checkbox id="elternbeitraegeNichtInRechnungOffentlichCbx_id"
                                                       name="elternbeitraegeNichtInRechnungCbx_id"
                                                       [(ngModel)]="elternbeitraegeNichtInRechnung" required>
                                             {{ 'BESTAETIGEN' | translate }}
                                         </mat-checkbox>
                                     </div>
-                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN' | translate">
+                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN_OFFENTLICH' |
+                                    translate">
                                     </span>
                                     <div class="form-group">
-                                        <mat-checkbox id="notwendigenInformationenLiefernCbx_id"
+                                        <mat-checkbox id="notwendigenInformationenLiefernOffentlichCbx_id"
+                                                      name="notwendigenInformationenLiefernCbx_id"
+                                                      [(ngModel)]="notwendigenInformationenLiefern" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ==
+                                getRueckforderungInstitutionTypPrivat()">
+                                <div class="col-sm-12">
+                                    <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_PRIVAT' |
+                                    translate">
+                                    </span>
+                                    <div class="form-group">
+                                        <mat-checkbox id="elternbeitraegeNichtInRechnungPrivatCbx_id"
+                                                      name="elternbeitraegeNichtInRechnungCbx_id"
+                                                      [(ngModel)]="elternbeitraegeNichtInRechnung" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5" [innerHtml]="'VERPFLEGUNGSKOSTEN_KORREKT_ABGEZOGEN_PRIVAT' |
+                                    translate">
+                                    </span>
+                                    <div class="form-group">
+                                        <mat-checkbox id="Cbx_id"
+                                                      name="verpflegungskostenKorrektAbgezogenCbx_id"
+                                                      [(ngModel)]="verpflegungskostenKorrektAbgezogen" required>
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN_PRIVAT' |
+                                    translate">
+                                    </span>
+                                    <div class="form-group">
+                                        <mat-checkbox id="notwendigenInformationenLiefernPrivatCbx_id"
                                                       name="notwendigenInformationenLiefernCbx_id"
                                                       [(ngModel)]="notwendigenInformationenLiefern" required>
                                             {{ 'BESTAETIGEN' | translate }}
@@ -1108,10 +1154,11 @@
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
-                                <div class="col-sm-12">
-                                <span class="mt-5">
-                                    {{'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG'|translate}}
-                                </span>
+                                <div class="col-sm-12" *ngIf="rueckforderungFormular.institutionTyp ==
+                                getRueckforderungInstitutionTypOffentlich()">
+                                    <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_OFFENTLICH' |
+                                    translate">
+                                    </span>
                                     <div class="form-group">
                                         <mat-checkbox id="elternbeitraegeNichtInRechnungCbxReadOnly_id"
                                                       name="elternbeitraegeNichtInRechnungCbxReadOnly_id"
@@ -1120,12 +1167,48 @@
                                             {{ 'BESTAETIGEN' | translate }}
                                         </mat-checkbox>
                                     </div>
-                                    <span class="mt-5">
-                                    {{'NOTWENDIGEN_INFORMATIONEN_LIEFERN'|translate}}
-                                </span>
+                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN_OFFENTLICH' |
+                                    translate">
+                                    </span>
                                     <div class="form-group">
                                         <mat-checkbox id="notwendigenInformationenLiefernCbxReadOnly_id"
                                                       name="notwendigenInformationenLiefernCbxReadOnly_id"
+                                                      checked="true"
+                                                      disabled="true">
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" *ngIf="rueckforderungFormular.institutionTyp ==
+                                getRueckforderungInstitutionTypPrivat()">
+                                    <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_PRIVAT' |
+                                    translate">
+                                    </span>
+                                    <div class="form-group">
+                                        <mat-checkbox id="elternbeitraegeNichtInRechnungPrivatCbxReadOnly_id"
+                                                      name="elternbeitraegeNichtInRechnungPrivatCbxReadOnly_id"
+                                                      checked="true"
+                                                      disabled="true">
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5" [innerHtml]="'VERPFLEGUNGSKOSTEN_KORREKT_ABGEZOGEN_PRIVAT' |
+                                    translate">
+                                    </span>
+                                    <div class="form-group">
+                                        <mat-checkbox id="verpflegungskostenKorrektAbgezogenPrivatCbxReadOnly_id"
+                                                      name="verpflegungskostenKorrektAbgezogenPrivatCbxReadOnly_id"
+                                                      checked="true"
+                                                      disabled="true">
+                                            {{ 'BESTAETIGEN' | translate }}
+                                        </mat-checkbox>
+                                    </div>
+                                    <span class="mt-5" [innerHtml]="'NOTWENDIGEN_INFORMATIONEN_LIEFERN_PRIVAT' |
+                                    translate">
+                                    </span>
+                                    <div class="form-group">
+                                        <mat-checkbox id="notwendigenInformationenLiefernPrivatCbxReadOnly_id"
+                                                      name="notwendigenInformationenLiefernPrivatCbxReadOnly_id"
                                                       checked="true"
                                                       disabled="true">
                                             {{ 'BESTAETIGEN' | translate }}
@@ -1309,8 +1392,7 @@
                 || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
-            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()
-                    && isInstitutionTypNullOrPrivat(rueckforderungFormular)"
+            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
                     (click)="fristVerlaengern(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
             </button>
