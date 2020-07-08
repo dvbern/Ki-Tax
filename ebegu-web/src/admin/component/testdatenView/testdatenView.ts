@@ -43,7 +43,6 @@ const LOG = LogFactory.createLog('TestdatenViewComponent');
 export class TestdatenViewComponent implements OnInit {
 
     public dossierid: string;
-    public verfuegenGesuchid: string;
     public eingangsdatum: moment.Moment;
     public ereignisdatum: moment.Moment;
 
@@ -67,7 +66,6 @@ export class TestdatenViewComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly gesuchRS: GesuchRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
     ) {
@@ -213,17 +211,6 @@ export class TestdatenViewComponent implements OnInit {
         return this.testFaelleRS.createTutorialdaten().then(response => {
             this.createAndOpenOkDialog(response.data);
         });
-    }
-
-    public gesuchVerfuegen(): void {
-        this.createAndOpenRemoveDialog$('GESUCH_VERFUEGEN_DIALOG_TITLE', 'GESUCH_VERFUEGEN_DIALOG_TEXT')
-            .subscribe(
-                acceptedByUser => {
-                    if (acceptedByUser) {
-                        this.gesuchRS.gesuchVerfuegen(this.verfuegenGesuchid);
-                    }
-                },
-                err => LOG.error(err));
     }
 
     private createAndOpenOkDialog(title: string): void {

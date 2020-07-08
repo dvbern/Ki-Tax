@@ -219,10 +219,6 @@ export class GesuchRS implements IEntityRS {
             });
     }
 
-    public gesuchVerfuegen(antragId: string): IHttpPromise<any> {
-        return this.$http.post(`${this.serviceURL}/gesuchVerfuegen/${encodeURIComponent(antragId)}`, null);
-    }
-
     public changeFinSitStatus(antragId: string, finSitStatus: TSFinSitStatus): IPromise<any> {
         return this.$http.post(`${this.serviceURL}/changeFinSitStatus/${encodeURIComponent(antragId)}/${finSitStatus}`,
             null);
