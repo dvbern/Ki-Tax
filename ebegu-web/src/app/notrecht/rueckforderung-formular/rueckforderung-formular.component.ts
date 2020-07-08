@@ -344,27 +344,12 @@ export class RueckforderungFormularComponent implements OnInit {
     public calculateProvisorischerBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
         this.stufe1ProvBetrag = undefined;
         this.stufe2ProvBetragOeffentlich = undefined;
-        let kostenuebernahmeBetreuung;
-        if (isStufe1) {
-            kostenuebernahmeBetreuung =
-                (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung))
-                    ? rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
-                    : rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
-        } else {
-            kostenuebernahmeBetreuung = rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
-        }
+
+        const kostenuebernahmeBetreuung = this.getActiveKostenuebernahmeBetreuung(rueckforderungFormular, isStufe1);
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
             return;
         }
-
-        let kostenuebernahmeAnzahlTage;
-        if (isStufe1) {
-            kostenuebernahmeAnzahlTage = (rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage)
-                ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
-                : rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
-        } else {
-            kostenuebernahmeAnzahlTage = rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
-        }
+        const kostenuebernahmeAnzahlTage = this.getActiveKostenuebernahmeAnzahlTage(rueckforderungFormular, isStufe1);
 
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
@@ -375,8 +360,8 @@ export class RueckforderungFormularComponent implements OnInit {
             this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
             return;
         }
-        const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+
+        const kostenuebernahmeAnzahlStunden = this.getActiveKostenuebernahmeAnzahlStunden(rueckforderungFormular, isStufe1);
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
             return;
         }
@@ -386,6 +371,51 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
         return;
+    }
+
+    private getActiveKostenuebernahmeBetreuung(
+        rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean
+    ): number {
+        if (isStufe1) {
+            if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung)) {
+                return rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
+            }
+            return rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung)) {
+            return rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung;
+        }
+        return rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+    }
+
+    private getActiveKostenuebernahmeAnzahlTage(
+        rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean
+    ): number {
+        if (isStufe1) {
+            if (rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage) {
+                return rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage;
+            }
+            return rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage)) {
+            return rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage;
+        }
+        return rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+    }
+
+    private getActiveKostenuebernahmeAnzahlStunden(
+        rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean
+    ): number {
+        if (isStufe1) {
+            if (rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden) {
+                return rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden;
+            }
+            return rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden)) {
+            return rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden;
+        }
+        return rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
     }
 
     public get stufe1ProvBetrag(): number {
