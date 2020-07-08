@@ -1318,7 +1318,7 @@
                     </div>
                 </div>
                 <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
-                    <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
+                    <div class="row" *ngIf="rueckforderungFormular.kurzarbeitDefinitivVerfuegt">
                         <div class="col-sm-12">
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
@@ -1335,7 +1335,7 @@
                             </dv-file-upload>
                         </div>
                     </div>
-                    <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
+                    <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt">
                         <div class="col-sm-12">
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
