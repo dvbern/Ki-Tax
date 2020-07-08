@@ -5360,6 +5360,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());
 		jaxRueckforderungDokument.setTimestampUpload(rueckforderungDokument.getTimestampUpload());
+		jaxRueckforderungDokument.setTimestampErstellt(rueckforderungDokument.getTimestampErstellt());
 
 		return jaxRueckforderungDokument;
 	}
