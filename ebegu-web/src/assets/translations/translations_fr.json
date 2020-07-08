@@ -2090,8 +2090,8 @@
     "RUECKFORDERUNGFORMULAR_BERUEUNDUNG_INFO": "Si non, veuillez exposer les raisons pour lesquelles aucune demande n'a été déposée.",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BEANTRAGT": "Avez-vous déposé une demande d'allocation pour perte de gain en cas de coronavirus ?",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BETRAG": "Si oui, à combien se monte l'allocation versée pour la période du 17 mars au 17 juin 2020 (estimation, le cas échéant) ?",
-    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH": "Le formulaire Excel dûment rempli pour la période du 17 mars au 16 mai 2020",
-    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT": "Le formulaire Excel dûment rempli pour la période du 17 mars au 17 juin 2020",
+    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH": "Le formulaire Excel dûment rempli pour la période du 17 mars au 16 mai 2020 (y compris, le cas échéant, les documents complémentaires où figures les données demandées dans le formulaires Excel)",
+    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT": "Le formulaire Excel dûment rempli pour la période du 17 mars au 17 juin 2020 (y compris, le cas échéant, les documents complémentaires où figures les données demandées dans le formulaires Excel)",
     "RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_OEFFENTLICH": "Les communications avec les parents au sujet de la prise en charge pendant la période du 17 mars au 16 mai 2020 (ensemble des circulaires, courriels, lignes directrices internes)",
     "RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_PRIVAT": "Les communications avec les parents au sujet de la prise en charge pendant la période du 17 mars au 17 juin 2020 (ensemble des circulaires, courriels, lignes directrices internes)",
     "RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_OEFFENTLICH": "Les plans de service précisant le personnel disponible pendant la période du 17 mars au 16 mai 2020",
@@ -2116,5 +2116,7 @@
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE": "Le délais de soumission est le {{private}} pour les institutions privées, et le {{oeffentlich}} pour les institutions publiques",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Le délais de soumission a été modifié à la date du {{datum}}",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD": "Le délais de soumission pour cette demande est le {{frist}}",
+    "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/fr/index/direktion/organisation/soa/Coronavirus.html",
+    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Vous pouvez télécharger les modèles ici",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

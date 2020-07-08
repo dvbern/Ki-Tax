@@ -1255,26 +1255,13 @@
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">DOKUMENTE</h2>
                         <hr class="header"/>
-                        <div class="download-file" *ngIf="showVorlageOeffentlicheInstitutionen(rueckforderungFormular)">
-                            <a (click)="downloadVorlageOeffentlicheInstitutionen(rueckforderungFormular);">
-                                <span class="fa fa-download"></span>
-                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA_OEFFENTLICH</span>
-                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO_OEFFENTLICH</span>
-                            </a>
-                        </div>
-
-                        <div class="download-file" *ngIf="showVorlagePrivateInstitutionen(rueckforderungFormular)">
-                            <a (click)="downloadVorlagePrivateInstitutionen(rueckforderungFormular);">
-                                <span class="fa fa-download"></span>
-                                <span *ngIf="isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_KITA_PRIVAT</span>
-                                <span *ngIf="!isKitaAngebot(rueckforderungFormular)" translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE_TFO_PRIVAT</span>
-                            </a>
-                        </div>
+                        <a target="_blank" rel="noopener noreferrer" href="{{'RUECKFORDERUNG_VORLAGEN_LINK' | translate}}"
+                           translate>RUECKFORDERUNG_VORLAGEN_LINK_TEXT</a>
                     </div>
                 </div>
             </div>
             <!-- Dokumenten -->
-            <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload()">
+            <div class="col-md-8 col-md-offset-2" *ngIf="showDokumentenUpload(rueckforderungFormular)">
                 <div class="row">
                     <div class="col-sm-12">
                         <h2 class="margin-top-50">
@@ -1331,7 +1318,7 @@
                     </div>
                 </div>
                 <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
-                    <div class="row" *ngIf="rueckforderungFormular.kurzarbeitBeantragt">
+                    <div class="row" *ngIf="rueckforderungFormular.kurzarbeitDefinitivVerfuegt">
                         <div class="col-sm-12">
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
@@ -1348,7 +1335,7 @@
                             </dv-file-upload>
                         </div>
                     </div>
-                    <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzBeantragt">
+                    <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt">
                         <div class="col-sm-12">
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>

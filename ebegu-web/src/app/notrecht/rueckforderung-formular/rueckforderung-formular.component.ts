@@ -57,8 +57,8 @@ export class RueckforderungFormularComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
-    private readonly einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-18');
-    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-08-01');
+    private readonly einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-17').endOf('day');
+    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-07-31').endOf('day');
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
@@ -662,8 +662,12 @@ export class RueckforderungFormularComponent implements OnInit {
             });
     }
 
-    public showDokumentenUpload(): boolean {
-        return true;
+    public showDokumentenUpload(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Dokumente sollen erst ab Stufe zwei hochgeladen werden
+        return (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH);
     }
 
     public getRueckforderungInstitutionTypOffentlich(): TSRueckforderungInstitutionTyp {
@@ -679,7 +683,7 @@ export class RueckforderungFormularComponent implements OnInit {
         let fristabgelaufen = false;
         if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
             fristabgelaufen = (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) ?
-                currentDate.isAfter(rueckforderungFormular.extendedEinreichefrist)
+                !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.endOf('day'))
                 : !currentDate.isBefore(this.einreicheFristPrivatDefault);
         } else {
             fristabgelaufen = !currentDate.isBefore(this.einreicheFristOeffentlich);

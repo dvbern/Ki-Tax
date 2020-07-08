@@ -2090,8 +2090,8 @@
     "RUECKFORDERUNGFORMULAR_BERUEUNDUNG_INFO": "Falls nein, bitte begründen, warum kein Antrag gestellt wurde.",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BEANTRAGT": "Haben Sie ein Gesuch um Corona-Erwerbsersatzentschädigung eingereicht?",
     "RUECKFORDERUNGFORMULAR_CORONA_ERWERBSERSATZ_BETRAG": "Falls ja, wie hoch ist die (voraussichtlich) ausbezahlte Entschädigung für die Zeit vom 17.03.2020 bis 17.06.2020?",
-    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH": "Das ausgefüllte Excel für die Zeit vom 17. März bis am 16. Mai",
-    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT": "Das ausgefüllte Excel-Formular für für die Zeit vom 17. März bis am 17. Juni",
+    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH": "Das ausgefüllte Excel für die Zeit vom 17. März bis am 16. Mai (inkl. allfälliger weiterer Unterlagen, aus denen die verlangten Angaben ersichtlich sind)",
+    "RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT": "Das ausgefüllte Excel-Formular für für die Zeit vom 17. März bis am 17. Juni (inkl. allfälliger weiterer Unterlagen, aus denen die verlangten Angaben ersichtlich sind)",
     "RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_OEFFENTLICH": "Die Kommunikation mit den Eltern (alle Rundschreiben, Rundmails, interne Sprachregelungen) bezüglich der Betreuung zwischen dem 17. März und 16. Mai 2020.",
     "RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_PRIVAT": "Die Kommunikation mit den Eltern (alle Rundschreiben, Rundmails, interne Sprachregelungen) bezüglich der Betreuung zwischen dem 17. März und 17. Juni 2020.",
     "RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_OEFFENTLICH": "Einsatzpläne für die Zeit vom 17. März bis 16. Mai, aus denen ersichtlich ist, welches Personal einsatzbereit war.",
@@ -2116,5 +2116,7 @@
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE": "Die Einreichungsfrist beträgt für private Institutionen {{private}}, für öffentliche {{oeffentlich}}",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Die Einreichungsfrist wurde auf das Datum {{frist}} angepasst",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD": "Die Einreichungsfrist für diesen Antrag ist der {{frist}}",
+    "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/de/index/direktion/organisation/soa/Coronavirus.html",
+    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Sie können die Vorlagen hier herunterladen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
