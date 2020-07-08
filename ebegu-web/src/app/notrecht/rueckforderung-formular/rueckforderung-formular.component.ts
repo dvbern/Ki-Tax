@@ -361,7 +361,8 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
 
-        const kostenuebernahmeAnzahlStunden = this.getActiveKostenuebernahmeAnzahlStunden(rueckforderungFormular, isStufe1);
+        const kostenuebernahmeAnzahlStunden =
+            this.getActiveKostenuebernahmeAnzahlStunden(rueckforderungFormular, isStufe1);
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
             return;
         }
