@@ -344,13 +344,27 @@ export class RueckforderungFormularComponent implements OnInit {
     public calculateProvisorischerBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
         this.stufe1ProvBetrag = undefined;
         this.stufe2ProvBetragOeffentlich = undefined;
-        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+        let kostenuebernahmeBetreuung;
+        if (isStufe1) {
+            kostenuebernahmeBetreuung =
+                (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung))
+                    ? rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
+                    : rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
+        } else {
+            kostenuebernahmeBetreuung = rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+        }
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
             return;
         }
-        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+
+        let kostenuebernahmeAnzahlTage;
+        if (isStufe1) {
+            kostenuebernahmeAnzahlTage = (rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage)
+                ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
+                : rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        } else {
+            kostenuebernahmeAnzahlTage = rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        }
 
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
