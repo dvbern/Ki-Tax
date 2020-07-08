@@ -16,6 +16,8 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
@@ -26,6 +28,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];
     private _status: TSRueckforderungStatus;
+    public hasBeenSentBackToInstitution: boolean = false;
     private _stufe1KantonKostenuebernahmeAnzahlStunden: number;
     private _stufe1InstitutionKostenuebernahmeAnzahlStunden: number;
     private _stufe2KantonKostenuebernahmeAnzahlStunden: number;
@@ -44,6 +47,22 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe2VerfuegungBetrag: number;
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
+    public institutionTyp: TSRueckforderungInstitutionTyp;
+    public extendedEinreichefrist: moment.Moment;
+    public relevantEinreichungsfrist: moment.Moment;
+    public betragEntgangeneElternbeitraege: number;
+    public betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten: number; // Kita in TAGE, TFO in STUNDEN
+    public anzahlNichtAngeboteneEinheiten: number; // Neu: Rueckerstattung fuer nicht angebotene Einheiten
+    public kurzarbeitBeantragt: boolean;
+    public kurzarbeitBetrag: number;
+    public kurzarbeitDefinitivVerfuegt: boolean;
+    public kurzarbeitKeinAntragBegruendung: string;
+    public kurzarbeitSonstiges: string;
+    public coronaErwerbsersatzBeantragt: boolean;
+    public coronaErwerbsersatzBetrag: number;
+    public coronaErwerbsersatzDefinitivVerfuegt: boolean;
+    public coronaErwerbsersatzKeinAntragBegruendung: string;
+    public coronaErwerbsersatzSonstiges: string;
 
     public constructor() {
         super();
@@ -215,5 +234,17 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set stufe2VerfuegungAusbezahltAm(value: moment.Moment) {
         this._stufe2VerfuegungAusbezahltAm = value;
+    }
+
+    public isKurzarbeitProzessBeendet(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.kurzarbeitBeantragt)
+        || EbeguUtil.isNotNullAndFalse(this.kurzarbeitBeantragt)
+        || (EbeguUtil.isNotNullAndTrue(this.kurzarbeitDefinitivVerfuegt));
+    }
+
+    public isCoronaErwerbsersatzProzessBeendet(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.coronaErwerbsersatzBeantragt)
+            || EbeguUtil.isNotNullAndFalse(this.coronaErwerbsersatzBeantragt)
+            || (EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzDefinitivVerfuegt));
     }
 }

@@ -205,7 +205,7 @@ public final class TestJaxDataUtil {
 		JaxBerechtigung jaxBerechtigung = createTestJaxBerechtigung();
 		jaxBenutzer.getBerechtigungen().add(jaxBerechtigung);
 		jaxBenutzer.setCurrentBerechtigung(jaxBerechtigung);
-		jaxBenutzer.setUsername("TestUser");
+		jaxBenutzer.setUsername("testuser");
 		jaxBenutzer.setPassword("1234");
 		jaxBenutzer.setEmail("testuser@example.com");
 		jaxBenutzer.setNachname("NachnameTest");

@@ -3884,6 +3884,7 @@ export class EbeguRestUtil {
         rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
         rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
+        rueckforderungFormular.hasBeenSentBackToInstitution = rueckforderungFormularFromServer.hasBeenSentBackToInstitution;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlStunden;
         rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
@@ -3913,6 +3914,28 @@ export class EbeguRestUtil {
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
         rueckforderungFormular.stufe2VerfuegungAusbezahltAm =
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
+        rueckforderungFormular.institutionTyp = rueckforderungFormularFromServer.institutionTyp;
+        rueckforderungFormular.extendedEinreichefrist =
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
+        rueckforderungFormular.relevantEinreichungsfrist =
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
+        rueckforderungFormular.betragEntgangeneElternbeitraege = rueckforderungFormularFromServer.betragEntgangeneElternbeitraege;
+        rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
+            rueckforderungFormularFromServer.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+        rueckforderungFormular.anzahlNichtAngeboteneEinheiten = rueckforderungFormularFromServer.anzahlNichtAngeboteneEinheiten;
+        rueckforderungFormular.kurzarbeitBeantragt = rueckforderungFormularFromServer.kurzarbeitBeantragt;
+        rueckforderungFormular.kurzarbeitBetrag = rueckforderungFormularFromServer.kurzarbeitBetrag;
+        rueckforderungFormular.kurzarbeitDefinitivVerfuegt = rueckforderungFormularFromServer.kurzarbeitDefinitivVerfuegt;
+        rueckforderungFormular.kurzarbeitKeinAntragBegruendung = rueckforderungFormularFromServer.kurzarbeitKeinAntragBegruendung;
+        rueckforderungFormular.kurzarbeitSonstiges = rueckforderungFormularFromServer.kurzarbeitSonstiges;
+        rueckforderungFormular.coronaErwerbsersatzBeantragt =
+            rueckforderungFormularFromServer.coronaErwerbsersatzBeantragt;
+        rueckforderungFormular.coronaErwerbsersatzBetrag = rueckforderungFormularFromServer.coronaErwerbsersatzBetrag;
+        rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt = rueckforderungFormularFromServer.coronaErwerbsersatzDefinitivVerfuegt;
+        rueckforderungFormular.coronaErwerbsersatzKeinAntragBegruendung =
+            rueckforderungFormularFromServer.coronaErwerbsersatzKeinAntragBegruendung;
+        rueckforderungFormular.coronaErwerbsersatzSonstiges =
+            rueckforderungFormularFromServer.coronaErwerbsersatzSonstiges;
         return rueckforderungFormular;
     }
 
@@ -3941,6 +3964,7 @@ export class EbeguRestUtil {
         rueckforderungFormularRest.institutionStammdaten = this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
         rueckforderungFormularRest.rueckforderungMitteilungen = this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
         rueckforderungFormularRest.status = rueckforderungFormularTS.status;
+        rueckforderungFormularRest.hasBeenSentBackToInstitution = rueckforderungFormularTS.hasBeenSentBackToInstitution;
         rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlStunden;
         rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;
@@ -3970,6 +3994,28 @@ export class EbeguRestUtil {
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
         rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
+        rueckforderungFormularRest.extendedEinreichefrist =
+            DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);
+        rueckforderungFormularRest.relevantEinreichungsfrist =
+            DateUtil.momentToLocalDate(rueckforderungFormularTS.relevantEinreichungsfrist);
+        rueckforderungFormularRest.betragEntgangeneElternbeitraege = rueckforderungFormularTS.betragEntgangeneElternbeitraege;
+        rueckforderungFormularRest.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
+            rueckforderungFormularTS.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+        rueckforderungFormularRest.anzahlNichtAngeboteneEinheiten = rueckforderungFormularTS.anzahlNichtAngeboteneEinheiten;
+        rueckforderungFormularRest.kurzarbeitBeantragt = rueckforderungFormularTS.kurzarbeitBeantragt;
+        rueckforderungFormularRest.kurzarbeitBetrag = rueckforderungFormularTS.kurzarbeitBetrag;
+        rueckforderungFormularRest.kurzarbeitDefinitivVerfuegt = rueckforderungFormularTS.kurzarbeitDefinitivVerfuegt;
+        rueckforderungFormularRest.kurzarbeitKeinAntragBegruendung = rueckforderungFormularTS.kurzarbeitKeinAntragBegruendung;
+        rueckforderungFormularRest.kurzarbeitSonstiges = rueckforderungFormularTS.kurzarbeitSonstiges;
+        rueckforderungFormularRest.coronaErwerbsersatzBeantragt =
+            rueckforderungFormularTS.coronaErwerbsersatzBeantragt;
+        rueckforderungFormularRest.coronaErwerbsersatzBetrag = rueckforderungFormularTS.coronaErwerbsersatzBetrag;
+        rueckforderungFormularRest.coronaErwerbsersatzDefinitivVerfuegt = rueckforderungFormularTS.coronaErwerbsersatzDefinitivVerfuegt;
+        rueckforderungFormularRest.coronaErwerbsersatzKeinAntragBegruendung =
+            rueckforderungFormularTS.coronaErwerbsersatzKeinAntragBegruendung;
+        rueckforderungFormularRest.coronaErwerbsersatzSonstiges =
+            rueckforderungFormularTS.coronaErwerbsersatzSonstiges;
         return rueckforderungFormularRest;
     }
 

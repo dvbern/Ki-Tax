@@ -1552,6 +1552,10 @@ export class GesuchModelManager {
         return this.neustesGesuch;
     }
 
+    public isErwerbspensumRequired(gesuchId: string): IPromise<boolean> {
+        return this.erwerbspensumRS.isErwerbspensumRequired(gesuchId);
+    }
+
     /**
      * Indicates whether the FinSit is available to be filled out or not.
      */

@@ -3392,7 +3392,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		// Achtung: Hier sollten nur Daten aus dem RelevantBGCalculation*Result* verwendet werden, da die Daten aus den
-		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr zugaenglich
+		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr
+		// zugaenglich
 		// sind. Ausnahme sind Daten, die ZUM VERFUEGEN gebraucht werden, wie z.B.
 		// getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten()
 
@@ -5197,6 +5198,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+		jaxFormular.setHasBeenSentBackToInstitution(rueckforderungFormular.isHasBeenSentBackToInstitution());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 		jaxFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
@@ -5216,6 +5218,22 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setStufe2VerfuegungBetrag(rueckforderungFormular.getStufe2VerfuegungBetrag());
 		jaxFormular.setStufe2VerfuegungDatum(rueckforderungFormular.getStufe2VerfuegungDatum());
 		jaxFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormular.getStufe2VerfuegungAusbezahltAm());
+		jaxFormular.setInstitutionTyp(rueckforderungFormular.getInstitutionTyp());
+		jaxFormular.setExtendedEinreichefrist(rueckforderungFormular.getExtendedEinreichefrist());
+		jaxFormular.setRelevantEinreichungsfrist(rueckforderungFormular.getRelevantEinreichungsfrist());
+		jaxFormular.setBetragEntgangeneElternbeitraege(rueckforderungFormular.getBetragEntgangeneElternbeitraege());
+		jaxFormular.setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(rueckforderungFormular.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten());
+		jaxFormular.setAnzahlNichtAngeboteneEinheiten(rueckforderungFormular.getAnzahlNichtAngeboteneEinheiten());
+		jaxFormular.setKurzarbeitBeantragt(rueckforderungFormular.getKurzarbeitBeantragt());
+		jaxFormular.setKurzarbeitBetrag(rueckforderungFormular.getKurzarbeitBetrag());
+		jaxFormular.setKurzarbeitDefinitivVerfuegt(rueckforderungFormular.getKurzarbeitDefinitivVerfuegt());
+		jaxFormular.setKurzarbeitKeinAntragBegruendung(rueckforderungFormular.getKurzarbeitKeinAntragBegruendung());
+		jaxFormular.setKurzarbeitSonstiges(rueckforderungFormular.getKurzarbeitSonstiges());
+		jaxFormular.setCoronaErwerbsersatzBeantragt(rueckforderungFormular.getCoronaErwerbsersatzBeantragt());
+		jaxFormular.setCoronaErwerbsersatzBetrag(rueckforderungFormular.getCoronaErwerbsersatzBetrag());
+		jaxFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormular.getCoronaErwerbsersatzDefinitivVerfuegt());
+		jaxFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormular.getCoronaErwerbsersatzKeinAntragBegruendung());
+		jaxFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormular.getCoronaErwerbsersatzSonstiges());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
@@ -5240,6 +5258,7 @@ public class JaxBConverter extends AbstractConverter {
 				);
 		rueckforderungFormular.setInstitutionStammdaten(institutionStammdaten);
 		rueckforderungFormular.setStatus(rueckforderungFormularJax.getStatus());
+		rueckforderungFormular.setHasBeenSentBackToInstitution(rueckforderungFormularJax.isHasBeenSentBackToInstitution());
 
 		rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1KantonKostenuebernahmeAnzahlStunden());
 		rueckforderungFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
@@ -5260,6 +5279,21 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setStufe2VerfuegungDatum(rueckforderungFormularJax.getStufe2VerfuegungDatum());
 		rueckforderungFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormularJax.getStufe2VerfuegungAusbezahltAm());
 		rueckforderungFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToEntity(rueckforderungFormularJax.getRueckforderungMitteilungen(), rueckforderungFormular.getRueckforderungMitteilungen()));
+		rueckforderungFormular.setInstitutionTyp(rueckforderungFormularJax.getInstitutionTyp());
+		rueckforderungFormular.setExtendedEinreichefrist(rueckforderungFormularJax.getExtendedEinreichefrist());
+		rueckforderungFormular.setBetragEntgangeneElternbeitraege(rueckforderungFormularJax.getBetragEntgangeneElternbeitraege());
+		rueckforderungFormular.setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(rueckforderungFormularJax.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten());
+		rueckforderungFormular.setAnzahlNichtAngeboteneEinheiten(rueckforderungFormularJax.getAnzahlNichtAngeboteneEinheiten());
+		rueckforderungFormular.setKurzarbeitBeantragt(rueckforderungFormularJax.getKurzarbeitBeantragt());
+		rueckforderungFormular.setKurzarbeitBetrag(rueckforderungFormularJax.getKurzarbeitBetrag());
+		rueckforderungFormular.setKurzarbeitDefinitivVerfuegt(rueckforderungFormularJax.getKurzarbeitDefinitivVerfuegt());
+		rueckforderungFormular.setKurzarbeitKeinAntragBegruendung(rueckforderungFormularJax.getKurzarbeitKeinAntragBegruendung());
+		rueckforderungFormular.setKurzarbeitSonstiges(rueckforderungFormularJax.getKurzarbeitSonstiges());
+		rueckforderungFormular.setCoronaErwerbsersatzBeantragt(rueckforderungFormularJax.getCoronaErwerbsersatzBeantragt());
+		rueckforderungFormular.setCoronaErwerbsersatzBetrag(rueckforderungFormularJax.getCoronaErwerbsersatzBetrag());
+		rueckforderungFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormularJax.getCoronaErwerbsersatzDefinitivVerfuegt());
+		rueckforderungFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormularJax.getCoronaErwerbsersatzKeinAntragBegruendung());
+		rueckforderungFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormularJax.getCoronaErwerbsersatzSonstiges());
 
 		return rueckforderungFormular;
 	}
@@ -5320,7 +5354,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxRueckforderungDokument rueckforderungDokumentToJax(@Nonnull RueckforderungDokument rueckforderungDokument) {
-		JaxRueckforderungDokument jaxRueckforderungDokument = new JaxRueckforderungDokument();
+		JaxRueckforderungDokument jaxRueckforderungDokument =
+			convertAbstractVorgaengerFieldsToJAX(rueckforderungDokument, new JaxRueckforderungDokument());
 		convertFileToJax(rueckforderungDokument, jaxRueckforderungDokument);
 
 		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());
