@@ -2109,7 +2109,7 @@
     "RUECKFORDERUNG_RESET_STATUS": "Retour à l'institution",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Retourner la demande à l'institution pour traitement",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Voulez-vous retourner la demande à l'institution? Vous ne pourrez plus revenir en arrière",
-    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Indemnisation probable",
+    "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Montant probable de l’indemnité",
     "FREIGABE_DISABLED_FRIST_ABGELAUFEN": "Votre demande ne peut plus être libérée, le délais est déjà dépassé",
     "FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN": "Veuillez confirmer vos données afin de pouvoir libérer la demande",
     "FREIGABE_DISABLED_KA_CE_NICHT_VERFUEGT": "Votre demande ne peut pas être libérée définitivement avant d'avoir mis à disposition toutes les décisions (indemnité RHT et/ou l'allocation pour perte de gain en cas de coronavirus)",
