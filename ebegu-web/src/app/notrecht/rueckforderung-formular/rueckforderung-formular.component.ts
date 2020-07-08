@@ -662,8 +662,12 @@ export class RueckforderungFormularComponent implements OnInit {
             });
     }
 
-    public showDokumentenUpload(): boolean {
-        return true;
+    public showDokumentenUpload(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Dokumente sollen erst ab Stufe zwei hochgeladen werden
+        return (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH);
     }
 
     public getRueckforderungInstitutionTypOffentlich(): TSRueckforderungInstitutionTyp {
