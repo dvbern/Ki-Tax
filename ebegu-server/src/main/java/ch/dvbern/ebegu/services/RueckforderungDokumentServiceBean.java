@@ -88,7 +88,7 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 
 	@Override
 	public void removeDokument(@Nonnull RueckforderungDokument dokument) {
-		authorizer.checkReadAuthorization(dokument.getRueckforderungFormular());
+		authorizer.checkWriteAuthorization(dokument.getRueckforderungFormular());
 		persistence.remove(dokument);
 	}
 
@@ -96,7 +96,7 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 	@Override
 	public RueckforderungDokument saveDokumentGrund(@Nonnull RueckforderungDokument rueckforderungDokument) {
 		Objects.requireNonNull(rueckforderungDokument);
-		authorizer.checkReadAuthorization(rueckforderungDokument.getRueckforderungFormular());
+		authorizer.checkWriteAuthorization(rueckforderungDokument.getRueckforderungFormular());
 
 		rueckforderungDokument.setTimestampUpload(LocalDateTime.now());
 
