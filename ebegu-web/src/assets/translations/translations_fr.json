@@ -2117,6 +2117,6 @@
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Le délais de soumission a été modifié à la date du {{datum}}",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD": "Le délais de soumission pour cette demande est le {{frist}}",
     "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/fr/index/direktion/organisation/soa/Coronavirus.html",
-    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Sie können die Vorlagen hier herunterladen",
+    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Vous pouvez télécharger les modèles ici",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
