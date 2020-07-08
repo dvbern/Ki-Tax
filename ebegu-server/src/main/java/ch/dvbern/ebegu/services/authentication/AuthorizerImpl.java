@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services.authentication;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -1314,6 +1315,28 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		default:
 			break;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		final List<UserRole> allowedRoles = new ArrayList<>();
+		allowedRoles.addAll(UserRole.getMandantRoles());
+		allowedRoles.addAll(UserRole.getInstitutionTraegerschaftRoles());
+		if (!principalBean.isCallerInAnyOfRole(allowedRoles)) {
+			throwViolation(rueckforderungFormular);
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
 		}
 	}
 

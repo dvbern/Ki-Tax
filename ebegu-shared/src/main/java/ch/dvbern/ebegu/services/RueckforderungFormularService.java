@@ -43,9 +43,6 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular createRueckforderungFormular(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
-	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
-
-	@Nonnull
 	List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer();
 
 	@Nonnull

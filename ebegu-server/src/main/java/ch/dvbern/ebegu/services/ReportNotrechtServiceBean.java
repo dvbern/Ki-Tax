@@ -156,8 +156,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	private Collection<RueckforderungFormular> findAllAuszuzahlendeFormulare() {
-		// Wir geben immer alle Formulare aus in der Statistik
-		return rueckforderungFormularService.getAllRueckforderungFormulare();
+		return rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
 	}
 
 	@Nonnull

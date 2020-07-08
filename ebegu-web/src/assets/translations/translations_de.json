@@ -650,7 +650,7 @@
     "INAKTIV": "Inaktiv",
     "BETREUUNG_WARTEN_TEXT": "warten auf Platzbestätigung.",
     "RUECKGAENGIG_MACHEN": "Rückgängig machen",
-    "BETREUUNG_MUTATION_WARNUNG": "Achtung: Diese Eingabe ändert den Betreuungszeitraum sowie den Betreuungsgutschein, rückwirkend und führt eventuell zu Korrekturzahlungen!\nFalls Sie die Betreuung rückwirkend nicht überschreiben möchten, sondern eine Anpassung für die zukünftige Betreuung vornehmen möchten, erfassen Sie bitte ein weiteres Betreuungspensum.",
+    "BETREUUNG_MUTATION_WARNUNG": "Achtung: Diese Eingabe ändert den Betreuungszeitraum sowie den Betreuungsgutschein rückwirkend und führt eventuell zu Korrekturzahlungen!\nFalls Sie die Betreuung rückwirkend nicht überschreiben möchten, sondern eine Anpassung für die zukünftige Betreuung vornehmen möchten, erfassen Sie bitte ein weiteres Betreuungspensum.",
     "BETREUUNG_BESTAETIGT_TEXT": "Dieses Betreuungsangebot wurde am {{date}} bestätigt.",
     "BETREUUNG_STORNIERT_TEXT": "Dieses Betreuungsangebot wurde storniert",
     "BETREUUNG_NICHT_EINGETRETEN_TEXT": "Dieses Betreuungsangebot wurde am {{date}} mutiert zu \"nicht eingetreten\"",
