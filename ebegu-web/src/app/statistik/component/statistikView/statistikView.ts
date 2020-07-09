@@ -272,8 +272,8 @@ export class StatistikViewController implements IController {
                     });
                 break;
             case TSStatistikParameterType.TAGESSCHULE_OHNE_FINSIT:
-                this.reportAsyncRS.getTagesschuleOhneFinSitReportExcel(
-                    this._statistikParameter.tagesschuleOhneFinSit.id,
+                this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
+                    this._statistikParameter.tagesschuleAnmeldungen.id,
                     this._statistikParameter.gesuchsperiode)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);

@@ -31,7 +31,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldTagesschule implements MergeFieldProvider {
 
-	tagesschuleOhneFinSitTitle(new SimpleMergeField<>("tagesschuleOhneFinSitTitle", STRING_CONVERTER)),
+	tagesschuleAnmeldungenTitle(new SimpleMergeField<>("tagesschuleAnmeldungenTitle", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
 	nachnameKindTitle(new SimpleMergeField<>("nachnameKindTitle", STRING_CONVERTER)),
 	vornameKindTitle(new SimpleMergeField<>("vornameKindTitle", STRING_CONVERTER)),

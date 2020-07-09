@@ -1422,7 +1422,7 @@
     "ReportType_institutionen": "Institutionen",
     "ReportType_verrechnungkibon": "VerrechnungKibon",
     "ReportType_lastenausgleich": "Lastenausgleich",
-    "ReportType_tagesschuleOhneFinSit": "Tagesschule Anmeldungen",
+    "ReportType_tagesschuleAnmeldungen": "Tagesschule Anmeldungen",
     "ReportType_notrecht": "Notrecht",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",

@@ -61,7 +61,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		excelMerger.addValue(MergeFieldTagesschule.tagesschuleOhneFinSitTitle, tagesschuleName);
+		excelMerger.addValue(MergeFieldTagesschule.tagesschuleAnmeldungenTitle, tagesschuleName);
 
 		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ')';
 		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
