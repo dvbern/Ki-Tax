@@ -22,18 +22,14 @@ import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-di
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
-
-const LOG = LogFactory.createLog('TestdatenViewComponent');
 
 @Component({
     selector: 'dv-testdaten-view',
@@ -241,7 +237,6 @@ export class TestdatenViewComponent implements OnInit {
             title,
             link,
         };
-
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
     }
 }
