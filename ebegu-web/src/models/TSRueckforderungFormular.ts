@@ -28,7 +28,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];
     private _status: TSRueckforderungStatus;
-    public hasBeenSentBackToInstitution: boolean = false;
+    public hasBeenProvisorisch: boolean = false;
     private _stufe1KantonKostenuebernahmeAnzahlStunden: number;
     private _stufe1InstitutionKostenuebernahmeAnzahlStunden: number;
     private _stufe2KantonKostenuebernahmeAnzahlStunden: number;
