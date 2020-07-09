@@ -75,7 +75,7 @@
 										   #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
                                            class="form-control"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            [disabled]="readOnly"
                                            required>
                                     <dv-error-messages
@@ -95,7 +95,7 @@
 										   #stufe1InstitutionKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden"
                                            class="form-control"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            [disabled]="readOnly"
                                            required>
                                     <dv-error-messages
@@ -115,7 +115,7 @@
 										   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
                                            class="form-control"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            [disabled]="readOnly"
                                            required>
                                     <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
@@ -151,7 +151,7 @@
                                            name="anzahl_plaetze_stufe1_kanton_in_tage"
 										   #stufe1KantonKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular, true)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -178,7 +178,7 @@
                                            name="anzahl_stunden_stufe1_kanton"
 										   #stufe1KantonKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular, true)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -206,7 +206,7 @@
                                            name="kostenuebernahme_betreuung_stuf1_kanton"
 										   #stufe1KantonKostenuebernahmeBetreuung="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -338,7 +338,7 @@
 												   #stufe2InstitutionKostenuebernahmeAnzahlTage="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -375,7 +375,7 @@
 												   #stufe2InstitutionKostenuebernahmeAnzahlStunden="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -413,7 +413,7 @@
 												   #stufe2InstitutionKostenuebernahmeBetreuung="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -469,7 +469,7 @@
 												   #stufe2KantonKostenuebernahmeAnzahlTage="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -513,7 +513,7 @@
 												   #stufe2KantonKostenuebernahmeAnzahlStunden="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -557,7 +557,7 @@
 												   #stufe2KantonKostenuebernahmeBetreuung="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">

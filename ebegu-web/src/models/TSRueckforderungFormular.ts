@@ -273,7 +273,6 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
         } else {
             result = this.calculateProvisorischerBetragStufe2Privat();
         }
-        console.log('gesamtresult', result);
         return result;
     }
 
@@ -320,7 +319,6 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
                 - coronaErerbsersatzBetrag
                 + rueckerstattungNichtAngeboten;
         }
-        console.log('result', result);
         return result;
     }
 
@@ -353,7 +351,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     }
 
     private getActiveKostenuebernahmeAnzahlStunden(): number {
-        if (this.isStufe1) {
+        if (this.isStufe1()) {
             if (this.stufe1KantonKostenuebernahmeAnzahlStunden) {
                 return this.stufe1KantonKostenuebernahmeAnzahlStunden;
             }
