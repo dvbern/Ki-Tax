@@ -98,7 +98,9 @@
                     <mat-cell (click)="openRueckforderungFormular(formular)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
-                        <dv-loading-button buttonClass="dv-btn-sm" *ngIf="openFormularAllowed(formular)">
+                        <dv-loading-button
+                            (buttonClick)="openRueckforderungFormular(formular)"
+                            buttonClass="dv-btn-sm" *ngIf="openFormularAllowed(formular)">
                             <i class="fa fa-eye"></i>
                         </dv-loading-button>
                     </mat-cell>

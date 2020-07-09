@@ -396,9 +396,10 @@ public class UploadResource {
 			rueckforderungDokument.setFilename(fileInfo.getFilename());
 			rueckforderungDokument.setFilesize(fileInfo.getSizeString());
 
-			rueckforderungDokumentService.saveDokumentGrund(rueckforderungDokument);
+			RueckforderungDokument documentFromDB =
+				rueckforderungDokumentService.saveDokumentGrund(rueckforderungDokument);
 
-			rueckforderungJaxDokuments.add(converter.rueckforderungDokumentToJax(rueckforderungDokument));
+			rueckforderungJaxDokuments.add(converter.rueckforderungDokumentToJax(documentFromDB));
 
 			filecounter++;
 			partrileName = PART_FILE + '[' + filecounter + ']';

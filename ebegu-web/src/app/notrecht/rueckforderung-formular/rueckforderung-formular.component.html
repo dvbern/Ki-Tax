@@ -307,10 +307,12 @@
                                          [disabled]="readOnly"
                                          required>
                             <mat-radio-button
-                                [value]="getRueckforderungInstitutionTypOffentlich()">{{'INSTITUTION_TYP_OFFENTLICH'|translate}}</mat-radio-button>
+                                [value]="getRueckforderungInstitutionTypOffentlich()"
+                                (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)">{{'INSTITUTION_TYP_OFFENTLICH'|translate}}</mat-radio-button>
                             &nbsp;&nbsp;
                             <mat-radio-button
-                                [value]="getRueckforderungInstitutionTypPrivat()">{{'INSTITUTION_TYP_PRIVAT'|translate}}
+                                [value]="getRueckforderungInstitutionTypPrivat()"
+                                (blur)="calculateProvBetragPrivat(rueckforderungFormular)">{{'INSTITUTION_TYP_PRIVAT'|translate}}
                             </mat-radio-button>
                         </mat-radio-group>
                         <dv-error-messages *ngIf="form.submitted"
@@ -321,7 +323,9 @@
                         getRueckforderungInstitutionTypOffentlich()">
                             <!-- Stufe 2 Institution offentlich -->
                             <div
-                                *ngIf="isInstitutionStufe2(rueckforderungFormular) || isInstitutionStufe2ReadOnly(rueckforderungFormular)
+                                *ngIf="isInstitutionStufe2(rueckforderungFormular) ||
+                                isInstitutionStufe2ReadOnly(rueckforderungFormular) ||
+                                isInstitutionStufe2Definitiv(rueckforderungFormular)
                                ">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">

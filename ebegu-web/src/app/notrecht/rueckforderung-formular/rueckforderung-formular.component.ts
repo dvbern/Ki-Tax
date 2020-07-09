@@ -322,7 +322,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
             case TSRueckforderungInstitutionTyp.PRIVAT:
                 if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
-                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenSentBackToInstitution)) {
+                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenProvisorisch)) {
                         return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV');
                     }
                     return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
@@ -344,13 +344,12 @@ export class RueckforderungFormularComponent implements OnInit {
     public calculateProvisorischerBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
         this.stufe1ProvBetrag = undefined;
         this.stufe2ProvBetragOeffentlich = undefined;
-        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+
+        const kostenuebernahmeBetreuung = this.getActiveKostenuebernahmeBetreuung(rueckforderungFormular, isStufe1);
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
             return;
         }
-        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        const kostenuebernahmeAnzahlTage = this.getActiveKostenuebernahmeAnzahlTage(rueckforderungFormular, isStufe1);
 
         if (this.isKitaAngebot(rueckforderungFormular)
             && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
@@ -361,8 +360,9 @@ export class RueckforderungFormularComponent implements OnInit {
             this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
             return;
         }
-        const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+
+        const kostenuebernahmeAnzahlStunden =
+            this.getActiveKostenuebernahmeAnzahlStunden(rueckforderungFormular, isStufe1);
         if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
             return;
         }
@@ -372,6 +372,51 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
         return;
+    }
+
+    private getActiveKostenuebernahmeBetreuung(
+        rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean
+    ): number {
+        if (isStufe1) {
+            if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung)) {
+                return rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung;
+            }
+            return rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung)) {
+            return rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung;
+        }
+        return rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
+    }
+
+    private getActiveKostenuebernahmeAnzahlTage(
+        rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean
+    ): number {
+        if (isStufe1) {
+            if (rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage) {
+                return rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage;
+            }
+            return rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage)) {
+            return rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage;
+        }
+        return rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
+    }
+
+    private getActiveKostenuebernahmeAnzahlStunden(
+        rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean
+    ): number {
+        if (isStufe1) {
+            if (rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden) {
+                return rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden;
+            }
+            return rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden)) {
+            return rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden;
+        }
+        return rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
     }
 
     public get stufe1ProvBetrag(): number {
@@ -819,6 +864,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            && EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
             && this.authServiceRS.isOneOfRoles(
                 [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;
@@ -827,7 +873,9 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public isKantonStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+                && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp)))
             && this.authServiceRS.isOneOfRoles(
                 [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;
