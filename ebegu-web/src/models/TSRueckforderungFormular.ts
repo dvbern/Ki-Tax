@@ -331,7 +331,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
             }
             return this.stufe1InstitutionKostenuebernahmeBetreuung;
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.stufe2KantonKostenuebernahmeBetreuung)) {
+        if (this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || this.status === TSRueckforderungStatus.VERFUEGT) {
             return this.stufe2KantonKostenuebernahmeBetreuung;
         }
         return this.stufe2InstitutionKostenuebernahmeBetreuung;
@@ -344,7 +345,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
             }
             return this.stufe1InstitutionKostenuebernahmeAnzahlTage;
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.stufe2KantonKostenuebernahmeAnzahlTage)) {
+        if (this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || this.status === TSRueckforderungStatus.VERFUEGT) {
             return this.stufe2KantonKostenuebernahmeAnzahlTage;
         }
         return this.stufe2InstitutionKostenuebernahmeAnzahlTage;
@@ -357,7 +359,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
             }
             return this.stufe1InstitutionKostenuebernahmeAnzahlStunden;
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.stufe2KantonKostenuebernahmeAnzahlStunden)) {
+        if (this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || this.status === TSRueckforderungStatus.VERFUEGT) {
             return this.stufe2KantonKostenuebernahmeAnzahlStunden;
         }
         return this.stufe2InstitutionKostenuebernahmeAnzahlStunden;
