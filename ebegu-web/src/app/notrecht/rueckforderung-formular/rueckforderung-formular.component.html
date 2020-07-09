@@ -151,7 +151,7 @@
                                            name="anzahl_plaetze_stufe1_kanton_in_tage"
 										   #stufe1KantonKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage"
-                                           (blur)="calculateProvBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -178,7 +178,7 @@
                                            name="anzahl_stunden_stufe1_kanton"
 										   #stufe1KantonKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden"
-                                           (blur)="calculateProvBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
