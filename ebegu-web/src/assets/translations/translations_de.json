@@ -2113,7 +2113,7 @@
     "FREIGABE_DISABLED_FRIST_ABGELAUFEN": "Ihr Antrag kann nicht mehr freigegeben werden, da die Frist bereits abgelaufen ist",
     "FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN": "Bitte bestätigen Sie Ihre Angaben um den Antrag freigeben zu können",
     "FREIGABE_DISABLED_KA_CE_NICHT_VERFUEGT": "Ihr Antrag kann nicht definitiv freigegeben werden, bevor nicht alle Verfügungen (Kurzarbeit und/oder Corona Erwerbsersatz) vorhanden sind",
-    "RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE": "Die Einreichungsfrist beträgt für private Institutionen {{private}}, für öffentliche {{oeffentlich}}",
+    "RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE": "Für die Stufe 2 beträgt die Einreichungsfrist für private Institutionen {{private}}, für öffentliche {{oeffentlich}}",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Die Einreichungsfrist wurde auf das Datum {{frist}} angepasst",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD": "Die Einreichungsfrist für diesen Antrag ist der {{frist}}",
     "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/de/index/direktion/organisation/soa/Coronavirus.html",

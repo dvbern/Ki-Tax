@@ -3884,7 +3884,7 @@ export class EbeguRestUtil {
         rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
         rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
-        rueckforderungFormular.hasBeenSentBackToInstitution = rueckforderungFormularFromServer.hasBeenSentBackToInstitution;
+        rueckforderungFormular.hasBeenProvisorisch = rueckforderungFormularFromServer.hasBeenProvisorisch;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlStunden;
         rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
@@ -3964,7 +3964,7 @@ export class EbeguRestUtil {
         rueckforderungFormularRest.institutionStammdaten = this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
         rueckforderungFormularRest.rueckforderungMitteilungen = this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
         rueckforderungFormularRest.status = rueckforderungFormularTS.status;
-        rueckforderungFormularRest.hasBeenSentBackToInstitution = rueckforderungFormularTS.hasBeenSentBackToInstitution;
+        rueckforderungFormularRest.hasBeenProvisorisch = rueckforderungFormularTS.hasBeenProvisorisch;
         rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlStunden;
         rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;

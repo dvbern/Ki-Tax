@@ -297,7 +297,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH;
 						// Wir muessen uns merken, dass das Formular hier nochmals geprueft werden musste, damit wir
 						// spaeter die richtige Confirmation Message anzeigen koennen
-						rueckforderungFormular.setHasBeenSentBackToInstitution(true);
+						rueckforderungFormular.setHasBeenProvisorisch(true);
 					}
 				}
 				rueckforderungFormular.setStatus(nextStatus);

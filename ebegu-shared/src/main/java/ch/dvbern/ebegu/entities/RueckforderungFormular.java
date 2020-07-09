@@ -86,7 +86,7 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean hasBeenSentBackToInstitution = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
+	private boolean hasBeenProvisorisch = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
 
 	@Nullable
 	@Column(nullable = true)
@@ -254,12 +254,12 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.status = status;
 	}
 
-	public boolean isHasBeenSentBackToInstitution() {
-		return hasBeenSentBackToInstitution;
+	public boolean isHasBeenProvisorisch() {
+		return hasBeenProvisorisch;
 	}
 
-	public void setHasBeenSentBackToInstitution(boolean hasBeenSentBackToInstitution) {
-		this.hasBeenSentBackToInstitution = hasBeenSentBackToInstitution;
+	public void setHasBeenProvisorisch(boolean hasBeenProvisorisch) {
+		this.hasBeenProvisorisch = hasBeenProvisorisch;
 	}
 
 	@Nullable
