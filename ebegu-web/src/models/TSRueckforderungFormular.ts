@@ -17,6 +17,7 @@
 
 import * as moment from 'moment';
 import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSAbstractEntity} from './TSAbstractEntity';
@@ -246,5 +247,119 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
         return EbeguUtil.isNullOrUndefined(this.coronaErwerbsersatzBeantragt)
             || EbeguUtil.isNotNullAndFalse(this.coronaErwerbsersatzBeantragt)
             || (EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzDefinitivVerfuegt));
+    }
+
+    public isStufe1(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.institutionTyp);
+    }
+
+    public isOeffentlich(): boolean {
+        return !this.isStufe1() && this.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH;
+    }
+
+    public isPrivat(): boolean {
+        return !this.isStufe1() && this.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public isKitaAngebot(): boolean {
+        return this.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
+    }
+
+    public calculateProvisorischerBetrag(): number {
+        let result = 0;
+        // tslint:disable-next-line:prefer-conditional-expression
+        if (this.isStufe1() || this.isOeffentlich()) {
+            result = this.calculateProvisorischerBetragStufe1OrOeffentlich();
+        } else {
+            result = this.calculateProvisorischerBetragStufe2Privat();
+        }
+        console.log('gesamtresult', result);
+        return result;
+    }
+
+    private calculateProvisorischerBetragStufe1OrOeffentlich(): number {
+        const kostenuebernahmeBetreuung =
+            EbeguUtil.isNotNullOrUndefined(this.getActiveKostenuebernahmeBetreuung())
+            ? this.getActiveKostenuebernahmeBetreuung() : 0;
+        const kostenuebernahmeAnzahlTage =
+            EbeguUtil.isNotNullOrUndefined(this.getActiveKostenuebernahmeAnzahlTage())
+            ? this.getActiveKostenuebernahmeAnzahlTage() : 0;
+        const kostenuebernahmeAnzahlStunden =
+            EbeguUtil.isNotNullOrUndefined(this.getActiveKostenuebernahmeAnzahlStunden())
+            ? this.getActiveKostenuebernahmeAnzahlStunden() : 0;
+        if (this.isKitaAngebot()) {
+            return kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
+        }
+        return kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
+    }
+
+    private calculateProvisorischerBetragStufe2Privat(): number {
+        const entgangeneElternbeitraege = EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraege)
+            ? this.betragEntgangeneElternbeitraege : 0;
+        const entgangeneElternbeitraegeNichtAngeboten = EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten)
+            ? this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten : 0;
+        const rueckerstattungNichtAngeboten = EbeguUtil.isNotNullOrUndefined(this.anzahlNichtAngeboteneEinheiten)
+            ? this.anzahlNichtAngeboteneEinheiten : 0;
+        const kurzarbeitBetrag = EbeguUtil.isNotNullOrUndefined(this.kurzarbeitBetrag) && EbeguUtil.isNotNullAndTrue(this.kurzarbeitBeantragt)
+            ? this.kurzarbeitBetrag : 0;
+        const coronaErerbsersatzBetrag =
+            EbeguUtil.isNotNullOrUndefined(this.coronaErwerbsersatzBetrag)
+                && EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzBeantragt)
+            ? this.coronaErwerbsersatzBetrag : 0;
+        let result = 0;
+        // (2.1) Privat mit Kurzarbeit
+        if (this.kurzarbeitBeantragt) {
+            result = entgangeneElternbeitraege - kurzarbeitBetrag - coronaErerbsersatzBetrag;
+        } else if (EbeguUtil.isNullOrUndefined(this.anzahlNichtAngeboteneEinheiten)) {
+            // (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
+            result = entgangeneElternbeitraege - coronaErerbsersatzBetrag;
+        } else {
+            // (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
+            result = entgangeneElternbeitraege
+                - entgangeneElternbeitraegeNichtAngeboten
+                - coronaErerbsersatzBetrag
+                + rueckerstattungNichtAngeboten;
+        }
+        console.log('result', result);
+        return result;
+    }
+
+    private getActiveKostenuebernahmeBetreuung(): number {
+        if (this.isStufe1()) {
+            if (EbeguUtil.isNotNullOrUndefined(this.stufe1KantonKostenuebernahmeBetreuung)) {
+                return this.stufe1KantonKostenuebernahmeBetreuung;
+            }
+            return this.stufe1InstitutionKostenuebernahmeBetreuung;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(this.stufe2KantonKostenuebernahmeBetreuung)) {
+            return this.stufe2KantonKostenuebernahmeBetreuung;
+        }
+        return this.stufe2InstitutionKostenuebernahmeBetreuung;
+    }
+
+    private getActiveKostenuebernahmeAnzahlTage(): number {
+        if (this.isStufe1()) {
+            if (this.stufe1KantonKostenuebernahmeAnzahlTage) {
+                return this.stufe1KantonKostenuebernahmeAnzahlTage;
+            }
+            return this.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(this.stufe2KantonKostenuebernahmeAnzahlTage)) {
+            return this.stufe2KantonKostenuebernahmeAnzahlTage;
+        }
+        return this.stufe2InstitutionKostenuebernahmeAnzahlTage;
+    }
+
+    private getActiveKostenuebernahmeAnzahlStunden(): number {
+        if (this.isStufe1) {
+            if (this.stufe1KantonKostenuebernahmeAnzahlStunden) {
+                return this.stufe1KantonKostenuebernahmeAnzahlStunden;
+            }
+            return this.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        }
+        if (EbeguUtil.isNotNullOrUndefined(this.stufe2KantonKostenuebernahmeAnzahlStunden)) {
+            return this.stufe2KantonKostenuebernahmeAnzahlStunden;
+        }
+        return this.stufe2InstitutionKostenuebernahmeAnzahlStunden;
     }
 }

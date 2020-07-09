@@ -51,6 +51,7 @@ import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verla
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungFormularComponent implements OnInit {
+
     public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
         return this._rueckforderungZahlungenList;
     }
@@ -85,6 +86,7 @@ export class RueckforderungFormularComponent implements OnInit {
     private _stufe1ProvBetrag: number;
     private _stufe2ProvBetragOeffentlich: number;
     private _stufe2ProvBetragPrivat: number;
+    private _provisorischerBetrag: number;
 
     public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
     public rueckforderungKommunikationDokumente?: TSRueckforderungDokument[];
@@ -342,6 +344,7 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public calculateProvisorischerBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
+        this._provisorischerBetrag = rueckforderungFormular.calculateProvisorischerBetrag();
         this.stufe1ProvBetrag = undefined;
         this.stufe2ProvBetragOeffentlich = undefined;
 
@@ -435,7 +438,16 @@ export class RueckforderungFormularComponent implements OnInit {
         this._stufe2ProvBetragOeffentlich = stufe2ProvBetrag;
     }
 
+    public get provisorischerBetrag(): number {
+        return this._provisorischerBetrag;
+    }
+
+    public set provisorischerBetrag(value: number) {
+        this._provisorischerBetrag = value;
+    }
+
     public calculateProvBetragPrivat(rueckforderungFormular: TSRueckforderungFormular): void {
+        this._provisorischerBetrag = rueckforderungFormular.calculateProvisorischerBetrag();
         this.stufe2ProvBetragPrivat = null;
         // (2.1) Privat mit Kurzarbeit
         if (rueckforderungFormular.kurzarbeitBeantragt) {
