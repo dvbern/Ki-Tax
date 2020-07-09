@@ -660,7 +660,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
-		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
@@ -701,6 +700,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				&& neustesGesuch.isMutation()) {
 				//betreuungsaenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
+				authorizer.checkWriteAuthorization(neustesGesuch);
 				applyBetreuungsmitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
@@ -709,6 +709,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
+				authorizer.checkWriteAuthorization(mutation);
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}
