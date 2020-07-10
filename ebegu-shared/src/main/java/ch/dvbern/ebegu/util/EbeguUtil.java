@@ -215,10 +215,10 @@ public final class EbeguUtil {
 			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA())) {
 				return true;
 			}
-			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
-				if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA())) {
-					return true;
-				}
+			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
+				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA())
+			) {
+				return true;
 			}
 		}
 		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
@@ -230,10 +230,10 @@ public final class EbeguUtil {
 				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())) {
 					return true;
 				}
-				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-					if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())) {
-						return true;
-					}
+				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
+						&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())
+				) {
+					return true;
 				}
 			}
 			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
@@ -259,9 +259,7 @@ public final class EbeguUtil {
 		// Das einzige, das wir validieren koennen, ist das Jahr+1 bzw. Jahr+2 nicht ausgefuellt sein duerfen, falls Basisjahr null
 		if (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null || finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null) {
 			// Basisjahr ist zwingend
-			if (finanzielleSituation.getGeschaeftsgewinnBasisjahr() == null) {
-				return false;
-			}
+			return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
 		}
 		return true;
 	}
