@@ -75,7 +75,7 @@
 										   #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
                                            class="form-control"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            [disabled]="readOnly"
                                            required>
                                     <dv-error-messages
@@ -95,7 +95,7 @@
 										   #stufe1InstitutionKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden"
                                            class="form-control"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            [disabled]="readOnly"
                                            required>
                                     <dv-error-messages
@@ -115,7 +115,7 @@
 										   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
                                            class="form-control"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            [disabled]="readOnly"
                                            required>
                                     <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
@@ -133,7 +133,7 @@
                                         {{'RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG' | translate}}</label>
                                     <input id="kostenuebernahme_prov_betrag_stuf1_insti_id" type="number"
                                            name="kostenuebernahme_prov_betrag_stuf1_insti"
-                                           [(ngModel)]="stufe1ProvBetrag"
+                                           [(ngModel)]="provisorischerBetrag"
                                            class="form-control" disabled="true">
                                 </div>
                             </div>
@@ -151,7 +151,7 @@
                                            name="anzahl_plaetze_stufe1_kanton_in_tage"
 										   #stufe1KantonKostenuebernahmeAnzahlTage="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -178,7 +178,7 @@
                                            name="anzahl_stunden_stufe1_kanton"
 										   #stufe1KantonKostenuebernahmeAnzahlStunden="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -206,7 +206,7 @@
                                            name="kostenuebernahme_betreuung_stuf1_kanton"
 										   #stufe1KantonKostenuebernahmeBetreuung="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung"
-                                           (blur)="calculateProvisorischerBetrag(rueckforderungFormular, true)"
+                                           (blur)="calculateProvBetrag(rueckforderungFormular)"
                                            class="form-control" required>
                                     <div class="bisher-form">
                                         <div
@@ -232,7 +232,7 @@
                                         RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG</label>
                                     <input id="kostenuebernahme_prov_betrag_stuf1_kanton_id" type="number"
                                            name="kostenuebernahme_prov_betrag_stuf1_kanton"
-                                           [(ngModel)]="stufe1ProvBetrag"
+                                           [(ngModel)]="provisorischerBetrag"
                                            class="form-control" disabled="true">
                                 </div>
                             </div>
@@ -308,11 +308,11 @@
                                          required>
                             <mat-radio-button
                                 [value]="getRueckforderungInstitutionTypOffentlich()"
-                                (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)">{{'INSTITUTION_TYP_OFFENTLICH'|translate}}</mat-radio-button>
+                                (blur)="calculateProvBetrag(rueckforderungFormular)">{{'INSTITUTION_TYP_OFFENTLICH'|translate}}</mat-radio-button>
                             &nbsp;&nbsp;
                             <mat-radio-button
                                 [value]="getRueckforderungInstitutionTypPrivat()"
-                                (blur)="calculateProvBetragPrivat(rueckforderungFormular)">{{'INSTITUTION_TYP_PRIVAT'|translate}}
+                                (blur)="calculateProvBetrag(rueckforderungFormular)">{{'INSTITUTION_TYP_PRIVAT'|translate}}
                             </mat-radio-button>
                         </mat-radio-group>
                         <dv-error-messages *ngIf="form.submitted"
@@ -338,7 +338,7 @@
 												   #stufe2InstitutionKostenuebernahmeAnzahlTage="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -375,7 +375,7 @@
 												   #stufe2InstitutionKostenuebernahmeAnzahlStunden="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -413,7 +413,7 @@
 												   #stufe2InstitutionKostenuebernahmeBetreuung="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -448,7 +448,7 @@
                                                 {{'RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG' | translate}}</label>
                                             <input id="kostenuebernahme_prov_betrag_stuf2_insti_id" type="number"
                                                    name="kostenuebernahme_prov_betrag_stuf2_insti"
-                                                   [(ngModel)]="stufe2ProvBetragOeffentlich"
+                                                   [(ngModel)]="provisorischerBetrag"
                                                    class="form-control" disabled="true">
                                         </div>
                                     </div>
@@ -469,7 +469,7 @@
 												   #stufe2KantonKostenuebernahmeAnzahlTage="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -513,7 +513,7 @@
 												   #stufe2KantonKostenuebernahmeAnzahlStunden="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -557,7 +557,7 @@
 												   #stufe2KantonKostenuebernahmeBetreuung="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung"
                                                    class="form-control"
-                                                   (blur)="calculateProvisorischerBetrag(rueckforderungFormular, false)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <div class="bisher-form">
@@ -599,7 +599,7 @@
                                                 {{'RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG' | translate}}</label>
                                             <input id="kostenuebernahme_prov_betrag_stuf2_kanton_id" type="number"
                                                    name="kostenuebernahme_prov_betrag_stuf2_kanton"
-                                                   [(ngModel)]="stufe2ProvBetragOeffentlich"
+                                                   [(ngModel)]="provisorischerBetrag"
                                                    class="form-control" disabled="true">
                                         </div>
                                     </div>
@@ -621,7 +621,7 @@
                                                [(ngModel)]="rueckforderungFormular.betragEntgangeneElternbeitraege"
                                                class="form-control"
                                                [disabled]="readOnly"
-                                               (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                               (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                required>
                                         <dv-error-messages [errorObject]="betragEntgangeneElternbeitraege.errors"
                                                            inputId="betragEntgangeneElternbeitraege_id">
@@ -646,7 +646,7 @@
                                             [(ngModel)]="rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten"
                                             class="form-control"
                                             [disabled]="readOnly"
-                                            (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                            (blur)="calculateProvBetrag(rueckforderungFormular)"
                                             required>
                                         <dv-error-messages
                                             [errorObject]="betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten.errors"
@@ -671,7 +671,7 @@
                                                [(ngModel)]="rueckforderungFormular.anzahlNichtAngeboteneEinheiten"
                                                class="form-control"
                                                [disabled]="readOnly"
-                                               (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                               (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                required>
                                         <dv-error-messages [errorObject]="anzahlNichtAngeboteneEinheiten.errors"
                                                            inputId="anzahlNichtAngeboteneEinheiten_id">
@@ -688,7 +688,7 @@
 														 #kurzarbeitBeantragt="ngModel"
                                                          [(ngModel)]="rueckforderungFormular.kurzarbeitBeantragt"
                                                          [disabled]="readOnly"
-                                                         (ngModelChange)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                                         (ngModelChange)="calculateProvBetrag(rueckforderungFormular)"
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
@@ -717,7 +717,7 @@
                                                    [(ngModel)]="rueckforderungFormular.kurzarbeitBetrag"
                                                    class="form-control"
                                                    [disabled]="readOnly"
-                                                   (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    required>
                                             <dv-error-messages [errorObject]="kurzarbeitBetrag.errors"
                                                                inputId="kurzarbeitBetrag_id">
@@ -815,7 +815,7 @@
 														 #coronaErwerbsersatzBeantragt="ngModel"
                                                          [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzBeantragt"
                                                          [disabled]="readOnly"
-                                                         (ngModelChange)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                                         (ngModelChange)="calculateProvBetrag(rueckforderungFormular)"
                                                          required>
                                             <mat-radio-button
                                                 [value]="true">{{'LABEL_JA'|translate}}</mat-radio-button>
@@ -843,7 +843,7 @@
 												   #coronaErwerbsersatzBetrag="ngModel"
                                                    [(ngModel)]="rueckforderungFormular.coronaErwerbsersatzBetrag"
                                                    class="form-control"
-                                                   (blur)="calculateProvBetragPrivat(rueckforderungFormular)"
+                                                   (blur)="calculateProvBetrag(rueckforderungFormular)"
                                                    [disabled]="readOnly"
                                                    required>
                                             <dv-error-messages [errorObject]="coronaErwerbsersatzBetrag.errors"
@@ -944,13 +944,14 @@
                                             {{'RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG' | translate}}</label>
                                         <input id="prov_betrag_stufe2_privat_id" type="number"
                                                name="prov_betrag_stufe2_privat"
-                                               [(ngModel)]="stufe2ProvBetragPrivat"
+                                               [(ngModel)]="provisorischerBetrag"
                                                class="form-control" disabled="true">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="row"
                          *ngIf="isInstitutionStufe1(rueckforderungFormular)">
                         <!-- Checkbox -->
