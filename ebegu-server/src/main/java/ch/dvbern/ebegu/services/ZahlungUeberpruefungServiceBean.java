@@ -146,10 +146,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
-			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ") , Beschrieb: " + zahlungsauftrag.getBeschrieb();
+			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ")";
 			if (potentielleFehlerList.isEmpty()) {
 				mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
-					"Keine Fehler gefunden", administratorMail);
+					"Bezeichnung: " + zahlungsauftrag.getBeschrieb() + ": Keine Fehler gefunden", administratorMail);
 				zahlungsauftrag.setResult("OK");
 			} else {
 				StringBuilder sb = new StringBuilder();
@@ -166,7 +166,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				}
 				mailService.sendMessage(auftragBezeichnung+ ": Potentieller Fehler im Zahlungslauf",
 					sb.toString(), administratorMail);
-				String result = "Potentieller Fehler im Zahlungslauf: " + sb;
+				String result = "Bezeichnung: " + zahlungsauftrag.getBeschrieb() + ": Potentieller Fehler im Zahlungslauf: " + sb;
 				result = StringUtils.abbreviate(result, Constants.DB_TEXTAREA_LENGTH);
 				zahlungsauftrag.setResult(result);
 			}
