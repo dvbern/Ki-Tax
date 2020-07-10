@@ -569,7 +569,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstaendig(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
-		} else if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(wizardStep.getGesuch(), wizardStep.getWizardStepName())) {
+		} else if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
+			wizardStep.getWizardStepName())) {
 			// the FinSit/EKV is required but has not been created yet or is only partialy filled, so it must be NOK
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
@@ -920,7 +921,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
-			} else if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(wizardStep.getGesuch(), wizardStep.getWizardStepName())
+			} else if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
+				wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 					|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
