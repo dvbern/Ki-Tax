@@ -57,6 +57,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 
+		Objects.requireNonNull(oeffnungszeiten);
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
 		if (!input.isBetreuungInGemeinde()) {
@@ -156,6 +157,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		@Nonnull BigDecimal verguenstigungIntervall,
 		@Nonnull BigDecimal elternbeitragIntervall
 	) {
+		Objects.requireNonNull(oeffnungszeiten);
 		// Resultat erstellen und benoetigte Daten aus Input kopieren
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
