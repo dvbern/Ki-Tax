@@ -185,7 +185,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
-                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+                    ) {
+                        // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
+                        // -> wir nehmen alle anderen Angebote aus der Liste raus
+                        this.betreuungsangebotValues = new Array<any>();
+                        this.betreuungsangebotValues.push(obj);
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
