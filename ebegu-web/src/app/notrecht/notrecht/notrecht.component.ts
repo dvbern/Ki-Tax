@@ -215,13 +215,6 @@ export class NotrechtComponent implements OnInit {
      * Institutionen & Trägerschaften dürfen Formulare ab Status EINGELADEN sehen
      */
     public openFormularAllowed(formular: TSRueckforderungFormular): boolean {
-        if (this.isSuperAdmin()) {
-            return formular.status !== TSRueckforderungStatus.NEU;
-        }
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            return formular.status !== TSRueckforderungStatus.NEU
-                && formular.status !== TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1;
-        }
         return formular.status !== TSRueckforderungStatus.NEU;
     }
 
