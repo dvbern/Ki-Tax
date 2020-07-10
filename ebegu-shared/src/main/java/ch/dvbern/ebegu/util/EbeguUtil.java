@@ -255,12 +255,13 @@ public final class EbeguUtil {
 		if (!isAbstractFinanzielleSituationVollstaendig(finanzielleSituation)) {
 			return false;
 		}
+		// TODO (team) Im Moment ist noch gar nichts zwingend, daher auskommentiert bis KIBON-1405 erledigt ist
 		// Zwingend ist nur das erste Jahr, FALLS ueberhaupt eines ausgefuellt wird.
 		// Das einzige, das wir validieren koennen, ist das Jahr+1 bzw. Jahr+2 nicht ausgefuellt sein duerfen, falls Basisjahr null
-		if (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null || finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null) {
-			// Basisjahr ist zwingend
-			return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
-		}
+//		if (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null || finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null) {
+//			// Basisjahr ist zwingend
+//			return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
+//		}
 		return true;
 	}
 
