@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.entities.Zahlungsposition_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -113,9 +114,15 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Asynchronous
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(value = 360, unit = TimeUnit.MINUTES)
-	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull LocalDateTime datumLetzteZahlung) {
+	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull String zahlungsauftragId) {
 		Objects.requireNonNull(gemeinde);
+		Objects.requireNonNull(zahlungsauftragId);
+
+		final Zahlungsauftrag zahlungsauftrag = persistence.find(Zahlungsauftrag.class, zahlungsauftragId);
+		Objects.requireNonNull(zahlungsauftrag);
+		final LocalDateTime datumLetzteZahlung = zahlungsauftrag.getDatumGeneriert();
 		Objects.requireNonNull(datumLetzteZahlung);
+
 		resetAllData();
 		LOGGER.info("Pruefe Zahlungen fuer Gemeinde {}", gemeinde.getName());
 		zahlungenIstMap = pruefeZahlungenIst(gemeinde);
@@ -125,11 +132,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			pruefungZahlungenSollFuerGesuchsperiode(gesuchsperiode, gemeinde, datumLetzteZahlung);
 		}
 		LOGGER.info("Pruefung der Zahlungen beendet: {}", potentielleFehlerList.isEmpty() ? "OK" : "ERROR");
-		sendeMail(gemeinde);
+		sendeMail(gemeinde, zahlungsauftrag);
 		resetAllData();
 	}
 
-	private void sendeMail(@Nonnull Gemeinde gemeinde) {
+	private void sendeMail(@Nonnull Gemeinde gemeinde, @Nonnull Zahlungsauftrag zahlungsauftrag) {
 		Objects.requireNonNull(gemeinde);
 		LOGGER.info("Sende Mail...");
 		String administratorMail = ebeguConfiguration.getAdministratorMail();
@@ -139,10 +146,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
-			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ')';
+			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ") , Beschrieb: " + zahlungsauftrag.getBeschrieb();
 			if (potentielleFehlerList.isEmpty()) {
 				mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
 					"Keine Fehler gefunden", administratorMail);
+				zahlungsauftrag.setResult("OK");
 			} else {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Zusammenfassung: \n");
@@ -158,7 +166,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				}
 				mailService.sendMessage(auftragBezeichnung+ ": Potentieller Fehler im Zahlungslauf",
 					sb.toString(), administratorMail);
+				String result = "Potentieller Fehler im Zahlungslauf: " + sb;
+				result = StringUtils.abbreviate(result, Constants.DB_TEXTAREA_LENGTH);
+				zahlungsauftrag.setResult(result);
 			}
+			persistence.merge(zahlungsauftrag);
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
 		}
@@ -321,6 +333,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void addToZahlungenList(Map<String, List<Zahlungsposition>> zahlungenIst, Zahlungsposition zahlungsposition) {
+		Objects.requireNonNull(zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung());
 		String key = zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer();
 		if (!zahlungenIst.containsKey(key)) {
 			zahlungenIst.put(key, new ArrayList<>());
