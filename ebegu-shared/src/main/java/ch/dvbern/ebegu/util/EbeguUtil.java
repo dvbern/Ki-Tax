@@ -203,58 +203,56 @@ public final class EbeguUtil {
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() == null);
 	}
 
-	public static boolean isFinanzielleSituationNotIntroducedOrIncomplete(@Nonnull Gesuch gesuch,
+	public static boolean isFinanzielleSituationIntroducedAndComplete(@Nonnull Gesuch gesuch,
 		@Nullable WizardStepName wizardStepName) {
 		if (gesuch.getGesuchsteller1() == null
 			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
 			|| gesuch.getEinkommensverschlechterungInfoContainer() == null) {
-			return true;
+			return false;
 		}
 
 		if (wizardStepName == null || wizardStepName == WizardStepName.FINANZIELLE_SITUATION) {
 			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA())) {
-				return true;
+				return false;
 			}
 			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
 				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA())
 			) {
-				return true;
+				return false;
 			}
 		}
 		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
 			&& gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
 			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-					return true;
+					return false;
 				}
 				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())) {
-					return true;
+					return false;
 				}
 				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
 						&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())
 				) {
-					return true;
+					return false;
 				}
 			}
 			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-					return true;
+					return false;
 				}
 				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2())) {
-					return true;
+					return false;
 				}
 				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-					return !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
+					return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private static boolean isFinanzielleSituationVollstaendig(@Nonnull FinanzielleSituation finanzielleSituation) {
-		if (!isAbstractFinanzielleSituationVollstaendig(finanzielleSituation)) {
-			return false;
-		}
+		return isAbstractFinanzielleSituationVollstaendig(finanzielleSituation);
 		// TODO (team) Im Moment ist noch gar nichts zwingend, daher auskommentiert bis KIBON-1405 erledigt ist
 		// Zwingend ist nur das erste Jahr, FALLS ueberhaupt eines ausgefuellt wird.
 		// Das einzige, das wir validieren koennen, ist das Jahr+1 bzw. Jahr+2 nicht ausgefuellt sein duerfen, falls Basisjahr null
@@ -262,7 +260,6 @@ public final class EbeguUtil {
 //			// Basisjahr ist zwingend
 //			return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
 //		}
-		return true;
 	}
 
 	private static boolean isAbstractFinanzielleSituationVollstaendig(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {

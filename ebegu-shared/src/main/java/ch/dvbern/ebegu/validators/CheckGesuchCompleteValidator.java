@@ -61,7 +61,7 @@ public class CheckGesuchCompleteValidator implements ConstraintValidator<CheckGe
 					LOG.error("Familiensituation is incomplete for this Gesuch {}", gesuch.getId());
 					valid = false;
 				} else if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
-					if (EbeguUtil.isFinanzielleSituationNotIntroducedOrIncomplete(gesuch, null)) {
+					if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, null)) {
 						LOG.error("FinanzielleSituation is incomplete for this Gesuch {}", gesuch.getId());
 						valid = false;
 					}
