@@ -35,6 +35,7 @@ public class TagesschuleDataRow {
 	private String referenznummer;
 	private LocalDate ab;
 	private @NotNull Betreuungsstatus status;
+	private boolean isZweiwoechentlich;
 	private AnmeldungTagesschule anmeldungTagesschule;
 
 	public String getNachnameKind() {
@@ -87,6 +88,14 @@ public class TagesschuleDataRow {
 
 	public AnmeldungTagesschule getAnmeldungTagesschule() {
 		return anmeldungTagesschule;
+	}
+
+	public boolean isZweiwoechentlich() {
+		return isZweiwoechentlich;
+	}
+
+	public void setZweiwoechentlich(boolean zweiwoechentlich) {
+		isZweiwoechentlich = zweiwoechentlich;
 	}
 
 	public void setAnmeldungTagesschule(AnmeldungTagesschule anmeldungTagesschule) {

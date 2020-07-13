@@ -745,15 +745,15 @@
                      'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION']">
                         <dv-accordion-tab tabid="tagesschuleAnmeldungen">
                             <tab-title>
-                                <span class="uppercase" data-translate="TAGESSCHULE_OHNE_FINSIT_STATISTIK"></span>
+                                <span class="uppercase" data-translate="TAGESSCHULE_ANMELDUNGEN_STATISTIK"></span>
                                 <dv-tooltip input-id="lastenausgleich_info"
                                             ng-click="$event.stopPropagation()"
-                                            text="'TAGESSCHULE_OHNE_FINSIT_STATISTIK_INFO' | translate">
+                                            text="'TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO' | translate">
                                 </dv-tooltip>
                             </tab-title>
                             <tab-body>
                                 <form name="tagesschuleAnmeldungen"
-                                      ng-submit="vm.generateStatistik(tagesschuleAnmeldungen, vm.TSStatistikParameterType.TAGESSCHULE_OHNE_FINSIT)"
+                                      ng-submit="vm.generateStatistik(tagesschuleAnmeldungen, vm.TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN)"
                                       novalidate>
                                     <div class="row">
                                         <div class="col-xs-3">
