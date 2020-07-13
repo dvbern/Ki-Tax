@@ -1238,7 +1238,7 @@
     "EXISTING_MUTATIONSMELDUNG": "Am {{datumMutationsmeldung}} um {{timeMutationsmeldung}} wurde zu dieser Betreuung eine Mutationsmeldung an die Gemeinde gesendet",
     "REMOVE_ONLINE_MUTATION": "Klicken Sie hier, um die Online Mutation zu löschen",
     "REMOVE_ONLINE_MUTATION_CONFIRMATION": "Möchten Sie wirklich die Online Mutation löschen?",
-    "REMOVE_ONLINE_MUTATION_BESCHREIBUNG": "Die Mutation wird endgültig gelöscht. Die Änderungen können nicht rückgängig gemacht werden.",
+    "REMOVE_ONLINE_MUTATION_BESCHREIBUNG": "Die Mutation wird endgültig gelöscht. Die Änderungen können nicht rückgängig gemacht werden. Ich bestätige, dass ich mit dem Antragsteller Kontakt aufgenommen habe",
     "REMOVE_ONLINE_ERNEUERUNGSGESUCH": "Klicken Sie hier, um den Online Antrag zu löschen",
     "REMOVE_ONLINE_ERNEUERUNGSGESUCH_CONFIRMATION": "Möchten Sie den Online Antrag wirklich löschen?",
     "REMOVE_ONLINE_ERNEUERUNGSGESUCH_BESCHREIBUNG": "Der Antrag wird endgültig gelöscht. Die Änderungen können nicht rückgängig gemacht werden.",
