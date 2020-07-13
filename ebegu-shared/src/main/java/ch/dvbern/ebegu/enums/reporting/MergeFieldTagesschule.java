@@ -27,7 +27,10 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 
 public enum MergeFieldTagesschule implements MergeFieldProvider {
 
@@ -44,6 +47,10 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	wochentagMi(new SimpleMergeField<>("wochentagMi", STRING_CONVERTER)),
 	wochentagDo(new SimpleMergeField<>("wochentagDo", STRING_CONVERTER)),
 	wochentagFr(new SimpleMergeField<>("wochentagFr", STRING_CONVERTER)),
+	summeStundenTitle(new SimpleMergeField<>("summeStundenTitle", STRING_CONVERTER)),
+	summeVerpflegungTitle(new SimpleMergeField<>("summeVerpflegungTitle", STRING_CONVERTER)),
+	generiertAmTitle(new SimpleMergeField<>("generiertAmTitle", STRING_CONVERTER)),
+	generiertAm(new SimpleMergeField<>("generiertAm", DATE_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 	repeatRow2(new RepeatRowMergeField("repeatRow2")),
@@ -62,7 +69,9 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	repeatCol5(new RepeatColMergeField<>("repeatCol5", STRING_CONVERTER)),
 
 	modulName(new RepeatValMergeField<>("modulName", STRING_CONVERTER)),
-	angemeldet(new RepeatValMergeField<>("angemeldet", STRING_CONVERTER));
+	modulStunden(new RepeatValMergeField<>("modulStunden", LONG_CONVERTER)),
+	verpflegungskosten(new RepeatValMergeField<>("verpflegungskosten", BIGDECIMAL_CONVERTER)),
+	angemeldet(new RepeatValMergeField<>("angemeldet", INTEGER_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;
