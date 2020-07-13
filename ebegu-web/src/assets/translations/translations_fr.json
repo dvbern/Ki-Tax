@@ -1238,7 +1238,7 @@
     "EXISTING_MUTATIONSMELDUNG": "Une annonce de changement a été envoyée à la commune le {{datumMutationsmeldung}} à {{timeMutationsmeldung}} heures pour cette offre de prise en charge.",
     "REMOVE_ONLINE_MUTATION": "Cliquez ici pour supprimer le changement en ligne. ",
     "REMOVE_ONLINE_MUTATION_CONFIRMATION": "Voulez-vous vraiment supprimer le changement en ligne ? ",
-    "REMOVE_ONLINE_MUTATION_BESCHREIBUNG": "Le changement est définitivement supprimé. Il n'est plus possible de modifier a posteriori. ",
+    "REMOVE_ONLINE_MUTATION_BESCHREIBUNG": "Le changement est définitivement supprimé. Il n'est plus possible de modifier a posteriori. Je confirme avoir pris contact avec l'auteur-e de la demande",
     "REMOVE_ONLINE_ERNEUERUNGSGESUCH": "Veuillez cliquer ici pour supprimer la demande de renouvellement en ligne.",
     "REMOVE_ONLINE_ERNEUERUNGSGESUCH_CONFIRMATION": "Voulez-vous vraiment supprimer la demande de renouvellement en ligne ? ",
     "REMOVE_ONLINE_ERNEUERUNGSGESUCH_BESCHREIBUNG": "La demande de renouvellement est définitivement supprimée. Il n'est plus possible de modifier a posteriori. ",
