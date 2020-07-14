@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +63,7 @@ import static java.util.Objects.requireNonNull;
 @Path("dokumente")
 @Stateless
 @Api(description = "Resource für die Verwaltung von Dokumenten")
+@PermitAll
 public class DokumenteResource {
 
 	@SuppressWarnings("CdiInjectionPointsInspection")

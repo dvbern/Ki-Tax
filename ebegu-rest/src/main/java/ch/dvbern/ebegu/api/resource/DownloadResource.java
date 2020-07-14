@@ -22,6 +22,8 @@ import java.util.Optional;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -78,6 +80,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -89,6 +92,7 @@ import static java.util.Objects.requireNonNull;
 @Path("blobs/temp")
 @Stateless
 @Api(description = "Resource fuer den Download von Dokumenten")
+@PermitAll
 public class DownloadResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DownloadResource.class.getSimpleName());
@@ -500,6 +504,8 @@ public class DownloadResource {
 	@Path("/{zahlungsauftragId}/PAIN001/generated")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getPain001AccessTokenGeneratedDokument(
 		@Nonnull @Valid @PathParam("zahlungsauftragId") JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MimeTypeParseException {
@@ -558,6 +564,9 @@ public class DownloadResource {
 	@Path("/{gesuchId}/{anmeldungId}/ANMELDEBESTAETIGUNG/{forceCreation}/{mitTarif}/generated")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument(
 		@Nonnull @Valid @PathParam("gesuchId") JaxId jaxGesuchId,
 		@Nonnull @Valid @PathParam("anmeldungId") JaxId jaxAnmledungId,

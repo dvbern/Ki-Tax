@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -48,12 +50,17 @@ import ch.dvbern.ebegu.services.FachstelleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource fuer Fachstellen
  */
 @Path("fachstellen")
 @Stateless
 @Api(description = "Resource zur Verwaltung von Fachstellen")
+@PermitAll
 public class FachstelleResource {
 
 	@Inject
@@ -67,6 +74,7 @@ public class FachstelleResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public JaxFachstelle saveFachstelle(
 		@Nonnull @NotNull @Valid JaxFachstelle fachstelleJAXP,
 		@Context UriInfo uriInfo,
@@ -126,6 +134,7 @@ public class FachstelleResource {
 	@DELETE
 	@Path("/{fachstelleJAXPID}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response remove(
 		@Nonnull @NotNull @PathParam("fachstelleJAXPID") JaxId fachstelleJAXPID,
 		@Context HttpServletRequest request,

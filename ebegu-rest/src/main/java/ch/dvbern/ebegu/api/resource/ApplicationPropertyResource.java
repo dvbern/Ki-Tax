@@ -64,6 +64,8 @@ import org.apache.tika.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -152,6 +154,7 @@ public class ApplicationPropertyResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxApplicationProperties> getAllApplicationProperties() {
 		return applicationPropertyService.getAllApplicationProperties().stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
@@ -165,6 +168,7 @@ public class ApplicationPropertyResource {
 	@POST
 	@Path("/{key}")
 	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response create(
 		@Nonnull @NotNull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
@@ -190,6 +194,7 @@ public class ApplicationPropertyResource {
 	@PUT
 	@Path("/{key}")
 	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed(SUPER_ADMIN)
 	public JaxApplicationProperties update(
 		@Nonnull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
@@ -210,6 +215,7 @@ public class ApplicationPropertyResource {
 	@DELETE
 	@Path("/{key}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Response remove(@Nonnull @PathParam("key") String keyParam, @Context HttpServletResponse response) {
 		applicationPropertyService.removeApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, keyParam));
 		return Response.ok().build();

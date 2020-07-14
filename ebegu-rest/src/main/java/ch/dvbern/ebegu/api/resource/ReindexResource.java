@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDateTime;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +33,12 @@ import ch.dvbern.ebegu.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 @Path("admin/reindex")
 @Stateless
 @Api(description = "Resource zum Reindizieren des Lucene-Suchindexes")
+@RolesAllowed(SUPER_ADMIN)
 public class ReindexResource {
 
 	@Inject

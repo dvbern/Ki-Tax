@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -49,6 +50,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * REST Resource fuer Reports
@@ -56,6 +58,9 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 @Path("reporting")
 @Stateless
 @Api(description = "Resource für Statistiken und Reports")
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+	ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+	ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class ReportResource {
 
 	@Inject

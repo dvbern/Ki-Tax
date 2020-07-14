@@ -20,6 +20,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -44,12 +46,15 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
+
 /**
  * REST Resource fuer die History von Gesuchen/Mutationen (Antraegen)
  */
 @Path("antragStatusHistory")
 @Stateless
 @Api(description = "Resource zum Lesen der History von Gesuchen / Mutationen (Anträgen)")
+@PermitAll
 public class AntragStatusHistoryResource {
 
 	@Inject
@@ -88,6 +93,8 @@ public class AntragStatusHistoryResource {
 	@Path("/verlauf/{gesuchsperiodeId}/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Collection<JaxAntragStatusHistory> findAllAntragStatusHistoryByGPForDossier(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId jaxGesuchsperiodeId,
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId) {

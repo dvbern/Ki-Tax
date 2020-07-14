@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -54,12 +56,17 @@ import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource fuer Traegerschaft
  */
 @Path("traegerschaften")
 @Stateless
 @Api(description = "Resource zur Verwaltung von Trägerschaften (Zusammenschluss von mehreren Institutionen)")
+@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class TraegerschaftResource {
 
 	@Inject
@@ -115,6 +122,7 @@ public class TraegerschaftResource {
 	@Path("/id/{traegerschaftId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public JaxTraegerschaft findTraegerschaft(
 		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId) {
 
@@ -157,6 +165,7 @@ public class TraegerschaftResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public List<JaxTraegerschaft> getAllTraegerschaften() {
 		return traegerschaftService.getAllTraegerschaften().stream()
 			.map(traegerschaft -> converter.traegerschaftToJAX(traegerschaft))
@@ -171,6 +180,7 @@ public class TraegerschaftResource {
 	@Path("/active")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public List<JaxTraegerschaft> getAllActiveTraegerschaften() {
 		return traegerschaftService.getAllActiveTraegerschaften().stream()
 			.map(traegerschaft -> converter.traegerschaftToJAX(traegerschaft))

@@ -20,6 +20,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -61,6 +62,7 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -69,6 +71,9 @@ import static java.util.Objects.requireNonNull;
 @Path("finanzielleSituation")
 @Stateless
 @Api(description = "Resource für die finanzielle Situation")
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
+	ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS,
+	ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class FinanzielleSituationResource {
 
 	@Inject
@@ -94,6 +99,7 @@ public class FinanzielleSituationResource {
 	@Path("/finanzielleSituation/{gesuchId}/{gesuchstellerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxFinanzielleSituationContainer saveFinanzielleSituation(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId jaxGesuchId,
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
@@ -129,6 +135,7 @@ public class FinanzielleSituationResource {
 	@Path("/finanzielleSituationStart")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxGesuch saveFinanzielleSituationStart(
 		@Nonnull @NotNull @Valid JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
@@ -271,6 +278,8 @@ public class FinanzielleSituationResource {
 	@Path("/{finanzielleSituationId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxFinanzielleSituationContainer findFinanzielleSituation(
 		@Nonnull @NotNull @PathParam("finanzielleSituationId") JaxId finanzielleSituationId) {
 

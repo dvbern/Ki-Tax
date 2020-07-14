@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("mandanten")
 @Stateless
 @Api(description = "Resource für Mandanten")
+@PermitAll
 public class MandantResource {
 
 	@Inject

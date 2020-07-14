@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.naming.directory.SearchResult;
@@ -63,9 +64,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
+
 @Path("search")
 @Stateless
 @Api(description = "Resource für Suchanfragen")
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_TS, SACHBEARBEITER_TS,
+	ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class SearchIndexResource {
 
 	@Inject

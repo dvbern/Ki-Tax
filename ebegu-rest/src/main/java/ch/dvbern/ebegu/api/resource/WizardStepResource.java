@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -53,6 +54,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("wizard-steps")
 @Stateless
 @Api(description = "Resource für die Darstellung des Antrags-Wizards")
+@PermitAll
 public class WizardStepResource {
 
 	@Inject

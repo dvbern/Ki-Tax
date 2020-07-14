@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +61,15 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -68,6 +79,7 @@ import static java.util.Objects.requireNonNull;
 @Path("gesuchsperioden")
 @Stateless
 @Api(description = "Resource welche zum bearbeiten der Gesuchsperiode dient")
+@PermitAll
 public class GesuchsperiodeResource {
 
 	@Inject
@@ -85,6 +97,7 @@ public class GesuchsperiodeResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public JaxGesuchsperiode saveGesuchsperiode(
 		@Nonnull @NotNull @Valid JaxGesuchsperiode gesuchsperiodeJAXP,
 		@Context UriInfo uriInfo,
@@ -139,6 +152,7 @@ public class GesuchsperiodeResource {
 	@DELETE
 	@Path("/{gesuchsperiodeId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response removeGesuchsperiode(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
 		@Context HttpServletResponse response) {
@@ -254,6 +268,7 @@ public class GesuchsperiodeResource {
 	@DELETE
 	@Path("/gesuchsperiodeDokument/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response removeGesuchsperiodeDokument(
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
@@ -272,6 +287,8 @@ public class GesuchsperiodeResource {
 	@Path("/existDokument/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
+		SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public boolean existDokument(
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Nonnull @PathParam("sprache") Sprache sprache,

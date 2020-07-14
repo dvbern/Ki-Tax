@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -96,6 +98,16 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -104,6 +116,7 @@ import static java.util.Objects.requireNonNull;
 @Path("gemeinde")
 @Stateless
 @Api(description = "Resource für Gemeinden")
+@PermitAll
 public class GemeindeResource {
 
 	@Inject
@@ -135,6 +148,7 @@ public class GemeindeResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
@@ -157,7 +171,7 @@ public class GemeindeResource {
 		// if Ferieninsel is active, we need to initialize the Ferien
 		if (persistedGemeinde.isAngebotFI()) {
 			gesuchsperiodeService.getAllGesuchsperioden()
-				.forEach( gp -> initFerieninselnForGemeindeAndGesuchsperiode(persistedGemeinde, gp));
+				.forEach(gp -> initFerieninselnForGemeindeAndGesuchsperiode(persistedGemeinde, gp));
 		}
 
 		return converter.gemeindeToJAX(persistedGemeinde);
@@ -180,6 +194,7 @@ public class GemeindeResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxGemeinde saveGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Context UriInfo uriInfo,
@@ -282,6 +297,7 @@ public class GemeindeResource {
 	@Path("/stammdaten")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxGemeindeStammdaten saveGemeindeStammdaten(
 		@Nonnull @NotNull @Valid JaxGemeindeStammdaten jaxStammdaten,
 		@Context UriInfo uriInfo,
@@ -310,7 +326,6 @@ public class GemeindeResource {
 			} else if (GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiode().getStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			}
-
 
 			saveFerieninseln(konfiguration.getFerieninselStammdaten(), stammdaten.getGemeinde());
 		});
@@ -418,21 +433,22 @@ public class GemeindeResource {
 			if (gsgp.getGemeindeStammdatenGesuchsperiodeFerieninseln() != null
 				&& !gsgp.getGemeindeStammdatenGesuchsperiodeFerieninseln().isEmpty()) {
 				gsgp.getGemeindeStammdatenGesuchsperiodeFerieninseln()
-					.forEach( stammdaten -> ferieninselStammdatenService.removeFerieninselStammdaten(stammdaten.getId()));
+					.forEach(stammdaten -> ferieninselStammdatenService.removeFerieninselStammdaten(stammdaten.getId()));
 				gsgp.getGemeindeStammdatenGesuchsperiodeFerieninseln().clear();
 			}
 		}
 	}
 
-	private void saveFerieninseln(List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> jaxFiStammdaten, Gemeinde gemeinde) {
+	private void saveFerieninseln(List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> jaxFiStammdaten,
+		Gemeinde gemeinde) {
 		if (gemeinde.isAngebotFI()) {
 			Objects.requireNonNull(jaxFiStammdaten);
 			for (JaxGemeindeStammdatenGesuchsperiodeFerieninsel fiStammdaten : jaxFiStammdaten) {
 				Objects.requireNonNull(fiStammdaten.getId());
 				GemeindeStammdatenGesuchsperiodeFerieninsel fiStammdatenFromDB =
-					ferieninselStammdatenService.findFerieninselStammdaten(fiStammdaten.getId()).orElseThrow(()->
-					new EbeguEntityNotFoundException("saveFerieninseln", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
-				);
+					ferieninselStammdatenService.findFerieninselStammdaten(fiStammdaten.getId()).orElseThrow(() ->
+						new EbeguEntityNotFoundException("saveFerieninseln", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+					);
 				ferieninselStammdatenService.saveFerieninselStammdaten(
 					converter.ferieninselStammdatenToEntity(fiStammdaten,
 						fiStammdatenFromDB)
@@ -446,6 +462,7 @@ public class GemeindeResource {
 	@Path("/logo/data/{gemeindeId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response uploadLogo(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
 		@Nonnull @NotNull MultipartFormDataInput input) {
@@ -677,6 +694,7 @@ public class GemeindeResource {
 	@Path("/updateangebote")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response updateAngebot(
 		@Nonnull @NotNull @Valid JaxGemeinde jaxGemeinde
 	) {
@@ -723,10 +741,10 @@ public class GemeindeResource {
 	private void handleFIAngebotChange(boolean isAngebotFI, final Gemeinde gemeinde) {
 		if (isAngebotFI) {
 			gesuchsperiodeService.getAllGesuchsperioden()
-				.forEach( gp -> initFerieninselnForGemeindeAndGesuchsperiode(gemeinde, gp));
+				.forEach(gp -> initFerieninselnForGemeindeAndGesuchsperiode(gemeinde, gp));
 		} else {
 			gesuchsperiodeService.getAllGesuchsperioden()
-				.forEach( gp -> removeFerieninselnForGemeindeAndGesuchsperiode(gemeinde, gp));
+				.forEach(gp -> removeFerieninselnForGemeindeAndGesuchsperiode(gemeinde, gp));
 		}
 	}
 
@@ -736,6 +754,8 @@ public class GemeindeResource {
 	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
+		SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER })
 	public Response downloadGemeindeDokument(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
@@ -774,6 +794,8 @@ public class GemeindeResource {
 	@DELETE
 	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
+		SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response removeGesuchsperiodeDokument(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
@@ -822,6 +844,8 @@ public class GemeindeResource {
 	@Path("/{gemeindeId}/externalclients")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS,
+		SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS })
 	public Response getExternalClients(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 		requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeID = converter.toEntityId(gemeindeJAXPId);
@@ -830,7 +854,7 @@ public class GemeindeResource {
 
 		Collection<ExternalClient> availableClients = externalClientService.getAllForGemeinde();
 		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
-		if(gemeindeStammdaten != null) {
+		if (gemeindeStammdaten != null) {
 			availableClients.removeAll(gemeindeStammdaten.getExternalClients());
 			jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(gemeindeStammdaten.getExternalClients()));
 		}

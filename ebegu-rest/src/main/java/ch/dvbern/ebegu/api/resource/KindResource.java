@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +52,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -57,10 +60,7 @@ import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * REST Resource fuer Kinder
@@ -68,6 +68,7 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 @Path("kinder")
 @Stateless
 @Api(description = "Resource zum Verwalten von Kindern eines Gesuchstellers")
+@PermitAll
 public class KindResource {
 
 	@Inject
@@ -89,6 +90,8 @@ public class KindResource {
 	@Path("/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
+		UserRoleName.ADMIN_INSTITUTION, UserRoleName.SACHBEARBEITER_INSTITUTION, UserRoleName.ADMIN_TRAEGERSCHAFT, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxKindContainer saveKind(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
 		@Nonnull @NotNull @Valid JaxKindContainer kindContainerJAXP,
@@ -146,6 +149,7 @@ public class KindResource {
 	@DELETE
 	@Path("/{kindContainerId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Response removeKind(
 		@Nonnull @NotNull @PathParam("kindContainerId") JaxId kindJAXPId,
 		@Context HttpServletResponse response) {
@@ -168,6 +172,8 @@ public class KindResource {
 	@Path("/dubletten/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, SACHBEARBEITER_TS, ADMIN_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Set<KindDubletteDTO> getKindDubletten(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId) {
 		Objects.requireNonNull(gesuchJaxId.getId());
 		String gesuchId = converter.toEntityId(gesuchJaxId);

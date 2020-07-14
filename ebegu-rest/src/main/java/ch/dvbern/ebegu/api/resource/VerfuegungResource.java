@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -66,10 +66,7 @@ import ch.dvbern.ebegu.services.VerfuegungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * REST Resource fuer Verfügungen
@@ -77,7 +74,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 @Path("verfuegung")
 @Stateless
 @Api(description = "Resource für Verfügungen, inkl. Berechnung der Vergünstigung")
-@PermitAll
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 public class VerfuegungResource {
 
 	@Inject
@@ -110,6 +107,9 @@ public class VerfuegungResource {
 	@Path("/calculate/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST,
+		REVISOR, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, STEUERAMT, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response calculateVerfuegung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchstellerId,
 		@Context UriInfo uriInfo,
@@ -205,6 +205,8 @@ public class VerfuegungResource {
 	@Path("/anmeldung/uebernehmen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungUebernehmen(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
