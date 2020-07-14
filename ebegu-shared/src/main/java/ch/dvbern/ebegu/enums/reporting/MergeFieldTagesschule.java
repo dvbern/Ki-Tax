@@ -40,7 +40,7 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	vornameKindTitle(new SimpleMergeField<>("vornameKindTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
-	abTitle(new SimpleMergeField<>("abTitle", STRING_CONVERTER)),
+	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	wochentagMo(new SimpleMergeField<>("wochentagMo", STRING_CONVERTER)),
 	wochentagDi(new SimpleMergeField<>("wochentagDi", STRING_CONVERTER)),
@@ -51,6 +51,10 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	summeVerpflegungTitle(new SimpleMergeField<>("summeVerpflegungTitle", STRING_CONVERTER)),
 	generiertAmTitle(new SimpleMergeField<>("generiertAmTitle", STRING_CONVERTER)),
 	generiertAm(new SimpleMergeField<>("generiertAm", DATE_CONVERTER)),
+	legende(new SimpleMergeField<>("legende", STRING_CONVERTER)),
+	legendeVolleKosten(new SimpleMergeField<>("legendeVolleKosten", STRING_CONVERTER)),
+	legendeZweiwoechentlich(new SimpleMergeField<>("legendeZweiwoechentlich", STRING_CONVERTER)),
+	legendeOhneVerpflegung(new SimpleMergeField<>("legendeOhneVerpflegung", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 	repeatRow2(new RepeatRowMergeField("repeatRow2")),
@@ -59,7 +63,7 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	vornameKind(new SimpleMergeField<>("vornameKind", STRING_CONVERTER)),
 	geburtsdatumKind(new SimpleMergeField<>("geburtsdatumKind", DATE_CONVERTER)),
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
-	ab(new SimpleMergeField<>("ab", DATE_CONVERTER)),
+	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 
 	repeatCol1(new RepeatColMergeField<>("repeatCol1", STRING_CONVERTER)),

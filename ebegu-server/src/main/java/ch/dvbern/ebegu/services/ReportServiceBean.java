@@ -2242,7 +2242,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		BelegungTagesschule belegung = anmeldungTagesschule.getBelegungTagesschule();
 		if (belegung != null) {
-			tdr.setAb(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
+			tdr.setEintrittsdatum(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
 		}
 
 		return tdr;

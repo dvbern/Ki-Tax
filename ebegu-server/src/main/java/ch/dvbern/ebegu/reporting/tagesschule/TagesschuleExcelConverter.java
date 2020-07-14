@@ -49,8 +49,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Dependent
 public class TagesschuleExcelConverter implements ExcelConverter {
 
-	public static int IDENTIFIER_WOECHENTLICHES_MODUL = 1;
-	public static int IDENTIFIER_ZWEIWOECHENTLICHES_MODUL = 1;
+	public final int IDENTIFIER_WOECHENTLICHES_MODUL = 1;
+	public final int IDENTIFIER_ZWEIWOECHENTLICHES_MODUL = 1;
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -74,7 +74,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
 
 		List<ModulTagesschuleGroup> sortedGroups =
-			einstellungenTagesschule.getModulTagesschuleGroups().stream().sorted(Comparator.reverseOrder())
+			einstellungenTagesschule.getModulTagesschuleGroups().stream().sorted(Comparator.naturalOrder())
 				.collect(Collectors.toList());
 
 		List<TagesschuleRepeatColGroup> repeatColGroupList =
@@ -99,7 +99,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldTagesschule.vornameKind, dataRow.getVornameKind());
 			excelRowGroup.addValue(MergeFieldTagesschule.geburtsdatumKind, dataRow.getGeburtsdatum());
 			excelRowGroup.addValue(MergeFieldTagesschule.referenznummer, dataRow.getReferenznummer());
-			excelRowGroup.addValue(MergeFieldTagesschule.ab, dataRow.getAb());
+			excelRowGroup.addValue(MergeFieldTagesschule.eintrittsdatum, dataRow.getEintrittsdatum());
 			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
 			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
@@ -157,7 +157,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschule.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.referenznummerTitle, ServerMessageUtil.getMessage(
 			"Reports_bgNummerTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.abTitle, ServerMessageUtil.getMessage("Reports_abTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschule.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
 
 		excelMerger.addValue(MergeFieldTagesschule.wochentagMo, ServerMessageUtil.getMessage("Reports_MontagShort", locale));
@@ -168,6 +168,15 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 		excelMerger.addValue(MergeFieldTagesschule.summeStundenTitle, ServerMessageUtil.getMessage("Reports_summeStundenTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.summeVerpflegungTitle, ServerMessageUtil.getMessage("Reports_summeVerpflegungTitle", locale));
+
+		excelMerger.addValue(MergeFieldTagesschule.legende, ServerMessageUtil.getMessage("Reports_legende", locale));
+		excelMerger.addValue(MergeFieldTagesschule.legendeVolleKosten, ServerMessageUtil.getMessage(
+			"Reports_legendeVolleKosten", locale));
+		excelMerger.addValue(MergeFieldTagesschule.legendeZweiwoechentlich, ServerMessageUtil.getMessage(
+			"Reports_legendeZweiwoechentlich", locale));
+		excelMerger.addValue(MergeFieldTagesschule.legendeOhneVerpflegung, ServerMessageUtil.getMessage(
+			"Reports_legendeOhneVerpflegung", locale));
+
 
 		fillModulHeaders(repeatColGroups, excelMerger, locale);
 	}
@@ -223,7 +232,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 	 * @param module: das Modul, für das die Anmeldungen überprüft werden
 	 * @param dataRow: für diese Zeile im Excel Report wird überprüft, ob eine Anmeldung für das genannte modul
 	 *                  existiert
-	 * @return IDENTIFIER_WOECHENTLICHES_MODUL, IDENTIFIER_ZWEIWOECHENTLICHES_MODUL oder NICHT_ANGEMELDET
+	 * @return IDENTIFIER_WOECHENTLICHES_MODUL, IDENTIFIER_ZWEIWOECHENTLICHES_MODUL oder null falls nicht angemeldet
 	 */
 	@Nullable
 	private Integer getAnmeldungCode(ModulTagesschule module, TagesschuleDataRow dataRow) {

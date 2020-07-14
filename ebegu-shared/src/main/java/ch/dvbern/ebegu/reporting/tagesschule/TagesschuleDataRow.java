@@ -33,7 +33,7 @@ public class TagesschuleDataRow {
 	private String vornameKind;
 	private LocalDate geburtsdatum;
 	private String referenznummer;
-	private LocalDate ab;
+	private LocalDate eintrittsdatum;
 	private @NotNull Betreuungsstatus status;
 	private boolean isZweiwoechentlich;
 	private AnmeldungTagesschule anmeldungTagesschule;
@@ -70,12 +70,12 @@ public class TagesschuleDataRow {
 		this.referenznummer = referenznummer;
 	}
 
-	public LocalDate getAb() {
-		return ab;
+	public LocalDate getEintrittsdatum() {
+		return eintrittsdatum;
 	}
 
-	public void setAb(LocalDate ab) {
-		this.ab = ab;
+	public void setEintrittsdatum(LocalDate eintrittsdatum) {
+		this.eintrittsdatum = eintrittsdatum;
 	}
 
 	public @NotNull Betreuungsstatus getStatus() {
