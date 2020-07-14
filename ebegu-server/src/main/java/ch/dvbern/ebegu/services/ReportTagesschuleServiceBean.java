@@ -44,15 +44,12 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
-import ch.dvbern.ebegu.entities.BelegungTagesschule_;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -311,18 +308,11 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		final Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 		final Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung, JoinType.LEFT);
 		final Join<Verfuegung, AnmeldungTagesschule> joinAnmeldungTagesschule = joinVerfuegung.join(Verfuegung_.anmeldungTagesschule, JoinType.LEFT);
-		final Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionStammdaten = joinAnmeldungTagesschule.join(AnmeldungTagesschule_.institutionStammdaten, JoinType.LEFT);
-		final Join<InstitutionStammdaten, Institution> joinInstitution = joinInstitutionStammdaten.join(InstitutionStammdaten_.institution, JoinType.LEFT);
-		final Join<AnmeldungTagesschule, BelegungTagesschule> joinBelegungTagesschule = joinAnmeldungTagesschule.join(AnmeldungTagesschule_.belegungTagesschule);
 
 		// Die Reihenfolge der Attribute muss mit dem Konstruktor des DTOs (TagesschuleRechnungsstellungDataRow)
 		// uebereinstimmen
 		query.multiselect(
-			joinInstitution.get(Institution_.name),
-			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.kind),
-			joinVerfuegung.get(Verfuegung_.anmeldungTagesschule),
-			joinBelegungTagesschule.get(BelegungTagesschule_.eintrittsdatum),
-			root.alias("zeitabschnitt")
+			root
 		);
 
 		ParameterExpression<LocalDate> datumVonParam = cb.parameter(LocalDate.class, "datumVon");
@@ -338,8 +328,10 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		);
 		// Datum ab Zeitabschnitt muss kleiner/gleich dem Stichtag sein
 		final Predicate predicateNurVergangene = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), stichtagParam);
+		// Es muss sich um Tagesschule-Anmeldungen handeln
+		final Predicate predicateAnmeldungTagesschule = cb.isNotNull(joinAnmeldungTagesschule);
 
-		query.where(predicateAktuelleGesuchsperiode, predicateNurVergangene);
+		query.where(predicateAktuelleGesuchsperiode, predicateNurVergangene, predicateAnmeldungTagesschule);
 
 		TypedQuery<TagesschuleRechnungsstellungDataRow> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(datumVonParam, gesuchsperiode.getGueltigkeit().getGueltigAb());

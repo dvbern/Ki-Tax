@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.reporting.tagesschule;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
@@ -60,14 +61,12 @@ public class TagesschuleRechnungsstellungDataRow {
 
 
 	public TagesschuleRechnungsstellungDataRow(
-		@Nullable String tagesschule,
-		@Nullable KindContainer kindContainer,
-		@Nullable AnmeldungTagesschule anmeldungTagesschule,
-		@Nullable LocalDate eintrittsdatum,
-		@Nullable VerfuegungZeitabschnitt zeitabschnitt
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
 	) {
-		this.tagesschule = tagesschule;
-		if (kindContainer != null) {
+		final AnmeldungTagesschule anmeldungTagesschule = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
+		if (anmeldungTagesschule != null) {
+			this.tagesschule = anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName();
+			final KindContainer kindContainer = anmeldungTagesschule.getKind();
 			final Kind kind = kindContainer.getKindJA();
 			if (kind != null) {
 				this.nachnameKind = kind.getNachname();
@@ -90,22 +89,18 @@ public class TagesschuleRechnungsstellungDataRow {
 				}
 			}
 		}
-		if (anmeldungTagesschule != null) {
-			this.referenznummer = anmeldungTagesschule.getBGNummer();
+		this.datumAb = zeitabschnitt.getGueltigkeit().getGueltigAb();
+		final BGCalculationResult bgCalculationResult = zeitabschnitt.getRelevantBgCalculationResult();
+		this.massgebendesEinkommenVorFamAbzug = bgCalculationResult.getMassgebendesEinkommenVorAbzugFamgr();
+		this.famGroesse = bgCalculationResult.getFamGroesse();
+		this.massgebendesEinkommenNachFamAbzug = bgCalculationResult.getMassgebendesEinkommen();
+		final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
+		if (tsMitBetreuung != null) {
+			this.gebuehrProStundeMitBetreuung = tsMitBetreuung.getGebuehrProStunde();
 		}
-		this.eintrittsdatum = eintrittsdatum;
-
-		if (zeitabschnitt != null) {
-			this.datumAb = zeitabschnitt.getGueltigkeit().getGueltigAb();
-			final BGCalculationResult bgCalculationResult = zeitabschnitt.getRelevantBgCalculationResult();
-			final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
-			if (tsMitBetreuung != null) {
-				this.gebuehrProStundeMitBetreuung = tsMitBetreuung.getGebuehrProStunde();
-			}
-			final TSCalculationResult tsOhneBetreuung = bgCalculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
-			if (tsOhneBetreuung != null) {
-				this.gebuehrProStundeOhneBetreuung = tsOhneBetreuung.getGebuehrProStunde();
-			}
+		final TSCalculationResult tsOhneBetreuung = bgCalculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
+		if (tsOhneBetreuung != null) {
+			this.gebuehrProStundeOhneBetreuung = tsOhneBetreuung.getGebuehrProStunde();
 		}
 	}
 
