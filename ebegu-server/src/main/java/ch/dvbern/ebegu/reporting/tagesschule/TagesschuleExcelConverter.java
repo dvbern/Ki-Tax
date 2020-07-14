@@ -240,9 +240,10 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 			for (BelegungTagesschuleModul m :
 				dataRow.getAnmeldungTagesschule().getBelegungTagesschule().getBelegungTagesschuleModule()) {
 				if (m.getModulTagesschule().getId().equals(module.getId())) {
-					return (m.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN)
-						? IDENTIFIER_ZWEIWOECHENTLICHES_MODUL
-						: IDENTIFIER_WOECHENTLICHES_MODUL;
+					if (m.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN) {
+						return IDENTIFIER_ZWEIWOECHENTLICHES_MODUL;
+					}
+					return IDENTIFIER_WOECHENTLICHES_MODUL;
 				}
 			}
 		}
