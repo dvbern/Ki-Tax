@@ -271,10 +271,16 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
-            case TSStatistikParameterType.TAGESSCHULE_OHNE_FINSIT:
+            case TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN:
                 this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
                     this._statistikParameter.tagesschuleAnmeldungen.id,
                     this._statistikParameter.gesuchsperiode)
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
+            case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
+                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
                     });

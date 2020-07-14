@@ -656,6 +656,37 @@ public class ReportResourceAsync {
 		return Response.ok(workJob.getId()).build();
 	}
 
+	@ApiOperation(
+		value = "Erstellt ein Excel mit der Statistik 'Tagesschule Rechnungsstellung'",
+		response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/tagesschuleRechnungsstellung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_BG, SACHBEARBEITER_BG })
+	public Response getTagesschuleRechnungsstellungReportExcel(
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo
+	) {
+
+		String ip = downloadResource.getIP(request);
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG,
+			null,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
+
+		return Response.ok(workJob.getId()).build();
+	}
+
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Notrecht'", response = JaxDownloadFile.class)
 	@Nonnull
 	@GET

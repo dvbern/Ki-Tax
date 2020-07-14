@@ -181,6 +181,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
 			return this.reportTagesschuleService.generateExcelReportTagesschuleAnmeldungen(stammdatenId, gesuchPeriodeId, locale);
 		}
+		case VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG: {
+			return this.reportTagesschuleService.generateExcelReportTagesschuleRechnungsstellung(locale);
+		}
 		case VORLAGE_REPORT_NOTRECHT: {
 			return generateReportNotrecht();
 		}

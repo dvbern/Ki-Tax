@@ -138,6 +138,12 @@ public enum ReportVorlage {
 		Constants.DATA,
 		MergeFieldTagesschuleAnmeldungen.class
 	),
+	VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG(
+		"/reporting/TagesschuleRechnungsstellung.xlsx",
+		ReportFileName.TAGESSCHULE_RECHNUNGSSTELLUNG,
+		Constants.DATA,
+		MergeFieldTagesschuleRechnungsstellung.class
+	),
 	VORLAGE_REPORT_NOTRECHT(
 		"/reporting/Notrecht.xlsx",
 		ReportFileName.NOTRECHT,

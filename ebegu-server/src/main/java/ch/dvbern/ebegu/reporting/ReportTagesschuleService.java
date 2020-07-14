@@ -20,7 +20,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleDataRow;
+import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleAnmeldungenDataRow;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
@@ -33,7 +33,10 @@ public interface ReportTagesschuleService {
 		@Nonnull Locale locale) throws ExcelMergeException;
 
 	@Nonnull
-	List<TagesschuleDataRow> getReportDataTagesschuleAnmeldungen(
+	List<TagesschuleAnmeldungenDataRow> getReportDataTagesschuleAnmeldungen(
 		@Nonnull String stammdatenID,
 		@Nonnull String gesuchsperiodeID);
+
+	@Nonnull
+	UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(@Nonnull Locale locale) throws ExcelMergeException;
 }

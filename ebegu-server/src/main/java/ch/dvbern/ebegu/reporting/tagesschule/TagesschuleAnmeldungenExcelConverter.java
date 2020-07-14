@@ -51,7 +51,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
-		@Nonnull List<TagesschuleDataRow> data,
+		@Nonnull List<TagesschuleAnmeldungenDataRow> data,
 		@Nonnull Locale locale,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull EinstellungenTagesschule einstellungenTagesschule,
@@ -75,10 +75,10 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 
 		addHeaders(excelMerger, locale, repeatColGroupList);
 
-		List<TagesschuleDataRow> nichtFreigegebeneGesuche = new ArrayList<>();
-		List<TagesschuleDataRow> freigegebeneGesuche = new ArrayList<>();
+		List<TagesschuleAnmeldungenDataRow> nichtFreigegebeneGesuche = new ArrayList<>();
+		List<TagesschuleAnmeldungenDataRow> freigegebeneGesuche = new ArrayList<>();
 
-		for (TagesschuleDataRow row : data) {
+		for (TagesschuleAnmeldungenDataRow row : data) {
 			if (row.getStatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
 				nichtFreigegebeneGesuche.add(row);
 			} else {
@@ -174,7 +174,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 	}
 
 	private void setAnmeldungenForModule(
-		@Nonnull TagesschuleDataRow dataRow,
+		@Nonnull TagesschuleAnmeldungenDataRow dataRow,
 		@Nonnull List<TagesschuleRepeatColGroup> repeatColGroups,
 		@Nonnull ExcelMergerDTO excelRowGroup) {
 			repeatColGroups.forEach(weekday -> {
@@ -198,7 +198,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 			});
 	}
 
-	private boolean isAngemeldet(ModulTagesschule module, TagesschuleDataRow dataRow) {
+	private boolean isAngemeldet(ModulTagesschule module, TagesschuleAnmeldungenDataRow dataRow) {
 		if (dataRow.getAnmeldungTagesschule().getBelegungTagesschule() != null) {
 			for (BelegungTagesschuleModul m :
 				dataRow.getAnmeldungTagesschule().getBelegungTagesschule().getBelegungTagesschuleModule()) {
