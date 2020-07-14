@@ -184,6 +184,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
+                    // tslint:disable-next-line:early-exit
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
                         && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
                     ) {
