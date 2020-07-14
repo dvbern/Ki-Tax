@@ -49,8 +49,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Dependent
 public class TagesschuleExcelConverter implements ExcelConverter {
 
-	public final int IDENTIFIER_WOECHENTLICHES_MODUL = 1;
-	public final int IDENTIFIER_ZWEIWOECHENTLICHES_MODUL = 1;
+	public static final int IDENTIFIER_WOECHENTLICHES_MODUL = 1;
+	public static final int IDENTIFIER_ZWEIWOECHENTLICHES_MODUL = 1;
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
