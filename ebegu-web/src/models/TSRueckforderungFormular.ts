@@ -64,6 +64,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public coronaErwerbsersatzDefinitivVerfuegt: boolean;
     public coronaErwerbsersatzKeinAntragBegruendung: string;
     public coronaErwerbsersatzSonstiges: string;
+    public bemerkungFuerVerfuegung: string;
 
     public constructor() {
         super();

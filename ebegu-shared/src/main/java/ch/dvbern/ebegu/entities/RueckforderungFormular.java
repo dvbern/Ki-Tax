@@ -225,6 +225,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
 
+	@Nullable
+	@Size(min=1, max=2000)
+	@Column(nullable = true)
+	private String bemerkungFuerVerfuegung;
+
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
 
@@ -552,6 +557,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setCoronaErwerbsersatzSonstiges(@Nullable String coronaErwerbsersatzSonstiges) {
 		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
+	}
+
+	@Nullable
+	public String getBemerkungFuerVerfuegung() {
+		return bemerkungFuerVerfuegung;
+	}
+
+	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
+		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
 	}
 
 	public boolean isStufe1ZahlungJetztAusgeloest() {

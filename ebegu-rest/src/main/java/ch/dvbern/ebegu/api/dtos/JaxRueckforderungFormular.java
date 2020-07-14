@@ -158,6 +158,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private String coronaErwerbsersatzSonstiges;
 
+	@Nullable
+	private String bemerkungFuerVerfuegung;
+
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;
@@ -497,5 +500,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setCoronaErwerbsersatzSonstiges(@Nullable String coronaErwerbsersatzSonstiges) {
 		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
+	}
+
+	@Nullable
+	public String getBemerkungFuerVerfuegung() {
+		return bemerkungFuerVerfuegung;
+	}
+
+	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
+		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
 	}
 }
