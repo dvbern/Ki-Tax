@@ -1422,7 +1422,7 @@
     "ReportType_institutionen": "Institutions",
     "ReportType_verrechnungkibon": "Comptabilité kiBon",
     "ReportType_lastenausgleich": "Compensation des charges",
-    "ReportType_tagesschuleOhneFinSit": "Inscriptions aux écoles à journée continue",
+    "ReportType_tagesschuleAnmeldungen": "Inscriptions aux écoles à journée continue",
     "ReportType_notrecht": "Droit d'urgence",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
