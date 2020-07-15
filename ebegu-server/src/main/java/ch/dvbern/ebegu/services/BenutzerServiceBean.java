@@ -33,8 +33,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -112,15 +110,6 @@ import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForCurrentUser;
@@ -135,7 +124,6 @@ import static javax.persistence.LockModeType.PESSIMISTIC_WRITE;
 /**
  * Service fuer Benutzer
  */
-@PermitAll
 @Stateless
 @Local(BenutzerService.class)
 public class BenutzerServiceBean extends AbstractBaseService implements BenutzerService {
@@ -174,7 +162,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Benutzer saveBenutzerBerechtigungen(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged) {
 		requireNonNull(benutzer);
 		prepareBenutzerForSave(benutzer, currentBerechtigungChanged);
@@ -185,7 +172,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Benutzer saveBenutzer(@Nonnull Benutzer benutzer) {
 		requireNonNull(benutzer);
 		authorizer.checkWriteAuthorization(benutzer);
@@ -197,7 +183,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Benutzer createAdminGemeindeByEmail(
 		@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde
 	) {
@@ -212,7 +197,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
 		requireNonNull(institution);
 
@@ -225,7 +209,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
 
@@ -274,16 +257,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({
-		SUPER_ADMIN,
-		ADMIN_BG,
-		ADMIN_GEMEINDE,
-		ADMIN_TS,
-		ADMIN_MANDANT,
-		ADMIN_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_MANDANT,
-	})
 	public Benutzer einladen(@Nonnull Einladung einladung) {
 		requireNonNull(einladung);
 
@@ -304,7 +277,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
 		try {
 			if (eingeladener.getStatus() != BenutzerStatus.EINGELADEN) {
@@ -424,7 +396,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
 		requireNonNull(username, "username muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
@@ -432,7 +403,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Benutzer> findAndLockBenutzer(@Nonnull String username) {
 		requireNonNull(username, "username muss gesetzt sein");
 
@@ -466,7 +436,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Benutzer> findBenutzerByEmail(@Nonnull String email) {
 		Objects.requireNonNull(email, "email muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, email, Benutzer_.email);
@@ -474,7 +443,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID) {
 		requireNonNull(externalUUID, "externalUUID muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, externalUUID, Benutzer_.externalUUID);
@@ -482,21 +450,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getAllBenutzer() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Benutzer.class));
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getGemeindeAdministratoren(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(UserRole.getAllGemeindeAdminRoles(), gemeinde);
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getGemeindeSachbearbeiter(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(UserRole.getAllGemeindeSachbearbeiterRoles(), gemeinde);
 	}
@@ -515,42 +480,36 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles(), gemeinde);
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getBenutzerTsBgOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(UserRole.getTsBgAndGemeindeRoles(), gemeinde);
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getBenutzerTsOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getTsAndGemeindeRoles(), gemeinde);
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getAllBenutzerBgOrGemeinde() {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles());
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getAllBenutzerTsOrGemeinde() {
 		return getBenutzersOfRoles(getTsAndGemeindeRoles());
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Benutzer> getAllBenutzerBgTsOrGemeinde() {
 		return getBenutzersOfRoles(getTsBgAndGemeindeRoles());
 	}
@@ -662,7 +621,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<Benutzer> getGesuchsteller() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
@@ -681,7 +639,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeBenutzer(@Nonnull String username) {
 		requireNonNull(username);
 		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -727,7 +684,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Benutzer> getCurrentBenutzer() {
 		String username = null;
 		if (principalBean != null) {
@@ -741,7 +697,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@PermitAll
 	public Benutzer updateOrStoreUserFromIAM(@Nonnull Benutzer benutzer) {
 		requireNonNull(benutzer.getExternalUUID());
 
@@ -799,7 +754,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@PermitAll
 	public Optional<Benutzer> findUserWithInvitationByEmail(@Nonnull Benutzer benutzer) {
 		return findBenutzerByEmail(benutzer.getEmail())
 			.filter(benutzerByEmail ->
@@ -810,8 +764,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT })
 	public Benutzer sperren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -839,8 +791,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT })
 	public Benutzer reaktivieren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -926,8 +876,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_MANDANT, REVISOR })
 	public Pair<Long, List<Benutzer>> searchBenutzer(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto) {
 		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT).getLeft();
 
@@ -940,7 +888,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	private Pair<Long, List<Benutzer>> searchBenutzer(
 		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode) {
@@ -1280,7 +1227,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@RolesAllowed(SUPER_ADMIN)
 	public int handleAbgelaufeneRollen(@Nonnull LocalDate stichtag) {
 		requireNonNull(stichtag);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -1373,7 +1319,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@PermitAll
 	public void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted) {
 		requireNonNull(berechtigung);
 		BerechtigungHistory newBerechtigungsHistory = new BerechtigungHistory(berechtigung, deleted);
@@ -1386,8 +1331,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, REVISOR })
 	public Collection<BerechtigungHistory> getBerechtigungHistoriesForBenutzer(@Nonnull Benutzer benutzer) {
 		requireNonNull(benutzer);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -1405,8 +1348,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT })
 	public boolean isBenutzerDefaultBenutzerOfAnyGemeinde(@Nonnull String username) {
 		requireNonNull(username);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();

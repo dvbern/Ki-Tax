@@ -81,9 +81,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(FallService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_TS, SACHBEARBEITER_TS,
-	ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class FallServiceBean extends AbstractBaseService implements FallService {
 
 	@Inject
@@ -109,7 +106,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Fall saveFall(@Nonnull Fall fall) {
 		Objects.requireNonNull(fall);
 		// Den "Besitzer" auf dem Fall ablegen
@@ -167,7 +163,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void removeFallIfExists(@Nonnull String fallId, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(fallId);
 		Optional<Fall> fallToRemove = findFall(fallId);
@@ -178,7 +173,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(fall);
 		Optional<Fall> fallToRemove = findFall(fall.getId());

@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,16 +44,11 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer Kind
  */
 @Stateless
 @Local(DokumentGrundService.class)
-@PermitAll
 public class DokumentGrundServiceBean extends AbstractBaseService implements DokumentGrundService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DokumentGrundServiceBean.class.getSimpleName());
@@ -182,7 +175,6 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE})
 	public void removeAllDokumentGrundeFromGesuch(@Nonnull Gesuch gesuch) {
 		LOGGER.info("Deleting Dokument-Gruende of Gesuch: {} / {}", gesuch.getDossier(), gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		Collection<DokumentGrund> dokumentsFromGesuch = findAllDokumentGrundByGesuch(gesuch);

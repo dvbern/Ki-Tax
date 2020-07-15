@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,7 +35,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
  */
 @Stateless
 @Local(MandantService.class)
-@PermitAll
 public class MandantServiceBean extends AbstractBaseService implements MandantService {
 
 	@Inject

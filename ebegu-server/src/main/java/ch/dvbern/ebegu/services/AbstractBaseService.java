@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -68,7 +67,6 @@ public abstract class AbstractBaseService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
-	@PermitAll
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void updateLuceneIndex(Class<? extends AbstractEntity> clazz, String id) {
 		// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
@@ -81,14 +79,12 @@ public abstract class AbstractBaseService {
 		fullTextSession.index(customer);
 	}
 
-	@PermitAll
 	@Nonnull
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 	}
 
-	@PermitAll
 	@Nonnull
 	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
 		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten = criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);

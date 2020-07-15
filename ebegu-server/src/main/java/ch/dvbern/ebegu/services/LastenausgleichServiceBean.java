@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -53,15 +52,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer den Lastenausgleich
  */
-@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 @Stateless
 @Local(LastenausgleichService.class)
 public class LastenausgleichServiceBean extends AbstractBaseService implements LastenausgleichService {
@@ -89,7 +84,6 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		return criteriaQueryHelper.getAll(Lastenausgleich.class);
 	}
 
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	@Nonnull
 	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz) {
@@ -186,14 +180,12 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}
 	}
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@Nonnull
 	@Override
 	public Lastenausgleich findLastenausgleich(@Nonnull String lastenausgleichId) {
 		return persistence.find(Lastenausgleich.class, lastenausgleichId);
 	}
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@Nonnull
 	private Optional<Lastenausgleich> findLastenausgleichByJahr(int jahr) {
 		Optional<Lastenausgleich> optional = criteriaQueryHelper.getEntityByUniqueAttribute(Lastenausgleich.class, jahr,
@@ -201,7 +193,6 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		return optional;
 	}
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@Override
 	@Nonnull
 	public Optional<LastenausgleichGrundlagen> findLastenausgleichGrundlagen(int jahr) {
@@ -210,7 +201,6 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		return optional;
 	}
 
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	public void removeLastenausgleich(@Nonnull String lastenausgleichId) {
 		// Lastenausgleich und -Grundlagen löschen

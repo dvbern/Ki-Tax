@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -77,7 +76,6 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @Local(WizardStepService.class)
-@PermitAll
 public class WizardStepServiceBean extends AbstractBaseService implements WizardStepService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WizardStepServiceBean.class);

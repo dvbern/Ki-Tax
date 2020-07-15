@@ -27,8 +27,6 @@ import java.util.Optional;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -105,7 +103,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -113,7 +110,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(TestfaelleService.class)
-@RolesAllowed(SUPER_ADMIN)
 public class TestfaelleServiceBean extends AbstractBaseService implements TestfaelleService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBean.class);
@@ -970,7 +966,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Gesuch antragErneuern(@Nonnull Gesuch gesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
 		Gesuch erneuerung = Gesuch.createErneuerung(gesuch.getDossier(), gesuchsperiode, eingangsdatum);
 		return gesuchService.createGesuch(erneuerung);
@@ -978,7 +973,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Gesuch antragMutieren(@Nonnull Gesuch antrag, @Nullable LocalDate eingangsdatum) {
 		Gesuch mutation = Gesuch.createMutation(antrag.getDossier(), antrag.getGesuchsperiode(), eingangsdatum);
 		return gesuchService.createGesuch(mutation);
