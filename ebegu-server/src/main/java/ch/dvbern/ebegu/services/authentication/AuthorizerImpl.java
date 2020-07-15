@@ -453,6 +453,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 							SACHBEARBEITER_GEMEINDE,
 							ADMIN_TS,
 							SACHBEARBEITER_TS,
+							ADMIN_BG,
+							SACHBEARBEITER_BG,
 							ADMIN_INSTITUTION,
 							SACHBEARBEITER_INSTITUTION,
 							ADMIN_TRAEGERSCHAFT,
