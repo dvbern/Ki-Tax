@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.services;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RunAs;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import org.slf4j.Logger;
@@ -39,7 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @Local(SuperAdminService.class)
-@RunAs(UserRoleName.SUPER_ADMIN)
 public class SuperAdminServiceBean implements SuperAdminService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SuperAdminServiceBean.class.getSimpleName());
