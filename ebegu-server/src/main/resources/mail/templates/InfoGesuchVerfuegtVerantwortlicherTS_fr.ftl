@@ -3,7 +3,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: " ${gesuch.dossier.verantwortlicherTS.fullName} <${empfaengerMail}>
+To: <@base64Header>${gesuch.dossier.verantwortlicherTS.fullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon - Betreuungsgutschein wurde verfügt</@base64Header>
 Content-Type: text/html;charset=utf-8
 
