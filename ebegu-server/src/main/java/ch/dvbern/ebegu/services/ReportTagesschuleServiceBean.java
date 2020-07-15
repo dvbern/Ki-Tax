@@ -36,6 +36,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -276,11 +277,10 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		// TODO = November, es sollten 4 Monate kommen!!!
 		LocalDate stichtag = LocalDate.now().plusMonths(4); // TODO (Reviewer: Nach dem Testen zuruecksetzen!
-		final List<TagesschuleRechnungsstellungDataRow> reportData1 = getReportDataTagesschuleRechnungsstellung(stichtag);
+		final List<TagesschuleRechnungsstellungDataRow> reportData = getReportDataTagesschuleRechnungsstellung(stichtag);
 
-		ExcelMergerDTO excelMergerDTO = tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData1, stichtag, locale);
+		ExcelMergerDTO excelMergerDTO = tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		tagesschuleRechnungsstellungExcelConverter.applyAutoSize(sheet);
@@ -306,16 +306,10 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		final Collection<InstitutionStammdaten> allowedTagesschulen = institutionStammdatenService.getTagesschulenForCurrentBenutzer();
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<TagesschuleRechnungsstellungDataRow> query = cb.createQuery(TagesschuleRechnungsstellungDataRow.class);
+		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
 		final Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
-		final Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
-		final Join<Verfuegung, AnmeldungTagesschule> joinAnmeldungTagesschule = joinVerfuegung.join(Verfuegung_.anmeldungTagesschule);
-
-		// Die Reihenfolge der Attribute muss mit dem Konstruktor des DTOs (TagesschuleRechnungsstellungDataRow)
-		// uebereinstimmen
-		query.multiselect(
-			root
-		);
+		final Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung, JoinType.LEFT);
+		final Join<Verfuegung, AnmeldungTagesschule> joinAnmeldungTagesschule = joinVerfuegung.join(Verfuegung_.anmeldungTagesschule, JoinType.LEFT);
 
 		ParameterExpression<LocalDate> datumVonParam = cb.parameter(LocalDate.class, "datumVon");
 		ParameterExpression<LocalDate> datumBisParam = cb.parameter(LocalDate.class, "datumBis");
@@ -334,17 +328,22 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		);
 		// Datum ab Zeitabschnitt muss kleiner/gleich dem Stichtag sein
 		final Predicate predicateNurVergangene = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), stichtagParam);
-		// Es muss sich um Tagesschule-Anmeldungen handeln
-		final Predicate predicateAnmeldungTagesschule = cb.isNotNull(joinAnmeldungTagesschule);
+		// Nur der letzte Abschnitt
+		final Predicate predicateGueltig = cb.equal(joinAnmeldungTagesschule.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
 
-		query.where(predicateBerechtigt, predicateAktuelleGesuchsperiode, predicateNurVergangene, predicateAnmeldungTagesschule);
+		query.where(predicateBerechtigt, predicateAktuelleGesuchsperiode, predicateNurVergangene, predicateGueltig);
 
-		TypedQuery<TagesschuleRechnungsstellungDataRow> typedQuery = persistence.getEntityManager().createQuery(query);
+		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(datumVonParam, gesuchsperiode.getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(datumBisParam, gesuchsperiode.getGueltigkeit().getGueltigBis());
 		typedQuery.setParameter(stichtagParam, stichtag);
 		typedQuery.setParameter(allowedTagesschulenParam, allowedTagesschulen);
-		final List<TagesschuleRechnungsstellungDataRow> resultList = typedQuery.getResultList();
-		return resultList;
+		final List<VerfuegungZeitabschnitt> zeitabschnitteList = typedQuery.getResultList();
+		List<TagesschuleRechnungsstellungDataRow> dataRows = new ArrayList<>();
+		zeitabschnitteList
+			.stream()
+			.map(verfuegungZeitabschnitt -> TagesschuleRechnungsstellungDataRow.createRows(verfuegungZeitabschnitt, stichtag))
+			.forEach(dataRows::addAll);
+		return dataRows;
 	}
 }

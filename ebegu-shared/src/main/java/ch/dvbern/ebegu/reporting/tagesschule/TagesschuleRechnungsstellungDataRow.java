@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.reporting.tagesschule;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,50 +61,6 @@ public class TagesschuleRechnungsstellungDataRow {
 	private @Nullable BigDecimal gebuehrProStundeMitBetreuung;
 	private @Nullable BigDecimal gebuehrProStundeOhneBetreuung;
 
-
-	public TagesschuleRechnungsstellungDataRow(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
-	) {
-		final AnmeldungTagesschule anmeldungTagesschule = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
-		if (anmeldungTagesschule != null) {
-			this.tagesschule = anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName();
-			final KindContainer kindContainer = anmeldungTagesschule.getKind();
-			final Kind kind = kindContainer.getKindJA();
-			if (kind != null) {
-				this.nachnameKind = kind.getNachname();
-				this.vornameKind = kind.getVorname();
-				this.geburtsdatumKind = kind.getGeburtsdatum();
-			}
-			final GesuchstellerContainer gsContainer = kindContainer.getGesuch().getGesuchsteller1();
-			if (gsContainer != null) {
-				final Gesuchsteller gesuchsteller = gsContainer.getGesuchstellerJA();
-				if (gesuchsteller != null) {
-					this.rechnungsadresseVorname = gesuchsteller.getVorname();
-					this.rechnungsadresseNachname = gesuchsteller.getNachname();
-				}
-				final GesuchstellerAdresse adresse = gsContainer.extractEffectiveRechnungsAdresse(LocalDate.now());
-				if (adresse != null) {
-					this.rechnungsadresseStrasse = adresse.getStrasse();
-					this.rechnungsadresseHausnummer = adresse.getHausnummer();
-					this.rechnungsadressePlz = adresse.getPlz();
-					this.rechnungsadresseOrt = adresse.getOrt();
-				}
-			}
-		}
-		this.datumAb = zeitabschnitt.getGueltigkeit().getGueltigAb();
-		final BGCalculationResult bgCalculationResult = zeitabschnitt.getRelevantBgCalculationResult();
-		this.massgebendesEinkommenVorFamAbzug = bgCalculationResult.getMassgebendesEinkommenVorAbzugFamgr();
-		this.famGroesse = bgCalculationResult.getFamGroesse();
-		this.massgebendesEinkommenNachFamAbzug = bgCalculationResult.getMassgebendesEinkommen();
-		final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
-		if (tsMitBetreuung != null) {
-			this.gebuehrProStundeMitBetreuung = tsMitBetreuung.getGebuehrProStunde();
-		}
-		final TSCalculationResult tsOhneBetreuung = bgCalculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
-		if (tsOhneBetreuung != null) {
-			this.gebuehrProStundeOhneBetreuung = tsOhneBetreuung.getGebuehrProStunde();
-		}
-	}
 
 	public @Nullable  String getTagesschule() {
 		return tagesschule;
@@ -246,5 +204,68 @@ public class TagesschuleRechnungsstellungDataRow {
 
 	public void setGebuehrProStundeOhneBetreuung(@Nullable  BigDecimal gebuehrProStundeOhneBetreuung) {
 		this.gebuehrProStundeOhneBetreuung = gebuehrProStundeOhneBetreuung;
+	}
+
+	@Nonnull
+	public static Collection<TagesschuleRechnungsstellungDataRow> createRows(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull LocalDate stichtag
+	) {
+		// Der Zeitabschnitt einer Tagesschule-Verfuegung enthaelt mehrere Monate!
+		Collection<TagesschuleRechnungsstellungDataRow> dataRows = new ArrayList<>();
+		LocalDate monatsStart = zeitabschnitt.getGueltigkeit().getGueltigAb();
+		while (!monatsStart.isAfter(stichtag)) {
+			dataRows.add(createRow(zeitabschnitt, monatsStart));
+			monatsStart = monatsStart.plusMonths(1);
+		}
+		return dataRows;
+	}
+
+	@Nonnull
+	private static TagesschuleRechnungsstellungDataRow createRow(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull LocalDate monatsStart
+	) {
+		TagesschuleRechnungsstellungDataRow dataRow = new TagesschuleRechnungsstellungDataRow();
+		final AnmeldungTagesschule anmeldungTagesschule = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
+		if (anmeldungTagesschule != null) {
+			dataRow.tagesschule = anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName();
+			final KindContainer kindContainer = anmeldungTagesschule.getKind();
+			final Kind kind = kindContainer.getKindJA();
+			if (kind != null) {
+				dataRow.nachnameKind = kind.getNachname();
+				dataRow.vornameKind = kind.getVorname();
+				dataRow.geburtsdatumKind = kind.getGeburtsdatum();
+			}
+			final GesuchstellerContainer gsContainer = kindContainer.getGesuch().getGesuchsteller1();
+			if (gsContainer != null) {
+				final Gesuchsteller gesuchsteller = gsContainer.getGesuchstellerJA();
+				if (gesuchsteller != null) {
+					dataRow.rechnungsadresseVorname = gesuchsteller.getVorname();
+					dataRow.rechnungsadresseNachname = gesuchsteller.getNachname();
+				}
+				final GesuchstellerAdresse adresse = gsContainer.extractEffectiveRechnungsAdresse(LocalDate.now());
+				if (adresse != null) {
+					dataRow.rechnungsadresseStrasse = adresse.getStrasse();
+					dataRow.rechnungsadresseHausnummer = adresse.getHausnummer();
+					dataRow.rechnungsadressePlz = adresse.getPlz();
+					dataRow.rechnungsadresseOrt = adresse.getOrt();
+				}
+			}
+		}
+		dataRow.datumAb = monatsStart;
+		final BGCalculationResult bgCalculationResult = zeitabschnitt.getRelevantBgCalculationResult();
+		dataRow.massgebendesEinkommenVorFamAbzug = bgCalculationResult.getMassgebendesEinkommenVorAbzugFamgr();
+		dataRow.famGroesse = bgCalculationResult.getFamGroesse();
+		dataRow.massgebendesEinkommenNachFamAbzug = bgCalculationResult.getMassgebendesEinkommen();
+		final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
+		if (tsMitBetreuung != null) {
+			dataRow.gebuehrProStundeMitBetreuung = tsMitBetreuung.getGebuehrProStunde();
+		}
+		final TSCalculationResult tsOhneBetreuung = bgCalculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
+		if (tsOhneBetreuung != null) {
+			dataRow.gebuehrProStundeOhneBetreuung = tsOhneBetreuung.getGebuehrProStunde();
+		}
+		return dataRow;
 	}
 }
