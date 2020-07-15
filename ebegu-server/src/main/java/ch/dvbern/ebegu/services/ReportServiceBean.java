@@ -2098,7 +2098,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	@Override
-	public List<TagesschuleDataRow> getReportDataTagesschuleOhneFinSit(
+	public List<TagesschuleDataRow> getReportDataTagesschuleAnmeldungen(
 		@Nonnull String stammdatenID,
 		@Nonnull String gesuchsperiodeID) {
 
@@ -2178,7 +2178,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		BelegungTagesschule belegung = anmeldungTagesschule.getBelegungTagesschule();
 		if (belegung != null) {
-			tdr.setAb(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
+			tdr.setEintrittsdatum(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
 		}
 
 		return tdr;
@@ -2188,7 +2188,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportTagesschuleOhneFinSit(
+	public UploadFileInfo generateExcelReportTagesschuleAnmeldungen(
 		@Nonnull String stammdatenID,
 		@Nonnull String gesuchsperiodeID,
 		@Nonnull Locale locale) throws ExcelMergeException {
@@ -2196,7 +2196,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		requireNonNull(stammdatenID, "stammdatenID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 		requireNonNull(gesuchsperiodeID, "gesuchsperiodeID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
-		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT;
+		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
 
@@ -2205,7 +2205,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportTagesschuleOhneFinSit",
+				"generateExcelReportTagesschuleAnmeldungen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeID));
 
@@ -2217,7 +2217,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
 		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
-		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);
+		List<TagesschuleDataRow> reportData = getReportDataTagesschuleAnmeldungen(stammdatenID, gesuchsperiodeID);
 
 		ExcelMergerDTO excelMergerDTO = tagesschuleExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode,
 			einstellungenTagesschule, institutionStammdaten.getInstitution().getName());

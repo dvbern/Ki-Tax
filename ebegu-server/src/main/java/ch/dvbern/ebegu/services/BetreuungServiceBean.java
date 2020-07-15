@@ -77,6 +77,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -85,11 +86,13 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -139,6 +142,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	public Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit) {
 		Objects.requireNonNull(betreuung);
+
+		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
+
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		final Betreuung mergedBetreuung = persistence.merge(betreuung);
@@ -160,8 +166,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	@Override
-	public AnmeldungTagesschule saveAnmeldungTagesschule(@Nonnull AnmeldungTagesschule betreuung,
-		@Nonnull Boolean isAbwesenheit) {
+	public AnmeldungTagesschule saveAnmeldungTagesschule(
+		@Nonnull AnmeldungTagesschule betreuung, @Nonnull Boolean isAbwesenheit
+	) {
+		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
+
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
@@ -1027,6 +1036,21 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			Collection<Betreuung> pendenzen = getPendenzenForInstitution(stammdaten.getInstitution());
 			if (CollectionUtils.isNotEmpty(pendenzen) && stammdaten.getSendMailWennOffenePendenzen()) {
 				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
+			}
+		}
+	}
+
+	private void checkNotKorrekturmodusWithFerieninselOnly(@Nonnull Gesuch gesuch) {
+		// Im Korrekturmodus Gemeinde darf bei nur-Ferieninsel-Gesuchen keine Betreuung hinzufuegt
+		// werden, da sonst die FinSit ungueltig wird, diese aber durch die Gemeinde nicht korrigiert
+		// werden kann
+		final boolean korrekturmodusGemeinde = EbeguUtil.isKorrekturmodusGemeinde(gesuch);
+		if (korrekturmodusGemeinde) {
+			List<AbstractPlatz> allPlaetze = gesuch.extractAllPlaetze();
+			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
+			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
+				throw new EbeguRuntimeException(KibonLogLevel.NONE, "checkNotKorrekturmodusWithFerieninselOnly",
+					ErrorCodeEnum.ERROR_KORREKTURMODUS_FI_ONLY);
 			}
 		}
 	}
