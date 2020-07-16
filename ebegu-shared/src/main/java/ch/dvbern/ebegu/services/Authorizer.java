@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -216,6 +217,10 @@ public interface Authorizer {
 	 */
 	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
 
+	boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft);
+
+	boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft);
+
 	boolean isReadAuthorizationInstitution(@Nullable Institution institution);
 
 	boolean isWriteAuthorizationInstitution(@Nullable Institution institution);
@@ -227,6 +232,10 @@ public interface Authorizer {
 	void checkReadAuthorizationInstitution(@Nullable Institution institution);
 
 	void checkWriteAuthorizationInstitution(@Nullable Institution institution);
+
+	void checkReadAuthorization(@Nullable Traegerschaft traegerschaft);
+
+	void checkWriteAuthorization(@Nullable Traegerschaft traegerschaft);
 
 	void checkReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
 

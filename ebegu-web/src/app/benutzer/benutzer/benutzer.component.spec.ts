@@ -42,8 +42,6 @@ describe('BenutzerComponent', () => {
                 'inactivateBenutzer', 'reactivateBenutzer',
             ]);
 
-        const applicationPropertySpy = jasmine
-            .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getByName']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
         const i18nServiceSpy = jasmine
@@ -65,10 +63,6 @@ describe('BenutzerComponent', () => {
                 {
                     provide: BenutzerRS,
                     useValue: benutzerSpy,
-                },
-                {
-                    provide: ApplicationPropertyRS,
-                    useValue: applicationPropertySpy,
                 },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: APP_BASE_HREF, useValue: '/'},

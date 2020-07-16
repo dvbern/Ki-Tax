@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -88,7 +89,8 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("benutzer")
 @Stateless
-@Api(description = "Resource für die Verwaltung der Benutzer (User)")
+@Api("Resource für die Verwaltung der Benutzer (User)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class BenutzerResource {
 
 	@Inject
@@ -310,26 +312,6 @@ public class BenutzerResource {
 		resultDTO.setPaginationDTO(pagination);
 
 		return resultDTO;
-	}
-
-	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen  E-Mail in der Datenbank.",
-		response = JaxBenutzer.class)
-	@Nullable
-	@GET
-	@Path("/email/{email}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
-	public JaxBenutzer findBenutzerByEmail(
-		@Nonnull @NotNull @PathParam("email") String email) {
-
-		requireNonNull(email);
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerByEmail(email);
-		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
-
-		return benutzerOptional
-			.map(benutzer -> converter.benutzerToJaxBenutzer(benutzer))
-			.orElse(null);
 	}
 
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",

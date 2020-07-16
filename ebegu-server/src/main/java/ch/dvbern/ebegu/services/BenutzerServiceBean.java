@@ -187,6 +187,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde
 	) {
 		requireNonNull(gemeinde);
+		authorizer.checkWriteAuthorization(gemeinde);
 
 		return createBenutzerFromEmail(
 			adminMail,
@@ -199,6 +200,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
 		requireNonNull(institution);
+		authorizer.checkWriteAuthorizationInstitution(institution);
 
 		return createBenutzerFromEmail(
 			adminMail,
@@ -211,6 +213,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
+		authorizer.checkWriteAuthorization(traegerschaft);
 
 		Benutzer admin = createBenutzerFromEmail(
 			adminMail,
@@ -278,6 +281,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Override
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
+		authorizer.checkWriteAuthorization(eingeladener);
 		try {
 			if (eingeladener.getStatus() != BenutzerStatus.EINGELADEN) {
 				throw new EbeguRuntimeException(
@@ -419,7 +423,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				.createQuery(query)
 				.setLockMode(PESSIMISTIC_WRITE)
 				.getSingleResult());
-
 			return benutzer;
 		} catch (NoResultException nre) {
 			return Optional.empty();
@@ -446,12 +449,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID) {
 		requireNonNull(externalUUID, "externalUUID muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, externalUUID, Benutzer_.externalUUID);
-	}
-
-	@Nonnull
-	@Override
-	public Collection<Benutzer> getAllBenutzer() {
-		return new ArrayList<>(criteriaQueryHelper.getAll(Benutzer.class));
 	}
 
 	@Nonnull
@@ -546,7 +543,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);
 
-		return persistence.getCriteriaResults(query);
+		final List<Benutzer> benutzerList = persistence.getCriteriaResults(query);
+		benutzerList.forEach(benutzer -> authorizer.checkReadAuthorization(benutzer));
+		return benutzerList;
 	}
 
 	/**
@@ -560,6 +559,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
 		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		authorizer.checkReadAuthorization(gemeinde);
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -595,6 +595,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Institution institution) {
 		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		authorizer.checkReadAuthorizationInstitution(institution);
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -1333,6 +1334,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Collection<BerechtigungHistory> getBerechtigungHistoriesForBenutzer(@Nonnull Benutzer benutzer) {
 		requireNonNull(benutzer);
+		authorizer.checkReadAuthorization(benutzer);
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BerechtigungHistory> query = cb.createQuery(BerechtigungHistory.class);
 		Root<BerechtigungHistory> root = query.from(BerechtigungHistory.class);

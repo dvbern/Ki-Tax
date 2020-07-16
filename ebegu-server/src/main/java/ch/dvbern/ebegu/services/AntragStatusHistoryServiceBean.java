@@ -124,6 +124,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 
 	@Override
 	public void removeAllAntragStatusHistoryFromGesuch(@Nonnull Gesuch gesuch) {
+		authorizer.checkWriteAuthorization(gesuch);
 		Collection<AntragStatusHistory> antragStatusHistoryFromGesuch = findAllAntragStatusHistoryByGesuch(gesuch);
 		for (AntragStatusHistory antragStatusHistory : antragStatusHistoryFromGesuch) {
 			persistence.remove(AntragStatusHistory.class, antragStatusHistory.getId());

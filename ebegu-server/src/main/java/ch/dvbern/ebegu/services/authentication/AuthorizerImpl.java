@@ -1088,6 +1088,27 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
+		// Aktuell sind keine Einschraenkungen zum Lesen von Traegerschaften bekannt.
+		return true;
+	}
+
+	@Override
+	public boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return true;
+		}
+		if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			// Problem hier: Traegerschaft gehoert aktuell nicht zu einem Mandanten!
+			return true;
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
+			return traegerschaft.equals(principalBean.getBenutzer().getCurrentBerechtigung().getTraegerschaft());
+		}
+		return false;
+	}
+
+	@Override
 	public boolean isReadAuthorizationInstitution(@Nullable Institution institution) {
 		if (institution == null) {
 			return true;
@@ -1265,6 +1286,26 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkMandantMatches(institution);
 		if (!isWriteAuthorizationInstitution(institution)) {
 			throwViolation(institution);
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return;
+		}
+		if (!isReadAuthorization(traegerschaft)) {
+			throwViolation(traegerschaft);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return;
+		}
+		if (!isWriteAuthorization(traegerschaft)) {
+			throwViolation(traegerschaft);
 		}
 	}
 
