@@ -142,6 +142,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	public Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit) {
 		Objects.requireNonNull(betreuung);
+		authorizer.checkWriteAuthorization(betreuung);
 
 		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
 
@@ -167,22 +168,25 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@Override
 	public AnmeldungTagesschule saveAnmeldungTagesschule(
-		@Nonnull AnmeldungTagesschule betreuung, @Nonnull Boolean isAbwesenheit
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule, @Nonnull Boolean isAbwesenheit
 	) {
-		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
+		Objects.requireNonNull(anmeldungTagesschule);
+		authorizer.checkWriteAuthorization(anmeldungTagesschule);
 
-		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+		checkNotKorrekturmodusWithFerieninselOnly(anmeldungTagesschule.extractGesuch());
+
+		boolean isNew = anmeldungTagesschule.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
-		final AnmeldungTagesschule mergedBetreuung = persistence.merge(betreuung);
+		updateGueltigFlagOnPlatzAndVorgaenger(anmeldungTagesschule);
+		final AnmeldungTagesschule mergedBetreuung = persistence.merge(anmeldungTagesschule);
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(betreuung.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(anmeldungTagesschule.getId(), b.getId()))
 			.forEach(b -> {
-				b.copyAnmeldung(betreuung);
+				b.copyAnmeldung(anmeldungTagesschule);
 				persistence.merge(b);
 			});
 
@@ -205,20 +209,24 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	@Override
-	public AnmeldungFerieninsel saveAnmeldungFerieninsel(@Nonnull AnmeldungFerieninsel betreuung,
-		@Nonnull Boolean isAbwesenheit) {
-		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+	public AnmeldungFerieninsel saveAnmeldungFerieninsel(
+		@Nonnull AnmeldungFerieninsel anmeldung, @Nonnull Boolean isAbwesenheit
+	) {
+		Objects.requireNonNull(anmeldung);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		boolean isNew = anmeldung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
-		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(betreuung);
+		updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
+		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(anmeldung);
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(betreuung.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(anmeldung.getId(), b.getId()))
 			.forEach(b -> {
-				b.copyAnmeldung(betreuung);
+				b.copyAnmeldung(anmeldung);
 				persistence.merge(b);
 			});
 
@@ -351,16 +359,18 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung betreuung) {
-		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
-		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
-		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
-		if (betreuung.getBetreuungsangebotTyp().isTagesschule()) {
+	public AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung) {
+		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		if (anmeldung.getBetreuungsangebotTyp().isTagesschule()) {
 			AnmeldungTagesschule anmeldungTagesschule =
-				findAnmeldungTagesschule(betreuung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+				findAnmeldungTagesschule(anmeldung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
 				"anmeldungSchulamtModuleAkzeptieren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"AnmeldungTagesschule: " + betreuung.getId()));
+				"AnmeldungTagesschule: " + anmeldung.getId()));
 			try {
 				// Bei Akzeptieren einer Anmeldung muss eine E-Mail geschickt werden
 				GemeindeStammdaten gemeindeStammdaten =
@@ -371,7 +381,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,
 					"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
-					betreuung.getId());
+					anmeldung.getId());
 			}
 			generateAnmeldebestaetigungDokument(persistedBetreuung, false);
 		}
@@ -401,17 +411,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public AbstractAnmeldung anmeldungSchulamtAblehnen(@Valid @Nonnull AbstractAnmeldung betreuung) {
-		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
-		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT);
-		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
+	public AbstractAnmeldung anmeldungSchulamtAblehnen(@Valid @Nonnull AbstractAnmeldung anmeldung) {
+		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
 		boolean tagis = false;
-		if (betreuung.getBetreuungsangebotTyp().isTagesschule()) {
+		if (anmeldung.getBetreuungsangebotTyp().isTagesschule()) {
 			AnmeldungTagesschule anmeldungTagesschule =
-				findAnmeldungTagesschule(betreuung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+				findAnmeldungTagesschule(anmeldung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
 					"anmeldungSchulamtModuleAkzeptieren",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					"AnmeldungTagesschule: " + betreuung.getId()));
+					"AnmeldungTagesschule: " + anmeldung.getId()));
 			tagis = anmeldungTagesschule.isTagesschuleTagi();
 		}
 		try {
@@ -424,17 +436,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e,
 				"Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
-				betreuung.getId());
+				anmeldung.getId());
 		}
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	public AbstractAnmeldung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull AbstractAnmeldung betreuung) {
-		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
-		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
-		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
+	public AbstractAnmeldung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull AbstractAnmeldung anmeldung) {
+		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
 		return persistedBetreuung;
 	}
 

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -67,8 +68,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("mahnung")
 @Stateless
-@Api(description = "Resource zum Verwalten eines Mahnlaufes")
-@PermitAll
+@Api("Resource zum Verwalten eines Mahnlaufes")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class MahnungResource {
 
 	@Inject
@@ -118,6 +119,7 @@ public class MahnungResource {
 	@Path("/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxMahnung> findMahnungen(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
@@ -168,6 +170,7 @@ public class MahnungResource {
 	@Path("/bemerkungen/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public String getInitialeBemerkungen(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
 		String gesuchID = converter.toEntityId(gesuchJAXPId);

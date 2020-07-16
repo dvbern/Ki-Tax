@@ -44,8 +44,8 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("mandanten")
 @Stateless
-@Api(description = "Resource für Mandanten")
-@PermitAll
+@Api("Resource für Mandanten")
+@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class MandantResource {
 
 	@Inject
@@ -65,10 +65,7 @@ public class MandantResource {
 		String mandantID = converter.toEntityId(mandantJAXPId);
 		Optional<Mandant> optional = mandantService.findMandant(mandantID);
 
-		if (!optional.isPresent()) {
-			return null;
-		}
-		return converter.mandantToJAX(optional.get());
+		return optional.map(mandant -> converter.mandantToJAX(mandant)).orElse(null);
 	}
 
 	@ApiOperation(value = "Gibt den ersten Mandanten aus der Datenbank zurueck. Convenience-Methode, da im Moment " +

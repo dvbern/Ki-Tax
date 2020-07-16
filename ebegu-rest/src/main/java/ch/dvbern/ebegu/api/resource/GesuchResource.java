@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -79,15 +80,31 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.*;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Resource fuer Gesuch
  */
 @Path("gesuche")
 @Stateless
-@Api(description = "Resource für Anträge (Erstgesuch oder Mutation)")
-@PermitAll
+@Api("Resource für Anträge (Erstgesuch oder Mutation)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GesuchResource.class);
@@ -178,6 +195,7 @@ public class GesuchResource {
 	@Path("/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxGesuch findGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
@@ -264,6 +282,7 @@ public class GesuchResource {
 	@Path("/institution/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION})
 	public JaxGesuch findGesuchForInstitution(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
@@ -403,6 +422,7 @@ public class GesuchResource {
 	@Path("/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxAntragDTO> getAllAntragDTOForDossier(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
 		Objects.requireNonNull(dossierJAXPId.getId());
@@ -804,6 +824,7 @@ public class GesuchResource {
 	@Path("/gesuchBetreuungenStatus/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response findGesuchBetreuungenStatus(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
@@ -872,6 +893,7 @@ public class GesuchResource {
 	@Path("/newest/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response isNeuestesGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId))
@@ -889,6 +911,7 @@ public class GesuchResource {
 	@Path("/newestid/gesuchsperiode/{gesuchsperiodeId}/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response getIdOfNewestGesuch(@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJaxId) {
 
@@ -924,6 +947,7 @@ public class GesuchResource {
 	@Path("/newestid/fall/{fallId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response getIdOfNewestGesuchForDossier(
 		@Nonnull @NotNull @PathParam("fallId") JaxId dossierJaxId) {
 
@@ -970,6 +994,7 @@ public class GesuchResource {
 	@Path("/massenversand/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.WILDCARD)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<String> getMassenversandTexteForGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdJax) {
 		Validate.notNull(gesuchIdJax.getId());
 		return gesuchService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));

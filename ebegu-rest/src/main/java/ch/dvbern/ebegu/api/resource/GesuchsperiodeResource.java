@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -78,8 +79,8 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 @Path("gesuchsperioden")
 @Stateless
-@Api(description = "Resource welche zum bearbeiten der Gesuchsperiode dient")
-@PermitAll
+@Api("Resource welche zum bearbeiten der Gesuchsperiode dient")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchsperiodeResource {
 
 	@Inject
@@ -125,6 +126,7 @@ public class GesuchsperiodeResource {
 	@Path("/gesuchsperiode/{gesuchsperiodeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public JaxGesuchsperiode findGesuchsperiode(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId) {
 
@@ -142,6 +144,7 @@ public class GesuchsperiodeResource {
 	@Path("/newestGesuchsperiode/")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public JaxGesuchsperiode findNewestGesuchsperiode() {
 		Optional<Gesuchsperiode> optional = gesuchsperiodeService.findNewestGesuchsperiode();
 		return optional.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode)).orElse(null);
@@ -168,6 +171,7 @@ public class GesuchsperiodeResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllGesuchsperioden() {
 		return gesuchsperiodeService.getAllGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
@@ -184,6 +188,7 @@ public class GesuchsperiodeResource {
 	@Path("/active")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden() {
 		return gesuchsperiodeService.getAllActiveGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
@@ -197,6 +202,7 @@ public class GesuchsperiodeResource {
 	@Path("/unclosed")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
 		return gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
@@ -214,6 +220,7 @@ public class GesuchsperiodeResource {
 	@Path("/unclosed/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
 		@Nonnull @PathParam("dossierId") String dossierId) {
 
@@ -233,6 +240,7 @@ public class GesuchsperiodeResource {
 	@Path("/gemeinde/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
 		@Nonnull @PathParam("gemeindeId") String gemeindeId,
 		@Nullable @QueryParam("dossierId") String dossierId) {
@@ -253,6 +261,7 @@ public class GesuchsperiodeResource {
 	@Path("/aktive/gemeinde/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivePeriodenForGemeinde(
 		@Nonnull @PathParam("gemeindeId") String gemeindeId,
 		@Nullable @QueryParam("dossierId") String dossierId) {
@@ -306,6 +315,7 @@ public class GesuchsperiodeResource {
 	@Path("/downloadGesuchsperiodeDokument/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public Response downloadGesuchsperiodeDokument(
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
@@ -320,12 +330,12 @@ public class GesuchsperiodeResource {
 
 		if (content != null && content.length > 0) {
 			try {
-				if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+				if(dokumentTyp == DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
 					//noinspection StringConcatenationMissingWhitespace
 					return RestUtil.buildDownloadResponse(true, "erlaeuterung" + sprache + ".pdf",
 						"application/octet-stream", content);
 				}
-				else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+				else if (dokumentTyp == DokumentTyp.VORLAGE_MERKBLATT_TS){
 					//noinspection StringConcatenationMissingWhitespace
 					return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".docx",
 						"application/octet-stream", content);

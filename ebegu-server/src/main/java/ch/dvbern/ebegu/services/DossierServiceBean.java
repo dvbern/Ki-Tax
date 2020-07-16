@@ -160,6 +160,8 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		final Dossier dossierToRemove = optDossier.orElseThrow(()
 			-> new EbeguEntityNotFoundException("removeDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 
+		authorizer.checkWriteAuthorizationDossier(dossierToRemove);
+
 		gesuchService.getAllGesuchIDsForDossier(dossierToRemove.getId())
 			.forEach(gesuch -> gesuchService.removeGesuch(gesuch, deletionCause));
 
@@ -191,6 +193,8 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			gemeindeId));
 		//noinspection ConstantConditions
 
+		authorizer.checkReadAuthorization(gemeinde);
+
 		Objects.requireNonNull(fallOptional.get());
 		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
@@ -206,6 +210,8 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Override
 	public boolean hasDossierAnyMitteilung(@Nonnull Dossier dossier) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+
 		final Collection<Mitteilung> mitteilungenForCurrentRolle =
 			mitteilungService.getMitteilungenForCurrentRolle(dossier);
 		return !mitteilungenForCurrentRolle.isEmpty();
@@ -217,6 +223,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		final Dossier dossier =
 			findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		authorizer.checkWriteAuthorizationDossier(dossier);
 		dossier.setVerantwortlicherBG(benutzer);
 
 		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern
@@ -231,6 +238,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		final Dossier dossier =
 			findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		authorizer.checkWriteAuthorizationDossier(dossier);
 		dossier.setVerantwortlicherTS(benutzer);
 
 		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern
@@ -242,6 +250,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		authorizer.checkWriteAuthorizationDossier(dossier);
 		LocalDate erstesEinreichungsdatum = null;
 		List<Gesuch> gesuchList =
 			gesuchService.getAllGesucheForDossierAndPeriod(dossier, gesuchsperiode);

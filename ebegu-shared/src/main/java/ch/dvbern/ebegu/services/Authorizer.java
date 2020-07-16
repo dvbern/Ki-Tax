@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
@@ -133,7 +132,7 @@ public interface Authorizer {
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer die betreuung schreibend bearbeiten darf
 	 */
-	void checkWriteAuthorization(@Nullable Betreuung betreuungToRemove);
+	void checkWriteAuthorization(@Nullable AbstractPlatz abstractPlatz);
 
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer den Benutzer schreibend bearbeiten darf

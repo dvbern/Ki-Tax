@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBContext;
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -79,8 +81,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("einkommensverschlechterung")
 @Stateless
-@Api(description = "Resource fuer Einkommensverschlechterung (pro Gesuchsteller)")
-@PermitAll
+@Api("Resource fuer Einkommensverschlechterung (pro Gesuchsteller)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class EinkommensverschlechterungResource {
 
 	@Inject
@@ -142,6 +144,7 @@ public class EinkommensverschlechterungResource {
 	@Path("/{ekvContainerId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxEinkommensverschlechterungContainer findEinkommensverschlechterungContainer(
 		@Nonnull @NotNull @PathParam("ekvContainerId") JaxId ekvContainerId) {
 
@@ -163,6 +166,7 @@ public class EinkommensverschlechterungResource {
 	@Path("/forGesuchsteller/{gesuchstellerId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxEinkommensverschlechterungContainer findEkvContainerForGesuchsteller(
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId) {
 
@@ -185,6 +189,7 @@ public class EinkommensverschlechterungResource {
 	@Path("/calculate/{basisJahrPlus}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response calculateEinkommensverschlechterung(
 		@Nonnull @NotNull @PathParam("basisJahrPlus") String basisJahrPlus,
 		@Nonnull @NotNull @Valid JaxGesuch gesuchJAXP,
@@ -213,6 +218,7 @@ public class EinkommensverschlechterungResource {
 	@Path("/calculateTemp/{basisJahrPlus}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response calculateEinkommensverschlechterungTemp(
 		@Nonnull @NotNull @PathParam("basisJahrPlus") String basisJahrPlus,
 		@Nonnull @NotNull @Valid JaxFinanzModel jaxFinSitModel,
@@ -222,7 +228,9 @@ public class EinkommensverschlechterungResource {
 		Objects.requireNonNull(basisJahrPlus);
 		Gesuch gesuch = new Gesuch();
 		gesuch.initFamiliensituationContainer();
-		gesuch.extractFamiliensituation().setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS1() != null) {
 			gesuch.setGesuchsteller1(new GesuchstellerContainer());
 			//noinspection ConstantConditions
@@ -271,6 +279,7 @@ public class EinkommensverschlechterungResource {
 	@Path("/calculateDifferenz/{jahr1}/{jahr2}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response calculateProzentualeDifferenz(
 		@Nonnull @NotNull @PathParam("jahr1") String sJahr1,
 		@Nonnull @NotNull @PathParam("jahr2") String sJahr2,

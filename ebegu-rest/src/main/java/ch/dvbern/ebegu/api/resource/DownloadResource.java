@@ -92,7 +92,7 @@ import static java.util.Objects.requireNonNull;
 @Path("blobs/temp")
 @Stateless
 @Api(description = "Resource fuer den Download von Dokumenten")
-@PermitAll
+@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class DownloadResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DownloadResource.class.getSimpleName());

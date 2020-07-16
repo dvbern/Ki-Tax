@@ -76,8 +76,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("dossier")
 @Stateless
-@Api(description = "Resource für Dossier (Fall in einer Gemeinde)")
-@PermitAll
+@Api("Resource für Dossier (Fall in einer Gemeinde)")
+@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class DossierResource {
 
 	@Inject
@@ -135,6 +135,7 @@ public class DossierResource {
 	@Path("/id/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxDossier findDossier(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
 		Objects.requireNonNull(dossierJAXPId.getId());
@@ -151,6 +152,7 @@ public class DossierResource {
 	@Path("/fall/{fallId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxDossier> findDossiersByFall(
 		@Nonnull @NotNull @Valid @PathParam("fallId") JaxId fallJaxId) {
 
@@ -173,6 +175,7 @@ public class DossierResource {
 	@Path("/newestCurrentBesitzer")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxDossier findNewestDossierByCurrentBenutzerAsBesitzer() {
 		Optional<Fall> optFall = fallService.findFallByCurrentBenutzerAsBesitzer();
 		// Beim ersten Einloggen ist der Fall nie vorhanden, dies ist also ein erwarteter Fehler. Wir loggen es nicht.

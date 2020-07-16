@@ -50,8 +50,8 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("institutionstammdaten")
 @Stateless
-@Api(description = "Resource für InstitutionsStammdaten (Daten zu einem konkreten Betreuungsangebot einer Institution)")
-@PermitAll
+@Api("Resource für InstitutionsStammdaten (Daten zu einem konkreten Betreuungsangebot einer Institution)")
+@PermitAll // Grundsaetzliche fuer alle Rollen (nur Lesend): Datenabhaengig. -> Authorizer
 public class InstitutionStammdatenResource {
 
 	@Inject

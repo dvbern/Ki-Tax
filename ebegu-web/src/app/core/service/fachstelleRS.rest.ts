@@ -31,42 +31,6 @@ export class FachstelleRS {
         this.serviceURL = `${REST_API}fachstellen`;
     }
 
-    public updateFachstelle(fachstelle: TSFachstelle): IPromise<TSFachstelle> {
-        return this.saveFachstelle(fachstelle);
-    }
-
-    public createFachstelle(fachstelle: TSFachstelle): IPromise<TSFachstelle> {
-        return this.saveFachstelle(fachstelle);
-    }
-
-    private saveFachstelle(fachstelle: TSFachstelle): IPromise<TSFachstelle> {
-        let fachstelleObject = {};
-        fachstelleObject = this.ebeguRestUtil.fachstelleToRestObject(fachstelleObject, fachstelle);
-
-        return this.http.put(this.serviceURL, fachstelleObject).then((response: any) => {
-            this.log.debug('PARSING fachstelle REST object ', response.data);
-            return this.ebeguRestUtil.parseFachstelle(new TSFachstelle(), response.data);
-        });
-    }
-
-    public removeFachstelle(fachstelleID: string): IHttpPromise<any> {
-        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(fachstelleID)}`);
-    }
-
-    public findFachstelle(fachstelleID: string): IPromise<TSFachstelle> {
-        return this.http.get(`${this.serviceURL}/${encodeURIComponent(fachstelleID)}`)
-            .then((response: any) => {
-                this.log.debug('PARSING fachstelle REST object ', response.data);
-                return this.ebeguRestUtil.parseFachstelle(new TSFachstelle(), response.data);
-            });
-    }
-
-    public getAllFachstellen(): IPromise<TSFachstelle[]> {
-        return this.http.get(this.serviceURL).then(
-            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
-        );
-    }
-
     public getAnspruchFachstellen(): IPromise<TSFachstelle[]> {
         return this.http.get(`${this.serviceURL}/anspruch`).then(
             (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),

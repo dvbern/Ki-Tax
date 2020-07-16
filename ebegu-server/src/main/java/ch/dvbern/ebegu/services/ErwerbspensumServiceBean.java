@@ -59,9 +59,11 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	@Nonnull
 	@Override
 	public ErwerbspensumContainer saveErwerbspensum(
-		@Valid @Nonnull ErwerbspensumContainer erwerbspensumContainer,
-		Gesuch gesuch) {
+		@Valid @Nonnull ErwerbspensumContainer erwerbspensumContainer, @Nonnull Gesuch gesuch
+	) {
 		Objects.requireNonNull(erwerbspensumContainer);
+		authorizer.checkWriteAuthorization(gesuch);
+
 		final ErwerbspensumContainer mergedErwerbspensum = persistence.merge(erwerbspensumContainer);
 		mergedErwerbspensum.getGesuchsteller().addErwerbspensumContainer(mergedErwerbspensum);
 		wizardStepService.updateSteps(
@@ -120,6 +122,8 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	@Override
 	public void removeErwerbspensum(@Nonnull String erwerbspensumContainerID, Gesuch gesuch) {
 		Objects.requireNonNull(erwerbspensumContainerID);
+		authorizer.checkWriteAuthorization(gesuch);
+
 		ErwerbspensumContainer ewpCont = this.findErwerbspensum(erwerbspensumContainerID).orElseThrow(
 			() -> new EbeguEntityNotFoundException(
 				"removeErwerbspensum",
@@ -137,6 +141,7 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 
 	@Override
 	public boolean isErwerbspensumRequired(@Nonnull Gesuch gesuch) {
+		authorizer.checkReadAuthorization(gesuch);
 		return gesuch.extractAllBetreuungen().stream()
 			.anyMatch(this::isErwerbspensumRequired);
 	}

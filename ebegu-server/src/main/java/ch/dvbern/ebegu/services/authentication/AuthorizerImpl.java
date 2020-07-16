@@ -37,7 +37,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -635,13 +634,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorization(Betreuung betreuungToRemove) {
-		if (betreuungToRemove == null) {
+	public void checkWriteAuthorization(AbstractPlatz abstractPlatz) {
+		if (abstractPlatz == null) {
 			return;
 		}
-		Gesuch gesuch = extractGesuch(betreuungToRemove);
+		Gesuch gesuch = extractGesuch(abstractPlatz);
 		if (!isWriteAuthorized(gesuch)) {
-			throwViolation(betreuungToRemove);
+			throwViolation(abstractPlatz);
 		}
 	}
 

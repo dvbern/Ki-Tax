@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -63,8 +64,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("gesuchsteller")
 @Stateless
-@Api(description = "Resource für Gesuchsteller")
-@PermitAll
+@Api("Resource für Gesuchsteller")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchstellerResource {
 
 	@Inject
@@ -121,6 +122,7 @@ public class GesuchstellerResource {
 	@Path("/id/{gesuchstellerId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxGesuchstellerContainer findGesuchsteller(
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
 

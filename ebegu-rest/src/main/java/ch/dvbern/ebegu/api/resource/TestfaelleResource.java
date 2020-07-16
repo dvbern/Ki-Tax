@@ -53,7 +53,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("testfaelle")
 @Stateless
-@Api(description = "Resource zur Erstellung von (vordefinierten) Testfaellen")
+@Api("Resource zur Erstellung von (vordefinierten) Testfaellen")
 @RolesAllowed(SUPER_ADMIN)
 public class TestfaelleResource {
 

@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -242,10 +243,8 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		JaxKindContainer jaxKind = converter.kindContainerToJAX(returnedKind);
 		JaxPensumFachstelle jaxPensumFachstelle = jaxKind.getKindGS().getPensumFachstelle();
 		Assert.assertNotNull(jaxPensumFachstelle);
-		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(
-			jaxPensumFachstelle.getFachstelle(),
-			DUMMY_URIINFO,
-			DUMMY_RESPONSE));
+		persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
+		jaxPensumFachstelle.setFachstelle(jaxPensumFachstelle.getFachstelle());
 		PensumFachstelle returnedPensumFachstelle = persistence.merge(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);

@@ -57,7 +57,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
  */
 @Path("historization")
 @Stateless
-@Api(description = "Resource für (technische) Historisierung")
+@Api("Resource für (technische) Historisierung")
 @RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 public class HistorizationResource {
 

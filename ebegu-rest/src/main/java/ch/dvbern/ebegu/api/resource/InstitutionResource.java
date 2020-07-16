@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -106,8 +107,8 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("institutionen")
 @Stateless
-@Api(description = "Resource für Institutionen (Anbieter eines Betreuungsangebotes)")
-@PermitAll
+@Api("Resource für Institutionen (Anbieter eines Betreuungsangebotes)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class InstitutionResource {
 
 	@Inject
@@ -334,6 +335,7 @@ public class InstitutionResource {
 	@Path("/{institutionId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public JaxInstitution findInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
@@ -365,6 +367,7 @@ public class InstitutionResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxInstitution> getAllInstitutionen() {
 		return institutionService.getAllInstitutionen().stream()
 			.map(inst -> converter.institutionToJAX(inst))
@@ -378,6 +381,7 @@ public class InstitutionResource {
 	@Path("/editable/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxInstitution> getInstitutionenEditableForCurrentBenutzer() {
 		return institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.map(inst -> converter.institutionToJAX(inst))
@@ -391,6 +395,7 @@ public class InstitutionResource {
 	@Path("/editable/currentuser/listdto")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxInstitutionListDTO> getInstitutionenListDTOEditableForCurrentBenutzer() {
 		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap =
 			institutionService.getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(true);
@@ -406,6 +411,7 @@ public class InstitutionResource {
 	@Path("/readable/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxInstitution> getInstitutionenReadableForCurrentBenutzer() {
 		return institutionService.getInstitutionenReadableForCurrentBenutzer(false).stream()
 			.map(inst -> converter.institutionToJAX(inst))
@@ -419,6 +425,7 @@ public class InstitutionResource {
 	@Path("/hasEinladungen/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response hasInstitutionenInStatusEingeladenForCurrentBenutzer() {
 		long anzahl = institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.filter(inst -> inst.getStatus() == InstitutionStatus.EINGELADEN)
@@ -464,6 +471,7 @@ public class InstitutionResource {
 	@Path("/isStammdatenCheckRequired/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response isStammdatenCheckRequiredForCurrentBenutzer() {
 		long anzahl = institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.filter(Institution::isStammdatenCheckRequired)

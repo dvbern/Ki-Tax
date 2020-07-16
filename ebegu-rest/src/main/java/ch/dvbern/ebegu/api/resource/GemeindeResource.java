@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -54,11 +55,11 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeRegistrierung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
@@ -86,8 +87,8 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.FerieninselStammdatenService;
 import ch.dvbern.ebegu.services.ExternalClientService;
+import ch.dvbern.ebegu.services.FerieninselStammdatenService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
@@ -115,8 +116,8 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("gemeinde")
 @Stateless
-@Api(description = "Resource für Gemeinden")
-@PermitAll
+@Api("Resource für Gemeinden")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GemeindeResource {
 
 	@Inject
@@ -217,6 +218,7 @@ public class GemeindeResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGemeinde> getAllGemeinden() {
 		return gemeindeService.getAllGemeinden().stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
@@ -231,6 +233,7 @@ public class GemeindeResource {
 	@Path("/active")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxGemeinde> getAktiveGemeinden() {
 		return gemeindeService.getAktiveGemeinden().stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
@@ -243,6 +246,7 @@ public class GemeindeResource {
 	@Path("/id/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public JaxGemeinde findGemeinde(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
@@ -260,6 +264,7 @@ public class GemeindeResource {
 	@Path("/stammdaten/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxGemeindeStammdaten getGemeindeStammdaten(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
@@ -484,6 +489,7 @@ public class GemeindeResource {
 	@Path("/supported/image")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentlich
 	public Response isSupportedImage(@Nonnull @NotNull MultipartFormDataInput input) {
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 		Validate.notEmpty(fileList, "Need to upload something");
@@ -501,6 +507,7 @@ public class GemeindeResource {
 	@Path("/logo/data/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@PermitAll // Oeffentliche Daten
 	public Response downloadLogo(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
@@ -527,6 +534,7 @@ public class GemeindeResource {
 	@Path("/unregistered")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxBfsGemeinde> getUnregisteredBfsGemeinden() {
 		Mandant bern = mandantService.getFirst(); //TODO (later) Change to real mandant!
 		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
@@ -541,6 +549,7 @@ public class GemeindeResource {
 	@Path("/allBfs")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxBfsGemeinde> getAllBfsGemeinden() {
 		return gemeindeService.getAllBfsGemeinden().stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
@@ -554,6 +563,7 @@ public class GemeindeResource {
 	@Path("/hasEinladungen/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public Response hasGemeindenInStatusEingeladenForCurrentBenutzer() {
 		final Benutzer benutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -579,6 +589,7 @@ public class GemeindeResource {
 	@Path("/gemeindeRegistrierung/{gemeindeId}/{gemeindenTSId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Fuer Registrierungsprozess
 	public List<JaxGemeindeRegistrierung> getGemeindenRegistrierung(@Nullable @PathParam("gemeindeId") JaxId gemeindeBGJAXPId,
 		@Nullable @PathParam("gemeindenTSId") String gemeindenTSIdList) {
 		List<JaxGemeindeRegistrierung> gemeindeRegistrierungList = new ArrayList<>();
@@ -659,6 +670,7 @@ public class GemeindeResource {
 	@Path("/activeAndSchulverbund")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Fuer Registrierungsprozess
 	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
 		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeinden().stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
@@ -821,6 +833,7 @@ public class GemeindeResource {
 	@Path("/existGemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public boolean existDokument(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,

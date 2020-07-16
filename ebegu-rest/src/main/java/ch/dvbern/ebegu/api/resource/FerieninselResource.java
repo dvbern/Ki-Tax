@@ -56,8 +56,8 @@ import io.swagger.annotations.ApiOperation;
 
 @Path("ferieninselStammdaten")
 @Stateless
-@Api(description = "Resource fuer die Verwaltung von FerieninselStammdaten")
-@PermitAll
+@Api("Resource fuer die Verwaltung von FerieninselStammdaten")
+@PermitAll // Oeffentliche Daten
 public class FerieninselResource {
 
 

@@ -59,86 +59,22 @@ describe('fachstelleRS', () => {
     });
 
     describe('API Usage', () => {
-        describe('findFachstelle', () => {
-            it('should return the Fachstelle by id', () => {
-                const url = `${fachstelleRS.serviceURL}/${mockFachstelle.id}`;
-                $httpBackend.expectGET(url).respond(mockFachstelleRest);
 
-                let foundFachstelle: TSFachstelle;
-                fachstelleRS.findFachstelle(mockFachstelle.id).then(result => {
-                    foundFachstelle = result;
-                });
-                $httpBackend.flush();
-                checkFieldValues(foundFachstelle, mockFachstelle);
-            });
-
-        });
-
-        describe('createFachstelle', () => {
-            it('should create an fachstelle', () => {
-                let savedFachstelle: TSFachstelle;
-                $httpBackend.expectPUT(fachstelleRS.serviceURL, mockFachstelleRest).respond(mockFachstelleRest);
-                fachstelleRS.createFachstelle(mockFachstelle).then(result => {
-                    savedFachstelle = result;
-                });
-                $httpBackend.flush();
-                checkFieldValues(savedFachstelle, mockFachstelle);
-            });
-        });
-
-        describe('updateFachstelle', () => {
-            it('should update an fachstelle', () => {
-                mockFachstelle.name = TSFachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE;
-                mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
-                let updatedFachstelle: TSFachstelle;
-                $httpBackend.expectPUT(fachstelleRS.serviceURL, mockFachstelleRest).respond(mockFachstelleRest);
-                fachstelleRS.updateFachstelle(mockFachstelle).then(result => {
-                    updatedFachstelle = result;
-                });
-                $httpBackend.flush();
-                checkFieldValues(updatedFachstelle, mockFachstelle);
-            });
-        });
-
-        describe('removeFachstelle', () => {
-            it('should remove an fachstelle', () => {
-                const httpOk = 200;
-                $httpBackend.expectDELETE(`${fachstelleRS.serviceURL}/${encodeURIComponent(mockFachstelle.id)}`)
-                    .respond(httpOk);
-
-                let deleteResult: any;
-                fachstelleRS.removeFachstelle(mockFachstelle.id)
-                    .then(result => {
-                        deleteResult = result;
-                    });
-                $httpBackend.flush();
-                expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(httpOk);
-            });
-        });
-
-        describe('getAllFachstellen', () => {
-            it('should return all Fachstellen', () => {
+        describe('getAnspruchFachstellen', () => {
+            it('should return all Anspruch Fachstellen', () => {
                 const fachstellenRestArray = [mockFachstelleRest, mockFachstelleRest];
-                $httpBackend.expectGET(fachstelleRS.serviceURL).respond(fachstellenRestArray);
+                $httpBackend.expectGET(fachstelleRS.serviceURL + '/anspruch').respond(fachstellenRestArray);
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
 
-                fachstelleRS.getAllFachstellen();
+                fachstelleRS.getAnspruchFachstellen();
                 $httpBackend.flush();
                 // tslint:disable-next-line:no-unbound-method
-                expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL);
+                expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL + 'anspruch');
                 // tslint:disable-next-line:no-unbound-method
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });
         });
 
     });
-
-    function checkFieldValues(fachstelle1: TSFachstelle, fachstelle2: TSFachstelle): void {
-        expect(fachstelle1).toBeDefined();
-        expect(fachstelle1.name).toEqual(fachstelle2.name);
-        expect(fachstelle1.id).toEqual(fachstelle2.id);
-    }
-
 });

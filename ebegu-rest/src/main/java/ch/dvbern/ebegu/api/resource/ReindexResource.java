@@ -37,14 +37,14 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("admin/reindex")
 @Stateless
-@Api(description = "Resource zum Reindizieren des Lucene-Suchindexes")
+@Api("Resource zum Reindizieren des Lucene-Suchindexes")
 @RolesAllowed(SUPER_ADMIN)
 public class ReindexResource {
 
 	@Inject
 	private SearchIndexService searchIndexService;
 
-	@ApiOperation(value = "Erstellt den Suchindex neu")
+	@ApiOperation("Erstellt den Suchindex neu")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response reindex(@Context HttpServletRequest request) {

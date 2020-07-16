@@ -31,6 +31,7 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -107,8 +108,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @SuppressWarnings("OverlyBroadCatchBlock")
 @Path("upload")
 @Stateless
-@Api(description = "Resource zum Upload von Dokumenten")
-@PermitAll
+@Api("Resource zum Upload von Dokumenten")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class UploadResource {
 
 	@Inject
@@ -148,6 +149,7 @@ public class UploadResource {
 	@ApiOperation(value = "Speichert ein oder mehrere Dokumente in der Datenbank", response = JaxDokumentGrund.class)
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@PermitAll
 	public Response uploadFiles(@Context HttpServletRequest request, @Context UriInfo uriInfo, MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 

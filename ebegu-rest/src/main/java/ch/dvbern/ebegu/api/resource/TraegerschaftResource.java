@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -65,8 +66,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("traegerschaften")
 @Stateless
-@Api(description = "Resource zur Verwaltung von Trägerschaften (Zusammenschluss von mehreren Institutionen)")
-@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+@Api("Resource zur Verwaltung von Trägerschaften (Zusammenschluss von mehreren Institutionen)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class TraegerschaftResource {
 
 	@Inject
@@ -83,6 +84,7 @@ public class TraegerschaftResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxTraegerschaft createTraegerschaft(
 		@Nonnull @NotNull @Valid JaxTraegerschaft jaxTraegerschaft,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
@@ -98,6 +100,7 @@ public class TraegerschaftResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxTraegerschaft saveTraegerschaft(
 		@Nonnull @NotNull @Valid JaxTraegerschaft traegerschaftJAXP,
 		@Context UriInfo uriInfo,
@@ -138,6 +141,7 @@ public class TraegerschaftResource {
 	@DELETE
 	@Path("/{traegerschaftId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response removeTraegerschaft(
 		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId,
 		@Context HttpServletResponse response) {
