@@ -81,7 +81,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 	}
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
-		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.tagesschuleRechungsstellungTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.tagesschuleRechungsstellungTitle, ServerMessageUtil.getMessage("Reports_tagesschuleRechungsstellungTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.datumErstelltTitle, ServerMessageUtil.getMessage("Reports_datumErstelltTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.tagesschuleTitle, ServerMessageUtil.getMessage("Reports_tagesschuleTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.kindTitle, ServerMessageUtil.getMessage("Reports_kindTitle", locale));
