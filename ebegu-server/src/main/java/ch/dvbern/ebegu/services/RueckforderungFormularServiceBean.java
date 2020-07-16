@@ -136,14 +136,12 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public RueckforderungFormular createRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		return persistence.persist(rueckforderungFormular);
 	}
 
 	@Nonnull
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
-	public Collection<RueckforderungFormular> getAllRueckforderungFormulare(){
+	private Collection<RueckforderungFormular> getAllRueckforderungFormulare(){
 		return criteriaQueryHelper.getAll(RueckforderungFormular.class);
 	}
 
@@ -154,7 +152,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
 		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 		Benutzer currentBenutzer = principalBean.getBenutzer();
-		if(currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
+		if (currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
 			return new ArrayList<>(allRueckforderungFormulare);
 		}
 		Collection<Institution> institutionenCurrentBenutzer =
@@ -178,6 +176,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	public Optional<RueckforderungFormular> findRueckforderungFormular(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, id);
+		authorizer.checkReadAuthorization(rueckforderungFormular);
 		return Optional.ofNullable(rueckforderungFormular);
 	}
 
@@ -186,6 +185,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		Objects.requireNonNull(rueckforderungFormular);
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
+		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
+		return mergedRueckforderungFormular;
+	}
+
+	private RueckforderungFormular saveWithoutAuthCheck(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
 		return mergedRueckforderungFormular;
@@ -197,8 +203,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular saveAndChangeStatusIfNecessary(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		changeStatusAndCopyFields(rueckforderungFormular);
-		return save(rueckforderungFormular);
+		return saveWithoutAuthCheck(rueckforderungFormular);
 	}
 
 	@Nonnull
@@ -223,6 +230,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		@Nonnull RueckforderungFormular formular,
 		@Nonnull RueckforderungMitteilung mitteilung
 	) {
+		authorizer.checkReadAuthorization(formular);
 		formular.addRueckforderungMitteilung(mitteilung);
 		return persistence.persist(formular);
 	}
@@ -238,6 +246,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Collection<RueckforderungFormular> formulareWithStatusGeprueftStufe1 =
 			getRueckforderungFormulareByStatus(statusGeprueftStufe1);
 		for (RueckforderungFormular formular : formulareWithStatusGeprueftStufe1) {
+			authorizer.checkWriteAuthorization(formular);
 			saveAndChangeStatusIfNecessary(formular);
 		}
 	}
@@ -251,8 +260,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				"resetStatusToInBearbeitungInstitutionPhase2",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"Rueckfordungsformular invalid: " + id));
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
-		return save(rueckforderungFormular);
+		return saveWithoutAuthCheck(rueckforderungFormular);
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
@@ -287,7 +297,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH;
 						// Wir muessen uns merken, dass das Formular hier nochmals geprueft werden musste, damit wir
 						// spaeter die richtige Confirmation Message anzeigen koennen
-						rueckforderungFormular.setHasBeenSentBackToInstitution(true);
+						rueckforderungFormular.setHasBeenProvisorisch(true);
 					}
 				}
 				rueckforderungFormular.setStatus(nextStatus);

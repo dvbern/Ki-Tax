@@ -233,4 +233,6 @@ public interface Authorizer {
 	void checkWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
 
 	void checkWriteAuthorization(@Nullable RueckforderungFormular rueckforderungFormular);
+
+	void checkReadAuthorization(@Nullable RueckforderungFormular rueckforderungFormular);
 }

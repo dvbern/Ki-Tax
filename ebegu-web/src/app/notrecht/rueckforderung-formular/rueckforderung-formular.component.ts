@@ -51,6 +51,7 @@ import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verla
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungFormularComponent implements OnInit {
+
     public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
         return this._rueckforderungZahlungenList;
     }
@@ -82,9 +83,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public showMessageFehlendeDokumenteErwerbsersatz: boolean = false;
 
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
-    private _stufe1ProvBetrag: number;
-    private _stufe2ProvBetragOeffentlich: number;
-    private _stufe2ProvBetragPrivat: number;
+    private _provisorischerBetrag: number;
 
     public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
     public rueckforderungKommunikationDokumente?: TSRueckforderungDokument[];
@@ -118,16 +117,7 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.readOnly = this.initReadOnly(response);
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
-                    if (EbeguUtil.isNullOrUndefined(response.institutionTyp)) {
-                        // Wir sind in Stufe 1
-                        this.calculateProvisorischerBetrag(response, true);
-                    } else if (response.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
-                        // Stufe 2 Privat
-                        this.calculateProvBetragPrivat(response);
-                    } else {
-                        // Stufe 2 Oeffentlich oder unbekannt
-                        this.calculateProvisorischerBetrag(response, false);
-                    }
+                    this.calculateProvBetrag(response);
                     return response;
                 }));
     }
@@ -322,7 +312,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
             case TSRueckforderungInstitutionTyp.PRIVAT:
                 if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
-                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenSentBackToInstitution)) {
+                    if (EbeguUtil.isNotNullAndTrue(rueckforderungFormular.hasBeenProvisorisch)) {
                         return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV');
                     }
                     return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
@@ -341,96 +331,16 @@ export class RueckforderungFormularComponent implements OnInit {
         return rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
     }
 
-    public calculateProvisorischerBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
-        this.stufe1ProvBetrag = undefined;
-        this.stufe2ProvBetragOeffentlich = undefined;
-        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
-            return;
-        }
-        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
-
-        if (this.isKitaAngebot(rueckforderungFormular)
-            && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
-            if (isStufe1) {
-                this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-                return;
-            }
-            this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-            return;
-        }
-        const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
-            return;
-        }
-        if (isStufe1) {
-            this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-            return;
-        }
-        this.stufe2ProvBetragOeffentlich = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-        return;
+    public get provisorischerBetrag(): number {
+        return this._provisorischerBetrag;
     }
 
-    public get stufe1ProvBetrag(): number {
-        return this._stufe1ProvBetrag;
+    public set provisorischerBetrag(value: number) {
+        this._provisorischerBetrag = value;
     }
 
-    public set stufe1ProvBetrag(stufe1ProvBetrag: number) {
-        this._stufe1ProvBetrag = stufe1ProvBetrag;
-    }
-
-    public get stufe2ProvBetragOeffentlich(): number {
-        return this._stufe2ProvBetragOeffentlich;
-    }
-
-    public set stufe2ProvBetragOeffentlich(stufe2ProvBetrag: number) {
-        this._stufe2ProvBetragOeffentlich = stufe2ProvBetrag;
-    }
-
-    public calculateProvBetragPrivat(rueckforderungFormular: TSRueckforderungFormular): void {
-        this.stufe2ProvBetragPrivat = null;
-        // (2.1) Privat mit Kurzarbeit
-        if (rueckforderungFormular.kurzarbeitBeantragt) {
-            if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
-                || EbeguUtil.isNullOrUndefined(rueckforderungFormular.kurzarbeitBetrag)) {
-                return;
-            }
-            this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
-                - rueckforderungFormular.kurzarbeitBetrag
-                - rueckforderungFormular.coronaErwerbsersatzBetrag;
-            return;
-        }
-        // (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
-        if (!rueckforderungFormular.anzahlNichtAngeboteneEinheiten) {
-            if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
-                || EbeguUtil.isNullOrUndefined(rueckforderungFormular.coronaErwerbsersatzBetrag)) {
-                return;
-            }
-            this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
-                - rueckforderungFormular.coronaErwerbsersatzBetrag;
-            return;
-        }
-        // (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
-        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraege)
-            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten)
-            || EbeguUtil.isNullOrUndefined(rueckforderungFormular.anzahlNichtAngeboteneEinheiten)) {
-            return;
-        }
-        this.stufe2ProvBetragPrivat = rueckforderungFormular.betragEntgangeneElternbeitraege
-            - rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten
-            + rueckforderungFormular.anzahlNichtAngeboteneEinheiten
-            - rueckforderungFormular.coronaErwerbsersatzBetrag;
-    }
-
-    public get stufe2ProvBetragPrivat(): number {
-        return this._stufe2ProvBetragPrivat;
-    }
-
-    public set stufe2ProvBetragPrivat(value: number) {
-        this._stufe2ProvBetragPrivat = value;
+    public calculateProvBetrag(rueckforderungFormular: TSRueckforderungFormular): void {
+        this._provisorischerBetrag = rueckforderungFormular.calculateProvisorischerBetrag();
     }
 
     public showVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
@@ -819,6 +729,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            && EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
             && this.authServiceRS.isOneOfRoles(
                 [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;
@@ -827,7 +738,9 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public isKantonStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+                && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp)))
             && this.authServiceRS.isOneOfRoles(
                 [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;

@@ -1,0 +1,2 @@
+alter table rueckforderung_formular change has_been_sent_back_to_institution has_been_provisorisch BIT not null default false;
+alter table rueckforderung_formular_aud change has_been_sent_back_to_institution has_been_provisorisch BIT;

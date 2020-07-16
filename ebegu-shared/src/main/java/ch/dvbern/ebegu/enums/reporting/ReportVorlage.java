@@ -132,9 +132,9 @@ public enum ReportVorlage {
 		Constants.DATA,
 		MergeFieldLastenausgleichBerechnung.class
 	),
-	VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT(
-		"/reporting/TagesschuleOhneFinSit.xlsx",
-		ReportFileName.TAGESSCHULE_OHNE_FINSIT,
+	VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN(
+		"/reporting/TagesschuleAnmeldungen.xlsx",
+		ReportFileName.TAGESSCHULE_ANMELDUNGEN,
 		Constants.DATA,
 		MergeFieldTagesschule.class
 	),
@@ -189,7 +189,7 @@ public enum ReportVorlage {
 
 		if (UserRole.getInstitutionTraegerschaftAdminRoles().contains(role)) {
 			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON
-				|| vorlage == VORLAGE_REPORT_BENUTZER  || vorlage == VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT;
+				|| vorlage == VORLAGE_REPORT_BENUTZER  || vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
 		}
 
 		if (UserRole.getInstitutionTraegerschaftRoles().contains(role)) {
@@ -201,7 +201,7 @@ public enum ReportVorlage {
 				|| vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM_DE || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM_FR
 				|| vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_GESUCHSTELLER
 				|| vorlage == VORLAGE_REPORT_BENUTZER || vorlage == VORLAGE_REPORT_MASSENVERSAND
-				|| vorlage == VORLAGE_REPORT_INSTITUTIONEN || vorlage == VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT;
+				|| vorlage == VORLAGE_REPORT_INSTITUTIONEN || vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
 		}
 
 		return UserRole.GESUCHSTELLER != role && UserRole.STEUERAMT != role && UserRole.JURIST != role;
