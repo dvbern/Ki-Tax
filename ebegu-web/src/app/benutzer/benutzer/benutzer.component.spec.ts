@@ -20,7 +20,6 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';

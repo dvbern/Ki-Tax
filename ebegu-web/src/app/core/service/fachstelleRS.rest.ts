@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 

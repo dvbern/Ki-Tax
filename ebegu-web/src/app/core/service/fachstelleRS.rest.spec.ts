@@ -70,7 +70,7 @@ describe('fachstelleRS', () => {
                 fachstelleRS.getAnspruchFachstellen();
                 $httpBackend.flush();
                 // tslint:disable-next-line:no-unbound-method
-                expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL + 'anspruch');
+                expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL + '/anspruch');
                 // tslint:disable-next-line:no-unbound-method
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });
