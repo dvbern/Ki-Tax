@@ -140,13 +140,13 @@ public interface ReportService {
 	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportTagesschuleOhneFinSit(
+	UploadFileInfo generateExcelReportTagesschuleAnmeldungen(
 		@Nonnull String stammdatenId,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Locale locale) throws ExcelMergeException;
 
 	@Nonnull
-	List<TagesschuleDataRow> getReportDataTagesschuleOhneFinSit(
+	List<TagesschuleDataRow> getReportDataTagesschuleAnmeldungen(
 		@Nonnull String stammdatenID,
 		@Nonnull String gesuchsperiodeID);
 }

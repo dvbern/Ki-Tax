@@ -172,10 +172,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
 			return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
 		}
-		case VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT: {
+		case VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN: {
 			Objects.requireNonNull(gesuchPeriodeId);
 			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
-			return this.reportService.generateExcelReportTagesschuleOhneFinSit(stammdatenId, gesuchPeriodeId, locale);
+			return this.reportService.generateExcelReportTagesschuleAnmeldungen(stammdatenId, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_NOTRECHT: {
 			return generateReportNotrecht();

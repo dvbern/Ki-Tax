@@ -284,7 +284,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		GESUCHSTELLER })
+		ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER })
 	public AnmeldungTagesschule anmeldungSchulamtAusgeloestAbschliessen(
 		@Nonnull String gesuchId,
 		@Nonnull String betreuungId
