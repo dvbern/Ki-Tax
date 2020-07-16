@@ -277,7 +277,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		LocalDate stichtag = LocalDate.now().plusMonths(4); // TODO (Reviewer: Nach dem Testen zuruecksetzen!
+		LocalDate stichtag = LocalDate.now(); // TODO (Reviewer): Zum Testen hier .plusMonths(4)
 		final List<TagesschuleRechnungsstellungDataRow> reportData = getReportDataTagesschuleRechnungsstellung(stichtag);
 
 		ExcelMergerDTO excelMergerDTO = tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale);
