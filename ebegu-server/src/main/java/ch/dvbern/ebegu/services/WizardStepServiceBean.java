@@ -476,8 +476,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	/**
 	 * In dieser Methode werden alle Sachen gemacht, die gebraucht werden, um ein Gesuch zu verfuegen.
 	 */
-	@Override
-	public void gesuchVerfuegen(@NotNull WizardStep verfuegenWizardStep) {
+	private void gesuchVerfuegen(@NotNull WizardStep verfuegenWizardStep) {
 		if (verfuegenWizardStep.getWizardStepName() == WizardStepName.VERFUEGEN) {
 			verfuegenWizardStep.setWizardStepStatus(WizardStepStatus.OK);
 			verfuegenWizardStep.getGesuch().setStatus(AntragStatus.VERFUEGT);

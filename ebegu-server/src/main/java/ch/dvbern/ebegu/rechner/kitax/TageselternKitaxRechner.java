@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
@@ -44,7 +45,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 	public TageselternKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
-		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale
 	) {
 		super(kitaxParameter, oeffnungszeiten, locale);

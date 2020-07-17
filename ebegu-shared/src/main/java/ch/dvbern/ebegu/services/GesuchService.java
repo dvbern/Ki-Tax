@@ -423,13 +423,6 @@ public interface GesuchService {
 	Gesuch updateBetreuungenStatus(@NotNull Gesuch gesuch);
 
 	/**
-	 * In dieser Methode wird das Gesuch verfuegt. Nur Gesuche bei denen alle Betreuungen bereits verfuegt sind und
-	 * der WizardStep Verfuegen
-	 * (faelslicherweise) auf OK gesetzt wurde, werden durch diese Methode wieder verfuegt.
-	 */
-	void gesuchVerfuegen(@NotNull Gesuch gesuch);
-
-	/**
 	 * Setzt den uebergebene FinSitStatus im gegebenen Gesuch
 	 *
 	 * @return 1 wenn alles ok
