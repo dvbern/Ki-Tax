@@ -28,6 +28,7 @@ import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dial
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
+import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -115,7 +116,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgGesuchstellerDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
-        FileUploadComponent
+        FileUploadComponent,
+        DvNgConfirmDialogComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
@@ -138,6 +140,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         FileUploadComponent,
+        DvNgConfirmDialogComponent,
     ],
     exports: [
         CommonModule,
@@ -176,6 +179,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         FileUploadComponent,
+        DvNgConfirmDialogComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
