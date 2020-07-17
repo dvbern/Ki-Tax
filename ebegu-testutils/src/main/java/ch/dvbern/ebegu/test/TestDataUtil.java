@@ -1482,6 +1482,7 @@ public final class TestDataUtil {
 		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		gesuch.setGesuchsteller1(gs);
+		persistence.merge(gesuch);
 		return gesuch;
 	}
 
