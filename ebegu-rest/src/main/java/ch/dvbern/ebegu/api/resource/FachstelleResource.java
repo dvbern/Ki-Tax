@@ -118,6 +118,7 @@ public class FachstelleResource {
 	public List<JaxFachstelle> getErweiterteBetreuungFachstellen(){
 		return fachstelleService.getAllFachstellen().stream()
 			.filter(Fachstelle::isFachstelleErweiterteBetreuung)
+			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
 	}

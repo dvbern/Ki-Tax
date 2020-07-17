@@ -282,12 +282,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getFachstellenList(): Array<TSFachstelle> {
-        if (this.isGesuchReadonly()
-            && this.getModel().pensumFachstelle !== null
+        const fachstellen = this.gesuchModelManager.getFachstellenAnspruchList();
+        if (this.getModel().pensumFachstelle !== null
+            && this.getModel().pensumFachstelle.fachstelle
             && this.getModel().pensumFachstelle.fachstelle.name.toString() === 'KINDES_ERWACHSENEN_SCHUTZBEHOERDE') {
-            return new Array<TSFachstelle>().concat(this.getModel().pensumFachstelle.fachstelle);
+            return fachstellen.concat(this.getModel().pensumFachstelle.fachstelle);
         }
-        return this.gesuchModelManager.getFachstellenAnspruchList();
+        return fachstellen;
     }
 
     public getModel(): TSKind {
