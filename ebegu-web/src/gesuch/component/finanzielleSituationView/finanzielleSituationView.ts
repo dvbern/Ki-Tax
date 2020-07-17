@@ -22,7 +22,6 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSWizardSubStepName} from '../../../models/enums/TSWizardSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
