@@ -1481,6 +1481,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch);
 		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
+		gesuch.setGesuchsteller1(gs);
 		return gesuch;
 	}
 
