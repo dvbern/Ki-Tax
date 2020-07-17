@@ -290,9 +290,6 @@ public class GesuchResource {
 
 		UserRole role = principalBean.discoverMostPrivilegedRole();
 		if (role != null) {
-			if (UserRole.SUPER_ADMIN == role) {
-				return completeGesuch;
-			}
 			Collection<Institution> instForCurrBenutzer =
 				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			return cleanGesuchForInstitutionTraegerschaft(completeGesuch, instForCurrBenutzer);

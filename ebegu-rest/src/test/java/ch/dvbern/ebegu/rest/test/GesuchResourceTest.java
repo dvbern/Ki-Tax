@@ -150,8 +150,9 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 		persistUser(UserRole.GESUCHSTELLER, "gesuchst", null, null);
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
 			null, null, gesuchsperiode);
+		loginAsSuperadmin();
 
-		final JaxGesuch gesuchForInstitution = gesuchResource.findGesuchForInstitution(converter.toJaxId(gesuch));
+		final JaxGesuch gesuchForInstitution = gesuchResource.findGesuchForInstitution(converter.toJaxId(gesuch)); //TODO
 
 		Assert.assertNotNull(gesuchForInstitution);
 		Assert.assertNull(gesuchForInstitution.getEinkommensverschlechterungInfoContainer());

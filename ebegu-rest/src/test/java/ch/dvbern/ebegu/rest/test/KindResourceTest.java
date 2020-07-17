@@ -97,8 +97,8 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 		JaxKindContainer testJaxKindContainer = TestJaxDataUtil.createTestJaxKindContainer();
 		JaxPensumFachstelle jaxPensumFachstelle = testJaxKindContainer.getKindGS().getPensumFachstelle();
 		Assert.assertNotNull(jaxPensumFachstelle);
-		persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
-		jaxPensumFachstelle.setFachstelle(jaxPensumFachstelle.getFachstelle());
+		final Fachstelle fachstelle = persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
+		jaxPensumFachstelle.setFachstelle(converter.fachstelleToJAX(fachstelle));
 		PensumFachstelle returnedPensumFachstelle = persistence.merge(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
