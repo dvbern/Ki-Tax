@@ -129,7 +129,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initAusserordentlicherAnspruch();
     }
 
-    public $postLink (): void {
+    public $postLink(): void {
         // Bei einer neuen Periode werden gewisse Kinderdaten nicht kopiert. In diesem Fall sollen diese
         // bereits rot angezeigt werden.
         if (!this.model.kindJA.isNew() && !this.model.kindJA.isGeprueft()) {
@@ -165,9 +165,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.gesuchModelManager.getGesuchsperiode().id
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
-                .forEach(value => { this.minValueAllowed = Number(value.value); });
+                .forEach(value => {
+                    this.minValueAllowed = Number(value.value);
+                });
             response.filter(r => r.key === maxValueEinstellungKey)
-                .forEach(value => { this.maxValueAllowed = Number(value.value); });
+                .forEach(value => {
+                    this.maxValueAllowed = Number(value.value);
+                });
 
             if (this.isOnlyOneValueAllowed()) {
                 this.getModel().pensumFachstelle.pensum = this.minValueAllowed;
@@ -278,6 +282,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getFachstellenList(): Array<TSFachstelle> {
+        if (this.isGesuchReadonly()
+            && this.getModel().pensumFachstelle !== null
+            && this.getModel().pensumFachstelle.fachstelle.name.toString() === 'KINDES_ERWACHSENEN_SCHUTZBEHOERDE') {
+            return new Array<TSFachstelle>().concat(this.getModel().pensumFachstelle.fachstelle);
+        }
         return this.gesuchModelManager.getFachstellenAnspruchList();
     }
 
