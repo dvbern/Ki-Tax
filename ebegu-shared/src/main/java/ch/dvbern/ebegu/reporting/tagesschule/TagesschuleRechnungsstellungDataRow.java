@@ -230,6 +230,7 @@ public class TagesschuleRechnungsstellungDataRow {
 		final AnmeldungTagesschule anmeldungTagesschule = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
 		if (anmeldungTagesschule != null) {
 			dataRow.tagesschule = anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName();
+			dataRow.referenznummer = anmeldungTagesschule.getBGNummer();
 			final KindContainer kindContainer = anmeldungTagesschule.getKind();
 			final Kind kind = kindContainer.getKindJA();
 			if (kind != null) {
@@ -251,6 +252,9 @@ public class TagesschuleRechnungsstellungDataRow {
 					dataRow.rechnungsadressePlz = adresse.getPlz();
 					dataRow.rechnungsadresseOrt = adresse.getOrt();
 				}
+			}
+			if (anmeldungTagesschule.getBelegungTagesschule() != null) {
+				dataRow.eintrittsdatum = anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum();
 			}
 		}
 		dataRow.datumAb = monatsStart;

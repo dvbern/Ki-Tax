@@ -141,7 +141,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportTagesschuleOhneFinSit",
+				"getReportDataTagesschuleRechnungsstellung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeID));
 
@@ -277,7 +277,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		LocalDate stichtag = LocalDate.now(); // TODO (Reviewer): Zum Testen hier .plusMonths(4)
+		LocalDate stichtag = LocalDate.now();
 		final List<TagesschuleRechnungsstellungDataRow> reportData = getReportDataTagesschuleRechnungsstellung(stichtag);
 
 		ExcelMergerDTO excelMergerDTO = tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale);
@@ -300,7 +300,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportTagesschuleOhneFinSit",
+				"getReportDataTagesschuleRechnungsstellung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				stichtag));
 		final Collection<InstitutionStammdaten> allowedTagesschulen = institutionStammdatenService.getTagesschulenForCurrentBenutzer();
