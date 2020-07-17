@@ -195,17 +195,6 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG', params);
     }
 
-    /**
-     * Mindestens einer aller Felder von Geschaftsgewinn muss ausgefuellt sein. Mit dieser Methode kann man es pruefen.
-     */
-    public isGeschaeftsgewinnRequired(): boolean {
-        const finSit = this.getModel().finanzielleSituationJA;
-
-        return EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)
-            && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)
-            && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
-    }
-
     public subStepName(): TSWizardSubStepName {
         return this.gesuchModelManager.gesuchstellerNumber === 2 ?
             TSWizardSubStepName.FINANZIELLE_SITUATON_GS2 :
