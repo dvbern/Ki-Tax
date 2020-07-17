@@ -1301,6 +1301,7 @@
     "ADDITIONAL_INFORMATION": "Weitere Informationen",
     "TABLE_EDIT": "Eintrag öffnen/bearbeiten",
     "CONFIRM_GESUCH_LOESCHEN": "Möchten Sie diesen Antrag wirklich löschen?",
+    "CONFIRM_MUTATION_LOESCHEN": "Möchten Sie diese Mutation wirklich löschen?",
     "BESCHREIBUNG_GESUCH_LOESCHEN": "Wenn Sie mit dem Löschen fortfahren, werden alle Daten endgültig gelöscht",
     "SCHLIESSEN": "Schliessen",
     "KINDER_DELETE": "Eintrag löschen",
