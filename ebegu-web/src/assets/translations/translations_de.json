@@ -2120,6 +2120,6 @@
     "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Sie können die Vorlagen hier herunterladen",
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Sie haben {{NAME_DRITTANWENDUNGEN}} als zugriffsberechtigte Drittanwendung ausgewählt. Dadurch hat {{NAME_DRITTANWENDUNGEN}} Einsicht auf Ihre Daten. Möchten Sie  fortfahren und diese Änderung speichern?",
     "LABEL_OK_FORFAHREN": "Ja, Forfahren",
-    "LABEL_NEIN_ABBRECHEN": "Nein, abbrechen",
+    "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
