@@ -57,6 +57,7 @@ public class AVClient {
 		}
 	}
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	public void scan (FileMetadata fileMetadata) {
 
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
