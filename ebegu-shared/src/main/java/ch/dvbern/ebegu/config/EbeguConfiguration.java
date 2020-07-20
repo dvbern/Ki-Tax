@@ -285,4 +285,10 @@ public interface EbeguConfiguration {
 	String getKitaxHost();
 
 	String getKitaxEndpoint();
+
+	String getClamavHost();
+
+	int getClamavPort();
+
+	boolean isClamavDisabled();
 }
