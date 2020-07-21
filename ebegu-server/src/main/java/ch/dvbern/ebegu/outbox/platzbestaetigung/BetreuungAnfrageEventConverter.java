@@ -48,9 +48,10 @@ public class BetreuungAnfrageEventConverter {
 	 * @param betreuung
 	 * @return
 	 */
-	private BetreuungAnfrageEventDTO toBetreuungAnfrageEvent(Betreuung betreuung) {
+	@Nonnull
+	private BetreuungAnfrageEventDTO toBetreuungAnfrageEvent(@Nonnull Betreuung betreuung) {
 		return BetreuungAnfrageEventDTO.newBuilder()
-			.setRefnr(betreuung.getBetreuungNummer().toString())
+			.setRefnr(betreuung.getBGNummer())
 			.setInstitutionId(betreuung.getInstitutionStammdaten().getInstitution().getId())
 			.setGesuchsteller(toGesuchstellerDTO(requireNonNull(betreuung.extractGesuch().getGesuchsteller1()).getGesuchstellerJA()))
 			.setKind(toKindDTO(betreuung.getKind().getKindJA()))

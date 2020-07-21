@@ -49,7 +49,7 @@ public class BetreuungAnfrageEventConverterTest {
 		Gesuchsteller gesuchsteller = TestDataUtil.createDefaultGesuchsteller();
 		GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
 		gesuchstellerContainer.setGesuchstellerJA(gesuchsteller);
-		Gesuch gesuch = new Gesuch();
+		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.setGesuchsteller1(gesuchstellerContainer);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		kitaBetreuung.getKind().setGesuch(gesuch);
@@ -67,7 +67,7 @@ public class BetreuungAnfrageEventConverterTest {
 		BetreuungAnfrageEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		assertThat(specificRecord, is(pojo(BetreuungAnfrageEventDTO.class)
-			.where(BetreuungAnfrageEventDTO::getRefnr, is(kitaBetreuung.getBetreuungNummer().toString()))
+			.where(BetreuungAnfrageEventDTO::getRefnr, is(kitaBetreuung.getBGNummer()))
 			.where(BetreuungAnfrageEventDTO::getInstitutionId,
 				is(kitaBetreuung.getInstitutionStammdaten().getInstitution().getId()))
 			.where(BetreuungAnfrageEventDTO::getPeriodeVon,
