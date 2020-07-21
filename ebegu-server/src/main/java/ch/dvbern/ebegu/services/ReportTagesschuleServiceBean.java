@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -79,16 +78,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("PMD.NcssTypeCount")
@@ -119,8 +108,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -141,13 +128,13 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getReportDataTagesschuleRechnungsstellung",
+				"generateExcelReportTagesschuleAnmeldungen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeID));
 
 		InstitutionStammdaten institutionStammdaten =
 			institutionStammdatenService.findInstitutionStammdaten(stammdatenID).orElseThrow(() -> new EbeguRuntimeException(
-				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
+				"generateExcelReportTagesschuleAnmeldungen", NO_STAMMDATEN_FOUND));
 
 		EinstellungenTagesschule einstellungenTagesschule =
 			findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
@@ -263,8 +250,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx";
 	}
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_BG, SACHBEARBEITER_BG })
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
