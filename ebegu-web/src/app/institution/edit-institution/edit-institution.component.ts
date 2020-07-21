@@ -25,6 +25,7 @@ import {
     ViewChildren,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -47,6 +48,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
+import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -93,6 +95,7 @@ export class EditInstitutionComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -255,8 +258,40 @@ export class EditInstitutionComponent implements OnInit {
         updateModel.externalClients = this.getExternalClientsUpdate();
         updateModel.stammdaten = this.stammdaten;
 
-        this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-            .then(stammdaten => this.setValuesAfterSave(stammdaten));
+        this.updateInstitution(updateModel);
+    }
+
+    private updateInstitution(updateModel: TSInstitutionUpdate): void {
+        if (!EbeguUtil.isSame(this.externalClients.assignedClients, this.initiallyAssignedClients) && this.externalClients.assignedClients.length > 0) {
+            let drittanwendungen = '';
+            this.externalClients.assignedClients.filter(assignedClient =>
+                this.initiallyAssignedClients.indexOf(assignedClient) < 0
+            ).forEach(assignedClient =>
+                drittanwendungen.length > 0 ?
+                    drittanwendungen += ', ' + assignedClient.clientName
+                    : drittanwendungen = assignedClient.clientName
+            );
+            // show warning popup
+            const dialogConfig = new MatDialogConfig();
+            dialogConfig.data = {
+                frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
+                    NAME_DRITTANWENDUNGEN: drittanwendungen,
+                })
+            };
+            this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
+                .subscribe(answer => {
+                        if (answer !== true) {
+                            return;
+                        }
+                        this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+                            .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                    },
+                    () => {
+                    });
+        } else {
+            this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+        }
     }
 
     private getExternalClientsUpdate(): string[] | null {

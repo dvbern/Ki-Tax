@@ -619,12 +619,12 @@ public class ReportResourceAsync {
 		response = JaxDownloadFile.class)
 	@Nonnull
 	@GET
-	@Path("/excel/tagesschuleOhneFinSit")
+	@Path("/excel/tagesschuleAnmeldungen")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
-	public Response getTagesschuleOhneFinSitReportExcel(
+	public Response getTagesschuleAnmeldungenReportExcel(
 		@QueryParam("stammdatenId") @Nonnull String stammdatenId,
 		@QueryParam("gesuchsperiodeId") @Nonnull String gesuchsperiodeId,
 		@Context HttpServletRequest request,
@@ -636,18 +636,18 @@ public class ReportResourceAsync {
 
 		InstitutionStammdaten stammdaten = institutionStammdatenService.findInstitutionStammdaten(stammdatenId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-			"getTagesschuleOhneFinSitReportExcel", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, stammdatenId));
+			"getTagesschuleAnmeldungenReportExcel", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, stammdatenId));
 		authorizer.checkReadAuthorizationInstitutionStammdaten(stammdaten);
 
 		if (checkMaxTagesschulModuleExceeded(stammdaten, gesuchsperiodeId)) {
-			throw new EbeguRuntimeException("getTagesschuleOhneFinSitReportExcel", "Für diese Tagesschule gibt es zu "
+			throw new EbeguRuntimeException("getTagesschuleAnmeldungenReportExcel", "Für diese Tagesschule gibt es zu "
 				+ "viele Module. Mehr als " + Constants.MAX_MODULGROUPS_TAGESSCHULE + " können im Excel nicht "
 				+ "angezeigt werden");
 		}
 
 		workJob = workjobService.createNewReporting(
 			workJob,
-			ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT,
+			ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN,
 			stammdatenId,
 			gesuchsperiodeId,
 			LocaleThreadLocal.get()

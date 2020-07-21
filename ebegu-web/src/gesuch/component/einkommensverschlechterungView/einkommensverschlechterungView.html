@@ -197,6 +197,7 @@
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
                                                    name="geschaeftsgewinnBasisjahr"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr"
+                                                   ng-required="vm.showSelbstaendig"
                                                    allow-negative=true
                                                    dv-on-blur="vm.calculate()"
                                                    class="input-element">
