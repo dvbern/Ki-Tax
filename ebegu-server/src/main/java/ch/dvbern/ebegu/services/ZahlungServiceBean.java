@@ -324,8 +324,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicates.add(predicateGueltig);
-		// Status der Betreuung muss VERFUEGT oder STORINERT sein
-		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT, Betreuungsstatus.STORNIERT);
+		// Status der Betreuung muss VERFUEGT sein
+		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT);
 		predicates.add(predicateStatus);
 		// Das Dossier muss der uebergebenen Gemeinde zugeordnet sein
 		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
@@ -377,8 +377,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicates.add(predicateGueltig);
-		// Status der Betreuung muss VERFUEGT oder STORINERT sein
-		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT, Betreuungsstatus.STORNIERT);
+		// Status der Betreuung muss VERFUEGT sein
+		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT);
 		predicates.add(predicateStatus);
 		// Das Dossier muss der uebergebenen Gemeinde zugeordnet sein
 		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
