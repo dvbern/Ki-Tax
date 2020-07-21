@@ -152,7 +152,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 			null, null, gesuchsperiode);
 		loginAsSuperadmin();
 
-		final JaxGesuch gesuchForInstitution = gesuchResource.findGesuchForInstitution(converter.toJaxId(gesuch)); //TODO
+		final JaxGesuch gesuchForInstitution = gesuchResource.findGesuchForInstitution(converter.toJaxId(gesuch));
 
 		Assert.assertNotNull(gesuchForInstitution);
 		Assert.assertNull(gesuchForInstitution.getEinkommensverschlechterungInfoContainer());

@@ -70,7 +70,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("reporting")
 @Stateless
-@Api("Resource für Statistiken und Reports")
+@Api(description = "Resource für Statistiken und Reports")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class ReportResource {
 

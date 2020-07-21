@@ -63,7 +63,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("sozialhilfeZeitraeume")
 @Stateless
-@Api("Resource fuer Sozialhilfe Zeitraeume")
+@Api(description = "Resource fuer Sozialhilfe Zeitraeume")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class SozialhilfeZeitraumResource {
 

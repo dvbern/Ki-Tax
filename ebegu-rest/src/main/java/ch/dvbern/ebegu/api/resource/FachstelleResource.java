@@ -40,7 +40,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("fachstellen")
 @Stateless
-@Api("Resource zur Verwaltung von Fachstellen")
+@Api(description = "Resource zur Verwaltung von Fachstellen")
 @PermitAll // Alles oeffentliche Daten
 public class FachstelleResource {
 

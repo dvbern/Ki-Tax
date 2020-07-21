@@ -520,6 +520,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	public Gesuch calculateVerfuegung(@Nonnull Gesuch gesuch) {
+		authorizer.checkReadAuthorization(gesuch);
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 
 		Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);

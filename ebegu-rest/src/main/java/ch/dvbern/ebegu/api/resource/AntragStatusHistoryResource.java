@@ -66,7 +66,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("antragStatusHistory")
 @Stateless
-@Api("Resource zum Lesen der History von Gesuchen / Mutationen (Anträgen)")
+@Api(description = "Resource zum Lesen der History von Gesuchen / Mutationen (Anträgen)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class AntragStatusHistoryResource {
 

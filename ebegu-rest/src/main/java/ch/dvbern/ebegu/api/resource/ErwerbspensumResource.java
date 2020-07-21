@@ -73,7 +73,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("erwerbspensen")
 @Stateless
-@Api("Resource welche zum bearbeiten des Erwerbspensums dient")
+@Api(description = "Resource welche zum bearbeiten des Erwerbspensums dient")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class ErwerbspensumResource {
 

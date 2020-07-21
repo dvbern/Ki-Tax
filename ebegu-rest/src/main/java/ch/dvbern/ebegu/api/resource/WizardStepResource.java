@@ -53,7 +53,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("wizard-steps")
 @Stateless
-@Api("Resource für die Darstellung des Antrags-Wizards")
+@Api(description = "Resource für die Darstellung des Antrags-Wizards")
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class WizardStepResource {
 

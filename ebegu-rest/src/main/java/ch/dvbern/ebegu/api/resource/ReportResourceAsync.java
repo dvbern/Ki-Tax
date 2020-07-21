@@ -85,7 +85,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("reporting/async")
 @Stateless
-@Api("Resource für Statistiken und Reports")
+@Api(description = "Resource für Statistiken und Reports")
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class ReportResourceAsync {
 

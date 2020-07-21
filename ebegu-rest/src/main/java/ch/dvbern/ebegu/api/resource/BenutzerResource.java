@@ -89,7 +89,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("benutzer")
 @Stateless
-@Api("Resource für die Verwaltung der Benutzer (User)")
+@Api(description = "Resource für die Verwaltung der Benutzer (User)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class BenutzerResource {
 

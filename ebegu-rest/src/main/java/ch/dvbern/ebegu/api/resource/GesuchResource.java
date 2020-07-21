@@ -103,7 +103,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("gesuche")
 @Stateless
-@Api("Resource für Anträge (Erstgesuch oder Mutation)")
+@Api(description = "Resource für Anträge (Erstgesuch oder Mutation)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchResource {
 

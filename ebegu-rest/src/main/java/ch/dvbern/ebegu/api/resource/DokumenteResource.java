@@ -62,7 +62,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("dokumente")
 @Stateless
-@Api("Resource für die Verwaltung von Dokumenten")
+@Api(description = "Resource für die Verwaltung von Dokumenten")
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class DokumenteResource {
 

@@ -97,7 +97,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("betreuungen")
 @Stateless
-@Api("Resource zum Verwalten von Betreuungen (Ein Betreuungsangebot für ein Kind)")
+@Api(description = "Resource zum Verwalten von Betreuungen (Ein Betreuungsangebot für ein Kind)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class BetreuungResource {
 

@@ -79,7 +79,7 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 @Path("gesuchsperioden")
 @Stateless
-@Api("Resource welche zum bearbeiten der Gesuchsperiode dient")
+@Api(description = "Resource welche zum bearbeiten der Gesuchsperiode dient")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchsperiodeResource {
 

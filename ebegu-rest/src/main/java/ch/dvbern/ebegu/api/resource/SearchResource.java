@@ -82,7 +82,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("search")
 @Stateless
-@Api("Resource für die Verwaltung der Pendenzlisten und die Fall-Suche")
+@Api(description = "Resource für die Verwaltung der Pendenzlisten und die Fall-Suche")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class SearchResource {
 
@@ -143,7 +143,7 @@ public class SearchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/pendenzenBetreuungen")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		SACHBEARBEITER_TS, ADMIN_TS })
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxPendenzBetreuungen> getAllPendenzenBetreuungen() {
 		Collection<AbstractPlatz> betreuungenInStatus = betreuungService.getPendenzenBetreuungen();
 		List<JaxPendenzBetreuungen> pendenzenList = new ArrayList<>();

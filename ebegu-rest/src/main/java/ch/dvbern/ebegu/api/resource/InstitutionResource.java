@@ -107,7 +107,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("institutionen")
 @Stateless
-@Api("Resource für Institutionen (Anbieter eines Betreuungsangebotes)")
+@Api(description = "Resource für Institutionen (Anbieter eines Betreuungsangebotes)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class InstitutionResource {
 

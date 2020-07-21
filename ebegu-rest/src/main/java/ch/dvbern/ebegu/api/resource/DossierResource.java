@@ -76,7 +76,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("dossier")
 @Stateless
-@Api("Resource für Dossier (Fall in einer Gemeinde)")
+@Api(description = "Resource für Dossier (Fall in einer Gemeinde)")
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class DossierResource {
 

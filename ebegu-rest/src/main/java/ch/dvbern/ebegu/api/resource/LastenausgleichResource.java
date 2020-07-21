@@ -73,7 +73,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("lastenausgleich")
 @Stateless
-@Api("Resource zum Verwalten von Lastenausgleichen")
+@Api(description = "Resource zum Verwalten von Lastenausgleichen")
 @RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class LastenausgleichResource {
 

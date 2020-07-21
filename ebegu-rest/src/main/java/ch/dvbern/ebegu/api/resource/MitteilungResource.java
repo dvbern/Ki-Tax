@@ -92,7 +92,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("mitteilungen")
 @Stateless
-@Api("Resource zum Verwalten von Mitteilungen (In-System Nachrichten)")
+@Api(description = "Resource zum Verwalten von Mitteilungen (In-System Nachrichten)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class MitteilungResource {
 

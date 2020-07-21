@@ -59,7 +59,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("adressen")
 @Stateless
-@Api("Resource zum Speichern von Adressen")
+@Api(description = "Resource zum Speichern von Adressen")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class AdresseResource {
 

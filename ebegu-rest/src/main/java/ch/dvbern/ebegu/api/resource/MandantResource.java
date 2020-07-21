@@ -44,7 +44,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("mandanten")
 @Stateless
-@Api("Resource für Mandanten")
+@Api(description = "Resource für Mandanten")
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class MandantResource {
 

@@ -60,7 +60,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("falle")
 @Stateless
-@Api("Resource zum Verwalten von Fällen (Familien)")
+@Api(description = "Resource zum Verwalten von Fällen (Familien)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FallResource {
 

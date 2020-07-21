@@ -108,7 +108,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @SuppressWarnings("OverlyBroadCatchBlock")
 @Path("upload")
 @Stateless
-@Api("Resource zum Upload von Dokumenten")
+@Api(description = "Resource zum Upload von Dokumenten")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class UploadResource {
 

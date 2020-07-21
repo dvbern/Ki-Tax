@@ -81,7 +81,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("einkommensverschlechterung")
 @Stateless
-@Api("Resource fuer Einkommensverschlechterung (pro Gesuchsteller)")
+@Api(description = "Resource fuer Einkommensverschlechterung (pro Gesuchsteller)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class EinkommensverschlechterungResource {
 

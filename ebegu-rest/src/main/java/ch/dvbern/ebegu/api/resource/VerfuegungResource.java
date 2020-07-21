@@ -85,7 +85,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("verfuegung")
 @Stateless
-@Api("Resource für Verfügungen, inkl. Berechnung der Vergünstigung")
+@Api(description = "Resource für Verfügungen, inkl. Berechnung der Vergünstigung")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class VerfuegungResource {
 
@@ -157,7 +157,7 @@ public class VerfuegungResource {
 	@Path("/verfuegen/{gesuchId}/{betreuungId}/{ignorieren}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
 	public JaxVerfuegung saveVerfuegung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId,
@@ -177,7 +177,7 @@ public class VerfuegungResource {
 	@Path("/schliessenOhneVerfuegen/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
 	public Response verfuegungSchliessenOhneVerfuegen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId) {
 

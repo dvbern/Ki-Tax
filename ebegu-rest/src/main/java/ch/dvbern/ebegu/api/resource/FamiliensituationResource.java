@@ -62,7 +62,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("familiensituation")
 @Stateless
-@Api("Resource für die Familiensituation")
+@Api(description = "Resource für die Familiensituation")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FamiliensituationResource {
 

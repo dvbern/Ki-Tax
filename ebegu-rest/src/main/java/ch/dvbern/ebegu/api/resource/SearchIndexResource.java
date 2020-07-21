@@ -66,7 +66,7 @@ import org.apache.commons.lang3.Validate;
 
 @Path("search")
 @Stateless
-@Api("Resource für Suchanfragen")
+@Api(description = "Resource für Suchanfragen")
 @PermitAll
 public class SearchIndexResource {
 

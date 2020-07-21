@@ -66,7 +66,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("traegerschaften")
 @Stateless
-@Api("Resource zur Verwaltung von Trägerschaften (Zusammenschluss von mehreren Institutionen)")
+@Api(description = "Resource zur Verwaltung von Trägerschaften (Zusammenschluss von mehreren Institutionen)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class TraegerschaftResource {
 

@@ -76,7 +76,7 @@ import static java.util.Objects.requireNonNull;
 
 @Path("notrecht")
 @Stateless
-@Api("Resource zum Verwalten von Rueckforderungsformularen für das Notrecht")
+@Api(description = "Resource zum Verwalten von Rueckforderungsformularen für das Notrecht")
 @RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
 	ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 public class NotrechtResource {

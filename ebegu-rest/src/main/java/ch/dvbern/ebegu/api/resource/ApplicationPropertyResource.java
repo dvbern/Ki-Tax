@@ -72,7 +72,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("application-properties")
 @Stateless
-@Api("Resource zum Lesen der Applikationsproperties")
+@Api(description = "Resource zum Lesen der Applikationsproperties")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class ApplicationPropertyResource {
 

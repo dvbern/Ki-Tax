@@ -116,7 +116,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("gemeinde")
 @Stateless
-@Api("Resource für Gemeinden")
+@Api(description = "Resource für Gemeinden")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GemeindeResource {
 

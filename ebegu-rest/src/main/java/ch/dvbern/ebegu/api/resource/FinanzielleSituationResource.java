@@ -84,7 +84,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("finanzielleSituation")
 @Stateless
-@Api("Resource für die finanzielle Situation")
+@Api(description = "Resource für die finanzielle Situation")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FinanzielleSituationResource {
 

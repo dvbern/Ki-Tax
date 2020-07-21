@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("support")
 @Stateless
-@Api("Resource zum Senden von Supportanfragen")
+@Api(description = "Resource zum Senden von Supportanfragen")
 @PermitAll
 public class SupportResource {
 

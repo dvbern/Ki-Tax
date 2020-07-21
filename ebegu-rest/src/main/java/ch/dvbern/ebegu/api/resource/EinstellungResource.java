@@ -72,7 +72,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("einstellung")
 @Stateless
-@Api("Resource fuer Einstellungen")
+@Api(description = "Resource fuer Einstellungen")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class EinstellungResource {
 

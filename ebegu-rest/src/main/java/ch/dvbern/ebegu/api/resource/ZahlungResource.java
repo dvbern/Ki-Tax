@@ -76,7 +76,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("zahlungen")
 @Stateless
-@Api("Resource zum Verwalten von Zahlungen")
+@Api(description = "Resource zum Verwalten von Zahlungen")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class ZahlungResource {
 

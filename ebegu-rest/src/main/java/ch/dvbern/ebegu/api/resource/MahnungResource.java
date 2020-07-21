@@ -68,7 +68,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Path("mahnung")
 @Stateless
-@Api("Resource zum Verwalten eines Mahnlaufes")
+@Api(description = "Resource zum Verwalten eines Mahnlaufes")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class MahnungResource {
 
