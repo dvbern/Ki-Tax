@@ -241,6 +241,14 @@ export class ReportAsyncRS {
             });
     }
 
+    public getTagesschuleRechnungsstellungReportExcel(): IPromise<string> {
+        return this.http
+            .get(`${this.serviceURL}/excel/tagesschuleRechnungsstellung`, {timeout: this.reportingTimeout})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getNotrechtReportExcel(zahlungenAusloesen: boolean): IPromise<string> {
         const reportParams = this.httpParamSerializer({
             zahlungenAusloesen,

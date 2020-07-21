@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 /**
  * DTO fuer die TagesschuleStatistik
  */
-public class TagesschuleDataRow {
+public class TagesschuleAnmeldungenDataRow {
 
 	private String nachnameKind;
 	private String vornameKind;
