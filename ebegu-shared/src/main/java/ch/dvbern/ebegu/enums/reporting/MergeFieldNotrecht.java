@@ -58,6 +58,8 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe1FreigabeAusbezahltAm(new SimpleMergeField<>("stufe1FreigabeAusbezahltAm", DATETIME_CONVERTER)),
 	stufe1ZahlungJetztAusgeloest(new SimpleMergeField<>("stufe1ZahlungJetztAusgeloest", STRING_CONVERTER)),
 
+	institutionTyp(new SimpleMergeField<>("institutionTyp", STRING_CONVERTER)),
+
 	stufe2InstitutionKostenuebernahmeAnzahlTage(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlTage", BIGDECIMAL_CONVERTER)),
 	stufe2InstitutionKostenuebernahmeAnzahlStunden(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlStunden", BIGDECIMAL_CONVERTER)),
 	stufe2InstitutionKostenuebernahmeBetreuung(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeBetreuung", BIGDECIMAL_CONVERTER)),
