@@ -1649,7 +1649,7 @@
     "CONFIRM_KEIN_KONTINGENT_TITLE": "Wollen Sie den Status auf 'Kein Kontingent' setzen?",
     "CONFIRM_KEIN_KONTINGENT_TEXT": "Für diesen Antrag besteht kein Kontingent. Sie müssen die Antragstellenden ausserhalb kiBon über diesen Sachverhalt informieren",
     "BEGRUENDUNG": "Begründung",
-    "DOWNLOAD_WINDOW_LOADING_TEXT": "Das gewünschte Dokument wird aufbereitet und angezeigt / heruntergeladen.",
+    "DOWNLOAD_WINDOW_LOADING_TEXT": "Das gewünschte Dokument wird auf Schadsoftware überprüft und anschliessend aufbereitet und angezeigt / heruntergeladen.",
     "DOWNLOAD_WINDOW_FINISHED_TEXT": "Das Dokument wurde heruntergeladen. Sie können dieses Fenster schliessen.",
     "DOWNLOAD_WINDOW_CLOSE_TEXT": "Fenster schliessen",
     "DOWNLOAD_WINDOW_TITLE": "Filedownload",
@@ -2123,7 +2123,7 @@
     "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/de/index/direktion/organisation/soa/Coronavirus.html",
     "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Sie können die Vorlagen hier herunterladen",
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Sie haben {{NAME_DRITTANWENDUNGEN}} als zugriffsberechtigte Drittanwendung ausgewählt. Dadurch hat {{NAME_DRITTANWENDUNGEN}} Einsicht auf Ihre Daten. Möchten Sie  fortfahren und diese Änderung speichern?",
-    "LABEL_OK_FORFAHREN": "Ja, Forfahren",
+    "LABEL_OK_FORFAHREN": "Ja, Fortfahren",
     "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
