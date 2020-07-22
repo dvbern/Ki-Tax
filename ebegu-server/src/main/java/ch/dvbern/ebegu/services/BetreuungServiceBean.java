@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -90,6 +91,9 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+/*import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;*/
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
@@ -158,6 +162,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private PrincipalBean principalBean;
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
+/*	@Inject
+	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
+	@Inject
+	private Event<ExportedEvent> event;*/
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -174,6 +182,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		final Betreuung mergedBetreuung = persistence.merge(betreuung);
+
+		//if isNew and Jugendamt generate Event for Kafka -
+		// Muss nicht geschickt werden bevor die Exchange-service diese Event bearbeiten kann, man muss es erst
+		// auskommentieren werden wenn man in DEV die neuste
+		// Exchange-service Version testen wollen. Und muss unbedingt nicht in Prod gehen bis alles läuft auf DEV:
+	/*	if(isNew && mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()){
+			BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent = betreuungAnfrageEventConverter.of(mergedBetreuung);
+
+			this.event.fire(betreuungAnfrageAddedEvent);
+		}*/
 
 		// we need to manually add this new Betreuung to the Kind
 		final Set<Betreuung> betreuungen = mergedBetreuung.getKind().getBetreuungen();
