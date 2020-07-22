@@ -53,22 +53,27 @@ public class BGCalculationResult extends AbstractEntity {
 	private static final long serialVersionUID = 6727717920099112569L;
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal vollkosten = BigDecimal.ZERO; // Punkt IV auf der Verfuegung
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO; // Punkt V auf der Verfuegung
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag = BigDecimal.ZERO; // Punkt VI auf der Verfuegung
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal minimalerElternbeitrag = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal elternbeitrag = BigDecimal.ZERO;
 
@@ -78,7 +83,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal verguenstigung = BigDecimal.ZERO; // Punkt VIII auf der Verfuegung
+	private BigDecimal verguenstigung = BigDecimal.ZERO; // Punkt VIII auf der Verfuegung (Achtung: darf negativ sein)
 
 	@NotNull @Nonnull
 	@Enumerated(EnumType.STRING)
@@ -114,10 +119,12 @@ public class BGCalculationResult extends AbstractEntity {
 	private Integer einkommensjahr;
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
+	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal famGroesse = BigDecimal.ZERO;
 
