@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 public interface DownloadFileService {
 
 	/**
-	 * Erstellt ein neues DownloadFile und überprüft das Dokument auf Viren
+	 * Erstellt ein neues DownloadFile
 	 */
 	@Nonnull
 	DownloadFile create(@Nonnull FileMetadata fileMetadata, @Nonnull String ip);

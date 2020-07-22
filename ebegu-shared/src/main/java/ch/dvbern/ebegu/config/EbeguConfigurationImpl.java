@@ -89,9 +89,9 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
 
-	private static final String CLAMAV_HOST = "clamav.host";
-	private static final String CLAMAV_PORT = "clamav.port";
-	private static final String CLAMAV_DISABLED = "clamav.disabled";
+	private static final String CLAMAV_HOST = "ebegu.clamav.host";
+	private static final String CLAMAV_PORT = "ebegu.clamav.port";
+	private static final String CLAMAV_DISABLED = "ebegu.clamav.disabled";
 
 
 	@Inject
