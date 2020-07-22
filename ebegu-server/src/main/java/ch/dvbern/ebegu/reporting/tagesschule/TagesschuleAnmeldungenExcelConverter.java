@@ -37,7 +37,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschule;
+import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschuleAnmeldungen;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -47,7 +47,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Dependent
-public class TagesschuleExcelConverter implements ExcelConverter {
+public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 
 	public static final int IDENTIFIER_WOECHENTLICHES_MODUL = 1;
 	public static final int IDENTIFIER_ZWEIWOECHENTLICHES_MODUL = 2;
@@ -58,7 +58,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
-		@Nonnull List<TagesschuleDataRow> data,
+		@Nonnull List<TagesschuleAnmeldungenDataRow> data,
 		@Nonnull Locale locale,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull EinstellungenTagesschule einstellungenTagesschule,
@@ -68,10 +68,10 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		excelMerger.addValue(MergeFieldTagesschule.tagesschuleAnmeldungenTitle, tagesschuleName);
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.tagesschuleAnmeldungenTitle, tagesschuleName);
 
 		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ')';
-		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.periode, gesuchsPeriodeStr);
 
 		List<ModulTagesschuleGroup> sortedGroups =
 			einstellungenTagesschule.getModulTagesschuleGroups().stream().sorted(Comparator.naturalOrder())
@@ -82,10 +82,10 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 		addHeaders(excelMerger, locale, repeatColGroupList);
 
-		List<TagesschuleDataRow> nichtFreigegebeneGesuche = new ArrayList<>();
-		List<TagesschuleDataRow> freigegebeneGesuche = new ArrayList<>();
+		List<TagesschuleAnmeldungenDataRow> nichtFreigegebeneGesuche = new ArrayList<>();
+		List<TagesschuleAnmeldungenDataRow> freigegebeneGesuche = new ArrayList<>();
 
-		for (TagesschuleDataRow row : data) {
+		for (TagesschuleAnmeldungenDataRow row : data) {
 			if (row.getStatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
 				nichtFreigegebeneGesuche.add(row);
 			} else {
@@ -94,21 +94,21 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		}
 
 		freigegebeneGesuche.forEach(dataRow -> {
-			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschule.repeatRow);
-			excelRowGroup.addValue(MergeFieldTagesschule.nachnameKind, dataRow.getNachnameKind());
-			excelRowGroup.addValue(MergeFieldTagesschule.vornameKind, dataRow.getVornameKind());
-			excelRowGroup.addValue(MergeFieldTagesschule.geburtsdatumKind, dataRow.getGeburtsdatum());
-			excelRowGroup.addValue(MergeFieldTagesschule.referenznummer, dataRow.getReferenznummer());
-			excelRowGroup.addValue(MergeFieldTagesschule.eintrittsdatum, dataRow.getEintrittsdatum());
-			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
+			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschuleAnmeldungen.repeatRow);
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.nachnameKind, dataRow.getNachnameKind());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.vornameKind, dataRow.getVornameKind());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.geburtsdatumKind, dataRow.getGeburtsdatum());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.referenznummer, dataRow.getReferenznummer());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatum, dataRow.getEintrittsdatum());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
 			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
 		});
 		// wenn das Gesuch noch nicht freigegeben wurde, soll das Kind anonym erscheinen
 		nichtFreigegebeneGesuche.forEach(dataRow -> {
-			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschule.repeatRow2);
-			excelRowGroup.addValue(MergeFieldTagesschule.nachnameKind, ServerMessageUtil.getMessage("Reports_anonym", locale));
-			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
+			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschuleAnmeldungen.repeatRow2);
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.nachnameKind, ServerMessageUtil.getMessage("Reports_anonym", locale));
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
 			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
 		});
@@ -149,32 +149,32 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale,
 		@Nonnull List<TagesschuleRepeatColGroup> repeatColGroups) {
 
-		excelMerger.addValue(MergeFieldTagesschule.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.generiertAm, LocalDate.now());
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.generiertAm, LocalDate.now());
 
-		excelMerger.addValue(MergeFieldTagesschule.nachnameKindTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle",	locale));
-		excelMerger.addValue(MergeFieldTagesschule.vornameKindTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.referenznummerTitle, ServerMessageUtil.getMessage(
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.nachnameKindTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle",	locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.vornameKindTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.referenznummerTitle, ServerMessageUtil.getMessage(
 			"Reports_bgNummerTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
 
-		excelMerger.addValue(MergeFieldTagesschule.wochentagMo, ServerMessageUtil.getMessage("Reports_MontagShort", locale));
-		excelMerger.addValue(MergeFieldTagesschule.wochentagDi, ServerMessageUtil.getMessage("Reports_DienstagShort", locale));
-		excelMerger.addValue(MergeFieldTagesschule.wochentagMi, ServerMessageUtil.getMessage("Reports_MittwochShort", locale));
-		excelMerger.addValue(MergeFieldTagesschule.wochentagDo, ServerMessageUtil.getMessage("Reports_DonnerstagShort", locale));
-		excelMerger.addValue(MergeFieldTagesschule.wochentagFr, ServerMessageUtil.getMessage("Reports_FreitagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagMo, ServerMessageUtil.getMessage("Reports_MontagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagDi, ServerMessageUtil.getMessage("Reports_DienstagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagMi, ServerMessageUtil.getMessage("Reports_MittwochShort", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagDo, ServerMessageUtil.getMessage("Reports_DonnerstagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagFr, ServerMessageUtil.getMessage("Reports_FreitagShort", locale));
 
-		excelMerger.addValue(MergeFieldTagesschule.summeStundenTitle, ServerMessageUtil.getMessage("Reports_summeStundenTitle", locale));
-		excelMerger.addValue(MergeFieldTagesschule.summeVerpflegungTitle, ServerMessageUtil.getMessage("Reports_summeVerpflegungTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.summeStundenTitle, ServerMessageUtil.getMessage("Reports_summeStundenTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.summeVerpflegungTitle, ServerMessageUtil.getMessage("Reports_summeVerpflegungTitle", locale));
 
-		excelMerger.addValue(MergeFieldTagesschule.legende, ServerMessageUtil.getMessage("Reports_legende", locale));
-		excelMerger.addValue(MergeFieldTagesschule.legendeVolleKosten, ServerMessageUtil.getMessage(
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.legende, ServerMessageUtil.getMessage("Reports_legende", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.legendeVolleKosten, ServerMessageUtil.getMessage(
 			"Reports_legendeVolleKosten", locale));
-		excelMerger.addValue(MergeFieldTagesschule.legendeZweiwoechentlich, ServerMessageUtil.getMessage(
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.legendeZweiwoechentlich, ServerMessageUtil.getMessage(
 			"Reports_legendeZweiwoechentlich", locale));
-		excelMerger.addValue(MergeFieldTagesschule.legendeOhneVerpflegung, ServerMessageUtil.getMessage(
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.legendeOhneVerpflegung, ServerMessageUtil.getMessage(
 			"Reports_legendeOhneVerpflegung", locale));
 
 
@@ -186,20 +186,20 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		repeatColGroups.forEach(group -> {
 			int counter = Constants.MAX_MODULGROUPS_TAGESSCHULE;
 			for (ModulTagesschuleGroup moduleGroup : group.getModulTagesschuleList()) {
-				excelMerger.addValue(MergeFieldTagesschule.valueOf(group.getRepeatColName()), null);
-				excelMerger.addValue(MergeFieldTagesschule.modulName,
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.valueOf(group.getRepeatColName()), null);
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.modulName,
 					moduleGroup.getBezeichnung().findTextByLocale(locale));
 				long modulStunden = Duration.between(moduleGroup.getZeitVon(), moduleGroup.getZeitBis()).toHours();
-				excelMerger.addValue(MergeFieldTagesschule.modulStunden, modulStunden);
-				excelMerger.addValue(MergeFieldTagesschule.verpflegungskosten, moduleGroup.getVerpflegungskosten());
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.modulStunden, modulStunden);
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.verpflegungskosten, moduleGroup.getVerpflegungskosten());
 				counter--;
 			}
 			// Eine maximale anzahl Spalten wurden im Excel vorbereitet. Diese müssen ausgefüllt leer ausgefüllt
 			// werden, damit sie ausgeblendet werden.
 			while (counter > 0) {
-				excelMerger.addValue(MergeFieldTagesschule.modulName, null);
-				excelMerger.addValue(MergeFieldTagesschule.modulStunden, null);
-				excelMerger.addValue(MergeFieldTagesschule.verpflegungskosten, null);
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.modulName, null);
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.modulStunden, null);
+				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.verpflegungskosten, null);
 				counter--;
 			}
 		});
@@ -207,7 +207,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 	// Anmeldungen für die Module pro Kind ausfüllen
 	private void setAnmeldungenForModule(
-		@Nonnull TagesschuleDataRow dataRow,
+		@Nonnull TagesschuleAnmeldungenDataRow dataRow,
 		@Nonnull List<TagesschuleRepeatColGroup> repeatColGroups,
 		@Nonnull ExcelMergerDTO excelRowGroup) {
 			repeatColGroups.forEach(weekday -> {
@@ -215,13 +215,13 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 				for (ModulTagesschuleGroup moduleGroup : weekday.getModulTagesschuleList()) {
 					for (ModulTagesschule module : moduleGroup.getModule()) {
 						if (module.getWochentag() == weekday.getWochentag()) {
-							excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, getAnmeldungCode(module, dataRow));
+							excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.angemeldet, getAnmeldungCode(module, dataRow));
 							counter--;
 						}
 					}
 				}
 				while (counter > 0) {
-					excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, null);
+					excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.angemeldet, null);
 					counter--;
 				}
 			});
@@ -235,7 +235,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 	 * @return IDENTIFIER_WOECHENTLICHES_MODUL, IDENTIFIER_ZWEIWOECHENTLICHES_MODUL oder null falls nicht angemeldet
 	 */
 	@Nullable
-	private Integer getAnmeldungCode(ModulTagesschule module, TagesschuleDataRow dataRow) {
+	private Integer getAnmeldungCode(ModulTagesschule module, TagesschuleAnmeldungenDataRow dataRow) {
 		if (dataRow.getAnmeldungTagesschule().getBelegungTagesschule() != null) {
 			for (BelegungTagesschuleModul m :
 				dataRow.getAnmeldungTagesschule().getBelegungTagesschule().getBelegungTagesschuleModule()) {

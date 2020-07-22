@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 /**
@@ -52,6 +53,7 @@ public class NotrechtDataRow {
 	private @Nullable LocalDateTime stufe1FreigabeDatum;
 	private @Nullable LocalDateTime stufe1FreigabeAusbezahltAm;
 	private @Nullable String stufe1ZahlungJetztAusgeloest;
+	private @Nullable RueckforderungInstitutionTyp institutionTyp;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
@@ -365,6 +367,15 @@ public class NotrechtDataRow {
 
 	public void setStufe1ZahlungJetztAusgeloest(@Nullable String stufe1ZahlungJetztAusgeloest) {
 		this.stufe1ZahlungJetztAusgeloest = stufe1ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public RueckforderungInstitutionTyp getInstitutionTyp() {
+		return institutionTyp;
+	}
+
+	public void setInstitutionTyp(@Nullable RueckforderungInstitutionTyp institutionTyp) {
+		this.institutionTyp = institutionTyp;
 	}
 
 	@Nullable

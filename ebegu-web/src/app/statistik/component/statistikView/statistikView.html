@@ -803,6 +803,33 @@
                 </div>
 
                 <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
+                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_TS', 'SACHBEARBEITER_TS']">
+                    <dv-accordion-tab tabid="tagesschuleRechnungsstellung">
+                        <tab-title>
+                            <span class="uppercase" data-translate="TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK"></span>
+                            <dv-tooltip input-id="tagesschuleRechnungsstellung_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
+                        <tab-body>
+                            <form name="tagesschuleRechnungsstellung"
+                                  ng-submit="vm.generateStatistik(tagesschuleRechnungsstellung, vm.TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
+
+                <div dv-show-element
                      dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="notrecht">
                         <tab-title>

@@ -89,6 +89,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
 
+	private static final String CLAMAV_HOST = "ebegu.clamav.host";
+	private static final String CLAMAV_PORT = "ebegu.clamav.port";
+	private static final String CLAMAV_DISABLED = "ebegu.clamav.disabled";
+
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -355,4 +359,20 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public String getKitaxEndpoint() {
 		return getString(EBEGU_KITAX_ENDPOINT, "/ebegu/api/v1/kibon/lookup");
 	}
+
+	@Override
+	public String getClamavHost() {
+		return getString(CLAMAV_HOST, "localhost");
+	}
+
+	@Override
+	public int getClamavPort() {
+		return getInt(CLAMAV_PORT, 3310);
+	}
+
+	@Override
+	public boolean isClamavDisabled() {
+		return getBoolean(CLAMAV_DISABLED, true);
+	}
+
 }

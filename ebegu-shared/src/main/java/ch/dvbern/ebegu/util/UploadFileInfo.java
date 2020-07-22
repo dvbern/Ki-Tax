@@ -94,7 +94,7 @@ public class UploadFileInfo {
 
 	public String getSizeString() {
 
-		int unit = 1000;
+		int unit = 1024;
 		if (size < unit) {
 			return size + " B";
 		}
