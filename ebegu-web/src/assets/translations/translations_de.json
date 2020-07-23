@@ -1649,7 +1649,7 @@
     "CONFIRM_KEIN_KONTINGENT_TITLE": "Wollen Sie den Status auf 'Kein Kontingent' setzen?",
     "CONFIRM_KEIN_KONTINGENT_TEXT": "Für diesen Antrag besteht kein Kontingent. Sie müssen die Antragstellenden ausserhalb kiBon über diesen Sachverhalt informieren",
     "BEGRUENDUNG": "Begründung",
-    "DOWNLOAD_WINDOW_LOADING_TEXT": "Das gewünschte Dokument wird aufbereitet und angezeigt / heruntergeladen.",
+    "DOWNLOAD_WINDOW_LOADING_TEXT": "Das gewünschte Dokument wird auf Schadsoftware überprüft und anschliessend aufbereitet und angezeigt / heruntergeladen.",
     "DOWNLOAD_WINDOW_FINISHED_TEXT": "Das Dokument wurde heruntergeladen. Sie können dieses Fenster schliessen.",
     "DOWNLOAD_WINDOW_CLOSE_TEXT": "Fenster schliessen",
     "DOWNLOAD_WINDOW_TITLE": "Filedownload",

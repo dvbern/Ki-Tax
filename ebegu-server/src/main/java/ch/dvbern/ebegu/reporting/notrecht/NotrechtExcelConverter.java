@@ -78,6 +78,8 @@ public class NotrechtExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1FreigabeAusbezahltAm, dataRow.getStufe1FreigabeAusbezahltAm());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1ZahlungJetztAusgeloest, dataRow.getStufe1ZahlungJetztAusgeloest());
 
+			excelRowGroup.addValue(MergeFieldNotrecht.institutionTyp, ServerMessageUtil.translateEnumValue(dataRow.getInstitutionTyp(), locale));
+
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlTage, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlTage());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlStunden, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeBetreuung, dataRow.getStufe2InstitutionKostenuebernahmeBetreuung());

@@ -172,14 +172,15 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		Join<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule =
 			root.join(KindContainer_.anmeldungenTagesschule);
 
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(builder.equal(root.get(KindContainer_.gesuch).get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.id),
-			gesuchsperiodeID));
-		predicates.add(builder.equal(
+		final Predicate predicateGesuch = builder.equal(root.get(KindContainer_.gesuch).get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.id),
+			gesuchsperiodeID);
+		final Predicate predicateStammdaten = builder.equal(
 			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.institutionStammdaten).get(InstitutionStammdaten_.id),
-			stammdatenID));
+			stammdatenID);
+		final Predicate predicateGueltig = builder.equal(joinAnmeldungTagesschule.get(AnmeldungTagesschule_.gueltig),
+			Boolean.TRUE);
 
-		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
+		query.where(predicateGesuch, predicateStammdaten, predicateGueltig);
 		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
 		requireNonNull(kindContainerList);
 
