@@ -96,9 +96,9 @@ public class ZusaetzlicherBabyGutscheinRechnerRuleTest {
 		// London: Nichts gesetzt
 		rule.prepareParameter(prepareInput(false, true, KITA), londonDTO, result);
 		Assert.assertEquals(BigDecimal.ZERO, result.getZusaetzlicherBabyGutscheinBetrag());
-		// Paris: 50, aber bei 160'000, dort ist aber der Anspruch bereits 0. Bei 159'999 gibt es 49.57 CHF
+		// Paris: 50, aber bei 160'000, dort ist aber der Anspruch bereits 0. Bei 159'999 gibt es 49.99 CHF, gerundet wieder 50
 		rule.prepareParameter(prepareInput(false, true, KITA), parisDTO, result);
-		Assert.assertEquals(MathUtil.DEFAULT.from(49.57), MathUtil.toTwoKommastelle(result.getZusaetzlicherBabyGutscheinBetrag()));
+		Assert.assertEquals(MathUtil.DEFAULT.from(50.00), MathUtil.DEFAULT.from(result.getZusaetzlicherBabyGutscheinBetrag()));
 	}
 
 	private BGCalculationInput prepareInput(@Nonnull Boolean hasSozialhilfe, boolean isBaby, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
@@ -109,7 +109,7 @@ public class ZusaetzlicherBabyGutscheinRechnerRuleTest {
 		input.setBetreuungspensumProzent(BigDecimal.valueOf(100));
 		input.setBetreuungInGemeinde(true);
 		input.setBabyTarif(isBaby);
-		input.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.from(159000));
+		input.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.from(159999));
 		input.setAbzugFamGroesse(BigDecimal.ZERO);
 		return input;
 	}
