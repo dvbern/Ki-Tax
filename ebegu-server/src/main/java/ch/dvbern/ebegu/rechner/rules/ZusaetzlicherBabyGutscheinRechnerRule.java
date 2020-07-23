@@ -82,18 +82,22 @@ public class ZusaetzlicherBabyGutscheinRechnerRule implements RechnerRule {
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
-		final BigDecimal maxBabyGutschein = getMaximalBetragZusaetzlicherBabyGutschein(inputGemeinde, parameterDTO);
-		// Formel: (Einkommen-MinEinkommen)/(MaxEinkommen-MinEinkommen)*maxBabyGutschein
 		final BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		final BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
-		final BigDecimal einkommen = inputGemeinde.getMassgebendesEinkommen();
+		BigDecimal einkommen = inputGemeinde.getMassgebendesEinkommen();
+		einkommen = MathUtil.minimumMaximum(einkommen, minEinkommen, maxEinkommen);
+		// Bei einem Einkommen >= 160'000 entfaellt der Baby-Gutschein
+		if (einkommen.compareTo(maxEinkommen) == 0) {
+			return BigDecimal.ZERO;
+		}
 		final MathUtil MATH = MathUtil.EXACT;
+		final BigDecimal maxBabyGutschein = getMaximalBetragZusaetzlicherBabyGutschein(inputGemeinde, parameterDTO);
+		// Formel: (Einkommen-MinEinkommen)/(MaxEinkommen-MinEinkommen)*maxBabyGutschein
 		final BigDecimal dividend = MATH.subtract(einkommen, minEinkommen);
 		final BigDecimal divisor = MATH.subtract(maxEinkommen, minEinkommen);
 		final BigDecimal faktor = MATH.divide(dividend, divisor);
 		BigDecimal babyGutschein = MATH.multiply(faktor, maxBabyGutschein);
-		babyGutschein = MathUtil.minimum(babyGutschein, BigDecimal.ZERO); // Kann nicht negativ sein
-		babyGutschein = MathUtil.maximum(babyGutschein, maxBabyGutschein); // Nicht hoeher als Maximum
+		babyGutschein = MathUtil.minimumMaximum(babyGutschein, BigDecimal.ZERO, maxBabyGutschein); // Kann nicht negativ sein und nicht hoeher als Max
 		return babyGutschein;
 	}
 

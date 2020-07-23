@@ -23,12 +23,16 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterGemeindeDTO;
 import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,12 +43,15 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 public class ZusaetzlicherBabyGutscheinRechnerRuleTest {
 
-	private static final BigDecimal babyGutscheinKita = MathUtil.DEFAULT.from(50);
+	private static final BigDecimal babyGutscheinKita = MathUtil.DEFAULT.from(50.00);
 	private static final BigDecimal babyGutscheinTfo = MathUtil.DEFAULT.from(4.54);
 
+	final Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 	private ZusaetzlicherBabyGutscheinRechnerRule rule = new ZusaetzlicherBabyGutscheinRechnerRule(Locale.GERMAN);
-	private BGRechnerParameterDTO londonDTO = new BGRechnerParameterDTO();
-	private BGRechnerParameterDTO parisDTO = new BGRechnerParameterDTO();
+	private BGRechnerParameterDTO londonDTO =
+		new BGRechnerParameterDTO(EbeguRuleTestsHelper.getAllEinstellungen(gesuchsperiode),	gesuchsperiode, new Gemeinde());
+	private BGRechnerParameterDTO parisDTO =
+		new BGRechnerParameterDTO(EbeguRuleTestsHelper.getAllEinstellungen(gesuchsperiode),	gesuchsperiode, new Gemeinde());
 
 	@Before
 	public void init() {
@@ -89,9 +96,9 @@ public class ZusaetzlicherBabyGutscheinRechnerRuleTest {
 		// London: Nichts gesetzt
 		rule.prepareParameter(prepareInput(false, true, KITA), londonDTO, result);
 		Assert.assertEquals(BigDecimal.ZERO, result.getZusaetzlicherBabyGutscheinBetrag());
-		// Paris: 30
+		// Paris: 50, aber bei 160'000, dort ist aber der Anspruch bereits 0. Bei 159'999 gibt es 49.57 CHF
 		rule.prepareParameter(prepareInput(false, true, KITA), parisDTO, result);
-		Assert.assertEquals(babyGutscheinKita, result.getZusaetzlicherBabyGutscheinBetrag());
+		Assert.assertEquals(MathUtil.DEFAULT.from(49.57), MathUtil.toTwoKommastelle(result.getZusaetzlicherBabyGutscheinBetrag()));
 	}
 
 	private BGCalculationInput prepareInput(@Nonnull Boolean hasSozialhilfe, boolean isBaby, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
@@ -102,6 +109,8 @@ public class ZusaetzlicherBabyGutscheinRechnerRuleTest {
 		input.setBetreuungspensumProzent(BigDecimal.valueOf(100));
 		input.setBetreuungInGemeinde(true);
 		input.setBabyTarif(isBaby);
+		input.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.from(159000));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 		return input;
 	}
 }
