@@ -162,7 +162,7 @@ public class BetreuungResource {
 		}
 
 		AnmeldungTagesschule persistedAnmeldungTagesschule =
-			this.betreuungService.saveAnmeldungTagesschule(convertedAnmeldungTagesschule, abwesenheit);
+			this.betreuungService.saveAnmeldungTagesschule(convertedAnmeldungTagesschule);
 		return converter.anmeldungTagesschuleToJAX(persistedAnmeldungTagesschule);
 	}
 
@@ -179,7 +179,7 @@ public class BetreuungResource {
 		convertedAnmeldungFerieninsel.setKind(kindContainer);
 
 		AnmeldungFerieninsel persistedAnmeldungFerieninsel =
-			this.betreuungService.saveAnmeldungFerieninsel(convertedAnmeldungFerieninsel, abwesenheit);
+			this.betreuungService.saveAnmeldungFerieninsel(convertedAnmeldungFerieninsel);
 		return converter.anmeldungFerieninselToJAX(persistedAnmeldungFerieninsel);
 	}
 

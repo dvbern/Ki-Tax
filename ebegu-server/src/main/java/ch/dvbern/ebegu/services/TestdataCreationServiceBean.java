@@ -229,7 +229,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		anmeldung.setBelegungTagesschule(new BelegungTagesschule());
 		Objects.requireNonNull(anmeldung.getBelegungTagesschule());
 		anmeldung.getBelegungTagesschule().setEintrittsdatum(LocalDate.now());
-		betreuungService.saveAnmeldungTagesschule(anmeldung, false);
+		betreuungService.saveAnmeldungTagesschule(anmeldung);
 		return persistence.find(Gesuch.class, gesuchToAdd.getId());
 	}
 

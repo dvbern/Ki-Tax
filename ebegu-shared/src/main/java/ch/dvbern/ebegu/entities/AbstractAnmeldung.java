@@ -71,7 +71,7 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 		case MUTATION:
 			if (targetEingangsart == Eingangsart.ONLINE) {
 				target.setAnmeldungMutationZustand(AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN);
-				this.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
+				this.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 			} else {
 				target.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 				target.setGueltig(true); // Bei Anmeldungen ist immer die neueste "gültig"

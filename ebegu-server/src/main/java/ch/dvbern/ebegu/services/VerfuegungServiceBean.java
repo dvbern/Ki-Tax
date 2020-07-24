@@ -201,10 +201,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public AnmeldungTagesschule anmeldungTagesschuleUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		// Da die Module auch beim Uebernehmen noch verändert worden sein können, muss die Anmeldung zuerst nochmals
-		// gespeichert werden
-		betreuungService.saveAnmeldungTagesschule(anmeldungTagesschule, false);
-
 		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(
 			anmeldungTagesschule.extractGesuch().getId(),
 			anmeldungTagesschule.getId());
@@ -220,6 +216,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// übernommen, diese dürfen aber nicht auf gueltig gesetzt werden!
 		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+
+		// Da die Module auch beim Uebernehmen noch verändert worden sein können, muss die Anmeldung zuerst nochmals
+		// gespeichert werden. Hier muss der neue Status schon gesetzt sein, damit er auf die bestehenden
+		// Anemldungen auf anderen Mutationen / Erstgesuch kopiert wirdd
+		betreuungService.saveAnmeldungTagesschule(anmeldungTagesschule);
 
 		AnmeldungTagesschule persistedAnmeldung = persistedVerfuegung.getAnmeldungTagesschule();
 		Objects.requireNonNull(persistedAnmeldung);
@@ -267,7 +268,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					+ "AnmeldungFerieninsel {}",
 				anmeldungFerieninsel.getId(), e);
 		}
-		return betreuungService.saveAnmeldungFerieninsel(anmeldungFerieninsel, false);
+		return betreuungService.saveAnmeldungFerieninsel(anmeldungFerieninsel);
 	}
 
 	private void setVorgaengerAnmeldungTagesschuleAufUebernommen(@Nonnull AnmeldungTagesschule anmeldung) {

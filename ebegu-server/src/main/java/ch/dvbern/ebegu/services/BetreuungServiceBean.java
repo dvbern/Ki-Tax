@@ -30,7 +30,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -91,9 +90,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-/*import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;*/
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
@@ -122,6 +118,10 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
+/*import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;*/
 
 /**
  * Service fuer Betreuung
@@ -211,22 +211,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@Override
 	public AnmeldungTagesschule saveAnmeldungTagesschule(
-		@Nonnull AnmeldungTagesschule betreuung, @Nonnull Boolean isAbwesenheit
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule
 	) {
-		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
+		checkNotKorrekturmodusWithFerieninselOnly(anmeldungTagesschule.extractGesuch());
 
-		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+		boolean isNew = anmeldungTagesschule.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
-		final AnmeldungTagesschule mergedBetreuung = persistence.merge(betreuung);
+		updateGueltigFlagOnPlatzAndVorgaenger(anmeldungTagesschule);
+		final AnmeldungTagesschule mergedBetreuung = persistence.merge(anmeldungTagesschule);
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(betreuung.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(anmeldungTagesschule.getId(), b.getId()))
 			.forEach(b -> {
-				b.copyAnmeldung(betreuung);
+				b.copyAnmeldung(anmeldungTagesschule);
 				persistence.merge(b);
 			});
 
@@ -236,7 +236,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		mergedBetreuung.getKind().setAnmeldungenTagesschule(betreuungen);
 
 		//jetzt noch wizard step updaten
-		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+		updateWizardSteps(mergedBetreuung, false);
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
@@ -249,20 +249,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	@Override
-	public AnmeldungFerieninsel saveAnmeldungFerieninsel(@Nonnull AnmeldungFerieninsel betreuung,
-		@Nonnull Boolean isAbwesenheit) {
-		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+	public AnmeldungFerieninsel saveAnmeldungFerieninsel(@Nonnull AnmeldungFerieninsel anmeldungFerieninsel) {
+		boolean isNew = anmeldungFerieninsel.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
-		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(betreuung);
+		updateGueltigFlagOnPlatzAndVorgaenger(anmeldungFerieninsel);
+		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(anmeldungFerieninsel);
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(betreuung.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(anmeldungFerieninsel.getId(), b.getId()))
 			.forEach(b -> {
-				b.copyAnmeldung(betreuung);
+				b.copyAnmeldung(anmeldungFerieninsel);
 				persistence.merge(b);
 			});
 
@@ -272,7 +271,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		mergedBetreuung.getKind().setAnmeldungenFerieninsel(betreuungen);
 
 		//jetzt noch wizard step updaten
-		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+		updateWizardSteps(mergedBetreuung, false);
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
@@ -285,9 +284,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private <T extends AbstractPlatz> T savePlatz(T platz) {
 		if (platz.getBetreuungsangebotTyp().isFerieninsel()) {
-			return (T) saveAnmeldungFerieninsel((AnmeldungFerieninsel) platz, false);
+			return (T) saveAnmeldungFerieninsel((AnmeldungFerieninsel) platz);
 		} else if (platz instanceof AnmeldungTagesschule) {
-			return (T) saveAnmeldungTagesschule((AnmeldungTagesschule) platz, false);
+			return (T) saveAnmeldungTagesschule((AnmeldungTagesschule) platz);
 		} else {
 			return (T) saveBetreuung((Betreuung) platz, false);
 		}

@@ -49,14 +49,14 @@ public interface BetreuungService {
 	 * Bean validation wird eingeschaltet
 	 */
 	@Nonnull
-	AnmeldungTagesschule saveAnmeldungTagesschule(@Valid @Nonnull AnmeldungTagesschule anmeldungTagesschule, @Nonnull Boolean isAbwesenheit);
+	AnmeldungTagesschule saveAnmeldungTagesschule(@Valid @Nonnull AnmeldungTagesschule anmeldungTagesschule);
 
 	/**
 	 * Speichert die AnmeldungFerieninsel neu in der DB falls der Key noch nicht existiert. Sonst wird die existierende AnmeldungFerieninsel aktualisiert
 	 * Bean validation wird eingeschaltet
 	 */
 	@Nonnull
-	AnmeldungFerieninsel saveAnmeldungFerieninsel(@Valid @Nonnull AnmeldungFerieninsel anmeldungFerieninsel, @Nonnull Boolean isAbwesenheit);
+	AnmeldungFerieninsel saveAnmeldungFerieninsel(@Valid @Nonnull AnmeldungFerieninsel anmeldungFerieninsel);
 
 	/**
 	 * Setzt die Betreuungsplatzanfrage auf ABGEWIESEN und sendet dem Gesuchsteller eine E-Mail
