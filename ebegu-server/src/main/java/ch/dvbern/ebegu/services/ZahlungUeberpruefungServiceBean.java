@@ -39,6 +39,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -172,15 +173,22 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				autragResult = StringUtils.abbreviate(autragResult, Constants.DB_TEXTAREA_LENGTH);
 
 			}
-			// Erst jetzt den Zahlungsauftrag von der DB lesen, wegen OptimisticLockExceptions,
-			// wenn unterdessen der Auftrag freigegeben wird
-			final Zahlungsauftrag zahlungsauftrag = persistence.find(Zahlungsauftrag.class, zahlungsauftragId);
-			zahlungsauftrag.setResult(autragResult);
-			persistence.merge(zahlungsauftrag);
+			// Erst jetzt den Zahlungsauftrag lesen bzw. updaten, wegen OptimisticLockExceptions,
+			updateZahlungsauftragResult(zahlungsauftragId, autragResult);
+
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
 		}
 		LOGGER.info("... beendet");
+	}
+
+	private void updateZahlungsauftragResult(@Nonnull String zahlungsauftragId, @Nonnull String autragResult) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaUpdate<Zahlungsauftrag> criteriaUpdate = cb.createCriteriaUpdate(Zahlungsauftrag.class);
+		Root<Zahlungsauftrag> employeeRoot = criteriaUpdate.from(Zahlungsauftrag.class);
+		criteriaUpdate.set(employeeRoot.get(Zahlungsauftrag_.result), autragResult);
+		criteriaUpdate.where(cb.equal(employeeRoot.get(Zahlungsauftrag_.id), zahlungsauftragId));
+		persistence.getEntityManager().createQuery(criteriaUpdate).executeUpdate();
 	}
 
 	private void pruefungZahlungenSollFuerGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode,
