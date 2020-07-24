@@ -43,9 +43,6 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular createRueckforderungFormular(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
-	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
-
-	@Nonnull
 	List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer();
 
 	@Nonnull
@@ -55,11 +52,16 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
+	RueckforderungFormular saveAndChangeStatusIfNecessary(RueckforderungFormular rueckforderungFormular);
+
+	@Nonnull
 	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status);
 
 	@Nonnull
 	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
 
-	@Nonnull
 	void initializePhase2();
+
+	@Nonnull
+	RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id);
 }

@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#assign datumGeloescht = .now>
 From: ${configuration.senderAddress}
-To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
+To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${gesuchsteller.mail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Ihr Gesuch wurde gelöscht</@base64Header>
 Content-Type: text/html;charset=utf-8
 

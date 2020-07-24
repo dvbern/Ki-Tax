@@ -26,7 +26,7 @@
             <p ng-if="vm.gesuchModelManager.getGesuch().isMutation()" class="inline-hint"
                data-translate="ERWERBSPENSEN_LIST_HINT">
             </p>
-            <div class="row" ng-if="!vm.erwerbspensumRequired">
+            <div class="row" ng-if="vm.erwerbspensumNotAllowed">
                 <div class="col-md-12">
                     <div class="well well-status-bestaetigt">
                         <span ng-bind="vm.getErwerbspensumNotRequired()"></span>
@@ -44,7 +44,7 @@
         </h3>
         <dv-erwerbspensum-list erwerbspensen="vm.getErwerbspensenListGS1()" table-id="erwerbspensenGS1"
                                add-button-text="{{'ADD_TAETIGKEIT' | translate}}"
-                               add-button-visible="!vm.isGesuchReadonly() && vm.erwerbspensumRequired"
+                               add-button-visible="!vm.isGesuchReadonly() && !vm.erwerbspensumNotAllowed"
                                input-id="removeEWPButton1_"
                                on-add="vm.createErwerbspensum(1)"
                                on-edit="vm.editPensum(pensum, 1)"
@@ -58,7 +58,7 @@
         </h3>
         <dv-erwerbspensum-list erwerbspensen="vm.getErwerbspensenListGS2()" table-id="erwerbspensenGS2"
                                add-button-text="{{'ADD_TAETIGKEIT' | translate}}"
-                               add-button-visible="!vm.isGesuchReadonly() && vm.erwerbspensumRequired"
+                               add-button-visible="!vm.isGesuchReadonly() && !vm.erwerbspensumNotAllowed"
                                input-id="removeEWPButton2_"
                                on-add="vm.createErwerbspensum(2)"
                                on-edit="vm.editPensum(pensum, 2)"

@@ -41,10 +41,9 @@ public final class KitaxUtil {
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull Betreuungspensum betreuungspensum
 	) {
-		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
-
 		switch (betreuungspensum.getUnitForDisplay()) {
 		case DAYS:
+			KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
 			BigDecimal faktor = MathUtil.EXACT.divide(BigDecimal.valueOf(240), oeffnungszeiten.getOeffnungstage());
 			BigDecimal prozent = MathUtil.EXACT.multiply(betreuungspensum.getPensum(), faktor);
 			return prozent;

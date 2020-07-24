@@ -3392,7 +3392,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		// Achtung: Hier sollten nur Daten aus dem RelevantBGCalculation*Result* verwendet werden, da die Daten aus den
-		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr zugaenglich
+		// RelevantBgCalculation*Input* nicht gespeichert werden und somit bei verfuegten Angeboten nicht mehr
+		// zugaenglich
 		// sind. Ausnahme sind Daten, die ZUM VERFUEGEN gebraucht werden, wie z.B.
 		// getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten()
 
@@ -5197,6 +5198,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+		jaxFormular.setHasBeenProvisorisch(rueckforderungFormular.isHasBeenProvisorisch());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 		jaxFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
@@ -5256,6 +5258,7 @@ public class JaxBConverter extends AbstractConverter {
 				);
 		rueckforderungFormular.setInstitutionStammdaten(institutionStammdaten);
 		rueckforderungFormular.setStatus(rueckforderungFormularJax.getStatus());
+		rueckforderungFormular.setHasBeenProvisorisch(rueckforderungFormularJax.isHasBeenProvisorisch());
 
 		rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1KantonKostenuebernahmeAnzahlStunden());
 		rueckforderungFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
@@ -5351,7 +5354,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxRueckforderungDokument rueckforderungDokumentToJax(@Nonnull RueckforderungDokument rueckforderungDokument) {
-		JaxRueckforderungDokument jaxRueckforderungDokument = new JaxRueckforderungDokument();
+		JaxRueckforderungDokument jaxRueckforderungDokument =
+			convertAbstractVorgaengerFieldsToJAX(rueckforderungDokument, new JaxRueckforderungDokument());
 		convertFileToJax(rueckforderungDokument, jaxRueckforderungDokument);
 
 		jaxRueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokument.getRueckforderungDokumentTyp());

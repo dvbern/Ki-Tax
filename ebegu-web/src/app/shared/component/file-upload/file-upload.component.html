@@ -15,8 +15,9 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 <div>
-    <table class="table" width="100%">
-        <tr>
+    <table class="table outer-table" width="100%">
+        <tr [ngClass]="{'file-required': files?.length === 0, 'file-uploaded': files?.length > 0}"
+        (click)="fileInput.click()">
             <td style="white-space: pre-wrap;">{{title | translate}}</td>
             <td width="2%"
                 class="symbol"
@@ -25,29 +26,29 @@
                 colspan="2">
                 <input type="file" multiple style="display: none"
 					   #fileInput
-                       accept="application/pdf"
+                       [accept]="allowedMimetypes"
                        (change)="onUploadFile($event);$event.stopPropagation()"/>
                 <button mat-raised-button
                         type="button"
-                        (click)="fileInput.click()"
                         class="dv-btn fa fa-upload dv-btn-operation"
                         title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                         [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                        [disabled]="readOnly"
                         tabindex="0">
                 </button>
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
-                <table class="table" width="100%">
+        <tr *ngIf="files?.length">
+            <td colspan="5" class="no-padding">
+                <table class="table inner-table" width="100%">
                     <thead>
-                    <th translate="DATEINAME">
+                    <th translate="DATEINAME" width="70%">
                     </th>
-                    <th translate="DATUM">
+                    <th translate="DATUM" width="10%">
                     </th>
-                    <th translate="SIZE">
+                    <th translate="SIZE" width="10%">
                     </th>
-                    <th colspan="3"></th>
+                    <th colspan="3" width="10%"></th>
                     </thead>
                     <tr *ngFor="let file of files;">
                         <td>
@@ -90,6 +91,7 @@
                                     title="{{'DOKUMENT_DELETE' | translate}}"
                                     [attr.aria-label]="'DOKUMENT_DELETE' | translate"
                                     aria-hidden="true"
+                                    [disabled]="readOnly"
                                     tabindex="0"></button>
                         </td>
                     </tr>

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services.authentication;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
@@ -451,6 +453,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 							SACHBEARBEITER_GEMEINDE,
 							ADMIN_TS,
 							SACHBEARBEITER_TS,
+							ADMIN_BG,
+							SACHBEARBEITER_BG,
 							ADMIN_INSTITUTION,
 							SACHBEARBEITER_INSTITUTION,
 							ADMIN_TRAEGERSCHAFT,
@@ -1283,6 +1287,65 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkMandantMatches(institutionStammdaten.getInstitution());
 		if (!isWriteAuthorizationInstitutionStammdaten(institutionStammdaten)) {
 			throwViolation(institutionStammdaten);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		switch (rueckforderungFormular.getStatus()) {
+		case EINGELADEN:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV:{
+			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		case NEU:
+		case IN_PRUEFUNG_KANTON_STUFE_1:
+		case IN_PRUEFUNG_KANTON_STUFE_2:
+		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH:
+		case GEPRUEFT_STUFE_1:
+		case VERFUEGT_PROVISORISCH:
+		case VERFUEGT:
+		case ABGESCHLOSSEN_OHNE_GESUCH: {
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		final List<UserRole> allowedRoles = new ArrayList<>();
+		allowedRoles.addAll(UserRole.getMandantRoles());
+		allowedRoles.addAll(UserRole.getInstitutionTraegerschaftRoles());
+		if (!principalBean.isCallerInAnyOfRole(allowedRoles)) {
+			throwViolation(rueckforderungFormular);
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
 		}
 	}
 

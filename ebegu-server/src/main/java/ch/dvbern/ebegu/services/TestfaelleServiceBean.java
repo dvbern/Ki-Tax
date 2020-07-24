@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
@@ -632,6 +633,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 				createStammdatenForGemeinde(gesuch.extractGemeinde());
 			}
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
+			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())
@@ -645,9 +647,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 				generateDokFinSituation(gesuch); // the finSit document must be explicitly generated
 			}
-			gesuchService.postGesuchVerfuegen(gesuch);
 		}
-		wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.VERFUEGEN);
 	}
 
 	private void createStammdatenForGemeinde(@Nonnull Gemeinde gemeinde) {

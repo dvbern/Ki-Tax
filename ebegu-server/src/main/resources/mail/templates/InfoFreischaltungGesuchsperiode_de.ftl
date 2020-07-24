@@ -6,7 +6,7 @@
 <#-- @ftlvariable name="startDatum" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode" -->
 From: ${configuration.senderAddress}
-To: ${gesuchsteller.fullName} <${empfaengerMail}>
+To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Neue Gesuchsperiode freigeschaltet</@base64Header>
 Content-Type: text/html;charset=utf-8
 

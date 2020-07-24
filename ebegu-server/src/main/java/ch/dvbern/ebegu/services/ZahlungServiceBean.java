@@ -324,8 +324,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicates.add(predicateGueltig);
-		// Status der Betreuung muss VERFUEGT oder STORINERT sein
-		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT, Betreuungsstatus.STORNIERT);
+		// Status der Betreuung muss VERFUEGT sein
+		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT);
 		predicates.add(predicateStatus);
 		// Das Dossier muss der uebergebenen Gemeinde zugeordnet sein
 		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
@@ -377,8 +377,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicates.add(predicateGueltig);
-		// Status der Betreuung muss VERFUEGT oder STORINERT sein
-		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT, Betreuungsstatus.STORNIERT);
+		// Status der Betreuung muss VERFUEGT sein
+		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT);
 		predicates.add(predicateStatus);
 		// Das Dossier muss der uebergebenen Gemeinde zugeordnet sein
 		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
@@ -781,7 +781,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
-		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(gemeinde, zahlungsauftrag.getDatumGeneriert()));
+		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(gemeinde, zahlungsauftrag.getId()));
 	}
 }
 

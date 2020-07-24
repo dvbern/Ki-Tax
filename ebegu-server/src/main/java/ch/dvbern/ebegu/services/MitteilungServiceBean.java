@@ -359,6 +359,40 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return Optional.ofNullable(mitteilung);
 	}
 
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
+	public void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung) {
+		Collection<Betreuungsmitteilung> existing = findOffeneBetreuungsmitteilungenForBetreuung(betreuung);
+		existing.forEach(e -> persistence.remove(e));
+	}
+
+	@Nonnull
+	private Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
+		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
+		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
+
+		Predicate predicateBetreuung = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
+		predicates.add(predicateBetreuung);
+
+		final Predicate predicateNotApplied = cb.equal(root.get(Betreuungsmitteilung_.APPLIED), Boolean.FALSE);
+		predicates.add(predicateNotApplied);
+
+		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<Betreuungsmitteilung> tq = persistence.getEntityManager().createQuery(query);
+
+		tq.setParameter("betreuunParam", betreuung);
+		return tq.getResultList();
+	}
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
@@ -626,7 +660,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
-		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
@@ -667,6 +700,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				&& neustesGesuch.isMutation()) {
 				//betreuungsaenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
+				authorizer.checkWriteAuthorization(neustesGesuch);
 				applyBetreuungsmitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
@@ -675,6 +709,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
+				authorizer.checkWriteAuthorization(mutation);
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}

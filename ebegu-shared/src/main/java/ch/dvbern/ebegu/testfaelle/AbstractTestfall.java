@@ -461,7 +461,7 @@ public abstract class AbstractTestfall {
 		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
 		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
 		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
-
+		finanzielleSituation.setNettolohn(BigDecimal.ZERO);
 		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
 		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}

@@ -23,7 +23,6 @@ import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest'
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 
@@ -47,7 +46,6 @@ describe('testdatenView', () => {
         const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
             ['isDevMode']);
         applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
-        const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['gesuchVerfuegen']);
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
         const i18nServiceSpy = jasmine
@@ -64,7 +62,6 @@ describe('testdatenView', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {provide: GesuchRS, useValue: gesuchRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
