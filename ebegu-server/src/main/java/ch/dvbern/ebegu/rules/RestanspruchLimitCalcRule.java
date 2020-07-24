@@ -55,12 +55,23 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
 		//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 		if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-			inputData.addBemerkung(
-				MsgKey.RESTANSPRUCH_MSG,
-				getLocale(),
-				anspruchberechtigtesPensum,
-				verfuegbarerRestanspruch);
+			if (addVerfuegungsbemerkungRestanspruch(inputData)) {
+				inputData.addBemerkung(
+					MsgKey.RESTANSPRUCH_MSG,
+					getLocale(),
+					anspruchberechtigtesPensum,
+					verfuegbarerRestanspruch);
+			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
+	}
+
+	private boolean addVerfuegungsbemerkungRestanspruch(@Nonnull BGCalculationInput inputData) {
+		// Die Restanspruchsbemerkung soll nur hinzugefuegt werden, wenn es die "relevante"
+		// Berechnung fuer diesen Abschnitt ist
+		if (inputData.getParent().isHasGemeindeSpezifischeBerechnung()) {
+			return inputData.getRuleValidity() == RuleValidity.GEMEINDE;
+		}
+		return inputData.getRuleValidity() == RuleValidity.ASIV;
 	}
 }
