@@ -781,7 +781,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
-		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(gemeinde, zahlungsauftrag.getId()));
+		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(
+			gemeinde,
+			zahlungsauftrag.getId(),
+			zahlungsauftrag.getDatumGeneriert(),
+			zahlungsauftrag.getBeschrieb()));
 	}
 }
 
