@@ -621,8 +621,9 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public gesuchLoeschen(): IPromise<void> {
+        const titleDialog = this.getGesuch().isMutation() ? 'CONFIRM_MUTATION_LOESCHEN' : 'CONFIRM_GESUCH_LOESCHEN';
         return this.dvDialog.showRemoveDialog(removeDialogTempl, undefined, RemoveDialogController, {
-            title: 'CONFIRM_GESUCH_LOESCHEN',
+            title: titleDialog,
             deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN',
             parentController: this,
             elementID: 'gesuchLoeschenButton',

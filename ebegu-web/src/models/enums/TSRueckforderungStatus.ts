@@ -34,3 +34,12 @@ export function isNeuOrEingeladenStatus(status: TSRueckforderungStatus): boolean
     return status === TSRueckforderungStatus.NEU
         || status === TSRueckforderungStatus.EINGELADEN;
 }
+
+export function isStatusRelevantForFrist(status: TSRueckforderungStatus): boolean {
+    return status === TSRueckforderungStatus.NEU
+        || status === TSRueckforderungStatus.EINGELADEN
+        || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+        || status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+        || status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
+        || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
+}

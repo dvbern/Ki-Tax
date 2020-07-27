@@ -57,16 +57,20 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 
+		Objects.requireNonNull(oeffnungszeiten);
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
-		if (!input.isBetreuungInGemeinde()) {
+		if (!input.isBetreuungInGemeinde() && input.getBetreuungspensumProzent().doubleValue() > 0) {
+			// Wenn die Betreuung zu diesem Zeitpunkt schon beendet ist, kommt hier FALSE (es gibt ja
+			// keine Betreuung in der Gemeinde zu diesem Zeitpunkt). In diesem Fall darf aber der Anspruch
+			// nicht 0 gesetzt werden, da sonst der Restanspruch falsch berechnet wird!
+			// Daher nur 0 setzen, wenn tatsaechlich noch eine Betreuung vorhanden ist (die nicht in der
+			// Gemeinde ist)
 			input.setAnspruchspensumProzent(0);
 			// Die Bemerkung wollen wir nur setzen, wenn es ueberhaupt eine Betreuung gibt zu diesem Zeitpunkt
 			// Das Flag betreuungInBern ist logischerweise auf der Betreuung, und in Zeitabschnitten ohne Betreuung
 			// defaultmaessig false!
-			if (input.getBetreuungspensumProzent().doubleValue() > 0) {
-				input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
-			}
+			input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
 		}
 
 		// Benoetigte Daten
@@ -156,6 +160,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		@Nonnull BigDecimal verguenstigungIntervall,
 		@Nonnull BigDecimal elternbeitragIntervall
 	) {
+		Objects.requireNonNull(oeffnungszeiten);
 		// Resultat erstellen und benoetigte Daten aus Input kopieren
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);

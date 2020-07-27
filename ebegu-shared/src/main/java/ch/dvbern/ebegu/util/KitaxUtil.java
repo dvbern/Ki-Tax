@@ -18,11 +18,14 @@
 package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 
 /**
@@ -30,10 +33,21 @@ import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten
  */
 public final class KitaxUtil {
 
+	// DEV: d254c221-0c93-4151-aa87-6d32cd0a4d9e, PROD: b195d1a4-81e5-4233-8d7e-d99c4f1eb452
+	private static final List<String> IDS_TO_ACCEPT_FEBR_BUT_NOT_ASIV =
+		Arrays.asList("d254c221-0c93-4151-aa87-6d32cd0a4d9e", "b195d1a4-81e5-4233-8d7e-d99c4f1eb452");
+
+	private KitaxUtil() {
+	}
+
 	public static boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
 		// Zum Testen behandeln wir Paris wie Bern
 		long bfsNummer = gemeinde.getBfsNummer();
 		return bfsNummer == 351 || bfsNummer == 99998;
+	}
+
+	public static boolean isInstitutionAcceptingFebrButNotAsiv(@Nonnull InstitutionStammdaten institution) {
+		return IDS_TO_ACCEPT_FEBR_BUT_NOT_ASIV.contains(institution.getInstitution().getId());
 	}
 
 	public static BigDecimal recalculatePensumKonvertierung(
@@ -41,10 +55,9 @@ public final class KitaxUtil {
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull Betreuungspensum betreuungspensum
 	) {
-		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
-
 		switch (betreuungspensum.getUnitForDisplay()) {
 		case DAYS:
+			KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
 			BigDecimal faktor = MathUtil.EXACT.divide(BigDecimal.valueOf(240), oeffnungszeiten.getOeffnungstage());
 			BigDecimal prozent = MathUtil.EXACT.multiply(betreuungspensum.getPensum(), faktor);
 			return prozent;

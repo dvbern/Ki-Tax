@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -78,6 +79,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -86,11 +88,16 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+/*import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;*/
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -155,6 +162,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private PrincipalBean principalBean;
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
+/*	@Inject
+	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
+	@Inject
+	private Event<ExportedEvent> event;*/
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -165,9 +176,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit) {
 		Objects.requireNonNull(betreuung);
+
+		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
+
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		final Betreuung mergedBetreuung = persistence.merge(betreuung);
+
+		//if isNew and Jugendamt generate Event for Kafka -
+		// Muss nicht geschickt werden bevor die Exchange-service diese Event bearbeiten kann, man muss es erst
+		// auskommentieren werden wenn man in DEV die neuste
+		// Exchange-service Version testen wollen. Und muss unbedingt nicht in Prod gehen bis alles läuft auf DEV:
+	/*	if(isNew && mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()){
+			BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent = betreuungAnfrageEventConverter.of(mergedBetreuung);
+
+			this.event.fire(betreuungAnfrageAddedEvent);
+		}*/
 
 		// we need to manually add this new Betreuung to the Kind
 		final Set<Betreuung> betreuungen = mergedBetreuung.getKind().getBetreuungen();
@@ -186,8 +210,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	@Override
-	public AnmeldungTagesschule saveAnmeldungTagesschule(@Nonnull AnmeldungTagesschule betreuung,
-		@Nonnull Boolean isAbwesenheit) {
+	public AnmeldungTagesschule saveAnmeldungTagesschule(
+		@Nonnull AnmeldungTagesschule betreuung, @Nonnull Boolean isAbwesenheit
+	) {
+		checkNotKorrekturmodusWithFerieninselOnly(betreuung.extractGesuch());
+
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
@@ -1111,6 +1138,21 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			Collection<Betreuung> pendenzen = getPendenzenForInstitution(stammdaten.getInstitution());
 			if (CollectionUtils.isNotEmpty(pendenzen) && stammdaten.getSendMailWennOffenePendenzen()) {
 				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
+			}
+		}
+	}
+
+	private void checkNotKorrekturmodusWithFerieninselOnly(@Nonnull Gesuch gesuch) {
+		// Im Korrekturmodus Gemeinde darf bei nur-Ferieninsel-Gesuchen keine Betreuung hinzufuegt
+		// werden, da sonst die FinSit ungueltig wird, diese aber durch die Gemeinde nicht korrigiert
+		// werden kann
+		final boolean korrekturmodusGemeinde = EbeguUtil.isKorrekturmodusGemeinde(gesuch);
+		if (korrekturmodusGemeinde) {
+			List<AbstractPlatz> allPlaetze = gesuch.extractAllPlaetze();
+			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
+			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
+				throw new EbeguRuntimeException(KibonLogLevel.NONE, "checkNotKorrekturmodusWithFerieninselOnly",
+					ErrorCodeEnum.ERROR_KORREKTURMODUS_FI_ONLY);
 			}
 		}
 	}

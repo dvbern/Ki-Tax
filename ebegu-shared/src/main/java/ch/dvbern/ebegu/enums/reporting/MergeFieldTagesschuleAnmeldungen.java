@@ -27,23 +27,34 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 
-public enum MergeFieldTagesschule implements MergeFieldProvider {
+public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 
-	tagesschuleOhneFinSitTitle(new SimpleMergeField<>("tagesschuleOhneFinSitTitle", STRING_CONVERTER)),
+	tagesschuleAnmeldungenTitle(new SimpleMergeField<>("tagesschuleAnmeldungenTitle", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
 	nachnameKindTitle(new SimpleMergeField<>("nachnameKindTitle", STRING_CONVERTER)),
 	vornameKindTitle(new SimpleMergeField<>("vornameKindTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
-	abTitle(new SimpleMergeField<>("abTitle", STRING_CONVERTER)),
+	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	wochentagMo(new SimpleMergeField<>("wochentagMo", STRING_CONVERTER)),
 	wochentagDi(new SimpleMergeField<>("wochentagDi", STRING_CONVERTER)),
 	wochentagMi(new SimpleMergeField<>("wochentagMi", STRING_CONVERTER)),
 	wochentagDo(new SimpleMergeField<>("wochentagDo", STRING_CONVERTER)),
 	wochentagFr(new SimpleMergeField<>("wochentagFr", STRING_CONVERTER)),
+	summeStundenTitle(new SimpleMergeField<>("summeStundenTitle", STRING_CONVERTER)),
+	summeVerpflegungTitle(new SimpleMergeField<>("summeVerpflegungTitle", STRING_CONVERTER)),
+	generiertAmTitle(new SimpleMergeField<>("generiertAmTitle", STRING_CONVERTER)),
+	generiertAm(new SimpleMergeField<>("generiertAm", DATE_CONVERTER)),
+	legende(new SimpleMergeField<>("legende", STRING_CONVERTER)),
+	legendeVolleKosten(new SimpleMergeField<>("legendeVolleKosten", STRING_CONVERTER)),
+	legendeZweiwoechentlich(new SimpleMergeField<>("legendeZweiwoechentlich", STRING_CONVERTER)),
+	legendeOhneVerpflegung(new SimpleMergeField<>("legendeOhneVerpflegung", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 	repeatRow2(new RepeatRowMergeField("repeatRow2")),
@@ -52,7 +63,7 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	vornameKind(new SimpleMergeField<>("vornameKind", STRING_CONVERTER)),
 	geburtsdatumKind(new SimpleMergeField<>("geburtsdatumKind", DATE_CONVERTER)),
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
-	ab(new SimpleMergeField<>("ab", DATE_CONVERTER)),
+	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 
 	repeatCol1(new RepeatColMergeField<>("repeatCol1", STRING_CONVERTER)),
@@ -62,12 +73,14 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	repeatCol5(new RepeatColMergeField<>("repeatCol5", STRING_CONVERTER)),
 
 	modulName(new RepeatValMergeField<>("modulName", STRING_CONVERTER)),
-	angemeldet(new RepeatValMergeField<>("angemeldet", STRING_CONVERTER));
+	modulStunden(new RepeatValMergeField<>("modulStunden", LONG_CONVERTER)),
+	verpflegungskosten(new RepeatValMergeField<>("verpflegungskosten", BIGDECIMAL_CONVERTER)),
+	angemeldet(new RepeatValMergeField<>("angemeldet", INTEGER_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;
 
-	<V> MergeFieldTagesschule(@Nonnull MergeField<V> mergeField) {
+	<V> MergeFieldTagesschuleAnmeldungen(@Nonnull MergeField<V> mergeField) {
 		this.mergeField = mergeField;
 	}
 

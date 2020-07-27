@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
+import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.ValidationMessageUtil;
 
 /**
@@ -51,6 +52,12 @@ public class CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator imple
 			DateRange betreuungWithinGP = limitToDateRange(pensumDateRange, betreuung.extractGesuchsperiode().getGueltigkeit());
 			// Da wir jetzt nur noch die Gesuchsperiode betrachten, darf die Betreuung NIE ausserhalb der Stammdaten sein
 			if (!stammdatenWithinGP.contains(betreuungWithinGP)) {
+				// Sonderfall: Fuer die Stadt Bern nach FEBR sind teilweise auch Kitas zugelassen,
+				// die mit ASIV erst spaeter beginnen, jedoch nach FEBR Gutscheine akzeptieren
+				if (KitaxUtil.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
+					&& KitaxUtil.isInstitutionAcceptingFebrButNotAsiv(betreuung.getInstitutionStammdaten())) {
+					return true;
+				}
 				setConstraintViolationMessage(institutionStammdatenDateRange, context);
 				return false;
 			}
