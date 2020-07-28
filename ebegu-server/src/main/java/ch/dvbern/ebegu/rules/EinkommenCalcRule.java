@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -67,12 +68,15 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull BGCalculationInput inputData) {
 
+		// TODO (hefr) Hier drin kann nur der Gesuch-Fall abgehandelt werden, die Mutation muss im MutationsMerger behandelt werden
+
 		// Es gibt zwei Faelle, in denen die Finanzielle Situation nicht bekannt ist:
 		// - Sozialhilfeempfaenger: Wir rechnen mit Einkommen = 0
 		// - Keine Vergünstigung gewünscht: Wir rechnen mit dem Maximalen Einkommen
 
 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		boolean keineFinSitErfasst = false;
+		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
 		if (familiensituation != null) {
 			keineFinSitErfasst = Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
 			int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
@@ -84,19 +88,24 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				return;
 			}
 			// Keine FinSit erfasst, aber auch nicht Sozialhilfeempfaenger -> Bezahlt Vollkosten
-			if (keineFinSitErfasst) {
+			if (keineFinSitErfasst || finSitAbgelehnt) {
 				inputData.setBezahltVollkosten(true);
+				inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 			}
 			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
 			// aus. Da Anspruch auf die Pauschale besteht, wird das Anspruchberechtigte Pensum nicht auf 0 gesetzt!
 			// Dies betrifft nur Betreuungsgutscheine
 			if (platz.getBetreuungsangebotTyp().isJugendamt()) {
 				Betreuung betreuung = (Betreuung) platz;
-				if (keineFinSitErfasst && Boolean.TRUE.equals(betreuung.hasErweiterteBetreuung())) {
-					inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
+				if ((keineFinSitErfasst || finSitAbgelehnt) && Boolean.TRUE.equals(betreuung.hasErweiterteBetreuung())) {
 					inputData.setAbzugFamGroesse(BigDecimal.ZERO);
 					inputData.setEinkommensjahr(basisjahr);
-					inputData.addBemerkung(MsgKey.EINKOMMEN_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+					if (keineFinSitErfasst) {
+						// TODO (hefr) hier kommt bisher die "normale" Max-Einkommen Bemerkung. Soll das so sein???
+						inputData.addBemerkung(MsgKey.EINKOMMEN_MAX_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+					} else {
+						inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, getLocale());
+					}
 					return;
 				}
 			}
@@ -126,13 +135,20 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
 		if (requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
-			if (keineFinSitErfasst || inputData.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
+			if (keineFinSitErfasst || finSitAbgelehnt || inputData.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
 				inputData.setKategorieMaxEinkommen(true);
 				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					Betreuung betreuung = (Betreuung) platz;
 					reduceAnspruchInNormalCase(betreuung, inputData);
-					inputData.addBemerkung(MsgKey.EINKOMMEN_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+					if (keineFinSitErfasst) {
+						// TODO (hefr) hier kommt bisher die "normale" Max-Einkommen Bemerkung. Soll das so sein???
+						inputData.addBemerkung(MsgKey.EINKOMMEN_MAX_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+					} else if (finSitAbgelehnt) {
+						inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, getLocale());
+					} else {
+						inputData.addBemerkung(MsgKey.EINKOMMEN_MAX_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+					}
 				}
 			}
 		}
