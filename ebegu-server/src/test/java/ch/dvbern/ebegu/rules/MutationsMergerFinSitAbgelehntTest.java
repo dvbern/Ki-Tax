@@ -56,7 +56,7 @@ public class MutationsMergerFinSitAbgelehntTest {
 
 	@Test
 	public void finSitAbgelehntInMutationErhoehungRechtzeitigEingereichtKita() {
-		// Einkommen steigt in (abgelehnter) Mutation
+		// Einkommen steigt in Mutation mit abgelehnter FinSit
 		// Rechtzeitig eingereicht
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculateMutationWithFinSitAbgelehnt(DATUM_FRUEHER, DATUM_SPAETER, EINKOMMEN_TIEFER, EINKOMMEN_HOEHER);
 
@@ -69,7 +69,7 @@ public class MutationsMergerFinSitAbgelehntTest {
 
 	@Test
 	public void finSitAbgelehntInMutationSenkungRechtzeitigEingereichtKita() {
-		// Einkommen sinkt in (abgelehnter) Mutation
+		// Einkommen sinkt in Mutation mit abgelehnter FinSit
 		// Rechtzeitig eingereicht
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculateMutationWithFinSitAbgelehnt(DATUM_FRUEHER, DATUM_SPAETER, EINKOMMEN_HOEHER, EINKOMMEN_TIEFER);
 
@@ -82,7 +82,7 @@ public class MutationsMergerFinSitAbgelehntTest {
 
 	@Test
 	public void finSitAbgelehntInMutationErhoehungZuSpaetEingereichtKita() {
-		// Einkommen steigt in (abgelehnter) Mutation
+		// Einkommen steigt in Mutation mit abgelehnter FinSit
 		// Zu spaet eingereicht
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculateMutationWithFinSitAbgelehnt(DATUM_SPAETER, DATUM_FRUEHER, EINKOMMEN_TIEFER, EINKOMMEN_HOEHER);
 
@@ -95,7 +95,7 @@ public class MutationsMergerFinSitAbgelehntTest {
 
 	@Test
 	public void finSitAbgelehntInMutationSenkungZuSpaetEingereichtKita() {
-		// Einkommen sinkt in (abgelehnter) Mutation
+		// Einkommen sinkt in Mutation mit abgelehnter FinSit
 		// Zu spaet eingereicht
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculateMutationWithFinSitAbgelehnt(DATUM_SPAETER, DATUM_FRUEHER, EINKOMMEN_HOEHER, EINKOMMEN_TIEFER);
 
