@@ -24,6 +24,8 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
@@ -36,13 +38,13 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -57,25 +59,42 @@ public class EinkommenCalcRuleTest {
 	private final BigDecimal EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(100000);
 	private final BigDecimal EINKOMMEN_HOCH = MathUtil.DEFAULT.fromNullSafe(180000);
 
-	private final BigDecimal KOSTEN = MathUtil.DEFAULT.fromNullSafe(1000);
-
 	@Test
-	public void testKitaNormalfall() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(EINKOMMEN, KOSTEN));
+	public void normalfallKita() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, false, false, false, FinSitStatus.AKZEPTIERT));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(0, EINKOMMEN.compareTo(result.get(0).getMassgebendesEinkommen()));
-		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
-		assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
-		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		final VerfuegungZeitabschnitt abschnitt = result.get(0);
+		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBemerkungenList().isEmpty());
+		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
-	public void testKitaEinkommenZuHoch() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(EINKOMMEN_HOCH, KOSTEN));
+	public void normalfallTagesschule() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungTagesschule(
+			EINKOMMEN, false, false, FinSitStatus.AKZEPTIERT));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		final VerfuegungZeitabschnitt abschnitt = result.get(0);
+		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBemerkungenList().isEmpty());
+		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+	}
+
+	@Test
+	public void einkommenZuHochKita() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN_HOCH, false, false, false, FinSitStatus.AKZEPTIERT));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -88,6 +107,21 @@ public class EinkommenCalcRuleTest {
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
+	@Test
+	public void einkommenZuHochTagesschule() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungTagesschule(
+			EINKOMMEN_HOCH, false, false, FinSitStatus.AKZEPTIERT));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(0, EINKOMMEN_HOCH.compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
+		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+	}
+
 	/**
 	 * Erstellt einen Testfall mit 2 EKV.
 	 * Am Ende schaut es dass die Bemerkungen richtig geschrieben wurden
@@ -95,7 +129,7 @@ public class EinkommenCalcRuleTest {
 	@Test
 	public void testAcceptedEKV() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(
-			TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA,100, KOSTEN);
+			TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, KITA,100, BigDecimal.ZERO);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
@@ -156,8 +190,8 @@ public class EinkommenCalcRuleTest {
 
 	@Test
 	public void sozialhilfebezueger() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(
-			EINKOMMEN, KOSTEN, true, false, false, FinSitStatus.AKZEPTIERT));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, true, false, false, FinSitStatus.AKZEPTIERT));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -172,8 +206,8 @@ public class EinkommenCalcRuleTest {
 
 	@Test
 	public void nurPauschaleFuerErweiterteBeduernisse() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(
-			EINKOMMEN_HOCH, KOSTEN, false, true, true, FinSitStatus.AKZEPTIERT));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN_HOCH, false, true, true, FinSitStatus.AKZEPTIERT));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -189,8 +223,8 @@ public class EinkommenCalcRuleTest {
 
 	@Test
 	public void keineFinSitErfasstOhneErweiterteBeduerfnisse() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(
-			EINKOMMEN, KOSTEN, false, true, false, FinSitStatus.AKZEPTIERT));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, false, true, false, FinSitStatus.AKZEPTIERT));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -204,9 +238,9 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void finSitStatusNull() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(
-			EINKOMMEN, KOSTEN, false, false, false, null));
+	public void finSitStatusNullKita() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, false, false, false, null));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -219,9 +253,9 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void finSitStatusAbgelehnt() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(
-			EINKOMMEN, KOSTEN, false, false, false, FinSitStatus.ABGELEHNT));
+	public void finSitStatusAbgelehntErstgesuchKita() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, false, false, false, FinSitStatus.ABGELEHNT));
 
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -234,21 +268,48 @@ public class EinkommenCalcRuleTest {
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG));
 	}
 
-	private Betreuung prepareData(@Nonnull BigDecimal massgebendesEinkommen, @Nonnull BigDecimal monatlicheVollkosten) {
-		return prepareData(massgebendesEinkommen, monatlicheVollkosten, false, false, false, FinSitStatus.AKZEPTIERT);
-	}
-
-	private Betreuung prepareData(
+	private Betreuung prepareBetreuungKita(
 		@Nonnull BigDecimal massgebendesEinkommen,
-		@Nonnull BigDecimal monatlicheVollkosten,
 		boolean sozialhilfeempfaenger,
 		boolean keineVerguenstigungGewuenscht,
 		boolean erweiterteBeduerfnisse,
 		@Nullable FinSitStatus finSitStatus
 	) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(
-			TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 100, monatlicheVollkosten);
-		Gesuch gesuch = betreuung.extractGesuch();
+			TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, KITA, 100, MathUtil.DEFAULT.fromNullSafe(2000));
+		prepareGesuch(betreuung, massgebendesEinkommen, sozialhilfeempfaenger, keineVerguenstigungGewuenscht, finSitStatus);
+		if (erweiterteBeduerfnisse) {
+			betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
+			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(new ErweiterteBetreuung());
+			ErweiterteBetreuung erweiterteBetreuungJA = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+			Objects.requireNonNull(erweiterteBetreuungJA);
+			erweiterteBetreuungJA.setErweiterteBeduerfnisse(true);
+			erweiterteBetreuungJA.setFachstelle(new Fachstelle());
+			erweiterteBetreuungJA.setErweiterteBeduerfnisseBestaetigt(true);
+			erweiterteBetreuungJA.setKeineKesbPlatzierung(true);
+		}
+		return betreuung;
+	}
+
+	private AnmeldungTagesschule prepareBetreuungTagesschule(
+		@Nonnull BigDecimal massgebendesEinkommen,
+		boolean sozialhilfeempfaenger,
+		boolean keineVerguenstigungGewuenscht,
+		@Nullable FinSitStatus finSitStatus
+	) {
+		final AnmeldungTagesschule anmeldung = TestDataUtil.createGesuchWithAnmeldungTagesschule();
+		prepareGesuch(anmeldung, massgebendesEinkommen, sozialhilfeempfaenger, keineVerguenstigungGewuenscht, finSitStatus);
+		return anmeldung;
+	}
+
+	private void prepareGesuch(
+		@Nonnull AbstractPlatz platz,
+		@Nonnull BigDecimal massgebendesEinkommen,
+		boolean sozialhilfeempfaenger,
+		boolean keineVerguenstigungGewuenscht,
+		@Nullable FinSitStatus finSitStatus
+	) {
+		Gesuch gesuch = platz.extractGesuch();
 		gesuch.setFinSitStatus(finSitStatus);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -261,17 +322,6 @@ public class EinkommenCalcRuleTest {
 		if (sozialhilfeempfaenger) {
 			Objects.requireNonNull(gesuch.extractFamiliensituation()).setSozialhilfeBezueger(true);
 		}
-		if (erweiterteBeduerfnisse) {
-			betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
-			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(new ErweiterteBetreuung());
-			ErweiterteBetreuung erweiterteBetreuungJA = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
-			Objects.requireNonNull(erweiterteBetreuungJA);
-			erweiterteBetreuungJA.setErweiterteBeduerfnisse(true);
-			erweiterteBetreuungJA.setFachstelle(new Fachstelle());
-			erweiterteBetreuungJA.setErweiterteBeduerfnisseBestaetigt(true);
-			erweiterteBetreuungJA.setKeineKesbPlatzierung(true);
-		}
 		Objects.requireNonNull(gesuch.extractFamiliensituation()).setVerguenstigungGewuenscht(!keineVerguenstigungGewuenscht);
-		return betreuung;
 	}
 }

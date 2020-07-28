@@ -1115,6 +1115,27 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
+	@SuppressWarnings("ConstantConditions")
+	public static AnmeldungTagesschule createGesuchWithAnmeldungTagesschule() {
+		Gesuch gesuch = new Gesuch();
+		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setDossier(createDefaultDossier());
+		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
+		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(new FinanzielleSituation());
+		final KindContainer kindContainer = createDefaultKindContainer();
+		kindContainer.setGesuch(gesuch);
+		gesuch.getKindContainers().add(kindContainer);
+		final AnmeldungTagesschule anmeldung = createAnmeldungTagesschuleWithModules(kindContainer, gesuch.getGesuchsperiode());
+		anmeldung.setKind(kindContainer);
+		kindContainer.getAnmeldungenTagesschule().add(anmeldung);
+		return anmeldung;
+	}
+
 	public static void calculateFinanzDaten(Gesuch gesuch) {
 		if (gesuch.getGesuchsperiode() == null) {
 			gesuch.setGesuchsperiode(createGesuchsperiode1718());
