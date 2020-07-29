@@ -69,6 +69,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
@@ -85,6 +86,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.BETREUUNGSANGEBOT_MSG));
@@ -100,7 +102,8 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_MAX_MSG));
@@ -117,7 +120,8 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_MAX_MSG));
@@ -201,6 +205,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, (new BigDecimal("0.00")).compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
@@ -218,6 +223,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG));
@@ -236,6 +242,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG));
@@ -253,6 +260,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
@@ -269,6 +277,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Keine erweiterteBetreuung: Anspruch wird auf 0 gesetzt", 0, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue("Keine erweiterteBetreuung: Bezahlt Vollkosten", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
@@ -286,6 +295,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue("keinAnspruchAufgrundEinkommen gilt auch wenn erweiterteBetreuung", abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
 		assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));

@@ -76,7 +76,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		// - Der Anspruch wird auf 0 gesetzt, AUSSER das Kind hat erweiterte Beduerfnisse
 		// - "Bezahlt Vollkosten" darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse
 
-		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+ 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		boolean sozialhilfeEmpfaenger = familiensituation != null && Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger());
 		int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 
@@ -99,10 +99,6 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 			inputData.setAbzugFamGroesse(BigDecimal.ZERO);
 			inputData.setEinkommensjahr(basisjahr);
-			if (!hasErweiterteBetreuung) {
-				// Darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse, da sonst der Zuschlag nicht ausbezahlt wird!
-				inputData.setBezahltVollkosten(true);
-			}
 		}
 
 		// Die Finanzdaten berechnen
@@ -131,10 +127,16 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		if (keineFinSitErfasst || finSitAbgelehnt || inputData.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 			//maximales einkommen wurde ueberschritten
 			inputData.setKategorieMaxEinkommen(true);
+			inputData.setKeinAnspruchAufgrundEinkommen(true);
 			if (!hasErweiterteBetreuung) {
-				// Falls MaxEinkommen, aber kein Zuschlag fuer erweiterte Betreuung -> Anspruch wird auf 0 gesetzt
-				// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen
-				inputData.setAnspruchspensumProzent(0);
+				// Darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse, da sonst der Zuschlag nicht ausbezahlt wird!
+				inputData.setBezahltVollkosten(true);
+				if (platz.getBetreuungsangebotTyp().isJugendamt()) {
+					// Falls MaxEinkommen, aber kein Zuschlag fuer erweiterte Betreuung -> Anspruch wird auf 0 gesetzt
+					// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen
+					// Bei Tagesschule muss der Anspruch immer 100 bleiben, siehe BetreuungsangebotTypCalcRule
+					inputData.setAnspruchspensumProzent(0);
+				}
 			}
 			// Bemerkungen setzen, je nach Grund des Max-Einkommens
 			if (keineFinSitErfasst) {

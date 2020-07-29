@@ -89,9 +89,9 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO rechnerParameterDTO
 	) {
-		// Zusatzgutschein gibts nur, wenn grundsaetzlich Anspruch vorhanden
-		// TODO somit wuerde maxEinkommen mit erweiterterBetreuung den Zusatzgutschein bekommen
-		if (!inputGemeinde.isBezahltVollkosten() && inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
+		// Zusatzgutschein gibts nur, wenn grundsaetzlich Anspruch *aufgrund des Einkommens* vorhanden
+		// also nicht, wenn nur Anspruch auf die Pauschale fuer erweiterte Betreuung!
+		if (!inputGemeinde.isKeinAnspruchAufgrundEinkommen() && inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
 			if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
 				BigDecimal betragKita = rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBetragKita();
 				if (betragKita != null) {
