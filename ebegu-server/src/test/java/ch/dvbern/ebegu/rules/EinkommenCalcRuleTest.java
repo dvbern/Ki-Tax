@@ -119,7 +119,8 @@ public class EinkommenCalcRuleTest {
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
-		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
+		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_MAX_MSG));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 	}
 
