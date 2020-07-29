@@ -74,6 +74,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Path("lastenausgleich")
 @Stateless
 @Api(description = "Resource zum Verwalten von Lastenausgleichen")
+@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class LastenausgleichResource {
 
 	@Inject
@@ -95,7 +96,6 @@ public class LastenausgleichResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public List<JaxLastenausgleich> getAllLastenausgleiche() {
 		return lastenausgleichService.getAllLastenausgleiche().stream()
 			.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
@@ -108,7 +108,6 @@ public class LastenausgleichResource {
 	@Path("/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public JaxLastenausgleich createLastenausgleich(
 		@QueryParam("jahr") String sJahr,
 		@QueryParam("selbstbehaltPro100ProzentPlatz") String sSelbstbehaltPro100ProzentPlatz
@@ -129,7 +128,6 @@ public class LastenausgleichResource {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Response getLastenausgleichReportExcel(
 		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
@@ -153,7 +151,6 @@ public class LastenausgleichResource {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Response getLastenausgleichReportCSV(
 		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
@@ -174,7 +171,6 @@ public class LastenausgleichResource {
 	@DELETE
 	@Path("/{lastenausgleichId}")
 	@Consumes(MediaType.WILDCARD)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Response removeLastenausgleich(
 		@Nonnull @NotNull @PathParam("lastenausgleichId") JaxId lastenausgleichJAXPId,
 		@Context HttpServletResponse response) {

@@ -228,13 +228,14 @@ export class EditGemeindeComponent implements OnInit {
                     return;
                 }
             });
-
-            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
-                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
-                    this.loadStammdaten();
-                }
-                this.updateExternalClients();
-            });
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+                this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
+                    if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
+                        this.loadStammdaten();
+                    }
+                    this.updateExternalClients();
+                });
+            }
 
             // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
             // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!

@@ -20,7 +20,6 @@ import java.time.Month;
 import java.util.Collection;
 import java.util.concurrent.Future;
 
-import javax.annotation.security.PermitAll;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Local;
@@ -43,7 +42,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
  * be found, this implies a rollback of the Transaction and everything gets undone. Executing the service within a
  * transaction flushes the queries before the method finishes and the context still exists.
  */
-@PermitAll
 @Stateless
 @Local(DailyBatch.class)
 public class DailyBatchBean implements DailyBatch {
