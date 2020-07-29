@@ -279,6 +279,12 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
+            case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
+                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
             case TSStatistikParameterType.NOTRECHT:
                 this.reportAsyncRS.getNotrechtReportExcel(
                     this._statistikParameter.doSave)

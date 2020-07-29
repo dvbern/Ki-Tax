@@ -115,6 +115,8 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		row.setStufe1FreigabeAusbezahltAm(formular.getStufe1FreigabeAusbezahltAm());
 		row.setStufe1ZahlungJetztAusgeloest((formular.isStufe1ZahlungJetztAusgeloest()) ? "Ja" : "-");
 
+		row.setInstitutionTyp(formular.getInstitutionTyp());
+
 		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
 		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
 		row.setStufe2InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeBetreuung()));

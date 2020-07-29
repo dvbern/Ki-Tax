@@ -835,28 +835,6 @@ public class GesuchResource {
 		return Response.ok(gesuchToReturn.getGesuchBetreuungenStatus()).build();
 	}
 
-	@ApiOperation(value = "verfuegt das gegebene Gesuch. Funktioniert nur bei Gesuchen, bei denen alle Betreuungen "
-		+ "verfügt sind, der Status"
-		+ " vom Gesuch aber noch nicht als VERFUEGT gesetzt wurde.", response = JaxAntragSearchresultDTO.class)
-	@Nonnull
-	@POST
-	@Path("/gesuchVerfuegen/{gesuchId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Response gesuchVerfuegen(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-
-		Objects.requireNonNull(gesuchJAXPId.getId());
-		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
-		if (!gesuchOptional.isPresent()) {
-			throw new EbeguEntityNotFoundException("gesuchVerfuegen", ErrorCodeEnum
-				.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + gesuchJAXPId.getId());
-		}
-		gesuchService.gesuchVerfuegen(gesuchOptional.get());
-		return Response.ok().build();
-	}
-
 	@ApiOperation(value = "Aendert den FinSitStatus im Gesuch", response = JaxGesuch.class)
 	@Nonnull
 	@POST

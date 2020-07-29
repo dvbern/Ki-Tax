@@ -457,7 +457,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 							ADMIN_INSTITUTION,
 							SACHBEARBEITER_INSTITUTION,
 							ADMIN_TRAEGERSCHAFT,
-							SACHBEARBEITER_INSTITUTION)) {
+							SACHBEARBEITER_TRAEGERSCHAFT)) {
 				throwViolation(verfuegung);
 			}
 		} else {

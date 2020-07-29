@@ -98,8 +98,11 @@ public class BetreuungsgutscheinExecutor {
 			if (possibleKitaxRechner) {
 				if (zeitabschnitt.getGueltigkeit().endsBefore(kitaxParameter.getStadtBernAsivStartDate())) {
 					String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
-					KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten =
-						kitaxParameter.getOeffnungszeiten(kitaName);
+					KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = null;
+					if (platz.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+						// Die Oeffnungszeiten sind nur fuer Kitas relevant
+						oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
+					}
 					rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
 				} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 					// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,

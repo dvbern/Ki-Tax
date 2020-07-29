@@ -43,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -136,6 +137,9 @@ public class DownloadResource {
 
 	@Inject
 	private RueckforderungDokumentService rueckforderungDokumentService;
+
+	@Inject
+	private AVClient avClient;
 
 
 	@SuppressWarnings("ConstantConditions")
@@ -527,6 +531,9 @@ public class DownloadResource {
 
 	@Nonnull
 	public Response getFileDownloadResponse(UriInfo uriInfo, String ip, FileMetadata fileMetadata) {
+
+		avClient.scan(fileMetadata);
+
 		final DownloadFile downloadFile = downloadFileService.create(fileMetadata, ip);
 
 		URI uri = createDownloadURIForDownloadFile(uriInfo, downloadFile);
@@ -590,7 +597,7 @@ public class DownloadResource {
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				jaxAnmledungId.getId()));;
+				jaxAnmledungId.getId()));
 
 		WriteProtectedDokument persistedDokument = generatedDokumentService
 			.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, mitTarif, forceCreation);

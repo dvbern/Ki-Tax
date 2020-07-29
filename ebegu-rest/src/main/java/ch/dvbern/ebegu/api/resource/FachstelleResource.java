@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.services.FachstelleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -60,6 +61,7 @@ public class FachstelleResource {
 	public List<JaxFachstelle> getAnspruchFachstellen(){
 		return fachstelleService.getAllFachstellen().stream()
 			.filter(Fachstelle::isFachstelleAnspruch)
+			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
 	}
@@ -73,6 +75,7 @@ public class FachstelleResource {
 	public List<JaxFachstelle> getErweiterteBetreuungFachstellen(){
 		return fachstelleService.getAllFachstellen().stream()
 			.filter(Fachstelle::isFachstelleErweiterteBetreuung)
+			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
 	}

@@ -32,7 +32,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 
-public enum MergeFieldTagesschule implements MergeFieldProvider {
+public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 
 	tagesschuleAnmeldungenTitle(new SimpleMergeField<>("tagesschuleAnmeldungenTitle", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
@@ -80,7 +80,7 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	@Nonnull
 	private final MergeField<?> mergeField;
 
-	<V> MergeFieldTagesschule(@Nonnull MergeField<V> mergeField) {
+	<V> MergeFieldTagesschuleAnmeldungen(@Nonnull MergeField<V> mergeField) {
 		this.mergeField = mergeField;
 	}
 

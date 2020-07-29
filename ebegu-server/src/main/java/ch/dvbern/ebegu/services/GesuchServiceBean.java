@@ -100,7 +100,6 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.entities.Massenversand_;
-import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -116,7 +115,6 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -1963,20 +1961,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			}
 		}
 		return persistence.merge(gesuch);
-	}
-
-	@Override
-	public void gesuchVerfuegen(@NotNull Gesuch gesuch) {
-		if (gesuch.getStatus() != AntragStatus.VERFUEGT) {
-			final WizardStep verfuegenStep =
-				wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.VERFUEGEN);
-			if (verfuegenStep.getWizardStepStatus() == WizardStepStatus.OK) {
-				final List<Betreuung> allBetreuungen = gesuch.extractAllBetreuungen();
-				if (allBetreuungen.stream().allMatch(betreuung -> betreuung.getBetreuungsstatus().isGeschlossen())) {
-					wizardStepService.gesuchVerfuegen(verfuegenStep);
-				}
-			}
-		}
 	}
 
 	@Nonnull

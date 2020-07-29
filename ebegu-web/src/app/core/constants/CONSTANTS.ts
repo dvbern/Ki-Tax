@@ -47,4 +47,4 @@ export const LOCALSTORAGE_LANGUAGE_KEY = 'kibonLanguage';
 export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 
 // Maximale (upload) Filegrösse ist 10MB
-export const MAX_FILE_SIZE = 10000000;
+export const MAX_FILE_SIZE = 10485760;

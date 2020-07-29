@@ -474,8 +474,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	/**
 	 * In dieser Methode werden alle Sachen gemacht, die gebraucht werden, um ein Gesuch zu verfuegen.
 	 */
-	@Override
-	public void gesuchVerfuegen(@NotNull WizardStep verfuegenWizardStep) {
+	private void gesuchVerfuegen(@NotNull WizardStep verfuegenWizardStep) {
 		if (verfuegenWizardStep.getWizardStepName() == WizardStepName.VERFUEGEN) {
 			verfuegenWizardStep.setWizardStepStatus(WizardStepStatus.OK);
 			verfuegenWizardStep.getGesuch().setStatus(AntragStatus.VERFUEGT);
@@ -826,7 +825,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch()))
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
 						&& erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
-						wizardStep.setVerfuegbar(false);
+						// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
+						wizardStep.setVerfuegbar(true);
 						wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 
 					}
@@ -853,6 +853,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 						if (wizardStep.getGesuch().getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
 							if (wizardStep.getWizardStepStatus() != WizardStepStatus.NOK) {
+								// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 								wizardStep.setVerfuegbar(true);
 								wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 							}
@@ -939,16 +940,21 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		boolean erwerbspensumRequired = erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch());
 
 		WizardStepStatus status = null;
+		boolean available = wizardStep.getVerfuegbar();
 		if (erwerbspensumRequired) {
 			if (gesuch.getGesuchsteller1() != null
 				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch.getGesuchsteller1()).isEmpty()) {
+				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
+				available = true;
 			}
 			if (status != WizardStepStatus.NOK
 				&& gesuch.getGesuchsteller2() != null
-				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch
-				.getGesuchsteller2()).isEmpty()) {
+				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch.getGesuchsteller2()).isEmpty()
+			) {
+				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
+				available = true;
 			}
 		} else if (changesBecauseOtherStates && wizardStep.getWizardStepStatus() != WizardStepStatus.MUTIERT) {
 			status = WizardStepStatus.OK;
@@ -958,6 +964,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			status = getWizardStepStatusOkOrMutiert(wizardStep);
 		}
 		wizardStep.setWizardStepStatus(status);
+		wizardStep.setVerfuegbar(available);
 	}
 
 	/**
