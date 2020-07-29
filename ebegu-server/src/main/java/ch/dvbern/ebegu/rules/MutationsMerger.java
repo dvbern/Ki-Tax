@@ -185,7 +185,8 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
 		inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
 		inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
-		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
+		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0) {
+			// Die Bemerkung immer dann setzen, wenn das Einkommen (egal in welche Richtung) geaendert haette
 			String datumLetzteVerfuegung = Constants.DATE_FORMATTER.format(timestampVerfuegtVorgaenger);
 			inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, locale, datumLetzteVerfuegung);
 		}

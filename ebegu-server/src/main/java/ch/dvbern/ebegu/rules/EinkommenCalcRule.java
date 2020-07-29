@@ -89,7 +89,9 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		}
 
 		boolean keineFinSitErfasst = familiensituation != null && Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
-		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
+		// FinSit abgelehnt muss nur bei Erstgesuch beachtet werden. In einer Mutation wird es im Mutationsmerger abgehandelt
+		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus()
+			&& platz.extractGesuch().getTyp().isGesuch();
 		boolean hasErweiterteBetreuung = hasErweiterteBetreuung(platz);
 
 		// Die Finanzdaten berechnen
