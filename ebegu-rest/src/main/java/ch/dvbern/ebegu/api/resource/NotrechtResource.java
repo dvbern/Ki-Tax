@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -64,11 +65,20 @@ import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 @Path("notrecht")
 @Stateless
 @Api(description = "Resource zum Verwalten von Rueckforderungsformularen für das Notrecht")
+@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
+	ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 public class NotrechtResource {
 
 	@Inject
@@ -94,6 +104,7 @@ public class NotrechtResource {
 	@Path("/initialize")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxRueckforderungFormular> initializeRueckforderungFormulare() {
 
 		List<RueckforderungFormular> createdFormulare =
@@ -235,6 +246,7 @@ public class NotrechtResource {
 	@POST
 	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public void sendMessage(
 		@Nonnull @NotNull JaxRueckforderungMitteilungRequestParams data,
 		@Context UriInfo uriInfo,
@@ -251,6 +263,7 @@ public class NotrechtResource {
 	@POST
 	@Path("/einladung")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public void sendEinladung(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,
@@ -265,6 +278,7 @@ public class NotrechtResource {
 	@Nullable
 	@POST
 	@Path("/initializePhase2")
+	@RolesAllowed(SUPER_ADMIN)
 	public Response initializePhase2() {
 		rueckforderungFormularService.initializePhase2();
 		return Response.ok().build();
@@ -276,6 +290,7 @@ public class NotrechtResource {
 	@Path("/resetStatus")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public JaxRueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(
 		@Nonnull @NotNull String formularId,
 		@Context UriInfo uriInfo,

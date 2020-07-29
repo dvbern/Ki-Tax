@@ -41,14 +41,6 @@ export class ApplicationPropertyRS {
         });
     }
 
-    public getByName(name: string): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/key/${encodeURIComponent(name)}`).then(
-            (response: any) => {
-                return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-            },
-        );
-    }
-
     public isDevMode(): IPromise<boolean> {
         return this.getPublicPropertiesCached().then(response => {
             return response.devmode;

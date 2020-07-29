@@ -148,7 +148,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     private doSave(): void {
-        this.gesuchsperiodeRS.updateGesuchsperiode(this.gesuchsperiode).then((response: TSGesuchsperiode) => {
+        this.gesuchsperiodeRS.saveGesuchsperiode(this.gesuchsperiode).then((response: TSGesuchsperiode) => {
             this.gesuchsperiode = response;
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
             // Die E-BEGU-Parameter für die neue Periode lesen bzw. erstellen, wenn noch nicht vorhanden

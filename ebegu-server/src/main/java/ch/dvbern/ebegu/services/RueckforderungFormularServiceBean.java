@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -56,14 +55,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Stateless
 @Local(RueckforderungFormularService.class)
@@ -95,7 +86,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public List<RueckforderungFormular> initializeRueckforderungFormulare() {
 
 		Collection<InstitutionStammdaten> institutionenStammdatenCollection = institutionStammdatenService.getAllInstitutionStammdaten();
@@ -134,7 +124,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public RueckforderungFormular createRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		return persistence.persist(rueckforderungFormular);
@@ -147,8 +136,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
 		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 		Benutzer currentBenutzer = principalBean.getBenutzer();
@@ -170,8 +157,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	@Interceptors(UpdateRueckfordFormStatusInterceptor.class)
 	public Optional<RueckforderungFormular> findRueckforderungFormular(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
@@ -182,8 +167,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -199,8 +182,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular saveAndChangeStatusIfNecessary(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -210,7 +191,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	public Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status) {
 		Objects.requireNonNull(status.get(0), "Mindestens ein Status muss angegeben werden");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -225,7 +205,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public RueckforderungFormular addMitteilung(
 		@Nonnull RueckforderungFormular formular,
 		@Nonnull RueckforderungMitteilung mitteilung
@@ -236,7 +215,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void initializePhase2() {
 		//set Application Properties zu true
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, "true");
@@ -253,7 +231,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id) {
 		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(

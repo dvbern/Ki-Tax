@@ -25,8 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -51,13 +49,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(ReportLastenausgleichSelbstbehaltService.class)
-@PermitAll
 public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReportServiceBean implements ReportLastenausgleichSelbstbehaltService {
 
 	private LastenausgleichSelbstbehaltExcelConverter lastenausgleichKibonExcelConverter = new LastenausgleichSelbstbehaltExcelConverter();
@@ -70,7 +63,6 @@ public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReport
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportLastenausgleichKibon(

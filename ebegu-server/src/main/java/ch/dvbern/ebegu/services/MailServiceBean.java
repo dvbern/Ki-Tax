@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Local;
@@ -73,18 +71,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -92,7 +78,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(MailService.class)
-@PermitAll
 public class MailServiceBean extends AbstractMailServiceBean implements MailService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MailServiceBean.class.getSimpleName());
@@ -116,8 +101,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	private EbeguConfiguration ebeguConfiguration;
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public void sendInfoBetreuungenBestaetigt(@Nonnull Gesuch gesuch) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		sendMail(
@@ -130,8 +113,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public void sendInfoBetreuungAbgelehnt(@Nonnull Betreuung betreuung) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService);
 		sendMail(
@@ -184,9 +165,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoMitteilungErhalten(@Nonnull Mitteilung mitteilung) throws MailException {
 		List<Sprache> sprachen =
 			EbeguUtil.extractGemeindeSprachen(mitteilung.getDossier().getGemeinde(), gemeindeService);
@@ -203,8 +181,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
-		SACHBEARBEITER_TS })
 	public void sendInfoVerfuegtGesuch(@Nonnull Gesuch gesuch) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		sendMail(
@@ -216,8 +192,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
-		SACHBEARBEITER_TS })
 	public void sendInfoVerfuegtMutation(@Nonnull Gesuch gesuch) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		sendMail(
@@ -229,8 +203,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoMahnung(@Nonnull Gesuch gesuch) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		sendMail(
@@ -242,7 +214,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void sendWarnungGesuchNichtFreigegeben(@Nonnull Gesuch gesuch, int anzahlTageBisLoeschung)
 		throws MailException {
 
@@ -262,7 +233,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void sendWarnungFreigabequittungFehlt(@Nonnull Gesuch gesuch, int anzahlTageBisLoeschung)
 		throws MailException {
 
@@ -282,7 +252,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void sendInfoGesuchGeloescht(@Nonnull Gesuch gesuch) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		sendMail(
@@ -296,7 +265,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Override
 	@Asynchronous
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Future<Integer> sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull List<Gesuch> gesucheToSendMail) {
@@ -311,7 +279,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public boolean sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gesuch gesuch) {
@@ -346,8 +313,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoBetreuungGeloescht(@Nonnull List<Betreuung> betreuungen) {
 
 		for (Betreuung betreuung : betreuungen) {
@@ -413,8 +378,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung) {
 
 		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();

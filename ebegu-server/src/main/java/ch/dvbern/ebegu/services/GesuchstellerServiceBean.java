@@ -24,8 +24,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -61,15 +59,6 @@ import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.Validate;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer Gesuchsteller
  */
@@ -86,8 +75,6 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public GesuchstellerContainer saveGesuchsteller(
 		@Nonnull GesuchstellerContainer gesuchsteller,
 		@Nonnull final Gesuch gesuch, @Nonnull Integer gsNumber, boolean umzug) {
@@ -235,7 +222,6 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<GesuchstellerContainer> findGesuchsteller(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		GesuchstellerContainer a = persistence.find(GesuchstellerContainer.class, id);
@@ -244,14 +230,11 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<GesuchstellerContainer> getAllGesuchsteller() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(GesuchstellerContainer.class));
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller) {
 		Objects.requireNonNull(gesuchsteller);
 		GesuchstellerContainer gesuchstellerToRemove = findGesuchsteller(gesuchsteller.getId())
@@ -264,7 +247,6 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Nullable
 	@Override
-	@PermitAll
 	public Gesuch findGesuchOfGesuchsteller(@Nonnull String gesuchstellerContainerID) {
 		Validate.notEmpty(gesuchstellerContainerID, "gesuchstellerContainerID must be set");
 

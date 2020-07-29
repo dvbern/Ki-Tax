@@ -21,8 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,18 +32,8 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(SozialhilfeZeitraumService.class)
-@PermitAll
 public class SozialhilfeZeitraumServiceBean extends AbstractBaseService implements SozialhilfeZeitraumService {
 
 	@Inject
@@ -54,8 +42,6 @@ public class SozialhilfeZeitraumServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public SozialhilfeZeitraumContainer saveSozialhilfeZeitraum(@Nonnull @Valid SozialhilfeZeitraumContainer sozialhilfeZeitraumContainer) {
 		Objects.requireNonNull(sozialhilfeZeitraumContainer);
 		final SozialhilfeZeitraumContainer mergedSozialhilfeZeitraum = persistence.merge(sozialhilfeZeitraumContainer);
@@ -72,8 +58,6 @@ public class SozialhilfeZeitraumServiceBean extends AbstractBaseService implemen
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeSozialhilfeZeitraum(@Nonnull String sozialhilfeZeitraumContainerID) {
 		Objects.requireNonNull(sozialhilfeZeitraumContainerID);
 		SozialhilfeZeitraumContainer shzCont =

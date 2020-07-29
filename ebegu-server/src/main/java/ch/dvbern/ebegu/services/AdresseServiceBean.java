@@ -21,8 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,15 +28,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer Adresse
@@ -55,7 +44,6 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Adresse createAdresse(@Nonnull Adresse adresse) {
 		Objects.requireNonNull(adresse);
 		return persistence.persist(adresse);
@@ -63,7 +51,6 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Adresse updateAdresse(@Nonnull Adresse adresse) {
 		Objects.requireNonNull(adresse);
 		return persistence.merge(adresse);
@@ -71,7 +58,6 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Adresse> findAdresse(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Adresse a = persistence.find(Adresse.class, id);
@@ -80,7 +66,6 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Collection<Adresse> getAllAdressen() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Adresse.class));
 	}

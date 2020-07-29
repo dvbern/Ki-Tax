@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,6 +44,7 @@ import io.swagger.annotations.ApiOperation;
 @Stateless
 @Api(description = "This service provides methods to download verfuegungen in an export format for use by external "
 	+ "applications")
+@PermitAll
 public class ExportResource {
 
 	@ApiOperation("Exports a json Schema of the ExportDTOs")

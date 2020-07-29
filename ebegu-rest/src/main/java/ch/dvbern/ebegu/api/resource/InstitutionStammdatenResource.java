@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -50,6 +51,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("institutionstammdaten")
 @Stateless
 @Api(description = "Resource für InstitutionsStammdaten (Daten zu einem konkreten Betreuungsangebot einer Institution)")
+@PermitAll // Grundsaetzliche fuer alle Rollen (nur Lesend): Datenabhaengig. -> Authorizer
 public class InstitutionStammdatenResource {
 
 	@Inject
