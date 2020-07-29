@@ -97,7 +97,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
-				boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == inputAsiv.getParent().getVerfuegung().getPlatz().extractGesuch().getFinSitStatus();
+				boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
 				LocalDateTime timestampVerfuegtVorgaenger = null;
 				if (finSitAbgelehnt) {
 					// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
