@@ -92,15 +92,6 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
 		boolean hasErweiterteBetreuung = hasErweiterteBetreuung(platz);
 
-		// Keine FinSit erfasst oder FinSit abgelehnt, aber auch nicht Sozialhilfeempfaenger -> Bezahlt Vollkosten
-		if (keineFinSitErfasst || finSitAbgelehnt) {
-			// Wenn die FinSit nicht ausgefuellt oder nicht akzeptiert wurde, setzen wir das MaxEinkommen
-			// Es wird auch automatisch das Basisjahr gesetzt, da in einem solchen Fall keine EKV akzeptiert wird.
-			inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
-			inputData.setAbzugFamGroesse(BigDecimal.ZERO);
-			inputData.setEinkommensjahr(basisjahr);
-		}
-
 		// Die Finanzdaten berechnen
 		FinanzDatenDTO finanzDatenDTO;
 		if (inputData.isHasSecondGesuchstellerForFinanzielleSituation()) {
@@ -121,6 +112,15 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				inputData,
 				platz,
 				getLocale());
+		}
+
+		// Keine FinSit erfasst oder FinSit abgelehnt, aber auch nicht Sozialhilfeempfaenger -> Bezahlt Vollkosten
+		if (keineFinSitErfasst || finSitAbgelehnt) {
+			// Wenn die FinSit nicht ausgefuellt oder nicht akzeptiert wurde, setzen wir das MaxEinkommen
+			// Es wird auch automatisch das Basisjahr gesetzt, da in einem solchen Fall keine EKV akzeptiert wird.
+			inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
+			inputData.setAbzugFamGroesse(BigDecimal.ZERO);
+			inputData.setEinkommensjahr(basisjahr);
 		}
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
