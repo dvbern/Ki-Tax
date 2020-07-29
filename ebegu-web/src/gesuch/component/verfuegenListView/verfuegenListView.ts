@@ -748,6 +748,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }).then(() => {
             return this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
+                this.refreshKinderListe();
                 return this.gesuchModelManager.getGesuch();
             });
         });
