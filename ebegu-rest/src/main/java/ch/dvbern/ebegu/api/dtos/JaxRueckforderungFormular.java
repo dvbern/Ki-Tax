@@ -101,6 +101,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
 	@Nullable
+	private BigDecimal stufe2VoraussichtlicheBetrag;
+
+	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Nullable
@@ -497,5 +500,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setCoronaErwerbsersatzSonstiges(@Nullable String coronaErwerbsersatzSonstiges) {
 		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
 	}
 }

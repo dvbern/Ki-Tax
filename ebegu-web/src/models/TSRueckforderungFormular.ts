@@ -45,6 +45,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe1FreigabeBetrag: number;
     private _stufe1FreigabeDatum: moment.Moment;
     private _stufe1FreigabeAusbezahltAm: moment.Moment;
+    private _stufe2VoraussichtlicheBetrag: number;
     private _stufe2VerfuegungBetrag: number;
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
@@ -211,6 +212,10 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set stufe1FreigabeAusbezahltAm(value: moment.Moment) {
         this._stufe1FreigabeAusbezahltAm = value;
+    }
+
+    public get stufe2VoraussichtlicheBetrag(): number {
+        return this._stufe2VoraussichtlicheBetrag;
     }
 
     public get stufe2VerfuegungBetrag(): number {

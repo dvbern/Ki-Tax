@@ -153,6 +153,10 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
+	@Column(name = "stufe_2_voraussichtliche_betrag", nullable = true)
+	@Nullable
+	private BigDecimal stufe2VoraussichtlicheBetrag;
+
 	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
@@ -568,6 +572,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStufe2ZahlungJetztAusgeloest(boolean stufe2ZahlungJetztAusgeloest) {
 		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
 	}
 
 	@Override
