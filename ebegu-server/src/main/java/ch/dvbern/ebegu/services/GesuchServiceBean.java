@@ -425,7 +425,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			antragStatusHistoryService.saveStatusChange(merged, saveAsUser);
 		}
 
-		if (gesuch.getStatus() == AntragStatus.VERFUEGEN || gesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
+		if (gesuch.getStatus() == AntragStatus.VERFUEGEN
+			|| gesuch.getStatus() == AntragStatus.NUR_SCHULAMT
+			|| gesuch.getStatus() == AntragStatus.KEIN_KONTINGENT
+		) {
 			KindContainer[] kindArray =
 				gesuch.getKindContainers().toArray(new KindContainer[gesuch.getKindContainers().size()]);
 			for (int i = 0; i < gesuch.getKindContainers().size(); i++) {
