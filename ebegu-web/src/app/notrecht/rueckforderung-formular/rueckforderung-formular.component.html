@@ -294,9 +294,7 @@
                     </div>
                     <!-- Stufe 2 Institution und Kanton -->
                     <div class="form-group" *ngIf="isInstitutionStufe2(rueckforderungFormular)
-                                || isInstitutionStufe2Definitiv(rueckforderungFormular)
                                 || isPruefungKantonStufe2(rueckforderungFormular)
-                                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)
                                 || isInstitutionStufe2ReadOnly(rueckforderungFormular)
                                 || isKantonStufe2ReadOnly(rueckforderungFormular)">
                         <label class="required long-label">
@@ -324,8 +322,7 @@
                             <!-- Stufe 2 Institution offentlich -->
                             <div
                                 *ngIf="isInstitutionStufe2(rueckforderungFormular) ||
-                                isInstitutionStufe2ReadOnly(rueckforderungFormular) ||
-                                isInstitutionStufe2Definitiv(rueckforderungFormular)
+                                isInstitutionStufe2ReadOnly(rueckforderungFormular)
                                ">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
@@ -456,7 +453,6 @@
                             </div>
                             <!-- Stufe 2 Kanton offentlich -->
                             <div *ngIf="isPruefungKantonStufe2(rueckforderungFormular)
-                                    || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)
                                     || isKantonStufe2ReadOnly(rueckforderungFormular)">
                                 <div class="row" *ngIf="isKitaAngebot(rueckforderungFormular)">
                                     <div class="col-sm-6">
@@ -1084,8 +1080,7 @@
                         </div>
                     </div>
                     <div class="row"
-                         *ngIf="isInstitutionStufe2(rueckforderungFormular)
-                               || isInstitutionStufe2Definitiv(rueckforderungFormular)">
+                         *ngIf="isInstitutionStufe2(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ==
@@ -1152,7 +1147,6 @@
                     </div>
                     <div class="row"
                          *ngIf="isPruefungKantonStufe2(rueckforderungFormular)
-                            || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)
                             || isInstitutionStufe2ReadOnly(rueckforderungFormular)
                             || isKantonStufe2ReadOnly(rueckforderungFormular)">
                         <!-- Checkbox -->
@@ -1375,12 +1369,6 @@
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"
                 [type]="'submit'"
                 [buttonDisabled]="!enableRueckforderungAbsenden(rueckforderungFormular) || fristSchonErreicht(rueckforderungFormular)">
-                <span translate>LABEL_ABSENDEN</span>
-            </dv-loading-button>
-            <dv-loading-button
-                *ngIf="isInstitutionStufe2Definitiv(rueckforderungFormular)"
-                [type]="'submit'"
-                [buttonDisabled]="!enableRueckforderungDefinitivAbsenden(rueckforderungFormular)">
                 <span translate>LABEL_ABSENDEN</span>
             </dv-loading-button>
             <button type="button" class="dv-btn cancel-button" *ngIf="isInstitutionStufe1(rueckforderungFormular)"

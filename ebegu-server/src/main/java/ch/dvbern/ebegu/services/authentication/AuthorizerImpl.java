@@ -1341,8 +1341,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		switch (rueckforderungFormular.getStatus()) {
 		case EINGELADEN:
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV:{
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
 				throwViolation(rueckforderungFormular);
@@ -1352,7 +1351,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case NEU:
 		case IN_PRUEFUNG_KANTON_STUFE_1:
 		case IN_PRUEFUNG_KANTON_STUFE_2:
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH:
 		case GEPRUEFT_STUFE_1:
 		case VERFUEGT_PROVISORISCH:
 		case VERFUEGT:
