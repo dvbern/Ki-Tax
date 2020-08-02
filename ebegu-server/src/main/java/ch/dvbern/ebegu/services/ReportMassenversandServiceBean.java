@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -66,13 +64,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(ReportMassenversandService.class)
-@PermitAll
 public class ReportMassenversandServiceBean extends AbstractReportServiceBean implements ReportMassenversandService {
 
 	private static final char SEPARATOR = ';';
@@ -94,7 +87,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	public List<MassenversandDataRow> getReportMassenversand(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
@@ -141,7 +133,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportMassenversand(

@@ -23,7 +23,7 @@
           novalidate>
         <div class="notrecht admin-modul" flex="auto">
             <div class="col-md-8 col-md-offset-2">
-                <div class="row" *ngIf="fristSchonErreicht(rueckforderungFormular)">
+                <div class="row" *ngIf="showFristAbgelaufen(rueckforderungFormular)">
                     <div class="col-md-12">
                         <div class="well well-status-warten">
                             <span>{{'RUECKFORDERUNG_WARNING_FRIST_ERREICHT' | translate }}</span>
@@ -1387,8 +1387,7 @@
                     (click)="rueckforderungAbschliessen(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN</span>
             </button>
-            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)
-                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
+            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
             <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"

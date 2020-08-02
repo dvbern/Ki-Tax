@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -82,13 +80,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(ReportVerrechnungKibonService.class)
-@PermitAll
 public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean implements ReportVerrechnungKibonService {
 
 	private VerrechnungKibonExcelConverter verrechnungKibonExcelConverter = new VerrechnungKibonExcelConverter();
@@ -109,7 +102,6 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@SuppressWarnings("SimplifyStreamApiCallChains")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	public List<VerrechnungKibonDataRow> getReportVerrechnungKibon(
 		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale
 	) {
@@ -359,7 +351,6 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportVerrechnungKibon(

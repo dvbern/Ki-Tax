@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -54,13 +53,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(ReportNotrechtService.class)
-@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 public class ReportNotrechtServiceBean extends AbstractReportServiceBean implements ReportNotrechtService {
 
 	private NotrechtExcelConverter excelConverter = new NotrechtExcelConverter();
@@ -74,7 +68,6 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen) {
 		List<NotrechtDataRow> formulare = new ArrayList<>();
 		Collection<RueckforderungFormular> auszuzahlendeFormulare = findAllAuszuzahlendeFormulare();
@@ -121,6 +114,8 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		row.setStufe1FreigabeDatum(formular.getStufe1FreigabeDatum());
 		row.setStufe1FreigabeAusbezahltAm(formular.getStufe1FreigabeAusbezahltAm());
 		row.setStufe1ZahlungJetztAusgeloest((formular.isStufe1ZahlungJetztAusgeloest()) ? "Ja" : "-");
+
+		row.setInstitutionTyp(formular.getInstitutionTyp());
 
 		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
 		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
@@ -169,7 +164,6 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException {

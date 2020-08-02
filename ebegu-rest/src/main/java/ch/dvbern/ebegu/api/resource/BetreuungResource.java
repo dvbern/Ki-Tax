@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -73,12 +75,30 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.Validate;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource fuer Betreuungen. Betreuung = ein Kind in einem Betreuungsangebot bei einer Institution.
  */
 @Path("betreuungen")
 @Stateless
 @Api(description = "Resource zum Verwalten von Betreuungen (Ein Betreuungsangebot für ein Kind)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class BetreuungResource {
 
 	public static final String KIND_CONTAINER_ID_INVALID = "KindContainerId invalid: ";
@@ -104,6 +124,9 @@ public class BetreuungResource {
 	@Path("/betreuung/{abwesenheit}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxBetreuung saveBetreuung(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Nonnull @NotNull @PathParam("abwesenheit") Boolean abwesenheit,
@@ -190,6 +213,9 @@ public class BetreuungResource {
 	@Path("/all/{abwesenheit}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxBetreuung> saveAbwesenheiten(
 		List<JaxBetreuung> betreuungenJAXP,
 		@Nonnull @PathParam("abwesenheit") Boolean abwesenheit,
@@ -226,6 +252,8 @@ public class BetreuungResource {
 	@Path("/abweisen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION })
 	public JaxBetreuung betreuungPlatzAbweisen(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
@@ -252,6 +280,8 @@ public class BetreuungResource {
 	@Path("/bestaetigen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION })
 	public JaxBetreuung betreuungPlatzBestaetigen(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
@@ -278,6 +308,8 @@ public class BetreuungResource {
 	@Path("/schulamt/ablehnen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungSchulamtAblehnen(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
@@ -289,7 +321,7 @@ public class BetreuungResource {
 		// Anmeldungen ablehnen kann man entweder im Status SCHULAMT_ANMELDUNG_AUSGELOEST oder
 		// SCHULAMT_FALSCHE_INSTITUTION
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
-		Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
 
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -305,6 +337,8 @@ public class BetreuungResource {
 	@Path("/schulamt/falscheInstitution")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungSchulamtFalscheInstitution(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
@@ -314,7 +348,7 @@ public class BetreuungResource {
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
-		Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -332,6 +366,9 @@ public class BetreuungResource {
 	@Path("/{betreuungId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 	public JaxBetreuung findBetreuung(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId) {
 		Objects.requireNonNull(betreuungJAXPId.getId());
@@ -352,6 +389,9 @@ public class BetreuungResource {
 	@Path("/{betreuungId}")
 	@Consumes(MediaType.WILDCARD)
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
 	public Response removeBetreuung(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId,
 		@Context HttpServletResponse response) {
@@ -366,7 +406,7 @@ public class BetreuungResource {
 			return Response.ok().build();
 		}
 		Optional<? extends AbstractAnmeldung> anmeldung = betreuungService.findAnmeldung(betreuungJAXPId.getId());
-		if(anmeldung.isPresent()){
+		if (anmeldung.isPresent()) {
 			resourceHelper.assertGesuchStatusForBenutzerRole(anmeldung.get().extractGesuch());
 			betreuungService.removeAnmeldung(converter.toEntityId(betreuungJAXPId));
 			return Response.ok().build();
@@ -376,7 +416,8 @@ public class BetreuungResource {
 			+ "invalid: " + betreuungJAXPId.getId());
 	}
 
-	@ApiOperation(value = "Sucht alle verfügten Betreuungen aus allen Gesuchsperioden, welche zum übergebenen Dossier" +
+	@ApiOperation(value = "Sucht alle verfügten Betreuungen aus allen Gesuchsperioden, welche zum übergebenen "
+		+ "Dossier" +
 		"vorhanden sind. Es werden nur diejenigen Betreuungen zurückgegeben, für welche der eingeloggte Benutzer " +
 		"berechtigt ist.", responseContainer = "Collection", response = JaxBetreuung.class)
 	@Nullable
@@ -384,6 +425,9 @@ public class BetreuungResource {
 	@Path("/alleBetreuungen/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 	public Response findAllBetreuungenWithVerfuegungFromFall(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
@@ -409,6 +453,9 @@ public class BetreuungResource {
 	@Path("/anmeldung/create/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Response createAnmeldung(
 		@Nonnull @NotNull @Valid JaxAnmeldungDTO jaxAnmeldungDTO,
 		@Context UriInfo uriInfo,
@@ -425,7 +472,8 @@ public class BetreuungResource {
 				kindService.saveKind(kindContainer);
 			}
 
-			BetreuungsangebotTyp betreuungsangebotTyp = jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
+			BetreuungsangebotTyp betreuungsangebotTyp =
+				jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
 			switch (betreuungsangebotTyp) {
 			case TAGESSCHULE:
 				savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer, false);
@@ -434,7 +482,8 @@ public class BetreuungResource {
 				savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer, false);
 				break;
 			default:
-				throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und Ferieninseln möglich");
+				throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und "
+					+ "Ferieninseln möglich");
 			}
 
 			return Response.ok().build();
@@ -449,6 +498,9 @@ public class BetreuungResource {
 	@Path("/betreuung/abweichungen/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Collection<JaxBetreuungspensumAbweichung> saveBetreuungspensumAbweichungen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJax,
@@ -465,8 +517,9 @@ public class BetreuungResource {
 		}
 
 		Betreuung betreuung = betreuungOptional.get();
-		Set<BetreuungspensumAbweichung> toStore = converter.betreuungspensumAbweichungenToEntity(betreuungJax.getBetreuungspensumAbweichungen(),
-			betreuung.getBetreuungspensumAbweichungen());
+		Set<BetreuungspensumAbweichung> toStore =
+			converter.betreuungspensumAbweichungenToEntity(betreuungJax.getBetreuungspensumAbweichungen(),
+				betreuung.getBetreuungspensumAbweichungen());
 
 		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
 		betreuung.setBetreuungspensumAbweichungen(toStore);
@@ -476,11 +529,14 @@ public class BetreuungResource {
 
 	@ApiOperation(value = "Gibt für jeden Monat in einer Gesuchsperiode eine BetreuungspensumAbweichung zurück.",
 		response =
-		Collection.class)
+			Collection.class)
 	@GET
 	@Path("/betreuung/abweichungen/{betreuungId}/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 	public Collection<JaxBetreuungspensumAbweichung> findBetreuungspensumAbweichungen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
 		@Context UriInfo uriInfo,
@@ -499,12 +555,14 @@ public class BetreuungResource {
 
 	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt aber die Finanzeil Situation ist "
 		+ "noch nicht geprueft",
-		response =	JaxBetreuung.class)
+		response = JaxBetreuung.class)
 	@Nonnull
 	@PUT
 	@Path("/schulamt/akzeptieren")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungSchulamtModuleAkzeptieren(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {

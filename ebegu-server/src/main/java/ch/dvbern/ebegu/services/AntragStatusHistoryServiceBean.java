@@ -24,8 +24,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -54,27 +52,11 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer AntragStatusHistory
  */
 @Stateless
 @Local(AntragStatusHistoryService.class)
-@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-	GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 public class AntragStatusHistoryServiceBean extends AbstractBaseService implements AntragStatusHistoryService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AntragStatusHistoryServiceBean.class.getSimpleName());
@@ -126,7 +108,6 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	@PermitAll
 	public AntragStatusHistory findLastStatusChange(@Nonnull String gesuchId) {
 		Objects.requireNonNull(gesuchId);
 		try {
@@ -142,8 +123,8 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeAllAntragStatusHistoryFromGesuch(@Nonnull Gesuch gesuch) {
+		authorizer.checkWriteAuthorization(gesuch);
 		Collection<AntragStatusHistory> antragStatusHistoryFromGesuch = findAllAntragStatusHistoryByGesuch(gesuch);
 		for (AntragStatusHistory antragStatusHistory : antragStatusHistoryFromGesuch) {
 			persistence.remove(AntragStatusHistory.class, antragStatusHistory.getId());

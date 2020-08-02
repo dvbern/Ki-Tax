@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -57,21 +55,11 @@ import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer Dossier
  */
 @Stateless
 @Local(DossierService.class)
-@PermitAll
 public class DossierServiceBean extends AbstractBaseService implements DossierService {
 
 	@Inject
@@ -158,8 +146,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
 		authorizer.checkWriteAuthorizationDossier(dossier);
@@ -167,13 +153,14 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void removeDossier(@Nonnull String dossierId, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(dossierId);
 
 		final Optional<Dossier> optDossier = findDossier(dossierId);
 		final Dossier dossierToRemove = optDossier.orElseThrow(()
 			-> new EbeguEntityNotFoundException("removeDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+
+		authorizer.checkWriteAuthorizationDossier(dossierToRemove);
 
 		gesuchService.getAllGesuchIDsForDossier(dossierToRemove.getId())
 			.forEach(gesuch -> gesuchService.removeGesuch(gesuch, deletionCause));
@@ -206,6 +193,8 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			gemeindeId));
 		//noinspection ConstantConditions
 
+		authorizer.checkReadAuthorization(gemeinde);
+
 		Objects.requireNonNull(fallOptional.get());
 		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
@@ -221,6 +210,8 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Override
 	public boolean hasDossierAnyMitteilung(@Nonnull Dossier dossier) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+
 		final Collection<Mitteilung> mitteilungenForCurrentRolle =
 			mitteilungService.getMitteilungenForCurrentRolle(dossier);
 		return !mitteilungenForCurrentRolle.isEmpty();
@@ -232,6 +223,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		final Dossier dossier =
 			findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		authorizer.checkWriteAuthorizationDossier(dossier);
 		dossier.setVerantwortlicherBG(benutzer);
 
 		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern
@@ -246,6 +238,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		final Dossier dossier =
 			findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		authorizer.checkWriteAuthorizationDossier(dossier);
 		dossier.setVerantwortlicherTS(benutzer);
 
 		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern
@@ -257,6 +250,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		authorizer.checkWriteAuthorizationDossier(dossier);
 		LocalDate erstesEinreichungsdatum = null;
 		List<Gesuch> gesuchList =
 			gesuchService.getAllGesucheForDossierAndPeriod(dossier, gesuchsperiode);

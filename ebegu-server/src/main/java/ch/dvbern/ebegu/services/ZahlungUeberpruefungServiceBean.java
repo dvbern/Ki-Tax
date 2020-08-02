@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.Nullable;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
@@ -38,6 +38,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -65,9 +66,6 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.util.MathUtil.DEFAULT;
 import static ch.dvbern.ebegu.util.MathUtil.isSame;
 
@@ -77,7 +75,6 @@ import static ch.dvbern.ebegu.util.MathUtil.isSame;
  * Einige Gesuche haben bekanntermassen falsche Auszahlungen gehabt. Diese werden entsprechend behandelt.
  */
 @Stateful
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "SpringAutowiredFieldsWarningInspection", "InstanceMethodNamingConvention" })
 public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
@@ -114,13 +111,13 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Asynchronous
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(value = 360, unit = TimeUnit.MINUTES)
-	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull String zahlungsauftragId) {
+	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull String zahlungsauftragId, @Nonnull LocalDateTime datumLetzteZahlung, @Nullable String beschrieb) {
+
 		Objects.requireNonNull(gemeinde);
 		Objects.requireNonNull(zahlungsauftragId);
+		Objects.requireNonNull(datumLetzteZahlung);
 
-		final Zahlungsauftrag zahlungsauftrag = persistence.find(Zahlungsauftrag.class, zahlungsauftragId);
-		Objects.requireNonNull(zahlungsauftrag);
-		final LocalDateTime datumLetzteZahlung = zahlungsauftrag.getDatumGeneriert();
+		Objects.requireNonNull(zahlungsauftragId);
 		Objects.requireNonNull(datumLetzteZahlung);
 
 		resetAllData();
@@ -132,11 +129,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			pruefungZahlungenSollFuerGesuchsperiode(gesuchsperiode, gemeinde, datumLetzteZahlung);
 		}
 		LOGGER.info("Pruefung der Zahlungen beendet: {}", potentielleFehlerList.isEmpty() ? "OK" : "ERROR");
-		sendeMail(gemeinde, zahlungsauftrag);
+		sendeMail(gemeinde, zahlungsauftragId, beschrieb);
 		resetAllData();
 	}
 
-	private void sendeMail(@Nonnull Gemeinde gemeinde, @Nonnull Zahlungsauftrag zahlungsauftrag) {
+	private void sendeMail(@Nonnull Gemeinde gemeinde, @Nonnull String zahlungsauftragId, String beschrieb) {
 		Objects.requireNonNull(gemeinde);
 		LOGGER.info("Sende Mail...");
 		String administratorMail = ebeguConfiguration.getAdministratorMail();
@@ -146,11 +143,12 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
-			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ")";
+			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ')';
+			String autragResult = "Pending";
 			if (potentielleFehlerList.isEmpty()) {
 				mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
-					"Bezeichnung: " + zahlungsauftrag.getBeschrieb() + ": Keine Fehler gefunden", administratorMail);
-				zahlungsauftrag.setResult("OK");
+					"Bezeichnung: " + beschrieb + ": Keine Fehler gefunden", administratorMail);
+				autragResult = "OK";
 			} else {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Zusammenfassung: \n");
@@ -166,15 +164,26 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				}
 				mailService.sendMessage(auftragBezeichnung+ ": Potentieller Fehler im Zahlungslauf",
 					sb.toString(), administratorMail);
-				String result = "Bezeichnung: " + zahlungsauftrag.getBeschrieb() + ": Potentieller Fehler im Zahlungslauf: " + sb;
-				result = StringUtils.abbreviate(result, Constants.DB_TEXTAREA_LENGTH);
-				zahlungsauftrag.setResult(result);
+				autragResult = "Bezeichnung: " + beschrieb + ": Potentieller Fehler im Zahlungslauf: " + sb;
+				autragResult = StringUtils.abbreviate(autragResult, Constants.DB_TEXTAREA_LENGTH);
+
 			}
-			persistence.merge(zahlungsauftrag);
+			// Erst jetzt den Zahlungsauftrag lesen bzw. updaten, wegen OptimisticLockExceptions,
+			updateZahlungsauftragResult(zahlungsauftragId, autragResult);
+
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
 		}
 		LOGGER.info("... beendet");
+	}
+
+	private void updateZahlungsauftragResult(@Nonnull String zahlungsauftragId, @Nonnull String autragResult) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaUpdate<Zahlungsauftrag> criteriaUpdate = cb.createCriteriaUpdate(Zahlungsauftrag.class);
+		Root<Zahlungsauftrag> employeeRoot = criteriaUpdate.from(Zahlungsauftrag.class);
+		criteriaUpdate.set(employeeRoot.get(Zahlungsauftrag_.result), autragResult);
+		criteriaUpdate.where(cb.equal(employeeRoot.get(Zahlungsauftrag_.id), zahlungsauftragId));
+		persistence.getEntityManager().createQuery(criteriaUpdate).executeUpdate();
 	}
 
 	private void pruefungZahlungenSollFuerGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode,

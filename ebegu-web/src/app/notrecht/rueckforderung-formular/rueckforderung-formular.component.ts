@@ -27,7 +27,7 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
-import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {isNeuOrEingeladenStatus, isStatusRelevantForFrist, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
@@ -586,6 +586,13 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public getRueckforderungInstitutionTypPrivat(): TSRueckforderungInstitutionTyp {
         return TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public showFristAbgelaufen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (isStatusRelevantForFrist(rueckforderungFormular.status)) {
+            return this.fristSchonErreicht(rueckforderungFormular);
+        }
+        return false;
     }
 
     public fristSchonErreicht(rueckforderungFormular: TSRueckforderungFormular): boolean {

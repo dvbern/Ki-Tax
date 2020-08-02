@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.batch.operations.JobOperator;
@@ -34,7 +35,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.MatrixParam;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,12 +47,11 @@ import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.WorkjobService;
 
 @Path("admin/batch")
 @Stateless
-@RolesAllowed(UserRoleName.SUPER_ADMIN)
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class BatchResource {
 
 	@Inject
@@ -68,6 +67,7 @@ public class BatchResource {
 	@GET
 	@Path("/jobs")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(UserRoleName.SUPER_ADMIN)
 	public JaxBatchJobList getAllJobs(
 		@Valid @MatrixParam("start") @DefaultValue("0") int start,
 		@Valid @MatrixParam("count") @DefaultValue("100") int count) {
@@ -81,19 +81,6 @@ public class BatchResource {
 			.collect(Collectors.toList());
 
 		return new JaxBatchJobList(resultlist);
-	}
-
-	@GET
-	@Path("/jobs/{executionId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getBatchJobInformation(@Valid @PathParam("executionId") long idParam) {
-		try {
-			JobExecution information = BatchRuntime.getJobOperator().getJobExecution(idParam);
-			return Response.ok(converter.toBatchJobInformation(information)).build();
-		} catch (NoSuchJobExecutionException ex) {
-			throw new EbeguEntityNotFoundException("getBatchJobInfo", "could not find batch job", ex);
-		}
 	}
 
 	@GET

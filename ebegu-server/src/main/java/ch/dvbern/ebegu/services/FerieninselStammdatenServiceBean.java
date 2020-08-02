@@ -24,8 +24,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -53,14 +51,11 @@ import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.StringUtils;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service zum Verwalten von Ferieninsel-Stammdaten
  */
 @Stateless
 @Local(FerieninselStammdatenService.class)
-@PermitAll
 public class FerieninselStammdatenServiceBean extends AbstractBaseService implements FerieninselStammdatenService {
 
 	@Inject
@@ -133,7 +128,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
 		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
 		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = persistence.find(GemeindeStammdatenGesuchsperiodeFerieninsel.class, ferieninselStammdatenId);
@@ -141,7 +135,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void copyEinstellungenFerieninselToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode
@@ -155,7 +148,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<EinstellungenFerieninsel> findEinstellungenFerieninselByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		return
 			criteriaQueryHelper.getEntitiesByAttribute(
@@ -164,7 +156,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdatenForGesuchsperiodeAndFerienname(
 			@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId, @Nonnull Ferienname ferienname) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -193,7 +184,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public List<BelegungFerieninselTag> getPossibleFerieninselTage(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
 		List<BelegungFerieninselTag> potentielleFerieninselTage = new LinkedList<>();
 		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : ferieninselStammdaten.getZeitraumList()) {

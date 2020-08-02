@@ -22,8 +22,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -64,15 +62,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -80,7 +69,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(GesuchsperiodeService.class)
-@PermitAll
 public class GesuchsperiodeServiceBean extends AbstractBaseService implements GesuchsperiodeService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GesuchsperiodeServiceBean.class.getSimpleName());
@@ -117,7 +105,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		requireNonNull(gesuchsperiode);
 		return persistence.merge(gesuchsperiode);
@@ -125,7 +112,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	public Gesuchsperiode saveGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
@@ -213,7 +199,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Gesuchsperiode> findGesuchsperiode(@Nonnull String key) {
 		requireNonNull(key, "id muss gesetzt sein");
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, key);
@@ -222,7 +207,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<Gesuchsperiode> getAllGesuchsperioden() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
@@ -235,7 +219,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nullable
 	@Override
-	@PermitAll
 	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
 		List<Gesuchsperiode> gesuchsperioden = null;
 		Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(key);
@@ -255,7 +238,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@RolesAllowed(SUPER_ADMIN)
 	public void removeGesuchsperiode(@Nonnull String gesuchsPeriodeId) {
 		Optional<Gesuchsperiode> gesuchsperiodeOptional = findGesuchsperiode(gesuchsPeriodeId);
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeOptional.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -341,14 +323,12 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Gesuchsperiode> getAllActiveGesuchsperioden() {
 		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV);
 	}
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden() {
 		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV,
 			GesuchsperiodeStatus.ENTWURF);
@@ -359,14 +339,12 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	 */
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Gesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
 		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
 	}
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Gesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
 		@Nonnull String dossierId
 	) {
@@ -429,7 +407,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<Gesuchsperiode> getGesuchsperiodeAm(@Nonnull LocalDate stichtag) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
@@ -448,7 +425,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Gesuchsperiode> getGesuchsperiodenBetween(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis) {
@@ -483,7 +459,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Gesuchsperiode uploadGesuchsperiodeDokument(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache,
@@ -525,7 +500,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Gesuchsperiode removeGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
 		@Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
@@ -563,9 +537,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public boolean existDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
 		@Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);

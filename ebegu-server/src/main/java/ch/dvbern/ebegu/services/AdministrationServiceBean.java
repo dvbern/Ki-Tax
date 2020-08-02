@@ -32,7 +32,6 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -52,10 +51,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer diverse Admin-Aufgaben.
  * Im Moment nur fuer internen Gebrauch, d.h. die Methoden werden nirgends im Code aufgerufen, koennen aber bei Bedarf
@@ -63,7 +58,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(AdministrationService.class)
-@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "ConstantConditions" })
 public class AdministrationServiceBean extends AbstractBaseService implements AdministrationService {
 
