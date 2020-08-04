@@ -53,7 +53,7 @@
                             </span>
                             <span class="status-header">
                             {{translateStatus(rueckforderungFormular.status)}}<br>
-                                <span *ngIf="rueckforderungFormular.verantwortlicherName">
+                                <span *ngIf="rueckforderungFormular.verantwortlicherName && isKantonBenutzer()">
                                     {{'VERANTWORTLICHER' | translate }}:
                                     {{rueckforderungFormular.verantwortlicherName}}
                                 </span>
