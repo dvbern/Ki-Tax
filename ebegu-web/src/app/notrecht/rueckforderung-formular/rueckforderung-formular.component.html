@@ -1398,6 +1398,10 @@
                     (click)="resetStatus(rueckforderungFormular)">
                 <span translate>RUECKFORDERUNG_RESET_STATUS</span>
             </button>
+            <button *ngIf="showButtonZurueckholen(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
+                    (click)="formularZurueckholen(rueckforderungFormular)">
+                <span translate>RUECKFORDERUNG_ZURUECKHOLEN</span>
+            </button>
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"

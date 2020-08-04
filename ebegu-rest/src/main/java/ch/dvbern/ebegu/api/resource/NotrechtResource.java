@@ -301,6 +301,23 @@ public class NotrechtResource {
 		return converter.rueckforderungFormularToJax(formular);
 	}
 
+	@ApiOperation("Setzt den Status des Formulars zurueck auf 'In Pruefung Kanton Phase 2'")
+	@Nonnull
+	@POST
+	@Path("/zurueckholen")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungFormular resetStatusToInPruefungKantonPhase2(
+		@Nonnull @NotNull String formularId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(formularId);
+		RueckforderungFormular formular = rueckforderungFormularService.resetStatusToInPruefungKantonPhase2(formularId);
+		return converter.rueckforderungFormularToJax(formular);
+	}
+
 	@ApiOperation(value = "Gibt alle Rückforderungsdokumente zurück, die die aktuelle RueckforderungForm",
 		responseContainer = "List", response = JaxRueckforderungFormular.class)
 	@GET
