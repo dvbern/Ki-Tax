@@ -42,6 +42,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -228,6 +229,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Size(min = 1, max = 2000)
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
+
+	@Nonnull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Sprache korrespondenzsprache = Sprache.DEUTSCH;
 
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
@@ -581,6 +587,16 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
 		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzsprache() {
+		return korrespondenzsprache;
+	}
+
+	@Nonnull
+	public void setKorrespondenzsprache(Sprache korrespondenzsprache) {
+		this.korrespondenzsprache = korrespondenzsprache;
 	}
 
 	@Override

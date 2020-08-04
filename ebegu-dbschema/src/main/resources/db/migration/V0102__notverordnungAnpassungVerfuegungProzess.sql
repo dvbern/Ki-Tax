@@ -1,5 +1,9 @@
 alter table rueckforderung_formular add stufe_2_voraussichtliche_betrag decimal(19,2);
 alter table rueckforderung_formular_aud add stufe_2_voraussichtliche_betrag decimal(19,2);
+alter table rueckforderung_formular add korrespondenz_sprache VARCHAR(255);
+alter table rueckforderung_formular_aud add korrespondenz_sprache VARCHAR(255);
+
+update rueckforderung_formular set korrespondenz_sprache = 'DEUTSCH';
 
 CREATE TABLE generated_notrecht_dokument_aud (
 	id                 BINARY(16) NOT NULL,

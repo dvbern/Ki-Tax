@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -50,7 +51,11 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 	public void generateProvisorischeVerfuegung() throws IOException, InvoiceGeneratorException {
 		RueckforderungVerfuegungPdfGenerator generator =
 			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true);
-		generator.generate(new FileOutputStream(pfad + "todo.pdf"));
+		generator.generate(new FileOutputStream(pfad + "notrecht_provisorische_verfuegung_de.pdf"));
+		this.rueckforderungFormular.setKorrespondenzsprache(Sprache.FRANZOESISCH);
+		generator =
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true);
+		generator.generate(new FileOutputStream(pfad + "notrecht_provisorische_verfuegung_fr.pdf"));
 	}
 
 	private InstitutionStammdaten initInstitutionStammdaten(){

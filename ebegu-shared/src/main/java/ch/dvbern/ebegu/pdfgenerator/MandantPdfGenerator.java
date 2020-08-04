@@ -19,10 +19,10 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -40,20 +40,28 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public abstract class MandantPdfGenerator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(MandantPdfGenerator.class);
+
+	protected static final String DIREKTION = "PdfGeneration_ProvisorischeVerfuegung_Direktion";
+	protected static final String AMT = "PdfGeneration_ProvisorischeVerfuegung_Amt";
+	protected static final String DIVISION = "PdfGeneration_ProvisorischeVerfuegung_Division";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
 	protected static final String EINSCHREIBEN = "PdfGeneration_VerfuegungEingeschrieben"; //wird bei der Definitiv
 	// verwendet werden
+	protected Locale sprache;
 
 	@Nonnull
 	private PdfGenerator pdfGenerator;
 
-	public MandantPdfGenerator() {
+	public MandantPdfGenerator(Sprache sprache) {
 		byte[] mandantLogo = new byte[0];
 		try {
 			mandantLogo = IOUtils.toByteArray(MandantPdfGenerator.class.getResourceAsStream(
@@ -61,9 +69,18 @@ public abstract class MandantPdfGenerator {
 					+ ".png"));
 		}
 		catch (IOException e) {
-			//TODO Throw Exception Logo not Found
+			LOG.error("KantonBernLogo.png koennte nicht geladen werden: {}", e.getMessage());
 		}
+		initSprache(sprache);
 		initGenerator(mandantLogo);
+	}
+
+	private void initSprache(Sprache sprache){
+		if(sprache != null) {
+			this.sprache = sprache.getLocale();
+		} else{
+			this.sprache = Sprache.DEUTSCH.getLocale();
+		}
 	}
 
 	@Nonnull
@@ -104,11 +121,11 @@ public abstract class MandantPdfGenerator {
 	@Nonnull
 	public String getMandantAddressAsString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Gesundheits-, Sozial- und Integrationsdirektion");
+		sb.append(translate(DIREKTION));
 		sb.append(Constants.LINE_BREAK);
-		sb.append("Amt für Integration und Soziales");
+		sb.append(translate(AMT));
 		sb.append(Constants.LINE_BREAK);
-		sb.append("Abteilung Familie");
+		sb.append(translate(DIVISION));
 		sb.append(Constants.LINE_BREAK);
 		sb.append(Constants.LINE_BREAK);
 		sb.append("Rathausgasse 1");
@@ -136,7 +153,7 @@ public abstract class MandantPdfGenerator {
 
 	@Nonnull
 	protected String translate(String key, Object... args) {
-		return ServerMessageUtil.getMessage(key, Sprache.DEUTSCH.getLocale(), args);
+		return ServerMessageUtil.getMessage(key, sprache, args);
 	}
 
 	protected void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte, List<String> content) throws DocumentException {
