@@ -99,6 +99,8 @@ export class NotrechtComponent implements OnInit {
                     return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
                 case 'zahlungStufe2':
                     return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
+                case 'verantwortlich':
+                    return item.verantwortlicherName;
                 default:
                     // @ts-ignore
                     return item[property];
@@ -123,7 +125,8 @@ export class NotrechtComponent implements OnInit {
                 || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
-                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter);
+                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter)
+                || EbeguUtil.hasTextCaseInsensitive(data.verantwortlicherName, filter);
         };
     }
 
@@ -248,16 +251,6 @@ export class NotrechtComponent implements OnInit {
     }
 
     public getDisplayColumns(): string[] {
-        return this.isMandantOrSuperuser() ?
-            this.displayedColumnsMandant :
-            this.displayedColumns;
-    }
-
-    public getNameVerantwortlicher(formular: TSRueckforderungFormular): string {
-        if (!formular.verantwortlicher) {
-            return '';
-        }
-
-        return `${formular.verantwortlicher.vorname} ${formular.verantwortlicher.nachname}`;
+        return this.isMandantOrSuperuser() ? this.displayedColumnsMandant : this.displayedColumns;
     }
 }

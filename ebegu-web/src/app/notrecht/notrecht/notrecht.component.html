@@ -93,13 +93,13 @@
                 </ng-container>
 
                 <ng-container matColumnDef="verantwortlich">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="verantwortlich">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'VERANTWORTLICHER' | translate}}
                     </mat-header-cell>
                     <mat-cell (click)="openRueckforderungFormular(formular)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
-                        {{getNameVerantwortlicher(formular)}}
+                        {{formular.verantwortlicherName}}
                     </mat-cell>
                 </ng-container>
 

@@ -5199,7 +5199,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
 		if (rueckforderungFormular.getVerantwortlicher() != null) {
-			jaxFormular.setVerantwortlicher(benutzerToJaxBenutzer(rueckforderungFormular.getVerantwortlicher()));
+			jaxFormular.setVerantwortlicherName(rueckforderungFormular.getVerantwortlicher().getFullName());
 		}
 		jaxFormular.setHasBeenProvisorisch(rueckforderungFormular.isHasBeenProvisorisch());
 

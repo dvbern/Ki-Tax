@@ -29,7 +29,6 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];
-    private _verantwortlicher: TSBenutzer;
     private _status: TSRueckforderungStatus;
     public hasBeenProvisorisch: boolean = false;
     private _stufe1KantonKostenuebernahmeAnzahlStunden: number;
@@ -50,6 +49,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe2VerfuegungBetrag: number;
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
+    private _verantwortlicherName: string;
     public institutionTyp: TSRueckforderungInstitutionTyp;
     public extendedEinreichefrist: moment.Moment;
     public relevantEinreichungsfrist: moment.Moment;
@@ -93,14 +93,6 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set status(value: TSRueckforderungStatus) {
         this._status = value;
-    }
-
-    public get verantwortlicher(): TSBenutzer {
-        return this._verantwortlicher;
-    }
-
-    public set verantwortlicher(value: TSBenutzer) {
-        this._verantwortlicher = value;
     }
 
     public get stufe1KantonKostenuebernahmeAnzahlStunden(): number {
@@ -245,6 +237,14 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set stufe2VerfuegungAusbezahltAm(value: moment.Moment) {
         this._stufe2VerfuegungAusbezahltAm = value;
+    }
+
+    public get verantwortlicherName(): string {
+        return this._verantwortlicherName;
+    }
+
+    public set verantwortlicherName(value: string) {
+        this._verantwortlicherName = value;
     }
 
     public isKurzarbeitProzessBeendet(): boolean {

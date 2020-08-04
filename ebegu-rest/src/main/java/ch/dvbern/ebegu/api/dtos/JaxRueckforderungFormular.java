@@ -48,9 +48,6 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nonnull
 	private RueckforderungStatus status;
 
-	@Nullable
-	private JaxBenutzer verantwortlicher;
-
 	private boolean hasBeenProvisorisch = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
 
 	@Nullable
@@ -161,6 +158,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private String coronaErwerbsersatzSonstiges;
 
+	@Nullable
+	private String verantwortlicherName;
+
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;
@@ -177,15 +177,6 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStatus(@Nonnull RueckforderungStatus status) {
 		this.status = status;
-	}
-
-	@Nullable
-	public JaxBenutzer getVerantwortlicher() {
-		return verantwortlicher;
-	}
-
-	public void setVerantwortlicher(@Nullable JaxBenutzer verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
 	}
 
 	public boolean isHasBeenProvisorisch() {
@@ -509,5 +500,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setCoronaErwerbsersatzSonstiges(@Nullable String coronaErwerbsersatzSonstiges) {
 		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
+	}
+
+	@Nullable
+	public String getVerantwortlicherName() {
+		return verantwortlicherName;
+	}
+
+	public void setVerantwortlicherName(@Nullable String verantwortlicherName) {
+		this.verantwortlicherName = verantwortlicherName;
 	}
 }
