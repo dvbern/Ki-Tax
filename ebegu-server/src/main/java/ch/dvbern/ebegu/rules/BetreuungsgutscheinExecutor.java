@@ -87,7 +87,7 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
-		AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
+		AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde);
 		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
 			&& platz.getBetreuungsangebotTyp().isJugendamt();
 		// Den richtigen Rechner anwerfen
