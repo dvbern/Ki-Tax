@@ -737,7 +737,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
             && EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
-            && this.isMandantUser()) {
+            && this.isKantonBenutzer()) {
             return true;
         }
         return false;
@@ -747,7 +747,7 @@ export class RueckforderungFormularComponent implements OnInit {
         if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV
             || (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
                 && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp)))
-            && this.isMandantUser()) {
+            && this.isKantonBenutzer()) {
             return true;
         }
         return false;
@@ -824,12 +824,6 @@ export class RueckforderungFormularComponent implements OnInit {
     public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)
-        );
-    }
-
-    public isMandantUser(): boolean {
-        return this.authServiceRS.isOneOfRoles(
-            [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT]
         );
     }
 }

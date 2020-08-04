@@ -46,7 +46,7 @@
 						}
                             }}
 
-                            <span *ngIf="isMandantUser()">
+                            <span *ngIf="isKantonBenutzer()">
                                 <button class="dv-btn"
                                         (click)="setCurrentUserAsVerantwortlicher(rueckforderungFormular)"
                                         [textContent]="'LABEL_ZUWEISEN' | translate"></button>
