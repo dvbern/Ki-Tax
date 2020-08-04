@@ -84,6 +84,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private RueckforderungStatus status = RueckforderungStatus.NEU;
 
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rueckforderung_verantwortlicher_id"), nullable = true)
+	private Benutzer verantwortlicher;
+
 	@NotNull
 	@Column(nullable = false)
 	private boolean hasBeenProvisorisch = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
@@ -277,6 +282,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nullable
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	@Nullable
