@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -220,7 +221,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
-		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
@@ -239,7 +240,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
-		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
@@ -274,7 +275,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
-		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Keine erweiterteBetreuung: Anspruch wird auf 0 gesetzt", 0, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue("Keine erweiterteBetreuung: Bezahlt Vollkosten", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
@@ -292,7 +293,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
-		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue("keinAnspruchAufgrundEinkommen gilt auch wenn erweiterteBetreuung", abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());

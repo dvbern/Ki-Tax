@@ -121,7 +121,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		Assert.assertEquals(1, zeitabschnitte.size());
 
 		VerfuegungZeitabschnitt abschnittFinSitAbgelehnt = zeitabschnitte.get(0);
-		assertZeitabschnitt_MaxTarif(abschnittFinSitAbgelehnt, 100000);
+		assertZeitabschnitt_MaxTarif(abschnittFinSitAbgelehnt, 160000);
 	}
 
 	private List<VerfuegungZeitabschnitt> calculate(long einkommen, FinSitStatus finSitStatus) {
