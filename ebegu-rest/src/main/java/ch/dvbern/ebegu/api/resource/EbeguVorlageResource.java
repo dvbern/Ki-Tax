@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -67,12 +69,17 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource fuer Dokument-Vorlagen
  */
 @Path("ebeguVorlage")
 @Stateless
 @Api(description = "Resource fuer Dokument-Vorlagen")
+@PermitAll
 public class EbeguVorlageResource {
 
 	private static final String PART_FILE = "file";
@@ -189,6 +196,7 @@ public class EbeguVorlageResource {
 	@DELETE
 	@Path("/{ebeguVorlageId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Response removeEbeguVorlage(
 		@Nonnull @NotNull @PathParam("ebeguVorlageId") JaxId ebeguVorlageId,
 		@Context HttpServletResponse response) {

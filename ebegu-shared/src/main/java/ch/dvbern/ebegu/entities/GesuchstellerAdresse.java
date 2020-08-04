@@ -100,7 +100,11 @@ public class GesuchstellerAdresse extends Adresse {
 	public GesuchstellerAdresse copyGesuchstellerAdresse(@Nonnull GesuchstellerAdresse target, @Nonnull AntragCopyType copyType) {
 		super.copyAdresse(target, copyType);
 		target.setAdresseTyp(this.getAdresseTyp());
-		target.setNichtInGemeinde(this.nichtInGemeinde);
+		if (copyType.isGleichesDossier()) {
+			target.setNichtInGemeinde(this.nichtInGemeinde);
+		} else {
+			target.setNichtInGemeinde(false);
+		}
 		return target;
 	}
 }

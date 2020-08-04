@@ -114,10 +114,6 @@ export class BenutzerRS implements IEntityRS {
         return this.getSingleBenutzer(`${this.serviceURL}/username/${encodeURIComponent(username)}`);
     }
 
-    public findBenutzerByEmail(email: string): IPromise<TSBenutzer | undefined> {
-        return this.getSingleBenutzer(`${this.serviceURL}/email/${encodeURIComponent(email)}`);
-    }
-
     public inactivateBenutzer(user: TSBenutzer): IPromise<TSBenutzer> {
         const userRest = this.ebeguRestUtil.userToRestObject({}, user);
         return this.$http.put(`${this.serviceURL}/inactivate/`, userRest).then((response: any) => {

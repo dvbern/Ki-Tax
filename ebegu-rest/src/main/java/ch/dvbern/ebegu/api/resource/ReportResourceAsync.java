@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -85,9 +86,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Path("reporting/async")
 @Stateless
 @Api(description = "Resource für Statistiken und Reports")
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS,
-	ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
-	REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class ReportResourceAsync {
 
 	public static final String DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN =
@@ -198,6 +197,9 @@ public class ReportResourceAsync {
 	@Path("/excel/kanton")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, REVISOR,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public Response getKantonReportExcel(
 		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
@@ -419,6 +421,9 @@ public class ReportResourceAsync {
 	@Path("/excel/kinder")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, REVISOR,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public Response getKinderReportExcel(
 		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
@@ -496,6 +501,7 @@ public class ReportResourceAsync {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS})
 	public Response getMassenversandReportExcel(
 		@QueryParam("auswertungVon") @Nullable String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,

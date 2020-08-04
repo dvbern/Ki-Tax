@@ -52,13 +52,6 @@ export class SearchRS implements IEntityRS {
         return new TSAntragSearchresultDTO(tsAntragDTOS, response.data.paginationDTO.totalItemCount);
     }
 
-    public getPendenzenListForUser(userId: string): IPromise<Array<TSAntragDTO>> {
-        return this.$http.get(`${this.serviceURL}/jugendamt/user/${encodeURIComponent(userId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseAntragDTOs(response.data);
-            });
-    }
-
     public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {
         return this.$http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
             .then((response: any) => {

@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.services;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,18 +28,6 @@ import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.ExternalClient_;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 
 @Stateless
 @Local(ExternalClientService.class)
@@ -51,7 +38,6 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS })
 	public Collection<ExternalClient> getAllForGemeinde() {
 		return criteriaQueryHelper.getEntitiesByAttribute(
 			ExternalClient.class, ExternalClientType.GEMEINDE_SCOLARIS_SERVICE, ExternalClient_.type);
@@ -59,8 +45,6 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS })
 	public Collection<ExternalClient> getAllForInstitution() {
 		return criteriaQueryHelper.getEntitiesByAttribute(
 			ExternalClient.class, ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClient_.type);

@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -67,17 +65,6 @@ import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections4.map.HashedMap;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -85,7 +72,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(InstitutionService.class)
-@PermitAll
 public class InstitutionServiceBean extends AbstractBaseService implements InstitutionService {
 
 	private static final String GEMEINDEN = "gemeinden";
@@ -116,8 +102,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
 		authorizer.checkWriteAuthorizationInstitution(institution);
@@ -127,8 +111,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Nonnull
 	@Override
 	// same as updateInstitution but without ADMIN_INSTITUTION
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution createInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
 		authorizer.checkWriteAuthorizationInstitution(institution);
@@ -139,7 +121,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Institution> findInstitution(@Nonnull final String id, boolean doAuthCheck) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Institution institution = persistence.find(Institution.class, id);
@@ -151,7 +132,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Institution> getAllInstitutionenFromTraegerschaft(String traegerschaftId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
@@ -167,7 +147,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Institution> getAllInstitutionen() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
@@ -197,7 +176,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<Institution> getAllInstitutionenForBatchjobs() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
@@ -208,7 +186,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Nonnull
-	@PermitAll
 	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(boolean editable,
 		boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
@@ -245,7 +222,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Institution> getInstitutionenReadableForCurrentBenutzer(boolean restrictedForSCH) {
 		return getInstitutionenForCurrentBenutzer(false, restrictedForSCH);
 	}
@@ -278,7 +254,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH) {
 		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
 
@@ -322,8 +297,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION })
 	public BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId) {
 		InstitutionStammdaten institutionStammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, true);
@@ -332,8 +305,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
-		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void calculateStammdatenCheckRequired() {
 		Collection<Institution> allInstitutionen = getAllInstitutionenForBatchjobs();
 
@@ -349,8 +320,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
-		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
 		InstitutionStammdaten stammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, true);
@@ -365,8 +334,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
 		final Optional<Institution> institutionOpt = findInstitution(institutionId, false);
 
@@ -382,7 +349,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitution(@Nonnull String institutionId) {
 		final Optional<Institution> institutionOpt = findInstitution(institutionId, true);
 		final Institution institution = institutionOpt.orElseThrow(() ->
@@ -399,8 +365,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void saveExternalClients(
 		@Nonnull Institution institution,
 		@Nonnull Collection<ExternalClient> externalClients) {

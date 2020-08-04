@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
@@ -34,6 +33,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -132,7 +132,7 @@ public interface Authorizer {
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer die betreuung schreibend bearbeiten darf
 	 */
-	void checkWriteAuthorization(@Nullable Betreuung betreuungToRemove);
+	void checkWriteAuthorization(@Nullable AbstractPlatz abstractPlatz);
 
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer den Benutzer schreibend bearbeiten darf
@@ -216,6 +216,10 @@ public interface Authorizer {
 	 */
 	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
 
+	boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft);
+
+	boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft);
+
 	boolean isReadAuthorizationInstitution(@Nullable Institution institution);
 
 	boolean isWriteAuthorizationInstitution(@Nullable Institution institution);
@@ -227,6 +231,10 @@ public interface Authorizer {
 	void checkReadAuthorizationInstitution(@Nullable Institution institution);
 
 	void checkWriteAuthorizationInstitution(@Nullable Institution institution);
+
+	void checkReadAuthorization(@Nullable Traegerschaft traegerschaft);
+
+	void checkWriteAuthorization(@Nullable Traegerschaft traegerschaft);
 
 	void checkReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
 

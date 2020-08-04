@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -54,7 +53,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(DownloadFileService.class)
-@PermitAll
 public class DownloadFileServiceBean implements DownloadFileService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DownloadFileServiceBean.class);

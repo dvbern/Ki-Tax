@@ -34,8 +34,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -94,10 +92,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
  */
@@ -105,7 +99,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 	"SpringAutowiredFieldsWarningInspection" })
 @Stateless
 @Local(SchulungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 public class SchulungServiceBean extends AbstractBaseService implements SchulungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchulungServiceBean.class);
@@ -362,7 +355,6 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	@Override
-	@PermitAll
 	@Nonnull
 	public String[] getSchulungBenutzer() {
 		//noinspection SuspiciousArrayCast

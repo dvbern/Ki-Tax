@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import javax.annotation.Nonnull;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("support")
 @Stateless
 @Api(description = "Resource zum Senden von Supportanfragen")
+@PermitAll
 public class SupportResource {
 
 	@Inject

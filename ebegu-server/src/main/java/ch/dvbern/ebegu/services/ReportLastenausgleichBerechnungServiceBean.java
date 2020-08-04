@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -58,13 +57,8 @@ import org.apache.poi.util.StringUtil;
 import org.infinispan.commons.dataconversion.MediaType;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(ReportLastenausgleichBerechnungService.class)
-@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportServiceBean implements ReportLastenausgleichBerechnungService {
 
 	private LastenausgleichBerechnungExcelConverter lastenausgleichExcelConverter = new LastenausgleichBerechnungExcelConverter();
@@ -78,7 +72,6 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportLastenausgleichKibon(@Nonnull String lastenausgleichId, @Nonnull Locale locale) throws ExcelMergeException {
@@ -115,7 +108,6 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateCSVReportLastenausgleichKibon(@Nonnull String lastenausgleichId) {

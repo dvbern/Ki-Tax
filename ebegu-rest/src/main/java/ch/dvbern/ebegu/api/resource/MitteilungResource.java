@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -68,12 +70,30 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * Resource fuer Mitteilung
  */
 @Path("mitteilungen")
 @Stateless
 @Api(description = "Resource zum Verwalten von Mitteilungen (In-System Nachrichten)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class MitteilungResource {
 
 	public static final String FALL_ID_INVALID = "FallID invalid: ";
@@ -97,6 +117,9 @@ public class MitteilungResource {
 	@Path("/send")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxMitteilung sendMitteilung(
 		@Nonnull @NotNull @Valid JaxMitteilung mitteilungJAXP,
 		@Context UriInfo uriInfo,
@@ -113,6 +136,8 @@ public class MitteilungResource {
 	@Path("/sendbetreuungsmitteilung")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxBetreuungsmitteilung sendBetreuungsmitteilung(
 		@Nonnull @NotNull @Valid JaxBetreuungsmitteilung mitteilungJAXP,
 		@Context UriInfo uriInfo,
@@ -145,6 +170,7 @@ public class MitteilungResource {
 	@Path("/applybetreuungsmitteilung/{betreuungsmitteilungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxId applyBetreuungsmitteilung(
 		@Nonnull @NotNull @PathParam("betreuungsmitteilungId") JaxId betreuungsmitteilungId,
 		@Context UriInfo uriInfo,
@@ -165,6 +191,8 @@ public class MitteilungResource {
 	@Path("/setgelesen/{mitteilungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxMitteilung setMitteilungGelesen(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungId,
 		@Context UriInfo uriInfo,
@@ -181,6 +209,8 @@ public class MitteilungResource {
 	@Path("/seterledigt/{mitteilungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxMitteilung setMitteilungErledigt(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungId,
 		@Context UriInfo uriInfo,
@@ -197,6 +227,9 @@ public class MitteilungResource {
 	@Path("/seterledigt/{mitteilungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxMitteilung findMitteilung(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungId,
 		@Context UriInfo uriInfo,
@@ -216,6 +249,9 @@ public class MitteilungResource {
 	@Path("/newestBetreuunsmitteilung/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST,
+		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxMitteilung findNewestBetreuunsmitteilung(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId jaxBetreuungId,
 		@Context UriInfo uriInfo,
@@ -240,6 +276,9 @@ public class MitteilungResource {
 	@Path("/forrole/dossier/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST,
+		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxMitteilungen getMitteilungenOfDossierForCurrentRolle(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
@@ -270,6 +309,9 @@ public class MitteilungResource {
 	@Path("/forrole/betreuung/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST,
+		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxMitteilungen getMitteilungenForCurrentRolleForBetreuung(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
 		@Context UriInfo uriInfo,
@@ -293,6 +335,9 @@ public class MitteilungResource {
 	@Path("/amountnewforuser/notokenrefresh")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public Integer getAmountNewMitteilungenForCurrentBenutzer(
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
@@ -306,6 +351,9 @@ public class MitteilungResource {
 	@DELETE
 	@Path("/{mitteilungId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Response removeMitteilung(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJAXPId,
 		@Context HttpServletResponse response) {
@@ -326,6 +374,9 @@ public class MitteilungResource {
 	@Path("/setallgelesen/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxMitteilungen setAllNewMitteilungenOfDossierGelesen(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
@@ -364,6 +415,9 @@ public class MitteilungResource {
 	@Path("/amountnew/dossier/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST,
+		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Integer getAmountNewMitteilungenOfDossierForCurrentRolle(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
@@ -384,6 +438,7 @@ public class MitteilungResource {
 	@Path("/weiterleiten/{mitteilungId}/{userName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxMitteilung mitteilungWeiterleiten(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId,
 		@Nonnull @NotNull @PathParam("userName") String username,
@@ -402,6 +457,9 @@ public class MitteilungResource {
 	@Path("/search/{includeClosed}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS })
 	public Response searchMitteilungen(
 		@Nonnull @PathParam("includeClosed") String includeClosed,
 		@Nonnull @NotNull MitteilungTableFilterDTO tableFilterDTO,
@@ -434,6 +492,8 @@ public class MitteilungResource {
 	@Path("/betreuung/abweichungenfreigeben/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<JaxBetreuungspensumAbweichung> createMutationsmeldungFromBetreuungspensumAbweichungen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId jaxBetreuungId,
 		@Nonnull @NotNull @Valid JaxBetreuungsmitteilung mitteilungJAXP,
