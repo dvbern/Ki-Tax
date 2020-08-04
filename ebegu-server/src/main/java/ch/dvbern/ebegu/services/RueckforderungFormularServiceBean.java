@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -45,12 +46,12 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -83,6 +84,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private GeneratedDokumentService generatedDokumentService;
 
 	@Nonnull
 	@Override
@@ -242,6 +246,25 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return saveWithoutAuthCheck(rueckforderungFormular);
 	}
 
+	@Override
+	@Nonnull
+	public RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular) {
+		//Set status to Verfuegt Provisorisch
+		formular.setStatus(RueckforderungStatus.VERFUEGT_PROVISORISCH);
+		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
+		try {
+			//Inform Institution das der PRovisorsische Verfuegung wurde generiert
+			mailService.sendInfoRueckforderungProvisorischVerfuegt(persistedRueckforderungFormular);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoRueckforderungProvisorischVerfuegt konnte nicht verschickt werden fuer RueckforderungFormular",
+				persistedRueckforderungFormular.getId());
+		}
+		generateProvisorischeVerfuegungDokument(persistedRueckforderungFormular);
+
+		return persistedRueckforderungFormular;
+	}
+
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -306,6 +329,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			}
 			break;
 		}
+		case IN_PRUEFUNG_KANTON_STUFE_2:
+		case VERFUEGT_PROVISORISCH:
+			if(principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())){
+				rueckforderungFormular.setStatus(RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
+				rueckforderungFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.calculateFreigabeBetragStufe2());
+			}
+			break;
 		default:
 			break;
 		}
@@ -335,9 +365,29 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				mitteilung = persistence.persist(mitteilung);
 				addMitteilung(modifiedRueckforderungFormular, mitteilung);
 			}
-		} catch (MailException e) {
+		} catch (Exception e) {
 			throw new EbeguRuntimeException("update",
-				"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+				"BestaetigungEmail koennte nicht als Mitteilung gespeichert werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+		}
+	}
+
+	/**
+	 * Generiert das Provisoriche Verfuegung Dokument einer Ruckforderungformular.
+	 *
+	 * @param anmeldung AbstractAnmeldung, fuer die das Dokument generiert werden soll.
+	 */
+	private void generateProvisorischeVerfuegungDokument(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		try {
+			String id = rueckforderungFormular.getId();
+
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(id, rueckforderungFormular,
+				 true);
+		} catch (MimeTypeParseException | MergeDocException e) {
+			throw new EbeguRuntimeException(
+				"ProvisorischeVerfuegungDokument",
+				"ProvisorischeVerfuegung-Dokument konnte nicht erstellt werden"
+					+ rueckforderungFormular.getId(), e);
 		}
 	}
 }

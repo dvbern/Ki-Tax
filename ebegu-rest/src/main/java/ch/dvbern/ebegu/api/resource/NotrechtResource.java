@@ -367,4 +367,34 @@ public class NotrechtResource {
 
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
+
+	@ApiOperation(value = "Provisorische Verfügung von einen RueckforderungFormular", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Path("/provisorsichVerfuegen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungFormular provisorischVerfuegen(
+		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(rueckforderungFormularJAXP.getId());
+
+		RueckforderungFormular rueckforderungFormularFromDB =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularJAXP.getId()));
+
+		RueckforderungFormular rueckforderungFormularToMerge =
+			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
+				rueckforderungFormularFromDB);
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			this.rueckforderungFormularService.provisorischeVerfuegung(rueckforderungFormularToMerge);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
 }

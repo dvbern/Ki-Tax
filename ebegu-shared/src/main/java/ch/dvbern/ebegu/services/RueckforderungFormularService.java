@@ -64,4 +64,7 @@ public interface RueckforderungFormularService {
 
 	@Nonnull
 	RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id);
+
+	@Nonnull
+	RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular);
 }
