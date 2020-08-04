@@ -50,6 +50,8 @@ export class NotrechtComponent implements OnInit {
     // tslint:disable-next-line:no-duplicate-string
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
+    public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
+        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'is-clickable'];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
 
@@ -238,6 +240,24 @@ export class NotrechtComponent implements OnInit {
     }
 
     public showMitteilungSenden(): boolean {
+        return this.isMandantOrSuperuser();
+    }
+
+    public isMandantOrSuperuser(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public getDisplayColumns(): string[] {
+        return this.isMandantOrSuperuser() ?
+            this.displayedColumnsMandant :
+            this.displayedColumns;
+    }
+
+    public getNameVerantwortlicher(formular: TSRueckforderungFormular): string {
+        if (!formular.verantwortlicher) {
+            return '';
+        }
+
+        return `${formular.verantwortlicher.vorname} ${formular.verantwortlicher.nachname}`;
     }
 }

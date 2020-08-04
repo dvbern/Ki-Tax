@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -36,6 +37,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -83,6 +85,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	private RueckforderungStatus status = RueckforderungStatus.NEU;
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rueckforderung_verantwortlicher_id"), nullable = true)
+	private Benutzer verantwortlicher;
 
 	@NotNull
 	@Column(nullable = false)
@@ -277,6 +284,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nullable
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	@Nullable

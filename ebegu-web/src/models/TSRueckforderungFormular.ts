@@ -21,6 +21,7 @@ import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSBenutzer} from './TSBenutzer';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
 
@@ -28,6 +29,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];
+    private _verantwortlicher: TSBenutzer;
     private _status: TSRueckforderungStatus;
     public hasBeenProvisorisch: boolean = false;
     private _stufe1KantonKostenuebernahmeAnzahlStunden: number;
@@ -91,6 +93,14 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set status(value: TSRueckforderungStatus) {
         this._status = value;
+    }
+
+    public get verantwortlicher(): TSBenutzer {
+        return this._verantwortlicher;
+    }
+
+    public set verantwortlicher(value: TSBenutzer) {
+        this._verantwortlicher = value;
     }
 
     public get stufe1KantonKostenuebernahmeAnzahlStunden(): number {

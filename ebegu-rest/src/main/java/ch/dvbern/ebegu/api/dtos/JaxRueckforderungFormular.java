@@ -48,6 +48,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nonnull
 	private RueckforderungStatus status;
 
+	@Nullable
+	private JaxBenutzer verantwortlicher;
+
 	private boolean hasBeenProvisorisch = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
 
 	@Nullable
@@ -174,6 +177,15 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStatus(@Nonnull RueckforderungStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public JaxBenutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable JaxBenutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	public boolean isHasBeenProvisorisch() {

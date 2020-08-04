@@ -92,6 +92,17 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="verantwortlich">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="verantwortlich">
+                        {{'VERANTWORTLICHER' | translate}}
+                    </mat-header-cell>
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
+                              *matCellDef="let formular">
+                        {{getNameVerantwortlicher(formular)}}
+                    </mat-cell>
+                </ng-container>
+
                 <!-- clickable hint -->
                 <ng-container matColumnDef="is-clickable">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -107,8 +118,8 @@
                 </ng-container>
 
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <mat-header-row *matHeaderRowDef="getDisplayColumns()"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: getDisplayColumns();"></mat-row>
             </mat-table>
             <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
         </div>

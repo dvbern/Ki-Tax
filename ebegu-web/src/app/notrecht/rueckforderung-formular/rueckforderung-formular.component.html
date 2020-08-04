@@ -45,8 +45,19 @@
 							rueckforderungFormular.institutionStammdaten.institution.name
 						}
                             }}
+
+                            <span *ngIf="isMandantUser()">
+                                <button class="dv-btn"
+                                        (click)="setCurrentUserAsVerantwortlicher(rueckforderungFormular)"
+                                        [textContent]="'LABEL_ZUWEISEN' | translate"></button>
+                            </span>
                             <span class="status-header">
-                            {{translateStatus(rueckforderungFormular.status)}}
+                            {{translateStatus(rueckforderungFormular.status)}}<br>
+                                <span *ngIf="rueckforderungFormular.verantwortlicher">
+                                    {{'VERANTWORTLICHER' | translate }}:
+                                    {{rueckforderungFormular.verantwortlicher.vorname}}
+                                    {{rueckforderungFormular.verantwortlicher.nachname}}
+                                </span>
                         </span></h2>
                         <hr class="header">
                     </div>
