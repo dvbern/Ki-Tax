@@ -828,6 +828,8 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public isMandantUser(): boolean {
-        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT]);
+        return this.authServiceRS.isOneOfRoles(
+            [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT]
+        );
     }
 }

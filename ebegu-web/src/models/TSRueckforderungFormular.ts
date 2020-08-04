@@ -21,7 +21,6 @@ import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSAbstractEntity} from './TSAbstractEntity';
-import {TSBenutzer} from './TSBenutzer';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
 
