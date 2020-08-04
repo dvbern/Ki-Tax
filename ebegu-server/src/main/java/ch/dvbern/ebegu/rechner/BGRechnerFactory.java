@@ -39,8 +39,7 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractRechner getRechner(@Nonnull AbstractPlatz betreuung, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
-		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
+	public static AbstractRechner getRechner(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaRechner(rechnerRulesForGemeinde);
 		}
