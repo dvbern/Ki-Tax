@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
+import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
@@ -323,6 +324,7 @@ public class BetreuungsgutscheinEvaluator {
 		List<RechnerRule> rechnerRules = new LinkedList<>();
 		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinEnabled()) {
 			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
+			rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(locale));
 		}
 		return rechnerRules;
 	}
