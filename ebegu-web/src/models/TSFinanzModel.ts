@@ -216,10 +216,17 @@ export class TSFinanzModel {
         if (!(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2)) {
             return;
         }
+        const finSitGS1 = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
+        if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer)) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        }
+        if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA)) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        }
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
-            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
+            = finSitGS1.steuerveranlagungErhalten;
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
-            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt;
+            = finSitGS1.steuererklaerungAusgefuellt;
     }
 
     public copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
