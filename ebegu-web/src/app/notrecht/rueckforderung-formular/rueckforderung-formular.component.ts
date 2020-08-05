@@ -732,6 +732,7 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.rueckforderungFormular$ = from(this.notrechtRS.resetStatus(rueckforderungFormular)
                         .then((response: TSRueckforderungFormular) => {
                             this.changeDetectorRef.markForCheck();
+                            this.readOnly = this.initReadOnly(response);
                             return response;
                         }));
                 },
@@ -752,17 +753,13 @@ export class RueckforderungFormularComponent implements OnInit {
                     }
                     this.rueckforderungFormular$ = from(this.notrechtRS.formularZurueckholen(rueckforderungFormular)
                         .then((response: TSRueckforderungFormular) => {
+                            this.readOnly = this.initReadOnly(response);
                             this.changeDetectorRef.markForCheck();
                             return response;
                         }));
                 },
                 () => {
                 });
-    }
-
-    public showButtonResetStatus(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
-            && this.isPruefungKantonStufe2(rueckforderungFormular);
     }
 
     public showButtonZurueckholen(rueckforderungFormular: TSRueckforderungFormular): boolean {
