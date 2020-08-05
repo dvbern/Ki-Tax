@@ -1977,6 +1977,7 @@
     "FREISCHALTUNG_FERIENINSEL_INFO": "Die Anmeldung ist im Moment noch nicht möglich.",
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
+    "CORONA_LISTE_NUR_OFFENE_PENDENZEN": "Nur offene Pendenzen bis 15.09.2020",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
     "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Rückerstattung Kanton für nicht angebotene Betreuungstage",
