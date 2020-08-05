@@ -47,5 +47,30 @@ Content-Type: text/html;charset=utf-8
 		</p>
     </#if>
 </div>
+<div>
+	<p>
+		Mesdames, Messieurs,
+	</p>
+	<p>
+		L'examen ainsi que le calcul de votre demande de financement en raison du coronavirus a été décidée
+		provisoirement. Vous pouvez la consulter <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">ici</a>.
+	</p>
+	<p>
+		Meilleurs salutations
+	</p>
+	<p>
+		La division Famille de l’Office de l’intégration et de l’action sociale</p>
+	<p>
+		Office de l’intégration et de l’action sociale
+		info.fam@be.ch
+		031 633 78 91
+	</p>
+    <#if configuration.isDevmode>
+		<p>
+			<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système
+				ne donnent pas droit à un versement.</b><br><br>
+		</p>
+    </#if>
+</div>
 </body>
 </html>

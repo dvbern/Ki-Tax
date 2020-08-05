@@ -107,8 +107,8 @@ public interface GeneratedDokumentService {
 	) throws MimeTypeParseException, MergeDocException;
 
 	@Nonnull
-	WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(String id,
-		RueckforderungFormular rueckforderungFormular, boolean b) throws MimeTypeParseException, MergeDocException;
+	WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(RueckforderungFormular rueckforderungFormular) throws MimeTypeParseException, MergeDocException;
+
 	@Nullable
 	WriteProtectedDokument findGeneratedNotrechtDokument(@Nonnull String id, @Nonnull String filename);
 }

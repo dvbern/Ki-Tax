@@ -52,7 +52,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		RueckforderungVerfuegungPdfGenerator generator =
 			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true);
 		generator.generate(new FileOutputStream(pfad + "notrecht_provisorische_verfuegung_de.pdf"));
-		this.rueckforderungFormular.setKorrespondenzsprache(Sprache.FRANZOESISCH);
+		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		generator =
 			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true);
 		generator.generate(new FileOutputStream(pfad + "notrecht_provisorische_verfuegung_fr.pdf"));

@@ -5235,6 +5235,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormular.getCoronaErwerbsersatzKeinAntragBegruendung());
 		jaxFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormular.getCoronaErwerbsersatzSonstiges());
 		jaxFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.getStufe2VoraussichtlicheBetrag());
+		jaxFormular.setKorrespondenzSprache(rueckforderungFormular.getKorrespondenzSprache());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
@@ -5295,6 +5296,7 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormularJax.getCoronaErwerbsersatzDefinitivVerfuegt());
 		rueckforderungFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormularJax.getCoronaErwerbsersatzKeinAntragBegruendung());
 		rueckforderungFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormularJax.getCoronaErwerbsersatzSonstiges());
+		rueckforderungFormular.setKorrespondenzSprache(rueckforderungFormularJax.getKorrespondenzSprache());
 
 		return rueckforderungFormular;
 	}

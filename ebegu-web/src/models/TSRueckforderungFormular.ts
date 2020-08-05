@@ -20,6 +20,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
+import {TSSprache} from './enums/TSSprache';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
@@ -45,7 +46,6 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe1FreigabeBetrag: number;
     private _stufe1FreigabeDatum: moment.Moment;
     private _stufe1FreigabeAusbezahltAm: moment.Moment;
-    private _stufe2VoraussichtlicheBetrag: number;
     private _stufe2VerfuegungBetrag: number;
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
@@ -65,6 +65,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public coronaErwerbsersatzDefinitivVerfuegt: boolean;
     public coronaErwerbsersatzKeinAntragBegruendung: string;
     public coronaErwerbsersatzSonstiges: string;
+    public korrespondenzSprache: TSSprache;
 
     public constructor() {
         super();
@@ -212,10 +213,6 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set stufe1FreigabeAusbezahltAm(value: moment.Moment) {
         this._stufe1FreigabeAusbezahltAm = value;
-    }
-
-    public get stufe2VoraussichtlicheBetrag(): number {
-        return this._stufe2VoraussichtlicheBetrag;
     }
 
     public get stufe2VerfuegungBetrag(): number {

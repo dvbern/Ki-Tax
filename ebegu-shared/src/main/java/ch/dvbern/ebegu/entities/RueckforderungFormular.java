@@ -233,7 +233,7 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Sprache korrespondenzsprache = Sprache.DEUTSCH;
+	private Sprache korrespondenzSprache = Sprache.DEUTSCH;
 
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
@@ -590,13 +590,13 @@ public class RueckforderungFormular extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Sprache getKorrespondenzsprache() {
-		return korrespondenzsprache;
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
 	}
 
 	@Nonnull
-	public void setKorrespondenzsprache(Sprache korrespondenzsprache) {
-		this.korrespondenzsprache = korrespondenzsprache;
+	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
 	}
 
 	@Override

@@ -950,7 +950,8 @@
                         <div class="row">
                             <div class="col-sm-6 mt-5">
                                 <div class="form-group"
-                                     *ngIf="showGewaehrteAusfallentschaedigung(rueckforderungFormular)">
+                                     *ngIf="showKantonStufe2Felder(rueckforderungFormular)">
+
                                     <label class="required long-label margin-top-30"
                                            for="gewaehrte_ausfallentschaedigung_stufe2_id">
                                         {{'RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG' | translate}}</label>
@@ -959,10 +960,25 @@
 										   #stufe2VerfuegungBetrag="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe2VerfuegungBetrag"
                                            class="form-control"
-                                           [disabled]="!canEditGewaehrteAusfallentschaedigung(rueckforderungFormular)">
-                                    <dv-error-messages [errorObject]="stufe2VerfuegungBetrag.errors"
-                                                       inputId="stufe2VerfuegungBetrag_id">
-                                    </dv-error-messages>
+                                           [disabled]="!canEditKantonStufe2Felder(rueckforderungFormular)"
+                                    >
+                                    <div class="dv-error-messages" *ngIf="showMessageFehlendeVerfuegungBetrag">
+                                        <span>{{'ERROR_REQUIRED' | translate}}</span>
+                                    </div>
+                                    <label class="required long-label margin-top-30">
+                                        {{'RUECKFORDERUNGFORMULAR_KORRESPONDENZSPRACHE' | translate}}</label>
+                                    <mat-radio-group name="korrespondenzSprache"
+													 #korrespondenzSprache="ngModel"
+                                                     [(ngModel)]="rueckforderungFormular.korrespondenzSprache"
+                                                     [disabled]="!canEditKantonStufe2Felder(rueckforderungFormular)"
+                                                     required>
+                                        <mat-radio-button
+                                            [value]="'DEUTSCH'">{{'DEUTSCH'|translate}}</mat-radio-button>
+                                        &nbsp;&nbsp;
+                                        <mat-radio-button
+                                            [value]="'FRANZOESISCH'">{{'FRANZOESISCH'|translate}}
+                                        </mat-radio-button>
+                                    </mat-radio-group>
                                 </div>
                             </div>
                         </div>
@@ -1277,6 +1293,12 @@
                         <a target="_blank" rel="noopener noreferrer"
                            href="{{'RUECKFORDERUNG_VORLAGEN_LINK' | translate}}"
                            translate>RUECKFORDERUNG_VORLAGEN_LINK_TEXT</a>
+                    </div>
+                    <div class="col-sm-12" *ngIf="rueckforderungFormular.hasBeenProvisorisch">
+                        <button type="button" class="dv-btn btn-link link-underline"
+                                (click)="openProvisorischeVerfuegung(rueckforderungFormular)">
+                            <span translate="RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT"></span>
+                        </button>
                     </div>
                 </div>
             </div>

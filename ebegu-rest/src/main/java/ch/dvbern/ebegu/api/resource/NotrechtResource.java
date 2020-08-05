@@ -372,7 +372,7 @@ public class NotrechtResource {
 		JaxRueckforderungFormular.class)
 	@Nullable
 	@PUT
-	@Path("/provisorsichVerfuegen")
+	@Path("/provisorischVerfuegen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})

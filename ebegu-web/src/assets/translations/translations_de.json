@@ -2126,5 +2126,6 @@
     "RUECKFORDERUNG_PROVISORISCH_VERFUEGEN": "Provisorisch Verfügen",
     "RUECKFORDERUNG_FREIGEBEN_ZUR_VERFUEGUNG": "Freigeben zur Verfügung",
     "RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG": "Gewährte Ausfallentschädigung",
+    "RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT": "Provisorische Verfügung herunterladen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

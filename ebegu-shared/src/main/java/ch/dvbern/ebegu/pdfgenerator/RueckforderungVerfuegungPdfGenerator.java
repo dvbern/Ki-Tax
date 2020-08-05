@@ -17,7 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 
 	public RueckforderungVerfuegungPdfGenerator(RueckforderungFormular rueckforderungFormular,
 		boolean provisorisch) {
-		super(rueckforderungFormular.getKorrespondenzsprache());
+		super(rueckforderungFormular.getKorrespondenzSprache());
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		this.rueckforderungFormular = rueckforderungFormular;
 		this.isProvisorisch = provisorisch;
@@ -124,8 +124,8 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		Adresse adresse = institutionStammdaten.getAdresse();
 		empfaengerAdresse.add(adresse.getAddressAsString());
 		empfaengerAdresse.add("");
-		empfaengerAdresse.add("Versand per Email an " + this.institutionStammdaten.getMail());
-		empfaengerAdresse.add("");
+		empfaengerAdresse.add("Versand per Email an: ");
+		empfaengerAdresse.add(this.institutionStammdaten.getMail()); //auf zwei Zeilen wegen der Abstand
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
@@ -171,15 +171,17 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			getPageConfiguration().getFont(),
 			10f);
 		try {
-			byte[] signature = IOUtils.toByteArray(MandantPdfGenerator.class.getResourceAsStream(
-				"KantonSignature"
+			//Bild muss in einen Wildfly Verzeichnis gelesen werden wegen Rechtschutz:
+			String jBossDirectory = System.getProperty("jboss.home.dir");
+			byte[] signature = IOUtils.toByteArray(new FileInputStream(
+				jBossDirectory + "/KantonSignature"
 					+ ".png"));
 			Image image = Image.getInstance(signature);
 			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
 			image.scalePercent(percent);
 			image.setAbsolutePosition(350, 430);
 			document.add(image);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOG.error("KantonSignature.png koennte nicht geladen werden: {}", e.getMessage());
 		}
 		createContentWhereIWant(directContent, translate(MITARBEITERIN), 375, 122,

@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
@@ -160,6 +161,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	@Nullable
 	private String coronaErwerbsersatzSonstiges;
+
+	@Nonnull
+	private Sprache korrespondenzSprache;
 
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
@@ -509,5 +513,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
 		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	public void setKorrespondenzSprache(@Nonnull Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
 	}
 }

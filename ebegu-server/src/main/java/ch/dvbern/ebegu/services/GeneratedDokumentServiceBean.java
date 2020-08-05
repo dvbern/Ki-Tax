@@ -575,6 +575,15 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		return Optional.ofNullable(persistedDokument);
 	}
 
+	@Nonnull
+	private Optional<WriteProtectedDokument> getMaybeExistingGeneratedNotrechtDokument(
+		String rueckforderungFormularId,
+		String fileNameForGeneratedDokumentTyp) {
+		final WriteProtectedDokument persistedDokument =
+			findGeneratedNotrechtDokument(rueckforderungFormularId, fileNameForGeneratedDokumentTyp);
+		return Optional.ofNullable(persistedDokument);
+	}
+
 	@SuppressWarnings("Duplicates")
 	@Nullable
 	private WriteProtectedDokument getDocumentIfExistsAndIsWriteProtected(
@@ -592,6 +601,26 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				// mit
 				// einer eventuellen Fehlermeldung sowieso nichts anfangen könnte, geben wir das bereits vorhandene
 				// Dokument zurück, loggen aber den Vorfall.
+				LOGGER.error(
+					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
+						+ "PersistedDokument-ID: {}",
+					optionalDokument.get()
+						.getId());
+			}
+			return optionalDokument.get();
+		}
+		return null;
+	}
+
+	@Nullable
+	private WriteProtectedDokument getNotrechtDocumentIfExistsAndIsWriteProtected(
+		String rueckforderungFormularId,
+		String fileNameForGeneratedDokumentTyp,
+		@Nonnull Boolean forceCreation) {
+		Optional<WriteProtectedDokument> optionalDokument =
+			getMaybeExistingGeneratedNotrechtDokument(rueckforderungFormularId, fileNameForGeneratedDokumentTyp);
+		if (optionalDokument.isPresent() && optionalDokument.get().isWriteProtected()) {
+			if (forceCreation) {
 				LOGGER.error(
 					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
 						+ "PersistedDokument-ID: {}",
@@ -1052,14 +1081,15 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(String id, RueckforderungFormular rueckforderungFormular, boolean b) throws MimeTypeParseException, MergeDocException {
+	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(RueckforderungFormular rueckforderungFormular) throws MimeTypeParseException, MergeDocException {
 		//Institution haben keine Sprache, so default DE
 		String fileNameForGeneratedDokumentTyp = DokumenteUtil
 				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
 					rueckforderungFormular.getId(), Sprache.DEUTSCH.getLocale());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
-			getDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(), fileNameForGeneratedDokumentTyp,
+			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
+				fileNameForGeneratedDokumentTyp,
 				false);
 		if (documentIfExistsAndIsWriteProtected != null) {
 			return documentIfExistsAndIsWriteProtected;

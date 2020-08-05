@@ -162,7 +162,7 @@ export class NotrechtRS {
         let restRueckforderungFormular = {};
         restRueckforderungFormular =
             this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
-        const url = `${this.serviceURL}/provisorsichVerfuegen`;
+        const url = `${this.serviceURL}/provisorischVerfuegen`;
         return this.$http.put(url, restRueckforderungFormular).then((response: any) => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             },

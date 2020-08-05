@@ -251,6 +251,8 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	public RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular) {
 		//Set status to Verfuegt Provisorisch
 		formular.setStatus(RueckforderungStatus.VERFUEGT_PROVISORISCH);
+		formular.setStufe2VoraussichtlicheBetrag(formular.calculateFreigabeBetragStufe2());
+		formular.setHasBeenProvisorisch(true);
 		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
 		try {
 			//Inform Institution das der PRovisorsische Verfuegung wurde generiert
@@ -330,10 +332,10 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			break;
 		}
 		case IN_PRUEFUNG_KANTON_STUFE_2:
+			rueckforderungFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.calculateFreigabeBetragStufe2());
 		case VERFUEGT_PROVISORISCH:
 			if(principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())){
 				rueckforderungFormular.setStatus(RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
-				rueckforderungFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.calculateFreigabeBetragStufe2());
 			}
 			break;
 		default:
@@ -381,8 +383,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			String id = rueckforderungFormular.getId();
 
 			//noinspection ResultOfMethodCallIgnored
-			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(id, rueckforderungFormular,
-				 true);
+			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(rueckforderungFormular);
 		} catch (MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException(
 				"ProvisorischeVerfuegungDokument",
