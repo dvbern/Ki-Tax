@@ -756,7 +756,6 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
-        console.warn('clicket');
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
@@ -809,7 +808,6 @@ export class RueckforderungFormularComponent implements OnInit {
         const roleMandant = this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
         const statusInstitution2 = rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
         const datenErfasst = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp);
-        console.warn('zurueckholen moeglich: ', fristAbgelaufen, roleMandant, statusInstitution2, datenErfasst);
         return fristAbgelaufen && roleMandant && statusInstitution2 && datenErfasst;
     }
 
