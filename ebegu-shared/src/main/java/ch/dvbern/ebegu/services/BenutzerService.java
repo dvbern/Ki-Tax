@@ -119,14 +119,6 @@ public interface BenutzerService {
 	Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID);
 
 	/**
-	 * Gibt alle existierenden Benutzer zurueck.
-	 *
-	 * @return Liste aller Benutzern aus der DB
-	 */
-	@Nonnull
-	Collection<Benutzer> getAllBenutzer();
-
-	/**
 	 * Gibt alle Administratoren einer Gemeinde zurueck.
 	 *
 	 * @param gemeinde Die Gemeinde

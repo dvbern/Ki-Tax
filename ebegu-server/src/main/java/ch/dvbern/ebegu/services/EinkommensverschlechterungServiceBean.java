@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,15 +39,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer Einkommensverschlechterung
@@ -72,7 +61,6 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public EinkommensverschlechterungContainer saveEinkommensverschlechterungContainer(
 		@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, String gesuchId) {
 		Objects.requireNonNull(einkommensverschlechterungContainer);
@@ -85,7 +73,6 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<EinkommensverschlechterungContainer> findEinkommensverschlechterungContainer(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		EinkommensverschlechterungContainer a = persistence.find(EinkommensverschlechterungContainer.class, key);
@@ -94,13 +81,11 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<EinkommensverschlechterungContainer> getAllEinkommensverschlechterungContainer() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(EinkommensverschlechterungContainer.class));
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeEinkommensverschlechterungContainer(@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer) {
 		Objects.requireNonNull(einkommensverschlechterungContainer);
 		einkommensverschlechterungContainer.getGesuchsteller().setEinkommensverschlechterungContainer(null);
@@ -113,7 +98,6 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeEinkommensverschlechterung(@Nonnull Einkommensverschlechterung einkommensverschlechterung) {
 		Objects.requireNonNull(einkommensverschlechterung);
 		persistence.remove(Einkommensverschlechterung.class, einkommensverschlechterung.getId());
@@ -121,14 +105,12 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch, int basisJahrPlus) {
 		return finSitRechner.calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
 	}
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
 		BigDecimal resultGerundet = FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(einkommenJahr, einkommenJahrPlus1);
 		String sign = MathUtil.isPositive(resultGerundet) ? "+" : "-";
@@ -136,7 +118,6 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public boolean removeAllEKVOfGesuch(@Nonnull Gesuch gesuch, int yearPlus) {
 		if (yearPlus != 1 && yearPlus != 2) {
 			return false;

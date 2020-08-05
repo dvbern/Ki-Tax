@@ -492,10 +492,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             let betreuungsstatus: TSBetreuungsstatus;
 
             if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
-                (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-                    isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
-                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                    : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+                betreuungsstatus = this.anmeldungTagesschuleDirektUebernehmen()
+                    ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                    : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
             } else {
                 betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
             }
@@ -510,6 +509,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     {gesuchId: this.getGesuchId()});
             }
         });
+    }
+
+    private anmeldungTagesschuleDirektUebernehmen(): boolean {
+        // Falls das Gesuch im Status Verfuegen oder einem Verfuegt-Status ist, soll die Anmeldung
+        // beim akzeptieren direkt auf uebernommen gesetzt werden
+        // Dasselbe gilt im Falle von KEIN_KONTINTENT, da die Tagesschule-Anmeldungen sonst blockiert sind!
+        return this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+            this.gesuchModelManager.getGesuch().status === TSAntragStatus.KEIN_KONTINGENT ||
+            isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public anmeldungSchulamtAblehnen(): void {

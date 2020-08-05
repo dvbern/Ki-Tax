@@ -787,7 +787,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		betreuungService.saveAnmeldungTagesschule(betreuung, false);
+		betreuungService.saveAnmeldungTagesschule(betreuung);
 
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Assert.assertNotNull(mutation);

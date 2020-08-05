@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -62,12 +65,25 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource fuer Pendenzen
  */
 @Path("search")
 @Stateless
 @Api(description = "Resource für die Verwaltung der Pendenzlisten und die Fall-Suche")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class SearchResource {
 
 	@Inject
@@ -103,6 +119,7 @@ public class SearchResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/jugendamt")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Response getAllPendenzenJA(
 		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
 		@Context UriInfo uriInfo,
@@ -118,27 +135,6 @@ public class SearchResource {
 		});
 	}
 
-	/**
-	 * Gibt eine Liste mit allen Pendenzen des übergebenen Benutzers des JA zurueck.
-	 * Sollte keine Pendenze gefunden werden oder ein Fehler passieren, wird eine leere Liste zurueckgegeben.
-	 */
-	@ApiOperation(value = "Gibt eine Liste mit allen Pendenzen des übergebenen Benutzers des JA zurueck.",
-		responseContainer = "List", response = JaxAntragDTO.class)
-	@Nonnull
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/jugendamt/user/{benutzername}")
-	public List<JaxAntragDTO> getAllPendenzenJA(@Nonnull @NotNull @PathParam("benutzername") String benutzername) {
-		Objects.requireNonNull(benutzername);
-		Collection<Gesuch> gesucheList = gesuchService.getGesucheForBenutzerPendenzenBG(benutzername);
-
-		List<JaxAntragDTO> pendenzenList = new ArrayList<>();
-		gesucheList.stream().filter(gesuch -> gesuch.getFall() != null)
-			.forEach(gesuch -> pendenzenList.add(converter.gesuchToAntragDTO(gesuch, principalBean.discoverMostPrivilegedRole())));
-		return pendenzenList;
-	}
-
 	@ApiOperation(value = "Gibt eine Liste mit allen Betreuungen die pendent sind und zur Institution oder Traegerschaft des eingeloggten Benutzers " +
 		"gehoeren zurueck. Fuer das Schulamt werden alle SCH-Anmeldungen zurueckgegeben", responseContainer = "List", response = JaxPendenzBetreuungen.class)
 	@Nonnull
@@ -146,6 +142,8 @@ public class SearchResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/pendenzenBetreuungen")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxPendenzBetreuungen> getAllPendenzenBetreuungen() {
 		Collection<AbstractPlatz> betreuungenInStatus = betreuungService.getPendenzenBetreuungen();
 		List<JaxPendenzBetreuungen> pendenzenList = new ArrayList<>();
@@ -186,6 +184,7 @@ public class SearchResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/gesuchsteller/{dossierId}")
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxAntragDTO> getAllAntraegeOfDossier(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId
 	) {
@@ -213,6 +212,7 @@ public class SearchResource {
 	@Path("/search")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response searchAntraege(
 		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
 		@Context UriInfo uriInfo,

@@ -2125,5 +2125,7 @@
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Vous avez choisi {{NAME_DRITTANWENDUNGEN}} en tant qu'application(s) tierce(s) autorisée(s). Cela donne à {{NAME_DRITTANWENDUNGEN}} une vue sur vos données. Voulez-vous continuer et sauvegarder ces changements?",
     "LABEL_OK_FORFAHREN": "Oui, continuer",
     "LABEL_NEIN_ABBRECHEN": "Non, interrompre",
+    "LABEL_ZUWEISEN": "",
+    "VERANTWORTLICHER": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

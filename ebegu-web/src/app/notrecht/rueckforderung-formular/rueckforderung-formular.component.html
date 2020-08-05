@@ -45,8 +45,18 @@
 							rueckforderungFormular.institutionStammdaten.institution.name
 						}
                             }}
+
+                            <span *ngIf="isKantonBenutzer()">
+                                <button class="dv-btn"
+                                        (click)="setCurrentUserAsVerantwortlicher(rueckforderungFormular)"
+                                        [textContent]="'LABEL_ZUWEISEN' | translate"></button>
+                            </span>
                             <span class="status-header">
-                            {{translateStatus(rueckforderungFormular.status)}}
+                            {{translateStatus(rueckforderungFormular.status)}}<br>
+                                <span *ngIf="rueckforderungFormular.verantwortlicherName && isKantonBenutzer()">
+                                    {{'VERANTWORTLICHER' | translate }}:
+                                    {{rueckforderungFormular.verantwortlicherName}}
+                                </span>
                         </span></h2>
                         <hr class="header">
                     </div>
@@ -1387,8 +1397,7 @@
                     (click)="rueckforderungAbschliessen(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN</span>
             </button>
-            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)
-                || isPruefungKantonStufe2Provisorisch(rueckforderungFormular)" [type]="'submit'">
+            <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
             <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"

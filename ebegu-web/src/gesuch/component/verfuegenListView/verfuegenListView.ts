@@ -704,9 +704,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined,
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                this.refreshKinderListe();
-                return this.gesuchModelManager.getGesuch();
+                return this.reloadView(gesuch);
             });
         });
     }
@@ -747,10 +745,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined,
         }).then(() => {
             return this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                return this.gesuchModelManager.getGesuch();
+                return this.reloadView(gesuch);
             });
         });
+    }
+
+    private reloadView(gesuchFromServer: TSGesuch): TSGesuch {
+        this.gesuchModelManager.setGesuch(gesuchFromServer);
+        this.refreshKinderListe();
+        return this.gesuchModelManager.getGesuch();
     }
 
     public changeFinSitStatus(): void {

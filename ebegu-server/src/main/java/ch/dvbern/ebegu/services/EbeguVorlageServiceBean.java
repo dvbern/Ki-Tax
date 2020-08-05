@@ -29,8 +29,6 @@ import java.util.Optional;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -60,10 +58,6 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.io.IOUtils;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer EbeguVorlage
  */
@@ -82,7 +76,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public EbeguVorlage saveEbeguVorlage(@Nonnull EbeguVorlage ebeguVorlage) {
 		Objects.requireNonNull(ebeguVorlage);
 		return persistence.merge(ebeguVorlage);
@@ -90,14 +83,12 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<EbeguVorlage> getEbeguVorlageByDatesAndKey(@Nonnull LocalDate abDate, @Nonnull LocalDate bisDate, @Nonnull EbeguVorlageKey ebeguVorlageKey) {
 		return getEbeguVorlageByDatesAndKey(abDate, bisDate, ebeguVorlageKey, persistence.getEntityManager());
 	}
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<EbeguVorlage> getEbeguVorlageByDatesAndKey(@Nonnull LocalDate abDate, @Nonnull LocalDate bisDate, @Nonnull EbeguVorlageKey ebeguVorlageKey, final EntityManager em) {
 		final CriteriaBuilder cb = em.getCriteriaBuilder();
 		final CriteriaQuery<EbeguVorlage> query = cb.createQuery(EbeguVorlage.class);
@@ -130,14 +121,12 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Override
 	@Nullable
-	@PermitAll
 	public EbeguVorlage updateEbeguVorlage(@Nonnull EbeguVorlage ebeguVorlage) {
 		Objects.requireNonNull(ebeguVorlage);
 		return persistence.merge(ebeguVorlage);
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeVorlage(@Nonnull String id) {
 		Objects.requireNonNull(id);
 		Optional<EbeguVorlage> ebeguVorlage = findById(id);
@@ -153,7 +142,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<EbeguVorlage> findById(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		EbeguVorlage a = persistence.find(EbeguVorlage.class, id);
@@ -162,13 +150,11 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<EbeguVorlage> getALLEbeguVorlageByDate(@Nonnull LocalDate date) {
 		return new ArrayList<>(criteriaQueryHelper.getAllInInterval(EbeguVorlage.class, date));
 	}
 
 	@Override
-	@PermitAll
 	@Nullable
 	public Vorlage getVorlageNotrechtOeffentlicheInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlageOeffentlicheInstitutionen(language, angebotTyp);
@@ -176,7 +162,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	}
 
 	@Override
-	@PermitAll
 	@Nullable
 	public Vorlage getVorlageNotrechtPrivateInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlagePrivateInstitutionen(language, angebotTyp);

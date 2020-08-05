@@ -49,15 +49,7 @@ export class GesuchsperiodeRS {
             .then(response => this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data));
     }
 
-    public createGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
-        return this.saveGesuchsperiode(gesuchsperiode);
-    }
-
-    public updateGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
-        return this.saveGesuchsperiode(gesuchsperiode);
-    }
-
-    private saveGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
+    public saveGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
         let restGesuchsperiode = {};
         restGesuchsperiode = this.ebeguRestUtil.gesuchsperiodeToRestObject(restGesuchsperiode, gesuchsperiode);
         return this.http.put(this.serviceURL, restGesuchsperiode).then((response: any) => {

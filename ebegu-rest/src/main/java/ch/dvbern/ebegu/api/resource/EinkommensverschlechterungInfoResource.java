@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -49,12 +51,22 @@ import ch.dvbern.ebegu.services.GesuchService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource fuer Einkommensverschlechterung
  */
 @Path("einkommensverschlechterungInfo")
 @Stateless
 @Api(description = "Resource für EinkommensverschlechterungInfo (pro Familie)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class EinkommensverschlechterungInfoResource {
 
 	@Inject
@@ -76,13 +88,17 @@ public class EinkommensverschlechterungInfoResource {
 	@Path("/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response saveEinkommensverschlechterungInfo(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
 		@Nonnull @NotNull @Valid JaxEinkommensverschlechterungInfoContainer jaxEkvInfoContainer,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) throws EbeguException {
 
-		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("saveEinkommensverschlechterungInfo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId.getId()));
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"saveEinkommensverschlechterungInfo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchId invalid: " + gesuchId.getId()));
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
@@ -94,7 +110,8 @@ public class EinkommensverschlechterungInfoResource {
 			Optional<EinkommensverschlechterungInfoContainer> optional = einkommensverschlechterungInfoService.
 				findEinkommensverschlechterungInfo(jaxEkvInfoContainer.getId());
 			ekviToMerge = optional.orElse(new EinkommensverschlechterungInfoContainer());
-			oldEVData = new EinkommensverschlechterungInfoContainer(ekviToMerge); //wir muessen uns merken wie die Daten vorher waren damit wir nachher vergleichen koennen
+			oldEVData = new EinkommensverschlechterungInfoContainer(ekviToMerge); //wir muessen uns merken wie die
+			// Daten vorher waren damit wir nachher vergleichen koennen
 		}
 		EinkommensverschlechterungInfoContainer convertedEkvi = converter
 			.einkommensverschlechterungInfoContainerToEntity(jaxEkvInfoContainer, ekviToMerge);
@@ -107,7 +124,8 @@ public class EinkommensverschlechterungInfoResource {
 			.path('/' + convertedEkvi.getId())
 			.build();
 
-		JaxEinkommensverschlechterungInfoContainer jaxEkvInfoContainerReturn = converter.einkommensverschlechterungInfoContainerToJAX(persistedEkvi);
+		JaxEinkommensverschlechterungInfoContainer jaxEkvInfoContainerReturn =
+			converter.einkommensverschlechterungInfoContainerToJAX(persistedEkvi);
 		return Response.created(uri).entity(jaxEkvInfoContainerReturn).build();
 	}
 }

@@ -22,8 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,15 +36,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer familiensituation
@@ -67,8 +56,6 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public FamiliensituationContainer saveFamiliensituation(
 		Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
@@ -128,7 +115,6 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<FamiliensituationContainer> findFamiliensituation(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		FamiliensituationContainer a = persistence.find(FamiliensituationContainer.class, key);
@@ -137,15 +123,11 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Collection<FamiliensituationContainer> getAllFamiliensituatione() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(FamiliensituationContainer.class));
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeFamiliensituation(@Nonnull FamiliensituationContainer familiensituation) {
 		Objects.requireNonNull(familiensituation);
 		FamiliensituationContainer familiensituationToRemove =

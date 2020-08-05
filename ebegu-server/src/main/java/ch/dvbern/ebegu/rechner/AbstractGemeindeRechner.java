@@ -104,6 +104,8 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 			bezahltVollkosten);
 		// Zusaetzlicher Gutschein Gemeinde
 		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
+		// Zusaetzlicher Baby-Gutschein
+		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
 		return verguenstigungProZeiteinheit;
 	}
 }
