@@ -24,7 +24,7 @@
             <hr class="header">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="isMandantOrSuperuser()">
             <mat-checkbox id="showOnlyOffenePendenzen_id" name="showOnlyOffenePendenzen_id"
                           [(ngModel)]="showOnlyOffenePendenzen"
                           (change)="toggleShowOnlyOffenePendenzen()">
