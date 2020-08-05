@@ -50,6 +50,8 @@ export class NotrechtComponent implements OnInit {
     // tslint:disable-next-line:no-duplicate-string
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
+    public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
+        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'is-clickable'];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
 
@@ -97,6 +99,8 @@ export class NotrechtComponent implements OnInit {
                     return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
                 case 'zahlungStufe2':
                     return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
+                case 'verantwortlich':
+                    return item.verantwortlicherName;
                 default:
                     // @ts-ignore
                     return item[property];
@@ -121,7 +125,8 @@ export class NotrechtComponent implements OnInit {
                 || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
-                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter);
+                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter)
+                || EbeguUtil.hasTextCaseInsensitive(data.verantwortlicherName, filter);
         };
     }
 
@@ -238,6 +243,14 @@ export class NotrechtComponent implements OnInit {
     }
 
     public showMitteilungSenden(): boolean {
+        return this.isMandantOrSuperuser();
+    }
+
+    public isMandantOrSuperuser(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public getDisplayColumns(): string[] {
+        return this.isMandantOrSuperuser() ? this.displayedColumnsMandant : this.displayedColumns;
     }
 }

@@ -2122,5 +2122,7 @@
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Sie haben {{NAME_DRITTANWENDUNGEN}} als zugriffsberechtigte Drittanwendung ausgewählt. Dadurch hat {{NAME_DRITTANWENDUNGEN}} Einsicht auf Ihre Daten. Möchten Sie  fortfahren und diese Änderung speichern?",
     "LABEL_OK_FORFAHREN": "Ja, Fortfahren",
     "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
+    "LABEL_ZUWEISEN": "Mir zuweisen",
+    "VERANTWORTLICHER": "Verantwortlich",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
