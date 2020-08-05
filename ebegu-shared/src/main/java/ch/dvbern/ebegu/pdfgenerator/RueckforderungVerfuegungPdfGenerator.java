@@ -18,6 +18,8 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -181,7 +183,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			image.scalePercent(percent);
 			image.setAbsolutePosition(350, 430);
 			document.add(image);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOG.error("KantonSignature.png koennte nicht geladen werden: {}", e.getMessage());
 		}
 		createContentWhereIWant(directContent, translate(MITARBEITERIN), 375, 122,
