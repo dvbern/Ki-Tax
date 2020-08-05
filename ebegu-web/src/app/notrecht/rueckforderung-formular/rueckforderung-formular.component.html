@@ -1392,9 +1392,13 @@
                     (click)="fristVerlaengern(rueckforderungFormular);">
                 <span translate>RUECKFORDERUNG_FRIST_VERLAENGERN</span>
             </button>
-            <button *ngIf="showButtonResetStatus(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
+            <button *ngIf="isPruefungKantonStufe2(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
                     (click)="resetStatus(rueckforderungFormular)">
                 <span translate>RUECKFORDERUNG_RESET_STATUS</span>
+            </button>
+            <button *ngIf="showButtonZurueckholen(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
+                    (click)="formularZurueckholen(rueckforderungFormular)">
+                <span translate>RUECKFORDERUNG_ZURUECKHOLEN</span>
             </button>
             <button type="button"
                     class="dv-btn cancel-button"
