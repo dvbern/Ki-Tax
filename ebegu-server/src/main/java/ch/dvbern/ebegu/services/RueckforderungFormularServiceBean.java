@@ -379,8 +379,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	 */
 	private void generateProvisorischeVerfuegungDokument(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		try {
-			String id = rueckforderungFormular.getId();
-
 			//noinspection ResultOfMethodCallIgnored
 			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(rueckforderungFormular);
 		} catch (MimeTypeParseException | MergeDocException e) {
