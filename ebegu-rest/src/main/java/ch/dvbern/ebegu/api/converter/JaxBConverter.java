@@ -3709,7 +3709,7 @@ public class JaxBConverter extends AbstractConverter {
 		return convertedBerechtigungen;
 	}
 
-	public JaxBenutzer benutzerToJaxBenutzer(Benutzer benutzer) {
+	public JaxBenutzer benutzerToJaxBenutzer(@Nonnull Benutzer benutzer) {
 		JaxBenutzer jaxLoginElement = new JaxBenutzer();
 		jaxLoginElement.setVorname(benutzer.getVorname());
 		jaxLoginElement.setNachname(benutzer.getNachname());
@@ -5198,6 +5198,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+		if (rueckforderungFormular.getVerantwortlicher() != null) {
+			jaxFormular.setVerantwortlicherName(rueckforderungFormular.getVerantwortlicher().getFullName());
+		}
 		jaxFormular.setHasBeenProvisorisch(rueckforderungFormular.isHasBeenProvisorisch());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());

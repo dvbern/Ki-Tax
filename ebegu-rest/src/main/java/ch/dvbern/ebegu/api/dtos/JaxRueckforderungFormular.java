@@ -165,6 +165,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nonnull
 	private Sprache korrespondenzSprache;
 
+	@Nullable
+	private String verantwortlicherName;
+
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;
@@ -522,5 +525,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setKorrespondenzSprache(@Nonnull Sprache korrespondenzSprache) {
 		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	@Nullable
+	public String getVerantwortlicherName() {
+		return verantwortlicherName;
+	}
+
+	public void setVerantwortlicherName(@Nullable String verantwortlicherName) {
+		this.verantwortlicherName = verantwortlicherName;
 	}
 }
