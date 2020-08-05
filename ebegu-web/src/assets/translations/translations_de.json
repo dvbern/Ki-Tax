@@ -1992,9 +1992,7 @@
     "RUECKFORDERUNG_STATUS_IN_PRUEFUNG_KANTON_STUFE_1": "In Prüfung Kanton Stufe 1",
     "RUECKFORDERUNG_STATUS_GEPRUEFT_STUFE_1":  "Geprüft",
     "RUECKFORDERUNG_STATUS_IN_BEARBEITUNG_INSTITUTION_STUFE_2": "In Bearbeitung Institution Stufe 2",
-    "RUECKFORDERUNG_STATUS_IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH": "In Prüfung Kanton Stufe 2 provisorisch",
     "RUECKFORDERUNG_STATUS_VERFUEGT_PROVISORISCH": "Provisorisch verfügt",
-    "RUECKFORDERUNG_STATUS_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV": "In Bearbeitung Institution Stufe 2 definitiv",
     "RUECKFORDERUNG_STATUS_IN_PRUEFUNG_KANTON_STUFE_2":  "In Prüfung Kanton Stufe 2",
     "RUECKFORDERUNG_STATUS_ABGESCHLOSSEN_OHNE_GESUCH": "Abgeschlossen ohne Gesuch",
     "RUECKFORDERUNG_STATUS_VERFUEGT": "Verfügt",
@@ -2014,7 +2012,6 @@
     "CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG": "Besten Dank für die Übermittlung Ihres Gesuchs. Da noch definitive Abrechnungen zur Kurzarbeitsentschädigung und/oder Corona-Erwerbsersatzentschädigung fehlen, wird Ihr Gesuch vorerst provisorisch verfügt. Sie erhalten die provisorische Verfügung bis am 16. September. Sobald Ihnen die definitiven Abrechnungen vorliegen, können Sie diese hochladen. Anschliessend wird Ihr Gesuch erneut geprüft und definitiv verfügt. Allfällige Rückforderungen / Nachzahlungen erfolgen nach der definitiven Verfügung.",
     "CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG": "Besten Dank für die Übermittlung Ihres Gesuchs. Ihr Gesuch wird bis spätestens am 16. September 2020 geprüft und verfügt. Allfällige Rückforderungen / Nachzahlungen erfolgen nach der definitiven Verfügung.",
     "CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH": "Besten Dank für die Übermittlung Ihres Gesuchs. Ihr Gesuch wird nun geprüft und verfügt. Dies kann einige Wochen in Anspruch nehmen.  Allfällige Rückforderungen / Nachzahlungen erfolgen nach der definitiven Verfügung.",
-    "CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV": "Besten Dank für die Übermittlung der vollständigen Unterlagen. Ihr Gesuch wird geprüft und definitiv verfügt. Allfällige Rückforderungen / Nachzahlungen erfolgen nach der definitiven Verfügung.",
     "BETREUUNG_KORREKT_AUSGEWIESEN": "Wir bestätigen, dass wir die Anzahl Betreuungstage / Betreuungsstunden, welche nicht mehr angeboten wurden, korrekt ausgewiesen haben.",
     "BETREUUNG_KORREKT_AUSGEWIESEN_INFO": "Was sind Betreuungsplätze, die nicht mehr tatsächlich zur Verfügung standen? Beispiele:<ul><li>Eltern konnten Plätze nicht nutzen, weil ihnen kommuniziert wurde, dass sie z.B. nur für Personen mit bestimmten Berufen vorgesehen sind.</li><li>Eltern hielten sich nicht dafür Plätze zu nutzen, weil die Kommunikation im Vergleich zu den Vorgaben des Kantons verschärft wurde</li><li>Plätze wurden nicht mehr angeboten, weil weniger Betreuungspersonen zur Verfügung standen (krank, in Quarantäne/Selbstisolation, Risikopersonen).</li><li>Die Kita war (vorübergehend) ganz oder teilweise geschlossen</li><li>Tagesfamilien konnten keine Kinder mehr betreuen und den Familien wurde keine Ersatzbetreuung angeboten</li></ul>",
     "GUTSCHEIN_PLAETZEN_REDUZIERT": "Wir bestätigen, dass wir bei Betreuungsplätzen mit Betreuungsgutscheinen, die nicht mehr angeboten wurden, die Betreuung in kiBon entsprechend sistiert bwz. reduziert haben. Im Gebührensystem werden wir die Plätze / Betreuungsstunden als nicht angeboten deklarieren.",
@@ -2128,5 +2125,7 @@
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Sie haben {{NAME_DRITTANWENDUNGEN}} als zugriffsberechtigte Drittanwendung ausgewählt. Dadurch hat {{NAME_DRITTANWENDUNGEN}} Einsicht auf Ihre Daten. Möchten Sie  fortfahren und diese Änderung speichern?",
     "LABEL_OK_FORFAHREN": "Ja, Fortfahren",
     "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
+    "LABEL_ZUWEISEN": "Mir zuweisen",
+    "VERANTWORTLICHER": "Verantwortlich",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

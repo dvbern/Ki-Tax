@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilungRequestParams;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
@@ -58,6 +59,7 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
@@ -95,6 +97,9 @@ public class NotrechtResource {
 
 	@Inject
 	private RueckforderungDokumentService rueckforderungDokumentService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -378,6 +383,40 @@ public class NotrechtResource {
 					rueckforderungFormularId));
 
 		rueckforderungFormular.setExtendedEinreichefrist(extendedEinreichefristdatum);
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			rueckforderungFormularService.save(rueckforderungFormular);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
+
+	@ApiOperation(value = "Setzt einen Verantwortlichen für ein Rückforderungs Formular", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Path("/verantwortlicher/{formularId}/{username}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungFormular setVerantwortlicher(
+		@Nonnull @NotNull @PathParam("formularId") JaxId formularId,
+		@Nonnull @NotNull @PathParam("username") String username) {
+
+		Objects.requireNonNull(formularId);
+		Objects.requireNonNull(username);
+
+		RueckforderungFormular rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(formularId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					formularId.getId()));
+
+		Benutzer benutzer = benutzerService.findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicher",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				username));
+
+		rueckforderungFormular.setVerantwortlicher(benutzer);
 
 		RueckforderungFormular modifiedRueckforderungFormular =
 			rueckforderungFormularService.save(rueckforderungFormular);

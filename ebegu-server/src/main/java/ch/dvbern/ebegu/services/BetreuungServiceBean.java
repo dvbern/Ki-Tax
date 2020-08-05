@@ -29,7 +29,6 @@ import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -90,9 +89,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-/*import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;*/
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
@@ -186,7 +182,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@Override
 	public AnmeldungTagesschule saveAnmeldungTagesschule(
-		@Nonnull AnmeldungTagesschule anmeldungTagesschule, @Nonnull Boolean isAbwesenheit
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule
 	) {
 		Objects.requireNonNull(anmeldungTagesschule);
 		authorizer.checkWriteAuthorization(anmeldungTagesschule);
@@ -214,7 +210,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		mergedBetreuung.getKind().setAnmeldungenTagesschule(betreuungen);
 
 		//jetzt noch wizard step updaten
-		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+		updateWizardSteps(mergedBetreuung, false);
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
@@ -228,23 +224,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@Override
 	public AnmeldungFerieninsel saveAnmeldungFerieninsel(
-		@Nonnull AnmeldungFerieninsel anmeldung, @Nonnull Boolean isAbwesenheit
-	) {
-		Objects.requireNonNull(anmeldung);
-		authorizer.checkWriteAuthorization(anmeldung);
+		@Nonnull AnmeldungFerieninsel anmeldungFerieninsel) {
+		Objects.requireNonNull(anmeldungFerieninsel);
+		authorizer.checkWriteAuthorization(anmeldungFerieninsel);
 
-		boolean isNew = anmeldung.isNew(); // needed hier before it gets saved
+		boolean isNew = anmeldungFerieninsel.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
-		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(anmeldung);
+		updateGueltigFlagOnPlatzAndVorgaenger(anmeldungFerieninsel);
+		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(anmeldungFerieninsel);
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(anmeldung.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(anmeldungFerieninsel.getId(), b.getId()))
 			.forEach(b -> {
-				b.copyAnmeldung(anmeldung);
+				b.copyAnmeldung(anmeldungFerieninsel);
 				persistence.merge(b);
 			});
 
@@ -254,7 +249,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		mergedBetreuung.getKind().setAnmeldungenFerieninsel(betreuungen);
 
 		//jetzt noch wizard step updaten
-		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+		updateWizardSteps(mergedBetreuung, false);
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
@@ -267,9 +262,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private <T extends AbstractPlatz> T savePlatz(T platz) {
 		if (platz.getBetreuungsangebotTyp().isFerieninsel()) {
-			return (T) saveAnmeldungFerieninsel((AnmeldungFerieninsel) platz, false);
+			return (T) saveAnmeldungFerieninsel((AnmeldungFerieninsel) platz);
 		} else if (platz instanceof AnmeldungTagesschule) {
-			return (T) saveAnmeldungTagesschule((AnmeldungTagesschule) platz, false);
+			return (T) saveAnmeldungTagesschule((AnmeldungTagesschule) platz);
 		} else {
 			return (T) saveBetreuung((Betreuung) platz, false);
 		}

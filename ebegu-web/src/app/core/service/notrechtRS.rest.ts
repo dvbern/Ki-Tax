@@ -165,4 +165,11 @@ export class NotrechtRS {
             },
         );
     }
+
+    public setVerantwortlicher(formularId: string, username: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.put(`${this.serviceURL}/verantwortlicher/${encodeURIComponent(formularId)}/${encodeURIComponent(username)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
 }
