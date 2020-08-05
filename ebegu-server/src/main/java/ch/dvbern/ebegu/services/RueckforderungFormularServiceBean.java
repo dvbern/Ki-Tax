@@ -263,8 +263,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				RueckforderungStatus nextStatus = rueckforderungFormular.getStatus();
-				nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
+				RueckforderungStatus nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
 				rueckforderungFormular.setStatus(nextStatus);
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
