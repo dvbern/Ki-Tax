@@ -500,8 +500,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getAllAdminSuperAdminRevisorRoles())
-			&& !hasPrincipalName(benutzer)) {
+		// Benutzer duerfen grundsaetzlich von allen Rollen gelesen werden
+		// Der Mandant muss aber stimmen
+		checkMandantMatches(benutzer);
+		// Gesuchsteller duerfen nur sich selber lesen, alle anderen Rollen sind nicht weiter
+		// eingeschraenkt
+		if (principalBean.isCallerInRole(GESUCHSTELLER) && !hasPrincipalName(benutzer)) {
 			throwViolation(benutzer);
 		}
 	}

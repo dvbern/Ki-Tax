@@ -747,7 +747,6 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
-        console.warn('clicket');
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
@@ -761,6 +760,7 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.rueckforderungFormular$ = from(this.notrechtRS.resetStatus(rueckforderungFormular)
                         .then((response: TSRueckforderungFormular) => {
                             this.changeDetectorRef.markForCheck();
+                            this.readOnly = this.initReadOnly(response);
                             return response;
                         }));
                 },
@@ -768,9 +768,34 @@ export class RueckforderungFormularComponent implements OnInit {
                 });
     }
 
-    public showButtonResetStatus(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
-            && this.isPruefungKantonStufe2(rueckforderungFormular);
+    public formularZurueckholen(rueckforderungFormular: TSRueckforderungFormular): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.rueckforderungFormular$ = from(this.notrechtRS.formularZurueckholen(rueckforderungFormular)
+                        .then((response: TSRueckforderungFormular) => {
+                            this.readOnly = this.initReadOnly(response);
+                            this.changeDetectorRef.markForCheck();
+                            return response;
+                        }));
+                },
+                () => {
+                });
+    }
+
+    public showButtonZurueckholen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        const fristAbgelaufen = this.fristSchonErreicht(rueckforderungFormular);
+        const roleMandant = this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+        const statusInstitution2 = rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
+        const datenErfasst = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp);
+        return fristAbgelaufen && roleMandant && statusInstitution2 && datenErfasst;
     }
 
     public getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): string {

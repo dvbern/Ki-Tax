@@ -246,6 +246,19 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return saveWithoutAuthCheck(rueckforderungFormular);
 	}
 
+	@Nonnull
+	@Override
+	public RueckforderungFormular resetStatusToInPruefungKantonPhase2(@Nonnull String id) {
+		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetStatusToInBearbeitungKantonPhase2",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Rueckfordungsformular invalid: " + id));
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
+		rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
+		return saveWithoutAuthCheck(rueckforderungFormular);
+	}
+
 	@Override
 	@Nonnull
 	public RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular) {
