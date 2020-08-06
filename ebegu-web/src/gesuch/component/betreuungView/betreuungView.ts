@@ -184,8 +184,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
+                    // tslint:disable-next-line:early-exit
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
-                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+                    ) {
+                        // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
+                        // -> wir nehmen alle anderen Angebote aus der Liste raus
+                        this.betreuungsangebotValues = new Array<any>();
+                        this.betreuungsangebotValues.push(obj);
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
@@ -212,7 +218,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
-        this.findExistingBetreuungsmitteilung();
+        if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+            || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN
+        ) {
+            // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
+            this.findExistingBetreuungsmitteilung();
+        }
+
         const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
         if (anmeldungMutationZustand) {
             if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
@@ -480,10 +492,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             let betreuungsstatus: TSBetreuungsstatus;
 
             if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
-                (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-                    isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
-                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                    : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+                betreuungsstatus = this.anmeldungTagesschuleDirektUebernehmen()
+                    ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                    : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
             } else {
                 betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
             }
@@ -498,6 +509,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     {gesuchId: this.getGesuchId()});
             }
         });
+    }
+
+    private anmeldungTagesschuleDirektUebernehmen(): boolean {
+        // Falls das Gesuch im Status Verfuegen oder einem Verfuegt-Status ist, soll die Anmeldung
+        // beim akzeptieren direkt auf uebernommen gesetzt werden
+        // Dasselbe gilt im Falle von KEIN_KONTINTENT, da die Tagesschule-Anmeldungen sonst blockiert sind!
+        return this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+            this.gesuchModelManager.getGesuch().status === TSAntragStatus.KEIN_KONTINGENT ||
+            isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public anmeldungSchulamtAblehnen(): void {

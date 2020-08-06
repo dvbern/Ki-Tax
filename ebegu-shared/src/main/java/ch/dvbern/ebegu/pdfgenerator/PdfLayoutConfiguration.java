@@ -44,10 +44,12 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 	public static final int BARCODE_TOP_IN_MM = 22;
 	private static final int LOGO_MAX_WIDTH_IN_MM = 70;
 	private static final int LOGO_MAX_HEIGHT_IN_MM = 25;
+	private static final int LOGO_KANTON_MAX_WIDTH_IN_MM = 41;
+	private static final int LOGO_KANTON_MAX_HEIGHT_IN_MM = 20;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfLayoutConfiguration.class);
 
-	public PdfLayoutConfiguration(final byte[] gemeindeLogo, final List<String> absenderHeader) {
+	public PdfLayoutConfiguration(final byte[] logo, final List<String> absenderHeader, boolean isKanton) {
 		super(new AddressComponent(
 			null,
 			RECEIVER_LEFT_IN_MM,
@@ -55,7 +57,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 			ADRESSE_WIDTH,
 			ADRESSE_HEIGHT,
 			OnPage.FIRST));
-		applyLogo(gemeindeLogo);
+		applyLogo(logo, isKanton);
 		if (absenderHeader != null && !absenderHeader.isEmpty()) {
 			setHeader(new PhraseRenderer(absenderHeader,
 				LEFT_PAGE_DEFAULT_MARGIN_MM,
@@ -65,26 +67,27 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 		}
 	}
 
-	private void applyLogo(final byte[] gemeindeLogo) {
-		if (gemeindeLogo == null || gemeindeLogo.length == 0) {
+	private void applyLogo(final byte[] logo, boolean isKanton) {
+		if (logo == null || logo.length == 0) {
 			return;
 		}
 
 		try {
-			Image image = Image.getInstance(gemeindeLogo);
+			Image image = Image.getInstance(logo);
 			final float imageWidthInMm = Utilities.pointsToMillimeters(image.getWidth());
 			final float imageHeightInMm = Utilities.pointsToMillimeters(image.getHeight());
-			float widthInMm = Math.min(LOGO_MAX_WIDTH_IN_MM, imageWidthInMm);
-			if (imageHeightInMm > LOGO_MAX_HEIGHT_IN_MM) {
-				final float factor = LOGO_MAX_HEIGHT_IN_MM / imageHeightInMm;
+			float widthInMm = Math.min(isKanton ? LOGO_KANTON_MAX_WIDTH_IN_MM : LOGO_MAX_WIDTH_IN_MM, imageWidthInMm);
+			if (imageHeightInMm > (isKanton ? LOGO_KANTON_MAX_HEIGHT_IN_MM : LOGO_MAX_HEIGHT_IN_MM)) {
+				final float factor =
+					(isKanton ? LOGO_KANTON_MAX_HEIGHT_IN_MM : LOGO_MAX_HEIGHT_IN_MM) / imageHeightInMm;
 				widthInMm = Math.min(widthInMm, imageWidthInMm * factor);
 			}
-			Logo logo = new Logo(
-				gemeindeLogo,
-				LOGO_LEFT_IN_MM,
-				LOGO_TOP_IN_MM,
+			Logo logoToApply = new Logo(
+				logo,
+				isKanton ? 8 : LOGO_LEFT_IN_MM,
+				isKanton ? 5 : LOGO_TOP_IN_MM,
 				widthInMm);
-			setLogo(logo);
+			setLogo(logoToApply);
 		} catch (IOException | BadElementException e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage(), e);
 		}

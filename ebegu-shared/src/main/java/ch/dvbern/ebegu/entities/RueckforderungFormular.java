@@ -42,6 +42,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -83,6 +84,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	private RueckforderungStatus status = RueckforderungStatus.NEU;
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rueckforderung_verantwortlicher_id"), nullable = true)
+	private Benutzer verantwortlicher;
 
 	@NotNull
 	@Column(nullable = false)
@@ -152,6 +158,10 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(name = "stufe_1_freigabe_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
+
+	@Column(name = "stufe_2_voraussichtliche_betrag", nullable = true)
+	@Nullable
+	private BigDecimal stufe2VoraussichtlicheBetrag;
 
 	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
@@ -225,6 +235,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
 
+	@Nonnull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Sprache korrespondenzSprache = Sprache.DEUTSCH;
+
 	@Nullable
 	@Size(min=1, max=2000)
 	@Column(nullable = true)
@@ -282,6 +297,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nullable
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	@Nullable
@@ -582,6 +606,25 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStufe2ZahlungJetztAusgeloest(boolean stufe2ZahlungJetztAusgeloest) {
 		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	@Nonnull
+	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
 	}
 
 	@Override

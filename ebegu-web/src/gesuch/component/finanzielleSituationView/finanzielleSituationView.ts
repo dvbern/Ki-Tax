@@ -22,7 +22,6 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSWizardSubStepName} from '../../../models/enums/TSWizardSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -193,17 +192,6 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         const params = {basisjahr, gewinn1: gew1, gewinn2: gew2, gewinn3: gew3};
 
         return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG', params);
-    }
-
-    /**
-     * Mindestens einer aller Felder von Geschaftsgewinn muss ausgefuellt sein. Mit dieser Methode kann man es pruefen.
-     */
-    public isGeschaeftsgewinnRequired(): boolean {
-        const finSit = this.getModel().finanzielleSituationJA;
-
-        return EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)
-            && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)
-            && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
     }
 
     public subStepName(): TSWizardSubStepName {

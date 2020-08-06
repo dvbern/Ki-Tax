@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -39,7 +38,6 @@ public class PensumFachstelleServiceBean extends AbstractBaseService implements 
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<PensumFachstelle> findPensumFachstelle(@Nonnull String pensumFachstelleId) {
 		Objects.requireNonNull(pensumFachstelleId, "id muss gesetzt sein");
 		PensumFachstelle a = persistence.find(PensumFachstelle.class, pensumFachstelleId);

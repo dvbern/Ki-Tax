@@ -21,7 +21,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.transaction.Status;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -41,7 +40,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Allgemeine Mailing-Funktionalität
  */
-@PermitAll
 public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractMailServiceBean.class.getSimpleName());
@@ -56,7 +54,6 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	@Resource
 	private TransactionSynchronizationRegistry txReg;
 
-	@PermitAll
 	public void sendMessage(
 		@Nonnull String subject,
 		@Nonnull String messageBody,

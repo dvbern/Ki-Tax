@@ -196,6 +196,13 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
+	public static List createListOrdered(java.util.List<String> list) {
+		final List itextList = new List(List.ORDERED);
+		list.forEach(item -> itextList.add(createListItem(item)));
+		return itextList;
+	}
+
+	@Nonnull
 	public static Paragraph createListInParagraph(java.util.List<String> list, final int emptyLinesAfter) {
 		Paragraph paragraph = new Paragraph();
 		final List itextList = createList(list);

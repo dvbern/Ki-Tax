@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -53,6 +56,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -84,8 +88,18 @@ import ch.dvbern.ebegu.util.Constants;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections4.map.HashedMap;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -94,6 +108,7 @@ import static java.util.Objects.requireNonNull;
 @Path("institutionen")
 @Stateless
 @Api(description = "Resource für Institutionen (Anbieter eines Betreuungsangebotes)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class InstitutionResource {
 
 	@Inject
@@ -115,6 +130,9 @@ public class InstitutionResource {
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
+	private PrincipalBean principalBean;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
@@ -122,6 +140,8 @@ public class InstitutionResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Response createInstitution(
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
@@ -132,6 +152,14 @@ public class InstitutionResource {
 		@Context HttpServletResponse response) {
 
 		requireNonNull(adminMail);
+		if ((betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) &&
+			!principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			throw new IllegalStateException(
+				"Nur ein Superadmin oder Mandant Benutzer kann einen neuen Kita/TFO Benutzer einladen. Dies wurde "
+					+ "aber versucht durch: "
+					+ principalBean.getBenutzer().getUsername());
+		}
+
 		Institution convertedInstitution = converter.institutionToNewEntity(institutionJAXP);
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
@@ -256,6 +284,8 @@ public class InstitutionResource {
 	@Path("/{institutionId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public JaxInstitutionStammdaten updateInstitutionAndStammdaten(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Nonnull @NotNull @Valid JaxInstitutionUpdate update) {
@@ -305,6 +335,7 @@ public class InstitutionResource {
 	@Path("/{institutionId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public JaxInstitution findInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
@@ -320,6 +351,7 @@ public class InstitutionResource {
 	@DELETE
 	@Path("/{institutionId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response removeInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Context HttpServletResponse response) {
@@ -335,6 +367,7 @@ public class InstitutionResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
 	public List<JaxInstitution> getAllInstitutionen() {
 		return institutionService.getAllInstitutionen().stream()
 			.map(inst -> converter.institutionToJAX(inst))
@@ -348,6 +381,7 @@ public class InstitutionResource {
 	@Path("/editable/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxInstitution> getInstitutionenEditableForCurrentBenutzer() {
 		return institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.map(inst -> converter.institutionToJAX(inst))
@@ -361,8 +395,9 @@ public class InstitutionResource {
 	@Path("/editable/currentuser/listdto")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxInstitutionListDTO> getInstitutionenListDTOEditableForCurrentBenutzer() {
-		Map<Institution,InstitutionStammdaten> institutionInstitutionStammdatenMap =
+		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap =
 			institutionService.getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(true);
 
 		return institutionInstitutionStammdatenMap.entrySet().stream().map(map -> converter.institutionListDTOToJAX(map))
@@ -376,6 +411,7 @@ public class InstitutionResource {
 	@Path("/readable/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxInstitution> getInstitutionenReadableForCurrentBenutzer() {
 		return institutionService.getInstitutionenReadableForCurrentBenutzer(false).stream()
 			.map(inst -> converter.institutionToJAX(inst))
@@ -389,6 +425,7 @@ public class InstitutionResource {
 	@Path("/hasEinladungen/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response hasInstitutionenInStatusEingeladenForCurrentBenutzer() {
 		long anzahl = institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.filter(inst -> inst.getStatus() == InstitutionStatus.EINGELADEN)
@@ -403,6 +440,8 @@ public class InstitutionResource {
 	@Path("/{institutionId}/externalclients")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS })
 	public Response getExternalClients(@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
 		requireNonNull(institutionJAXPId.getId());
@@ -432,6 +471,7 @@ public class InstitutionResource {
 	@Path("/isStammdatenCheckRequired/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response isStammdatenCheckRequiredForCurrentBenutzer() {
 		long anzahl = institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.filter(Institution::isStammdatenCheckRequired)
@@ -447,6 +487,8 @@ public class InstitutionResource {
 	@Path("/deactivateStammdatenCheckRequired/{institutionId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
+		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Response deactivateStammdatenCheckRequired(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJaxId
 	) {

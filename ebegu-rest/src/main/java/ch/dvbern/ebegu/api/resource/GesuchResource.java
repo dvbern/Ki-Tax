@@ -23,6 +23,9 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -77,12 +80,31 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * Resource fuer Gesuch
  */
 @Path("gesuche")
 @Stateless
 @Api(description = "Resource für Anträge (Erstgesuch oder Mutation)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GesuchResource.class);
@@ -122,6 +144,8 @@ public class GesuchResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response create(
 		@Nonnull @NotNull JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
@@ -144,6 +168,8 @@ public class GesuchResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public JaxGesuch update(
 		@Nonnull @NotNull JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
@@ -169,6 +195,7 @@ public class GesuchResource {
 	@Path("/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxGesuch findGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
@@ -189,6 +216,7 @@ public class GesuchResource {
 	@GET
 	@Path("/ewk/searchgesuch/{gesuchId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public EWKResultat suchePersonenByGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) throws EbeguException {
 		Objects.requireNonNull(gesuchJAXPId.getId());
@@ -220,6 +248,8 @@ public class GesuchResource {
 	@Path("/freigabe/{gesuchId}/{anzZurueckgezogen}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, GESUCHSTELLER })
 	public JaxAntragDTO findGesuchForFreigabe(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull @PathParam("anzZurueckgezogen") String anzZurueckgezogen
@@ -252,6 +282,7 @@ public class GesuchResource {
 	@Path("/institution/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION})
 	public JaxGesuch findGesuchForInstitution(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
@@ -259,9 +290,6 @@ public class GesuchResource {
 
 		UserRole role = principalBean.discoverMostPrivilegedRole();
 		if (role != null) {
-			if (UserRole.SUPER_ADMIN == role) {
-				return completeGesuch;
-			}
 			Collection<Institution> instForCurrBenutzer =
 				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			return cleanGesuchForInstitutionTraegerschaft(completeGesuch, instForCurrBenutzer);
@@ -304,6 +332,8 @@ public class GesuchResource {
 	@Path("/bemerkung/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Response updateBemerkung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull String bemerkung,
@@ -330,6 +360,8 @@ public class GesuchResource {
 	@Path("/bemerkungPruefungSTV/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Response updateBemerkungPruefungSTV(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull String bemerkungPruefungSTV,
@@ -356,6 +388,8 @@ public class GesuchResource {
 	@Path("/status/{gesuchId}/{statusDTO}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Response updateStatus(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull @PathParam("statusDTO") AntragStatusDTO statusDTO) {
@@ -385,6 +419,7 @@ public class GesuchResource {
 	@Path("/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<JaxAntragDTO> getAllAntragDTOForDossier(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
 		Objects.requireNonNull(dossierJAXPId.getId());
@@ -398,6 +433,8 @@ public class GesuchResource {
 	@Path("/freigeben/{antragId}/JA/{usernameJA}/SCH/{usernameSCH}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, GESUCHSTELLER })
 	public Response antragFreigeben(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Nullable @PathParam("usernameJA") String usernameJA,
@@ -424,6 +461,7 @@ public class GesuchResource {
 	@Path("/zurueckziehen/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
 	public Response antraZurueckziehen(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -447,6 +485,8 @@ public class GesuchResource {
 	@Path("/setBeschwerde/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response setBeschwerdeHaengig(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -475,6 +515,8 @@ public class GesuchResource {
 	@Path("/setAbschliessen/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response setAbschliessen(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -501,6 +543,8 @@ public class GesuchResource {
 	@Path("/sendToSTV/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response sendGesuchToSTV(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Nullable String bemerkungen,
@@ -531,6 +575,7 @@ public class GesuchResource {
 	@Path("/freigebenSTV/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ STEUERAMT, SUPER_ADMIN})
 	public Response gesuchBySTVFreigeben(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -560,6 +605,8 @@ public class GesuchResource {
 	@Path("/stvPruefungAbschliessen/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response stvPruefungAbschliessen(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -595,6 +642,8 @@ public class GesuchResource {
 	@Path("/removeBeschwerde/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response removeBeschwerdeHaengig(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -620,6 +669,7 @@ public class GesuchResource {
 	@DELETE
 	@Path("/removeOnlineMutation/{dossierId}/{gesuchsperiodeId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN })
 	public Response removeOnlineMutation(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierId,
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeId,
@@ -647,6 +697,7 @@ public class GesuchResource {
 	@DELETE
 	@Path("/removeOnlineFolgegesuch/{dossierId}/{gesuchsperiodeId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN })
 	public Response removeOnlineFolgegesuch(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId,
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
@@ -674,6 +725,7 @@ public class GesuchResource {
 	@DELETE
 	@Path("/removeAntrag/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN })
 	public Response removeAntrag(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Context HttpServletResponse response) {
@@ -691,6 +743,7 @@ public class GesuchResource {
 	@DELETE
 	@Path("/removeAntragForced/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response removeAntragForced(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Context HttpServletResponse response) {
@@ -711,6 +764,7 @@ public class GesuchResource {
 	@Path("/closeWithoutAngebot/{antragId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Response closeWithoutAngebot(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -739,6 +793,7 @@ public class GesuchResource {
 	@Path("/verfuegenStarten/{antragId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Response verfuegenStarten(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -766,6 +821,7 @@ public class GesuchResource {
 	@Path("/gesuchBetreuungenStatus/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response findGesuchBetreuungenStatus(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
@@ -779,33 +835,14 @@ public class GesuchResource {
 		return Response.ok(gesuchToReturn.getGesuchBetreuungenStatus()).build();
 	}
 
-	@ApiOperation(value = "verfuegt das gegebene Gesuch. Funktioniert nur bei Gesuchen, bei denen alle Betreuungen "
-		+ "verfügt sind, der Status"
-		+ " vom Gesuch aber noch nicht als VERFUEGT gesetzt wurde.", response = JaxAntragSearchresultDTO.class)
-	@Nonnull
-	@POST
-	@Path("/gesuchVerfuegen/{gesuchId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response gesuchVerfuegen(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-
-		Objects.requireNonNull(gesuchJAXPId.getId());
-		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
-		if (!gesuchOptional.isPresent()) {
-			throw new EbeguEntityNotFoundException("gesuchVerfuegen", ErrorCodeEnum
-				.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + gesuchJAXPId.getId());
-		}
-		gesuchService.gesuchVerfuegen(gesuchOptional.get());
-		return Response.ok().build();
-	}
-
 	@ApiOperation(value = "Aendert den FinSitStatus im Gesuch", response = JaxGesuch.class)
 	@Nonnull
 	@POST
 	@Path("/changeFinSitStatus/{antragId}/{finSitStatus}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response changeFinSitStatus(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Nonnull @NotNull @PathParam("finSitStatus") FinSitStatus finSitStatus,
@@ -831,6 +868,7 @@ public class GesuchResource {
 	@Path("/newest/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response isNeuestesGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId))
@@ -848,6 +886,7 @@ public class GesuchResource {
 	@Path("/newestid/gesuchsperiode/{gesuchsperiodeId}/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response getIdOfNewestGesuch(@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJaxId) {
 
@@ -883,6 +922,7 @@ public class GesuchResource {
 	@Path("/newestid/fall/{fallId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response getIdOfNewestGesuchForDossier(
 		@Nonnull @NotNull @PathParam("fallId") JaxId dossierJaxId) {
 
@@ -910,6 +950,8 @@ public class GesuchResource {
 	@Path("/ausserordentlicheranspruchpossible/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, REVISOR, JURIST })
 	public Response isAusserordentlicherAnspruchPossible(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId))
@@ -927,6 +969,7 @@ public class GesuchResource {
 	@Path("/massenversand/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.WILDCARD)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<String> getMassenversandTexteForGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdJax) {
 		Validate.notNull(gesuchIdJax.getId());
 		return gesuchService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));
@@ -938,6 +981,8 @@ public class GesuchResource {
 	@Path("/setKeinKontingent/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response setKeinKontingent(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -962,6 +1007,8 @@ public class GesuchResource {
 	@Path("/updateAlwaysEditableProperties")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public JaxGesuch updateAlwaysEditableProperties(
 		@Nonnull @NotNull @Valid JaxAlwaysEditableProperties properties,
 		@Context UriInfo uriInfo,

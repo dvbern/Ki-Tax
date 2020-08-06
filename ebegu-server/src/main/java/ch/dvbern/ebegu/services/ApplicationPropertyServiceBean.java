@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,16 +46,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer ApplicationProperty
  */
 @Stateless
 @Local(ApplicationPropertyService.class)
-@PermitAll
 public class ApplicationPropertyServiceBean extends AbstractBaseService implements ApplicationPropertyService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationPropertyServiceBean.class.getSimpleName());
@@ -71,7 +64,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public ApplicationProperty saveOrUpdateApplicationProperty(
 		@Nonnull final ApplicationPropertyKey key,
 		@Nonnull final String value) {
@@ -88,7 +80,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<ApplicationProperty> readApplicationProperty(@Nonnull final ApplicationPropertyKey key) {
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			ApplicationProperty.class,
@@ -115,7 +106,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	}
 
 	@Override
-	@PermitAll
 	public Optional<ApplicationProperty> readApplicationProperty(String keyParam) {
 		try {
 			ApplicationPropertyKey keyToSearch = Enum.valueOf(ApplicationPropertyKey.class, keyParam);
@@ -128,13 +118,11 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public List<ApplicationProperty> getAllApplicationProperties() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(ApplicationProperty.class));
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key) {
 		Objects.requireNonNull(key);
 		ApplicationProperty toRemove =
@@ -146,7 +134,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	@PermitAll
 	public String findApplicationPropertyAsString(@Nonnull ApplicationPropertyKey name) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
 		Optional<ApplicationProperty> property =
@@ -156,7 +143,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	@PermitAll
 	public BigDecimal findApplicationPropertyAsBigDecimal(@Nonnull ApplicationPropertyKey name) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
 		String valueAsString = findApplicationPropertyAsString(name);
@@ -168,7 +154,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	@PermitAll
 	public Integer findApplicationPropertyAsInteger(@Nonnull ApplicationPropertyKey name) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
 		String valueAsString = findApplicationPropertyAsString(name);
@@ -180,7 +165,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	@PermitAll
 	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
 		String valueAsString = findApplicationPropertyAsString(name);
@@ -192,7 +176,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue) {
 		Boolean property = findApplicationPropertyAsBoolean(name);
 		if (property == null) {
@@ -203,7 +186,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public LocalDate getStadtBernAsivStartDatum() {
 		String valueAsString = findApplicationPropertyAsString(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM);
 		if (valueAsString != null) {
@@ -215,14 +197,12 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Boolean isStadtBernAsivConfigured() {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, false);
 	}
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Boolean isKantonNotverordnungPhase2Aktiviert() {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, false);
 	}

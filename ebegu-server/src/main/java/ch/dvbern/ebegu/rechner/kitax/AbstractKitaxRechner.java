@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
@@ -46,7 +47,10 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
 	protected KitaxUebergangsloesungParameter kitaxParameter;
+
+	@Nullable
 	protected KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten;
+
 	protected Locale locale;
 
 	protected static final BigDecimal ZWOELF = MathUtil.EXACT.fromNullSafe(12);
@@ -56,7 +60,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 
 	protected AbstractKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
-		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale
 	) {
 		this.kitaxParameter = kitaxParameter;

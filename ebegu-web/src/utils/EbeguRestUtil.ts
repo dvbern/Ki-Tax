@@ -3883,6 +3883,7 @@ export class EbeguRestUtil {
 
         rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
         rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
+        rueckforderungFormular.verantwortlicherName = rueckforderungFormularFromServer.verantwortlicherName;
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
         rueckforderungFormular.hasBeenProvisorisch = rueckforderungFormularFromServer.hasBeenProvisorisch;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
@@ -3936,6 +3937,7 @@ export class EbeguRestUtil {
             rueckforderungFormularFromServer.coronaErwerbsersatzKeinAntragBegruendung;
         rueckforderungFormular.coronaErwerbsersatzSonstiges =
             rueckforderungFormularFromServer.coronaErwerbsersatzSonstiges;
+        rueckforderungFormular.korrespondenzSprache = rueckforderungFormularFromServer.korrespondenzSprache;
         rueckforderungFormular.bemerkungFuerVerfuegung = rueckforderungFormularFromServer.bemerkungFuerVerfuegung;
         return rueckforderungFormular;
     }
@@ -4017,6 +4019,7 @@ export class EbeguRestUtil {
             rueckforderungFormularTS.coronaErwerbsersatzKeinAntragBegruendung;
         rueckforderungFormularRest.coronaErwerbsersatzSonstiges =
             rueckforderungFormularTS.coronaErwerbsersatzSonstiges;
+        rueckforderungFormularRest.korrespondenzSprache = rueckforderungFormularTS.korrespondenzSprache;
         rueckforderungFormularRest.bemerkungFuerVerfuegung = rueckforderungFormularTS.bemerkungFuerVerfuegung;
         return rueckforderungFormularRest;
     }

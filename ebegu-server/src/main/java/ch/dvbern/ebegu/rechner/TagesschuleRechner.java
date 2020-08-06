@@ -161,9 +161,7 @@ public class TagesschuleRechner extends AbstractRechner {
 			BigDecimal multiplyDividedMeMinusMinmE = MathUtil.EXACT.multiply(divided, meMinusMinmE);
 
 			tarifProStunde = MathUtil.DEFAULT.addNullSafe(multiplyDividedMeMinusMinmE, minTarif);
-
-			tarifProStunde = MathUtil.minimum(tarifProStunde, minTarif);
-			tarifProStunde = MathUtil.maximum(tarifProStunde, maxTarif);
+			tarifProStunde = MathUtil.minimumMaximum(tarifProStunde, minTarif, maxTarif);
 		}
 
 		return tarifProStunde;

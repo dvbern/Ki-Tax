@@ -22,9 +22,8 @@ export enum TSRueckforderungStatus {
     IN_PRUEFUNG_KANTON_STUFE_1 = 'IN_PRUEFUNG_KANTON_STUFE_1',
     GEPRUEFT_STUFE_1 = 'GEPRUEFT_STUFE_1',
     IN_BEARBEITUNG_INSTITUTION_STUFE_2 = 'IN_BEARBEITUNG_INSTITUTION_STUFE_2',
-    IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH = 'IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH',
     VERFUEGT_PROVISORISCH = 'VERFUEGT_PROVISORISCH',
-    IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV = 'IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV',
+    BEREIT_ZUM_VERFUEGEN = 'BEREIT_ZUM_VERFUEGEN',
     IN_PRUEFUNG_KANTON_STUFE_2 = 'IN_PRUEFUNG_KANTON_STUFE_2',
     VERFUEGT = 'VERFUEGT',
     ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH',
@@ -33,4 +32,13 @@ export enum TSRueckforderungStatus {
 export function isNeuOrEingeladenStatus(status: TSRueckforderungStatus): boolean {
     return status === TSRueckforderungStatus.NEU
         || status === TSRueckforderungStatus.EINGELADEN;
+}
+
+export function isStatusRelevantForFrist(status: TSRueckforderungStatus): boolean {
+    return status === TSRueckforderungStatus.NEU
+        || status === TSRueckforderungStatus.EINGELADEN
+        || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+        || status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+        || status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
+        || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
 }

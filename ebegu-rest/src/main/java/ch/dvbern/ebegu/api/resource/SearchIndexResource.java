@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.naming.directory.SearchResult;
@@ -66,6 +67,7 @@ import org.apache.commons.lang3.Validate;
 @Path("search")
 @Stateless
 @Api(description = "Resource für Suchanfragen")
+@PermitAll
 public class SearchIndexResource {
 
 	@Inject
