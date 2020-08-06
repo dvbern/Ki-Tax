@@ -505,8 +505,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkMandantMatches(benutzer);
 		// Gesuchsteller duerfen nur sich selber lesen, alle anderen Rollen sind nicht weiter
 		// eingeschraenkt
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesExceptGesuchsteller())
-			&& !hasPrincipalName(benutzer)) {
+		if (principalBean.isCallerInRole(GESUCHSTELLER) && !hasPrincipalName(benutzer)) {
 			throwViolation(benutzer);
 		}
 	}
