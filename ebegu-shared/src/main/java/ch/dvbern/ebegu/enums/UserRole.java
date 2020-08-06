@@ -192,6 +192,12 @@ public enum UserRole {
 			.collect(Collectors.toList());
 	}
 
+	public static List<UserRole> getAllRolesExceptGesuchsteller() {
+		final List<UserRole> result = Arrays.asList(UserRole.values());
+		result.remove(GESUCHSTELLER);
+		return result;
+	}
+
 	public boolean isRoleGemeindeabhaengig(){
 		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.GEMEINDE;
 	}

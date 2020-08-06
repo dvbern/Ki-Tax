@@ -544,6 +544,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		query.distinct(true);
 
 		final List<Benutzer> benutzerList = persistence.getCriteriaResults(query);
+		benutzerList.forEach(benutzer -> authorizer.checkReadAuthorization(benutzer));
 		return benutzerList;
 	}
 
