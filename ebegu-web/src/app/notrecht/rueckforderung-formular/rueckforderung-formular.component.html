@@ -1265,10 +1265,13 @@
                 </fieldset>
             </div>
 
-            <div class="col-md-8 col-md-offset-2" *ngIf="isStufe2(rueckforderungFormular) && isKantonBenutzer()">
+            <div class="col-md-8 col-md-offset-2" *ngIf="showKantonStufe2Felder(rueckforderungFormular)">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h2 translate class="margin-top-50">RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE</h2>
+                        <h2 translate class="margin-top-50">RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE
+                            <dv-tooltip id="bemerkungZurVerfuegungtooltip"
+                                        [text]="'RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP'|translate"></dv-tooltip>
+                        </h2>
                         <hr class="header"/>
                         <label for="bemerkungZurVerfuegung_id"></label>
                         <textarea md-no-autogrow
@@ -1279,12 +1282,15 @@
 								  #bemerkungZurVerfuegung="ngModel"
                                   name="bemerkungZurVerfuegung_name"
                                   [(ngModel)]="rueckforderungFormular.bemerkungFuerVerfuegung"
-                                  [disabled]="readOnly">
+                                  [disabled]="!canEditKantonStufe2Felder(rueckforderungFormular)">
                         </textarea>
                         <dv-error-messages
                             [errorObject]="bemerkungZurVerfuegung.errors"
                             inputId="bemerkungZurVerfuegung_id">
                         </dv-error-messages>
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeBemerkungen">
+                            <span>{{'ERROR_REQUIRED' | translate}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1295,7 +1301,8 @@
                 ></dv-rueckforderung-mitteilungen>
             </div>
 
-            <div class="col-md-8 col-md-offset-2" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular) || isStufe2(rueckforderungFormular)">
+            <div class="col-md-8 col-md-offset-2"
+                 *ngIf="isGeprueftKantonStufe1(rueckforderungFormular) || isStufe2(rueckforderungFormular)">
                 <div class="row">
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-30">RUECKFORDERUNG_ZAHLUNGEN</h2>

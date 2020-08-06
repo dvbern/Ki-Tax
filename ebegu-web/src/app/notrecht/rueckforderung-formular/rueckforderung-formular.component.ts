@@ -63,7 +63,7 @@ export class RueckforderungFormularComponent implements OnInit {
     @ViewChild(NgForm) private readonly form: NgForm;
 
     private readonly einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-17').endOf('day');
-    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-07-31').endOf('day');
+    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-08-31').endOf('day');
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
@@ -86,6 +86,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public showMessageFehlendeDokumenteKurzarbeit: boolean = false;
     public showMessageFehlendeDokumenteErwerbsersatz: boolean = false;
     public showMessageFehlendeVerfuegungBetrag: boolean = false;
+    public showMessageFehlendeBemerkungen: boolean = false;
 
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _provisorischerBetrag: number;
@@ -134,6 +135,7 @@ export class RueckforderungFormularComponent implements OnInit {
         this.showMessageFehlendeDokumenteKurzarbeit = false;
         this.showMessageFehlendeDokumenteErwerbsersatz = false;
         this.showMessageFehlendeVerfuegungBetrag = false;
+        this.showMessageFehlendeBemerkungen = false;
         if (!this.form.valid) {
             EbeguUtil.selectFirstInvalid();
             return;
@@ -144,11 +146,18 @@ export class RueckforderungFormularComponent implements OnInit {
         if (this.isInstitutionStufe2(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
             return;
         }
-        if ((rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
-            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2)
-            && EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)) {
-            this.showMessageFehlendeVerfuegungBetrag = true;
-            return;
+        if (rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+          ) {
+            if(EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)){
+                this.showMessageFehlendeVerfuegungBetrag = true;
+                return;
+            }
+            if(rueckforderungFormular.stufe2VerfuegungBetrag !== this.provisorischerBetrag &&
+            EbeguUtil.isNullOrUndefined(rueckforderungFormular.bemerkungFuerVerfuegung)){
+                this.showMessageFehlendeBemerkungen = true;
+                return;
+            }
         }
 
         const dialogConfig = new MatDialogConfig();
@@ -217,7 +226,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeAusbezahltAm);
             this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe1);
         }
-        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungBetrag)) {
+        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungDatum)) {
             return;
         }
         const rueckforderungZahlungStufe2 = new TSRueckforderungZahlung();
@@ -567,7 +576,10 @@ export class RueckforderungFormularComponent implements OnInit {
     public isStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
         // Dokumente sollen erst ab Stufe zwei hochgeladen werden
         return (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2)
-            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2)
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT;
     }
 
     public getRueckforderungInstitutionTypOffentlich(): TSRueckforderungInstitutionTyp {
