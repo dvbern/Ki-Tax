@@ -2108,8 +2108,11 @@
     "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Voulez-vous prolonger le délais de soumission pour cette institution? Ce délais sera valable que pour les institutions privées!",
     "RUECKFORDERUNG_FRIST_VERLAENGERN": "Prolonger le délais de soumission",
     "RUECKFORDERUNG_RESET_STATUS": "Retour à l'institution",
+    "RUECKFORDERUNG_ZURUECKHOLEN": "Récupérer",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE": "Retourner la demande à l'institution pour traitement",
     "RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT": "Voulez-vous retourner la demande à l'institution? Vous ne pourrez plus revenir en arrière",
+    "RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TITLE": "Reprende la demande à l'institution",
+    "RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TEXT": "Voulez-vous vraiment récupérer le formulaire de demande de remboursement à l'institution?",
     "RUECKFORDERUNGFORMULAR_STUFE2_PROVISORISCHE_BETRAG": "Montant probable de l’indemnité",
     "FREIGABE_DISABLED_FRIST_ABGELAUFEN": "Votre demande ne peut plus être libérée, le délais est déjà dépassé",
     "FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN": "Veuillez confirmer vos données afin de pouvoir libérer la demande",
@@ -2122,7 +2125,7 @@
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Vous avez choisi {{NAME_DRITTANWENDUNGEN}} en tant qu'application(s) tierce(s) autorisée(s). Cela donne à {{NAME_DRITTANWENDUNGEN}} une vue sur vos données. Voulez-vous continuer et sauvegarder ces changements?",
     "LABEL_OK_FORFAHREN": "Oui, continuer",
     "LABEL_NEIN_ABBRECHEN": "Non, interrompre",
-    "LABEL_ZUWEISEN": "",
-    "VERANTWORTLICHER": "",
+    "LABEL_ZUWEISEN": "Devenir le responsable",
+    "VERANTWORTLICHER": "Responsable",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
