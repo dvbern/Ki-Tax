@@ -161,6 +161,8 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private String verantwortlicherName;
 
+	private boolean uncheckedDocuments;
+
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;
@@ -509,5 +511,13 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setVerantwortlicherName(@Nullable String verantwortlicherName) {
 		this.verantwortlicherName = verantwortlicherName;
+	}
+
+	public boolean hasUncheckedDocuments() {
+		return uncheckedDocuments;
+	}
+
+	public void setUncheckedDocuments(boolean uncheckedDocuments) {
+		this.uncheckedDocuments = uncheckedDocuments;
 	}
 }

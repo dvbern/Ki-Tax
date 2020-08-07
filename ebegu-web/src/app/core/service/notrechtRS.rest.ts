@@ -172,4 +172,11 @@ export class NotrechtRS {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });
     }
+
+    public setDokumenteGeprueft(formularId: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.put(`${this.serviceURL}/dokumentegeprueft/${encodeURIComponent(formularId)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
 }

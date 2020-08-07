@@ -27,7 +27,12 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
-import {isNeuOrEingeladenStatus, isStatusRelevantForFrist, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {
+    isBereitZumVerfuegenOderVerfuegt,
+    isNeuOrEingeladenStatus,
+    isStatusRelevantForFrist,
+    TSRueckforderungStatus
+} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
@@ -64,6 +69,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
     public readOnly: boolean;
+    public readOnlyDocument: boolean;
 
     // Checkbox for Institution Stufe 1:
     public betreuungKorrektAusgewiesen: boolean;
@@ -115,6 +121,7 @@ export class RueckforderungFormularComponent implements OnInit {
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
                     this.readOnly = this.initReadOnly(response);
+                    this.readOnlyDocument = this.initReadOnlyDocument(response);
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
                     this.calculateProvBetrag(response);
@@ -162,6 +169,7 @@ export class RueckforderungFormularComponent implements OnInit {
             rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
                 this.readOnly = this.initReadOnly(response);
+                this.readOnly = this.initReadOnlyDocument(response);
                 this.initRueckforderungZahlungen(response);
                 return response;
             }));
@@ -684,6 +692,14 @@ export class RueckforderungFormularComponent implements OnInit {
         return false;
     }
 
+    private initReadOnlyDocument(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Alles ausser BEREIT_ZUM_VERRUEGEN und VERFUEGT
+        if (isBereitZumVerfuegenOderVerfuegt(rueckforderungFormular.status)) {
+            return true;
+        }
+        return false;
+    }
+
     public isInstitutionStufe1ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
@@ -754,6 +770,7 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.rueckforderungFormular$ = from(this.notrechtRS.formularZurueckholen(rueckforderungFormular)
                         .then((response: TSRueckforderungFormular) => {
                             this.readOnly = this.initReadOnly(response);
+                            this.readOnlyDocument = this.initReadOnlyDocument(response);
                             this.changeDetectorRef.markForCheck();
                             return response;
                         }));
@@ -803,6 +820,12 @@ export class RueckforderungFormularComponent implements OnInit {
     public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)
+        );
+    }
+
+    public setDokumenteGeprueft(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id)
         );
     }
 }
