@@ -348,8 +348,7 @@ public class DownloadResource {
 	 * @param uriInfo     uri
 	 * @return ein Response mit dem GeneratedDokument
 	 */
-	@ApiOperation("Erstellt ein Token f&uuml;r den Download der kompletten Korrespondenz f&uuml;r das Gesuchs mit der"
-		+ " " +
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download der kompletten Korrespondenz f&uuml;r das Gesuchs mit der" +
 		"&uuml;bergebenen Id.")
 	@Nonnull
 	@GET
@@ -376,8 +375,7 @@ public class DownloadResource {
 	}
 
 	/**
-	 * Wir benutzen dafuer die Methode getDokumentAccessTokenGeneratedDokument nicht damit man unnoetige Parameter
-	 * (zustelladresse)
+	 * Wir benutzen dafuer die Methode getDokumentAccessTokenGeneratedDokument nicht damit man unnoetige Parameter (zustelladresse)
 	 * nicht fuer jeden DokumentTyp eingeben muss
 	 */
 	@ApiOperation("Erstellt ein Token f&uuml;r den Download der Freigabequittung f&uuml;r das Gesuchs mit der " +
@@ -502,8 +500,7 @@ public class DownloadResource {
 	 * Dazu wird das File fuer die entsprechende Betreuung generiert und auf dem Server fuer eine gewisse Zeit
 	 * zum download bereitgestellt.
 	 */
-	@ApiOperation(value = "Generate Exportfile of a Verfuegung and return Token a token to download the generated "
-		+ "file",
+	@ApiOperation(value = "Generate Exportfile of a Verfuegung and return Token a token to download the generated file",
 		response = JaxDownloadFile.class)
 	@Nonnull
 	@GET
