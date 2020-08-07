@@ -22,7 +22,7 @@ import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {isBereitZumVerfuegenOderVerfuegt, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -264,11 +264,15 @@ export class NotrechtComponent implements OnInit {
         if (this.showOnlyOffenePendenzen) {
             // Diese Liste jedes Mal neu aufbauen, da unterdessen Formulare verfuegt worden sein koennten
             this.rueckforderungFormulareOffenePendenzen = this.rueckforderungFormulare
-                .filter(value => (value.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH)
-                    && (value.status !== TSRueckforderungStatus.VERFUEGT));
+                .filter(value => (this.isOffenePendenz(value)));
             this.initDataSource(this.rueckforderungFormulareOffenePendenzen);
         } else {
             this.initDataSource(this.rueckforderungFormulare);
         }
+    }
+
+    private isOffenePendenz(formular: TSRueckforderungFormular): boolean {
+        return !isBereitZumVerfuegenOderVerfuegt(formular.status)
+            && formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH;
     }
 }
