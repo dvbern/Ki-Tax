@@ -55,6 +55,11 @@ public final class KitaxUtil {
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull Betreuungspensum betreuungspensum
 	) {
+		// Wenn das Betreuungspensum 0 ist, muss nichts umgerechnet werden
+		if (betreuungspensum.getPensum().compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		}
+
 		switch (betreuungspensum.getUnitForDisplay()) {
 		case DAYS:
 			KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
