@@ -148,13 +148,13 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         if (rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
             || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
-          ) {
-            if(EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)){
+        ) {
+            if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)) {
                 this.showMessageFehlendeVerfuegungBetrag = true;
                 return;
             }
-            if(rueckforderungFormular.stufe2VerfuegungBetrag !== this.provisorischerBetrag &&
-            EbeguUtil.isNullOrUndefined(rueckforderungFormular.bemerkungFuerVerfuegung)){
+            if (rueckforderungFormular.stufe2VerfuegungBetrag !== this.provisorischerBetrag &&
+                EbeguUtil.isNullOrUndefined(rueckforderungFormular.bemerkungFuerVerfuegung)) {
                 this.showMessageFehlendeBemerkungen = true;
                 return;
             }

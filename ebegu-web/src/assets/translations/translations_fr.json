@@ -2128,5 +2128,7 @@
     "RUECKFORDERUNG_FREIGEBEN_ZUR_VERFUEGUNG": "Libérer pour la décision",
     "RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG": "Montant définitif de l’indemnité",
     "RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT": "Télécharger la décision provisoire",
+    "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Remarques concernant la décision",
+    "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Ce champ est obligatoire seulement lorsque le montant provisoire des indémnité n'est pas égal au montant définitif. Les remarques seront alors ajoutées dans la décision finale.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
