@@ -16,6 +16,7 @@
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {BenutzerRS} from '../../service/benutzerRS.rest';
@@ -48,7 +49,7 @@ export class VerantwortlicherselectController implements IController {
     public isSchulamt: boolean;
     public gemeindeId: string;
 
-    public userList: Array<TSBenutzer>;
+    public userList: Array<TSBenutzerNoDetails>;
 
     public constructor(
         private readonly benutzerRS: BenutzerRS,
@@ -153,16 +154,15 @@ export class VerantwortlicherselectController implements IController {
         });
     }
 
-    private sortUsers(userList: Array<TSBenutzer>): Array<TSBenutzer> {
+    private sortUsers(userList: Array<TSBenutzerNoDetails>): Array<TSBenutzerNoDetails> {
         return userList.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
     }
 
     /**
      *  Filters out users that have no berechtigung on the current gemeinde
      */
-    private filterUsers(userList: Array<TSBenutzer>, gemeindeId: string): Array<TSBenutzer> {
-        return userList.filter(user => user.berechtigungen
-            .some(berechtigung => berechtigung.gemeindeList
-                .some(gemeinde => gemeindeId === gemeinde.id)));
+    private filterUsers(userList: Array<TSBenutzerNoDetails>, gemeindeId: string): Array<TSBenutzerNoDetails> {
+        return userList.filter(user => user.gemeindeIds
+            .some(id => id === gemeindeId));
     }
 }

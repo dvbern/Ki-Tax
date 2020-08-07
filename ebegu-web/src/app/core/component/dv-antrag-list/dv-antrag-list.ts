@@ -19,20 +19,13 @@ import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {
-    getTSAntragStatusPendenzValues,
-    getTSAntragStatusValuesByRole,
-    TSAntragStatus,
-} from '../../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus,} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {
-    getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp,
-} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp,} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
-import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSInstitution} from '../../../../models/TSInstitution';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -96,9 +89,9 @@ export class DVAntragListController implements IController {
     public selectedAenderungsdatum: string;
     public selectedEingangsdatum: string;
     public selectedEingangsdatumSTV: string;
-    public selectedVerantwortlicherBG: TSBenutzer;
-    public selectedVerantwortlicherTS: TSBenutzer;
-    public selectedVerantwortlicherGemeinde: TSBenutzer;
+    public selectedVerantwortlicherBG: TSBenutzerNoDetails;
+    public selectedVerantwortlicherTS: TSBenutzerNoDetails;
+    public selectedVerantwortlicherGemeinde: TSBenutzerNoDetails;
     public selectedDokumenteHochgeladen: string;
     public pendenz: boolean;
     public selectedInstitutionName: string;

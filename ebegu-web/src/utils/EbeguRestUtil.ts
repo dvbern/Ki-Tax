@@ -46,6 +46,7 @@ import {TSBelegungFerieninselTag} from '../models/TSBelegungFerieninselTag';
 import {TSBelegungTagesschule} from '../models/TSBelegungTagesschule';
 import {TSBelegungTagesschuleModul} from '../models/TSBelegungTagesschuleModul';
 import {TSBenutzer} from '../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBerechtigung} from '../models/TSBerechtigung';
 import {TSBerechtigungHistory} from '../models/TSBerechtigungHistory';
 import {TSBetreuung} from '../models/TSBetreuung';
@@ -2633,6 +2634,16 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    public parseUserNoDetails(userTS: TSBenutzerNoDetails, userFromServer: any): TSBenutzerNoDetails {
+        if (userFromServer) {
+            userTS.nachname = userFromServer.nachname;
+            userTS.vorname = userFromServer.vorname;
+            userTS.gemeindeIds = userFromServer.gemeindeIds;
+            return userTS;
+        }
+        return undefined;
+    }
+
     public parseBerechtigungen(data: Array<any>): TSBerechtigung[] {
         if (!data) {
             return [];
@@ -2649,6 +2660,15 @@ export class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseUser(new TSBenutzer(), item))
             : [this.parseUser(new TSBenutzer(), data)];
+    }
+
+    public parseUserNoDetailsList(data: any): TSBenutzerNoDetails[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseUserNoDetails(new TSBenutzerNoDetails(), item))
+            : [this.parseUserNoDetails(new TSBenutzerNoDetails(), data)];
     }
 
     public berechtigungToRestObject(berechtigung: any, berechtigungTS: TSBerechtigung): any {
