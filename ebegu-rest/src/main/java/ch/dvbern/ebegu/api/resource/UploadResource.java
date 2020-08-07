@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -419,6 +420,12 @@ public class UploadResource {
 			rueckforderungDokument.setFilepfad(fileInfo.getPath());
 			rueckforderungDokument.setFilename(fileInfo.getFilename());
 			rueckforderungDokument.setFilesize(fileInfo.getSizeString());
+
+			// when uploading a new document we check the flag so we know that something has been uploaded
+			if (rueckforderungFormular.getStatus() == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
+				rueckforderungFormular.getStatus() == RueckforderungStatus.VERFUEGT_PROVISORISCH ) {
+				rueckforderungFormular.setUncheckedDocuments(true);
+			}
 
 			RueckforderungDokument documentFromDB =
 				rueckforderungDokumentService.saveDokumentGrund(rueckforderungDokument);

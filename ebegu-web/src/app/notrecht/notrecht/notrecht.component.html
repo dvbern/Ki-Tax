@@ -111,6 +111,17 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="dokumente">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <i class="fa fa-lg fa-file-o"></i>
+                    </mat-header-cell>
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
+                              *matCellDef="let formular">
+                        <i *ngIf="formular.uncheckedDocuments === true" class="fa fa-lg fa-file-o"></i>
+                    </mat-cell>
+                </ng-container>
+
                 <!-- clickable hint -->
                 <ng-container matColumnDef="is-clickable">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>

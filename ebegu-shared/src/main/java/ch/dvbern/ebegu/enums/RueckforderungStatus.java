@@ -24,9 +24,7 @@ public enum RueckforderungStatus {
 	IN_PRUEFUNG_KANTON_STUFE_1,
 	GEPRUEFT_STUFE_1,
 	IN_BEARBEITUNG_INSTITUTION_STUFE_2,
-	IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH,
 	VERFUEGT_PROVISORISCH,
-	IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV,
 	IN_PRUEFUNG_KANTON_STUFE_2,
 	VERFUEGT,
 	ABGESCHLOSSEN_OHNE_GESUCH;
@@ -38,8 +36,6 @@ public enum RueckforderungStatus {
 			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1 ||
 			status == RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2 ||
 			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
-			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH ||
-			status == RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV ||
 			status == RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH;
 	}
 
@@ -47,7 +43,6 @@ public enum RueckforderungStatus {
 		return status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1 ||
 			status == RueckforderungStatus.GEPRUEFT_STUFE_1 ||
 			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
-			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH ||
 			status == RueckforderungStatus.VERFUEGT ||
 			status == RueckforderungStatus.VERFUEGT_PROVISORISCH;
 	}

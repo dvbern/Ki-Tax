@@ -5201,6 +5201,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (rueckforderungFormular.getVerantwortlicher() != null) {
 			jaxFormular.setVerantwortlicherName(rueckforderungFormular.getVerantwortlicher().getFullName());
 		}
+		jaxFormular.setUncheckedDocuments(rueckforderungFormular.hasUncheckedDocuments());
 		jaxFormular.setHasBeenProvisorisch(rueckforderungFormular.isHasBeenProvisorisch());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());

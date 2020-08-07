@@ -52,7 +52,7 @@ export class NotrechtComponent implements OnInit {
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
     public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
-        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'is-clickable'];
+        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'dokumente', 'is-clickable'];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
 
@@ -103,6 +103,8 @@ export class NotrechtComponent implements OnInit {
                 case 'zahlungStufe2':
                     return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
                 case 'verantwortlich':
+                    return item.verantwortlicherName;
+                case 'dokumente':
                     return item.verantwortlicherName;
                 default:
                     // @ts-ignore

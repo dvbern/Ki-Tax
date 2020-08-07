@@ -242,6 +242,19 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return saveWithoutAuthCheck(rueckforderungFormular);
 	}
 
+	@Nonnull
+	@Override
+	public RueckforderungFormular resetStatusToInPruefungKantonPhase2(@Nonnull String id) {
+		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetStatusToInBearbeitungKantonPhase2",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Rueckfordungsformular invalid: " + id));
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
+		rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
+		return saveWithoutAuthCheck(rueckforderungFormular);
+	}
+
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -263,20 +276,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				RueckforderungStatus nextStatus = rueckforderungFormular.getStatus();
-				if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
-					nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-				} else {
-					// Definitiv ist es, wenn es entweder gar nicht beantragt wurde, oder schon verfuegt ist
-					if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
-						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-					} else {
-						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH;
-						// Wir muessen uns merken, dass das Formular hier nochmals geprueft werden musste, damit wir
-						// spaeter die richtige Confirmation Message anzeigen koennen
-						rueckforderungFormular.setHasBeenProvisorisch(true);
-					}
-				}
+				RueckforderungStatus nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
 				rueckforderungFormular.setStatus(nextStatus);
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
@@ -315,18 +315,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
 				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
 				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
-			}
-			break;
-		}
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH: {
-			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
-				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV);
-			}
-			break;
-		}
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV: {
-			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
 			}
 			break;
 		}
