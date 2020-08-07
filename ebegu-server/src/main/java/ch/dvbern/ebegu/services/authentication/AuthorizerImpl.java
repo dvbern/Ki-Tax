@@ -500,8 +500,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getAllAdminSuperAdminRevisorRoles())
-			&& !hasPrincipalName(benutzer)) {
+		// Benutzer duerfen grundsaetzlich von allen Rollen gelesen werden
+		// Der Mandant muss aber stimmen
+		checkMandantMatches(benutzer);
+		// Gesuchsteller duerfen nur sich selber lesen, alle anderen Rollen sind nicht weiter
+		// eingeschraenkt
+		if (principalBean.isCallerInRole(GESUCHSTELLER) && !hasPrincipalName(benutzer)) {
 			throwViolation(benutzer);
 		}
 	}
@@ -1341,8 +1345,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		switch (rueckforderungFormular.getStatus()) {
 		case EINGELADEN:
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV:{
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
 				throwViolation(rueckforderungFormular);
@@ -1352,9 +1355,44 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case NEU:
 		case IN_PRUEFUNG_KANTON_STUFE_1:
 		case IN_PRUEFUNG_KANTON_STUFE_2:
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH:
 		case GEPRUEFT_STUFE_1:
 		case VERFUEGT_PROVISORISCH:
+		case VERFUEGT:
+		case ABGESCHLOSSEN_OHNE_GESUCH: {
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationDocument(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		switch (rueckforderungFormular.getStatus()) {
+		case EINGELADEN:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
+			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		case NEU:
+		case IN_PRUEFUNG_KANTON_STUFE_1:
+		case GEPRUEFT_STUFE_1:
 		case VERFUEGT:
 		case ABGESCHLOSSEN_OHNE_GESUCH: {
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {

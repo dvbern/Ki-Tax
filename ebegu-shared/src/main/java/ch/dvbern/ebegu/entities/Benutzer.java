@@ -76,7 +76,7 @@ import static java.util.Objects.requireNonNull;
 @Audited
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Benutzer extends AbstractMutableEntity {
+public class Benutzer extends AbstractMutableEntity implements HasMandant {
 
 	private static final long serialVersionUID = 6372688971894279665L;
 

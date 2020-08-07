@@ -230,6 +230,9 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
 
+	@Column
+	private boolean uncheckedDocuments;
+
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
 
@@ -582,6 +585,14 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStufe2ZahlungJetztAusgeloest(boolean stufe2ZahlungJetztAusgeloest) {
 		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
+	public boolean hasUncheckedDocuments() {
+		return uncheckedDocuments;
+	}
+
+	public void setUncheckedDocuments(boolean uncheckedDocuments) {
+		this.uncheckedDocuments = uncheckedDocuments;
 	}
 
 	@Override

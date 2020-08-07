@@ -79,4 +79,10 @@ export class FileUploadComponent implements OnChanges, OnInit {
             this.files = changes.files.currentValue;
         }
     }
+
+    public click(fileInput: HTMLInputElement): void {
+        if (!this.readOnly) {
+            fileInput.click();
+        }
+    }
 }
