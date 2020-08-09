@@ -64,7 +64,7 @@ export class RueckforderungFormularComponent implements OnInit {
     @ViewChild(NgForm) private readonly form: NgForm;
 
     private readonly einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-17').endOf('day');
-    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-08-31').endOf('day');
+    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-07-31').endOf('day');
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
