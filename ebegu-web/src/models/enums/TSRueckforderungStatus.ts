@@ -44,6 +44,5 @@ export function isStatusRelevantForFrist(status: TSRueckforderungStatus): boolea
 }
 
 export function isBereitZumVerfuegenOderVerfuegt(status: TSRueckforderungStatus): boolean {
-    // TODO (team) hier muss dann der neue Status BEREIT_ZUM_VERFUEGEN addiert werden!
-    return status === TSRueckforderungStatus.VERFUEGT;
+    return status === TSRueckforderungStatus.VERFUEGT || status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN;
 }

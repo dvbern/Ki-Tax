@@ -976,7 +976,7 @@
                                         <span>{{'ERROR_REQUIRED' | translate}}</span>
                                     </div>
                                     <label class="required long-label margin-top-30">
-                                        {{'RUECKFORDERUNGFORMULAR_KORRESPONDENZSPRACHE' | translate}}</label>
+                                        {{'KORRESPONDENZSPRACHE' | translate}}</label>
                                     <mat-radio-group name="korrespondenzSprache"
 													 #korrespondenzSprache="ngModel"
                                                      [(ngModel)]="rueckforderungFormular.korrespondenzSprache"
@@ -1431,7 +1431,7 @@
             <dv-loading-button *ngIf="isPruefungKantonStufe1(rueckforderungFormular)" [type]="'submit'">
                 <span translate>RUECKFORDERUNG_GEPRUEFT</span>
             </dv-loading-button>
-            <button *ngIf="isPruefungKantonStufe2(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
+            <button *ngIf="isProvVerfuegenPossible(rueckforderungFormular)" type="button" class="dv-btn cancel-button"
                     (click)="provisorischVerfugen(rueckforderungFormular)">
                 <span translate>RUECKFORDERUNG_PROVISORISCH_VERFUEGEN</span>
             </button>

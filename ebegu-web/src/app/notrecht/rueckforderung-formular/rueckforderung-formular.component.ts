@@ -283,6 +283,11 @@ export class RueckforderungFormularComponent implements OnInit {
         return false;
     }
 
+    public isProvVerfuegenPossible(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.isPruefungKantonStufe2(rueckforderungFormular) &&
+            rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
     public isProvisorischVerfuegtStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
             && this.authServiceRS.isOneOfRoles(
