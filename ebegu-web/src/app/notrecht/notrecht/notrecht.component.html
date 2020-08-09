@@ -24,6 +24,14 @@
             <hr class="header">
         </div>
 
+        <div class="form-group" *ngIf="isMandantOrSuperuser()">
+            <mat-checkbox id="showOnlyOffenePendenzen_id" name="showOnlyOffenePendenzen_id"
+                          [(ngModel)]="showOnlyOffenePendenzen"
+                          (change)="toggleShowOnlyOffenePendenzen()">
+                {{ 'CORONA_LISTE_NUR_OFFENE_PENDENZEN' | translate }}
+            </mat-checkbox>
+        </div>
+
         <div class="filter">
             <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)"
                    placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
@@ -100,6 +108,17 @@
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
                         {{formular.verantwortlicherName}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="dokumente">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <i class="fa fa-lg fa-file-o"></i>
+                    </mat-header-cell>
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
+                              *matCellDef="let formular">
+                        <i *ngIf="formular.uncheckedDocuments === true" class="fa fa-lg fa-file-o"></i>
                     </mat-cell>
                 </ng-container>
 

@@ -166,8 +166,28 @@ export class NotrechtRS {
         );
     }
 
+    public verfuegtProvisorischRueckforderungFormular(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        let restRueckforderungFormular = {};
+        restRueckforderungFormular =
+            this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
+        const url = `${this.serviceURL}/provisorischVerfuegen`;
+        return this.$http.put(url, restRueckforderungFormular).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
     public setVerantwortlicher(formularId: string, username: string): IPromise<TSRueckforderungFormular> {
         return this.$http.put(`${this.serviceURL}/verantwortlicher/${encodeURIComponent(formularId)}/${encodeURIComponent(username)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
+
+    public setDokumenteGeprueft(formularId: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.put(`${this.serviceURL}/dokumentegeprueft/${encodeURIComponent(formularId)}`, {})
             .then(response => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });

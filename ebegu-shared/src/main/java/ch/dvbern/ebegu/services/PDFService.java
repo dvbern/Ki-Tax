@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.errors.MergeDocException;
 
@@ -80,6 +81,13 @@ public interface PDFService {
 	byte[] generateAnmeldebestaetigungFuerTagesschule(
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
 		boolean mitTarif,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateProvisorischeVerfuegungRuckforderungformular(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
 		boolean writeProtected,
 		@Nonnull Locale locale
 	) throws MergeDocException;

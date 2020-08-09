@@ -22,15 +22,15 @@ import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {isBereitZumVerfuegenOderVerfuegt, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
-import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 
 @Component({
     selector: 'dv-notrecht',
@@ -46,14 +46,17 @@ export class NotrechtComponent implements OnInit {
     @ViewChild(MatPaginator) public paginator: MatPaginator;
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
+    public rueckforderungFormulareOffenePendenzen: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
     // tslint:disable-next-line:no-duplicate-string
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
     public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
-        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'is-clickable'];
+        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'dokumente', 'is-clickable'];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
+
+    public showOnlyOffenePendenzen: boolean = false;
 
     public constructor(
         private readonly notrechtRS: NotrechtRS,
@@ -100,6 +103,8 @@ export class NotrechtComponent implements OnInit {
                 case 'zahlungStufe2':
                     return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
                 case 'verantwortlich':
+                    return item.verantwortlicherName;
+                case 'dokumente':
                     return item.verantwortlicherName;
                 default:
                     // @ts-ignore
@@ -252,5 +257,22 @@ export class NotrechtComponent implements OnInit {
 
     public getDisplayColumns(): string[] {
         return this.isMandantOrSuperuser() ? this.displayedColumnsMandant : this.displayedColumns;
+    }
+
+    public toggleShowOnlyOffenePendenzen(): void {
+        // tslint:disable-next-line:early-exit
+        if (this.showOnlyOffenePendenzen) {
+            // Diese Liste jedes Mal neu aufbauen, da unterdessen Formulare verfuegt worden sein koennten
+            this.rueckforderungFormulareOffenePendenzen = this.rueckforderungFormulare
+                .filter(value => (this.isOffenePendenz(value)));
+            this.initDataSource(this.rueckforderungFormulareOffenePendenzen);
+        } else {
+            this.initDataSource(this.rueckforderungFormulare);
+        }
+    }
+
+    private isOffenePendenz(formular: TSRueckforderungFormular): boolean {
+        return !isBereitZumVerfuegenOderVerfuegt(formular.status)
+            && formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH;
     }
 }

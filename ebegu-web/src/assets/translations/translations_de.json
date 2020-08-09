@@ -1977,6 +1977,7 @@
     "FREISCHALTUNG_FERIENINSEL_INFO": "Die Anmeldung ist im Moment noch nicht möglich.",
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
+    "CORONA_LISTE_NUR_OFFENE_PENDENZEN": "Nur offene Pendenzen bis 15.09.2020",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
     "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Rückerstattung Kanton für nicht angebotene Betreuungstage",
@@ -1993,6 +1994,7 @@
     "RUECKFORDERUNG_STATUS_GEPRUEFT_STUFE_1":  "Geprüft",
     "RUECKFORDERUNG_STATUS_IN_BEARBEITUNG_INSTITUTION_STUFE_2": "In Bearbeitung Institution Stufe 2",
     "RUECKFORDERUNG_STATUS_VERFUEGT_PROVISORISCH": "Provisorisch verfügt",
+    "RUECKFORDERUNG_STATUS_BEREIT_ZUM_VERFUEGEN": "Bereit zum Verfügen",
     "RUECKFORDERUNG_STATUS_IN_PRUEFUNG_KANTON_STUFE_2":  "In Prüfung Kanton Stufe 2",
     "RUECKFORDERUNG_STATUS_ABGESCHLOSSEN_OHNE_GESUCH": "Abgeschlossen ohne Gesuch",
     "RUECKFORDERUNG_STATUS_VERFUEGT": "Verfügt",
@@ -2127,5 +2129,11 @@
     "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
     "LABEL_ZUWEISEN": "Mir zuweisen",
     "VERANTWORTLICHER": "Verantwortlich",
+    "RUECKFORDERUNG_PROVISORISCH_VERFUEGEN": "Provisorisch Verfügen",
+    "RUECKFORDERUNG_FREIGEBEN_ZUR_VERFUEGUNG": "Freigeben zur Verfügung",
+    "RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG": "Gewährte Ausfallentschädigung",
+    "RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT": "Provisorische Verfügung herunterladen",
+    "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Bemerkung zur Verfügung",
+    "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Dieser Feld ist Pflichtig nur wenn die Eingereichte Ausfallentschädigung nicht gleich als die Gewährte Ausfallentschädigung sind. Die Bemerkungen werden in diesem Fall auf der definitive Verfügung ausgedrückt werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
