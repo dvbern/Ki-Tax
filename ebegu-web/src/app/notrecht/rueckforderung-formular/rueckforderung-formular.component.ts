@@ -28,6 +28,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
 import {
+    isBereitZumVerfuegenOderVerfuegt,
     isNeuOrEingeladenStatus,
     isStatusRelevantForFrist,
     TSRueckforderungStatus
@@ -68,6 +69,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
     public readOnly: boolean;
+    public readOnlyDocument: boolean;
 
     // Checkbox for Institution Stufe 1:
     public betreuungKorrektAusgewiesen: boolean;
@@ -121,6 +123,7 @@ export class RueckforderungFormularComponent implements OnInit {
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
                     this.readOnly = this.initReadOnly(response);
+                    this.readOnlyDocument = this.initReadOnlyDocument(response);
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
                     this.calculateProvBetrag(response);
@@ -183,6 +186,7 @@ export class RueckforderungFormularComponent implements OnInit {
             rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
                 this.readOnly = this.initReadOnly(response);
+                this.readOnly = this.initReadOnlyDocument(response);
                 this.initRueckforderungZahlungen(response);
                 return response;
             }));
@@ -286,6 +290,11 @@ export class RueckforderungFormularComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    public isProvVerfuegenPossible(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.isPruefungKantonStufe2(rueckforderungFormular) &&
+            rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
     }
 
     public isProvisorischVerfuegtStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
@@ -718,6 +727,14 @@ export class RueckforderungFormularComponent implements OnInit {
         }
     }
 
+    private initReadOnlyDocument(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Alles ausser BEREIT_ZUM_VERRUEGEN und VERFUEGT
+        if (isBereitZumVerfuegenOderVerfuegt(rueckforderungFormular.status)) {
+            return true;
+        }
+        return false;
+    }
+
     public isInstitutionStufe1ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
@@ -759,7 +776,6 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
-        console.warn('clicket');
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
@@ -773,6 +789,7 @@ export class RueckforderungFormularComponent implements OnInit {
                     this.rueckforderungFormular$ = from(this.notrechtRS.resetStatus(rueckforderungFormular)
                         .then((response: TSRueckforderungFormular) => {
                             this.changeDetectorRef.markForCheck();
+                            this.readOnly = this.initReadOnly(response);
                             return response;
                         }));
                 },
@@ -780,9 +797,35 @@ export class RueckforderungFormularComponent implements OnInit {
                 });
     }
 
-    public showButtonResetStatus(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
-            && this.isPruefungKantonStufe2(rueckforderungFormular);
+    public formularZurueckholen(rueckforderungFormular: TSRueckforderungFormular): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.rueckforderungFormular$ = from(this.notrechtRS.formularZurueckholen(rueckforderungFormular)
+                        .then((response: TSRueckforderungFormular) => {
+                            this.readOnly = this.initReadOnly(response);
+                            this.readOnlyDocument = this.initReadOnlyDocument(response);
+                            this.changeDetectorRef.markForCheck();
+                            return response;
+                        }));
+                },
+                () => {
+                });
+    }
+
+    public showButtonZurueckholen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        const fristAbgelaufen = this.fristSchonErreicht(rueckforderungFormular);
+        const roleMandant = this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+        const statusInstitution2 = rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
+        const datenErfasst = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp);
+        return fristAbgelaufen && roleMandant && statusInstitution2 && datenErfasst;
     }
 
     public getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): string {
@@ -864,6 +907,12 @@ export class RueckforderungFormularComponent implements OnInit {
     public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)
+        );
+    }
+
+    public setDokumenteGeprueft(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id)
         );
     }
 }

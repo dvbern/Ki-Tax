@@ -42,3 +42,7 @@ export function isStatusRelevantForFrist(status: TSRueckforderungStatus): boolea
         || status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
         || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
 }
+
+export function isBereitZumVerfuegenOderVerfuegt(status: TSRueckforderungStatus): boolean {
+    return status === TSRueckforderungStatus.VERFUEGT || status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN;
+}

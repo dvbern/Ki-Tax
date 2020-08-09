@@ -306,6 +306,23 @@ public class NotrechtResource {
 		return converter.rueckforderungFormularToJax(formular);
 	}
 
+	@ApiOperation("Setzt den Status des Formulars zurueck auf 'In Pruefung Kanton Phase 2'")
+	@Nonnull
+	@POST
+	@Path("/zurueckholen")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungFormular resetStatusToInPruefungKantonPhase2(
+		@Nonnull @NotNull String formularId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(formularId);
+		RueckforderungFormular formular = rueckforderungFormularService.resetStatusToInPruefungKantonPhase2(formularId);
+		return converter.rueckforderungFormularToJax(formular);
+	}
+
 	@ApiOperation(value = "Gibt alle Rückforderungsdokumente zurück, die die aktuelle RueckforderungForm",
 		responseContainer = "List", response = JaxRueckforderungFormular.class)
 	@GET
@@ -433,6 +450,33 @@ public class NotrechtResource {
 
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.provisorischeVerfuegung(rueckforderungFormularToMerge);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
+
+	@ApiOperation(value = "Setzt einen Verantwortlichen für ein Rückforderungs Formular", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Path("/dokumentegeprueft/{formularId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungFormular setDokumenteGeprueft(
+		@Nonnull @NotNull @PathParam("formularId") JaxId formularId) {
+
+		Objects.requireNonNull(formularId);
+
+		RueckforderungFormular rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(formularId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("setDokumenteGeprueft",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					formularId.getId()));
+
+		rueckforderungFormular.setUncheckedDocuments(false);
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			rueckforderungFormularService.save(rueckforderungFormular);
 
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}

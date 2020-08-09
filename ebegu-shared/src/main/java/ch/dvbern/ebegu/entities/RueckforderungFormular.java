@@ -245,6 +245,9 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(nullable = true)
 	private String bemerkungFuerVerfuegung;
 
+	@Column
+	private boolean uncheckedDocuments;
+
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
 
@@ -625,6 +628,14 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
 		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	public boolean hasUncheckedDocuments() {
+		return uncheckedDocuments;
+	}
+
+	public void setUncheckedDocuments(boolean uncheckedDocuments) {
+		this.uncheckedDocuments = uncheckedDocuments;
 	}
 
 	@Override

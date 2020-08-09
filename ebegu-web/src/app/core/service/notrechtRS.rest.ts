@@ -127,6 +127,16 @@ export class NotrechtRS {
         );
     }
 
+    public formularZurueckholen(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        const data = `${encodeURIComponent(rueckforderungFormular.id)}`;
+        return this.$http.post(`${this.serviceURL}/zurueckholen`, data).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
     public getRueckforderungDokumente(rueckforderungFormularID: string): IPromise<TSRueckforderungDokument[]> {
         return this.$http.get(`${this.serviceURL}/dokumente/${encodeURIComponent(rueckforderungFormularID)}`, {})
             .then(response => {
@@ -171,6 +181,13 @@ export class NotrechtRS {
 
     public setVerantwortlicher(formularId: string, username: string): IPromise<TSRueckforderungFormular> {
         return this.$http.put(`${this.serviceURL}/verantwortlicher/${encodeURIComponent(formularId)}/${encodeURIComponent(username)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
+
+    public setDokumenteGeprueft(formularId: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.put(`${this.serviceURL}/dokumentegeprueft/${encodeURIComponent(formularId)}`, {})
             .then(response => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });
