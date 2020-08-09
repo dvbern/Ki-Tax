@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
@@ -104,4 +105,10 @@ public interface GeneratedDokumentService {
 		@Nonnull Boolean mitTarif,
 		@Nonnull Boolean forceCreation
 	) throws MimeTypeParseException, MergeDocException;
+
+	@Nonnull
+	WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(RueckforderungFormular rueckforderungFormular) throws MimeTypeParseException, MergeDocException;
+
+	@Nullable
+	WriteProtectedDokument findGeneratedNotrechtDokument(@Nonnull String id, @Nonnull String filename);
 }

@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
@@ -101,6 +102,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
 	@Nullable
+	private BigDecimal stufe2VoraussichtlicheBetrag;
+
+	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Nullable
@@ -158,10 +162,16 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private String coronaErwerbsersatzSonstiges;
 
+	@Nonnull
+	private Sprache korrespondenzSprache;
+
 	@Nullable
 	private String verantwortlicherName;
 
 	private boolean uncheckedDocuments;
+
+	@Nullable
+	private String bemerkungFuerVerfuegung;
 
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
@@ -505,6 +515,24 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	}
 
 	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	public void setKorrespondenzSprache(@Nonnull Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	@Nullable
 	public String getVerantwortlicherName() {
 		return verantwortlicherName;
 	}
@@ -519,5 +547,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setUncheckedDocuments(boolean uncheckedDocuments) {
 		this.uncheckedDocuments = uncheckedDocuments;
+	}
+
+	@Nullable
+	public String getBemerkungFuerVerfuegung() {
+		return bemerkungFuerVerfuegung;
+	}
+
+	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
+		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
 	}
 }

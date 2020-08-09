@@ -126,19 +126,22 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Override
 	public void sendInfoSchulamtAnmeldungTagesschuleUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
 			"InfoSchulamtAnmeldungTagesschuleUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleUebernommen(abstractAnmeldung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleUebernommen(abstractAnmeldung, gesuchsteller,
+					adr, sprache),
 			AntragStatus.values()
 		);
 	}
 
 	@Override
 	public void sendInfoSchulamtAnmeldungAbgelehnt(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
 			"InfoSchulamtAnmeldungAbgelehnt",
@@ -153,12 +156,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Override
 	public void sendInfoSchulamtAnmeldungFerieninselUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
 			"InfoSchulamtAnmeldungFerieninselUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungFerieninselUebernommen(abstractAnmeldung, gesuchsteller, adr,
+				mailTemplateConfig.getInfoSchulamtAnmeldungFerieninselUebernommen(abstractAnmeldung, gesuchsteller,
+					adr,
 					sprache),
 			AntragStatus.values()
 		);
@@ -298,7 +303,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					return true;
 				}
 
-				LOG.info("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 or email address are null: {} : {}",
+				LOG.info("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 or email address are null: "
+						+ "{} : {}",
 					gesuchsteller,
 					emailAddress);
 				return false;
@@ -467,7 +473,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			.append(Constants.LINE_BREAK);
 		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
 
-
 		try {
 			String supportMail = ebeguConfiguration.getSupportMail();
 			sendMessage(subject, content.toString(), supportMail);
@@ -506,7 +511,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			return;
 		}
 		// Gewisse Mails sollen nur in bestimmten Status gesendet werden.
-		if (ArrayUtils.isNotEmpty(statusInWhichToSendMail) && EnumUtil.isNoneOf(gesuch.getStatus(), statusInWhichToSendMail)) {
+		if (ArrayUtils.isNotEmpty(statusInWhichToSendMail) && EnumUtil.isNoneOf(gesuch.getStatus(),
+			statusInWhichToSendMail)) {
 			return;
 		}
 
@@ -557,12 +563,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Override
 	public void sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
 			"InfoSchulamtAnmeldungTagesschuleAkzeptiert",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleAkzeptiert(abstractAnmeldung, gesuchsteller, adr
+					, sprache),
 			AntragStatus.values()
 		);
 	}
@@ -602,7 +610,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			EbeguUtil.extractGemeindeSprachen(gesuch.extractGemeinde(), gemeindeService);
 
 		if (StringUtils.isNotEmpty(mailaddressTS)) {
-			String message = mailTemplateConfig.getInfoGesuchVerfuegtVerantwortlicherTS(gesuch, mailaddressTS, sprachen);
+			String message = mailTemplateConfig.getInfoGesuchVerfuegtVerantwortlicherTS(gesuch, mailaddressTS,
+				sprachen);
 			sendMessageWithTemplate(message, mailaddressTS);
 			LOG.info("Email fuer InfoGesuchVerfuegtVerantwortlicherSCH wurde versendet an {}", mailaddressTS);
 		} else {
@@ -640,7 +649,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Nullable
 	@Override
-	public String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+	public String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		String mailaddress = institutionStammdaten.getMail();
 		try {
@@ -672,5 +681,23 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				institutionStammdaten.getInstitution().getName());
 		}
 		return null;
+	}
+
+	@Override
+	public void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
+		String mailaddress = institutionStammdaten.getMail();
+
+		if (StringUtils.isNotEmpty(mailaddress)) {
+			String message = mailTemplateConfig.getNotrechtProvisorischeVerfuegung(rueckforderungFormular,
+				institutionStammdaten, mailaddress
+			);
+			sendMessageWithTemplate(message, mailaddress);
+			LOG.debug("Email fuer RueckforderungProvisorischVerfuegt wurde versendet an {}", mailaddress);
+
+		} else {
+			LOG.warn("Skipping RueckforderungProvisorischVerfuegt because E-Mail of Institution is null");
+		}
+
 	}
 }

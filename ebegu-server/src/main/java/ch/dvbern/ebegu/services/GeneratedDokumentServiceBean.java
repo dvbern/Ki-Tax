@@ -54,12 +54,15 @@ import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -164,13 +167,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Override
 	@Nullable
-	public WriteProtectedDokument findGeneratedDokument(@Nonnull String gesuchId, @Nonnull String filename) {
+	public WriteProtectedDokument findGeneratedDokument(@Nonnull String id, @Nonnull String filename) {
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GeneratedDokument> query = cb.createQuery(GeneratedDokument.class);
 		Root<GeneratedDokument> root = query.from(GeneratedDokument.class);
 
-		Predicate predGesuch = cb.equal(root.get(GeneratedDokument_.gesuch).get(AbstractEntity_.id), gesuchId);
+		Predicate predGesuch = cb.equal(root.get(GeneratedDokument_.gesuch).get(AbstractEntity_.id), id);
 		Predicate predFileName = cb.equal(root.get(FileMetadata_.filename), filename);
 
 		query.where(predGesuch, predFileName);
@@ -192,6 +195,22 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		query.where(predZahlungsauftrag, predFileName);
 		return persistence.getCriteriaSingleResult(query);
 	}
+
+	@Override
+	@Nullable
+	public WriteProtectedDokument findGeneratedNotrechtDokument(@Nonnull String id, @Nonnull String filename) {
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<GeneratedNotrechtDokument> query = cb.createQuery(GeneratedNotrechtDokument.class);
+		Root<GeneratedNotrechtDokument> root = query.from(GeneratedNotrechtDokument.class);
+
+		Predicate predGesuch = cb.equal(root.get(GeneratedNotrechtDokument_.rueckforderungFormular).get(AbstractEntity_.id), id);
+		Predicate predFileName = cb.equal(root.get(FileMetadata_.filename), filename);
+
+		query.where(predGesuch, predFileName);
+		return persistence.getCriteriaSingleResult(query);
+	}
+
 
 	/**
 	 * Sucht ein WriteProtectedDokument mit demselben Namen und Pfad und vom selben Gesuch. Wen das Dokument
@@ -218,6 +237,16 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				filePathToRemove = writeProtectedDokument.getFilepfad();
 			}
 			((GeneratedDokument) writeProtectedDokument).setGesuch((Gesuch) entity);
+		}
+		else if (entity instanceof RueckforderungFormular){
+			writeProtectedDokument = this.findGeneratedNotrechtDokument(entity.getId(), fileName);
+			if (writeProtectedDokument == null) {
+				writeProtectedDokument = new GeneratedNotrechtDokument();
+			} else {
+				//Die Datei wird am Ende geloscht, um unvollstaenige Daten zu vermeiden falls was kaputt geht
+				filePathToRemove = writeProtectedDokument.getFilepfad();
+			}
+			((GeneratedNotrechtDokument) writeProtectedDokument).setRueckforderungFormular((RueckforderungFormular) entity);
 		} else { // case of pain001
 			writeProtectedDokument = this.findPain001Dokument(entity.getId(), fileName);
 			if (writeProtectedDokument == null) {
@@ -546,6 +575,15 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		return Optional.ofNullable(persistedDokument);
 	}
 
+	@Nonnull
+	private Optional<WriteProtectedDokument> getMaybeExistingGeneratedNotrechtDokument(
+		String rueckforderungFormularId,
+		String fileNameForGeneratedDokumentTyp) {
+		final WriteProtectedDokument persistedDokument =
+			findGeneratedNotrechtDokument(rueckforderungFormularId, fileNameForGeneratedDokumentTyp);
+		return Optional.ofNullable(persistedDokument);
+	}
+
 	@SuppressWarnings("Duplicates")
 	@Nullable
 	private WriteProtectedDokument getDocumentIfExistsAndIsWriteProtected(
@@ -563,6 +601,26 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				// mit
 				// einer eventuellen Fehlermeldung sowieso nichts anfangen könnte, geben wir das bereits vorhandene
 				// Dokument zurück, loggen aber den Vorfall.
+				LOGGER.error(
+					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
+						+ "PersistedDokument-ID: {}",
+					optionalDokument.get()
+						.getId());
+			}
+			return optionalDokument.get();
+		}
+		return null;
+	}
+
+	@Nullable
+	private WriteProtectedDokument getNotrechtDocumentIfExistsAndIsWriteProtected(
+		String rueckforderungFormularId,
+		String fileNameForGeneratedDokumentTyp,
+		@Nonnull Boolean forceCreation) {
+		Optional<WriteProtectedDokument> optionalDokument =
+			getMaybeExistingGeneratedNotrechtDokument(rueckforderungFormularId, fileNameForGeneratedDokumentTyp);
+		if (optionalDokument.isPresent() && optionalDokument.get().isWriteProtected()) {
+			if (forceCreation) {
 				LOGGER.error(
 					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
 						+ "PersistedDokument-ID: {}",
@@ -1018,6 +1076,31 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 					GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF,
 				gesuch, fileNameForGeneratedDokumentTyp, forceCreation);
 		}
+		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(RueckforderungFormular rueckforderungFormular) throws MimeTypeParseException, MergeDocException {
+		//Institution haben keine Sprache, so default DE
+		String fileNameForGeneratedDokumentTyp = DokumenteUtil
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+					rueckforderungFormular.getId(), Sprache.DEUTSCH.getLocale());
+
+		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
+				fileNameForGeneratedDokumentTyp,
+				false);
+		if (documentIfExistsAndIsWriteProtected != null) {
+			return documentIfExistsAndIsWriteProtected;
+		}
+
+		WriteProtectedDokument persistedDokument = null;
+			byte[] data = pdfService.generateProvisorischeVerfuegungRuckforderungformular(rueckforderungFormular, true,
+				Sprache.DEUTSCH.getLocale());
+			persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+				rueckforderungFormular, fileNameForGeneratedDokumentTyp, true);
+
 		return persistedDokument;
 	}
 }

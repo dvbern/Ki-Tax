@@ -1357,6 +1357,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case IN_PRUEFUNG_KANTON_STUFE_2:
 		case GEPRUEFT_STUFE_1:
 		case VERFUEGT_PROVISORISCH:
+		case BEREIT_ZUM_VERFUEGEN:
 		case VERFUEGT:
 		case ABGESCHLOSSEN_OHNE_GESUCH: {
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {

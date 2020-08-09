@@ -23,6 +23,7 @@ export enum TSRueckforderungStatus {
     GEPRUEFT_STUFE_1 = 'GEPRUEFT_STUFE_1',
     IN_BEARBEITUNG_INSTITUTION_STUFE_2 = 'IN_BEARBEITUNG_INSTITUTION_STUFE_2',
     VERFUEGT_PROVISORISCH = 'VERFUEGT_PROVISORISCH',
+    BEREIT_ZUM_VERFUEGEN = 'BEREIT_ZUM_VERFUEGEN',
     IN_PRUEFUNG_KANTON_STUFE_2 = 'IN_PRUEFUNG_KANTON_STUFE_2',
     VERFUEGT = 'VERFUEGT',
     ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH',
@@ -43,6 +44,5 @@ export function isStatusRelevantForFrist(status: TSRueckforderungStatus): boolea
 }
 
 export function isBereitZumVerfuegenOderVerfuegt(status: TSRueckforderungStatus): boolean {
-    // TODO (team) hier muss dann der neue Status BEREIT_ZUM_VERFUEGEN addiert werden!
-    return status === TSRueckforderungStatus.VERFUEGT;
+    return status === TSRueckforderungStatus.VERFUEGT || status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN;
 }

@@ -26,6 +26,7 @@ public enum RueckforderungStatus {
 	IN_BEARBEITUNG_INSTITUTION_STUFE_2,
 	VERFUEGT_PROVISORISCH,
 	IN_PRUEFUNG_KANTON_STUFE_2,
+	BEREIT_ZUM_VERFUEGEN,
 	VERFUEGT,
 	ABGESCHLOSSEN_OHNE_GESUCH;
 
@@ -44,7 +45,8 @@ public enum RueckforderungStatus {
 			status == RueckforderungStatus.GEPRUEFT_STUFE_1 ||
 			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
 			status == RueckforderungStatus.VERFUEGT ||
-			status == RueckforderungStatus.VERFUEGT_PROVISORISCH;
+			status == RueckforderungStatus.VERFUEGT_PROVISORISCH ||
+			status == RueckforderungStatus.BEREIT_ZUM_VERFUEGEN;
 	}
 }
 
