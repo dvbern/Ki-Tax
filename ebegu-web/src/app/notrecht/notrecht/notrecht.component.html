@@ -24,6 +24,14 @@
             <hr class="header">
         </div>
 
+        <div class="form-group" *ngIf="isMandantOrSuperuser()">
+            <mat-checkbox id="showOnlyOffenePendenzen_id" name="showOnlyOffenePendenzen_id"
+                          [(ngModel)]="showOnlyOffenePendenzen"
+                          (change)="toggleShowOnlyOffenePendenzen()">
+                {{ 'CORONA_LISTE_NUR_OFFENE_PENDENZEN' | translate }}
+            </mat-checkbox>
+        </div>
+
         <div class="filter">
             <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)"
                    placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">

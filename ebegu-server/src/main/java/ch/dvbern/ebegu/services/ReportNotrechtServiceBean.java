@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.notrecht.NotrechtDataRow;
@@ -117,12 +118,20 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 		row.setInstitutionTyp(formular.getInstitutionTyp());
 
-		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
-		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
-		row.setStufe2InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeBetreuung()));
-		row.setStufe2KantonKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlTage()));
-		row.setStufe2KantonKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlStunden()));
-		row.setStufe2KantonKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2KantonKostenuebernahmeBetreuung()));
+		if (formular.getInstitutionTyp() == null || formular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
+			row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
+			row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
+			row.setStufe2InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeBetreuung()));
+			row.setStufe2KantonKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlTage()));
+			row.setStufe2KantonKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlStunden()));
+			row.setStufe2KantonKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2KantonKostenuebernahmeBetreuung()));
+		} else {
+			row.setBetragEntgangeneElternbeitraege(printBigDecimal(formular.getBetragEntgangeneElternbeitraege()));
+			row.setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(printBigDecimal(formular.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten()));
+			row.setRueckerstattungNichtAngeboteneBetreuungstage(printBigDecimal(formular.getAnzahlNichtAngeboteneEinheiten()));
+			row.setKurzarbeitBetrag(printBigDecimal(formular.getKurzarbeitBetrag()));
+			row.setCoronaErwerbsersatzBetrag(printBigDecimal(formular.getCoronaErwerbsersatzBetrag()));
+		}
 
 		row.setStufe2VerfuegungBetrag(printBigDecimal(formular.getStufe2VerfuegungBetrag()));
 		row.setStufe2VerfuegungDatum(formular.getStufe2VerfuegungDatum());

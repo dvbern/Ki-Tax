@@ -20,6 +20,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
+import {TSSprache} from './enums/TSSprache';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
@@ -66,6 +67,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public coronaErwerbsersatzDefinitivVerfuegt: boolean;
     public coronaErwerbsersatzKeinAntragBegruendung: string;
     public coronaErwerbsersatzSonstiges: string;
+    public korrespondenzSprache: TSSprache;
+    public bemerkungFuerVerfuegung: string;
 
     public constructor() {
         super();

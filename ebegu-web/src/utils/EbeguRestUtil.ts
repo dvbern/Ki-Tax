@@ -3938,6 +3938,8 @@ export class EbeguRestUtil {
             rueckforderungFormularFromServer.coronaErwerbsersatzKeinAntragBegruendung;
         rueckforderungFormular.coronaErwerbsersatzSonstiges =
             rueckforderungFormularFromServer.coronaErwerbsersatzSonstiges;
+        rueckforderungFormular.korrespondenzSprache = rueckforderungFormularFromServer.korrespondenzSprache;
+        rueckforderungFormular.bemerkungFuerVerfuegung = rueckforderungFormularFromServer.bemerkungFuerVerfuegung;
         return rueckforderungFormular;
     }
 
@@ -4018,6 +4020,8 @@ export class EbeguRestUtil {
             rueckforderungFormularTS.coronaErwerbsersatzKeinAntragBegruendung;
         rueckforderungFormularRest.coronaErwerbsersatzSonstiges =
             rueckforderungFormularTS.coronaErwerbsersatzSonstiges;
+        rueckforderungFormularRest.korrespondenzSprache = rueckforderungFormularTS.korrespondenzSprache;
+        rueckforderungFormularRest.bemerkungFuerVerfuegung = rueckforderungFormularTS.bemerkungFuerVerfuegung;
         return rueckforderungFormularRest;
     }
 
