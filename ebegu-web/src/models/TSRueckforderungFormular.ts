@@ -50,6 +50,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
     private _verantwortlicherName: string;
+    private _uncheckedDocuments: string;
     public institutionTyp: TSRueckforderungInstitutionTyp;
     public extendedEinreichefrist: moment.Moment;
     public relevantEinreichungsfrist: moment.Moment;
@@ -246,6 +247,14 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public set verantwortlicherName(value: string) {
         this._verantwortlicherName = value;
+    }
+
+    public get uncheckedDocuments(): string {
+        return this._uncheckedDocuments;
+    }
+
+    public set uncheckedDocuments(value: string) {
+        this._uncheckedDocuments = value;
     }
 
     public isKurzarbeitProzessBeendet(): boolean {

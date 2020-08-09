@@ -17,7 +17,7 @@
 <div>
     <table class="table outer-table" width="100%">
         <tr [ngClass]="{'file-required': files?.length === 0, 'file-uploaded': files?.length > 0}"
-        (click)="fileInput.click()">
+        (click)="click(fileInput)">
             <td style="white-space: pre-wrap;">{{title | translate}}</td>
             <td width="2%"
                 class="symbol"
