@@ -234,13 +234,19 @@ export class NotrechtComponent implements OnInit {
         }
     };
 
-    public openRueckforderungFormular(formular: TSRueckforderungFormular): void {
+    public openRueckforderungFormular(formular: TSRueckforderungFormular, event: any): void {
         if (!this.openFormularAllowed(formular)) {
             return;
         }
-        this.$state.go('notrecht.form', {
-            rueckforderungId: formular.id,
-        });
+        if (event.ctrlKey==1){
+            const url = this.$state.href('notrecht.form', {rueckforderungId: formular.id});
+            window.open(url,'_blank');
+        }else{
+            this.$state.go('notrecht.form', {
+                rueckforderungId: formular.id,
+            });
+        }
+
     }
 
     public translateRueckforderungStatus(status: string): string {

@@ -1362,6 +1362,7 @@
                                 rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
                             [files]="rueckforderungAngabenDokumente"
                             [readOnly]="readOnlyDocument"
+                            [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
                         </dv-file-upload>
                     </div>
@@ -1379,6 +1380,7 @@
                                 rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
                             [files]="rueckforderungKommunikationDokumente"
                             [readOnly]="readOnlyDocument"
+                            [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
                         </dv-file-upload>
                     </div>
@@ -1396,6 +1398,7 @@
                                 rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
                             [files]="rueckforderungEinsatzplaeneDokumente"
                             [readOnly]="readOnlyDocument"
+                            [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
                         </dv-file-upload>
                     </div>
@@ -1414,6 +1417,7 @@
                                     rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
                                 [files]="rueckforderungKurzarbeitDokumente"
                                 [readOnly]="readOnlyDocument"
+                                [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
                             </dv-file-upload>
                         </div>
@@ -1431,6 +1435,7 @@
                                     rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
                                 [files]="rueckforderungErwerbsersatzDokumente"
                                 [readOnly]="readOnlyDocument"
+                                [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
                             </dv-file-upload>
                         </div>
@@ -1448,7 +1453,7 @@
         </div>
 
         <!-- Buttons -->
-        <div class="dv-footer margin-top-50">
+        <div class="dv-footer margin-top-50 flexbreak">
             <dv-loading-button
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"
                 [type]="'submit'"

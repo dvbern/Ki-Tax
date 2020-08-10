@@ -38,6 +38,7 @@ export class FileUploadComponent implements OnChanges, OnInit {
 
     @Input() public title: string;
     @Input() public readOnly: boolean;
+    @Input() public readOnlyDelete: boolean;
     @Output() public readonly download: EventEmitter<any> = new EventEmitter();
     @Output() public readonly delete: EventEmitter<any> = new EventEmitter();
     @Output() public readonly uploadFile: EventEmitter<any> = new EventEmitter();

@@ -314,9 +314,7 @@ public class NotrechtResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public JaxRueckforderungFormular resetStatusToInPruefungKantonPhase2(
-		@Nonnull @NotNull String formularId,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response
+		@Nonnull @NotNull String formularId, @Context UriInfo uriInfo, @Context HttpServletResponse response
 	) {
 		Objects.requireNonNull(formularId);
 		RueckforderungFormular formular = rueckforderungFormularService.resetStatusToInPruefungKantonPhase2(formularId);

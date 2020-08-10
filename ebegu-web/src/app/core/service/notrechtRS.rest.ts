@@ -65,7 +65,6 @@ export class NotrechtRS {
     public findRueckforderungFormular(rueckforderungFormularID: string): IPromise<TSRueckforderungFormular> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(rueckforderungFormularID)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING RueckforderungFormular REST object ', response.data);
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });
     }
