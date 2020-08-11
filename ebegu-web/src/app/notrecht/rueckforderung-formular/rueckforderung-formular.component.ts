@@ -125,7 +125,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
 
         const anchor: string = this.$transition$.params().anchor;
 
-        if (EbeguUtil.isNotNullOrUndefined(anchor)) {
+        if (EbeguUtil.isNullOrUndefined(anchor)) {
             return;
         }
 
