@@ -155,13 +155,13 @@ export class RueckforderungFormularComponent implements OnInit {
         ) {
             if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)) {
                 this.showMessageFehlendeVerfuegungBetrag = true;
-                document.getElementById("gewaehrte_ausfallentschaedigung_stufe2_id").focus();
+                document.getElementById('gewaehrte_ausfallentschaedigung_stufe2_id').focus();
                 return;
             }
             if (rueckforderungFormular.stufe2VerfuegungBetrag !== this.provisorischerBetrag &&
                 EbeguUtil.isNullOrUndefined(rueckforderungFormular.bemerkungFuerVerfuegung)) {
                 this.showMessageFehlendeBemerkungen = true;
-                document.getElementById("bemerkungZurVerfuegung_id").focus();
+                document.getElementById('bemerkungZurVerfuegung_id').focus();
                 return;
             }
         }

@@ -48,7 +48,8 @@ export function isBereitZumVerfuegenOderVerfuegt(status: TSRueckforderungStatus)
 }
 
 export function isAnyOfVerfuegtOrPruefungKantonStufe2(status: TSRueckforderungStatus): boolean {
-    return status === TSRueckforderungStatus.VERFUEGT || status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN ||
-        status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH || status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
+    return status === TSRueckforderungStatus.VERFUEGT ||
+        status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN ||
+        status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH ||
+        status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
 }
-
