@@ -272,7 +272,7 @@ export class NotrechtComponent implements OnInit {
     }
 
     private isOffenePendenz(formular: TSRueckforderungFormular): boolean {
-        return !isBereitZumVerfuegenOderVerfuegt(formular.status)
+        return formular.isPrivat() && !isBereitZumVerfuegenOderVerfuegt(formular.status)
             && formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH;
     }
 }
