@@ -14,8 +14,7 @@ Content-Type: text/html;charset=utf-8
     ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung für Kitas und
-		TFO: Provisorische Verfügung / Coronavirus et accueil extrafamilial : décision provisoire</title>
+	<title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Verfügung / décision</title>
 
 </head>
 
@@ -23,21 +22,38 @@ Content-Type: text/html;charset=utf-8
 
 <div>
 	<p>
+		<b>
+			Ausfallentschädigung im Bereich familienergänzende Kinderbetreuung für entgangene Betreuungsbeiträge
+			infolge der Massnahmen zur Bekämpfung des Coronavirus (Covid-19)
+		</b>
+	</p>
+	<p>
 		Sehr geehrte Dame, sehr geehrter Herr
 	</p>
 	<p>
-		Die Prüfung und Berechnung Ihres Gesuchs zur Corona-Finanzierung wurde provisorisch verfügt.
-		Sie können die Ergebnisse <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">Hier</a>
-		einsehen.
+		Wir haben Ihr Gesuch um eine Ausfallentschädigung für entgangene Betreuungsbeiträge infolge der Massnahmen zur
+		Bekämpfung des Coronavirus geprüft. Ihre Verfügung finden Sie unter <a href="<#if configuration
+		.clientUsingHTTPS>https://<#else>http://</#if>${configuration
+		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">diesem Link</a>.
 	</p>
 	<p>
-		Mit freundlichen Grüssen
+		Bitte beachten Sie, dass die Ausfallentschädigung unter Vorbehalt einer späteren Korrektur verfügt wurde.
+		Eine Verfügung unter Vorbehalt wurde erlassen, weil a) die Prüfung des Gesuchs zum jetzi-gen Zeitpunkt nicht
+		abgeschlossen ist, oder weil b) Sie die definitiven Abrechnungen über die Kurzar-beitsentschädigung und/oder
+		die Covid-Erwerbsausfallentschädigung noch erwarten.
+	</p>
+	<p>
+		Falls b) zutrifft, bitten wir Sie, die Abrechnungen nach Erhalt umgehend nachzureichen via Upload auf kiBon.
+		Falls a) zutrifft werden Sie wieder von uns hören, Sie müssen nichts unternehmen.
+	</p>
+	<p>
+		Freundliche Grüsse
 	</p>
 	<p>
 		Abteilung Familie Kanton Bern</p>
 	<p>
-		Amt für Integration und Soziales
-		info.fam@be.ch
+		Amt für Integration und Soziales<br>
+		<a href="mailto:info.fam@be.ch">info.fam@be.ch</a><br>
 		031 633 78 91
 	</p>
     <#if configuration.isDevmode>
@@ -49,21 +65,42 @@ Content-Type: text/html;charset=utf-8
 </div>
 <div>
 	<p>
+		<b>
+			Indemnités pour pertes financières en faveur des institutions d’accueil extra-familial pour enfants en
+			compensation des contributions de garde non perçues en raison des mesures de lutte contre le coronavirus (COVID-19)
+		</b>
+	</p>
+	<p>
 		Mesdames, Messieurs,
 	</p>
 	<p>
-		L'examen ainsi que le calcul de votre demande de financement en raison du coronavirus a été décidée
-		provisoirement. Vous pouvez la consulter <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">ici</a>.
+		Votre demande d’indemnités pour pertes financières nous est bien parvenue et a retenu toute notre attention.
+		Nous avons le plaisir de vous faire parvenir <a href="<#if configuration
+		.clientUsingHTTPS>https://<#else>http://</#if>${configuration
+		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">la décision</a>.
+		A noter que celle-ci est prise <b>sous réserve d’une correction ultérieure</b>. Si nous avons statué de cette manière,
+		c’est soit parce que l’examen de votre demande n’est pas encore achevé, soit parce que vous n’avez pas encore reçu
+		les décomptes définitifs relatifs aux indemnités en cas de réduction de l’horaire de travail et / ou à l’allocation
+		pour perte de gain en cas de coronavirus.
+	</p>
+	<p>
+		Dans le premier cas, vous n’avez aucune démarche à entreprendre : nous reprendrons spontanément contact avec vous.
+		Dans le second cas, nous vous prions de nous remettre les décomptes via la plateforme kiBon dès que ceux-ci
+		seront en votre possession.
+	</p>
+	<p>
+		En vous remerciant de votre engagement en cette période de pandémie, nous vous prions d’agréer,
+		Mesdames, Messieurs, nos salutations distinguées.
 	</p>
 	<p>
 		Meilleurs salutations
 	</p>
 	<p>
-		La division Famille de l’Office de l’intégration et de l’action sociale</p>
+		La division Famille</p>
 	<p>
 		Office de l’intégration et de l’action sociale
-		info.fam@be.ch
-		031 633 78 91
+		Courriel : <a href="mailto:info.fam@be.ch">info.fam@be.ch</a>
+		Tél : 031 633 78 91
 	</p>
     <#if configuration.isDevmode>
 		<p>
