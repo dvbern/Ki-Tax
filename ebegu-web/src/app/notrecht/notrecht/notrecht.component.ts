@@ -263,7 +263,7 @@ export class NotrechtComponent implements OnInit {
     public filterRueckforderungFormulare(): void {
         let filteredFormulare = this.rueckforderungFormulare;
         if (this.showOnlyOffenePendenzen) {
-            filteredFormulare = filteredFormulare.filter(this.isOffenePendenz);
+            filteredFormulare = filteredFormulare.filter(d => this.isOffenePendenz(d));
         }
         if (this.showOnlyAntraegeWithDokumenten) {
             filteredFormulare = filteredFormulare.filter(d => d.uncheckedDocuments);
