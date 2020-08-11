@@ -29,7 +29,7 @@ import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderun
 import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
 import {
     isBereitZumVerfuegenOderVerfuegt,
-    isAnyOfVerfuegt,
+    isAnyOfVerfuegtOrPruefungKantonStufe2,
     isNeuOrEingeladenStatus,
     isStatusRelevantForFrist,
     TSRueckforderungStatus
@@ -929,6 +929,6 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public canDeleteDocuments(formular: TSRueckforderungFormular): boolean {
-        return !isAnyOfVerfuegt(formular.status);
+        return !isAnyOfVerfuegtOrPruefungKantonStufe2(formular.status);
     }
 }
