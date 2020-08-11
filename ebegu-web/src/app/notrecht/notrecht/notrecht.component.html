@@ -24,11 +24,21 @@
             <hr class="header">
         </div>
 
-        <div class="form-group" *ngIf="isMandantOrSuperuser()">
+        <div class="form-group" *ngIf="isMandantOrSuperuser()" id="filters">
             <mat-checkbox id="showOnlyOffenePendenzen_id" name="showOnlyOffenePendenzen_id"
                           [(ngModel)]="showOnlyOffenePendenzen"
-                          (change)="toggleShowOnlyOffenePendenzen()">
+                          (change)="filterRueckforderungFormulare()">
                 {{ 'CORONA_LISTE_NUR_OFFENE_PENDENZEN' | translate }}
+            </mat-checkbox>
+            <mat-checkbox id="showOnlyMirZugewieseneAntraege_id" name="showOnlyMirZugewieseneAntraege_name"
+                          [(ngModel)]="showOnlyMirZugewieseneAntraege"
+                          (change)="filterRueckforderungFormulare()">
+                {{ 'CORONA_LISTE_NUR_MIR_ZUGEWIESENE' | translate }}
+            </mat-checkbox>
+            <mat-checkbox id="showOnlyAntraegeWithDokumenten_id" name="showOnlyAntraegeWithDokumenten_name"
+                          [(ngModel)]="showOnlyAntraegeWithDokumenten"
+                          (change)="filterRueckforderungFormulare()">
+                {{ 'CORONA_LISTE_NUR_DOKUMENTE' | translate }}
             </mat-checkbox>
         </div>
 
