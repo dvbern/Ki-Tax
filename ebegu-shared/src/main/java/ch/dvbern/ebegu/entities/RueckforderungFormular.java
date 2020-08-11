@@ -715,7 +715,8 @@ public class RueckforderungFormular extends AbstractEntity {
 				freigabeBetrag = getStufe2KantonKostenuebernahmeAnzahlStunden();
 			}
 			Objects.requireNonNull(getStufe2KantonKostenuebernahmeBetreuung());
-			return MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
+			BigDecimal result = MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
+			return MathUtil.roundToFrankenRappen(result);
 		}
 
 		// (2) Privat
@@ -727,25 +728,28 @@ public class RueckforderungFormular extends AbstractEntity {
 			// EntgangeBeitraege - bereits erhaltene Kurzarbeit - evtl. bereits erhaltene Corona Erwerbsersatz
 			Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
 			Objects.requireNonNull(getKurzarbeitBetrag());
-			return MathUtil.DEFAULT.subtractMultiple(
+			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
 				getKurzarbeitBetrag(),
 				getCoronaErwerbsersatzBetrag());
+			return MathUtil.roundToFrankenRappen(result);
 		}
 
 		// (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
 		if (getAnzahlNichtAngeboteneEinheiten() == null || !MathUtil.isPositive(getAnzahlNichtAngeboteneEinheiten())) {
 			// Keine nicht-angebotenen Tage
-			return MathUtil.DEFAULT.subtractMultiple(
+			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
 				getCoronaErwerbsersatzBetrag());
+			return MathUtil.roundToFrankenRappen(result);
 		}
 		// (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
-		return MathUtil.DEFAULT.subtractMultiple(
+		BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 			getBetragEntgangeneElternbeitraege(),
 			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
 			getCoronaErwerbsersatzBetrag())
 			.add(getAnzahlNichtAngeboteneEinheiten());
+		return MathUtil.roundToFrankenRappen(result);
 	}
 
 	/**
