@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewChecked,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
@@ -56,7 +63,7 @@ import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verla
     styleUrls: ['./rueckforderung-formular.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RueckforderungFormularComponent implements OnInit {
+export class RueckforderungFormularComponent implements OnInit, AfterViewChecked {
 
     public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
         return this._rueckforderungZahlungenList;
@@ -112,6 +119,21 @@ export class RueckforderungFormularComponent implements OnInit {
         private readonly uploadRS: UploadRS,
         private readonly cdr: ChangeDetectorRef,
     ) {
+    }
+
+    public ngAfterViewChecked(): void {
+
+        const anchor: string = this.$transition$.params().anchor;
+
+        if (EbeguUtil.isNotNullOrUndefined(anchor)) {
+            return;
+        }
+
+        const el = document.getElementById(anchor);
+        if (el) {
+            el.scrollIntoView();
+            el.setAttribute('id', 'scrolled');
+        }
     }
 
     public ngOnInit(): void {
