@@ -29,6 +29,7 @@ import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -43,6 +44,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -89,6 +91,9 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
@@ -135,10 +140,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private PrincipalBean principalBean;
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
-/*	@Inject
+	@Inject
 	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
 	@Inject
-	private Event<ExportedEvent> event;*/
+	private Event<ExportedEvent> event;
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -154,15 +161,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		final Betreuung mergedBetreuung = persistence.merge(betreuung);
 
-		//if isNew and Jugendamt generate Event for Kafka -
-		// Muss nicht geschickt werden bevor die Exchange-service diese Event bearbeiten kann, man muss es erst
-		// auskommentieren werden wenn man in DEV die neuste
-		// Exchange-service Version testen wollen. Und muss unbedingt nicht in Prod gehen bis alles läuft auf DEV:
-	/*	if(isNew && mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()){
+		// if isNew and Jugendamt -> generate Event for Kafka
+		if (exportBetreuung(isNew, mergedBetreuung)) {
 			BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent = betreuungAnfrageEventConverter.of(mergedBetreuung);
 
 			this.event.fire(betreuungAnfrageAddedEvent);
-		}*/
+		}
 
 		// we need to manually add this new Betreuung to the Kind
 		final Set<Betreuung> betreuungen = mergedBetreuung.getKind().getBetreuungen();
@@ -177,6 +181,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
 
 		return mergedBetreuung;
+	}
+
+	private boolean exportBetreuung(boolean isNew, @Nonnull Betreuung mergedBetreuung) {
+		return isNew
+			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()
+			&& ebeguConfiguration.isBetreuungAnfrageApiEnabled();
 	}
 
 	@Nonnull
