@@ -34,7 +34,7 @@ Content-Type: text/html;charset=utf-8
 		Wir haben Ihr Gesuch um eine Ausfallentschädigung für entgangene Betreuungsbeiträge infolge der Massnahmen zur
 		Bekämpfung des Coronavirus geprüft. Ihre Verfügung finden Sie unter <a href="<#if configuration
 		.clientUsingHTTPS>https://<#else>http://</#if>${configuration
-		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">diesem Link</a>.
+		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}#dokumente">diesem Link</a>.
 	</p>
 	<p>
 		Bitte beachten Sie, dass die Ausfallentschädigung unter Vorbehalt einer späteren Korrektur verfügt wurde.
@@ -77,7 +77,7 @@ Content-Type: text/html;charset=utf-8
 		Votre demande d’indemnités pour pertes financières nous est bien parvenue et a retenu toute notre attention.
 		Nous avons le plaisir de vous faire parvenir <a href="<#if configuration
 		.clientUsingHTTPS>https://<#else>http://</#if>${configuration
-		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}">la décision</a>.
+		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}#dokumente">la décision</a>.
 		A noter que celle-ci est prise <b>sous réserve d’une correction ultérieure</b>. Si nous avons statué de cette manière,
 		c’est soit parce que l’examen de votre demande n’est pas encore achevé, soit parce que vous n’avez pas encore reçu
 		les décomptes définitifs relatifs aux indemnités en cas de réduction de l’horaire de travail et / ou à l’allocation
