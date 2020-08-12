@@ -2126,7 +2126,7 @@
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Le délais de soumission a été modifié à la date du {{frist}}",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD": "Le délai pour le dépôt de la demande est le {{frist}}",
     "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/fr/index/direktion/organisation/soa/Coronavirus.html",
-    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Vous pouvez télécharger les modèles ici",
+    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Télécharger les modèles",
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Vous avez choisi {{NAME_DRITTANWENDUNGEN}} en tant qu'application(s) tierce(s) autorisée(s). Cela donne à {{NAME_DRITTANWENDUNGEN}} une vue sur vos données. Voulez-vous continuer et sauvegarder ces changements?",
     "LABEL_OK_FORFAHREN": "Oui, continuer",
     "LABEL_NEIN_ABBRECHEN": "Non, interrompre",
@@ -2138,5 +2138,6 @@
     "VERANTWORTLICHER": "Responsable",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Remarques concernant la décision",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Ce champ est obligatoire seulement lorsque le montant provisoire des indémnité n'est pas égal au montant définitif. Les remarques seront alors ajoutées dans la décision finale.",
+    "NOTVERORDNUNG_VERFUEGUNG": "Décisions",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
