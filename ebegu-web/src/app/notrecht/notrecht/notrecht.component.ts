@@ -46,7 +46,6 @@ export class NotrechtComponent implements OnInit {
     @ViewChild(MatPaginator) public paginator: MatPaginator;
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
-    public rueckforderungFormulareOffenePendenzen: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
     // tslint:disable-next-line:no-duplicate-string
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
@@ -57,6 +56,8 @@ export class NotrechtComponent implements OnInit {
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
 
     public showOnlyOffenePendenzen: boolean = false;
+    public showOnlyMirZugewieseneAntraege: boolean = false;
+    public showOnlyAntraegeWithDokumenten: boolean = false;
 
     public constructor(
         private readonly notrechtRS: NotrechtRS,
@@ -234,13 +235,19 @@ export class NotrechtComponent implements OnInit {
         }
     };
 
-    public openRueckforderungFormular(formular: TSRueckforderungFormular): void {
+    public openRueckforderungFormular(formular: TSRueckforderungFormular, event: any): void {
         if (!this.openFormularAllowed(formular)) {
             return;
         }
-        this.$state.go('notrecht.form', {
-            rueckforderungId: formular.id,
-        });
+        if (EbeguUtil.isNotNullOrUndefined(event) && event.ctrlKey === true) {
+            const url = this.$state.href('notrecht.form', {rueckforderungId: formular.id});
+            window.open(url, '_blank');
+        } else {
+            this.$state.go('notrecht.form', {
+                rueckforderungId: formular.id,
+            });
+        }
+
     }
 
     public translateRueckforderungStatus(status: string): string {
@@ -259,20 +266,23 @@ export class NotrechtComponent implements OnInit {
         return this.isMandantOrSuperuser() ? this.displayedColumnsMandant : this.displayedColumns;
     }
 
-    public toggleShowOnlyOffenePendenzen(): void {
-        // tslint:disable-next-line:early-exit
+    public filterRueckforderungFormulare(): void {
+        let filteredFormulare = this.rueckforderungFormulare;
         if (this.showOnlyOffenePendenzen) {
-            // Diese Liste jedes Mal neu aufbauen, da unterdessen Formulare verfuegt worden sein koennten
-            this.rueckforderungFormulareOffenePendenzen = this.rueckforderungFormulare
-                .filter(value => (this.isOffenePendenz(value)));
-            this.initDataSource(this.rueckforderungFormulareOffenePendenzen);
-        } else {
-            this.initDataSource(this.rueckforderungFormulare);
+            filteredFormulare = filteredFormulare.filter(d => this.isOffenePendenz(d));
         }
+        if (this.showOnlyAntraegeWithDokumenten) {
+            filteredFormulare = filteredFormulare.filter(d => d.uncheckedDocuments);
+        }
+        if (this.showOnlyMirZugewieseneAntraege) {
+            const currentUsername = this.authServiceRS.getPrincipal().getFullName();
+            filteredFormulare = filteredFormulare.filter(d => d.verantwortlicherName === currentUsername);
+        }
+        this.initDataSource(filteredFormulare);
     }
 
     private isOffenePendenz(formular: TSRueckforderungFormular): boolean {
-        return !isBereitZumVerfuegenOderVerfuegt(formular.status)
+        return formular.isPrivat() && !isBereitZumVerfuegenOderVerfuegt(formular.status)
             && formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH;
     }
 }

@@ -642,8 +642,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (abstractPlatz == null) {
 			return;
 		}
-		Gesuch gesuch = extractGesuch(abstractPlatz);
-		if (!isWriteAuthorized(gesuch)) {
+		boolean allowed = isWriteAuthorized(abstractPlatz);
+		if (!allowed) {
 			throwViolation(abstractPlatz);
 		}
 	}
@@ -739,8 +739,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		);
 	}
 
-	private boolean isReadAuthorized(final AbstractPlatz betreuung) {
-		final Gesuch gesuch = betreuung.extractGesuch();
+	private boolean isReadAuthorized(final AbstractPlatz abstractPlatz) {
+		final Gesuch gesuch = abstractPlatz.extractGesuch();
 		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
 		}
@@ -755,17 +755,21 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Objects.requireNonNull(
 				institution,
 				"Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			return betreuung.getInstitutionStammdaten().getInstitution().equals(institution);
+			return abstractPlatz.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
-			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), betreuung.getInstitutionStammdaten().getInstitution());
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), abstractPlatz.getInstitutionStammdaten().getInstitution());
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
-				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
+				&& abstractPlatz.getBetreuungsangebotTyp().isSchulamt();
 		}
 		return false;
+	}
 
+	private boolean isWriteAuthorized(final AbstractPlatz abstractPlatz) {
+		// Nach aktuellen Kenntnissen gleich wie lesen
+		return isReadAuthorized(abstractPlatz);
 	}
 
 	@Override

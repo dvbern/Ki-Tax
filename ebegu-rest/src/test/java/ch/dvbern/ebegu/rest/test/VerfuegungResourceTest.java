@@ -60,8 +60,11 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 
-	private static final String DEFAULT_BEMERKUNG = "01.08.2017 - 31.07.2018: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des "
+	private static final String DEFAULT_BEMERKUNG_1 = "01.08.2017 - 31.07.2018: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des "
 		+ "Beschäftigungspensums (Angestellt - Art. 34d ASIV).";
+	private static final String DEFAULT_BEMERKUNG_2 = "01.08.2017 - 31.07.2018: Die Berechnung des Gutscheins (V) erfolgt gemäss Art. 34k ASIV sowie der "
+		+ "Formel, welche im Anhang 1a der ASIV zu finden ist. Dabei wird auf das massgebende Einkommen gemäss Beilage 1 und das vergünstigte "
+		+ "Betreuungspensum (III) abgestellt.";
 
 	@Before
 	public void setUp() {
@@ -81,7 +84,9 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, manuelleBemerkung);
 
 		assert persistedVerfuegung != null;
-		Assert.assertEquals(DEFAULT_BEMERKUNG, persistedVerfuegung.getGeneratedBemerkungen());
+		Assert.assertNotNull(persistedVerfuegung.getGeneratedBemerkungen());
+		Assert.assertTrue(persistedVerfuegung.getGeneratedBemerkungen().contains(DEFAULT_BEMERKUNG_1));
+		Assert.assertTrue(persistedVerfuegung.getGeneratedBemerkungen().contains(DEFAULT_BEMERKUNG_2));
 		Assert.assertEquals(manuelleBemerkung, persistedVerfuegung.getManuelleBemerkungen());
 
 	}

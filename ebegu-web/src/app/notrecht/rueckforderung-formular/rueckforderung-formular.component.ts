@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewChecked,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
@@ -29,6 +36,7 @@ import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderun
 import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
 import {
     isBereitZumVerfuegenOderVerfuegt,
+    isAnyOfVerfuegtOrPruefungKantonStufe2,
     isNeuOrEingeladenStatus,
     isStatusRelevantForFrist,
     TSRueckforderungStatus
@@ -55,7 +63,7 @@ import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verla
     styleUrls: ['./rueckforderung-formular.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RueckforderungFormularComponent implements OnInit {
+export class RueckforderungFormularComponent implements OnInit, AfterViewChecked {
 
     public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
         return this._rueckforderungZahlungenList;
@@ -113,6 +121,21 @@ export class RueckforderungFormularComponent implements OnInit {
     ) {
     }
 
+    public ngAfterViewChecked(): void {
+
+        const anchor: string = this.$transition$.params().anchor;
+
+        if (EbeguUtil.isNullOrUndefined(anchor)) {
+            return;
+        }
+
+        const el = document.getElementById(anchor);
+        if (el) {
+            el.scrollIntoView();
+            el.setAttribute('id', 'scrolled');
+        }
+    }
+
     public ngOnInit(): void {
         const rueckforederungFormId: string = this.$transition$.params().rueckforderungId;
 
@@ -154,11 +177,13 @@ export class RueckforderungFormularComponent implements OnInit {
         ) {
             if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)) {
                 this.showMessageFehlendeVerfuegungBetrag = true;
+                document.getElementById('gewaehrte_ausfallentschaedigung_stufe2_id').focus();
                 return;
             }
             if (rueckforderungFormular.stufe2VerfuegungBetrag !== this.provisorischerBetrag &&
                 EbeguUtil.isNullOrUndefined(rueckforderungFormular.bemerkungFuerVerfuegung)) {
                 this.showMessageFehlendeBemerkungen = true;
+                document.getElementById('bemerkungZurVerfuegung_id').focus();
                 return;
             }
         }
@@ -186,7 +211,7 @@ export class RueckforderungFormularComponent implements OnInit {
             rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
                 this.readOnly = this.initReadOnly(response);
-                this.readOnly = this.initReadOnlyDocument(response);
+                this.readOnlyDocument = this.initReadOnlyDocument(response);
                 this.initRueckforderungZahlungen(response);
                 return response;
             }));
@@ -609,10 +634,14 @@ export class RueckforderungFormularComponent implements OnInit {
     public fristSchonErreicht(rueckforderungFormular: TSRueckforderungFormular): boolean {
         const currentDate = moment();
         let fristabgelaufen = false;
-        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
+        const frist = this.getRueckforderungInstitutionTypPrivat() === rueckforderungFormular.institutionTyp ?
+            this.einreicheFristPrivatDefault : this.einreicheFristOeffentlich;
+        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat() ||
+            (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2 &&
+                rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypOffentlich())) {
             fristabgelaufen = (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) ?
                 !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.endOf('day'))
-                : !currentDate.isBefore(this.einreicheFristPrivatDefault);
+                : !currentDate.isBefore(frist);
         } else {
             fristabgelaufen = !currentDate.isBefore(this.einreicheFristOeffentlich);
         }
@@ -635,8 +664,11 @@ export class RueckforderungFormularComponent implements OnInit {
         const fristVerlaengert = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
         const relevantFristPrivat = fristVerlaengert
             ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristPrivatDefault;
+        const relevanteFristOeffentlich = fristVerlaengert &&
+            rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristOeffentlich;
         const privatRelevantText = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
-        const oeffentlichText = DateUtil.momentToLocalDateFormat(this.einreicheFristOeffentlich, 'DD.MM.YYYY');
+        const oeffentlichText = DateUtil.momentToLocalDateFormat(relevanteFristOeffentlich, 'DD.MM.YYYY');
         if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)) {
             // Wir wissen noch nicht, ob privat oder oeffentlich
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE', {
@@ -646,9 +678,9 @@ export class RueckforderungFormularComponent implements OnInit {
         }
         const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
         const relevantText = isPrivat ? privatRelevantText : oeffentlichText;
-        if (fristVerlaengert && isPrivat) {
+        if (fristVerlaengert) {
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
-                frist: privatRelevantText,
+                frist: relevantText,
             });
         }
         return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD', {
@@ -790,6 +822,7 @@ export class RueckforderungFormularComponent implements OnInit {
                         .then((response: TSRueckforderungFormular) => {
                             this.changeDetectorRef.markForCheck();
                             this.readOnly = this.initReadOnly(response);
+                            this.readOnlyDocument = this.initReadOnlyDocument(response);
                             return response;
                         }));
                 },
@@ -889,6 +922,7 @@ export class RueckforderungFormularComponent implements OnInit {
             .then((response: TSRueckforderungFormular) => {
                 this.initRueckforderungZahlungen(response);
                 this.readOnly = this.initReadOnly(response);
+                this.readOnlyDocument = this.initReadOnlyDocument(response);
                 return response;
             }));
     }
@@ -897,7 +931,7 @@ export class RueckforderungFormularComponent implements OnInit {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenProvisoricheVerfuegungDokument(rueckforderungFormular.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(() => {
                 win.close();
@@ -914,5 +948,9 @@ export class RueckforderungFormularComponent implements OnInit {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id)
         );
+    }
+
+    public canDeleteDocuments(formular: TSRueckforderungFormular): boolean {
+        return !isAnyOfVerfuegtOrPruefungKantonStufe2(formular.status);
     }
 }

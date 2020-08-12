@@ -252,7 +252,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Override
 	@Nonnull
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorization(gesuch);
+		// Die Berechnung der FinSit Resultate beruht auf einem "Pseudo-Gesuch", dieses hat
+		// keinen Status und kann/muss nicht geprueft werden!
 		return finSitRechner.calculateResultateFinanzielleSituation(gesuch, true);
 	}
 
