@@ -2110,7 +2110,7 @@
     "MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY": "Wollen Sie diese Meldung überschreiben?",
     "RUECKFORDERUNG_WARNING_FRIST_ERREICHT": "Achtung, die Einreichungsfrist wurde erreicht, es ist nicht mehr möglich das Rückforderungsformular zu absenden. Bitte kontaktieren Sie bei Fragen den Kanton.",
     "RUECKFORDERUNG_VERLAENGERUNG_TITLE": "Einreichungsfrist verlängern?",
-    "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für diese Institution verlängern? Diese Frist wird nur bei privaten Institutionen für die Stufe 2 gelten!",
+    "RUECKFORDERUNG_VERLAENGERUNG_TEXT": "Wollen Sie die Einreichungsfrist für diese Institution verlängern? Diese Frist wird nur für die Stufe 2 gelten!",
     "RUECKFORDERUNG_FRIST_VERLAENGERN": "Einreichungsfrist verlängern",
     "RUECKFORDERUNG_RESET_STATUS": "Zurück an die Institution",
     "RUECKFORDERUNG_ZURUECKHOLEN": "Zurückholen",
