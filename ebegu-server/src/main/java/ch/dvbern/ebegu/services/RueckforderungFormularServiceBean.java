@@ -25,8 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,24 +46,16 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Stateless
 @Local(RueckforderungFormularService.class)
@@ -93,9 +85,11 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private GeneratedDokumentService generatedDokumentService;
+
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public List<RueckforderungFormular> initializeRueckforderungFormulare() {
 
 		Collection<InstitutionStammdaten> institutionenStammdatenCollection = institutionStammdatenService.getAllInstitutionStammdaten();
@@ -134,7 +128,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public RueckforderungFormular createRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		return persistence.persist(rueckforderungFormular);
@@ -147,8 +140,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION ,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
 		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
 		Benutzer currentBenutzer = principalBean.getBenutzer();
@@ -170,8 +161,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	@Interceptors(UpdateRueckfordFormStatusInterceptor.class)
 	public Optional<RueckforderungFormular> findRueckforderungFormular(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
@@ -182,8 +171,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular save(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -199,8 +186,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public RueckforderungFormular saveAndChangeStatusIfNecessary(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -210,7 +195,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	public Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status) {
 		Objects.requireNonNull(status.get(0), "Mindestens ein Status muss angegeben werden");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -225,7 +209,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public RueckforderungFormular addMitteilung(
 		@Nonnull RueckforderungFormular formular,
 		@Nonnull RueckforderungMitteilung mitteilung
@@ -236,7 +219,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void initializePhase2() {
 		//set Application Properties zu true
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, "true");
@@ -253,7 +235,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id) {
 		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -263,6 +244,40 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
 		rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
 		return saveWithoutAuthCheck(rueckforderungFormular);
+	}
+
+	@Nonnull
+	@Override
+	public RueckforderungFormular resetStatusToInPruefungKantonPhase2(@Nonnull String id) {
+		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetStatusToInBearbeitungKantonPhase2",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Rueckfordungsformular invalid: " + id));
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
+		rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
+		return saveWithoutAuthCheck(rueckforderungFormular);
+	}
+
+	@Override
+	@Nonnull
+	public RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular) {
+		//Set status to Verfuegt Provisorisch
+		formular.setStatus(RueckforderungStatus.VERFUEGT_PROVISORISCH);
+		formular.setStufe2VoraussichtlicheBetrag(formular.calculateFreigabeBetragStufe2());
+		formular.setHasBeenProvisorisch(true);
+		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
+		try {
+			//Inform Institution das der PRovisorsische Verfuegung wurde generiert
+			mailService.sendInfoRueckforderungProvisorischVerfuegt(persistedRueckforderungFormular);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoRueckforderungProvisorischVerfuegt konnte nicht verschickt werden fuer RueckforderungFormular",
+				persistedRueckforderungFormular.getId());
+		}
+		generateProvisorischeVerfuegungDokument(persistedRueckforderungFormular);
+
+		return persistedRueckforderungFormular;
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
@@ -286,20 +301,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				RueckforderungStatus nextStatus = rueckforderungFormular.getStatus();
-				if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
-					nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-				} else {
-					// Definitiv ist es, wenn es entweder gar nicht beantragt wurde, oder schon verfuegt ist
-					if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
-						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-					} else {
-						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH;
-						// Wir muessen uns merken, dass das Formular hier nochmals geprueft werden musste, damit wir
-						// spaeter die richtige Confirmation Message anzeigen koennen
-						rueckforderungFormular.setHasBeenProvisorisch(true);
-					}
-				}
+				RueckforderungStatus nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
 				rueckforderungFormular.setStatus(nextStatus);
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
@@ -341,18 +343,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			}
 			break;
 		}
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH: {
-			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
-				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV);
+		case IN_PRUEFUNG_KANTON_STUFE_2:
+			rueckforderungFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.calculateFreigabeBetragStufe2());
+		case VERFUEGT_PROVISORISCH:
+			if(principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())){
+				rueckforderungFormular.setStatus(RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
 			}
 			break;
-		}
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV: {
-			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
-			}
-			break;
-		}
 		default:
 			break;
 		}
@@ -382,9 +379,26 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				mitteilung = persistence.persist(mitteilung);
 				addMitteilung(modifiedRueckforderungFormular, mitteilung);
 			}
-		} catch (MailException e) {
+		} catch (Exception e) {
 			throw new EbeguRuntimeException("update",
-				"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+				"BestaetigungEmail koennte nicht als Mitteilung gespeichert werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+		}
+	}
+
+	/**
+	 * Generiert das Provisoriche Verfuegung Dokument einer Ruckforderungformular.
+	 *
+	 * @param anmeldung AbstractAnmeldung, fuer die das Dokument generiert werden soll.
+	 */
+	private void generateProvisorischeVerfuegungDokument(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		try {
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(rueckforderungFormular);
+		} catch (MimeTypeParseException | MergeDocException e) {
+			throw new EbeguRuntimeException(
+				"ProvisorischeVerfuegungDokument",
+				"ProvisorischeVerfuegung-Dokument konnte nicht erstellt werden"
+					+ rueckforderungFormular.getId(), e);
 		}
 	}
 }

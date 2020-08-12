@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -52,8 +53,6 @@ import ch.dvbern.ebegu.api.dtos.JaxPublicAppConfig;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import io.swagger.annotations.Api;
@@ -64,6 +63,8 @@ import org.apache.tika.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -72,7 +73,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Path("application-properties")
 @Stateless
 @Api(description = "Resource zum Lesen der Applikationsproperties")
-@PermitAll
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class ApplicationPropertyResource {
 
 	@Inject
@@ -85,24 +86,6 @@ public class ApplicationPropertyResource {
 	private EbeguConfiguration ebeguConfiguration;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationPropertyResource.class.getSimpleName());
-
-	@ApiOperation(value = "Find a property by its unique name (called key)", response = JaxApplicationProperties.class)
-	@Nullable
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/key/{key}")
-	public JaxApplicationProperties getByKey(
-		@Nonnull @PathParam("key") String keyParam,
-		@Context HttpServletResponse response) {
-
-		ApplicationProperty propertyFromDB = this.applicationPropertyService.readApplicationProperty(keyParam)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getByKey",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				keyParam));
-		return converter.applicationPropertyToJAX(propertyFromDB);
-	}
 
 	@Nonnull
 	private String readWhitelistAsString() {
@@ -137,6 +120,7 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/background")
+	@PermitAll
 	public JaxApplicationProperties getBackgroundColor() {
 		Optional<ApplicationProperty> propertyFromDB =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
@@ -152,6 +136,7 @@ public class ApplicationPropertyResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxApplicationProperties> getAllApplicationProperties() {
 		return applicationPropertyService.getAllApplicationProperties().stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
@@ -165,6 +150,7 @@ public class ApplicationPropertyResource {
 	@POST
 	@Path("/{key}")
 	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response create(
 		@Nonnull @NotNull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
@@ -190,6 +176,7 @@ public class ApplicationPropertyResource {
 	@PUT
 	@Path("/{key}")
 	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed(SUPER_ADMIN)
 	public JaxApplicationProperties update(
 		@Nonnull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
@@ -210,6 +197,7 @@ public class ApplicationPropertyResource {
 	@DELETE
 	@Path("/{key}")
 	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Response remove(@Nonnull @PathParam("key") String keyParam, @Context HttpServletResponse response) {
 		applicationPropertyService.removeApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, keyParam));
 		return Response.ok().build();
@@ -233,6 +221,7 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/all")
+	@PermitAll
 	public Response getPublicProperties(@Context HttpServletResponse response) {
 
 		boolean devmode = ebeguConfiguration.getIsDevmode();

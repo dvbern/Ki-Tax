@@ -41,10 +41,6 @@ export class BatchJobRS {
         return this.getInfo(`${this.serviceURL}/userjobs/notokenrefresh`);
     }
 
-    public getBatchJobInformation(executionId: string): IPromise<TSWorkJob[]> {
-        return this.getInfo(`${this.serviceURL}/jobs/${encodeURI(executionId)}`);
-    }
-
     private getInfo(url: string): IPromise<Array<TSWorkJob> | never> {
         return this.http.get(url).then((response: any) => {
             return this.ebeguRestUtil.parseWorkJobList(response.data);

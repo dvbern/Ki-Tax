@@ -63,24 +63,6 @@ describe('ApplicationPropertyRS', () => {
     });
 
     describe('API Usage', () => {
-        describe('getByName', () => {
-
-            it('should fetch property with given name', () => {
-                $httpBackend.expectGET(`${REST_API}application-properties/key/${testName}`);
-                const promise = applicationPropertyRS.getByName(testName);
-                let property: TSApplicationProperty;
-
-                promise.then(data => {
-                    property = data;
-                });
-                $httpBackend.flush();
-                expect(property.name).toEqual(mockApplicationProp.name);
-                expect(property.value).toEqual(mockApplicationProp.value);
-
-            });
-
-        });
-
         describe('create', () => {
 
             it('should create property with name and value', () => {

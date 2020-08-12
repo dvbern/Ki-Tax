@@ -30,6 +30,9 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
@@ -42,6 +45,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
  */
 public final class BGRechnerParameterGemeindeDTO {
 
+	// (1) Zusaetzlicher Gutschein der Gemeinde
 	private Boolean gemeindeZusaetzlicherGutscheinEnabled;
 	// Betrag des zusätzlichen Beitrags zum Gutschein
 	private BigDecimal gemeindeZusaetzlicherGutscheinBetragKita;
@@ -50,13 +54,25 @@ public final class BGRechnerParameterGemeindeDTO {
 	private EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita;
 	private EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo;
 
+	// (2) Zusaetzlicher Baby-Gutschein
+	private Boolean gemeindeZusaetzlicherBabyGutscheinEnabled;
+	// Betrag des zusätzlichen Gutscheins für Babies
+	private BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragKita;
+	private BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragTfo;
+
+
 
 	public BGRechnerParameterGemeindeDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
+		// (1) Zusaetzlicher Gutschein der Gemeinde
 		this.setGemeindeZusaetzlicherGutscheinEnabled(asBoolean(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherGutscheinBetragKita(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherGutscheinBetragTfo(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita(asSchulstufe(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo(asSchulstufe(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO, gesuchsperiode, gemeinde));
+		// (2) Zusaetzlicher Baby-Gutschein
+		this.setGemeindeZusaetzlicherBabyGutscheinEnabled(asBoolean(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED, gesuchsperiode, gemeinde));
+		this.setGemeindeZusaetzlicherBabyGutscheinBetragKita(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA, gesuchsperiode, gemeinde));
+		this.setGemeindeZusaetzlicherBabyGutscheinBetragTfo(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterGemeindeDTO() {
@@ -146,5 +162,29 @@ public final class BGRechnerParameterGemeindeDTO {
 
 	public void setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo(EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo) {
 		this.gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo = gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo;
+	}
+
+	public Boolean getGemeindeZusaetzlicherBabyGutscheinEnabled() {
+		return gemeindeZusaetzlicherBabyGutscheinEnabled;
+	}
+
+	public void setGemeindeZusaetzlicherBabyGutscheinEnabled(Boolean gemeindeZusaetzlicherBabyGutscheinEnabled) {
+		this.gemeindeZusaetzlicherBabyGutscheinEnabled = gemeindeZusaetzlicherBabyGutscheinEnabled;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherBabyGutscheinBetragKita() {
+		return gemeindeZusaetzlicherBabyGutscheinBetragKita;
+	}
+
+	public void setGemeindeZusaetzlicherBabyGutscheinBetragKita(BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragKita) {
+		this.gemeindeZusaetzlicherBabyGutscheinBetragKita = gemeindeZusaetzlicherBabyGutscheinBetragKita;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherBabyGutscheinBetragTfo() {
+		return gemeindeZusaetzlicherBabyGutscheinBetragTfo;
+	}
+
+	public void setGemeindeZusaetzlicherBabyGutscheinBetragTfo(BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragTfo) {
+		this.gemeindeZusaetzlicherBabyGutscheinBetragTfo = gemeindeZusaetzlicherBabyGutscheinBetragTfo;
 	}
 }

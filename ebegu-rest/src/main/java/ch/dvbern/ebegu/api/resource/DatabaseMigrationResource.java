@@ -40,6 +40,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Path("dbmigration")
 @Stateless
 @Api(description = "Resource zum Ausfuehren von manuellen DB-Migrationen")
+@RolesAllowed(SUPER_ADMIN)
 public class DatabaseMigrationResource {
 
 	@Inject

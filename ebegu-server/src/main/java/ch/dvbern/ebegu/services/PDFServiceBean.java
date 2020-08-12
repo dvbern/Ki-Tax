@@ -27,11 +27,11 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -50,7 +51,9 @@ import ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
@@ -59,22 +62,6 @@ import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Stateless
 @Local(PDFService.class)
@@ -102,12 +89,13 @@ public class PDFServiceBean implements PDFService {
 	private ApplicationPropertyService applicationPropertyService;
 
 	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
 	private Authorizer authorizer;
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateNichteintreten(
 		Betreuung betreuung,
 		boolean writeProtected,
@@ -129,8 +117,6 @@ public class PDFServiceBean implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateMahnung(
 		Mahnung mahnung,
 		Optional<Mahnung> vorgaengerMahnungOptional,
@@ -159,8 +145,6 @@ public class PDFServiceBean implements PDFService {
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateFreigabequittung(
 		@Nonnull Gesuch gesuch,
 		boolean writeProtected,
@@ -179,8 +163,6 @@ public class PDFServiceBean implements PDFService {
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateBegleitschreiben(
 		@Nonnull Gesuch gesuch,
 		boolean writeProtected,
@@ -198,8 +180,6 @@ public class PDFServiceBean implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, GESUCHSTELLER,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateFinanzielleSituation(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung famGroessenVerfuegung,
@@ -232,8 +212,6 @@ public class PDFServiceBean implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
 	public byte[] generateVerfuegungForBetreuung(
 		@Nonnull Betreuung betreuung,
 		@Nullable LocalDate letzteVerfuegungDatum,
@@ -269,9 +247,6 @@ public class PDFServiceBean implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION})
 	public byte[] generateAnmeldebestaetigungFuerTagesschule(
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
 		@Nonnull boolean mitTarif,
@@ -293,6 +268,20 @@ public class PDFServiceBean implements PDFService {
 
 		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
 			stammdaten, art , anmeldungTagesschule, mahlzeitenverguenstigungEnabled.getValueAsBoolean());
+		return generateDokument(pdfGenerator, !writeProtected, locale);
+	}
+
+	@Nonnull
+	@Override
+	public byte[] generateProvisorischeVerfuegungRuckforderungformular(@Nonnull RueckforderungFormular rueckforderungFormular,
+		boolean writeProtected,
+		@Nonnull Locale locale) throws MergeDocException {
+		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
+
+		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
+		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
+		RueckforderungVerfuegungPdfGenerator pdfGenerator =
+			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, true, nameVerantwortlichePerson, unterschriftPath);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
@@ -322,6 +311,27 @@ public class PDFServiceBean implements PDFService {
 	@Nonnull
 	private byte[] generateDokument(
 		@Nonnull KibonPdfGenerator pdfGenerator,
+		boolean entwurf,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			pdfGenerator.generate(baos);
+			byte[] content = baos.toByteArray();
+			if (entwurf) {
+				return PdfUtil.addEntwurfWatermark(content, locale);
+			}
+			return content;
+		} catch (InvoiceGeneratorException | IOException e) {
+			throw new MergeDocException("generateDokument()",
+				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
+		}
+	}
+
+	@Nonnull
+	private byte[] generateDokument(
+		@Nonnull MandantPdfGenerator pdfGenerator,
 		boolean entwurf,
 		@Nonnull Locale locale
 	) throws MergeDocException {

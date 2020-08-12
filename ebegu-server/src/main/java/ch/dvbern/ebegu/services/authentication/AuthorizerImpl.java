@@ -37,7 +37,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -501,8 +500,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getAllAdminSuperAdminRevisorRoles())
-			&& !hasPrincipalName(benutzer)) {
+		// Benutzer duerfen grundsaetzlich von allen Rollen gelesen werden
+		// Der Mandant muss aber stimmen
+		checkMandantMatches(benutzer);
+		// Gesuchsteller duerfen nur sich selber lesen, alle anderen Rollen sind nicht weiter
+		// eingeschraenkt
+		if (principalBean.isCallerInRole(GESUCHSTELLER) && !hasPrincipalName(benutzer)) {
 			throwViolation(benutzer);
 		}
 	}
@@ -635,13 +638,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorization(Betreuung betreuungToRemove) {
-		if (betreuungToRemove == null) {
+	public void checkWriteAuthorization(AbstractPlatz abstractPlatz) {
+		if (abstractPlatz == null) {
 			return;
 		}
-		Gesuch gesuch = extractGesuch(betreuungToRemove);
-		if (!isWriteAuthorized(gesuch)) {
-			throwViolation(betreuungToRemove);
+		boolean allowed = isWriteAuthorized(abstractPlatz);
+		if (!allowed) {
+			throwViolation(abstractPlatz);
 		}
 	}
 
@@ -736,8 +739,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		);
 	}
 
-	private boolean isReadAuthorized(final AbstractPlatz betreuung) {
-		final Gesuch gesuch = betreuung.extractGesuch();
+	private boolean isReadAuthorized(final AbstractPlatz abstractPlatz) {
+		final Gesuch gesuch = abstractPlatz.extractGesuch();
 		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
 		}
@@ -752,17 +755,21 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Objects.requireNonNull(
 				institution,
 				"Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			return betreuung.getInstitutionStammdaten().getInstitution().equals(institution);
+			return abstractPlatz.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
-			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), betreuung.getInstitutionStammdaten().getInstitution());
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), abstractPlatz.getInstitutionStammdaten().getInstitution());
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
-				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
+				&& abstractPlatz.getBetreuungsangebotTyp().isSchulamt();
 		}
 		return false;
+	}
 
+	private boolean isWriteAuthorized(final AbstractPlatz abstractPlatz) {
+		// Nach aktuellen Kenntnissen gleich wie lesen
+		return isReadAuthorized(abstractPlatz);
 	}
 
 	@Override
@@ -1088,6 +1095,27 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
+		// Aktuell sind keine Einschraenkungen zum Lesen von Traegerschaften bekannt.
+		return true;
+	}
+
+	@Override
+	public boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return true;
+		}
+		if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			// Problem hier: Traegerschaft gehoert aktuell nicht zu einem Mandanten!
+			return true;
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
+			return traegerschaft.equals(principalBean.getBenutzer().getCurrentBerechtigung().getTraegerschaft());
+		}
+		return false;
+	}
+
+	@Override
 	public boolean isReadAuthorizationInstitution(@Nullable Institution institution) {
 		if (institution == null) {
 			return true;
@@ -1269,6 +1297,26 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkReadAuthorization(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return;
+		}
+		if (!isReadAuthorization(traegerschaft)) {
+			throwViolation(traegerschaft);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return;
+		}
+		if (!isWriteAuthorization(traegerschaft)) {
+			throwViolation(traegerschaft);
+		}
+	}
+
+	@Override
 	public void checkReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten) {
 		if (institutionStammdaten == null) {
 			return;
@@ -1301,8 +1349,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		switch (rueckforderungFormular.getStatus()) {
 		case EINGELADEN:
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV:{
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
 				throwViolation(rueckforderungFormular);
@@ -1312,9 +1359,45 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case NEU:
 		case IN_PRUEFUNG_KANTON_STUFE_1:
 		case IN_PRUEFUNG_KANTON_STUFE_2:
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH:
 		case GEPRUEFT_STUFE_1:
 		case VERFUEGT_PROVISORISCH:
+		case BEREIT_ZUM_VERFUEGEN:
+		case VERFUEGT:
+		case ABGESCHLOSSEN_OHNE_GESUCH: {
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationDocument(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		switch (rueckforderungFormular.getStatus()) {
+		case EINGELADEN:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
+			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		case NEU:
+		case IN_PRUEFUNG_KANTON_STUFE_1:
+		case GEPRUEFT_STUFE_1:
 		case VERFUEGT:
 		case ABGESCHLOSSEN_OHNE_GESUCH: {
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {

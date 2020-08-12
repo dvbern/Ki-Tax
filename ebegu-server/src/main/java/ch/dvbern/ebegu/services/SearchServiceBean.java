@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -65,13 +63,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 
 /**
@@ -79,7 +70,6 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterFor
  */
 @Stateless
 @Local(SearchService.class)
-@PermitAll
 public class SearchServiceBean extends AbstractBaseService implements SearchService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SearchServiceBean.class.getSimpleName());
@@ -92,13 +82,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Pair<Long, List<Gesuch>> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, true);
 	}
 
 	@Override
-	@PermitAll
 	public Pair<Long, List<Gesuch>> searchAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, false);
 	}

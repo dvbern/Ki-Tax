@@ -37,11 +37,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -83,6 +85,11 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	private RueckforderungStatus status = RueckforderungStatus.NEU;
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rueckforderung_verantwortlicher_id"), nullable = true)
+	private Benutzer verantwortlicher;
 
 	@NotNull
 	@Column(nullable = false)
@@ -153,8 +160,14 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
+	@Column(name = "stufe_2_voraussichtliche_betrag", nullable = true)
+	@Nullable
+	@Min(0)
+	private BigDecimal stufe2VoraussichtlicheBetrag;
+
 	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
+	@Min(0)
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
@@ -225,6 +238,19 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(nullable = true)
 	private String coronaErwerbsersatzSonstiges;
 
+	@Nonnull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Sprache korrespondenzSprache = Sprache.DEUTSCH;
+
+	@Nullable
+	@Size(min=1, max=2000)
+	@Column(nullable = true)
+	private String bemerkungFuerVerfuegung;
+
+	@Column
+	private boolean uncheckedDocuments;
+
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
 
@@ -277,6 +303,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nullable
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	@Nullable
@@ -554,6 +589,15 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
 	}
 
+	@Nullable
+	public String getBemerkungFuerVerfuegung() {
+		return bemerkungFuerVerfuegung;
+	}
+
+	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
+		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
+	}
+
 	public boolean isStufe1ZahlungJetztAusgeloest() {
 		return stufe1ZahlungJetztAusgeloest;
 	}
@@ -568,6 +612,33 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStufe2ZahlungJetztAusgeloest(boolean stufe2ZahlungJetztAusgeloest) {
 		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	@Nonnull
+	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	public boolean hasUncheckedDocuments() {
+		return uncheckedDocuments;
+	}
+
+	public void setUncheckedDocuments(boolean uncheckedDocuments) {
+		this.uncheckedDocuments = uncheckedDocuments;
 	}
 
 	@Override
@@ -647,7 +718,9 @@ public class RueckforderungFormular extends AbstractEntity {
 				freigabeBetrag = getStufe2KantonKostenuebernahmeAnzahlStunden();
 			}
 			Objects.requireNonNull(getStufe2KantonKostenuebernahmeBetreuung());
-			return MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
+			BigDecimal result = MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
+			return MathUtil.roundToFrankenRappen(result);
 		}
 
 		// (2) Privat
@@ -659,25 +732,31 @@ public class RueckforderungFormular extends AbstractEntity {
 			// EntgangeBeitraege - bereits erhaltene Kurzarbeit - evtl. bereits erhaltene Corona Erwerbsersatz
 			Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
 			Objects.requireNonNull(getKurzarbeitBetrag());
-			return MathUtil.DEFAULT.subtractMultiple(
+			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
 				getKurzarbeitBetrag(),
 				getCoronaErwerbsersatzBetrag());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
+			return MathUtil.roundToFrankenRappen(result);
 		}
 
 		// (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
 		if (getAnzahlNichtAngeboteneEinheiten() == null || !MathUtil.isPositive(getAnzahlNichtAngeboteneEinheiten())) {
 			// Keine nicht-angebotenen Tage
-			return MathUtil.DEFAULT.subtractMultiple(
+			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
 				getCoronaErwerbsersatzBetrag());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
+			return MathUtil.roundToFrankenRappen(result);
 		}
 		// (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
-		return MathUtil.DEFAULT.subtractMultiple(
+		BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 			getBetragEntgangeneElternbeitraege(),
 			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
 			getCoronaErwerbsersatzBetrag())
 			.add(getAnzahlNichtAngeboteneEinheiten());
+		result = MathUtil.minimum(result, BigDecimal.ZERO);
+		return MathUtil.roundToFrankenRappen(result);
 	}
 
 	/**

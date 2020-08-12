@@ -372,6 +372,10 @@ public class BetreuungsgutscheinConfigurator {
 
 		MahlzeitenverguenstigungTSCalcRule mahlzeitenTSCalcRule = new MahlzeitenverguenstigungTSCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
 		addToRuleSetIfRelevantForGemeinde(mahlzeitenTSCalcRule, einstellungMap);
+
+		// Verfuegungsbemerkung
+		VerfuegungsBemerkungCalcRule bemerkungCalcRule = new VerfuegungsBemerkungCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(bemerkungCalcRule, einstellungMap);
 	}
 
 	private void addToRuleSetIfRelevantForGemeinde(@Nonnull Rule rule, @Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {

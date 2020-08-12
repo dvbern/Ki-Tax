@@ -26,20 +26,29 @@ import javax.annotation.Nullable;
 import ch.dvbern.lib.invoicegenerator.BaseGenerator;
 import ch.dvbern.lib.invoicegenerator.OnPageHandler;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
+import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.component.ComponentConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.component.ComponentRenderer;
 import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Utilities;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
 
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
+import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
-	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> absenderHeader, @Nullable final PhraseRenderer footer) {
-		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(gemeindeLogo, absenderHeader);
+	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> absenderHeader, @Nullable final PhraseRenderer footer,@Nonnull boolean isKanton) {
+		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(gemeindeLogo, absenderHeader, isKanton);
 		layoutConfiguration.setFooter(footer);
 		layoutConfiguration.getStaticComponents().stream()
 			.map(ComponentRenderer::getComponentConfiguration)
@@ -57,8 +66,9 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 	@Nonnull
 	public static PdfGenerator create(
 		@Nonnull final byte[] gemeindeLogo,
-		@Nonnull final List<String> absenderHeader) {
-		return create(gemeindeLogo, absenderHeader, null);
+		@Nonnull final List<String> absenderHeader,
+		@Nonnull boolean isKanton) {
+		return create(gemeindeLogo, absenderHeader, null, isKanton);
 	}
 
 	public PdfGenerator(@Nonnull PdfLayoutConfiguration configuration) {

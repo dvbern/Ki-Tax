@@ -1275,7 +1275,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isGesuchsteller(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
     }
 
     public getBetreuungInGemeindeLabel(): string {

@@ -87,13 +87,13 @@ describe('gesuchsperiodeRS', () => {
                 expect($http.get).toHaveBeenCalled();
             });
         });
-        describe('createGesuchsperiode', () => {
+        describe('saveGesuchsperiode', () => {
             it('should create a gesuchsperiode', () => {
                 let createdGesuchsperiode: TSGesuchsperiode;
                 $httpBackend.expectPUT(gesuchsperiodeRS.serviceURL, mockGesuchsperiodeRest).respond(
                     mockGesuchsperiodeRest);
 
-                gesuchsperiodeRS.createGesuchsperiode(mockGesuchsperiode)
+                gesuchsperiodeRS.saveGesuchsperiode(mockGesuchsperiode)
                     .then(result => {
                         createdGesuchsperiode = result;
                     });
@@ -101,7 +101,7 @@ describe('gesuchsperiodeRS', () => {
                 checkFieldValues(createdGesuchsperiode, mockGesuchsperiode);
             });
         });
-        describe('updateGesuchsperiode', () => {
+        describe('saveGesuchsperiode', () => {
             it('should update a gesuchsperiode', () => {
                 mockGesuchsperiode.status = TSGesuchsperiodeStatus.AKTIV;
                 mockGesuchsperiodeRest = ebeguRestUtil.gesuchsperiodeToRestObject({}, mockGesuchsperiode);
@@ -109,7 +109,7 @@ describe('gesuchsperiodeRS', () => {
                 $httpBackend.expectPUT(gesuchsperiodeRS.serviceURL, mockGesuchsperiodeRest).respond(
                     mockGesuchsperiodeRest);
 
-                gesuchsperiodeRS.updateGesuchsperiode(mockGesuchsperiode)
+                gesuchsperiodeRS.saveGesuchsperiode(mockGesuchsperiode)
                     .then(result => {
                         updatedGesuchsperiode = result;
                     });

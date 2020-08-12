@@ -83,6 +83,15 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 		}
 	}
 
+	protected Benutzer loginAsSuperadmin() {
+		try {
+			createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME).login();
+		} catch (LoginException e) {
+			LOG.error("could not login as sachbearbeiter jugendamt saja for tests");
+		}
+		return dummyAdmin;
+	}
+
 	protected Benutzer loginAsSachbearbeiterJA() {
 		try {
 			createLoginContext("saja", "saja").login();

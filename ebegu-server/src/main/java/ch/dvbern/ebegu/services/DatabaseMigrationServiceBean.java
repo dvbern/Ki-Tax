@@ -19,9 +19,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.annotation.security.RunAs;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Local;
@@ -30,7 +27,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -44,9 +40,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(DatabaseMigrationService.class)
-@PermitAll
-@RunAs(UserRoleName.SUPER_ADMIN)
-@RolesAllowed(SUPER_ADMIN)
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "LocalVariableNamingConvention", "PMD.NcssTypeCount", "InstanceMethodNamingConvention" })
 public class DatabaseMigrationServiceBean extends AbstractBaseService implements DatabaseMigrationService {
 

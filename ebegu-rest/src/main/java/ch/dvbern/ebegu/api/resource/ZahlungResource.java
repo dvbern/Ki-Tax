@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -76,6 +77,7 @@ import static java.util.Objects.requireNonNull;
 @Path("zahlungen")
 @Stateless
 @Api(description = "Resource zum Verwalten von Zahlungen")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class ZahlungResource {
 
 	@Inject

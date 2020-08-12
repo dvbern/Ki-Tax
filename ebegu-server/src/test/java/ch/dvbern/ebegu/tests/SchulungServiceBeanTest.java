@@ -20,9 +20,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AdresseService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -80,6 +82,9 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private Persistence persistence;
 
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
 	@Test
 	public void resetSchulungsdaten() {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
@@ -94,7 +99,8 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(6, institutionStammdatenService.getAllInstitutionStammdaten().size());
 		Assert.assertEquals(6, institutionService.getAllInstitutionen().size());
 		Assert.assertEquals(1, traegerschaftService.getAllTraegerschaften().size());
-		Assert.assertEquals(anzahlUserSchonVorhanden + anzahlGesuchsteller + anzahlInstitutionsBenutzer, benutzerService.getAllBenutzer().size());
+		Assert.assertEquals(anzahlUserSchonVorhanden + anzahlGesuchsteller + anzahlInstitutionsBenutzer,
+			criteriaQueryHelper.getAll(Benutzer.class).size());
 
 		schulungService.deleteSchulungsdaten();
 		assertEmpty();
@@ -111,7 +117,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(3, institutionStammdatenService.getAllInstitutionStammdaten().size());
 		Assert.assertEquals(3, institutionService.getAllInstitutionen().size());
 		Assert.assertTrue(traegerschaftService.getAllTraegerschaften().isEmpty());
-		Assert.assertEquals(anzahlUserSchonVorhanden, benutzerService.getAllBenutzer().size());
+		Assert.assertEquals(anzahlUserSchonVorhanden, criteriaQueryHelper.getAll(Benutzer.class).size());
 	}
 
 	private List<InstitutionStammdaten> createAndSaveInstitutionStammdatenForTestfaelle() {

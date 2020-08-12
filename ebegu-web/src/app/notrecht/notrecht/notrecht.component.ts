@@ -22,15 +22,15 @@ import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {isBereitZumVerfuegenOderVerfuegt, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
-import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 
 @Component({
     selector: 'dv-notrecht',
@@ -50,8 +50,14 @@ export class NotrechtComponent implements OnInit {
     // tslint:disable-next-line:no-duplicate-string
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
+    public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
+        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'dokumente', 'is-clickable'];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
+
+    public showOnlyOffenePendenzen: boolean = false;
+    public showOnlyMirZugewieseneAntraege: boolean = false;
+    public showOnlyAntraegeWithDokumenten: boolean = false;
 
     public constructor(
         private readonly notrechtRS: NotrechtRS,
@@ -97,6 +103,10 @@ export class NotrechtComponent implements OnInit {
                     return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
                 case 'zahlungStufe2':
                     return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
+                case 'verantwortlich':
+                    return item.verantwortlicherName;
+                case 'dokumente':
+                    return item.verantwortlicherName;
                 default:
                     // @ts-ignore
                     return item[property];
@@ -121,7 +131,8 @@ export class NotrechtComponent implements OnInit {
                 || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
-                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter);
+                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter)
+                || EbeguUtil.hasTextCaseInsensitive(data.verantwortlicherName, filter);
         };
     }
 
@@ -224,13 +235,19 @@ export class NotrechtComponent implements OnInit {
         }
     };
 
-    public openRueckforderungFormular(formular: TSRueckforderungFormular): void {
+    public openRueckforderungFormular(formular: TSRueckforderungFormular, event: any): void {
         if (!this.openFormularAllowed(formular)) {
             return;
         }
-        this.$state.go('notrecht.form', {
-            rueckforderungId: formular.id,
-        });
+        if (EbeguUtil.isNotNullOrUndefined(event) && event.ctrlKey === true) {
+            const url = this.$state.href('notrecht.form', {rueckforderungId: formular.id});
+            window.open(url, '_blank');
+        } else {
+            this.$state.go('notrecht.form', {
+                rueckforderungId: formular.id,
+            });
+        }
+
     }
 
     public translateRueckforderungStatus(status: string): string {
@@ -238,6 +255,34 @@ export class NotrechtComponent implements OnInit {
     }
 
     public showMitteilungSenden(): boolean {
+        return this.isMandantOrSuperuser();
+    }
+
+    public isMandantOrSuperuser(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public getDisplayColumns(): string[] {
+        return this.isMandantOrSuperuser() ? this.displayedColumnsMandant : this.displayedColumns;
+    }
+
+    public filterRueckforderungFormulare(): void {
+        let filteredFormulare = this.rueckforderungFormulare;
+        if (this.showOnlyOffenePendenzen) {
+            filteredFormulare = filteredFormulare.filter(d => this.isOffenePendenz(d));
+        }
+        if (this.showOnlyAntraegeWithDokumenten) {
+            filteredFormulare = filteredFormulare.filter(d => d.uncheckedDocuments);
+        }
+        if (this.showOnlyMirZugewieseneAntraege) {
+            const currentUsername = this.authServiceRS.getPrincipal().getFullName();
+            filteredFormulare = filteredFormulare.filter(d => d.verantwortlicherName === currentUsername);
+        }
+        this.initDataSource(filteredFormulare);
+    }
+
+    private isOffenePendenz(formular: TSRueckforderungFormular): boolean {
+        return formular.isPrivat() && !isBereitZumVerfuegenOderVerfuegt(formular.status)
+            && formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH;
     }
 }

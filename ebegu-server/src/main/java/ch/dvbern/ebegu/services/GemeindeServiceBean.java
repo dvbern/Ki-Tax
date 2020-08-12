@@ -24,8 +24,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -59,16 +57,6 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -76,7 +64,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(GemeindeService.class)
-@PermitAll
 public class GemeindeServiceBean extends AbstractBaseService implements GemeindeService {
 
 	@Inject
@@ -102,7 +89,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde) {
 		requireNonNull(gemeinde);
 		authorizer.checkWriteAuthorization(gemeinde);
@@ -115,7 +101,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
 		Optional<Gemeinde> gemeindeOpt =
 			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, gemeinde.getName(), Gemeinde_.name);
@@ -221,7 +206,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId) {
 		requireNonNull(gemeindeId, "Gemeinde id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -238,9 +222,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		authorizer.checkWriteAuthorization(stammdaten.getGemeinde());
@@ -356,7 +337,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void updateAngebotBG(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotBG(value);
 		persistence.merge(gemeinde);
@@ -367,7 +347,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotTS(value);
 		persistence.merge(gemeinde);
@@ -378,7 +357,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotFI(value);
 		persistence.merge(gemeinde);
@@ -440,9 +418,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdatenGesuchsperiode uploadGemeindeGesuchsperiodeDokument(
 		@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId,
@@ -476,9 +451,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER })
 	public byte[] downloadGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache,
 		@Nonnull DokumentTyp dokumentTyp) {
@@ -513,7 +485,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		return
 			criteriaQueryHelper.getEntitiesByAttribute(GemeindeStammdatenGesuchsperiode.class, gesuchsperiode,
@@ -558,9 +529,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdatenGesuchsperiode removeGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
@@ -590,7 +558,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@PermitAll
 	public boolean existGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);

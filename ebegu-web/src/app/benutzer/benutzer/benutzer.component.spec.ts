@@ -20,7 +20,6 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -42,8 +41,6 @@ describe('BenutzerComponent', () => {
                 'inactivateBenutzer', 'reactivateBenutzer',
             ]);
 
-        const applicationPropertySpy = jasmine
-            .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getByName']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
         const i18nServiceSpy = jasmine
@@ -65,10 +62,6 @@ describe('BenutzerComponent', () => {
                 {
                     provide: BenutzerRS,
                     useValue: benutzerSpy,
-                },
-                {
-                    provide: ApplicationPropertyRS,
-                    useValue: applicationPropertySpy,
                 },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: APP_BASE_HREF, useValue: '/'},
