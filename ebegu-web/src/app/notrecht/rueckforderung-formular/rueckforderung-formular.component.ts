@@ -931,7 +931,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenProvisoricheVerfuegungDokument(rueckforderungFormular.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(() => {
                 win.close();
