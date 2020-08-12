@@ -1325,32 +1325,22 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-8 col-md-offset-2">
-                <div class="row" id="dokumente">
-                    <div class="col-sm-12">
-                        <h2 translate class="margin-top-50">DOKUMENTE</h2>
-                        <hr class="header"/>
-                        <a target="_blank" rel="noopener noreferrer"
-                           href="{{'RUECKFORDERUNG_VORLAGEN_LINK' | translate}}"
-                           translate>RUECKFORDERUNG_VORLAGEN_LINK_TEXT</a>
-                    </div>
-                    <div class="col-sm-12" *ngIf="rueckforderungFormular.hasBeenProvisorisch">
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                (click)="openProvisorischeVerfuegung(rueckforderungFormular)">
-                            <span translate="RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- Dokumente -->
+            <!-- Dokumente hochladen -->
             <div class="col-md-8 col-md-offset-2" *ngIf="isStufe2(rueckforderungFormular)">
                 <div class="row">
                     <div class="col-sm-12">
                         <h2 class="margin-top-50">
                             <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
+                            &nbsp;
+                            <a target="_blank" rel="noopener noreferrer"
+                               href="{{'RUECKFORDERUNG_VORLAGEN_LINK' | translate}}"
+                               translate>RUECKFORDERUNG_VORLAGEN_LINK_TEXT</a>
                         </h2>
                         <hr class="header"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
                         <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
                             <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                         </div>
@@ -1438,6 +1428,21 @@
                                 [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
                             </dv-file-upload>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            Verfuegungen-->
+            <div class="col-md-8 col-md-offset-2" *ngIf="rueckforderungFormular.hasBeenProvisorisch"> <!--TODO: auch anzeigen wenn definitve Verfügung-->
+                <div class="row" id="verfuegungen">
+                    <div class="col-sm-12">
+                        <h2 translate class="margin-top-50">NOTVERORDNUNG_VERFUEGUNG</h2>
+                        <hr class="header"/>
+                        <div *ngIf="rueckforderungFormular.hasBeenProvisorisch">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    (click)="openProvisorischeVerfuegung(rueckforderungFormular)">
+                                <span translate="RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT"></span>
+                            </button>
                         </div>
                     </div>
                 </div>

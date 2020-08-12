@@ -2126,7 +2126,7 @@
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT": "Die Einreichungsfrist wurde auf das Datum {{frist}} angepasst",
     "RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD": "Die Einreichungsfrist für diesen Antrag ist der {{frist}}",
     "RUECKFORDERUNG_VORLAGEN_LINK": "https://www.gef.be.ch/gef/de/index/direktion/organisation/soa/Coronavirus.html",
-    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Sie können die Vorlagen hier herunterladen",
+    "RUECKFORDERUNG_VORLAGEN_LINK_TEXT": "Vorlagen herunterladen",
     "INSTITUTION_DRITTANWENDUNG_WARNUNG": "Sie haben {{NAME_DRITTANWENDUNGEN}} als zugriffsberechtigte Drittanwendung ausgewählt. Dadurch hat {{NAME_DRITTANWENDUNGEN}} Einsicht auf Ihre Daten. Möchten Sie  fortfahren und diese Änderung speichern?",
     "LABEL_OK_FORFAHREN": "Ja, Fortfahren",
     "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
@@ -2138,5 +2138,6 @@
     "RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT": "Provisorische Verfügung herunterladen",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Bemerkung zur Verfügung",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Dieser Feld ist Pflichtig nur wenn die Eingereichte Ausfallentschädigung nicht gleich als die Gewährte Ausfallentschädigung sind. Die Bemerkungen werden in diesem Fall auf der definitive Verfügung ausgedrückt werden.",
+    "NOTVERORDNUNG_VERFUEGUNG": "Verfügungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
