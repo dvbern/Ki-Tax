@@ -162,6 +162,7 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	@Column(name = "stufe_2_voraussichtliche_betrag", nullable = true)
 	@Nullable
+	@Min(0)
 	private BigDecimal stufe2VoraussichtlicheBetrag;
 
 	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
