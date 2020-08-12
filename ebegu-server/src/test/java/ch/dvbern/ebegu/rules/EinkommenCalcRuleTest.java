@@ -60,8 +60,9 @@ public class EinkommenCalcRuleTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
+		assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -123,9 +124,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(25000, abschnittErstesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
 		VerfuegungsBemerkungList bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBemerkungenList();
 		assertNotNull(bemerkungenAbschnitt2);
-		assertEquals(2, bemerkungenAbschnitt2.uniqueSize());
+		assertEquals(3, bemerkungenAbschnitt2.uniqueSize());
 		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_1;
 		VerfuegungsBemerkung bemerkungEkvAccept1 = bemerkungenAbschnitt2.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
@@ -136,9 +138,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(20000, abschnittZweitesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
 		VerfuegungsBemerkungList bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBemerkungenList();
 		assertNotNull(bemerkungenAbschnitt3);
-		assertEquals(2, bemerkungenAbschnitt3.uniqueSize());
+		assertEquals(3, bemerkungenAbschnitt3.uniqueSize());
 		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_2;
 		VerfuegungsBemerkung bemerkungEkvAccept2 = bemerkungenAbschnitt3.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
@@ -157,9 +160,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
+		assertEquals(3, result.get(0).getBemerkungenList().uniqueSize());
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -173,10 +177,11 @@ public class EinkommenCalcRuleTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertTrue(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		assertEquals(3, result.get(0).getBemerkungenList().uniqueSize());
+		assertEquals(4, result.get(0).getBemerkungenList().uniqueSize());
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_MSG));
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {
