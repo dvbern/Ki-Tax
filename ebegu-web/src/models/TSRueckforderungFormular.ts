@@ -294,6 +294,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
         } else {
             result = this.calculateProvisorischerBetragStufe2Privat();
         }
+        result = Math.min(result, 0);
         return EbeguUtil.roundToFiveRappen(result);
     }
 

@@ -970,6 +970,7 @@
 										   #stufe2VerfuegungBetrag="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe2VerfuegungBetrag"
                                            class="form-control"
+                                           [min]="0"
                                            [disabled]="!canEditKantonStufe2Felder(rueckforderungFormular)"
                                     >
                                     <div class="dv-error-messages" *ngIf="showMessageFehlendeVerfuegungBetrag">
