@@ -94,8 +94,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_ProvisorischeVerfuegung_Begruessung_End";
 	private static final String BEGRUESSUNG_AMT =
 		"PdfGeneration_ProvisorischeVerfuegung_Begruessung_Amt";
-	private static final String MITARBEITERIN =
-		"PdfGeneration_ProvisorischeVerfuegung_Mitarbeiterin";
 	private static final String VORSTEHERIN =
 		"PdfGeneration_ProvisorischeVerfuegung_Vorsteherin";
 
@@ -104,13 +102,21 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	private final boolean isProvisorisch;
 	private static final int superTextSize = 6;
 	private static final int superTextRise = 4;
+	private final String nameVerantwortlichePerson;
+	private final String pathToUnterschrift;
 
-	public RueckforderungVerfuegungPdfGenerator(RueckforderungFormular rueckforderungFormular,
-		boolean provisorisch) {
+	public RueckforderungVerfuegungPdfGenerator(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		boolean provisorisch,
+		@Nonnull String nameVerantwortlichePerson,
+		@Nonnull String pathToUnterschrift
+	) {
 		super(rueckforderungFormular.getKorrespondenzSprache());
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		this.rueckforderungFormular = rueckforderungFormular;
 		this.isProvisorisch = provisorisch;
+		this.nameVerantwortlichePerson = nameVerantwortlichePerson;
+		this.pathToUnterschrift = pathToUnterschrift;
 	}
 
 	@Nonnull
@@ -179,24 +185,18 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
 		}
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122,
-			getPageConfiguration().getFont(),
-			10f);
+		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122, getPageConfiguration().getFont(), 10f);
 		try {
-			//Bild muss in einen Wildfly Verzeichnis gelesen werden wegen Rechtschutz:
-			String jBossDirectory = System.getProperty("jboss.home.dir");
-			byte[] signature = IOUtils.toByteArray(new FileInputStream(
-				jBossDirectory + "/KantonSignature"
-					+ ".png"));
+			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
 			Image image = Image.getInstance(signature);
 			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
 			image.scalePercent(percent);
 			image.setAbsolutePosition(350, 430);
 			document.add(image);
 		} catch (IOException e) {
-			LOG.error("KantonSignature.png koennte nicht geladen werden: {}", e.getMessage());
+			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
 		}
-		createContentWhereIWant(directContent, translate(MITARBEITERIN), 375, 122,
+		createContentWhereIWant(directContent, nameVerantwortlichePerson, 375, 122,
 			getPageConfiguration().getFont(),
 			10f);
 		createContentWhereIWant(directContent, translate(VORSTEHERIN), 360, 122,

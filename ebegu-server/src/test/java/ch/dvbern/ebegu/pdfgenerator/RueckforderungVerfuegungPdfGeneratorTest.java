@@ -50,12 +50,16 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 	@Test
 	public void generateProvisorischeVerfuegung() throws IOException, InvoiceGeneratorException {
 		RueckforderungVerfuegungPdfGenerator generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true);
-		generator.generate(new FileOutputStream(pfad + "notrecht_provisorische_verfuegung_de.pdf"));
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true, "VerantwortlichePerson", "/temp/unterschrift.png");
+		final String file_de = pfad + "notrecht_provisorische_verfuegung_de.pdf";
+		generator.generate(new FileOutputStream(file_de));
+		System.out.println("PDF generated: " + file_de);
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true);
-		generator.generate(new FileOutputStream(pfad + "notrecht_provisorische_verfuegung_fr.pdf"));
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true, "VerantwortlichePerson", "/temp/unterschrift.png");
+		final String file_fr = pfad + "notrecht_provisorische_verfuegung_fr.pdf";
+		System.out.println("PDF generated: " + file_fr);
+		generator.generate(new FileOutputStream(file_fr));
 	}
 
 	private InstitutionStammdaten initInstitutionStammdaten(){

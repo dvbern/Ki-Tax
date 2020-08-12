@@ -297,4 +297,8 @@ public interface EbeguConfiguration {
 	int getClamavPort();
 
 	boolean isClamavDisabled();
+
+	String getNotverordnungUnterschriftName();
+
+	String getNotverordnungUnterschriftPath();
 }

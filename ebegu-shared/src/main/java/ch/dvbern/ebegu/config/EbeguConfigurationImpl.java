@@ -94,6 +94,9 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String CLAMAV_PORT = "ebegu.clamav.port";
 	private static final String CLAMAV_DISABLED = "ebegu.clamav.disabled";
 
+	private static final String NOTVERORDNUNG_UNTERSCHRIFT_PATH = "ebegu.notverordnung.unterschrift.path";
+	private static final String NOTVERORDNUNG_UNTERSCHRIFT_NAME = "ebegu.notverordnung.unterschrift.name";
+
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -379,6 +382,16 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public boolean isClamavDisabled() {
 		return getBoolean(CLAMAV_DISABLED, true);
+	}
+
+	@Override
+	public String getNotverordnungUnterschriftName() {
+		return getString(NOTVERORDNUNG_UNTERSCHRIFT_NAME);
+	}
+
+	@Override
+	public String getNotverordnungUnterschriftPath() {
+		return getString(NOTVERORDNUNG_UNTERSCHRIFT_PATH);
 	}
 
 }
