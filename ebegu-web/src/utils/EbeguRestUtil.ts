@@ -1117,7 +1117,7 @@ export class EbeguRestUtil {
         return restProperties;
     }
 
-    public gesuchToRestObject(restGesuch: any, gesuch: TSGesuch): TSGesuch {
+    public gesuchToRestObject(restGesuch: any, gesuch: TSGesuch): any {
         this.abstractAntragEntityToRestObject(restGesuch, gesuch);
         restGesuch.einkommensverschlechterungInfoContainer =
             this.einkommensverschlechterungInfoContainerToRestObject({},
