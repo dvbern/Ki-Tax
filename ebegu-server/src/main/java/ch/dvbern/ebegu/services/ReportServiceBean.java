@@ -72,6 +72,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -98,6 +99,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -231,6 +233,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@SuppressWarnings("Duplicates")
 	@Nonnull
@@ -1207,8 +1212,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
 		GesuchstellerKinderBetreuungDataRow row,
-		@Nullable GesuchstellerContainer containerGS1
-	) {
+		@Nullable GesuchstellerContainer containerGS1,
+		Einstellung freiwilligenArbeitMax) {
 		if (containerGS1 == null) {
 			return;
 		}
@@ -1249,14 +1254,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				row.setGs1EwpIntegration(row.getGs1EwpIntegration() + erwerbspensumJA.getPensum());
 			}
 			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
-				row.setGs1EwpFreiwillig(row.getGs1EwpFreiwillig() + erwerbspensumJA.getPensum());
+				row.setGs1EwpFreiwillig(Math.min(
+					row.getGs1EwpFreiwillig() + erwerbspensumJA.getPensum(),
+					freiwilligenArbeitMax.getValueAsInteger()
+				));
 			}
 		}
 	}
 
 	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(
 		GesuchstellerKinderBetreuungDataRow row,
-		GesuchstellerContainer containerGS2) {
+		GesuchstellerContainer containerGS2, Einstellung freiwilligenArbeitMax) {
 
 		Gesuchsteller gs2 = containerGS2.getGesuchstellerJA();
 		row.setGs2Name(gs2.getNachname());
@@ -1293,7 +1301,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				row.setGs2EwpIntegration(row.getGs2EwpIntegration() + erwerbspensumJA.getPensum());
 			}
 			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
-				row.setGs2EwpFreiwillig(row.getGs2EwpFreiwillig() + erwerbspensumJA.getPensum());
+				row.setGs2EwpFreiwillig(Math.min(
+					row.getGs2EwpFreiwillig() + erwerbspensumJA.getPensum(),
+					freiwilligenArbeitMax.getValueAsInteger()
+				));
 			}
 		}
 	}
@@ -1464,6 +1475,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 
+		Einstellung freiwilligenArbeitMax = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+			gesuch.getDossier().getGemeinde(),
+			gesuch.getGesuchsperiode());
+
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
 
@@ -1492,7 +1508,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpFreiwillig(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
-			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
+			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container, freiwilligenArbeitMax);
 		}
 		// Gesuchsteller 2: Prozent-Felder initialisieren, damit im Excel das Total sicher berechnet werden kann
 		row.setGs2EwpAngestellt(0);
@@ -1503,7 +1519,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpIntegration(0);
 		row.setGs2EwpFreiwillig(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
-			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
+			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2(), freiwilligenArbeitMax);
 		}
 		// Familiensituation / Einkommen
 		FamiliensituationContainer familiensituationContainer = gueltigeGesuch.getFamiliensituationContainer();
