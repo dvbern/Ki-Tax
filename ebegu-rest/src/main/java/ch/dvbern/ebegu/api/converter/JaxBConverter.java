@@ -1508,7 +1508,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
-		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
+		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungsAbweichungen());
 		if (persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(
 				institutionStammdatenBetreuungsgutscheineToJAX(
@@ -1562,7 +1562,7 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
 		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setWebseite(institutionStammdatenJAXP.getWebseite());
-		institutionStammdaten.setOeffnungszeiten(institutionStammdatenJAXP.getOeffnungszeiten());
+		institutionStammdaten.setOeffnungsAbweichungen(institutionStammdatenJAXP.getOeffnungszeiten());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
 		if (institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			// wenn InstitutionStammdatenBetreuungsgutscheine vorhanden ist es ein BG und Objekt muss, wenn noch
