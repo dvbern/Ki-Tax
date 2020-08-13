@@ -1248,6 +1248,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpIntegration(row.getGs1EwpIntegration() + erwerbspensumJA.getPensum());
 			}
+			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs1EwpFreiwillig(row.getGs1EwpFreiwillig() + erwerbspensumJA.getPensum());
+			}
 		}
 	}
 
@@ -1288,6 +1291,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpIntegration(row.getGs2EwpIntegration() + erwerbspensumJA.getPensum());
+			}
+			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs2EwpFreiwillig(row.getGs2EwpFreiwillig() + erwerbspensumJA.getPensum());
 			}
 		}
 	}
@@ -1483,6 +1489,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpRav(0);
 		row.setGs1EwpGesundhtl(0);
 		row.setGs1EwpIntegration(0);
+		row.setGs1EwpFreiwillig(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
 			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
@@ -1494,6 +1501,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpRav(0);
 		row.setGs2EwpGesundhtl(0);
 		row.setGs2EwpIntegration(0);
+		row.setGs2EwpFreiwillig(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
 			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
 		}

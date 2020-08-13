@@ -51,6 +51,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs1EwpRav;
 	private Integer gs1EwpGesundhtl;
 	private Integer gs1EwpIntegration;
+	private Integer gs1EwpFreiwillig;
 
 
 	@Nullable private String gs2Name;
@@ -67,6 +68,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs2EwpRav;
 	private Integer gs2EwpGesundhtl;
 	private Integer gs2EwpIntegration;
+	private Integer gs2EwpFreiwillig;
 
 	@Nullable private EnumFamilienstatus familiensituation;
 	@Nullable private BigDecimal familiengroesse;
@@ -303,6 +305,14 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setGs1EwpGesundhtl(@Nullable Integer gs1EwpGesundhtl) {
 		this.gs1EwpGesundhtl = gs1EwpGesundhtl;
+	}
+
+	public Integer getGs1EwpFreiwillig() {
+		return gs1EwpFreiwillig;
+	}
+
+	public void setGs1EwpFreiwillig(Integer gs1EwpFreiwillig) {
+		this.gs1EwpFreiwillig = gs1EwpFreiwillig;
 	}
 
 	@Nullable
@@ -722,5 +732,13 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setGs2EwpIntegration(Integer gs2EwpIntegration) {
 		this.gs2EwpIntegration = gs2EwpIntegration;
+	}
+
+	public Integer getGs2EwpFreiwillig() {
+		return gs2EwpFreiwillig;
+	}
+
+	public void setGs2EwpFreiwillig(Integer gs2EwpFreiwillig) {
+		this.gs2EwpFreiwillig = gs2EwpFreiwillig;
 	}
 }
