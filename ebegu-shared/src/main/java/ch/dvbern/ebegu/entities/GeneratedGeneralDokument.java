@@ -17,12 +17,9 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Arrays;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -41,9 +38,6 @@ public class GeneratedGeneralDokument extends WriteProtectedDokument {
 	@Column(nullable = false)
 	private String identifier;
 
-	@Transient
-	private byte[] content;
-
 	public GeneratedGeneralDokument() {
 	}
 
@@ -53,14 +47,6 @@ public class GeneratedGeneralDokument extends WriteProtectedDokument {
 
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
-	}
-
-	public byte[] getContent() {
-		return content;
-	}
-
-	public void setContent(byte[] content) {
-		this.content = Arrays.copyOf(content, content.length);
 	}
 
 	@Override

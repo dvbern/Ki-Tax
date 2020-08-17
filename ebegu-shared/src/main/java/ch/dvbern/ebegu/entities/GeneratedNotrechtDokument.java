@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@EntityListeners({ WriteProtectedDokumentListener.class })
+@EntityListeners(WriteProtectedDokumentListener.class)
 public class GeneratedNotrechtDokument extends WriteProtectedDokument {
 
 	private static final long serialVersionUID = -895840426576485097L;
@@ -60,7 +60,7 @@ public class GeneratedNotrechtDokument extends WriteProtectedDokument {
 	}
 
 	public byte[] getContent() {
-		return content;
+		return Arrays.copyOf(content, content.length);
 	}
 
 	public void setContent(byte[] content) {
