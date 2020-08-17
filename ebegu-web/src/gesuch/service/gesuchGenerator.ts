@@ -257,10 +257,9 @@ export class GesuchGenerator {
 
         this.authServiceRS.principal$.subscribe(currentUser => {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole())) {
-                gesuch.dossier.verantwortlicherBG = currentUser;
-
+                gesuch.dossier.verantwortlicherBG = currentUser.toBenutzerNoDetails();
             } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
-                gesuch.dossier.verantwortlicherTS = currentUser;
+                gesuch.dossier.verantwortlicherTS = currentUser.toBenutzerNoDetails();
             }
         }, err => LOG.error(err));
     }

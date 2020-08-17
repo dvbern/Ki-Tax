@@ -37,6 +37,9 @@ public class JaxBenutzerNoDetails implements Serializable {
 	private String vorname = "";
 
 	@Nonnull
+	private String username = "";
+
+	@Nonnull
 	private Set<String> gemeindeIds = new HashSet<>();
 
 
@@ -56,6 +59,15 @@ public class JaxBenutzerNoDetails implements Serializable {
 
 	public void setVorname(@Nonnull String vorname) {
 		this.vorname = vorname;
+	}
+
+	@Nonnull
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(@Nonnull String username) {
+		this.username = username;
 	}
 
 	@Nonnull

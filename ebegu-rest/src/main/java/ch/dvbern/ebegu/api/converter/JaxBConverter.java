@@ -3739,6 +3739,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBenutzerNoDetails jaxLoginElement = new JaxBenutzerNoDetails();
 		jaxLoginElement.setVorname(benutzer.getVorname());
 		jaxLoginElement.setNachname(benutzer.getNachname());
+		jaxLoginElement.setUsername(benutzer.getUsername());
 		Set<String> gemeindeIds = benutzer.getBerechtigungen()
 			.stream()
 			.flatMap(berechtigung -> berechtigung.getGemeindeList()

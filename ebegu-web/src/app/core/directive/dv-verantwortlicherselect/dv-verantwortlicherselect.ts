@@ -90,12 +90,12 @@ export class VerantwortlicherselectController implements IController {
     /**
      * Sets the given user as the verantworlicher fuer den aktuellen Fall
      */
-    public setVerantwortlicher(verantwortlicher: TSBenutzer): void {
+    public setVerantwortlicher(verantwortlicher: TSBenutzerNoDetails): void {
         this.setVerantwortlicherGesuchModelManager(verantwortlicher);
         this.setUserAsFallVerantwortlicherLocal(verantwortlicher);
     }
 
-    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzer): void {
+    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzerNoDetails): void {
         if (this.isSchulamt) {
             this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
@@ -103,7 +103,7 @@ export class VerantwortlicherselectController implements IController {
         }
     }
 
-    public setUserAsFallVerantwortlicherLocal(user: TSBenutzer): void {
+    public setUserAsFallVerantwortlicherLocal(user: TSBenutzerNoDetails): void {
         if (!(user && this.getGesuch() && this.getGesuch().dossier)) {
             return;
         }
@@ -122,7 +122,7 @@ export class VerantwortlicherselectController implements IController {
         return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
     }
 
-    public getFallVerantwortlicher(): TSBenutzer {
+    public getFallVerantwortlicher(): TSBenutzerNoDetails {
         return this.isSchulamt ?
             this.gesuchModelManager.getFallVerantwortlicherTS() :
             this.gesuchModelManager.getFallVerantwortlicherBG();

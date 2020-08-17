@@ -18,15 +18,18 @@ export class TSBenutzerNoDetails {
 
     public nachname: string;
     public vorname: string;
+    public username: string;
     public gemeindeIds: Array<string> = [];
 
     public constructor(
         vorname?: string,
         nachname?: string,
+        username?: string,
         gemeindeIds?: Array<string>
     ) {
         this.vorname = vorname;
         this.nachname = nachname;
+        this.username = username;
         this.gemeindeIds = gemeindeIds;
     }
 

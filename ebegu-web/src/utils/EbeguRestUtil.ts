@@ -818,7 +818,9 @@ export class EbeguRestUtil {
 
     private gemeindeListToRestObject(gemeindeListTS: Array<TSGemeinde>): Array<any> {
         return gemeindeListTS
-            ? gemeindeListTS.map(item => this.gemeindeToRestObject({}, item))
+            ? gemeindeListTS
+                .map(item => this.gemeindeToRestObject({}, item))
+                .filter(gmde => EbeguUtil.isNotNullOrUndefined(gmde))
             : [];
     }
 
@@ -1061,8 +1063,8 @@ export class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restDossier, dossier);
             restDossier.fall = this.fallToRestObject({}, dossier.fall);
             restDossier.gemeinde = this.gemeindeToRestObject({}, dossier.gemeinde);
-            restDossier.verantwortlicherBG = this.userToRestObject({}, dossier.verantwortlicherBG);
-            restDossier.verantwortlicherTS = this.userToRestObject({}, dossier.verantwortlicherTS);
+            restDossier.verantwortlicherBG = this.benutzerNoDetailsToRestObject({}, dossier.verantwortlicherBG);
+            restDossier.verantwortlicherTS = this.benutzerNoDetailsToRestObject({}, dossier.verantwortlicherTS);
             return restDossier;
         }
         return undefined;
@@ -1082,8 +1084,10 @@ export class EbeguRestUtil {
             this.parseAbstractMutableEntity(dossierTS, dossierFromServer);
             dossierTS.fall = this.parseFall(new TSFall(), dossierFromServer.fall);
             dossierTS.gemeinde = this.parseGemeinde(new TSGemeinde(), dossierFromServer.gemeinde);
-            dossierTS.verantwortlicherBG = this.parseUser(new TSBenutzer(), dossierFromServer.verantwortlicherBG);
-            dossierTS.verantwortlicherTS = this.parseUser(new TSBenutzer(), dossierFromServer.verantwortlicherTS);
+            dossierTS.verantwortlicherBG =
+                this.parseUserNoDetails(new TSBenutzerNoDetails(), dossierFromServer.verantwortlicherBG);
+            dossierTS.verantwortlicherTS =
+                this.parseUserNoDetails(new TSBenutzerNoDetails(), dossierFromServer.verantwortlicherTS);
             return dossierTS;
         }
         return undefined;
@@ -2616,6 +2620,17 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    public benutzerNoDetailsToRestObject(user: any, userTS: TSBenutzerNoDetails): TSBenutzerNoDetails {
+        if (!userTS) {
+            return undefined;
+        }
+        user.username = userTS.username;
+        user.nachname = userTS.nachname;
+        user.vorname = userTS.vorname;
+        user.gemeindeBGId = userTS.gemeindeIds;
+        return user;
+    }
+
     public parseUser(userTS: TSBenutzer, userFromServer: any): TSBenutzer {
         if (userFromServer) {
             userTS.username = userFromServer.username;
@@ -2638,6 +2653,7 @@ export class EbeguRestUtil {
         if (userFromServer) {
             userTS.nachname = userFromServer.nachname;
             userTS.vorname = userFromServer.vorname;
+            userTS.username = userFromServer.username;
             userTS.gemeindeIds = userFromServer.gemeindeIds;
             return userTS;
         }
