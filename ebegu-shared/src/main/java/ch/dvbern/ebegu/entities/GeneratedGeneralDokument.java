@@ -17,46 +17,40 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Arrays;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.envers.Audited;
 
 /**
- * Entitaet zum Speichern von GeneratedNotrechtDokument in der Datenbank.
+ * Entitaet zum Speichern eines Allgemeinen Dokumentes (Ohne direkte Verlinkung im Modell) in der
+ * Datenbank. Das Dokument hat einen Identifier.
  */
-@Audited
 @Entity
-@EntityListeners({ WriteProtectedDokumentListener.class })
-public class GeneratedNotrechtDokument extends WriteProtectedDokument {
+@EntityListeners(WriteProtectedDokumentListener.class)
+public class GeneratedGeneralDokument extends WriteProtectedDokument {
 
-	private static final long serialVersionUID = -895840426576485097L;
+	private static final long serialVersionUID = 9124834795106980991L;
 
 	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_generated_dokument_rueckforderung_formular_id"), nullable = false)
-	private RueckforderungFormular rueckforderungFormular;
+	@Column(nullable = false)
+	private String identifier;
 
 	@Transient
 	private byte[] content;
 
-	public GeneratedNotrechtDokument() {
+	public GeneratedGeneralDokument() {
 	}
 
-	public RueckforderungFormular getRueckforderungFormular() {
-		return rueckforderungFormular;
+	public String getIdentifier() {
+		return identifier;
 	}
 
-	public void setRueckforderungFormular(RueckforderungFormular rueckforderungFormular) {
-		this.rueckforderungFormular = rueckforderungFormular;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public byte[] getContent() {
@@ -64,14 +58,14 @@ public class GeneratedNotrechtDokument extends WriteProtectedDokument {
 	}
 
 	public void setContent(byte[] content) {
-		this.content = Arrays.copyOf(content, content.length);
+		this.content = content;
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
 			.appendSuper(super.toString())
-			.append("rueckforderungFormular", rueckforderungFormular)
+			.append("identifier", identifier)
 			.toString();
 	}
 }

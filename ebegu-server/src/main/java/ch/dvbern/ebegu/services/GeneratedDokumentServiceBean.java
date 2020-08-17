@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
+import ch.dvbern.ebegu.entities.GeneratedGeneralDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -1149,16 +1150,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		// Der Name des ZipFiles ist der auftragIdentifier.
 		UploadFileInfo savedDokument = fileSaverService.saveZipFile(content, auftragIdentifier);
 
-		GeneratedNotrechtDokument writeProtectedDokument = new GeneratedNotrechtDokument();
+		GeneratedGeneralDokument writeProtectedDokument = new GeneratedGeneralDokument();
+		writeProtectedDokument.setIdentifier(auftragIdentifier);
 		writeProtectedDokument.setFilename(savedDokument.getFilename());
 		writeProtectedDokument.setFilepfad(savedDokument.getPath());
 		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
 		writeProtectedDokument.setTyp(GeneratedDokumentTyp.NOTRECHT_MASSENVERFUEGUNG);
 		writeProtectedDokument.setWriteProtected(true);
-
-		// TODO das formular ist zwingend, temporaer ein pseudo formular anhaengen. Es braucht dann einen eigenen Typ
-		final Optional<RueckforderungFormular> first = criteriaQueryHelper.getAll(RueckforderungFormular.class).stream().findFirst();
-		first.ifPresent(writeProtectedDokument::setRueckforderungFormular);
 
 		return this.saveDokument(writeProtectedDokument);
 	}
