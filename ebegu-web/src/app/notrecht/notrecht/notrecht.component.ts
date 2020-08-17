@@ -23,14 +23,20 @@ import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {isBereitZumVerfuegenOderVerfuegt, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
+
+const LOG = LogFactory.createLog('NotrechtComponent');
 
 @Component({
     selector: 'dv-notrecht',
@@ -67,6 +73,7 @@ export class NotrechtComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly $state: StateService,
         private readonly dialog: MatDialog,
+        private readonly downloadRS: DownloadRS,
     ) {
     }
 
@@ -175,6 +182,34 @@ export class NotrechtComponent implements OnInit {
                         this.errorService.addMesageAsInfo(this.translate.instant(
                             'RUECKFORDERUNG_PHASE2_INITIALISIERT'
                         ));
+                    });
+                },
+                () => {
+                });
+    }
+
+    public verfuegenUndAusdrucken(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TITLE',
+            text: 'VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT',
+        };
+        const token = DateUtil.now().format('YYYY-MM-DD-HH-mm-ss');
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                if (answer !== true) {
+                    return;
+                }
+                // Wir loggen die AuftragId: Falls beim Download des ZIPs etwas schief geht, finden wir damit
+                // die Files auf dem Server
+                LOG.warn('Starting Massen-Verfuegung', token);
+                const win = this.downloadRS.prepareDownloadWindow();
+                this.downloadRS.getNotverordnungVerfuegungenAccessTokenGeneratedDokument(token)
+                    .then((downloadFile: TSDownloadFile) => {
+                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+                    })
+                    .catch(() => {
+                        win.close();
                     });
                 },
                 () => {

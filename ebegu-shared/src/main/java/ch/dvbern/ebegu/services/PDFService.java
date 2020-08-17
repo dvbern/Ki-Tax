@@ -88,7 +88,12 @@ public interface PDFService {
 	@Nonnull
 	byte[] generateProvisorischeVerfuegungRuckforderungformular(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
-		boolean writeProtected,
-		@Nonnull Locale locale
+		boolean writeProtected
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateDefinitiveVerfuegungRuckforderungformular(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		boolean writeProtected
 	) throws MergeDocException;
 }

@@ -1081,11 +1081,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(RueckforderungFormular rueckforderungFormular) throws MimeTypeParseException, MergeDocException {
-		//Institution haben keine Sprache, so default DE
+	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular
+	) throws MimeTypeParseException, MergeDocException {
+
 		String fileNameForGeneratedDokumentTyp = DokumenteUtil
 				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
-					rueckforderungFormular.getId(), Sprache.DEUTSCH.getLocale());
+					rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
@@ -1096,11 +1098,68 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 
 		WriteProtectedDokument persistedDokument = null;
-			byte[] data = pdfService.generateProvisorischeVerfuegungRuckforderungformular(rueckforderungFormular, true,
-				Sprache.DEUTSCH.getLocale());
-			persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
-				rueckforderungFormular, fileNameForGeneratedDokumentTyp, true);
+		byte[] data = pdfService.generateProvisorischeVerfuegungRuckforderungformular(rueckforderungFormular, true);
+		persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+			rueckforderungFormular, fileNameForGeneratedDokumentTyp, true);
 
 		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nullable String auftragIdentifier
+	) throws MimeTypeParseException, MergeDocException {
+
+		String fileNameForGeneratedDokumentTyp = DokumenteUtil
+			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+				rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
+
+		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
+				fileNameForGeneratedDokumentTyp,
+				false);
+		if (documentIfExistsAndIsWriteProtected != null) {
+			return documentIfExistsAndIsWriteProtected;
+		}
+
+		WriteProtectedDokument persistedDokument = null;
+		byte[] data = pdfService.generateDefinitiveVerfuegungRuckforderungformular(rueckforderungFormular, true);
+		persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+			rueckforderungFormular, fileNameForGeneratedDokumentTyp, false);
+
+		if (auftragIdentifier != null) {
+			// Bitzli ein Hack: Wir wollen fuer das Zip das byte[] direkt haben, schreiben es daher (transient) hier rein
+			// Dies ist aber nur notwendig, wenn wir ueberhaupt an einer Massenverfuegung sind (also einen
+			// auftragIdentifier haben)
+			((GeneratedNotrechtDokument)persistedDokument).setContent(data);
+		}
+
+		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument generateMassenVerfuegungenAccessTokenGeneratedDocument(
+		@Nonnull byte[] content,
+		@Nonnull String auftragIdentifier
+	) throws MimeTypeParseException {
+
+		// Der Name des ZipFiles ist der auftragIdentifier.
+		UploadFileInfo savedDokument = fileSaverService.saveZipFile(content, auftragIdentifier);
+
+		GeneratedNotrechtDokument writeProtectedDokument = new GeneratedNotrechtDokument();
+		writeProtectedDokument.setFilename(savedDokument.getFilename());
+		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
+		writeProtectedDokument.setTyp(GeneratedDokumentTyp.NOTRECHT_MASSENVERFUEGUNG);
+		writeProtectedDokument.setWriteProtected(true);
+
+		// TODO das formular ist zwingend, temporaer ein pseudo formular anhaengen. Es braucht dann einen eigenen Typ
+		final Optional<RueckforderungFormular> first = criteriaQueryHelper.getAll(RueckforderungFormular.class).stream().findFirst();
+		first.ifPresent(writeProtectedDokument::setRueckforderungFormular);
+
+		return this.saveDokument(writeProtectedDokument);
 	}
 }

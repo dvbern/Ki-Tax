@@ -2136,8 +2136,12 @@
     "RUECKFORDERUNG_FREIGEBEN_ZUR_VERFUEGUNG": "Freigeben zur Verfügung",
     "RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG": "Gewährte Ausfallentschädigung",
     "RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT": "Provisorische Verfügung herunterladen",
+    "RUECKFORDERUNG_DEFINITIVE_VERFUEGUNG_LINK_TEXT": "Definitive Verfügung herunterladen",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Bemerkung zur Verfügung",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Dieser Feld ist Pflichtig nur wenn die Eingereichte Ausfallentschädigung nicht gleich als die Gewährte Ausfallentschädigung sind. Die Bemerkungen werden in diesem Fall auf der definitive Verfügung ausgedrückt werden.",
     "NOTVERORDNUNG_VERFUEGUNG": "Verfügungen",
+    "NOTVERORDNUNG_VERFUEGUNGEN_AUSDRUCKEN": "Verfügungen ausdrucken",
+    "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TITLE": "Verfügen & Verfügungen ausdrucken",
+    "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT": "Wollen Sie wirklich für alle Rückforderungsformulare im Status \"bereit zur Verfügung\" die Verfügungen generieren?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

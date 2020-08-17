@@ -111,4 +111,24 @@ public interface GeneratedDokumentService {
 
 	@Nullable
 	WriteProtectedDokument findGeneratedNotrechtDokument(@Nonnull String id, @Nonnull String filename);
+
+	/**
+	 * Generiert ein AccessToken (und das File, falls nicht vorhanden) fuer eine einzelne Verfuegung.
+	 * Falls ein AuftragIdentifier vorhanden ist: Wir sind in einer Massenverfuegung und geben den
+	 * Inhalt des Dokuments als transientes Feld direkt im WriteProtectedDokument zurueck, um es ins
+	 * Zip File zu schreiben
+	 */
+	@Nonnull
+	WriteProtectedDokument getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nullable String auftragIdentifier) throws MimeTypeParseException, MergeDocException;
+
+	/**
+	 * Erstellt eine definitive Verfuegung fuer alle Formulare im Status 'Bereit zum Verfuegen'.
+	 * Die Verfuegungen werden als Zip File zurueckgegeben, der Name des Zip Files ist auftragIdentifier.
+	 */
+	@Nonnull
+	WriteProtectedDokument generateMassenVerfuegungenAccessTokenGeneratedDocument(
+		@Nonnull byte[] content,
+		@Nonnull String auftragIdentifier) throws MimeTypeParseException;
 }

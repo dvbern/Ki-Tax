@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,22 +40,25 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
+import ch.dvbern.ebegu.services.util.ZipCreator;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 
@@ -280,6 +285,48 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return persistedRueckforderungFormular;
 	}
 
+	@Nonnull
+	@Override
+	public byte[] massenVerfuegungDefinitiv(@Nonnull String auftragIdentifier) {
+		// Alle im Status BEREIT_ZUM_VERFUEGEN
+		List<RueckforderungStatus> statusList = new ArrayList<>();
+		statusList.add(RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
+		final Collection<RueckforderungFormular> toVerfuegen = this.getRueckforderungFormulareByStatus(statusList);
+		// Eigentliches Verfuegen (inkl. Generierung der Verfuegung)
+		try {
+			ZipCreator zipCreator = new ZipCreator();
+			for (RueckforderungFormular rueckforderungFormular : toVerfuegen) {
+				byte[] content = definitivVerfuegen(rueckforderungFormular, auftragIdentifier);
+				// Als Dateinamen innerhalb des Zips nehmen wir den Namen der Institution:
+				String zipEntryName = rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName() + ".pdf";
+				zipCreator.append(new ByteArrayInputStream(content), zipEntryName);
+			}
+			return zipCreator.create();
+		} catch (IOException ioe) {
+			throw new EbeguRuntimeException(
+				"definitivVerfuegen", "Could not create Zip File for Auftrag", ioe, auftragIdentifier);
+		}
+	}
+
+	@Nonnull
+	private byte[] definitivVerfuegen(@Nonnull RueckforderungFormular formular, @Nonnull String auftragIdentifier) {
+		if (formular.getStatus() != RueckforderungStatus.BEREIT_ZUM_VERFUEGEN) {
+			throw new IllegalArgumentException("falscher status");
+		}
+		formular.setStatus(RueckforderungStatus.VERFUEGT);
+		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
+		try {
+			// Information an die  Institution dass das Gesuch definitiv verfuegt wurde
+			mailService.sendInfoRueckforderungDefinitivVerfuegt(persistedRueckforderungFormular);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoRueckforderungDefinitivVerfuegt konnte nicht verschickt werden fuer RueckforderungFormular",
+				persistedRueckforderungFormular.getId());
+		}
+		final byte[] bytes = generateDefinitiveVerfuegungDokument(persistedRueckforderungFormular, auftragIdentifier);
+		return bytes;
+	}
+
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -387,8 +434,6 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	/**
 	 * Generiert das Provisoriche Verfuegung Dokument einer Ruckforderungformular.
-	 *
-	 * @param anmeldung AbstractAnmeldung, fuer die das Dokument generiert werden soll.
 	 */
 	private void generateProvisorischeVerfuegungDokument(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		try {
@@ -398,6 +443,27 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			throw new EbeguRuntimeException(
 				"ProvisorischeVerfuegungDokument",
 				"ProvisorischeVerfuegung-Dokument konnte nicht erstellt werden"
+					+ rueckforderungFormular.getId(), e);
+		}
+	}
+
+	/**
+	 * Generiert das definitive Verfuegung Dokument einer Ruckforderungformular.
+	 */
+	private byte[] generateDefinitiveVerfuegungDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull String auftragIdentifier
+	) {
+		try {
+			//noinspection ResultOfMethodCallIgnored
+			final WriteProtectedDokument dokument =
+				generatedDokumentService.getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(
+				rueckforderungFormular, auftragIdentifier);
+			return ((GeneratedNotrechtDokument)dokument).getContent();
+		} catch (MimeTypeParseException | MergeDocException e) {
+			throw new EbeguRuntimeException(
+				"DefinitiveVerfuegungDokument",
+				"DefinitiveVerfuegung-Dokument konnte nicht erstellt werden"
 					+ rueckforderungFormular.getId(), e);
 		}
 	}

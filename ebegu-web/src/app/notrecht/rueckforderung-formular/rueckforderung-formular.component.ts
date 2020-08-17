@@ -938,6 +938,17 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
             });
     }
 
+    public openDefinitiveVerfuegung(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenDefinitiveVerfuegungDokument(rueckforderungFormular.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
     public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)

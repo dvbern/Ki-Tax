@@ -22,6 +22,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -42,6 +43,9 @@ public class GeneratedNotrechtDokument extends WriteProtectedDokument {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_generated_dokument_rueckforderung_formular_id"), nullable = false)
 	private RueckforderungFormular rueckforderungFormular;
 
+	@Transient
+	private byte[] content;
+
 	public GeneratedNotrechtDokument() {
 	}
 
@@ -51,6 +55,14 @@ public class GeneratedNotrechtDokument extends WriteProtectedDokument {
 
 	public void setRueckforderungFormular(RueckforderungFormular rueckforderungFormular) {
 		this.rueckforderungFormular = rueckforderungFormular;
+	}
+
+	public byte[] getContent() {
+		return content;
+	}
+
+	public void setContent(byte[] content) {
+		this.content = content;
 	}
 
 	@Override

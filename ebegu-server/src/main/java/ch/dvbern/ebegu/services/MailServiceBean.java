@@ -698,6 +698,21 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		} else {
 			LOG.warn("Skipping RueckforderungProvisorischVerfuegt because E-Mail of Institution is null");
 		}
+	}
 
+	@Override
+	public void sendInfoRueckforderungDefinitivVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
+		String mailaddress = institutionStammdaten.getMail();
+
+		if (StringUtils.isNotEmpty(mailaddress)) {
+			String message = mailTemplateConfig.getNotrechtProvisorischeVerfuegung(
+				rueckforderungFormular,	institutionStammdaten, mailaddress
+			);
+			sendMessageWithTemplate(message, mailaddress);
+			LOG.debug("Email fuer RueckforderungDefinitivVerfuegt wurde versendet an {}", mailaddress);
+		} else {
+			LOG.warn("Skipping RueckforderungDefinitivVerfuegt because E-Mail of Institution is null");
+		}
 	}
 }

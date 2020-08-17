@@ -551,7 +551,7 @@ public class DownloadResource {
 	}
 
 	@Nonnull
-	public Response getFileDownloadResponse(UriInfo uriInfo, String ip, FileMetadata fileMetadata) {
+	public Response getFileDownloadResponse(UriInfo uriInfo, String ip, @Nonnull FileMetadata fileMetadata) {
 
 		avClient.scan(fileMetadata);
 
@@ -665,12 +665,66 @@ public class DownloadResource {
 
 		RueckforderungFormular rueckforderungFormular =
 			rueckforderungFormularService.findRueckforderungFormular(id)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("saveRueckforderungFormularEinreicheFrist",
+				.orElseThrow(() -> new EbeguEntityNotFoundException("getNotrechtProvisorischeVerfuegungDokument",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					id));
 
 		WriteProtectedDokument persistedDokument =
 			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(rueckforderungFormular);
 		return getFileDownloadResponse(uriInfo, ip, persistedDokument);
+	}
+
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download einer einzelnen definitiven Verf&uuml;gung.")
+	@Nonnull
+	@GET
+	@Path("/{rueckforderungFormularId}/definitiveVerfuegung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNotrechtDefinitiveVerfuegungDokument(
+		@Nonnull @Valid @PathParam("rueckforderungFormularId") JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,
+		MimeTypeParseException, MergeDocException {
+
+		requireNonNull(jaxId.getId());
+		String ip = getIP(request);
+		String id = converter.toEntityId(jaxId);
+
+		RueckforderungFormular rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(id)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("getNotrechtDefinitiveVerfuegungDokument",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					id));
+
+		WriteProtectedDokument persistedDokument =
+			generatedDokumentService.getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(rueckforderungFormular, null);
+		return getFileDownloadResponse(uriInfo, ip, persistedDokument);
+	}
+
+	@ApiOperation("Verfuegt alle Rueckforderungsformulare, die im Status 'BEREIT_ZUM_VERFUEGEN' sind," +
+		"erstellt die Verfuegungen (PDF) und gibt dieses als ZIP File zurueck.")
+	@Nonnull
+	@GET
+	@Path("/massenverfuegung/{auftragIdentifier}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.WILDCARD)
+	public Response getNotverordnungVerfuegungenAccessTokenGeneratedDokument(
+		@Nonnull @Valid @PathParam("auftragIdentifier") String auftragIdentifier,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo
+	) throws EbeguEntityNotFoundException {
+		requireNonNull(auftragIdentifier);
+		String ip = getIP(request);
+
+		try {
+			final byte[] zipWithVerfuegungen = rueckforderungFormularService.massenVerfuegungDefinitiv(auftragIdentifier);
+
+			final WriteProtectedDokument writeProtectedDokument;
+			writeProtectedDokument = generatedDokumentService.generateMassenVerfuegungenAccessTokenGeneratedDocument(zipWithVerfuegungen,
+				auftragIdentifier);
+			return getFileDownloadResponse(uriInfo, ip, writeProtectedDokument);
+		} catch (MimeTypeParseException | IOException e) {
+			throw new EbeguRuntimeException("getNotverordnungVerfuegungenAccessTokenGeneratedDokument",
+				"Verfuegungen konnten nicht erstellt werden", e, auftragIdentifier);
+		}
 	}
 }
