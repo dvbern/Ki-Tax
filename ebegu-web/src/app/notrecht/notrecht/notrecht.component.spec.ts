@@ -23,6 +23,7 @@ import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -43,6 +44,7 @@ describe('NotrechtComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -62,6 +64,7 @@ describe('NotrechtComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
