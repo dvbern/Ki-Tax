@@ -958,7 +958,7 @@
                         </div>
                         <!-- Gewaehrte Ausfallentschaedigung -->
                         <div class="row">
-                            <div class="col-sm-6 mt-5">
+                            <div class="col-sm-6 mt-3">
                                 <div class="form-group"
                                      *ngIf="showKantonStufe2Felder(rueckforderungFormular)">
 
@@ -970,11 +970,13 @@
 										   #stufe2VerfuegungBetrag="ngModel"
                                            [(ngModel)]="rueckforderungFormular.stufe2VerfuegungBetrag"
                                            class="form-control"
-                                           [disabled]="!canEditKantonStufe2Felder(rueckforderungFormular)"
-                                    >
-                                    <div class="dv-error-messages" *ngIf="showMessageFehlendeVerfuegungBetrag">
-                                        <span>{{'ERROR_REQUIRED' | translate}}</span>
-                                    </div>
+                                           customMinMax
+                                           [minValue]="0"
+                                           [required]="showMessageFehlendeVerfuegungBetrag"
+                                           [disabled]="!canEditKantonStufe2Felder(rueckforderungFormular)">
+                                    <dv-error-messages [errorObject]="stufe2VerfuegungBetrag.errors"
+                                                       inputId="stufe2VerfuegungBetrag_id">
+                                    </dv-error-messages>
                                     <label class="required long-label margin-top-30">
                                         {{'KORRESPONDENZSPRACHE' | translate}}</label>
                                     <mat-radio-group name="korrespondenzSprache"
@@ -1325,32 +1327,22 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-8 col-md-offset-2">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h2 translate class="margin-top-50">DOKUMENTE</h2>
-                        <hr class="header"/>
-                        <a target="_blank" rel="noopener noreferrer"
-                           href="{{'RUECKFORDERUNG_VORLAGEN_LINK' | translate}}"
-                           translate>RUECKFORDERUNG_VORLAGEN_LINK_TEXT</a>
-                    </div>
-                    <div class="col-sm-12" *ngIf="rueckforderungFormular.hasBeenProvisorisch">
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                (click)="openProvisorischeVerfuegung(rueckforderungFormular)">
-                            <span translate="RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- Dokumente -->
+            <!-- Dokumente hochladen -->
             <div class="col-md-8 col-md-offset-2" *ngIf="isStufe2(rueckforderungFormular)">
                 <div class="row">
                     <div class="col-sm-12">
                         <h2 class="margin-top-50">
                             <span translate="RUECKFORDERUNG_DOKUMENTE_HOCHLADEN"></span>
+                            &nbsp;
+                            <a target="_blank" rel="noopener noreferrer"
+                               href="{{'RUECKFORDERUNG_VORLAGEN_LINK' | translate}}"
+                               translate>RUECKFORDERUNG_VORLAGEN_LINK_TEXT</a>
                         </h2>
                         <hr class="header"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
                         <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
                             <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                         </div>
@@ -1362,6 +1354,7 @@
                                 rueckforderungDokumentTyp.ANGABEN_DOKUMENTE)"
                             [files]="rueckforderungAngabenDokumente"
                             [readOnly]="readOnlyDocument"
+                            [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
                         </dv-file-upload>
                     </div>
@@ -1379,6 +1372,7 @@
                                 rueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE)"
                             [files]="rueckforderungKommunikationDokumente"
                             [readOnly]="readOnlyDocument"
+                            [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
                         </dv-file-upload>
                     </div>
@@ -1396,6 +1390,7 @@
                                 rueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE)"
                             [files]="rueckforderungEinsatzplaeneDokumente"
                             [readOnly]="readOnlyDocument"
+                            [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
                         </dv-file-upload>
                     </div>
@@ -1414,6 +1409,7 @@
                                     rueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE)"
                                 [files]="rueckforderungKurzarbeitDokumente"
                                 [readOnly]="readOnlyDocument"
+                                [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
                             </dv-file-upload>
                         </div>
@@ -1431,8 +1427,24 @@
                                     rueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE)"
                                 [files]="rueckforderungErwerbsersatzDokumente"
                                 [readOnly]="readOnlyDocument"
+                                [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
                             </dv-file-upload>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            Verfuegungen-->
+            <div class="col-md-8 col-md-offset-2" *ngIf="rueckforderungFormular.hasBeenProvisorisch"> <!--TODO: auch anzeigen wenn definitve Verfügung-->
+                <div class="row" id="verfuegungen">
+                    <div class="col-sm-12">
+                        <h2 translate class="margin-top-50">NOTVERORDNUNG_VERFUEGUNG</h2>
+                        <hr class="header"/>
+                        <div *ngIf="rueckforderungFormular.hasBeenProvisorisch">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    (click)="openProvisorischeVerfuegung(rueckforderungFormular)">
+                                <span translate="RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1448,7 +1460,7 @@
         </div>
 
         <!-- Buttons -->
-        <div class="dv-footer margin-top-50">
+        <div class="dv-footer margin-top-50 flexbreak">
             <dv-loading-button
                 *ngIf="isInstitutionStufe1(rueckforderungFormular) || isInstitutionStufe2(rueckforderungFormular)"
                 [type]="'submit'"

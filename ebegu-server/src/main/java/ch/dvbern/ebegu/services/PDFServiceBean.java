@@ -31,6 +31,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -86,6 +87,9 @@ public class PDFServiceBean implements PDFService {
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	@Inject
 	private Authorizer authorizer;
@@ -274,8 +278,10 @@ public class PDFServiceBean implements PDFService {
 		@Nonnull Locale locale) throws MergeDocException {
 		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
 
+		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
+		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
 		RueckforderungVerfuegungPdfGenerator pdfGenerator =
-			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, true);
+			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, true, nameVerantwortlichePerson, unterschriftPath);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 

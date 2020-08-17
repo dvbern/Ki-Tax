@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.common.collect.Lists;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -54,14 +54,22 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_ProvisorischeVerfuegung_Intro";
 	private static final String BEGRUESSUNG =
 		"PdfGeneration_ProvisorischeVerfuegung_Begruessung";
-	private static final String INHALT_1 =
-		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1";
+	private static final String INHALT_1A =
+		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1A";
+	private static final String INHALT_1B =
+		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1B";
+	private static final String INHALT_1C =
+		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1C";
+	private static final String INHALT_1D =
+		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1D";
+	private static final String INHALT_1E =
+		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1E";
+	private static final String INHALT_1F =
+		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_1F";
 	private static final String INHALT_2 =
 		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_2";
 	private static final String INHALT_3 =
 		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_3";
-	private static final String INHALT_4 =
-		"PdfGeneration_ProvisorischeVerfuegung_Inhalt_4";
 	private static final String FUSSZEILE_1 =
 		"PdfGeneration_ProvisorischeVerfuegung_Fusszeile_1";
 	private static final String FUSSZEILE_2 =
@@ -86,21 +94,29 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_ProvisorischeVerfuegung_Begruessung_End";
 	private static final String BEGRUESSUNG_AMT =
 		"PdfGeneration_ProvisorischeVerfuegung_Begruessung_Amt";
-	private static final String MITARBEITERIN =
-		"PdfGeneration_ProvisorischeVerfuegung_Mitarbeiterin";
 	private static final String VORSTEHERIN =
 		"PdfGeneration_ProvisorischeVerfuegung_Vorsteherin";
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
 	private final boolean isProvisorisch;
+	private static final int superTextSize = 6;
+	private static final int superTextRise = 4;
+	private final String nameVerantwortlichePerson;
+	private final String pathToUnterschrift;
 
-	public RueckforderungVerfuegungPdfGenerator(RueckforderungFormular rueckforderungFormular,
-		boolean provisorisch) {
+	public RueckforderungVerfuegungPdfGenerator(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		boolean provisorisch,
+		@Nonnull String nameVerantwortlichePerson,
+		@Nonnull String pathToUnterschrift
+	) {
 		super(rueckforderungFormular.getKorrespondenzSprache());
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		this.rueckforderungFormular = rueckforderungFormular;
 		this.isProvisorisch = provisorisch;
+		this.nameVerantwortlichePerson = nameVerantwortlichePerson;
+		this.pathToUnterschrift = pathToUnterschrift;
 	}
 
 	@Nonnull
@@ -169,24 +185,18 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
 		}
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122,
-			getPageConfiguration().getFont(),
-			10f);
+		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122, getPageConfiguration().getFont(), 10f);
 		try {
-			//Bild muss in einen Wildfly Verzeichnis gelesen werden wegen Rechtschutz:
-			String jBossDirectory = System.getProperty("jboss.home.dir");
-			byte[] signature = IOUtils.toByteArray(new FileInputStream(
-				jBossDirectory + "/KantonSignature"
-					+ ".png"));
+			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
 			Image image = Image.getInstance(signature);
 			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
 			image.scalePercent(percent);
 			image.setAbsolutePosition(350, 430);
 			document.add(image);
 		} catch (IOException e) {
-			LOG.error("KantonSignature.png koennte nicht geladen werden: {}", e.getMessage());
+			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
 		}
-		createContentWhereIWant(directContent, translate(MITARBEITERIN), 375, 122,
+		createContentWhereIWant(directContent, nameVerantwortlichePerson, 375, 122,
 			getPageConfiguration().getFont(),
 			10f);
 		createContentWhereIWant(directContent, translate(VORSTEHERIN), 360, 122,
@@ -216,11 +226,23 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		document.add(title);
 		document.add(intro);
 		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG)));
-		document.add(PdfUtil.createParagraph(translate(INHALT_1)));
-		document.add(PdfUtil.createParagraph(translate(INHALT_2)));
-		document.add(PdfUtil.createParagraph(translate(INHALT_3,
+		// Absatz 1 mit Fusszeilen erstellen
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A), 2);
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1B)));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2", superTextSize, superTextRise));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1C)));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("3", superTextSize, superTextRise));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1D)));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("4", superTextSize, superTextRise));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1E)));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("5", superTextSize, superTextRise));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1F)));
+		document.add(paragraphWithSupertext);
+
+		document.add(PdfUtil.createParagraph(translate(INHALT_2,
 			this.rueckforderungFormular.getStufe2VoraussichtlicheBetrag())));
-		document.add(PdfUtil.createParagraph(translate(INHALT_4,
+		document.add(PdfUtil.createParagraph(translate(INHALT_3,
 			this.rueckforderungFormular.getStufe1FreigabeBetrag())));
 	}
 
