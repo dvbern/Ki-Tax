@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.ebegu.services.util.ZipCreator;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 
@@ -298,7 +299,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			for (RueckforderungFormular rueckforderungFormular : toVerfuegen) {
 				byte[] content = definitivVerfuegen(rueckforderungFormular, auftragIdentifier);
 				// Als Dateinamen innerhalb des Zips nehmen wir den Namen der Institution:
-				String zipEntryName = rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName() + ".pdf";
+				String zipEntryName = EbeguUtil.toFilename(rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName() + ".pdf");
 				zipCreator.append(new ByteArrayInputStream(content), zipEntryName);
 			}
 			return zipCreator.create();

@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Arrays;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -58,7 +60,7 @@ public class GeneratedGeneralDokument extends WriteProtectedDokument {
 	}
 
 	public void setContent(byte[] content) {
-		this.content = content;
+		this.content = Arrays.copyOf(content, content.length);
 	}
 
 	@Override

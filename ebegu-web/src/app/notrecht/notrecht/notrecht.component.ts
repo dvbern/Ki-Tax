@@ -207,6 +207,7 @@ export class NotrechtComponent implements OnInit {
                 this.downloadRS.getNotverordnungVerfuegungenAccessTokenGeneratedDokument(token)
                     .then((downloadFile: TSDownloadFile) => {
                         this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+                        this.loadRueckforderungFormulareForCurrentBenutzer();
                     })
                     .catch(() => {
                         win.close();
