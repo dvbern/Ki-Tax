@@ -19,7 +19,7 @@ export class TSBenutzerNoDetails {
     public nachname: string;
     public vorname: string;
     public username: string;
-    public gemeindeIds: Array<string> = [];
+    public gemeindeIds: Array<string>;
 
     public constructor(
         vorname?: string,
