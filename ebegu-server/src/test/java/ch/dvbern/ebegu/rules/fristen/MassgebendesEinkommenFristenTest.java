@@ -647,12 +647,12 @@ public class MassgebendesEinkommenFristenTest {
 
 	private Betreuung createMutationAlleine(@Nonnull LocalDate eingangsdatum) {
 		Gesuch erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG, false, 50000).extractGesuch();
+		addBetreuung(erstgesuch.getKindContainers().iterator().next());
 		List<VerfuegungZeitabschnitt> calculate =
 			calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(calculate);
 		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
-		addBetreuung(mutation.getKindContainers().iterator().next());
 		mutation.extractAllBetreuungen().get(0).initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutation.setRegelnGueltigAb(eingangsdatum);
 		return mutation.extractAllBetreuungen().get(0);
