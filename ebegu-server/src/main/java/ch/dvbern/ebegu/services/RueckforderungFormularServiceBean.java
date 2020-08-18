@@ -33,8 +33,10 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -50,6 +52,7 @@ import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -289,10 +292,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Nonnull
 	@Override
 	public byte[] massenVerfuegungDefinitiv(@Nonnull String auftragIdentifier) {
-		// Alle im Status BEREIT_ZUM_VERFUEGEN
-		List<RueckforderungStatus> statusList = new ArrayList<>();
-		statusList.add(RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
-		final Collection<RueckforderungFormular> toVerfuegen = this.getRueckforderungFormulareByStatus(statusList);
+		final Collection<RueckforderungFormular> toVerfuegen = getFormulareZuVerfuegen();
 		// Eigentliches Verfuegen (inkl. Generierung der Verfuegung)
 		try {
 			ZipCreator zipCreator = new ZipCreator();
@@ -307,6 +307,30 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			throw new EbeguRuntimeException(
 				"definitivVerfuegen", "Could not create Zip File for Auftrag", ioe, auftragIdentifier);
 		}
+	}
+
+	@Nonnull
+	private Collection<RueckforderungFormular> getFormulareZuVerfuegen() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<RueckforderungFormular> query = cb.createQuery(RueckforderungFormular.class);
+		Root<RueckforderungFormular> root = query.from(RueckforderungFormular.class);
+
+		ParameterExpression<RueckforderungStatus> statusParam = cb.parameter(RueckforderungStatus.class, "status");
+		ParameterExpression<RueckforderungInstitutionTyp> institutionTypParam = cb.parameter(RueckforderungInstitutionTyp.class, "institutionTyp");
+		ParameterExpression<Boolean> hasBeenProvisorischParam = cb.parameter(Boolean.class, "hasBeenProvisorisch");
+
+		// Alle im Status BEREIT_ZUM_VERFUEGEN, die Typ PRIVAT sind und nie eine Provisorische Verfuegung hatten
+		Predicate statusPredicate = cb.equal(root.get(RueckforderungFormular_.status), statusParam);
+		Predicate privatPredicate = cb.equal(root.get(RueckforderungFormular_.institutionTyp), institutionTypParam);
+		Predicate hasNotBeenProvisorischParam = cb.equal(root.get(RueckforderungFormular_.hasBeenProvisorisch), hasBeenProvisorischParam);
+
+		query.where(statusPredicate, privatPredicate, hasNotBeenProvisorischParam);
+
+		TypedQuery<RueckforderungFormular> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(statusParam, RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
+		q.setParameter(institutionTypParam, RueckforderungInstitutionTyp.PRIVAT);
+		q.setParameter(hasBeenProvisorischParam, Boolean.FALSE);
+		return q.getResultList();
 	}
 
 	@Nonnull
