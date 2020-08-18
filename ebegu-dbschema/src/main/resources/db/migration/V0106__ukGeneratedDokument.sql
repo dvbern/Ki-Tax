@@ -1,2 +1,2 @@
-alter table rueckforderung_formular add bemerkung_fuer_verfuegung varchar(2000);
-alter table rueckforderung_formular_aud add bemerkung_fuer_verfuegung varchar(2000);
+alter table generated_dokument
+	add constraint UK_generated_dokument_gesuch_filename unique (gesuch_id, filename);
