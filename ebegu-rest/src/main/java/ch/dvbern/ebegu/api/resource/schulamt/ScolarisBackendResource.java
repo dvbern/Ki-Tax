@@ -253,18 +253,23 @@ public class ScolarisBackendResource {
 				return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
 			}
 			if (betreuungen.size() > 1) {
-				// More than one betreuung
+				// More than one anmeldung
 				return createTooManyResultsResponse("More than one Betreuung with id " + referenznummer + " found");
 			}
 
-			final AbstractAnmeldung betreuung = betreuungen.get(0);
+			final AbstractAnmeldung anmeldung = betreuungen.get(0);
 
 			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp =
-				converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
+				converter.betreuungsangebotTypToScolaris(anmeldung.getBetreuungsangebotTyp());
 
 			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.TAGESSCHULE) {
 				// Betreuung ist Tagesschule
-				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
+				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) anmeldung;
+
+				if (anmeldungTagesschule.isKeineDetailinformationen()) {
+					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
+					return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+				}
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
 					return createResponseUnauthorised("username");
 				}
