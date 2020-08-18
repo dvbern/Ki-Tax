@@ -340,14 +340,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		formular.setStatus(RueckforderungStatus.VERFUEGT);
 		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
-		try {
-			// Information an die  Institution dass das Gesuch definitiv verfuegt wurde
-			mailService.sendInfoRueckforderungDefinitivVerfuegt(persistedRueckforderungFormular);
-		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
-				"Mail InfoRueckforderungDefinitivVerfuegt konnte nicht verschickt werden fuer RueckforderungFormular",
-				persistedRueckforderungFormular.getId());
-		}
+		// Bei der definitiven Verfuegung wird kein E-Mail versandt
 		final byte[] bytes = generateDefinitiveVerfuegungDokument(persistedRueckforderungFormular, auftragIdentifier);
 		return bytes;
 	}

@@ -45,7 +45,6 @@ public enum MailTemplate {
 	NotrechtGenerischeMitteilung,
 	NotrechtBestaetigungPruefungStufe1,
 	NotrechtProvisorischeVerfuegung,
-	NotrechtDefinitiveVerfuegung,
 	InfoSchulamtAnmeldungAkzeptiert,
 	InfoGesuchVerfuegtVerantwortlicherTS
 }

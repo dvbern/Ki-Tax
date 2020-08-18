@@ -674,17 +674,4 @@ public class MailTemplateConfiguration {
 
 		return doProcessTemplate(MailTemplate.NotrechtProvisorischeVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
 	}
-
-	public String getNotrechtDefinitiveVerfuegung(
-		@Nonnull RueckforderungFormular rueckforderungFormular,
-		@Nonnull InstitutionStammdaten institutionStammdaten,
-		@Nonnull String empfaengerMail
-	) {
-		Map<Object, Object> paramMap = initParamMap();
-		paramMap.put("rueckforderungFormular", rueckforderungFormular);
-		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
-		paramMap.put("empfaenger", empfaengerMail);
-
-		return doProcessTemplate(MailTemplate.NotrechtDefinitiveVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
-	}
 }
