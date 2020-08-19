@@ -327,15 +327,15 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		query.where(statusPredicate, privatPredicate, hasNotBeenProvisorischParam);
 
 		TypedQuery<RueckforderungFormular> q = persistence.getEntityManager().createQuery(query);
-		q.setParameter(statusParam, RueckforderungStatus.VERFUEGT);
+		q.setParameter(statusParam, RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
 		q.setParameter(institutionTypParam, RueckforderungInstitutionTyp.PRIVAT);
-		q.setParameter(hasBeenProvisorischParam, Boolean.TRUE);
+		q.setParameter(hasBeenProvisorischParam, Boolean.FALSE);
 		return q.getResultList();
 	}
 
 	@Nonnull
 	private byte[] definitivVerfuegen(@Nonnull RueckforderungFormular formular, @Nonnull String auftragIdentifier) {
-		if (formular.getStatus() != RueckforderungStatus.VERFUEGT) {
+		if (formular.getStatus() != RueckforderungStatus.BEREIT_ZUM_VERFUEGEN) {
 			throw new IllegalArgumentException("falscher status");
 		}
 		formular.setStatus(RueckforderungStatus.VERFUEGT);
