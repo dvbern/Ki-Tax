@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -490,6 +491,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			KantonDataRow row = new KantonDataRow();
 			Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+			Objects.requireNonNull(betreuung);
 			final Gesuch gesuch = betreuung.extractGesuch();
 
 			row.setGemeinde(gesuch.extractGemeinde().getName());
@@ -1189,13 +1191,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Locale locale
 	) {
 
-		row.setInstitution(zeitabschnitt.getVerfuegung()
-			.getBetreuung()
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		row.setInstitution(betreuung
 			.getInstitutionStammdaten()
 			.getInstitution()
 			.getName());
 
-		row.setBetreuungsTyp(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungsangebotTyp());
+		row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
 		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale));
@@ -1207,13 +1210,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		row.setFallId(Integer.parseInt(String.valueOf(gesuch.getFall().getFallNummer())));
 		row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
-		row.setBgNummer(zeitabschnitt.getVerfuegung().getBetreuung().getBGNummer());
+		row.setBgNummer(betreuung.getBGNummer());
 	}
 
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
-		GesuchstellerKinderBetreuungDataRow row,
+		@Nonnull GesuchstellerKinderBetreuungDataRow row,
 		@Nullable GesuchstellerContainer containerGS1,
-		Einstellung freiwilligenArbeitMax) {
+		@Nonnull Einstellung freiwilligenArbeitMax
+	) {
 		if (containerGS1 == null) {
 			return;
 		}
@@ -1263,8 +1267,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(
-		GesuchstellerKinderBetreuungDataRow row,
-		GesuchstellerContainer containerGS2, Einstellung freiwilligenArbeitMax) {
+		@Nonnull GesuchstellerKinderBetreuungDataRow row,
+		@Nonnull GesuchstellerContainer containerGS2,
+		@Nonnull Einstellung freiwilligenArbeitMax
+	) {
 
 		Gesuchsteller gs2 = containerGS2.getGesuchstellerJA();
 		row.setGs2Name(gs2.getNachname());
@@ -1471,9 +1477,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
 		@Nonnull Locale locale
 	) {
-		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
-		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(gueltigeBetreuung);
+		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
+		Gesuch gueltigeGesuch = null;
+
 
 		Einstellung freiwilligenArbeitMax = einstellungService.findEinstellung(
 			EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
@@ -1626,9 +1634,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
 		@Nonnull Locale locale
 	) {
-		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
-		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(gueltigeBetreuung);
+		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
+		Gesuch gueltigeGesuch = null;
+
 
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
@@ -1685,16 +1695,22 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
 
 		return gueltigeKind
-			.map(gk -> gk.getBetreuungen().stream().filter(betreuung -> betreuung
-				.getBetreuungNummer()
-				.equals(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungNummer()))
-				.findFirst()
-				.orElse(zeitabschnitt.getVerfuegung().getBetreuung()))
+			.map(gk -> {
+				final Betreuung betr = zeitabschnitt.getVerfuegung().getBetreuung();
+				Objects.requireNonNull(betr);
+				return gk.getBetreuungen().stream().filter(betreuung -> betreuung
+					.getBetreuungNummer()
+					.equals(betr.getBetreuungNummer()))
+					.findFirst()
+					.orElse(betr);
+			})
 			.orElse(gueltigeBetreuung);
 	}
 
 	private Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
-		Integer kindNummer = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindNummer();
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		Integer kindNummer = betreuung.getKind().getKindNummer();
 
 		return gueltigeGesuch.getKindContainers().stream()
 			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
