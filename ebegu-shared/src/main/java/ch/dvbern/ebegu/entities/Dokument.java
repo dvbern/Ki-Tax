@@ -24,8 +24,10 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -44,6 +46,7 @@ public class Dokument extends FileMetadata {
 
 	@NotNull
 	@Column(nullable = false)
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime timestampUpload;
 
 	public Dokument() {
