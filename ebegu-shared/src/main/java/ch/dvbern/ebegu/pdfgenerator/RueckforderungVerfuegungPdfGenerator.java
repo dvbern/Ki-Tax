@@ -232,7 +232,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			Image image = Image.getInstance(signature);
 			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
 			image.scalePercent(percent);
-			image.setAbsolutePosition(startOfEndbegruessung - 170, 430);
+			image.setAbsolutePosition(330, startOfEndbegruessung - 100);
 			document.add(image);
 		} catch (IOException e) {
 			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
