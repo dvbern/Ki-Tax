@@ -18,7 +18,12 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -60,6 +65,21 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal anzahlPlaetzeFirmen;
+
+	@Nullable
+	private String oeffnungsAbweichungen;
+
+	@Nullable
+	private List<DayOfWeek> oeffnungsTage;
+
+	@Nullable
+	private LocalTime offenVon;
+
+	@Nullable
+	private LocalTime offenBis;
+
+	@Nonnull
+	private List<JaxBetreuungsstandort> betreuungsstandorte = new ArrayList<>();
 
 	@Nullable
 	public String getIban() {
@@ -162,5 +182,50 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
+	}
+
+	@Nullable
+	public String getOeffnungsAbweichungen() {
+		return oeffnungsAbweichungen;
+	}
+
+	public void setOeffnungsAbweichungen(@Nullable String oeffnungsAbweichungen) {
+		this.oeffnungsAbweichungen = oeffnungsAbweichungen;
+	}
+
+	@Nullable
+	public List<DayOfWeek> getOeffnungsTage() {
+		return oeffnungsTage;
+	}
+
+	public void setOeffnungsTage(@Nullable List<DayOfWeek> oeffnungsTage) {
+		this.oeffnungsTage = oeffnungsTage;
+	}
+
+	@Nullable
+	public LocalTime getOffenVon() {
+		return offenVon;
+	}
+
+	public void setOffenVon(@Nullable LocalTime offenVon) {
+		this.offenVon = offenVon;
+	}
+
+	@Nullable
+	public LocalTime getOffenBis() {
+		return offenBis;
+	}
+
+	public void setOffenBis(@Nullable LocalTime offenBis) {
+		this.offenBis = offenBis;
+	}
+
+	@Nonnull
+	public List<JaxBetreuungsstandort> getBetreuungsstandorte() {
+		return betreuungsstandorte;
+	}
+
+	public void setBetreuungsstandorte(@Nonnull List<JaxBetreuungsstandort> betreuungsstandorte) {
+		this.betreuungsstandorte = betreuungsstandorte;
 	}
 }

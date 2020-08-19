@@ -15,8 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
+import {TSBetreuungsstandort} from './TSBetreuungsstandort';
 
 export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntity {
 
@@ -32,6 +35,11 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public anzahlPlaetzeFirmen: number = undefined;
     public tarifProHauptmahlzeit: number = undefined;
     public tarifProNebenmahlzeit: number = undefined;
+    public oeffnungsTage: TSDayOfWeek[] = [];
+    public offenVon: moment.Moment = undefined;
+    public offenBis: moment.Moment = undefined;
+    public oeffnungsAbweichungen: string;
+    public betreuungsstandorte: TSBetreuungsstandort[] = [];
 
     public constructor() {
         super();

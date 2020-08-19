@@ -2045,9 +2045,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (institutionStammdaten.getWebseite() != null) {
 			row.setUrl(institutionStammdaten.getWebseite());
 		}
-		if (institutionStammdaten.getOeffnungsAbweichungen() != null) {
+		// TODO: wieder aktivieren
+/*		if (institutionStammdaten.getOeffnungsAbweichungen() != null) {
 			row.setOeffnungszeiten(institutionStammdaten.getOeffnungsAbweichungen());
-		}
+		}*/
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());

@@ -46,9 +46,9 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -672064202442191630L;
 
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsstandort_institution_stammdaten_id"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsstandort_institution_stammdaten_betreuungsgutscheine_id"), nullable = false)
 	@ManyToOne(optional = false)
-	private @NotNull InstitutionStammdaten institutionStammdaten;
+	private @NotNull InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine;
 
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -70,12 +70,12 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String webseite;
 
-	public InstitutionStammdaten getInstitutionStammdaten() {
-		return institutionStammdaten;
+	public InstitutionStammdatenBetreuungsgutscheine getInstitutionStammdatenBetreuungsgutscheine() {
+		return institutionStammdatenBetreuungsgutscheine;
 	}
 
-	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
-		this.institutionStammdaten = institutionStammdaten;
+	public void setInstitutionStammdatenBetreuungsgutscheine(InstitutionStammdatenBetreuungsgutscheine institutionStammdaten) {
+		this.institutionStammdatenBetreuungsgutscheine = institutionStammdaten;
 	}
 
 	@Nonnull
@@ -127,7 +127,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 			return false;
 		}
 		final Betreuungsstandort otherBetreuungsstandort = (Betreuungsstandort) other;
-		return Objects.equals(getInstitutionStammdaten().getId(), otherBetreuungsstandort.getInstitutionStammdaten().getId()) &&
+		return Objects.equals(getInstitutionStammdatenBetreuungsgutscheine().getId(), otherBetreuungsstandort.getInstitutionStammdatenBetreuungsgutscheine().getId()) &&
 			Objects.equals(getAdresse().getId(), otherBetreuungsstandort.getAdresse().getId());
 	}
 }

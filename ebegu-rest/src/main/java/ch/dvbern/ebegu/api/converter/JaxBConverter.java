@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsstandort;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
@@ -87,7 +88,6 @@ import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -158,6 +159,7 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Betreuungsstandort;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -180,13 +182,13 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -1508,7 +1510,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
-		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungsAbweichungen());
 		if (persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(
 				institutionStammdatenBetreuungsgutscheineToJAX(
@@ -1562,7 +1563,6 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
 		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setWebseite(institutionStammdatenJAXP.getWebseite());
-		institutionStammdaten.setOeffnungsAbweichungen(institutionStammdatenJAXP.getOeffnungszeiten());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
 		if (institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			// wenn InstitutionStammdatenBetreuungsgutscheine vorhanden ist es ein BG und Objekt muss, wenn noch
@@ -1628,10 +1628,37 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
 		jaxInstStammdaten.setTarifProHauptmahlzeit(persistedInstStammdaten.getTarifProHauptmahlzeit());
 		jaxInstStammdaten.setTarifProNebenmahlzeit(persistedInstStammdaten.getTarifProNebenmahlzeit());
+		jaxInstStammdaten.setOeffnungsTage(persistedInstStammdaten.getOeffnungsTage());
+		jaxInstStammdaten.setOeffnungsAbweichungen(persistedInstStammdaten.getOeffnungsAbweichungen());
+		jaxInstStammdaten.setOffenVon(persistedInstStammdaten.getOffenVon());
+		jaxInstStammdaten.setOffenBis(persistedInstStammdaten.getOffenBis());
+
+		jaxInstStammdaten.setBetreuungsstandorte(betreuungsstandortListToJax(persistedInstStammdaten.getBetreuungsstandorte()));
+
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
 		return jaxInstStammdaten;
+	}
+
+	@Nonnull
+	private List<JaxBetreuungsstandort> betreuungsstandortListToJax(@Nullable final List<Betreuungsstandort> betreuungsstandorte) {
+		if (betreuungsstandorte == null) {
+			return new ArrayList<>();
+		}
+
+		return betreuungsstandorte.stream()
+			.map(this::betreuungsstandortToJax)
+			.collect(Collectors.toList());
+	}
+
+	private JaxBetreuungsstandort betreuungsstandortToJax(Betreuungsstandort betreuungsstandort) {
+		final JaxBetreuungsstandort jaxBetreuungsstandort = new JaxBetreuungsstandort();
+		jaxBetreuungsstandort.setAdresse(adresseToJAX(betreuungsstandort.getAdresse()));
+		jaxBetreuungsstandort.setMail(betreuungsstandort.getMail());
+		jaxBetreuungsstandort.setTelefon(betreuungsstandort.getTelefon());
+		jaxBetreuungsstandort.setWebseite(betreuungsstandort.getWebseite());
+		return jaxBetreuungsstandort;
 	}
 
 	@Nonnull
@@ -1653,6 +1680,20 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());
 		institutionStammdaten.setTarifProNebenmahlzeit(institutionStammdatenJAXP.getTarifProNebenmahlzeit());
+		if (institutionStammdatenJAXP.getOeffnungsTage() == null) {
+			institutionStammdaten.setOeffnungsTage(new ArrayList<>());
+		} else {
+			institutionStammdaten.setOeffnungsTage(institutionStammdatenJAXP.getOeffnungsTage());
+		}
+		institutionStammdaten.setOeffnungsAbweichungen(institutionStammdatenJAXP.getOeffnungsAbweichungen());
+		institutionStammdaten.setOffenVon(institutionStammdatenJAXP.getOffenVon());
+		institutionStammdaten.setOffenBis(institutionStammdatenJAXP.getOffenBis());
+
+		institutionStammdaten.setBetreuungsstandorte(betreuungsstandortListToEntity(
+			institutionStammdatenJAXP.getBetreuungsstandorte(),
+			institutionStammdaten.getBetreuungsstandorte(),
+			institutionStammdaten)
+		);
 
 		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
@@ -1662,6 +1703,42 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 		return institutionStammdaten;
 	}
+
+	private List<Betreuungsstandort> betreuungsstandortListToEntity(@Nonnull List<JaxBetreuungsstandort> jaxBetreuungsstandortList,
+		@Nonnull List<Betreuungsstandort> betreuungsstandortList,
+		@Nonnull InstitutionStammdatenBetreuungsgutscheine owner) {
+		final List<Betreuungsstandort> convertedBetreuungsstandorte = new ArrayList<>();
+		for (final JaxBetreuungsstandort jaxBetreuungsstandort : jaxBetreuungsstandortList) {
+			final Betreuungsstandort betreuungsstandorteToMergeWith = betreuungsstandortList
+				.stream()
+				.filter(existingStandort -> existingStandort.getId().equals(jaxBetreuungsstandort.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElseGet(Betreuungsstandort::new);
+			final Betreuungsstandort betreuungsstandortToAdd =
+				betreuungsstandortToEntity(jaxBetreuungsstandort, betreuungsstandorteToMergeWith);
+			betreuungsstandortToAdd.setInstitutionStammdatenBetreuungsgutscheine(owner);
+			if (convertedBetreuungsstandorte.contains(betreuungsstandortToAdd)) {
+				LOGGER.warn("dropped duplicate Betreuungsstandort {}", betreuungsstandortToAdd);
+			} else {
+				convertedBetreuungsstandorte.add(betreuungsstandortToAdd);
+			}
+		}
+		return convertedBetreuungsstandorte;
+	}
+
+	private Betreuungsstandort betreuungsstandortToEntity(JaxBetreuungsstandort jaxBetreuungsstandort, Betreuungsstandort betreuungsstandort) {
+
+		convertAbstractFieldsToEntity(jaxBetreuungsstandort, betreuungsstandort);
+
+		betreuungsstandort.setAdresse(adresseToEntity(jaxBetreuungsstandort.getAdresse(), new Adresse()));
+		betreuungsstandort.setMail(jaxBetreuungsstandort.getMail());
+		betreuungsstandort.setTelefon(jaxBetreuungsstandort.getTelefon());
+		betreuungsstandort.setWebseite(jaxBetreuungsstandort.getWebseite());
+
+		return betreuungsstandort;
+	}
+
+
 
 	@Nonnull
 	public JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninselToJAX(

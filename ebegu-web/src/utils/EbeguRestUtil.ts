@@ -1349,7 +1349,6 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.mail = institutionStammdaten.mail;
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
-            restInstitutionStammdaten.oeffnungszeiten = institutionStammdaten.oeffnungszeiten;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
 
             restInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine =
@@ -1380,7 +1379,6 @@ export class EbeguRestUtil {
             institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
             institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
-            institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
             institutionStammdatenTS.sendMailWennOffenePendenzen =
                 institutionStammdatenFromServer.sendMailWennOffenePendenzen;
 

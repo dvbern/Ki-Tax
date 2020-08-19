@@ -48,8 +48,6 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	private String telefon;
 	@Nullable
 	private String webseite;
-	@Nullable
-	private String oeffnungszeiten;
 	@NotNull @Nonnull
 	private JaxAdresse adresse;
 
@@ -135,15 +133,6 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 
 	public void setWebseite(@Nullable String webseite) {
 		this.webseite = webseite;
-	}
-
-	@Nullable
-	public String getOeffnungszeiten() {
-		return oeffnungszeiten;
-	}
-
-	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
-		this.oeffnungszeiten = oeffnungszeiten;
 	}
 
 	public boolean isSendMailWennOffenePendenzen() {

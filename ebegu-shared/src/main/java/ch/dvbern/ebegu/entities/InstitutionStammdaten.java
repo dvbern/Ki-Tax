@@ -15,27 +15,18 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -94,37 +85,10 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String webseite;
 
-	@Column(nullable = true)
-	@Nullable
-	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungsAbweichungen;
-
-	@ElementCollection(targetClass = DayOfWeek.class)
-	@JoinTable(
-		name = "institutionStammdatenOeffnungszeit",
-		joinColumns = @JoinColumn(name = "insitutionStammdaten")
-	)
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Collection<DayOfWeek> oeffnungszeiten;
-
-	@Column(nullable = false)
-	@Nullable
-	private LocalTime offenVon;
-
-	@Column(nullable = false)
-	@Nullable
-	private LocalTime offenBis;
-
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@Nonnull
 	private @NotNull Adresse adresse = new Adresse();
-
-	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "institutionStammdaten", fetch = FetchType.LAZY)
-	private List<Betreuungsstandort> betreuungsstandorte = new ArrayList<Betreuungsstandort>();
-
-	@Column(nullable = false)
-	private boolean mehrereBetreuungsstandorte = false;
 
 	@Column(nullable = false)
 	private boolean sendMailWennOffenePendenzen = true;
@@ -176,22 +140,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setAdresse(@Nonnull Adresse adresse) {
 		this.adresse = adresse;
-	}
-
-	public List<Betreuungsstandort> getBetreuungsstandorte() {
-		return betreuungsstandorte;
-	}
-
-	public void setBetreuungsstandorte(List<Betreuungsstandort> betreuungsstandorte) {
-		this.betreuungsstandorte = betreuungsstandorte;
-	}
-
-	public boolean hasMehrereBetreuungsstandorte() {
-		return mehrereBetreuungsstandorte;
-	}
-
-	public void setMehrereBetreuungsstandorte(boolean mehrereBetreuungsstandorte) {
-		this.mehrereBetreuungsstandorte = mehrereBetreuungsstandorte;
 	}
 
 	@Nullable
@@ -249,41 +197,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setWebseite(@Nullable String webseite) {
 		this.webseite = webseite;
-	}
-
-	@Nullable
-	public String getOeffnungsAbweichungen() {
-		return oeffnungsAbweichungen;
-	}
-
-	public void setOeffnungsAbweichungen(@Nullable String oeffnungszeiten) {
-		this.oeffnungsAbweichungen = oeffnungszeiten;
-	}
-
-	public Collection<DayOfWeek> getOeffnungszeiten() {
-		return oeffnungszeiten;
-	}
-
-	public void setOeffnungszeiten(Collection<DayOfWeek> oeffnungszeiten) {
-		this.oeffnungszeiten = oeffnungszeiten;
-	}
-
-	@Nullable
-	public LocalTime getOffenVon() {
-		return offenVon;
-	}
-
-	public void setOffenVon(@Nullable LocalTime offenVon) {
-		this.offenVon = offenVon;
-	}
-
-	@Nullable
-	public LocalTime getOffenBis() {
-		return offenBis;
-	}
-
-	public void setOffenBis(@Nullable LocalTime offenBis) {
-		this.offenBis = offenBis;
 	}
 
 	public boolean getSendMailWennOffenePendenzen() {
