@@ -96,6 +96,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_ProvisorischeVerfuegung_Begruessung_Amt";
 	private static final String VORSTEHERIN =
 		"PdfGeneration_ProvisorischeVerfuegung_Vorsteherin";
+	private static final String VERSAND_PER_EMAIL_AN = "PdfGeneration_Versand_Per_Email_An";
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
@@ -138,11 +139,10 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
-		empfaengerAdresse.add(institutionStammdaten.getInstitution().getName());
 		Adresse adresse = institutionStammdaten.getAdresse();
 		empfaengerAdresse.add(adresse.getAddressAsString());
 		empfaengerAdresse.add("");
-		empfaengerAdresse.add("Versand per Email an: ");
+		empfaengerAdresse.add(translate(VERSAND_PER_EMAIL_AN));
 		empfaengerAdresse.add(this.institutionStammdaten.getMail()); //auf zwei Zeilen wegen der Abstand
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
@@ -227,7 +227,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		document.add(intro);
 		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG)));
 		// Absatz 1 mit Fusszeilen erstellen
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A), 2);
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A), 1);
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
 		paragraphWithSupertext.add(new Chunk(translate(INHALT_1B)));
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2", superTextSize, superTextRise));
