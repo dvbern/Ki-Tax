@@ -38,7 +38,6 @@ import com.google.common.collect.Lists;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Utilities;
@@ -49,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RueckforderungProvVerfuegungPdfGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RueckforderungVerfuegungPdfGenerator.class);
 
 	private static final String VERFUEGUNG_TITLE =
 		"PdfGeneration_VerfuegungNotrecht_Title";
@@ -218,29 +217,32 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	}
 
 	private void createEndBegruessung(Document document, PdfContentByte directContent) {
+		int startOfEndbegruessung = 0;
 		if (sprache.equals(Locale.GERMAN)) {
-			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), 520, 122,
+			startOfEndbegruessung = 420;
+			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), startOfEndbegruessung, 122,
 				getPageConfiguration().getFont(),
 				10f);
 		} else {
+			startOfEndbegruessung = 420; // TODO testen, wenn franz. texte drin
 			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
 		}
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122, getPageConfiguration().getFont(), 10f);
+		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), startOfEndbegruessung - 25, 122, getPageConfiguration().getFont(), 10f);
 		try {
 			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
 			Image image = Image.getInstance(signature);
 			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
 			image.scalePercent(percent);
-			image.setAbsolutePosition(350, 430);
+			image.setAbsolutePosition(startOfEndbegruessung - 170, 430);
 			document.add(image);
 		} catch (IOException e) {
 			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
 		}
-		createContentWhereIWant(directContent, nameVerantwortlichePerson, 375, 122,
+		createContentWhereIWant(directContent, nameVerantwortlichePerson, startOfEndbegruessung - 145, 122,
 			getPageConfiguration().getFont(),
 			10f);
-		createContentWhereIWant(directContent, translate(VORSTEHERIN), 360, 122,
+		createContentWhereIWant(directContent, translate(VORSTEHERIN), startOfEndbegruessung - 160, 122,
 			getPageConfiguration().getFont(),
 			10f);
 	}
@@ -260,66 +262,81 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	}
 
 	private void createErsteSeite(Document document) {
-		Paragraph title = new Paragraph(translate(VERFUEGUNG_TITLE), PdfUtil.FONT_H2);
+		Paragraph title = PdfUtil.createParagraph(translate(VERFUEGUNG_TITLE), 2, PdfUtil.FONT_H2);
 		title.setSpacingAfter(15);
-		Paragraph intro = new Paragraph(translate(VERFUEGUNG_INTRO), PdfUtil.FONT_H2);
+		Paragraph intro = PdfUtil.createParagraph(translate(VERFUEGUNG_INTRO), 2, PdfUtil.FONT_H2);
 		intro.setSpacingAfter(30);
 		document.add(title);
 		document.add(intro);
 		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG)));
 		// Absatz 1 mit Fusszeilen erstellen
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A), 2);
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1B)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2", superTextSize, superTextRise)); //hier umbruch
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1C)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("3", superTextSize, superTextRise)); //hier umbruch
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1D)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("4", superTextSize, superTextRise));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1E)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("5", superTextSize, superTextRise));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1F)));  //hier umbruch
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1G)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("6", superTextSize, superTextRise));
-		document.add(paragraphWithSupertext);
+		Paragraph paragraph1 = PdfUtil.createParagraph(translate(INHALT_1A), 1);
+		paragraph1.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
+		paragraph1.add(new Chunk(translate(INHALT_1B)));
+		paragraph1.add(PdfUtil.createSuperTextInText("2", superTextSize, superTextRise));
+		document.add(paragraph1);
+
+		Paragraph paragraph2 = PdfUtil.createParagraph(translate(INHALT_1C), 1);
+		paragraph2.add(PdfUtil.createSuperTextInText("3", superTextSize, superTextRise));
+		document.add(paragraph2);
+
+		Paragraph paragraph3 = PdfUtil.createParagraph(translate(INHALT_1D), 2);
+		paragraph3.add(PdfUtil.createSuperTextInText("4", superTextSize, superTextRise));
+		paragraph3.add(new Chunk(translate(INHALT_1E)));
+		paragraph3.add(PdfUtil.createSuperTextInText("5", superTextSize, superTextRise));
+		paragraph3.add(new Chunk(translate(INHALT_1F)));  //hier umbruch
+		paragraph3.add(new Chunk(translate(INHALT_1G)));
+		paragraph3.add(PdfUtil.createSuperTextInText("6", superTextSize, superTextRise));
+		document.add(paragraph3);
 	}
 
 	private void createZweiteSeite(Document document) {
-		List<Element> verfuegungElements = new ArrayList();
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2A,
-			this.voraussichtlicheAusfallentschaedigung)));  //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(rueckforderungFormular.getBemerkungFuerVerfuegung()));  //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung)));  //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetrag)));
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2C_POSITIV)));  //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(translate(GRUNDEN)));
-		verfuegungElements.add(PdfUtil.createParagraph(translate(VERFUEGT), 2, PdfUtil.DEFAULT_FONT_BOLD));
+		Objects.requireNonNull(rueckforderungFormular.getBemerkungFuerVerfuegung());
+
+		document.add(PdfUtil.createParagraph(translate(INHALT_2A, this.voraussichtlicheAusfallentschaedigung)));
+		document.add(PdfUtil.createParagraph(rueckforderungFormular.getBemerkungFuerVerfuegung(), 1));
+		document.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung), 1));
+
+		final Paragraph paragraph = PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetrag));
+		paragraph.add(new Chunk(translate(INHALT_2C_POSITIV)));
+		document.add(paragraph);
+
+		document.add(PdfUtil.createParagraph(translate(GRUNDEN)));
+		document.add(PdfUtil.createParagraph(translate(VERFUEGT), 2, PdfUtil.DEFAULT_FONT_BOLD));
+
 		List<String> verfuegtList = new ArrayList();
 		verfuegtList.add(translate(GRUND_1, this.gewaehrteAusfallentschaedigung));
 		verfuegtList.add(translate(GRUND_2_POSITIV, this.relevanterBetrag));
-		verfuegungElements.add(PdfUtil.createListOrdered(verfuegtList));
-		document.add(PdfUtil.createKeepTogetherTable(verfuegungElements, 0, 2));
+		document.add(PdfUtil.createListOrdered(verfuegtList));
+
+		document.add(PdfUtil.createParagraph("", 2));
 	}
 
 	private void createZweiteSeiteRueckzahlung(Document document) {
-		List<Element> verfuegungElements = new ArrayList();
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2A, voraussichtlicheAusfallentschaedigung))); //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(rueckforderungFormular.getBemerkungFuerVerfuegung())); //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung))); //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetrag)));
-		verfuegungElements.add(PdfUtil.createParagraph(translate(INHALT_2C_NEGATIV))); //hier umbruch
-		verfuegungElements.add(PdfUtil.createParagraph(translate(GRUNDEN)));
-		verfuegungElements.add(PdfUtil.createParagraph(translate(VERFUEGT), 2, PdfUtil.DEFAULT_FONT_BOLD));
+		Objects.requireNonNull(rueckforderungFormular.getBemerkungFuerVerfuegung());
+
+		document.add(PdfUtil.createParagraph(translate(INHALT_2A, voraussichtlicheAusfallentschaedigung), 1));
+		document.add(PdfUtil.createParagraph(rueckforderungFormular.getBemerkungFuerVerfuegung(), 1));
+		document.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung), 1));
+
+		final Paragraph paragraph = PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetrag));
+		paragraph.add(new Chunk(translate(INHALT_2C_NEGATIV)));
+		document.add(paragraph);
+
+		document.add(PdfUtil.createParagraph(translate(GRUNDEN)));
+		document.add(PdfUtil.createParagraph(translate(VERFUEGT), 2, PdfUtil.DEFAULT_FONT_BOLD));
+
 		List<String> verfuegtList = new ArrayList();
 		verfuegtList.add(translate(GRUND_1, this.gewaehrteAusfallentschaedigung));
 		verfuegtList.add(translate(GRUND_2_NEGATIV, this.relevanterBetrag));
-		verfuegungElements.add(PdfUtil.createListOrdered(verfuegtList));
-		document.add(PdfUtil.createKeepTogetherTable(verfuegungElements, 0, 2));
+		document.add(PdfUtil.createListOrdered(verfuegtList));
+
+		document.add(PdfUtil.createParagraph("", 2));
 	}
 
 	private void createDritteSeite(Document document) {
-		Paragraph title = new Paragraph(translate(RECHTSMITTELBELEHRUNG_TITLE), PdfUtil.DEFAULT_FONT_BOLD);
-		Paragraph belehrung = new Paragraph(translate(RECHTSMITTELBELEHRUNG), PdfUtil.DEFAULT_FONT);
+		Paragraph title = PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE), 1);
+		Paragraph belehrung = PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG), 2);
 		document.add(title);
 		document.add(belehrung);
 	}
