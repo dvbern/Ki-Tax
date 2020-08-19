@@ -217,14 +217,12 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	}
 
 	private void createEndBegruessung(Document document, PdfContentByte directContent) {
-		int startOfEndbegruessung = 0;
+		int startOfEndbegruessung = 420;
 		if (sprache.equals(Locale.GERMAN)) {
-			startOfEndbegruessung = 420;
 			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), startOfEndbegruessung, 122,
 				getPageConfiguration().getFont(),
 				10f);
 		} else {
-			startOfEndbegruessung = 420; // TODO testen, wenn franz. texte drin
 			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
 		}
 
