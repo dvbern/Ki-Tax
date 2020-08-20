@@ -688,11 +688,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		String mailaddress = institutionStammdaten.getMail();
 
+		String ccMail = ebeguConfiguration.getNotverordnungCcMail();
+
 		if (StringUtils.isNotEmpty(mailaddress)) {
 			String message = mailTemplateConfig.getNotrechtProvisorischeVerfuegung(rueckforderungFormular,
 				institutionStammdaten, mailaddress
 			);
-			sendMessageWithTemplate(message, mailaddress);
+			sendMessageWithTemplate(message, mailaddress, ccMail);
 			LOG.debug("Email fuer RueckforderungProvisorischVerfuegt wurde versendet an {}", mailaddress);
 
 		} else {

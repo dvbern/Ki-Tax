@@ -96,6 +96,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String NOTVERORDNUNG_UNTERSCHRIFT_PATH = "ebegu.notverordnung.unterschrift.path";
 	private static final String NOTVERORDNUNG_UNTERSCHRIFT_NAME = "ebegu.notverordnung.unterschrift.name";
+	private static final String NOTVERORDNUNG_CC_MAIL = "ebegu.notverordnung.cc.mail";
 
 
 	@Inject
@@ -394,4 +395,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		return getString(NOTVERORDNUNG_UNTERSCHRIFT_PATH);
 	}
 
+	@Override
+	public String getNotverordnungCcMail() {
+		return getString(NOTVERORDNUNG_CC_MAIL);
+	}
 }
