@@ -168,7 +168,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		empfaengerAdresse.add(translate(EMPFAENGER_ADRESSE_GSI));
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add(translate(EINSCHREIBEN));
-		empfaengerAdresse.add(institutionStammdaten.getInstitution().getName());
+		empfaengerAdresse.add("");
 		Adresse adresse = institutionStammdaten.getAdresse();
 		empfaengerAdresse.add(adresse.getAddressAsString());
 		empfaengerAdresse.add("");

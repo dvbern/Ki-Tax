@@ -152,6 +152,7 @@ public abstract class KibonPdfGenerator {
 		final List<String> empfaengerAdresse = new ArrayList<>();
 		if (getGesuch().isVerfuegungEingeschrieben()) {
 			empfaengerAdresse.add(translate(EINSCHREIBEN));
+			empfaengerAdresse.add(translate(""));
 		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
 		if (hasSecondGesuchsteller() && getGesuch().getGesuchsteller2() != null) {
