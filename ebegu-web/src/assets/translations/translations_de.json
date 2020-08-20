@@ -1641,6 +1641,8 @@
     "STADT_BERN_ASIV_CONFIGURED": "Die Konfiguration der Stadt Bern fuer die ASIV Regeln ist definiert, die Zeiträume nach dem Wechsel zu ASIV werden berechnet",
     "STADT_BERN_ASIV_START_DATUM": "Datum, ab welchem die Stadt Bern die Gutscheine gemäss ASIV berechnet",
     "UPLOAD_FILETYPES_WHITELIST": "Dateitypen-Whitelist",
+    "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Notverordnung default Einreichefrist öffentlich",
+    "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "SEARCH_FOR_NAME": "Suche nach Name",
     "SEARCH_FOR_VALUE": "Suche Nach Text",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",

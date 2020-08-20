@@ -51,6 +51,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {UploadRS} from '../../core/service/uploadRS.rest';
@@ -71,8 +72,8 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
-    private readonly einreicheFristPrivatDefault = DateUtil.localDateToMoment('2020-07-17').endOf('day');
-    private readonly einreicheFristOeffentlich = DateUtil.localDateToMoment('2020-07-31').endOf('day');
+    private einreicheFristPrivatDefault: moment.Moment;
+    private einreicheFristOeffentlich: moment.Moment;
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
@@ -118,6 +119,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly uploadRS: UploadRS,
         private readonly cdr: ChangeDetectorRef,
+        private readonly applicationPropertyService: ApplicationPropertyRS
     ) {
     }
 
@@ -137,7 +139,14 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     public ngOnInit(): void {
+
         const rueckforederungFormId: string = this.$transition$.params().rueckforderungId;
+        this.applicationPropertyService.getNotverordnungDefaultEinreichefristPrivat().then(res => {
+            this.einreicheFristPrivatDefault = DateUtil.localDateToMoment(res).endOf('day');
+        });
+        this.applicationPropertyService.getNotverordnungDefaultEinreichefristOeffentlich().then(res => {
+            this.einreicheFristOeffentlich = DateUtil.localDateToMoment(res).endOf('day');
+        });
 
         if (!rueckforederungFormId) {
             return;
