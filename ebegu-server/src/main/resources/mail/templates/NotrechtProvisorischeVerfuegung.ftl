@@ -2,9 +2,9 @@
 <#-- @ftlvariable name="institutionStammdaten" type="ch.dvbern.ebegu.entities.InstitutionStammdaten" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
-<#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="empfaenger" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: ${institutionStammdaten.mail}
+To: ${empfaenger}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung
 	für Kitas und TFO: Provisorische Verfügung / Coronavirus et accueil extrafamilial : décision provisoire</@base64Header>
 Content-Type: text/html;charset=utf-8
@@ -19,7 +19,7 @@ Content-Type: text/html;charset=utf-8
 </head>
 
 <body>
-
+${institutionStammdaten.mail}
 <div>
 	<p>
 		<b>
