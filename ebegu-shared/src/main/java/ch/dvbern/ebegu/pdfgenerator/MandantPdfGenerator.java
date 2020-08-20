@@ -139,7 +139,7 @@ public abstract class MandantPdfGenerator {
 
 	@Nonnull
 	private List<String> getMandantKontaktdaten() {
-		String email = "info.fam.ais.gsi@be.ch";
+		String email = "info.fam@be.ch";
 		String telefon = "+41 31 633 78 83";
 		String webseite = "www.be.ch/gsi";
 		return Arrays.asList(

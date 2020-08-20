@@ -166,7 +166,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		empfaengerAdresse.add("GSI-AIS, Rathausgasse 1, Postfach, 3000 Bern 8");
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add(translate(EINSCHREIBEN));
-		empfaengerAdresse.add(institutionStammdaten.getInstitution().getName());
 		Adresse adresse = institutionStammdaten.getAdresse();
 		empfaengerAdresse.add(adresse.getAddressAsString());
 		empfaengerAdresse.add("");
