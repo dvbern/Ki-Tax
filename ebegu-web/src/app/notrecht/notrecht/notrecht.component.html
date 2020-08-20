@@ -168,6 +168,10 @@
             <button class="dv-btn" (click)="initializePhase2()" *ngIf="isSuperAdmin()" translate>
                 NOTVERORDNUNG_INITIALISIEREN_PHASE2
             </button>
+
+            <button class="dv-btn" (click)="verfuegenUndAusdrucken()" *ngIf="isMandantOrSuperuser()" translate>
+                NOTVERORDNUNG_VERFUEGUNGEN_AUSDRUCKEN
+            </button>
         </div>
     </div>
 </div>

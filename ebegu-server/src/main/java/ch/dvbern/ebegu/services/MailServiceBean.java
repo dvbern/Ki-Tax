@@ -698,6 +698,5 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		} else {
 			LOG.warn("Skipping RueckforderungProvisorischVerfuegt because E-Mail of Institution is null");
 		}
-
 	}
 }
