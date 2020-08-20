@@ -53,6 +53,8 @@ import ch.dvbern.ebegu.api.dtos.JaxPublicAppConfig;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import io.swagger.annotations.Api;
@@ -234,6 +236,13 @@ public class ApplicationPropertyResource {
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 
+		ApplicationProperty einreichefristOeffentlich  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		ApplicationProperty einreichefristPrivat  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
 		String nodeName = "";
 		try {
 			nodeName = InetAddress.getLocalHost().getHostName();
@@ -250,7 +259,9 @@ public class ApplicationPropertyResource {
 			zahlungentestmode,
 			personenSucheDisabled,
 			kitaxHost,
-			kitaxendpoint
+			kitaxendpoint,
+			einreichefristOeffentlich.getValue(),
+			einreichefristPrivat.getValue()
 		);
 		return Response.ok(pubAppConf).build();
 	}

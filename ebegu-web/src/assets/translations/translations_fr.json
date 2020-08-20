@@ -1641,6 +1641,8 @@
     "STADT_BERN_ASIV_CONFIGURED": "La configuration de la ville de Berne pour les règles OPIS est définie, les périodes seront calculées après le passage à OPIS",
     "STADT_BERN_ASIV_START_DATUM": "Date à partir de laquelle les bons seront calculés selon OPIS",
     "UPLOAD_FILETYPES_WHITELIST": "Types de fichier-liste blanche",
+    "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "",
+    "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "",
     "SEARCH_FOR_NAME": "Recherche par nom",
     "SEARCH_FOR_VALUE": "Recherche par texte",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",

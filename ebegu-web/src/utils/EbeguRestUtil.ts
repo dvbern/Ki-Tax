@@ -1117,7 +1117,7 @@ export class EbeguRestUtil {
         return restProperties;
     }
 
-    public gesuchToRestObject(restGesuch: any, gesuch: TSGesuch): TSGesuch {
+    public gesuchToRestObject(restGesuch: any, gesuch: TSGesuch): any {
         this.abstractAntragEntityToRestObject(restGesuch, gesuch);
         restGesuch.einkommensverschlechterungInfoContainer =
             this.einkommensverschlechterungInfoContainerToRestObject({},
@@ -3784,6 +3784,9 @@ export class EbeguRestUtil {
         publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
         publicAppConfigTS.kitaxHost = data.kitaxHost;
         publicAppConfigTS.kitaxEndpoint = data.kitaxEndpoint;
+        publicAppConfigTS.notverordnungDefaultEinreichefristOeffentlich =
+            data.notverordnungDefaultEinreichefristOeffentlich;
+        publicAppConfigTS.notverordnungDefaultEinreichefristPrivat = data.notverordnungDefaultEinreichefristPrivat;
         return publicAppConfigTS;
 
     }

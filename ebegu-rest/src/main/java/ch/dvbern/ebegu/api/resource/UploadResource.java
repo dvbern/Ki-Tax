@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.api.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -186,7 +185,7 @@ public class UploadResource {
 		try (InputStream dokGrund = input.getFormDataPart(PART_DOKUMENT_GRUND, InputStream.class, null)) {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
-			jaxDokumentGrund = mapper.readValue(IOUtils.toString(dokGrund, "UTF-8"), JaxDokumentGrund.class);
+			jaxDokumentGrund = mapper.readValue(IOUtils.toString(dokGrund, StandardCharsets.UTF_8), JaxDokumentGrund.class);
 		} catch (IOException e) {
 			final String problemString = "Can't parse DokumentGrund from Jax to object";
 			LOG.error(problemString, e);
@@ -229,7 +228,7 @@ public class UploadResource {
 		final JaxDokumentGrund jaxDokumentGrundToReturn = converter.dokumentGrundToJax(persistedDokumentGrund);
 
 		URI uri = uriInfo.getBaseUriBuilder()
-			.path(EinkommensverschlechterungInfoResource.class)
+			.path(UploadResource.class)
 			.path('/' + persistedDokumentGrund.getId())
 			.build();
 
@@ -360,7 +359,7 @@ public class UploadResource {
 			// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
 			if (encodedFilenames[filecounter] != null) {
 				String decodedFilenamesJson =
-					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), Charset.forName("UTF-8"));
+					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), StandardCharsets.UTF_8);
 				fileInfo.setFilename(decodedFilenamesJson);
 			}
 
