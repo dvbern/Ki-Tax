@@ -114,6 +114,8 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_Verfuegung_Rechtmittelbelehrung_Title";
 	private static final String RECHTSMITTELBELEHRUNG =
 		"PdfGeneration_Verfuegung_Rechtmittelbelehrung";
+	private static final String EMPFAENGER_ADRESSE_GSI =
+		"PdfGeneration_Empfaenger_Adresse_GSI";
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
@@ -163,9 +165,10 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		//Es muss bei der Kanton Adresse anfangen: 4 leere Zeilen
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
-		empfaengerAdresse.add("GSI-AIS, Rathausgasse 1, Postfach, 3000 Bern 8");
+		empfaengerAdresse.add(translate(EMPFAENGER_ADRESSE_GSI));
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add(translate(EINSCHREIBEN));
+		empfaengerAdresse.add("");
 		Adresse adresse = institutionStammdaten.getAdresse();
 		empfaengerAdresse.add(adresse.getAddressAsString());
 		empfaengerAdresse.add("");
