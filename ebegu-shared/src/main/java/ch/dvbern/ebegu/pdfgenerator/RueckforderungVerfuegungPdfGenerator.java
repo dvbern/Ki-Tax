@@ -114,8 +114,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_Verfuegung_Rechtmittelbelehrung_Title";
 	private static final String RECHTSMITTELBELEHRUNG =
 		"PdfGeneration_Verfuegung_Rechtmittelbelehrung";
-		"PdfGeneration_ProvisorischeVerfuegung_Vorsteherin";
-	private static final String VERSAND_PER_EMAIL_AN = "PdfGeneration_Versand_Per_Email_An";
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
