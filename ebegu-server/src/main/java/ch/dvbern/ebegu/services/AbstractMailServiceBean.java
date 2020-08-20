@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.transaction.Status;
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
@@ -67,11 +69,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
-			doSendMessage(subject, messageBody, mailadress);
+			doSendSimpleMessage(subject, messageBody, mailadress);
 		}
 	}
 
-	private void doSendMessage(
+	private void doSendSimpleMessage(
 		@Nonnull String subject,
 		@Nonnull String messageBody,
 		@Nonnull String mailadress)
@@ -92,7 +94,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	}
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
-	private void doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress) throws MailException {
+	private void doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress, @Nullable String ccMailAddress) throws MailException {
 		final SMTPClient client = new SMTPClient("UTF-8");
 		try {
 			client.setDefaultTimeout(CONNECTION_TIMEOUT);
@@ -104,6 +106,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			client.setSender(configuration.getSenderAddress());
 			assertPositiveCompletion(client);
 			client.addRecipient(mailadress);
+			if (StringUtils.isNotEmpty(ccMailAddress)) {
+				client.addRecipient(ccMailAddress);
+			}
 			assertPositiveCompletion(client);
 			final Writer writer = client.sendMessageData();
 			writer.write(messageBody);
@@ -127,8 +132,16 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	 * Emails should only be sent when all actions were performed withou any error.
 	 * For this reason this method flushes the EntityManager before sending emails.
 	 */
-	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress)
-		throws MailException {
+	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress) throws MailException {
+		sendMessageWithTemplate(messageBody, mailadress, null);
+	}
+
+	/**
+	 * Emails should only be sent when all actions were performed withou any error.
+	 * For this reason this method flushes the EntityManager before sending emails.
+	 */
+	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress, @Nullable String ccMailAddress
+	) throws MailException {
 		Objects.requireNonNull(mailadress);
 		Objects.requireNonNull(messageBody);
 		// wir haben hier nicht zwingend immer eine transaktion
@@ -140,7 +153,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
-			doSendMessage(messageBody, mailadress);
+			doSendMessage(messageBody, mailadress, ccMailAddress);
 		}
 	}
 

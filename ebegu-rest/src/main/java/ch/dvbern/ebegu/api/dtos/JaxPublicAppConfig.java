@@ -21,6 +21,8 @@ public class JaxPublicAppConfig {
 	private boolean personenSucheDisabled;
 	private String kitaxHost;
 	private String kitaxEndpoint;
+	private String notverordnungDefaultEinreichefristOeffentlich;
+	private String notverordnungDefaultEinreichefristPrivat;
 
 	public JaxPublicAppConfig(
 		String currentNode,
@@ -32,7 +34,9 @@ public class JaxPublicAppConfig {
 		boolean zahlungentestmode,
 		boolean personenSucheDisabled,
 		String kitaxHost,
-		String kitaxEndpoint
+		String kitaxEndpoint,
+		String notverordnungDefaultEinreichefristOeffentlich,
+		String notverordnungDefaultEinreichefristPrivat
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -44,6 +48,8 @@ public class JaxPublicAppConfig {
 		this.personenSucheDisabled = personenSucheDisabled;
 		this.kitaxHost = kitaxHost;
 		this.kitaxEndpoint = kitaxEndpoint;
+		this.notverordnungDefaultEinreichefristOeffentlich = notverordnungDefaultEinreichefristOeffentlich;
+		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
 	}
 
 	public String getCurrentNode() {
@@ -124,5 +130,21 @@ public class JaxPublicAppConfig {
 
 	public void setKitaxEndpoint(String kitaxEndpoint) {
 		this.kitaxEndpoint = kitaxEndpoint;
+	}
+
+	public String getNotverordnungDefaultEinreichefristOeffentlich() {
+		return notverordnungDefaultEinreichefristOeffentlich;
+	}
+
+	public void setNotverordnungDefaultEinreichefristOeffentlich(String notverordnungDefaultEinreichefristOeffentlich) {
+		this.notverordnungDefaultEinreichefristOeffentlich = notverordnungDefaultEinreichefristOeffentlich;
+	}
+
+	public String getNotverordnungDefaultEinreichefristPrivat() {
+		return notverordnungDefaultEinreichefristPrivat;
+	}
+
+	public void setNotverordnungDefaultEinreichefristPrivat(String notverordnungDefaultEinreichefristPrivat) {
+		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
 	}
 }
