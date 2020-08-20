@@ -3784,6 +3784,9 @@ export class EbeguRestUtil {
         publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
         publicAppConfigTS.kitaxHost = data.kitaxHost;
         publicAppConfigTS.kitaxEndpoint = data.kitaxEndpoint;
+        publicAppConfigTS.notverordnungDefaultEinreichefristOeffentlich =
+            data.notverordnungDefaultEinreichefristOeffentlich;
+        publicAppConfigTS.notverordnungDefaultEinreichefristPrivat = data.notverordnungDefaultEinreichefristPrivat;
         return publicAppConfigTS;
 
     }

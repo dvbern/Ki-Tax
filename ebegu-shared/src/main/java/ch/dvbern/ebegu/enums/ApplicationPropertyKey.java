@@ -87,4 +87,14 @@ public enum ApplicationPropertyKey {
 	 */
 	KANTON_NOTVERORDNUNG_PHASE_2_AKTIV,
 
+	/**
+	 * Default Datum bis wann die öffentlichen Gesuche der Notverordnung einreicht werden können
+	 */
+	NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH,
+	/**
+	 * Default Datum bis wann die privaten Gesuche der Notverordnung einreicht werden können
+	 */
+	NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
+
+
 }
