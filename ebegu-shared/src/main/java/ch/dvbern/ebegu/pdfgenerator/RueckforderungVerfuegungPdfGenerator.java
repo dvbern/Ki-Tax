@@ -116,6 +116,8 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		"PdfGeneration_Verfuegung_Rechtmittelbelehrung";
 	private static final String EMPFAENGER_ADRESSE_GSI =
 		"PdfGeneration_Empfaenger_Adresse_GSI";
+	private static final String STANDARD_VERFUEGUNGSBEMERKUNG =
+		"PdfGeneration_Standard_Verfuegungsbemerkung";
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
@@ -140,7 +142,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		this.pathToUnterschrift = pathToUnterschrift;
 
 		// sollten nicht null sein, es handelt sich aber einer gewissen stufe um pflichtfelder
-		Objects.requireNonNull(rueckforderungFormular.getBemerkungFuerVerfuegung());
 		Objects.requireNonNull(rueckforderungFormular.getStufe2VoraussichtlicheBetrag());
 		Objects.requireNonNull(rueckforderungFormular.getStufe2VerfuegungBetrag());
 		Objects.requireNonNull(rueckforderungFormular.getStufe1FreigabeBetrag());
@@ -315,10 +316,18 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	}
 
 	private void createZweiteSeiteRueckzahlung(Document document) {
-		Objects.requireNonNull(rueckforderungFormular.getBemerkungFuerVerfuegung());
 
-		document.add(PdfUtil.createParagraph(translate(INHALT_2A, voraussichtlicheAusfallentschaedigung), 1));
-		document.add(PdfUtil.createParagraph(rueckforderungFormular.getBemerkungFuerVerfuegung(), 1));
+		document.add(PdfUtil.createParagraph(translate(INHALT_2A, voraussichtlicheAusfallentschaedigung),
+			1));
+
+		String verfuegungsbemerkung;
+		if (rueckforderungFormular.getBemerkungFuerVerfuegung() != null) {
+			verfuegungsbemerkung = rueckforderungFormular.getBemerkungFuerVerfuegung();
+		} else {
+			verfuegungsbemerkung = translate(STANDARD_VERFUEGUNGSBEMERKUNG);
+		}
+		document.add(PdfUtil.createParagraph(verfuegungsbemerkung, 1));
+
 		document.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung), 1));
 
 		final Paragraph paragraph = PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetrag));
