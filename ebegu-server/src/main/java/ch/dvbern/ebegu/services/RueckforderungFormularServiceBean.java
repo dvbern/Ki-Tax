@@ -339,6 +339,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			throw new IllegalArgumentException("falscher status");
 		}
 		formular.setStatus(RueckforderungStatus.VERFUEGT);
+		formular.setStufe2VerfuegungDatum(LocalDateTime.now());
 		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
 		// Bei der definitiven Verfuegung wird kein E-Mail versandt
 		final byte[] bytes = generateDefinitiveVerfuegungDokument(persistedRueckforderungFormular, auftragIdentifier);
