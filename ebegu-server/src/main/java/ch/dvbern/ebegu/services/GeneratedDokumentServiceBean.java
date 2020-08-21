@@ -920,12 +920,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		IBAN ibanGemeinde = gemeindeStammdaten.getIban();
 		Objects.requireNonNull(ibanGemeinde, "Keine IBAN fuer Gemeinde " + gemeindeStammdaten.getGemeinde().getName());
 		String debitorIban = ibanToUnformattedString(ibanGemeinde);
-		String debitorIbanGebuehren = applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
 
 		pain001DTO.setSchuldnerName(debitorName);
 		pain001DTO.setSchuldnerIBAN(debitorIban);
 		pain001DTO.setSchuldnerBIC(debitorBic);
-		pain001DTO.setSchuldnerIBANGebuehren(debitorIbanGebuehren == null ? pain001DTO.getSchuldnerIBAN() : debitorIbanGebuehren);
+		// Wir setzen explizit keine SchuldnerIBAN, da dieses Feld zwar optional ist, aber bei einigen Banken Probleme macht
+		pain001DTO.setSchuldnerIBANGebuehren(null);
 		pain001DTO.setSoftwareName("kiBon");
 		// we use the currentTimeMillis so that it is always different
 		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
