@@ -16,8 +16,6 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -89,6 +87,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId
 	) {
+		authorizer.checkWriteAuthorization(finanzielleSituation);
+
 		// Die eigentliche FinSit speichern
 		final boolean isNew = finanzielleSituation.isNew();
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
@@ -191,6 +191,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull String gesuchId
 	) {
+		authorizer.checkWriteAuthorization(finanzielleSituation);
+
 		// Die eigentliche FinSit speichern
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
 		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
@@ -239,14 +241,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		FinanzielleSituationContainer finanzielleSituation = persistence.find(FinanzielleSituationContainer.class, id);
 		authorizer.checkReadAuthorization(finanzielleSituation);
 		return Optional.ofNullable(finanzielleSituation);
-	}
-
-	@Nonnull
-	@Override
-	public Collection<FinanzielleSituationContainer> getAllFinanzielleSituationen() {
-		Collection<FinanzielleSituationContainer> finanzielleSituationen = criteriaQueryHelper.getAll(FinanzielleSituationContainer.class);
-		authorizer.checkReadAuthorization(finanzielleSituationen);
-		return new ArrayList<>(finanzielleSituationen);
 	}
 
 	@Override
