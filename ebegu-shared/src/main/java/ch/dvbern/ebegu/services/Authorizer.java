@@ -161,6 +161,8 @@ public interface Authorizer {
 
 	void checkWriteAuthorization(@Nullable FinanzielleSituationContainer finanzielleSituation);
 
+	void checkWriteAuthorization(@Nullable ErwerbspensumContainer ewpCnt);
+
 	void checkReadAuthorization(@Nullable ErwerbspensumContainer ewpCnt);
 
 	/**

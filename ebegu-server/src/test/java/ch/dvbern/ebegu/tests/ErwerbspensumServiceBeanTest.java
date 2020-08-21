@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -55,11 +56,15 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private ErwerbspensumService erwerbspensumService;
+
 	@Inject
 	private InstitutionService instService;
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 	private Gesuchsperiode gesuchsperiode;
 
@@ -84,7 +89,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 
 		erwerbspensumService.saveErwerbspensum(ewpCont, TestDataUtil.createDefaultGesuch());
 		Collection<ErwerbspensumContainer> allErwerbspensenenContainer =
-			erwerbspensumService.getAllErwerbspensenenContainer();
+			criteriaQueryHelper.getAll(ErwerbspensumContainer.class);
 		Assert.assertEquals(1, allErwerbspensenenContainer.size());
 		Optional<ErwerbspensumContainer> storedContainer = erwerbspensumService.findErwerbspensum(ewpCont.getId());
 		Assert.assertTrue(storedContainer.isPresent());
@@ -115,42 +120,15 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void findErwerbspensenFromGesuch() {
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-
-		//Creates another Erwerbspensum that won't be loaded since it doesn't belong to the gesuch
-		Erwerbspensum erwerbspensumData = TestDataUtil.createErwerbspensumData();
-		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
-		gesuch.setGesuchsteller1(gesuchsteller1);
-		gesuchsteller1 = persistence.persist(gesuchsteller1);
-		persistence.merge(gesuch);
-
-		ErwerbspensumContainer ewpCont = TestDataUtil.createErwerbspensumContainer();
-		ewpCont.setErwerbspensumGS(erwerbspensumData);
-		ewpCont.setGesuchsteller(gesuchsteller1);
-		gesuchsteller1.addErwerbspensumContainer(ewpCont);
-		erwerbspensumService.saveErwerbspensum(ewpCont, gesuch);
-
-		Collection<ErwerbspensumContainer> erwerbspensenFromGesuch =
-			erwerbspensumService.findErwerbspensenFromGesuch(gesuch.getId());
-
-		Assert.assertEquals(1, erwerbspensenFromGesuch.size());
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		Assert.assertEquals(
-			gesuch.getGesuchsteller1().getErwerbspensenContainers().iterator().next(),
-			erwerbspensenFromGesuch.iterator().next());
-	}
-
-	@Test
 	public void removeFinanzielleSituationTest() {
 		Assert.assertNotNull(erwerbspensumService);
-		Assert.assertEquals(0, erwerbspensumService.getAllErwerbspensenenContainer().size());
+		Assert.assertEquals(0, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
 
 		ErwerbspensumContainer insertedEwpCont = insertNewEntity();
-		Assert.assertEquals(1, erwerbspensumService.getAllErwerbspensenenContainer().size());
+		Assert.assertEquals(1, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
 
 		erwerbspensumService.removeErwerbspensum(insertedEwpCont.getId(), TestDataUtil.createDefaultGesuch());
-		Assert.assertEquals(0, erwerbspensumService.getAllErwerbspensenenContainer().size());
+		Assert.assertEquals(0, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
 	}
 
 	@Test

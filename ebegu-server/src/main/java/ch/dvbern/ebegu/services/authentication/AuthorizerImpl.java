@@ -445,8 +445,16 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (finanzielleSituation == null) {
 			return;
 		}
+		UserRole[] allowedRoles =
+			{ SUPER_ADMIN,
+				ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+				ADMIN_BG, SACHBEARBEITER_BG,
+				ADMIN_TS, SACHBEARBEITER_TS };
 		Gesuch gesuch = extractGesuch(finanzielleSituation);
 		Objects.requireNonNull(gesuch);
+		if (!isInRoleOrGSOwner(allowedRoles, () -> gesuch)) {
+			throwViolation(finanzielleSituation);
+		}
 		if (!isWriteAuthorizedGesuchBerechnungsrelevanteDaten(gesuch)) {
 			throwViolation(finanzielleSituation);
 		}
@@ -610,6 +618,25 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		boolean allowed = isWriteAuthorized(abstractPlatz);
 		if (!allowed) {
 			throwViolation(abstractPlatz);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable ErwerbspensumContainer ewpCnt) {
+		if (ewpCnt != null) {
+			UserRole[] allowedRoles =
+				{ SUPER_ADMIN,
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+					ADMIN_BG, SACHBEARBEITER_BG,
+					ADMIN_TS, SACHBEARBEITER_TS };
+			final Gesuch gesuch = extractGesuch(ewpCnt);
+			Objects.requireNonNull(gesuch);
+			if (!isInRoleOrGSOwner(allowedRoles, () -> gesuch)) {
+				throwViolation(ewpCnt);
+			}
+			if (!isWriteAuthorizedGesuchBerechnungsrelevanteDaten(gesuch)) {
+				throwViolation(ewpCnt);
+			}
 		}
 	}
 
