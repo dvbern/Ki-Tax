@@ -302,5 +302,5 @@ public interface EbeguConfiguration {
 
 	String getNotverordnungUnterschriftPath();
 
-	String getNotverordnungCcMail();
+	String getNotverordnungEmpfaengerMail();
 }
