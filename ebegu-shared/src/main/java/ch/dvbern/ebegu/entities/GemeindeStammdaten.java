@@ -150,7 +150,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String kontoinhaber;
+	private String kontoinhaber; // TODO (team) evt. spaeter limitieren auf 70
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
