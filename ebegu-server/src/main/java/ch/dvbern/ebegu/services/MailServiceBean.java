@@ -686,7 +686,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Override
 	public void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
 		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
-		String mailaddress = institutionStammdaten.getMail();
+		String mailaddress = ebeguConfiguration.getNotverordnungEmpfaengerMail();
 
 		if (StringUtils.isNotEmpty(mailaddress)) {
 			String message = mailTemplateConfig.getNotrechtProvisorischeVerfuegung(rueckforderungFormular,
@@ -698,6 +698,5 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		} else {
 			LOG.warn("Skipping RueckforderungProvisorischVerfuegt because E-Mail of Institution is null");
 		}
-
 	}
 }

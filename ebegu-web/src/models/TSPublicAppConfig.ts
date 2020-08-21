@@ -26,4 +26,6 @@ export class TSPublicAppConfig {
     public personenSucheDisabled: boolean;
     public kitaxHost: string;
     public kitaxEndpoint: string;
+    public notverordnungDefaultEinreichefristOeffentlich: string;
+    public notverordnungDefaultEinreichefristPrivat: string;
 }
