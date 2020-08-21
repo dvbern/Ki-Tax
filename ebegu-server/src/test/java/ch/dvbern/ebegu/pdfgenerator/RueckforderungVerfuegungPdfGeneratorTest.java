@@ -60,7 +60,9 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
 
+		// Das franzoesische Dokument wird mit der Standardbemerkung generiert
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
+		this.rueckforderungFormular.setBemerkungFuerVerfuegung(null);
 		generator =
 			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
 		final String file_fr = pfad + "notrecht_definitive_verfuegung_negativ_fr.pdf";
@@ -79,7 +81,9 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
 
+		// Das franzoesische Dokument wird mit der Standardbemerkung generiert
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
+		this.rueckforderungFormular.setBemerkungFuerVerfuegung(null);
 		generator =
 			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
 		final String file_fr = pfad + "notrecht_definitive_verfuegung_positiv_fr.pdf";
@@ -109,7 +113,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		rueckforderungFormular.setStufe2VoraussichtlicheBetrag(new BigDecimal(5000.0));
 		rueckforderungFormular.setStufe1FreigabeBetrag(new BigDecimal(4000.0));
 		rueckforderungFormular.setInstitutionStammdaten(institutionStammdaten);
-		rueckforderungFormular.setBemerkungFuerVerfuegung("Die Verfügungsbemerkung");
+		rueckforderungFormular.setBemerkungFuerVerfuegung("Die Verfügungsbemerkung (manuell eingegeben)");
 		return rueckforderungFormular;
 	}
 }

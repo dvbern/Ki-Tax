@@ -43,6 +43,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -294,10 +295,17 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	}
 
 	private void createZweiteSeite(Document document) {
-		Objects.requireNonNull(rueckforderungFormular.getBemerkungFuerVerfuegung());
 
 		document.add(PdfUtil.createParagraph(translate(INHALT_2A, this.voraussichtlicheAusfallentschaedigung)));
-		document.add(PdfUtil.createParagraph(rueckforderungFormular.getBemerkungFuerVerfuegung(), 1));
+
+		String verfuegungsbemerkung;
+		if (StringUtils.isNotEmpty(rueckforderungFormular.getBemerkungFuerVerfuegung())) {
+			verfuegungsbemerkung = rueckforderungFormular.getBemerkungFuerVerfuegung();
+		} else {
+			verfuegungsbemerkung = translate(STANDARD_VERFUEGUNGSBEMERKUNG);
+		}
+		document.add(PdfUtil.createParagraph(verfuegungsbemerkung, 1));
+
 		document.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung), 1));
 
 		final Paragraph paragraph = PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetrag));
@@ -317,11 +325,10 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 
 	private void createZweiteSeiteRueckzahlung(Document document) {
 
-		document.add(PdfUtil.createParagraph(translate(INHALT_2A, voraussichtlicheAusfallentschaedigung),
-			1));
+		document.add(PdfUtil.createParagraph(translate(INHALT_2A, voraussichtlicheAusfallentschaedigung), 1));
 
 		String verfuegungsbemerkung;
-		if (rueckforderungFormular.getBemerkungFuerVerfuegung() != null) {
+		if (StringUtils.isNotEmpty(rueckforderungFormular.getBemerkungFuerVerfuegung())) {
 			verfuegungsbemerkung = rueckforderungFormular.getBemerkungFuerVerfuegung();
 		} else {
 			verfuegungsbemerkung = translate(STANDARD_VERFUEGUNGSBEMERKUNG);
