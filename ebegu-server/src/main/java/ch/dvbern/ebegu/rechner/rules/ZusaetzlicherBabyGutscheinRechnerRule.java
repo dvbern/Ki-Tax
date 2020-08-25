@@ -72,10 +72,15 @@ public class ZusaetzlicherBabyGutscheinRechnerRule implements RechnerRule {
 	public void prepareParameter(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull RechnerRuleParameterDTO recherParameter
+		@Nonnull RechnerRuleParameterDTO rechnerParameter
 	) {
 		final BigDecimal babyGutscheinBetrag = calculateBetragZusaetzlicherBabyGutschein(inputGemeinde, parameterDTO);
-		recherParameter.setZusaetzlicherBabyGutscheinBetrag(babyGutscheinBetrag);
+		rechnerParameter.setZusaetzlicherBabyGutscheinBetrag(babyGutscheinBetrag);
+	}
+
+	@Override
+	public void resetParameter(@Nonnull RechnerRuleParameterDTO rechnerParameter) {
+		rechnerParameter.setZusaetzlicherBabyGutscheinBetrag(BigDecimal.ZERO);
 	}
 
 	private BigDecimal calculateBetragZusaetzlicherBabyGutschein(
