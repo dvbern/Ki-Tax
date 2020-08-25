@@ -104,7 +104,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
-		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
@@ -269,8 +269,9 @@ public class EinkommenCalcRuleTest {
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
-		assertEquals(1, abschnitt.getBemerkungenList().uniqueSize());
+		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -304,10 +305,11 @@ public class EinkommenCalcRuleTest {
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue("keinAnspruchAufgrundEinkommen gilt auch wenn erweiterteBetreuung", abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
-		assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
+		assertEquals(4, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	private Betreuung prepareBetreuungKita(
