@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -54,9 +53,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Inject
 	private FinanzielleSituationRechner finSitRechner;

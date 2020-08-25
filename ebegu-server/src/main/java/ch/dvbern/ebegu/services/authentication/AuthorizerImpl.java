@@ -69,7 +69,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -114,9 +113,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private FallService fallService;
 
 	@Inject
 	private DossierService dossierService;
@@ -1113,6 +1109,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
 		// Aktuell sind keine Einschraenkungen zum Lesen von Traegerschaften bekannt.
 		return true;
