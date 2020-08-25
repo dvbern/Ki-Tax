@@ -46,6 +46,14 @@ const states: NgHybridStateDeclaration[] = [
             roles: TSRoleUtil.getAllRolesForNotrecht(),
         },
     },
+    {
+        name: 'notrecht.formWithAnchor',
+        component: RueckforderungFormularComponent,
+        url: '/list/rueckforderung/:rueckforderungId/:anchor',
+        data: {
+            roles: TSRoleUtil.getAllRolesForNotrecht(),
+        },
+    },
 ];
 
 @NgModule({

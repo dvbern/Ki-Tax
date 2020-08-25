@@ -243,13 +243,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			} else {
 				target.setBetreuungsstatus(this.getBetreuungsstatus());
 			}
-			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen() && target instanceof AnmeldungTagesschule){
-				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
-			}
 			target.setKind(targetKindContainer);
 			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			target.setBetreuungNummer(this.getBetreuungNummer());
-			target.setGueltig(false);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

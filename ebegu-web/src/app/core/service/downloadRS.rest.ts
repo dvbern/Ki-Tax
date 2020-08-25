@@ -308,4 +308,27 @@ export class DownloadRS {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
     }
+
+    public getAccessTokenProvisoricheVerfuegungDokument(rueckforderungFormularId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckforderungFormularId)}/provisorischeVerfuegung`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getAccessTokenDefinitiveVerfuegungDokument(rueckforderungFormularId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckforderungFormularId)}/definitiveVerfuegung`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getNotverordnungVerfuegungenAccessTokenGeneratedDokument(auftragId: string): IPromise<TSDownloadFile> {
+        return this.http.get(`${this.serviceURL}/massenverfuegung/${encodeURIComponent(auftragId)}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
 }

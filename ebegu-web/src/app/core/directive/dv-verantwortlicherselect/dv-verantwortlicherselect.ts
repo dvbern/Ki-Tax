@@ -16,6 +16,7 @@
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {BenutzerRS} from '../../service/benutzerRS.rest';
@@ -48,7 +49,7 @@ export class VerantwortlicherselectController implements IController {
     public isSchulamt: boolean;
     public gemeindeId: string;
 
-    public userList: Array<TSBenutzer>;
+    public userList: Array<TSBenutzerNoDetails>;
 
     public constructor(
         private readonly benutzerRS: BenutzerRS,
@@ -89,12 +90,12 @@ export class VerantwortlicherselectController implements IController {
     /**
      * Sets the given user as the verantworlicher fuer den aktuellen Fall
      */
-    public setVerantwortlicher(verantwortlicher: TSBenutzer): void {
+    public setVerantwortlicher(verantwortlicher: TSBenutzerNoDetails): void {
         this.setVerantwortlicherGesuchModelManager(verantwortlicher);
         this.setUserAsFallVerantwortlicherLocal(verantwortlicher);
     }
 
-    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzer): void {
+    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzerNoDetails): void {
         if (this.isSchulamt) {
             this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
@@ -102,7 +103,7 @@ export class VerantwortlicherselectController implements IController {
         }
     }
 
-    public setUserAsFallVerantwortlicherLocal(user: TSBenutzer): void {
+    public setUserAsFallVerantwortlicherLocal(user: TSBenutzerNoDetails): void {
         if (!(user && this.getGesuch() && this.getGesuch().dossier)) {
             return;
         }
@@ -121,7 +122,7 @@ export class VerantwortlicherselectController implements IController {
         return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
     }
 
-    public getFallVerantwortlicher(): TSBenutzer {
+    public getFallVerantwortlicher(): TSBenutzerNoDetails {
         return this.isSchulamt ?
             this.gesuchModelManager.getFallVerantwortlicherTS() :
             this.gesuchModelManager.getFallVerantwortlicherBG();
@@ -153,16 +154,15 @@ export class VerantwortlicherselectController implements IController {
         });
     }
 
-    private sortUsers(userList: Array<TSBenutzer>): Array<TSBenutzer> {
+    private sortUsers(userList: Array<TSBenutzerNoDetails>): Array<TSBenutzerNoDetails> {
         return userList.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
     }
 
     /**
      *  Filters out users that have no berechtigung on the current gemeinde
      */
-    private filterUsers(userList: Array<TSBenutzer>, gemeindeId: string): Array<TSBenutzer> {
-        return userList.filter(user => user.berechtigungen
-            .some(berechtigung => berechtigung.gemeindeList
-                .some(gemeinde => gemeindeId === gemeinde.id)));
+    private filterUsers(userList: Array<TSBenutzerNoDetails>, gemeindeId: string): Array<TSBenutzerNoDetails> {
+        return userList.filter(user => user.gemeindeIds
+            .some(id => id === gemeindeId));
     }
 }

@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,34 +27,42 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
+import ch.dvbern.ebegu.services.util.ZipCreator;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 
@@ -83,6 +93,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private GeneratedDokumentService generatedDokumentService;
 
 	@Nonnull
 	@Override
@@ -242,6 +255,97 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return saveWithoutAuthCheck(rueckforderungFormular);
 	}
 
+	@Nonnull
+	@Override
+	public RueckforderungFormular resetStatusToInPruefungKantonPhase2(@Nonnull String id) {
+		final RueckforderungFormular rueckforderungFormular = findRueckforderungFormular(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetStatusToInBearbeitungKantonPhase2",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Rueckfordungsformular invalid: " + id));
+		authorizer.checkWriteAuthorization(rueckforderungFormular);
+		rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
+		return saveWithoutAuthCheck(rueckforderungFormular);
+	}
+
+	@Override
+	@Nonnull
+	public RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular) {
+		//Set status to Verfuegt Provisorisch
+		formular.setStatus(RueckforderungStatus.VERFUEGT_PROVISORISCH);
+		formular.setStufe2VoraussichtlicheBetrag(formular.calculateFreigabeBetragStufe2());
+		formular.setHasBeenProvisorisch(true);
+		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
+		try {
+			//Inform Institution das der PRovisorsische Verfuegung wurde generiert
+			mailService.sendInfoRueckforderungProvisorischVerfuegt(persistedRueckforderungFormular);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoRueckforderungProvisorischVerfuegt konnte nicht verschickt werden fuer RueckforderungFormular",
+				persistedRueckforderungFormular.getId());
+		}
+		generateProvisorischeVerfuegungDokument(persistedRueckforderungFormular);
+
+		return persistedRueckforderungFormular;
+	}
+
+	@Nonnull
+	@Override
+	public byte[] massenVerfuegungDefinitiv(@Nonnull String auftragIdentifier) {
+		final Collection<RueckforderungFormular> toVerfuegen = getFormulareZuVerfuegen();
+		// Eigentliches Verfuegen (inkl. Generierung der Verfuegung)
+		try {
+			ZipCreator zipCreator = new ZipCreator();
+			for (RueckforderungFormular rueckforderungFormular : toVerfuegen) {
+				byte[] content = definitivVerfuegen(rueckforderungFormular, auftragIdentifier);
+				// Als Dateinamen innerhalb des Zips nehmen wir den Namen der Institution:
+				String zipEntryName = EbeguUtil.toFilename(rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName() + ".pdf");
+				zipCreator.append(new ByteArrayInputStream(content), zipEntryName);
+			}
+			return zipCreator.create();
+		} catch (IOException ioe) {
+			throw new EbeguRuntimeException(
+				"definitivVerfuegen", "Could not create Zip File for Auftrag", ioe, auftragIdentifier);
+		}
+	}
+
+	@Nonnull
+	private Collection<RueckforderungFormular> getFormulareZuVerfuegen() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<RueckforderungFormular> query = cb.createQuery(RueckforderungFormular.class);
+		Root<RueckforderungFormular> root = query.from(RueckforderungFormular.class);
+
+		ParameterExpression<RueckforderungStatus> statusParam = cb.parameter(RueckforderungStatus.class, "status");
+		ParameterExpression<RueckforderungInstitutionTyp> institutionTypParam = cb.parameter(RueckforderungInstitutionTyp.class, "institutionTyp");
+		ParameterExpression<Boolean> hasBeenProvisorischParam = cb.parameter(Boolean.class, "hasBeenProvisorisch");
+
+		// Alle im Status BEREIT_ZUM_VERFUEGEN, die Typ PRIVAT sind und nie eine Provisorische Verfuegung hatten
+		Predicate statusPredicate = cb.equal(root.get(RueckforderungFormular_.status), statusParam);
+		Predicate privatPredicate = cb.equal(root.get(RueckforderungFormular_.institutionTyp), institutionTypParam);
+		Predicate hasNotBeenProvisorischParam = cb.equal(root.get(RueckforderungFormular_.hasBeenProvisorisch), hasBeenProvisorischParam);
+
+		query.where(statusPredicate, privatPredicate, hasNotBeenProvisorischParam);
+
+		TypedQuery<RueckforderungFormular> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(statusParam, RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
+		q.setParameter(institutionTypParam, RueckforderungInstitutionTyp.PRIVAT);
+		q.setParameter(hasBeenProvisorischParam, Boolean.FALSE);
+		return q.getResultList();
+	}
+
+	@Nonnull
+	private byte[] definitivVerfuegen(@Nonnull RueckforderungFormular formular, @Nonnull String auftragIdentifier) {
+		if (formular.getStatus() != RueckforderungStatus.BEREIT_ZUM_VERFUEGEN) {
+			throw new IllegalArgumentException("falscher status");
+		}
+		formular.setStatus(RueckforderungStatus.VERFUEGT);
+		formular.setStufe2VerfuegungDatum(LocalDateTime.now());
+		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
+		// Bei der definitiven Verfuegung wird kein E-Mail versandt
+		final byte[] bytes = generateDefinitiveVerfuegungDokument(persistedRueckforderungFormular, auftragIdentifier);
+		return bytes;
+	}
+
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private void changeStatusAndCopyFields(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		authorizer.checkWriteAuthorization(rueckforderungFormular);
@@ -263,20 +367,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		}
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				RueckforderungStatus nextStatus = rueckforderungFormular.getStatus();
-				if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
-					nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-				} else {
-					// Definitiv ist es, wenn es entweder gar nicht beantragt wurde, oder schon verfuegt ist
-					if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
-						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-					} else {
-						nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH;
-						// Wir muessen uns merken, dass das Formular hier nochmals geprueft werden musste, damit wir
-						// spaeter die richtige Confirmation Message anzeigen koennen
-						rueckforderungFormular.setHasBeenProvisorisch(true);
-					}
-				}
+				RueckforderungStatus nextStatus = RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
 				rueckforderungFormular.setStatus(nextStatus);
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
 				rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
@@ -318,18 +409,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			}
 			break;
 		}
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH: {
-			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
-				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV);
+		case IN_PRUEFUNG_KANTON_STUFE_2:
+			rueckforderungFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.calculateFreigabeBetragStufe2());
+		case VERFUEGT_PROVISORISCH:
+			if(principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())){
+				rueckforderungFormular.setStatus(RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
 			}
 			break;
-		}
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV: {
-			if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
-				rueckforderungFormular.setStatus(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2);
-			}
-			break;
-		}
 		default:
 			break;
 		}
@@ -359,9 +445,45 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				mitteilung = persistence.persist(mitteilung);
 				addMitteilung(modifiedRueckforderungFormular, mitteilung);
 			}
-		} catch (MailException e) {
+		} catch (Exception e) {
 			throw new EbeguRuntimeException("update",
-				"BestaetigungEmail koennte nicht geschickt werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+				"BestaetigungEmail koennte nicht als Mitteilung gespeichert werden fuer RueckforderungFormular: " + modifiedRueckforderungFormular.getId(), e);
+		}
+	}
+
+	/**
+	 * Generiert das Provisoriche Verfuegung Dokument einer Ruckforderungformular.
+	 */
+	private void generateProvisorischeVerfuegungDokument(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		try {
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(rueckforderungFormular);
+		} catch (MimeTypeParseException | MergeDocException e) {
+			throw new EbeguRuntimeException(
+				"ProvisorischeVerfuegungDokument",
+				"ProvisorischeVerfuegung-Dokument konnte nicht erstellt werden"
+					+ rueckforderungFormular.getId(), e);
+		}
+	}
+
+	/**
+	 * Generiert das definitive Verfuegung Dokument einer Ruckforderungformular.
+	 */
+	private byte[] generateDefinitiveVerfuegungDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull String auftragIdentifier
+	) {
+		try {
+			//noinspection ResultOfMethodCallIgnored
+			final WriteProtectedDokument dokument =
+				generatedDokumentService.getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(
+				rueckforderungFormular, auftragIdentifier);
+			return ((GeneratedNotrechtDokument)dokument).getContent();
+		} catch (MimeTypeParseException | MergeDocException e) {
+			throw new EbeguRuntimeException(
+				"DefinitiveVerfuegungDokument",
+				"DefinitiveVerfuegung-Dokument konnte nicht erstellt werden"
+					+ rueckforderungFormular.getId(), e);
 		}
 	}
 }

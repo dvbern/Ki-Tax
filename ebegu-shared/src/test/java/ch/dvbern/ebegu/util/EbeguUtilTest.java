@@ -97,4 +97,11 @@ public class EbeguUtilTest {
 
 		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc, LocalDate.now()));
 	}
+
+	@Test
+	public void toFilename() {
+		String filename = EbeguUtil.toFilename("Kita Beundenweg/Crèche Oeuches.pdf");
+		Assert.assertNotNull(filename);
+		Assert.assertEquals("Kita_Beundenweg_Crèche_Oeuches.pdf", filename);
+	}
 }

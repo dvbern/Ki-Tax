@@ -242,5 +242,7 @@ public interface Authorizer {
 
 	void checkWriteAuthorization(@Nullable RueckforderungFormular rueckforderungFormular);
 
+	void checkWriteAuthorizationDocument(@Nullable RueckforderungFormular rueckforderungFormular);
+
 	void checkReadAuthorization(@Nullable RueckforderungFormular rueckforderungFormular);
 }

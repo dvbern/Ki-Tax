@@ -15,6 +15,7 @@
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
 import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -38,7 +39,7 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
+    public getBenutzerBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
@@ -46,7 +47,7 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerTsOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
+    public getBenutzerTsOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
@@ -54,7 +55,7 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerTsBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
+    public getBenutzerTsBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/TsBgOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
@@ -62,7 +63,7 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getAllBenutzerBgOrGemeinde(): IPromise<TSBenutzer[]> {
+    public getAllBenutzerBgOrGemeinde(): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/all`);
     }
 
@@ -70,7 +71,7 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getAllBenutzerTsOrGemeinde(): IPromise<TSBenutzer[]> {
+    public getAllBenutzerTsOrGemeinde(): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/all`);
     }
 
@@ -78,18 +79,17 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG, Admin_BG, Sachbearbeiter_TS, Admin_TS
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getAllBenutzerBgTsOrGemeinde(): IPromise<TSBenutzer[]> {
+    public getAllBenutzerBgTsOrGemeinde(): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/BgTsOrGemeinde/all`);
     }
 
-    public getAllGesuchsteller(): IPromise<TSBenutzer[]> {
+    public getAllGesuchsteller(): IPromise<TSBenutzerNoDetails[]> {
         return this.getBenutzer(`${this.serviceURL}/gesuchsteller`);
     }
 
-    private getBenutzer(url: string): IPromise<TSBenutzer[]> {
+    private getBenutzer(url: string): IPromise<TSBenutzerNoDetails[]> {
         return this.$http.get(url).then((response: any) => {
-            this.$log.debug('PARSING benutzer REST array object', response.data);
-            return this.ebeguRestUtil.parseUserList(response.data);
+            return this.ebeguRestUtil.parseUserNoDetailsList(response.data);
         });
     }
 

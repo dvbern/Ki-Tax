@@ -934,8 +934,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				// Set noch nicht freigegebene Betreuungen to aktuelle Anmeldung bei Freigabe
 				if (anmeldung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
 					anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+					anmeldung.setGueltig(true);
 					if (anmeldung.getVorgaengerId() != null) {
-						anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
+						final Optional<? extends AbstractAnmeldung> anmeldungOptional = betreuungService.findAnmeldung(anmeldung.getVorgaengerId());
+						anmeldungOptional.ifPresent(abstractAnmeldung -> {
+							abstractAnmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
+							abstractAnmeldung.setGueltig(false);
+						});
 					}
 				}
 			}

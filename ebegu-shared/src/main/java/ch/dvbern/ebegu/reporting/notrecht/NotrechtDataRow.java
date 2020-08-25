@@ -60,6 +60,11 @@ public class NotrechtDataRow {
 	private @Nullable BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 	private @Nullable BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 	private @Nullable BigDecimal stufe2KantonKostenuebernahmeBetreuung;
+	private @Nullable BigDecimal betragEntgangeneElternbeitraege;
+	private @Nullable BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	private @Nullable BigDecimal rueckerstattungNichtAngeboteneBetreuungstage;
+	private @Nullable BigDecimal kurzarbeitBetrag;
+	private @Nullable BigDecimal coronaErwerbsersatzBetrag;
 	private @Nullable BigDecimal stufe2VerfuegungBetrag;
 	private @Nullable LocalDateTime stufe2VerfuegungDatum;
 	private @Nullable LocalDateTime stufe2VerfuegungAusbezahltAm;
@@ -278,6 +283,51 @@ public class NotrechtDataRow {
 
 	public void setStufe2KantonKostenuebernahmeBetreuung(@Nullable BigDecimal stufe2KantonKostenuebernahmeBetreuung) {
 		this.stufe2KantonKostenuebernahmeBetreuung = stufe2KantonKostenuebernahmeBetreuung;
+	}
+
+	@Nullable
+	public BigDecimal getBetragEntgangeneElternbeitraege() {
+		return betragEntgangeneElternbeitraege;
+	}
+
+	public void setBetragEntgangeneElternbeitraege(@Nullable BigDecimal betragEntgangeneElternbeitraege) {
+		this.betragEntgangeneElternbeitraege = betragEntgangeneElternbeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten() {
+		return betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	public void setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(@Nullable BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten) {
+		this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten = betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	@Nullable
+	public BigDecimal getRueckerstattungNichtAngeboteneBetreuungstage() {
+		return rueckerstattungNichtAngeboteneBetreuungstage;
+	}
+
+	public void setRueckerstattungNichtAngeboteneBetreuungstage(@Nullable BigDecimal rueckerstattungNichtAngeboteneBetreuungstage) {
+		this.rueckerstattungNichtAngeboteneBetreuungstage = rueckerstattungNichtAngeboteneBetreuungstage;
+	}
+
+	@Nullable
+	public BigDecimal getKurzarbeitBetrag() {
+		return kurzarbeitBetrag;
+	}
+
+	public void setKurzarbeitBetrag(@Nullable BigDecimal kurzarbeitBetrag) {
+		this.kurzarbeitBetrag = kurzarbeitBetrag;
+	}
+
+	@Nullable
+	public BigDecimal getCoronaErwerbsersatzBetrag() {
+		return coronaErwerbsersatzBetrag;
+	}
+
+	public void setCoronaErwerbsersatzBetrag(@Nullable BigDecimal coronaErwerbsersatzBetrag) {
+		this.coronaErwerbsersatzBetrag = coronaErwerbsersatzBetrag;
 	}
 
 	public @Nullable BigDecimal getStufe2VerfuegungBetrag() {

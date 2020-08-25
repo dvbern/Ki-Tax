@@ -20,6 +20,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
+import {TSSprache} from './enums/TSSprache';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
@@ -48,6 +49,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private _stufe2VerfuegungBetrag: number;
     private _stufe2VerfuegungDatum: moment.Moment;
     private _stufe2VerfuegungAusbezahltAm: moment.Moment;
+    private _verantwortlicherName: string;
+    private _uncheckedDocuments: string;
     public institutionTyp: TSRueckforderungInstitutionTyp;
     public extendedEinreichefrist: moment.Moment;
     public relevantEinreichungsfrist: moment.Moment;
@@ -64,6 +67,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public coronaErwerbsersatzDefinitivVerfuegt: boolean;
     public coronaErwerbsersatzKeinAntragBegruendung: string;
     public coronaErwerbsersatzSonstiges: string;
+    public korrespondenzSprache: TSSprache;
+    public bemerkungFuerVerfuegung: string;
 
     public constructor() {
         super();
@@ -237,6 +242,22 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
         this._stufe2VerfuegungAusbezahltAm = value;
     }
 
+    public get verantwortlicherName(): string {
+        return this._verantwortlicherName;
+    }
+
+    public set verantwortlicherName(value: string) {
+        this._verantwortlicherName = value;
+    }
+
+    public get uncheckedDocuments(): string {
+        return this._uncheckedDocuments;
+    }
+
+    public set uncheckedDocuments(value: string) {
+        this._uncheckedDocuments = value;
+    }
+
     public isKurzarbeitProzessBeendet(): boolean {
         return EbeguUtil.isNullOrUndefined(this.kurzarbeitBeantragt)
         || EbeguUtil.isNotNullAndFalse(this.kurzarbeitBeantragt)
@@ -273,7 +294,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
         } else {
             result = this.calculateProvisorischerBetragStufe2Privat();
         }
-        return result;
+        result = Math.max(result, 0);
+        return EbeguUtil.roundToFiveRappen(result);
     }
 
     private calculateProvisorischerBetragStufe1OrOeffentlich(): number {

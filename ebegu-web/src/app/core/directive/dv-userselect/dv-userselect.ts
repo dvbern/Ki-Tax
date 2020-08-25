@@ -18,6 +18,7 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {LogFactory} from '../../logging/LogFactory';
 import {BenutzerRS} from '../../service/benutzerRS.rest';
 
@@ -62,7 +63,7 @@ export class UserselectController implements IController {
     private readonly unsubscribe$ = new Subject<void>();
     public selectedUser?: TSBenutzer;
     public smartTable: any;
-    public userList: TSBenutzer[];
+    public userList: TSBenutzerNoDetails[];
     public dvUsersearch: string;
     public initialAll: boolean;
     public showSelectionAll: boolean;

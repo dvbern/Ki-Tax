@@ -65,7 +65,6 @@ export class NotrechtRS {
     public findRueckforderungFormular(rueckforderungFormularID: string): IPromise<TSRueckforderungFormular> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(rueckforderungFormularID)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING RueckforderungFormular REST object ', response.data);
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });
     }
@@ -127,6 +126,16 @@ export class NotrechtRS {
         );
     }
 
+    public formularZurueckholen(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        const data = `${encodeURIComponent(rueckforderungFormular.id)}`;
+        return this.$http.post(`${this.serviceURL}/zurueckholen`, data).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
     public getRueckforderungDokumente(rueckforderungFormularID: string): IPromise<TSRueckforderungDokument[]> {
         return this.$http.get(`${this.serviceURL}/dokumente/${encodeURIComponent(rueckforderungFormularID)}`, {})
             .then(response => {
@@ -154,5 +163,32 @@ export class NotrechtRS {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             },
         );
+    }
+
+    public verfuegtProvisorischRueckforderungFormular(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        let restRueckforderungFormular = {};
+        restRueckforderungFormular =
+            this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
+        const url = `${this.serviceURL}/provisorischVerfuegen`;
+        return this.$http.put(url, restRueckforderungFormular).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
+    public setVerantwortlicher(formularId: string, username: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.put(`${this.serviceURL}/verantwortlicher/${encodeURIComponent(formularId)}/${encodeURIComponent(username)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
+
+    public setDokumenteGeprueft(formularId: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.put(`${this.serviceURL}/dokumentegeprueft/${encodeURIComponent(formularId)}`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
     }
 }

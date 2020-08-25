@@ -25,6 +25,8 @@ package ch.dvbern.ebegu.enums;
  */
 public enum MsgKey {
 
+	VERFUEGUNG_MIT_ANSPRUCH,
+
 	ERWERBSPENSUM_GS1_MSG,
 	ERWERBSPENSUM_GS2_MSG,
 	ERWERBSPENSUM_ANSPRUCH,

@@ -500,8 +500,52 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getAllAdminSuperAdminRevisorRoles())
-			&& !hasPrincipalName(benutzer)) {
+		// Der Mandant muss stimmen
+		checkMandantMatches(benutzer);
+		// Jeder Benutzer darf sich selber lesen
+		if (principalBean.getBenutzer().getUsername().equals(benutzer.getUsername())) {
+			return;
+		}
+		// Gesuchsteller duerfen nur sich selber lesen,
+		// Admins Instituion/Traegerschaft duerfen nur andere Benutzer mit Institution/Traegschaft Rolle lesen
+		// Gemeinde-Admins duerfen nur andere Gemeinde-Benutzer lesen
+		// Mandant-Admins duerfen nur andere Mandant-Benutzer lesen
+		switch (principalBean.getBenutzer().getRole()) {
+		case SUPER_ADMIN:
+		case REVISOR: {
+			// Alles erlaubt
+			return;
+		}
+		case ADMIN_GEMEINDE:
+		case ADMIN_BG:
+		case ADMIN_TS: {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.GEMEINDE) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		case ADMIN_TRAEGERSCHAFT:
+		case ADMIN_INSTITUTION: {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.TRAEGERSCHAFT
+			|| benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		case ADMIN_MANDANT: {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.KANTON) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		case GESUCHSTELLER: {
+			if (!hasPrincipalName(benutzer)) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		default:
+			// Alle anderen sind nicht erlaubt
 			throwViolation(benutzer);
 		}
 	}
@@ -638,8 +682,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (abstractPlatz == null) {
 			return;
 		}
-		Gesuch gesuch = extractGesuch(abstractPlatz);
-		if (!isWriteAuthorized(gesuch)) {
+		boolean allowed = isWriteAuthorized(abstractPlatz);
+		if (!allowed) {
 			throwViolation(abstractPlatz);
 		}
 	}
@@ -735,8 +779,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		);
 	}
 
-	private boolean isReadAuthorized(final AbstractPlatz betreuung) {
-		final Gesuch gesuch = betreuung.extractGesuch();
+	private boolean isReadAuthorized(final AbstractPlatz abstractPlatz) {
+		final Gesuch gesuch = abstractPlatz.extractGesuch();
 		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
 		}
@@ -751,17 +795,21 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Objects.requireNonNull(
 				institution,
 				"Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			return betreuung.getInstitutionStammdaten().getInstitution().equals(institution);
+			return abstractPlatz.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
-			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), betreuung.getInstitutionStammdaten().getInstitution());
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), abstractPlatz.getInstitutionStammdaten().getInstitution());
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
-				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
+				&& abstractPlatz.getBetreuungsangebotTyp().isSchulamt();
 		}
 		return false;
+	}
 
+	private boolean isWriteAuthorized(final AbstractPlatz abstractPlatz) {
+		// Nach aktuellen Kenntnissen gleich wie lesen
+		return isReadAuthorized(abstractPlatz);
 	}
 
 	@Override
@@ -1341,8 +1389,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		switch (rueckforderungFormular.getStatus()) {
 		case EINGELADEN:
 		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2:
-		case IN_BEARBEITUNG_INSTITUTION_STUFE_2_DEFINITIV:{
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
 			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
 				throwViolation(rueckforderungFormular);
@@ -1352,9 +1399,45 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case NEU:
 		case IN_PRUEFUNG_KANTON_STUFE_1:
 		case IN_PRUEFUNG_KANTON_STUFE_2:
-		case IN_PRUEFUNG_KANTON_STUFE_2_PROVISORISCH:
 		case GEPRUEFT_STUFE_1:
 		case VERFUEGT_PROVISORISCH:
+		case BEREIT_ZUM_VERFUEGEN:
+		case VERFUEGT:
+		case ABGESCHLOSSEN_OHNE_GESUCH: {
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			checkWriteAuthorizationInstitutionStammdaten(rueckforderungFormular.getInstitutionStammdaten());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationDocument(@Nullable RueckforderungFormular rueckforderungFormular) {
+		if (rueckforderungFormular == null) {
+			return;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		switch (rueckforderungFormular.getStatus()) {
+		case EINGELADEN:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_1:
+		case IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
+			// Der Kanton muss auch in den "Institution-" Status bearbeiten koennen wegen der Fristverlaengerung
+			if (!principalBean.isCallerInAnyOfRole(UserRole.getAllRolesForCoronaRueckforderung())) {
+				throwViolation(rueckforderungFormular);
+			}
+			break;
+		}
+		case NEU:
+		case IN_PRUEFUNG_KANTON_STUFE_1:
+		case GEPRUEFT_STUFE_1:
 		case VERFUEGT:
 		case ABGESCHLOSSEN_OHNE_GESUCH: {
 			if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
