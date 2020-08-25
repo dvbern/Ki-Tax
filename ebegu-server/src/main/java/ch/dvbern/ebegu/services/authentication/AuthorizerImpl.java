@@ -1493,6 +1493,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		// Explizit fuer die Gesuchsdaten sind wir strenger:
-		return gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen();
+		return !gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen();
 	}
 }
