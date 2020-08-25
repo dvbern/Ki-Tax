@@ -1104,6 +1104,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setGesuchBetreuungenStatus(antragJAXP.getGesuchBetreuungenStatus());
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
 		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
+		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;

@@ -72,13 +72,16 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Override
 	public DokumentGrund saveDokumentGrund(@Nonnull DokumentGrund dokumentGrund) {
 		Objects.requireNonNull(dokumentGrund);
-		authorizer.checkWriteAuthorization(dokumentGrund.getGesuch());
 
+		// Wir muessen zuerst den TimestampUpload setzen, bevor der Authorizer aufgerufen wird,
+		// da dieser u.U. flusht und die Daten dann noch ungueltig waeren
 		dokumentGrund.getDokumente().forEach(dokument -> {
 			if (dokument.getTimestampUpload() == null) {
 				dokument.setTimestampUpload(LocalDateTime.now());
 			}
 		});
+		authorizer.checkWriteAuthorization(dokumentGrund.getGesuch());
+
 		// Falls es der Gesuchsteller war, der das Dokument hochgeladen hat, soll das Flag auf dem Gesuch gesetzt werden,
 		// damit das Jugendamt es sieht. Allerdings nur wenn das Gesuch schon freigegeben wurde
 		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER) && !dokumentGrund.getGesuch().getStatus().isAnyOfInBearbeitungGS()) {

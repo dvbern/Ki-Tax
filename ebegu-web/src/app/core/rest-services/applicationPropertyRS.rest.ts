@@ -118,4 +118,16 @@ export class ApplicationPropertyRS {
             return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
         });
     }
+
+    public getNotverordnungDefaultEinreichefristPrivat(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.notverordnungDefaultEinreichefristOeffentlich;
+        });
+    }
+
+    public getNotverordnungDefaultEinreichefristOeffentlich(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.notverordnungDefaultEinreichefristPrivat;
+        });
+    }
 }

@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
@@ -273,16 +274,33 @@ public class PDFServiceBean implements PDFService {
 
 	@Nonnull
 	@Override
-	public byte[] generateProvisorischeVerfuegungRuckforderungformular(@Nonnull RueckforderungFormular rueckforderungFormular,
-		boolean writeProtected,
-		@Nonnull Locale locale) throws MergeDocException {
+	public byte[] generateProvisorischeVerfuegungRuckforderungformular(
+		@Nonnull RueckforderungFormular rueckforderungFormular, boolean writeProtected
+	) throws MergeDocException {
+
+		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
+
+		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
+		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
+		RueckforderungProvVerfuegungPdfGenerator pdfGenerator =
+			new RueckforderungProvVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson, unterschriftPath);
+		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
+	}
+
+	@Nonnull
+	@Override
+	public byte[] generateDefinitiveVerfuegungRuckforderungformular(
+		@Nonnull RueckforderungFormular rueckforderungFormular, boolean writeProtected
+	) throws MergeDocException {
+
 		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
 
 		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
 		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
 		RueckforderungVerfuegungPdfGenerator pdfGenerator =
-			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, true, nameVerantwortlichePerson, unterschriftPath);
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson,
+				unterschriftPath);
+		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
 	}
 
 	/**

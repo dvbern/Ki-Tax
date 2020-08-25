@@ -411,6 +411,14 @@ public final class EbeguUtil {
 		return username.toLowerCase(Locale.GERMAN).trim();
 	}
 
+	public static String toFilename(@Nonnull String filename) {
+		// Filename darf keine / enthalten
+		filename = StringUtils.replace(filename, "/", "_");
+		filename = StringUtils.replace(filename, "\\", "_");
+		filename = StringUtils.replace(filename, " ", "_");
+		return filename;
+	}
+
 	/**
 	 * Von allen Betreuungen der Liste gib den Typ zurueck der Betreuung, die ueber die anderen dominiert.
 	 * KITA > TAGESSCHULE > FERINEINSEL

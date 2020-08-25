@@ -665,9 +665,8 @@ public class MailTemplateConfiguration {
 	public String getNotrechtProvisorischeVerfuegung(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
 		@Nonnull InstitutionStammdaten institutionStammdaten,
-		String empfaengerMail
+		@Nonnull String empfaengerMail
 	) {
-
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("rueckforderungFormular", rueckforderungFormular);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
