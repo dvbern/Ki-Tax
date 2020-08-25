@@ -220,7 +220,7 @@
                                                  md-min-length="0"
                                                  md-no-cache="true"
                                                  md-delay="0"
-                                                 class="form-control"
+                                                 class="form-control hide-sm hide-xs"
                                                  ng-attr-placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}"
                                                  md-select-on-focus="true"
                                                  md-selected-item="vm.instStamm"
@@ -238,6 +238,17 @@
                                         </span>
                                     </md-item-template>
                                 </md-autocomplete>
+                                <div class="dv-select-style  hide-gt-sm">
+                                    <select aria-describedby="institution-error" name="institution" id="institution"
+                                            ng-model="vm.instStammId"
+                                            class="form-control"
+                                            ng-options="institutionSD.id as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
+                                            ng-required="true" ng-change="vm.setSelectedInstitutionStammdaten()"
+                                            ng-disabled="!(vm.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
+                                    </select>
+                                    <dv-error-messages input-id="betreuungsangebot"
+                                                       for="vm.form.betreuungsangebot.$error"></dv-error-messages>
+                                </div>
                                 <span ng-if="vm.form.institution.$touched">
                                     <dv-error-messages input-id="institution"
                                                        for="vm.form.institution.$error"></dv-error-messages>
