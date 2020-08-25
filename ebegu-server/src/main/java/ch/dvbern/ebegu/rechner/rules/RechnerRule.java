@@ -44,5 +44,10 @@ public interface RechnerRule {
 	void prepareParameter(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull RechnerRuleParameterDTO recherParameter);
+		@Nonnull RechnerRuleParameterDTO rechnerParameter);
+
+	/**
+	 * Reset Parameter wenn Rules nicht Relevant ist
+	 */
+	void resetParameter(@Nonnull RechnerRuleParameterDTO rechnerParameter);
 }
