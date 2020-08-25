@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.EINSTELLUNG_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -103,7 +104,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
-		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
@@ -225,7 +226,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
-		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
