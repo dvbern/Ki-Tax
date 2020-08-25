@@ -219,7 +219,7 @@ public class DossierResource {
 	@PUT
 	@Path("/verantwortlicherBG/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.WILDCARD)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response setVerantwortlicherBG(
@@ -250,7 +250,7 @@ public class DossierResource {
 	@PUT
 	@Path("/verantwortlicherTS/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.WILDCARD)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public Response setVerantwortlicherTS(
