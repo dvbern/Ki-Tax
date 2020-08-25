@@ -1159,7 +1159,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
-	private boolean isReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten) {
+	@Override
+	public boolean isReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten) {
 		if (institutionStammdaten == null) {
 			return true;
 		}
@@ -1217,7 +1218,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	private boolean isWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten) {
+	@Override
+	public boolean isWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten) {
 		if (institutionStammdaten == null) {
 			return true;
 		}

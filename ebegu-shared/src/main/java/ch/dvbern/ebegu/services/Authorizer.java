@@ -207,6 +207,10 @@ public interface Authorizer {
 	 */
 	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
 
+	boolean isReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
+
+	boolean isWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
+
 	void checkReadAuthorizationInstitution(@Nullable Institution institution);
 
 	void checkWriteAuthorizationInstitution(@Nullable Institution institution);
