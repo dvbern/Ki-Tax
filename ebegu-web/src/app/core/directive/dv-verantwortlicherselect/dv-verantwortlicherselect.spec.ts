@@ -15,7 +15,7 @@
 
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
@@ -28,7 +28,7 @@ describe('dvVerantwortlicherSelect', () => {
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
     let benutzerRS: BenutzerRS;
-    let benutzer: TSBenutzer;
+    let benutzer: TSBenutzerNoDetails;
     let $translate: ITranslateService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
@@ -38,7 +38,7 @@ describe('dvVerantwortlicherSelect', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         benutzerRS = $injector.get('BenutzerRS');
-        benutzer = new TSBenutzer('Emiliano', 'Camacho');
+        benutzer = new TSBenutzerNoDetails('Emiliano', 'Camacho');
         $translate = $injector.get('$translate');
 
         verantwortlicherselectController = new VerantwortlicherselectController(benutzerRS,
@@ -52,7 +52,7 @@ describe('dvVerantwortlicherSelect', () => {
         });
 
         it('returns the fullname of the verantwortlicherBG', () => {
-            const verantwortlicher = new TSBenutzer('Emiliano', 'Camacho');
+            const verantwortlicher = new TSBenutzerNoDetails('Emiliano', 'Camacho');
             const gesuch = new TSGesuch();
             gesuch.dossier = new TSDossier();
             gesuch.dossier.verantwortlicherBG = verantwortlicher;
@@ -72,7 +72,7 @@ describe('dvVerantwortlicherSelect', () => {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
-            const newUser = new TSBenutzer('Adolfo', 'Contreras');
+            const newUser = new TSBenutzerNoDetails('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
             expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
         });

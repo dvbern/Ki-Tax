@@ -14,7 +14,7 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSBenutzer} from './TSBenutzer';
+import {TSBenutzerNoDetails} from './TSBenutzerNoDetails';
 import {TSFall} from './TSFall';
 import {TSGemeinde} from './TSGemeinde';
 
@@ -22,8 +22,8 @@ export class TSDossier extends TSAbstractMutableEntity {
 
     private _fall: TSFall;
     private _gemeinde: TSGemeinde;
-    private _verantwortlicherBG: TSBenutzer;
-    private _verantwortlicherTS: TSBenutzer;
+    private _verantwortlicherBG: TSBenutzerNoDetails;
+    private _verantwortlicherTS: TSBenutzerNoDetails;
 
     public get fall(): TSFall {
         return this._fall;
@@ -41,23 +41,23 @@ export class TSDossier extends TSAbstractMutableEntity {
         this._gemeinde = value;
     }
 
-    public get verantwortlicherBG(): TSBenutzer {
+    public get verantwortlicherBG(): TSBenutzerNoDetails {
         return this._verantwortlicherBG;
     }
 
-    public set verantwortlicherBG(value: TSBenutzer) {
+    public set verantwortlicherBG(value: TSBenutzerNoDetails) {
         this._verantwortlicherBG = value;
     }
 
-    public get verantwortlicherTS(): TSBenutzer {
+    public get verantwortlicherTS(): TSBenutzerNoDetails {
         return this._verantwortlicherTS;
     }
 
-    public set verantwortlicherTS(value: TSBenutzer) {
+    public set verantwortlicherTS(value: TSBenutzerNoDetails) {
         this._verantwortlicherTS = value;
     }
 
-    public getHauptverantwortlicher(): TSBenutzer {
+    public getHauptverantwortlicher(): TSBenutzerNoDetails {
         if (this.verantwortlicherBG) {
             return this.verantwortlicherBG;
         }

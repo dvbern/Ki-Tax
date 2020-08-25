@@ -473,12 +473,52 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		// Benutzer duerfen grundsaetzlich von allen Rollen gelesen werden
-		// Der Mandant muss aber stimmen
+		// Der Mandant muss stimmen
 		checkMandantMatches(benutzer);
-		// Gesuchsteller duerfen nur sich selber lesen, alle anderen Rollen sind nicht weiter
-		// eingeschraenkt
-		if (principalBean.isCallerInRole(GESUCHSTELLER) && !hasPrincipalName(benutzer)) {
+		// Jeder Benutzer darf sich selber lesen
+		if (principalBean.getBenutzer().getUsername().equals(benutzer.getUsername())) {
+			return;
+		}
+		// Gesuchsteller duerfen nur sich selber lesen,
+		// Admins Instituion/Traegerschaft duerfen nur andere Benutzer mit Institution/Traegschaft Rolle lesen
+		// Gemeinde-Admins duerfen nur andere Gemeinde-Benutzer lesen
+		// Mandant-Admins duerfen nur andere Mandant-Benutzer lesen
+		switch (principalBean.getBenutzer().getRole()) {
+		case SUPER_ADMIN:
+		case REVISOR: {
+			// Alles erlaubt
+			return;
+		}
+		case ADMIN_GEMEINDE:
+		case ADMIN_BG:
+		case ADMIN_TS: {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.GEMEINDE) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		case ADMIN_TRAEGERSCHAFT:
+		case ADMIN_INSTITUTION: {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.TRAEGERSCHAFT
+			|| benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		case ADMIN_MANDANT: {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.KANTON) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		case GESUCHSTELLER: {
+			if (!hasPrincipalName(benutzer)) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
+		default:
+			// Alle anderen sind nicht erlaubt
 			throwViolation(benutzer);
 		}
 	}
