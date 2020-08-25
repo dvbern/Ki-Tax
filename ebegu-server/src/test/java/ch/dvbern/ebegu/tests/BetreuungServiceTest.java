@@ -223,7 +223,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		BelegungFerieninsel belegungFerieninsel = TestDataUtil.createDefaultBelegungFerieninsel();
 		betreuungUnderTest.setBelegungFerieninsel(belegungFerieninsel);
-		AnmeldungFerieninsel persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(betreuungUnderTest, false);
+		AnmeldungFerieninsel persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(betreuungUnderTest);
 
 		assertNotNull(persistedBetreuung);
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
@@ -234,7 +234,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		// Einen Tag hinzufügen
 		persistedBetreuung.getBelegungFerieninsel().getTage().add(TestDataUtil.createBelegungFerieninselTag(LocalDate.now().plusMonths(4)));
-		persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(persistedBetreuung, false);
+		persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(persistedBetreuung);
 		assertNotNull(persistedBetreuung);
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
@@ -244,7 +244,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		// Einen wieder loeschen
 		persistedBetreuung.getBelegungFerieninsel().getTage().remove(1);
-		persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(persistedBetreuung, false);
+		persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(persistedBetreuung);
 		assertNotNull(persistedBetreuung);
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());

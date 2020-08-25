@@ -62,7 +62,7 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
-		if (gesuch.getTyp().isGesuch() && startDatum != null) {
+		if (isErstgesuchOrNewPlatzInMutation(platz) && startDatum != null) {
 			LocalDate firstOfMonthDesEinreichungsMonats = getStichtagForEreignis(startDatum);
 			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {
 				VerfuegungZeitabschnitt abschnittVorAnspruch =
@@ -75,6 +75,10 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 			}
 		}
 		return einreichungsfristAbschnitte;
+	}
+
+	private boolean isErstgesuchOrNewPlatzInMutation(@Nonnull AbstractPlatz platz) {
+		return platz.extractGesuch().getTyp().isGesuch() || platz.getVorgaengerId() == null;
 	}
 
 	@Nullable

@@ -409,6 +409,7 @@ public class Betreuung extends AbstractPlatz {
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);
 			target.setAbwesenheitMutiert(null);
+			target.setGueltig(false);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

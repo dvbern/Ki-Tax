@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.EINSTELLUNG_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -102,7 +103,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
-		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
@@ -172,9 +173,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(25000, abschnittErstesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
 		VerfuegungsBemerkungList bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBemerkungenList();
 		assertNotNull(bemerkungenAbschnitt2);
-		assertEquals(2, bemerkungenAbschnitt2.uniqueSize());
+		assertEquals(3, bemerkungenAbschnitt2.uniqueSize());
 		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_1;
 		VerfuegungsBemerkung bemerkungEkvAccept1 = bemerkungenAbschnitt2.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
@@ -185,9 +187,10 @@ public class EinkommenCalcRuleTest {
 		assertEquals(20000, abschnittZweitesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
 		VerfuegungsBemerkungList bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBemerkungenList();
 		assertNotNull(bemerkungenAbschnitt3);
-		assertEquals(2, bemerkungenAbschnitt3.uniqueSize());
+		assertEquals(3, bemerkungenAbschnitt3.uniqueSize());
 		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_2;
 		VerfuegungsBemerkung bemerkungEkvAccept2 = bemerkungenAbschnitt3.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
@@ -208,9 +211,10 @@ public class EinkommenCalcRuleTest {
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
-		assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
+		assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -221,15 +225,16 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
-		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
 		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenList().isEmpty());
-		assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
+		assertEquals(4, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
+		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test

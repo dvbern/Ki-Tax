@@ -88,10 +88,15 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
+	private static final String KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED = "kibon.exchange.betreuunganfrage.enabled";
 
 	private static final String CLAMAV_HOST = "ebegu.clamav.host";
 	private static final String CLAMAV_PORT = "ebegu.clamav.port";
 	private static final String CLAMAV_DISABLED = "ebegu.clamav.disabled";
+
+	private static final String NOTVERORDNUNG_UNTERSCHRIFT_PATH = "ebegu.notverordnung.unterschrift.path";
+	private static final String NOTVERORDNUNG_UNTERSCHRIFT_NAME = "ebegu.notverordnung.unterschrift.name";
+	private static final String NOTVERORDNUNG_EMPFAENGER_MAIL = "ebegu.notverordnung.empfaenger.mail";
 
 
 	@Inject
@@ -286,6 +291,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
+	public boolean isBetreuungAnfrageApiEnabled() {
+		return getBoolean(KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED, false);
+	}
+
+	@Override
 	public String getEbeguPersonensucheSTSKeystorePath() {
 
 		String jbossHome =  System.getProperty("jboss.home.dir");
@@ -375,4 +385,18 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		return getBoolean(CLAMAV_DISABLED, true);
 	}
 
+	@Override
+	public String getNotverordnungUnterschriftName() {
+		return getString(NOTVERORDNUNG_UNTERSCHRIFT_NAME);
+	}
+
+	@Override
+	public String getNotverordnungUnterschriftPath() {
+		return getString(NOTVERORDNUNG_UNTERSCHRIFT_PATH);
+	}
+
+	@Override
+	public String getNotverordnungEmpfaengerMail() {
+		return getString(NOTVERORDNUNG_EMPFAENGER_MAIL);
+	}
 }

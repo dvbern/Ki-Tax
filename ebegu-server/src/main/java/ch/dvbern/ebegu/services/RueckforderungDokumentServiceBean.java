@@ -96,7 +96,7 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 	@Override
 	public RueckforderungDokument saveDokumentGrund(@Nonnull RueckforderungDokument rueckforderungDokument) {
 		Objects.requireNonNull(rueckforderungDokument);
-		authorizer.checkWriteAuthorization(rueckforderungDokument.getRueckforderungFormular());
+		authorizer.checkWriteAuthorizationDocument(rueckforderungDokument.getRueckforderungFormular());
 
 		rueckforderungDokument.setTimestampUpload(LocalDateTime.now());
 

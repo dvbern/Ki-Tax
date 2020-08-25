@@ -142,9 +142,9 @@ public class BetreuungResource {
 				betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp();
 			switch (betreuungsangebotTyp) {
 			case TAGESSCHULE:
-				return savePlatzAnmeldungTagesschule(betreuungJAXP, kindContainer, abwesenheit);
+				return savePlatzAnmeldungTagesschule(betreuungJAXP, kindContainer);
 			case FERIENINSEL:
-				return savePlatzAnmeldungFerieninsel(betreuungJAXP, kindContainer, abwesenheit);
+				return savePlatzAnmeldungFerieninsel(betreuungJAXP, kindContainer);
 			default:
 				return savePlatzBetreuung(betreuungJAXP, kindContainer, abwesenheit);
 			}
@@ -168,8 +168,7 @@ public class BetreuungResource {
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
 
-	private JaxBetreuung savePlatzAnmeldungTagesschule(@Nonnull JaxBetreuung betreuungJAXP,
-		@Nonnull KindContainer kindContainer, Boolean abwesenheit) {
+	private JaxBetreuung savePlatzAnmeldungTagesschule(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer) {
 		if (BetreuungUtil.hasDuplicateAnmeldungTagesschule(betreuungJAXP, kindContainer.getAnmeldungenTagesschule())) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzAnmeldungTagesschule",
 				ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
@@ -185,12 +184,11 @@ public class BetreuungResource {
 		}
 
 		AnmeldungTagesschule persistedAnmeldungTagesschule =
-			this.betreuungService.saveAnmeldungTagesschule(convertedAnmeldungTagesschule, abwesenheit);
+			this.betreuungService.saveAnmeldungTagesschule(convertedAnmeldungTagesschule);
 		return converter.anmeldungTagesschuleToJAX(persistedAnmeldungTagesschule);
 	}
 
-	private JaxBetreuung savePlatzAnmeldungFerieninsel(@Nonnull JaxBetreuung betreuungJAXP,
-		@Nonnull KindContainer kindContainer, Boolean abwesenheit) {
+	private JaxBetreuung savePlatzAnmeldungFerieninsel(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer) {
 		if (BetreuungUtil.hasDuplicateAnmeldungFerieninsel(betreuungJAXP, kindContainer.getAnmeldungenFerieninsel())) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzAnmeldungFerieninsel",
 				ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
@@ -202,7 +200,7 @@ public class BetreuungResource {
 		convertedAnmeldungFerieninsel.setKind(kindContainer);
 
 		AnmeldungFerieninsel persistedAnmeldungFerieninsel =
-			this.betreuungService.saveAnmeldungFerieninsel(convertedAnmeldungFerieninsel, abwesenheit);
+			this.betreuungService.saveAnmeldungFerieninsel(convertedAnmeldungFerieninsel);
 		return converter.anmeldungFerieninselToJAX(persistedAnmeldungFerieninsel);
 	}
 
@@ -476,10 +474,10 @@ public class BetreuungResource {
 				jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
 			switch (betreuungsangebotTyp) {
 			case TAGESSCHULE:
-				savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer, false);
+				savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer);
 				break;
 			case FERIENINSEL:
-				savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer, false);
+				savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer);
 				break;
 			default:
 				throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und "

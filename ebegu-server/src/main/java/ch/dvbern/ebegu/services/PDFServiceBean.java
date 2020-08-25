@@ -31,6 +31,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -38,6 +39,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -49,7 +51,10 @@ import ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
@@ -83,6 +88,9 @@ public class PDFServiceBean implements PDFService {
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	@Inject
 	private Authorizer authorizer;
@@ -264,6 +272,37 @@ public class PDFServiceBean implements PDFService {
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
+	@Nonnull
+	@Override
+	public byte[] generateProvisorischeVerfuegungRuckforderungformular(
+		@Nonnull RueckforderungFormular rueckforderungFormular, boolean writeProtected
+	) throws MergeDocException {
+
+		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
+
+		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
+		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
+		RueckforderungProvVerfuegungPdfGenerator pdfGenerator =
+			new RueckforderungProvVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson, unterschriftPath);
+		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
+	}
+
+	@Nonnull
+	@Override
+	public byte[] generateDefinitiveVerfuegungRuckforderungformular(
+		@Nonnull RueckforderungFormular rueckforderungFormular, boolean writeProtected
+	) throws MergeDocException {
+
+		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
+
+		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
+		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
+		RueckforderungVerfuegungPdfGenerator pdfGenerator =
+			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson,
+				unterschriftPath);
+		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
+	}
+
 	/**
 	 * In dieser Methode werden alle DokumentGrunds vom Gesuch einer Liste hinzugefuegt. Die die bereits existieren und die
 	 * die noch nicht hochgeladen wurden
@@ -290,6 +329,27 @@ public class PDFServiceBean implements PDFService {
 	@Nonnull
 	private byte[] generateDokument(
 		@Nonnull KibonPdfGenerator pdfGenerator,
+		boolean entwurf,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			pdfGenerator.generate(baos);
+			byte[] content = baos.toByteArray();
+			if (entwurf) {
+				return PdfUtil.addEntwurfWatermark(content, locale);
+			}
+			return content;
+		} catch (InvoiceGeneratorException | IOException e) {
+			throw new MergeDocException("generateDokument()",
+				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
+		}
+	}
+
+	@Nonnull
+	private byte[] generateDokument(
+		@Nonnull MandantPdfGenerator pdfGenerator,
 		boolean entwurf,
 		@Nonnull Locale locale
 	) throws MergeDocException {

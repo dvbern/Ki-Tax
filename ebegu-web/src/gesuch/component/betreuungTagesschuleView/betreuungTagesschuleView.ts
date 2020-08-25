@@ -190,8 +190,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.aktuellGueltig = false;
             return;
         }
+        // tslint:disable-next-line:early-exit
         if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-            this.showNochNichtFreigegeben = true;
+            // Die Warnung wollen wir dem GS nicht anzeigen!
+            if (!this.isGesuchsteller()) {
+                this.showNochNichtFreigegeben = true;
+            }
             this.aktuellGueltig = false;
         }
     }

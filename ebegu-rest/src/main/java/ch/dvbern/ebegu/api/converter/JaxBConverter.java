@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschuleModul;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -87,7 +88,6 @@ import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -180,13 +181,13 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -1103,6 +1104,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setGesuchBetreuungenStatus(antragJAXP.getGesuchBetreuungenStatus());
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
 		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
+		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -3709,7 +3711,7 @@ public class JaxBConverter extends AbstractConverter {
 		return convertedBerechtigungen;
 	}
 
-	public JaxBenutzer benutzerToJaxBenutzer(Benutzer benutzer) {
+	public JaxBenutzer benutzerToJaxBenutzer(@Nonnull Benutzer benutzer) {
 		JaxBenutzer jaxLoginElement = new JaxBenutzer();
 		jaxLoginElement.setVorname(benutzer.getVorname());
 		jaxLoginElement.setNachname(benutzer.getNachname());
@@ -3731,6 +3733,21 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxLoginElement.setBerechtigungen(jaxBerechtigungen);
 
+		return jaxLoginElement;
+	}
+
+	public JaxBenutzerNoDetails benutzerToJaxBenutzerNoDetails(@Nonnull Benutzer benutzer) {
+		JaxBenutzerNoDetails jaxLoginElement = new JaxBenutzerNoDetails();
+		jaxLoginElement.setVorname(benutzer.getVorname());
+		jaxLoginElement.setNachname(benutzer.getNachname());
+		jaxLoginElement.setUsername(benutzer.getUsername());
+		Set<String> gemeindeIds = benutzer.getBerechtigungen()
+			.stream()
+			.flatMap(berechtigung -> berechtigung.getGemeindeList()
+				.stream())
+			.map(AbstractEntity::getId)
+			.collect(Collectors.toSet());
+		jaxLoginElement.setGemeindeIds(gemeindeIds);
 		return jaxLoginElement;
 	}
 
@@ -5198,6 +5215,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxFormular.setInstitutionStammdatenSummary(institutionStammdatenSummaryToJAX(rueckforderungFormular.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+		if (rueckforderungFormular.getVerantwortlicher() != null) {
+			jaxFormular.setVerantwortlicherName(rueckforderungFormular.getVerantwortlicher().getFullName());
+		}
+		jaxFormular.setUncheckedDocuments(rueckforderungFormular.hasUncheckedDocuments());
 		jaxFormular.setHasBeenProvisorisch(rueckforderungFormular.isHasBeenProvisorisch());
 
 		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
@@ -5234,6 +5255,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormular.getCoronaErwerbsersatzDefinitivVerfuegt());
 		jaxFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormular.getCoronaErwerbsersatzKeinAntragBegruendung());
 		jaxFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormular.getCoronaErwerbsersatzSonstiges());
+		jaxFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.getStufe2VoraussichtlicheBetrag());
+		jaxFormular.setKorrespondenzSprache(rueckforderungFormular.getKorrespondenzSprache());
+		jaxFormular.setBemerkungFuerVerfuegung(rueckforderungFormular.getBemerkungFuerVerfuegung());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
@@ -5294,6 +5318,8 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setCoronaErwerbsersatzDefinitivVerfuegt(rueckforderungFormularJax.getCoronaErwerbsersatzDefinitivVerfuegt());
 		rueckforderungFormular.setCoronaErwerbsersatzKeinAntragBegruendung(rueckforderungFormularJax.getCoronaErwerbsersatzKeinAntragBegruendung());
 		rueckforderungFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormularJax.getCoronaErwerbsersatzSonstiges());
+		rueckforderungFormular.setKorrespondenzSprache(rueckforderungFormularJax.getKorrespondenzSprache());
+		rueckforderungFormular.setBemerkungFuerVerfuegung(rueckforderungFormularJax.getBemerkungFuerVerfuegung());
 
 		return rueckforderungFormular;
 	}
