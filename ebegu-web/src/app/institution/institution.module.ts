@@ -29,6 +29,7 @@ import {EditInstitutionComponent} from './edit-institution/edit-institution.comp
 import {ModulTagesschuleDialogComponent} from './edit-modul-tagesschule/modul-tagesschule-dialog.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
+import { EditBetreuungsstandortComponent } from './betreuungsstandort/edit-betreuungsstandort.component';
 
 @NgModule({
     imports: [
@@ -50,7 +51,8 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
         ModulTagesschuleDialogComponent,
-        DialogImportFromOtherInstitution
+        DialogImportFromOtherInstitution,
+        EditBetreuungsstandortComponent
     ],
     entryComponents: [
         InstitutionListComponent,

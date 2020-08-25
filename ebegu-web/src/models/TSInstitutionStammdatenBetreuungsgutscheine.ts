@@ -16,10 +16,10 @@
  */
 
 import * as moment from 'moment';
-import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
 import {TSBetreuungsstandort} from './TSBetreuungsstandort';
+import {TSOeffnungstageInstitution} from './TSOeffnungstageInstitution';
 
 export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntity {
 
@@ -35,7 +35,7 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public anzahlPlaetzeFirmen: number = undefined;
     public tarifProHauptmahlzeit: number = undefined;
     public tarifProNebenmahlzeit: number = undefined;
-    public oeffnungsTage: TSDayOfWeek[] = [];
+    public oeffnungstage: TSOeffnungstageInstitution = new TSOeffnungstageInstitution();
     public offenVon: moment.Moment = undefined;
     public offenBis: moment.Moment = undefined;
     public oeffnungsAbweichungen: string;

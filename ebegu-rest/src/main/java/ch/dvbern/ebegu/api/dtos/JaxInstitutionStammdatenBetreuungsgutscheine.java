@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,13 +69,13 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private String oeffnungsAbweichungen;
 
 	@Nullable
-	private List<DayOfWeek> oeffnungsTage;
+	private List<DayOfWeek> oeffnungstage;
 
 	@Nullable
-	private LocalTime offenVon;
+	private String offenVon;
 
 	@Nullable
-	private LocalTime offenBis;
+	private String offenBis;
 
 	@Nonnull
 	private List<JaxBetreuungsstandort> betreuungsstandorte = new ArrayList<>();
@@ -194,29 +193,29 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	}
 
 	@Nullable
-	public List<DayOfWeek> getOeffnungsTage() {
-		return oeffnungsTage;
+	public List<DayOfWeek> getOeffnungstage() {
+		return oeffnungstage;
 	}
 
-	public void setOeffnungsTage(@Nullable List<DayOfWeek> oeffnungsTage) {
-		this.oeffnungsTage = oeffnungsTage;
+	public void setOeffnungstage(@Nullable List<DayOfWeek> oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
 	}
 
 	@Nullable
-	public LocalTime getOffenVon() {
+	public String getOffenVon() {
 		return offenVon;
 	}
 
-	public void setOffenVon(@Nullable LocalTime offenVon) {
+	public void setOffenVon(@Nullable String offenVon) {
 		this.offenVon = offenVon;
 	}
 
 	@Nullable
-	public LocalTime getOffenBis() {
+	public String getOffenBis() {
 		return offenBis;
 	}
 
-	public void setOffenBis(@Nullable LocalTime offenBis) {
+	public void setOffenBis(@Nullable String offenBis) {
 		this.offenBis = offenBis;
 	}
 

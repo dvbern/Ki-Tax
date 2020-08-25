@@ -113,7 +113,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	private BigDecimal tarifProNebenmahlzeit;
 
-	@ElementCollection(targetClass = DayOfWeek.class)
+	@ElementCollection(targetClass = DayOfWeek.class, fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "institutionStammdatenBetreuungsgutscheineOeffnungstag",
 		joinColumns = @JoinColumn(name = "insitutionStammdatenBetreuungsgutscheine")
@@ -121,7 +121,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
 	@Nonnull
-	private List<DayOfWeek> oeffnungsTage = new ArrayList<>();
+	private List<DayOfWeek> oeffnungstage = new ArrayList<>();
 
 	@Column(nullable = true)
 	@Nullable
@@ -135,7 +135,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungsAbweichungen;
 
-	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine")
 	@Nonnull
 	private List<Betreuungsstandort> betreuungsstandorte = new ArrayList<Betreuungsstandort>();
 
@@ -246,11 +246,11 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	@Nonnull
 	public List<DayOfWeek> getOeffnungsTage() {
-		return oeffnungsTage;
+		return oeffnungstage;
 	}
 
-	public void setOeffnungsTage(@Nonnull List<DayOfWeek> oeffnungsTage) {
-		this.oeffnungsTage = oeffnungsTage;
+	public void setOeffnungsTage(@Nonnull List<DayOfWeek> oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
 	}
 
 	@Nullable

@@ -1628,10 +1628,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
 		jaxInstStammdaten.setTarifProHauptmahlzeit(persistedInstStammdaten.getTarifProHauptmahlzeit());
 		jaxInstStammdaten.setTarifProNebenmahlzeit(persistedInstStammdaten.getTarifProNebenmahlzeit());
-		jaxInstStammdaten.setOeffnungsTage(persistedInstStammdaten.getOeffnungsTage());
+		jaxInstStammdaten.setOeffnungstage(persistedInstStammdaten.getOeffnungsTage());
 		jaxInstStammdaten.setOeffnungsAbweichungen(persistedInstStammdaten.getOeffnungsAbweichungen());
-		jaxInstStammdaten.setOffenVon(persistedInstStammdaten.getOffenVon());
-		jaxInstStammdaten.setOffenBis(persistedInstStammdaten.getOffenBis());
+		if (persistedInstStammdaten.getOffenVon() != null) {
+			jaxInstStammdaten.setOffenVon(dateToHoursAndMinutes(persistedInstStammdaten.getOffenVon()));
+		}
+		if (persistedInstStammdaten.getOffenBis() != null) {
+			jaxInstStammdaten.setOffenBis(dateToHoursAndMinutes(persistedInstStammdaten.getOffenBis()));
+		}
 
 		jaxInstStammdaten.setBetreuungsstandorte(betreuungsstandortListToJax(persistedInstStammdaten.getBetreuungsstandorte()));
 
@@ -1680,14 +1684,18 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());
 		institutionStammdaten.setTarifProNebenmahlzeit(institutionStammdatenJAXP.getTarifProNebenmahlzeit());
-		if (institutionStammdatenJAXP.getOeffnungsTage() == null) {
+		if (institutionStammdatenJAXP.getOeffnungstage() == null) {
 			institutionStammdaten.setOeffnungsTage(new ArrayList<>());
 		} else {
-			institutionStammdaten.setOeffnungsTage(institutionStammdatenJAXP.getOeffnungsTage());
+			institutionStammdaten.setOeffnungsTage(institutionStammdatenJAXP.getOeffnungstage());
 		}
 		institutionStammdaten.setOeffnungsAbweichungen(institutionStammdatenJAXP.getOeffnungsAbweichungen());
-		institutionStammdaten.setOffenVon(institutionStammdatenJAXP.getOffenVon());
-		institutionStammdaten.setOffenBis(institutionStammdatenJAXP.getOffenBis());
+		if (institutionStammdatenJAXP.getOffenVon() != null) {
+			institutionStammdaten.setOffenVon(hoursAndMinutesToDate(institutionStammdatenJAXP.getOffenVon()));
+		}
+		if (institutionStammdatenJAXP.getOffenBis() != null) {
+			institutionStammdaten.setOffenBis(hoursAndMinutesToDate(institutionStammdatenJAXP.getOffenBis()));
+		}
 
 		institutionStammdaten.setBetreuungsstandorte(betreuungsstandortListToEntity(
 			institutionStammdatenJAXP.getBetreuungsstandorte(),

@@ -21,6 +21,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSDayOfWeek} from '../models/enums/TSDayOfWeek';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
@@ -54,6 +55,7 @@ import {TSBetreuungsmitteilungPensum} from '../models/TSBetreuungsmitteilungPens
 import {TSBetreuungspensum} from '../models/TSBetreuungspensum';
 import {TSBetreuungspensumAbweichung} from '../models/TSBetreuungspensumAbweichung';
 import {TSBetreuungspensumContainer} from '../models/TSBetreuungspensumContainer';
+import {TSBetreuungsstandort} from '../models/TSBetreuungsstandort';
 import {TSBfsGemeinde} from '../models/TSBfsGemeinde';
 import {TSDokument} from '../models/TSDokument';
 import {TSDokumentGrund} from '../models/TSDokumentGrund';
@@ -1437,9 +1439,30 @@ export class EbeguRestUtil {
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
             restInstitutionStammdaten.tarifProHauptmahlzeit = institutionStammdaten.tarifProHauptmahlzeit;
             restInstitutionStammdaten.tarifProNebenmahlzeit = institutionStammdaten.tarifProNebenmahlzeit;
+            restInstitutionStammdaten.betreuungsstandorte =
+                this.betreuungsstandortListToRestObject(institutionStammdaten.betreuungsstandorte);
+            restInstitutionStammdaten.oeffnungstage = institutionStammdaten.oeffnungstage.getDaysAsList();
+            restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
+            restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
+            restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
             return restInstitutionStammdaten;
         }
         return undefined;
+    }
+
+    private betreuungsstandortListToRestObject(betreuungsstandorte: Array<TSBetreuungsstandort>): Array<any> {
+        return betreuungsstandorte
+            ? betreuungsstandorte.map(item => this.betreuungsstandortToRestObject({}, item))
+            : [];
+    }
+
+    private betreuungsstandortToRestObject(restStandort: any, standort: TSBetreuungsstandort): any {
+        this.abstractEntityToRestObject(restStandort, standort);
+        restStandort.adresse = this.adresseToRestObject({}, standort.adresse);
+        restStandort.mail = standort.mail;
+        restStandort.telefon = standort.telefon;
+        restStandort.webseite = standort.webseite;
+        return restStandort;
     }
 
     private parseInstitutionStammdatenBetreuungsgutscheine(
@@ -1462,6 +1485,12 @@ export class EbeguRestUtil {
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
             institutionStammdatenTS.tarifProHauptmahlzeit = institutionStammdatenFromServer.tarifProHauptmahlzeit;
             institutionStammdatenTS.tarifProNebenmahlzeit = institutionStammdatenFromServer.tarifProNebenmahlzeit;
+            for (const day of institutionStammdatenFromServer.oeffnungstage) {
+                institutionStammdatenTS.oeffnungstage.setValueForDay(day, true);
+            }
+            institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
+            institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
+            institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
             return institutionStammdatenTS;
         }
         return undefined;

@@ -27,6 +27,7 @@ export class TSBetreuungsstandort extends TSAbstractEntity {
 
     public constructor() {
         super();
+        this.adresse = new TSAdresse();
     }
 
     public get adresse(): TSAdresse {

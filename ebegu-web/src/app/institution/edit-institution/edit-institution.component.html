@@ -171,18 +171,6 @@
                                                inputId="webseite_id"></dv-error-messages>
                         </div>
                     </div>
-                    <!-- Öffnungszeiten -->
-                    <div class="col-sm-6" *ngIf="isBetreuungsgutschein()">
-                        <div class="form-group">
-                            <label class="required" translate for="oeffnungszeiten_id">OEFFNUNGSZEITEN</label>
-                            <input id="oeffnungszeiten_id" type="text" name="oeffnungszeiten_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.oeffnungszeiten"
-                                   [maxlength]="255" class="form-control"
-                                   placeholder="{{getPlaceholderForOeffnungszeiten()}}" required>
-                            <dv-error-messages [errorObject]="form.controls.oeffnungszeiten_id?.errors"
-                                               inputId="oeffnungszeiten_id"></dv-error-messages>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <!-- Betreuungsgutscheine akzeptieren ab/bis -->
@@ -221,7 +209,7 @@
                                            [matDatepicker]="begu_ende_id"
                                            [min]="tomorrow"
                                            [disabled]="isDateStartEndDisabled()"
-                                           placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                           placeholder="{{'DATE_PLACEHOLDER' | translate}}"F
                                            [(ngModel)]="stammdaten.gueltigkeit.gueltigBis">
                                     <mat-datepicker-toggle matSuffix [for]="begu_ende_id"></mat-datepicker-toggle>
                                     <mat-datepicker #begu_ende_id></mat-datepicker>
@@ -302,13 +290,13 @@
                                       target="tah">{{stammdaten.webseite}}</a></p>
                             </div>
                         </div>
-                        <!-- Öffnungszeiten -->
-                        <div class="col-sm-3">
+                        <!-- Öffnungszeiten TODO: einkommentieren -->
+<!--                        <div class="col-sm-3">
                             <div class="form-group">
                                 <h3 translate>OEFFNUNGSZEITEN</h3>
                                 <p>{{stammdaten.oeffnungszeiten}}</p>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
 
                     <div class="row">

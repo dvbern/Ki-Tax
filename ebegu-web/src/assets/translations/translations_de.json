@@ -491,6 +491,9 @@
     "INSTITUTION_ANGABEN": "Institution – Allgemeine Angaben",
     "INSTITUTION_ADRESSE": "Adresse",
     "INSTITUTION_ZAHLUNGSANGABEN": "Zahlungsangaben",
+    "INSTITUTION_BETREUUNGSSTANDORTE": "Betreuungsstandorte",
+    "INSTITUTION_BETREUUNGSSTANDORT": "Betreuungsstandort",
+    "IDENTISCH_WIE_KONTAKTANGABEN": "(identisch wie Kontaktangaben)",
     "INSTITUTION_KONTOINHABER": "Kontoinhaber",
     "IBAN_NUMMER": "IBAN-Nummer",
     "IBAN_NUMMER_HINT": "Da die Mahlzeitenvergünstigung direkt durch die Stadt Bern an Sie überwiesen wird, muss hier die IBAN Nummer angegeben werden",
@@ -2139,5 +2142,8 @@
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Bemerkung zur Verfügung",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Dieser Feld ist Pflichtig nur wenn die Eingereichte Ausfallentschädigung nicht gleich als die Gewährte Ausfallentschädigung sind. Die Bemerkungen werden in diesem Fall auf der definitive Verfügung ausgedrückt werden.",
     "NOTVERORDNUNG_VERFUEGUNG": "Verfügungen",
+    "OFFEN_VON": "Offen von",
+    "OFFEN_BIS": "Offen bis",
+    "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Abweichungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -2139,5 +2139,8 @@
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_TITLE": "Remarques concernant la décision",
     "RUECKFORDERUNG_FORMULAR_BEMERKUNG_ZUR_VERFUEGUNG_HELP": "Ce champ est obligatoire seulement lorsque le montant provisoire des indémnité n'est pas égal au montant définitif. Les remarques seront alors ajoutées dans la décision finale.",
     "NOTVERORDNUNG_VERFUEGUNG": "Décisions",
+    "OFFEN_VON": "",
+    "OFFEN_BIS": "",
+    "OEFFNUNGSZEITEN_ABWEICHUNGEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
