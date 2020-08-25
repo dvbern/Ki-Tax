@@ -60,7 +60,7 @@ public class EinkommenCalcRuleTest {
 	private final BigDecimal EINKOMMEN_HOCH = MathUtil.DEFAULT.fromNullSafe(180000);
 
 	@Test
-	public void normalfallKita() {
+	public void testNormalfallKita() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, false, false, false, FinSitStatus.AKZEPTIERT));
 
@@ -77,7 +77,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void normalfallTagesschule() {
+	public void testNormalfallTagesschule() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungTagesschule(
 			EINKOMMEN, false, false, FinSitStatus.AKZEPTIERT));
 
@@ -94,7 +94,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void einkommenZuHochKita() {
+	public void testEinkommenZuHochKita() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN_HOCH, false, false, false, FinSitStatus.AKZEPTIERT));
 
@@ -112,7 +112,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void einkommenZuHochTagesschule() {
+	public void testEinkommenZuHochTagesschule() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungTagesschule(
 			EINKOMMEN_HOCH, false, false, FinSitStatus.AKZEPTIERT));
 
@@ -196,7 +196,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void sozialhilfebezueger() {
+	public void testSozialhilfebezueger() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, true, false, false, FinSitStatus.AKZEPTIERT));
 
@@ -214,7 +214,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void nurPauschaleFuerErweiterteBeduernisse() {
+	public void testNurPauschaleFuerErweiterteBeduernisse() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN_HOCH, false, true, true, FinSitStatus.AKZEPTIERT));
 
@@ -233,7 +233,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void keineFinSitErfasstOhneErweiterteBeduerfnisse() {
+	public void testKeineFinSitErfasstOhneErweiterteBeduerfnisse() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, false, true, false, FinSitStatus.AKZEPTIERT));
 
@@ -251,7 +251,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void finSitStatusNullKita() {
+	public void testFinSitStatusNullKita() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, false, false, false, null));
 
@@ -268,7 +268,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void finSitStatusAbgelehntOhneBesondereBeduerfnisse() {
+	public void testFinSitStatusAbgelehntOhneBesondereBeduerfnisse() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, false, false, false, FinSitStatus.ABGELEHNT));
 
@@ -286,7 +286,7 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
-	public void finSitStatusAbgelehntMitBesondereBeduerfnisse() {
+	public void testFinSitStatusAbgelehntMitBesondereBeduerfnisse() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, false, false, true, FinSitStatus.ABGELEHNT));
 
