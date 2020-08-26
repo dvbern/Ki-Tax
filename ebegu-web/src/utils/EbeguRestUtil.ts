@@ -4032,13 +4032,11 @@ export class EbeguRestUtil {
         rueckforderungFormularRest.stufe1FreigabeBetrag = rueckforderungFormularTS.stufe1FreigabeBetrag;
         rueckforderungFormularRest.stufe1FreigabeDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeDatum);
-        rueckforderungFormularRest.stufe1FreigabeAusbezahltAm =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeAusbezahltAm);
+        // stufe1FreigabeAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
         rueckforderungFormularRest.stufe2VerfuegungBetrag = rueckforderungFormularTS.stufe2VerfuegungBetrag;
         rueckforderungFormularRest.stufe2VerfuegungDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
-        rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        // stufe2VerfuegungAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
         rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
         rueckforderungFormularRest.extendedEinreichefrist =
             DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);
