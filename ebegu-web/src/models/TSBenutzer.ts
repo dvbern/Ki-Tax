@@ -18,6 +18,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
+import {TSBenutzerNoDetails} from './TSBenutzerNoDetails';
 import {TSBerechtigung} from './TSBerechtigung';
 import {TSGemeinde} from './TSGemeinde';
 import {TSInstitution} from './TSInstitution';
@@ -214,5 +215,19 @@ export class TSBenutzer {
     public hasOneOfRoles(roles: ReadonlyArray<TSRole>): boolean {
         const principalRole = this.getCurrentRole();
         return roles.some(role => role === principalRole);
+    }
+
+    public toBenutzerNoDetails(): TSBenutzerNoDetails {
+        const noDetails = new TSBenutzerNoDetails();
+        noDetails.nachname = this.nachname;
+        noDetails.vorname = this.vorname;
+        noDetails.username = this.username;
+        noDetails.gemeindeIds = new Array<string>();
+        for (const tsBerechtigung of this.berechtigungen) {
+            for (const tsGemeinde of tsBerechtigung.gemeindeList) {
+                noDetails.gemeindeIds.push(tsGemeinde.id);
+            }
+        }
+        return noDetails;
     }
 }

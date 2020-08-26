@@ -79,9 +79,15 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 	public void prepareParameter(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull RechnerRuleParameterDTO recherParameter
+		@Nonnull RechnerRuleParameterDTO rechnerParameter
 	) {
-		recherParameter.setZusaetzlicherGutscheinGemeindeBetrag(getBetragZusaetzlicherGutschein(inputGemeinde, parameterDTO));
+		rechnerParameter.setZusaetzlicherGutscheinGemeindeBetrag(getBetragZusaetzlicherGutschein(inputGemeinde,
+			parameterDTO));
+	}
+
+	@Override
+	public void resetParameter(@Nonnull RechnerRuleParameterDTO rechnerParameter) {
+		rechnerParameter.setZusaetzlicherGutscheinGemeindeBetrag(BigDecimal.ZERO);
 	}
 
 	@Nonnull

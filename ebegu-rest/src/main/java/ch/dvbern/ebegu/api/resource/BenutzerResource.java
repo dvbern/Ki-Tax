@@ -45,6 +45,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -148,9 +149,9 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getAllBenutzerBgOrGemeinde() {
+	public List<JaxBenutzerNoDetails> getAllBenutzerBgOrGemeinde() {
 		return benutzerService.getAllBenutzerBgOrGemeinde().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -165,7 +166,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+	public List<JaxBenutzerNoDetails> getBenutzerBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		Objects.requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -173,7 +174,7 @@ public class BenutzerResource {
 			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return benutzerService.getBenutzerBgOrGemeinde(gemeinde).stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -188,7 +189,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public List<JaxBenutzer> getBenutzerTsBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+	public List<JaxBenutzerNoDetails> getBenutzerTsBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		Objects.requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -196,7 +197,7 @@ public class BenutzerResource {
 			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return benutzerService.getBenutzerTsBgOrGemeinde(gemeinde).stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -211,9 +212,9 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getAllBenutzerBgTsOrGemeinde() {
+	public List<JaxBenutzerNoDetails> getAllBenutzerBgTsOrGemeinde() {
 		return benutzerService.getAllBenutzerBgTsOrGemeinde().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -229,9 +230,9 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getAllBenutzerTsOrGemeinde() {
+	public List<JaxBenutzerNoDetails> getAllBenutzerTsOrGemeinde() {
 		return benutzerService.getAllBenutzerTsOrGemeinde().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -246,7 +247,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerTsOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+	public List<JaxBenutzerNoDetails> getBenutzerTsOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		Objects.requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -254,7 +255,7 @@ public class BenutzerResource {
 			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return benutzerService.getBenutzerTsOrGemeinde(gemeinde).stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -267,9 +268,9 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBenutzer> getGesuchsteller() {
+	public List<JaxBenutzerNoDetails> getGesuchsteller() {
 		return benutzerService.getGesuchsteller().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
