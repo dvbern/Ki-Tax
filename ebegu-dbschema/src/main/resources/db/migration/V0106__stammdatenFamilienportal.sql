@@ -58,7 +58,7 @@ create table betreuungsstandort (
 	user_mutiert varchar(255) not null,
 	version bigint not null,
 	vorgaenger_id varchar(36),
-	mail varchar(255) not null,
+	mail varchar(255),
 	telefon varchar(255),
 	webseite varchar(255),
 	adresse_id binary(16) not null,

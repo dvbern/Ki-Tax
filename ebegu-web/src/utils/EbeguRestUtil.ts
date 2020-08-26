@@ -21,7 +21,6 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
-import {TSDayOfWeek} from '../models/enums/TSDayOfWeek';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
@@ -1441,7 +1440,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.tarifProNebenmahlzeit = institutionStammdaten.tarifProNebenmahlzeit;
             restInstitutionStammdaten.betreuungsstandorte =
                 this.betreuungsstandortListToRestObject(institutionStammdaten.betreuungsstandorte);
-            restInstitutionStammdaten.oeffnungstage = institutionStammdaten.oeffnungstage.getDaysAsList();
+            restInstitutionStammdaten.oeffnungstage = institutionStammdaten.oeffnungstage.getActiveDaysAsList();
             restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
             restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
             restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
@@ -1491,9 +1490,29 @@ export class EbeguRestUtil {
             institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
             institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
             institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
+            institutionStammdatenTS.betreuungsstandorte = this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
             return institutionStammdatenTS;
         }
         return undefined;
+    }
+
+    private parseBetreuungsstandortList(data: Array<any>): Array<any> {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBetreuungsstandort(new TSBetreuungsstandort(), item))
+            : [this.parseBetreuungsstandort(new TSBetreuungsstandort(), data)];
+    }
+
+    private parseBetreuungsstandort(betreuungsstandort: TSBetreuungsstandort, betreuungsstandortFromServer: any):
+        TSBetreuungsstandort {
+        this.parseAbstractEntity(betreuungsstandort, betreuungsstandortFromServer);
+        betreuungsstandort.adresse = this.parseAdresse(new TSAdresse(), betreuungsstandortFromServer.adresse);
+        betreuungsstandort.webseite = betreuungsstandortFromServer.webseite;
+        betreuungsstandort.telefon = betreuungsstandortFromServer.telefon;
+        betreuungsstandort.mail = betreuungsstandortFromServer.mail;
+        return betreuungsstandort;
     }
 
     public institutionStammdatenFerieninselToRestObject(

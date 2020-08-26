@@ -1,121 +1,118 @@
-<!--<div class="row">
-    <div class="col-sm-12">
-        <p><b>Betreuungsstandort 1 (aus Stammdaten)</b></p>
-        <div class="row">
-            <div class="col-sm-6">
-                <p>{{stammdaten.adresse.organisation}}</p>
-                <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
-                <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
-            </div>
-            <div class="col-sm-6">
-                <p>{{stammdaten.mail}}</p>
-                <p>{{stammdaten.webseite}}</p>
-                <p>{{stammdaten.telefon}}</p>
-            </div>
-        </div>
-    </div>
-</div>-->
-
 <div class="row">
     <div class="col-sm-12">
-        <p class="betreuungsstandort-title"><span translate>INSTITUTION_BETREUUNGSSTANDORT</span>&nbsp;1
-        <span translate>IDENTISCH_WIE_KONTAKTANGABEN</span></p>
-    </div>
-</div>
-<div class="row">
-    <!-- Anschrift -->
-    <div class="col-sm-6">
         <div class="form-group">
-            <label translate for="anschrift_readonly_id">ADRESSE_ANSCHRIFT</label>
-            <input id="anschrift_readonly_id" type="text"
-                   name="anschrift_readonly_id"
-				   #anschrift="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.adresse.organisation"
-                   [maxlength]="255" class="form-control">
-        </div>
-    </div>
-    <!-- E-Mail -->
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label class="required" translate for="e_mail_readonly_id">EMAIL</label>
-            <input id="e_mail_readonly_id" type="email" name="e_mail_id"
-				   #eMail="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.mail"
-                   [maxlength]="255" class="form-control">
-        </div>
-    </div>
-</div>
-<div class="row">
-    <!-- Strasse -->
-    <div class="col-sm-5">
-        <div class="form-group">
-            <label class="required" translate for="strasse_readonly_id">ADRESSE_STRASSE</label>
-            <input id="strasse_readonly_id" type="text" name="strasse_readonly_id"
-				   #strasse="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.adresse.strasse"
-                   [maxlength]="255" class="form-control">
-        </div>
-    </div>
-    <!-- Hausnummer -->
-    <div class="col-sm-1">
-        <div class="form-group">
-            <label translate for="hausnummer_readonly_id">ADRESSE_NUMMER</label>
-            <input id="hausnummer_readonly_id" type="text" name="hausnummer_readonly_id"
-				   #hausnummer="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.adresse.hausnummer"
-                   [maxlength]="255" class="form-control">
-        </div>
-    </div>
-    <!-- Telefon -->
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label translate for="telefon_id">TELEFON</label>
-            <input id="telefon_reaonly_id" type="text" name="telefon_reaonly_id"
-				   #telefon="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.telefon"
-                   [maxlength]="255" class="form-control"
-                   [pattern]="CONSTANTS.PATTERN_PHONE"
+            <mat-checkbox id="mehrere_betreuungsstandorte_id" name="mehrere_betreuungsstandorte_name"
+                          [checked]="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0"
+                          (change)="toggleMehrereBetreuungsstandorte()"
             >
+                {{'MEHRERE_BETREUUNGSSTANDORTE'|translate}}
+            </mat-checkbox>
         </div>
     </div>
 </div>
-<div class="row">
-    <!-- PLZ -->
-    <div class="col-sm-1">
-        <div class="form-group">
-            <label class="required" translate for="plz_readonly_id">ADRESSE_PLZ</label>
-            <input id="plz_readonly_id" type="text" name="plz_readonly_id"
-				   #plz="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.adresse.plz"
-                   [maxlength]="255" class="form-control">
+<!--betreuungsstandort 1: Identisch wie Kontaktadresse-->
+<div *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0">
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="betreuungsstandort-title"><span translate>INSTITUTION_BETREUUNGSSTANDORT</span>&nbsp;1
+            <span translate>IDENTISCH_WIE_KONTAKTANGABEN</span></p>
         </div>
     </div>
-    <!-- Ort -->
-    <div class="col-sm-5">
-        <div class="form-group">
-            <label class="required" translate for="ort_readonly_id">ADRESSE_ORT</label>
-            <input id="ort_readonly_id" type="text" name="ort_readonly_id"
-				   #ort="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.adresse.ort"
-                   [maxlength]="255" class="form-control">
+    <div class="row">
+        <!-- Anschrift -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label translate for="anschrift_readonly_id">ADRESSE_ANSCHRIFT</label>
+                <input id="anschrift_readonly_id" type="text"
+                       name="anschrift_readonly_id"
+                       #anschrift="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.adresse.organisation"
+                       [maxlength]="255" class="form-control">
+            </div>
+        </div>
+        <!-- E-Mail -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="required" translate for="e_mail_readonly_id">EMAIL</label>
+                <input id="e_mail_readonly_id" type="email" name="e_mail_id"
+                       #eMail="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.mail"
+                       [maxlength]="255" class="form-control">
+            </div>
         </div>
     </div>
-    <!-- Webseite -->
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label translate for="webseite_readonly_id">WEBSEITE</label>
-            <input id="webseite_readonly_id" type="text" name="webseite_readonly_id"
-				   #webseite="ngModel"
-                   disabled
-                   [(ngModel)]="stammdaten.webseite"
-                   [maxlength]="255" class="form-control">
+    <div class="row">
+        <!-- Strasse -->
+        <div class="col-sm-5">
+            <div class="form-group">
+                <label class="required" translate for="strasse_readonly_id">ADRESSE_STRASSE</label>
+                <input id="strasse_readonly_id" type="text" name="strasse_readonly_id"
+                       #strasse="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.adresse.strasse"
+                       [maxlength]="255" class="form-control">
+            </div>
+        </div>
+        <!-- Hausnummer -->
+        <div class="col-sm-1">
+            <div class="form-group">
+                <label translate for="hausnummer_readonly_id">ADRESSE_NUMMER</label>
+                <input id="hausnummer_readonly_id" type="text" name="hausnummer_readonly_id"
+                       #hausnummer="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.adresse.hausnummer"
+                       [maxlength]="255" class="form-control">
+            </div>
+        </div>
+        <!-- Telefon -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label translate for="telefon_id">TELEFON</label>
+                <input id="telefon_reaonly_id" type="text" name="telefon_reaonly_id"
+                       #telefon="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.telefon"
+                       [maxlength]="255" class="form-control"
+                       [pattern]="CONSTANTS.PATTERN_PHONE"
+                >
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- PLZ -->
+        <div class="col-sm-1">
+            <div class="form-group">
+                <label class="required" translate for="plz_readonly_id">ADRESSE_PLZ</label>
+                <input id="plz_readonly_id" type="text" name="plz_readonly_id"
+                       #plz="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.adresse.plz"
+                       [maxlength]="255" class="form-control">
+            </div>
+        </div>
+        <!-- Ort -->
+        <div class="col-sm-5">
+            <div class="form-group">
+                <label class="required" translate for="ort_readonly_id">ADRESSE_ORT</label>
+                <input id="ort_readonly_id" type="text" name="ort_readonly_id"
+                       #ort="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.adresse.ort"
+                       [maxlength]="255" class="form-control">
+            </div>
+        </div>
+        <!-- Webseite -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label translate for="webseite_readonly_id">WEBSEITE</label>
+                <input id="webseite_readonly_id" type="text" name="webseite_readonly_id"
+                       #webseite="ngModel"
+                       disabled
+                       [(ngModel)]="stammdaten.webseite"
+                       [maxlength]="255" class="form-control">
+            </div>
         </div>
     </div>
 </div>
@@ -143,11 +140,11 @@
         <!-- E-Mail -->
         <div class="col-sm-6">
             <div class="form-group">
-                <label class="required" translate for="e_mail_id">EMAIL</label>
+                <label translate for="e_mail_id">EMAIL</label>
                 <input id="e_mail_id" type="email" name="e_mail_id"
                        #eMail="ngModel"
                        [(ngModel)]="standort.mail"
-                       [maxlength]="255" class="form-control" required>
+                       [maxlength]="255" class="form-control">
                 <dv-error-messages [errorObject]="eMail.errors"
                                    inputId="e_mail_id"></dv-error-messages>
             </div>
@@ -231,6 +228,4 @@
             </div>
         </div>
     </div>
-
 </div>
-<button class="action" (click)="addStandort()" translate>STANDORT_HINZUFUEGEN</button>

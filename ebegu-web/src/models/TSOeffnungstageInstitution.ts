@@ -67,7 +67,7 @@ export class TSOeffnungstageInstitution {
     /**
      * Gibt eine Liste von allen aktivierten (=true) Wochentagen zurück
      */
-    public getDaysAsList(): TSDayOfWeek[] {
+    public getActiveDaysAsList(): TSDayOfWeek[] {
         const list: TSDayOfWeek[] = [];
         if (this.monday) {
             list.push(TSDayOfWeek.MONDAY);

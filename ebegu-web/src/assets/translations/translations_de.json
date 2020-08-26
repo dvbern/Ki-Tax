@@ -515,7 +515,7 @@
     "INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE": "Abweichende Zahlungsadresse",
     "INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE": "Identische Zahlungsadresse",
     "INSTITUTION_ZAHLUNGSADRESSE": "Zahlungsadresse",
-    "INSTITUTION_EDIT": "Institution Bearbeiten",
+    "INSTITUTION_EDIT": "Institution bearbeiten",
     "INSTITUTIONEN_BACK": "Zurück zu den Institutionen",
     "INSTITUTION_BACK": "Zurück zur Institution",
     "INSTITUTION_STAMMDATEN": "Institution Stammdaten",
@@ -1372,6 +1372,8 @@
     "WEDNESDAY_SHORT": "Mi",
     "THURSDAY_SHORT": "Do",
     "FRIDAY_SHORT": "Fr",
+    "SATURDAY_SHORT": "Sa",
+    "SUNDAY_SHORT": "So",
     "SATURDAY": "Samstag",
     "SUNDAY": "Sonntag",
     "Monday": "Montag",
@@ -2145,5 +2147,6 @@
     "OFFEN_VON": "Offen von",
     "OFFEN_BIS": "Offen bis",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Abweichungen",
+    "MEHRERE_BETREUUNGSSTANDORTE": "Mehrere Betreuungsstandorte für Familienportal angeben",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

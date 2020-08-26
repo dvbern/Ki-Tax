@@ -55,7 +55,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 	@Nonnull
 	private @NotNull Adresse adresse = new Adresse();
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	@Nullable

@@ -1369,6 +1369,8 @@
     "WEDNESDAY_SHORT": "Me",
     "THURSDAY_SHORT": "Je",
     "FRIDAY_SHORT": "Ve",
+    "SATURDAY_SHORT": "Sa",
+    "SUNDAY_SHORT": "Di",
     "SATURDAY": "Samedi",
     "SUNDAY": "Dimanche",
     "Monday": "Lundi",
@@ -2142,5 +2144,6 @@
     "OFFEN_VON": "",
     "OFFEN_BIS": "",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "",
+    "MEHRERE_BETREUUNGSSTANDORTE": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

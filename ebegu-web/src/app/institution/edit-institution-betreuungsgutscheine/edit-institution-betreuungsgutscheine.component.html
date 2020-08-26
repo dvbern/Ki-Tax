@@ -318,6 +318,55 @@
 
 
 <fieldset *ngIf="!editMode">
+
+    <div class="row">
+<!--        Öffnungszeiten-->
+        <div class="col-sm-6">
+            <h3 translate>OEFFNUNGSZEITEN</h3>
+            <p>{{getOeffnungsTageReadOnly()}}</p>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
+                {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen}}</p>
+        </div>
+
+        <div class="col-sm-6" *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0">
+        <h3 translate>INSTITUTION_BETREUUNGSSTANDORTE</h3>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="betreuungsstandort-title"><span translate>INSTITUTION_BETREUUNGSSTANDORT</span>&nbsp;1:</p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>{{stammdaten.adresse.organisation}}</p>
+                        <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                        <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>{{stammdaten.mail}}</p>
+                        <p>{{stammdaten.webseite}}</p>
+                        <p>{{stammdaten.telefon}}</p>
+                    </div>
+                </div>
+                <div *ngFor="let standort of stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte; let i = index">
+                    <p class="betreuungsstandort-title"><span translate>INSTITUTION_BETREUUNGSSTANDORT</span>&nbsp;{{i + 2}}:</p>
+                    <div class="row" >
+                        <div class="col-sm-6">
+                            <p>{{standort.adresse.organisation}}</p>
+                            <p>{{standort.adresse.strasse}} {{standort.adresse.hausnummer}}</p>
+                            <p>{{standort.adresse.plz}} {{standort.adresse.ort}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>{{standort.mail}}</p>
+                            <p>{{standort.webseite}}</p>
+                            <p>{{standort.telefon}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
     <div class="row">
         <!-- Zahlungsangaben -->
         <div class="col-sm-6">

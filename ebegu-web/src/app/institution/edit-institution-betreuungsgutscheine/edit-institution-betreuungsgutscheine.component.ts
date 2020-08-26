@@ -26,6 +26,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
     selector: 'dv-edit-institution-betreuungsgutscheine',
     templateUrl: './edit-institution-betreuungsgutscheine.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ['./edit-institution-betreuungsgutscheine.component.less'],
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 
@@ -85,5 +86,14 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
         }
         return alterskategorien.join(', ');
+    }
+
+    public getOeffnungsTageReadOnly(): string {
+        return this.stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage
+            .getActiveDaysAsList()
+            .map(day => {
+                return this.translate.instant(`${day}_SHORT`);
+            })
+            .join(', ');
     }
 }

@@ -1658,6 +1658,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	private JaxBetreuungsstandort betreuungsstandortToJax(Betreuungsstandort betreuungsstandort) {
 		final JaxBetreuungsstandort jaxBetreuungsstandort = new JaxBetreuungsstandort();
+		convertAbstractFieldsToJAX(betreuungsstandort, jaxBetreuungsstandort);
 		jaxBetreuungsstandort.setAdresse(adresseToJAX(betreuungsstandort.getAdresse()));
 		jaxBetreuungsstandort.setMail(betreuungsstandort.getMail());
 		jaxBetreuungsstandort.setTelefon(betreuungsstandort.getTelefon());
@@ -1731,14 +1732,16 @@ public class JaxBConverter extends AbstractConverter {
 				convertedBetreuungsstandorte.add(betreuungsstandortToAdd);
 			}
 		}
-		return convertedBetreuungsstandorte;
+		betreuungsstandortList.clear();
+		betreuungsstandortList.addAll(convertedBetreuungsstandorte);
+		return betreuungsstandortList;
 	}
 
 	private Betreuungsstandort betreuungsstandortToEntity(JaxBetreuungsstandort jaxBetreuungsstandort, Betreuungsstandort betreuungsstandort) {
 
 		convertAbstractFieldsToEntity(jaxBetreuungsstandort, betreuungsstandort);
 
-		betreuungsstandort.setAdresse(adresseToEntity(jaxBetreuungsstandort.getAdresse(), new Adresse()));
+		betreuungsstandort.setAdresse(adresseToEntity(jaxBetreuungsstandort.getAdresse(), betreuungsstandort.getAdresse()));
 		betreuungsstandort.setMail(jaxBetreuungsstandort.getMail());
 		betreuungsstandort.setTelefon(jaxBetreuungsstandort.getTelefon());
 		betreuungsstandort.setWebseite(jaxBetreuungsstandort.getWebseite());

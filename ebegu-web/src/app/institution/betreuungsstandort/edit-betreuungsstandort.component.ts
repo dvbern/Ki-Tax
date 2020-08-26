@@ -27,11 +27,20 @@ export class EditBetreuungsstandortComponent implements OnInit {
         this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.push(newStandort);
     }
 
-    public removeStandort(standort: TSBetreuungsstandort): void {
-        let standorte = this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte;
-        standorte = standorte.filter(s => {
-            return s.id !== standort.id;
-        });
+    public removeAllStandorte(): void {
+        this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte = [];
+    }
+
+    /**
+     * Für den Moment sind maximal zwei Standorte möglich. Der erste Standort wird jeweils aus den Stammdaten
+     * übernommen.
+     */
+    public toggleMehrereBetreuungsstandorte(): void {
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length === 0) {
+            this.addStandort();
+            return;
+        }
+        this.removeAllStandorte();
     }
 
 }
