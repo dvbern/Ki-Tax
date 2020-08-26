@@ -58,7 +58,9 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldInstitutionen.telefon, dataRow.getTelefon());
 			excelRowGroup.addValue(MergeFieldInstitutionen.email, dataRow.getEmail());
 			excelRowGroup.addValue(MergeFieldInstitutionen.url, dataRow.getUrl());
+			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungstage, dataRow.getOeffnungstage());
 			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungszeiten, dataRow.getOeffnungszeiten());
+			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungsAbweichungen, dataRow.getOeffnungsabweichungen());
 			excelRowGroup.addValue(MergeFieldInstitutionen.isBaby, dataRow.getBaby());
 			excelRowGroup.addValue(MergeFieldInstitutionen.isVorschulkind, dataRow.getVorschulkind());
 			excelRowGroup.addValue(MergeFieldInstitutionen.isKindergarten, dataRow.getKindergarten());
@@ -91,8 +93,14 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			ServerMessageUtil.getMessage("Reports_emailTitle", locale));
 		mergerDTO.addValue(MergeFieldInstitutionen.urlTitle, ServerMessageUtil.getMessage("Reports_urlTitle", locale));
 		mergerDTO.addValue(
+			MergeFieldInstitutionen.oeffnungstageTitle,
+			ServerMessageUtil.getMessage("Reports_oeffnungstageTitle", locale));
+		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungszeitenTitle,
 			ServerMessageUtil.getMessage("Reports_oeffnungszeitenTitle", locale));
+		mergerDTO.addValue(
+			MergeFieldInstitutionen.oeffnungsAbweichungenTitle,
+			ServerMessageUtil.getMessage("Reports_oeffnungsabweichungenTitle", locale));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.babyTitle,
 			ServerMessageUtil.getMessage("Reports_babyTitle", locale));

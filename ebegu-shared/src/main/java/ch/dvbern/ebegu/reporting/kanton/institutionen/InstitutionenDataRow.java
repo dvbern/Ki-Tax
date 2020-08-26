@@ -31,7 +31,9 @@ public class InstitutionenDataRow {
 	private String telefon = null;
 	private String email = null;
 	private String url = null;
+	private String oeffnungstage = null;
 	private String oeffnungszeiten = null;
+	private String oeffnungsabweichungen = null;
 	private Boolean baby = null;
 	private Boolean vorschulkind = null;
 	private Boolean kindergarten = null;
@@ -105,12 +107,28 @@ public class InstitutionenDataRow {
 		this.url = url;
 	}
 
+	public String getOeffnungstage() {
+		return oeffnungstage;
+	}
+
+	public void setOeffnungstage(String oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
+	}
+
 	public String getOeffnungszeiten() {
 		return oeffnungszeiten;
 	}
 
 	public void setOeffnungszeiten(String oeffnungszeiten) {
 		this.oeffnungszeiten = oeffnungszeiten;
+	}
+
+	public String getOeffnungsabweichungen() {
+		return oeffnungsabweichungen;
+	}
+
+	public void setOeffnungsabweichungen(String oeffnungsabweichungen) {
+		this.oeffnungsabweichungen = oeffnungsabweichungen;
 	}
 
 	public Boolean getBaby() {

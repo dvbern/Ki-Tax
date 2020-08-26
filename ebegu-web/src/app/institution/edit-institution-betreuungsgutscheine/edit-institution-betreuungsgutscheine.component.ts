@@ -88,7 +88,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
         return alterskategorien.join(', ');
     }
 
-    public getOeffnungsTageReadOnly(): string {
+    public getOeffnungsTageAbkuerzungListe(): string {
         return this.stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage
             .getActiveDaysAsList()
             .map(day => {
