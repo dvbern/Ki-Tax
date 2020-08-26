@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -51,11 +50,5 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 		// bei tagesschule hat man grundsaetzlich 100 anspruch
 		inputData.setAnspruchspensumProzent(100);
 		inputData.addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
-		// Damit der Gesuchsteller im Entwurf die "richtigen" provisorischen Daten sieht, wird bei *noch* nicht akzeptiert
-		// nicht auf Vollkosten gesetzt, erst beim eigentlichen Ablehnen
-		if (platz.extractGesuch().getFinSitStatus() != null
-			&& platz.extractGesuch().getFinSitStatus() == FinSitStatus.ABGELEHNT) {
-			inputData.setBezahltVollkosten(true);
-		}
 	}
 }

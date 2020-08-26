@@ -969,10 +969,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
 		if (persistedDossier.getVerantwortlicherBG() != null) {
-			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherBG()));
+			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
 		}
 		if (persistedDossier.getVerantwortlicherTS() != null) {
-			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherTS()));
+			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherTS()));
 		}
 		return jaxDossier;
 	}
