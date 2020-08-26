@@ -77,6 +77,7 @@ public class AbstractConverter {
 		jaxDTOToConvertTo.setTimestampErstellt(abstEntity.getTimestampErstellt());
 		jaxDTOToConvertTo.setTimestampMutiert(abstEntity.getTimestampMutiert());
 		jaxDTOToConvertTo.setId(checkNotNull(abstEntity.getId()));
+		jaxDTOToConvertTo.setVersion(abstEntity.getVersion());
 
 		return jaxDTOToConvertTo;
 	}
@@ -88,6 +89,7 @@ public class AbstractConverter {
 
 		if (jaxToConvert.getId() != null) {
 			abstEntityToConvertTo.setId(jaxToConvert.getId());
+			abstEntityToConvertTo.setVersion(jaxToConvert.getVersion());
 			//ACHTUNG hier timestamp erstellt und mutiert NICHT konvertieren da diese immer auf dem server gesetzt
 			// werden muessen
 		}

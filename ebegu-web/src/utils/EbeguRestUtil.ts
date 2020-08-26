@@ -274,6 +274,7 @@ export class EbeguRestUtil {
 
     private parseAbstractEntity(parsedAbstractEntity: TSAbstractEntity, receivedAbstractEntity: any): void {
         parsedAbstractEntity.id = receivedAbstractEntity.id;
+        parsedAbstractEntity.version = receivedAbstractEntity.version;
         parsedAbstractEntity.timestampErstellt =
             DateUtil.localDateTimeToMoment(receivedAbstractEntity.timestampErstellt);
         parsedAbstractEntity.timestampMutiert = DateUtil.localDateTimeToMoment(receivedAbstractEntity.timestampMutiert);
@@ -281,6 +282,7 @@ export class EbeguRestUtil {
 
     private abstractEntityToRestObject(restObject: any, typescriptObject: TSAbstractEntity): void {
         restObject.id = typescriptObject.id;
+        restObject.version = typescriptObject.version;
         if (typescriptObject.timestampErstellt) {
             restObject.timestampErstellt = DateUtil.momentToLocalDateTime(typescriptObject.timestampErstellt);
         }

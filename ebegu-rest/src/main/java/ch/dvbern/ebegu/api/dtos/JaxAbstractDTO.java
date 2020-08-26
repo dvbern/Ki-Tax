@@ -38,6 +38,8 @@ public abstract class JaxAbstractDTO implements Serializable, Comparable<JaxAbst
 	@Nullable
 	private String id = null;
 
+	private long version;
+
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime timestampErstellt;
@@ -69,6 +71,14 @@ public abstract class JaxAbstractDTO implements Serializable, Comparable<JaxAbst
 
 	public void setId(@Nonnull String id) {
 		this.id = Objects.requireNonNull(id);
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
 	}
 
 	@Nullable
