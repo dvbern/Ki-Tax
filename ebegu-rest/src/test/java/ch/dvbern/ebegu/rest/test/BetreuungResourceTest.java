@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -217,20 +218,21 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		);
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeParis(persistence));
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(gemeindeParis);
 		Mandant persistedMandant =
 			persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
-		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		jaxGesuch.getDossier()
 			.getVerantwortlicherBG()
-			.getBerechtigungen()
-			.iterator()
-			.next()
-			.getGemeindeList()
-			.add(persistedGemeinde);
-		benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(
-			jaxGesuch.getDossier().getVerantwortlicherBG(),
-			new Benutzer()));
+			.getGemeindeIds()
+			.add(persistedGemeinde.getId());
+		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
+		benutzer.setUsername(jaxGesuch.getDossier().getVerantwortlicherBG().getUsername());
+		benutzer.setVorname(jaxGesuch.getDossier().getVerantwortlicherBG().getVorname());
+		benutzer.setNachname(jaxGesuch.getDossier().getVerantwortlicherBG().getNachname());
+		benutzer.setMandant(persistedMandant);
+		benutzer.getCurrentBerechtigung().setRole(UserRole.ADMIN_BG);
+		benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeindeParis);
+		benutzerService.saveBenutzer(benutzer);
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
 		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);

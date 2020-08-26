@@ -2627,7 +2627,7 @@ export class EbeguRestUtil {
         user.username = userTS.username;
         user.nachname = userTS.nachname;
         user.vorname = userTS.vorname;
-        user.gemeindeBGId = userTS.gemeindeIds;
+        user.gemeindeIds = userTS.gemeindeIds;
         return user;
     }
 
