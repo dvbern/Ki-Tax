@@ -36,8 +36,8 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public tarifProHauptmahlzeit: number = undefined;
     public tarifProNebenmahlzeit: number = undefined;
     public oeffnungstage: TSOeffnungstageInstitution = new TSOeffnungstageInstitution();
-    public offenVon: moment.Moment = undefined;
-    public offenBis: moment.Moment = undefined;
+    public offenVon: string = undefined;
+    public offenBis: string = undefined;
     public oeffnungsAbweichungen: string;
     public betreuungsstandorte: TSBetreuungsstandort[] = [];
 
