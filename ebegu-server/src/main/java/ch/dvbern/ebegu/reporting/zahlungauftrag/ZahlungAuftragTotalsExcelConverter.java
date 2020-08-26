@@ -31,11 +31,11 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
-import org.apache.kafka.common.protocol.types.Field.Str;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -98,7 +98,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
 				if (iban != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, removeWhiteSpaces(iban.getIban()));
+					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, institutionStammdaten.extractKontoinhaber());
 				Adresse adresse = institutionStammdaten.extractAdresseKontoinhaber();
@@ -132,9 +132,5 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle",
 			locale).toUpperCase(locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale));
-	}
-
-	private String removeWhiteSpaces(@Nonnull String str) {
-		return str.replaceAll("\\s+","");
 	}
 }

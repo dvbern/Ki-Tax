@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -111,7 +110,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDokumentServiceBean.class.getSimpleName());
 	public static final byte[] EMPTY_BYTES = new byte[0];
-	private static final Pattern PATTERN = Pattern.compile("\\s+");
 
 	@Inject
 	private Persistence persistence;
@@ -972,7 +970,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Nonnull
 	protected String ibanToUnformattedString(@Nonnull IBAN iban) {
 		Objects.requireNonNull(iban);
-		return PATTERN.matcher(iban.getIban()).replaceAll("");
+		return EbeguUtil.removeWhiteSpaces(iban.getIban());
 	}
 
 	@Override

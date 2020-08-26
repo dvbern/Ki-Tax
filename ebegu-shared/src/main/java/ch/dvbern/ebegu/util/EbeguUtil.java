@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,6 +64,8 @@ import static java.util.Objects.requireNonNull;
  * Allgemeine Utils fuer EBEGU
  */
 public final class EbeguUtil {
+
+	private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
 	private EbeguUtil() {
 	}
@@ -417,6 +420,11 @@ public final class EbeguUtil {
 		filename = StringUtils.replace(filename, "\\", "_");
 		filename = StringUtils.replace(filename, " ", "_");
 		return filename;
+	}
+
+	@Nonnull
+	public static String removeWhiteSpaces(@Nonnull String str) {
+		return WHITESPACE.matcher(str).replaceAll("");
 	}
 
 	/**
