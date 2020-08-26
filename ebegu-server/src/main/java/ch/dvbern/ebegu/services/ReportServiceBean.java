@@ -2061,7 +2061,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream().map(tag -> {
 				return ServerMessageUtil.translateEnumValue(tag, locale);
 			}).collect(Collectors.joining(", ")));
-			row.setOeffnungsabweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
+			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
 		};
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
