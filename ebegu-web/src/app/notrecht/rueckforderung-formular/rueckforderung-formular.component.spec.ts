@@ -46,8 +46,10 @@ describe('RueckforderungFormularComponent', () => {
         ['getNotverordnungDefaultEinreichefristPrivat', 'getNotverordnungDefaultEinreichefristOeffentlich']);
 
     beforeEach(async(() => {
-        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristPrivat.and.returnValue(of('').toPromise());
-        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristOeffentlich.and.returnValue(of('').toPromise());
+        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristPrivat.and
+            .returnValue(of('2020-08-01').toPromise());
+        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristOeffentlich.and
+            .returnValue(of('2020-08-01').toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
