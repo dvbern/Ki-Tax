@@ -23,13 +23,13 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
@@ -78,45 +78,43 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createFinanzielleSituation() {
 		Assert.assertNotNull(erwerbspensumService);
 
-		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		Erwerbspensum erwerbspensumData = TestDataUtil.createErwerbspensumData();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
-		gesuchsteller = persistence.persist(gesuchsteller);
+		final Gesuch gesuch = insertNewEntity();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		ErwerbspensumContainer ewpCont = TestDataUtil.createErwerbspensumContainer();
-		ewpCont.setErwerbspensumGS(erwerbspensumData);
-		ewpCont.setGesuchsteller(gesuchsteller);
+		ewpCont.setGesuchsteller(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().getErwerbspensenContainers().add(ewpCont);
 
-		erwerbspensumService.saveErwerbspensum(ewpCont, TestDataUtil.createDefaultGesuch());
+		erwerbspensumService.saveErwerbspensum(ewpCont, gesuch);
 		Collection<ErwerbspensumContainer> allErwerbspensenenContainer =
 			criteriaQueryHelper.getAll(ErwerbspensumContainer.class);
-		Assert.assertEquals(1, allErwerbspensenenContainer.size());
+		Assert.assertEquals(3, allErwerbspensenenContainer.size());
 		Optional<ErwerbspensumContainer> storedContainer = erwerbspensumService.findErwerbspensum(ewpCont.getId());
 		Assert.assertTrue(storedContainer.isPresent());
 		ErwerbspensumContainer erwerbspensumContainer = storedContainer.get();
 		Assert.assertFalse(erwerbspensumContainer.isNew());
-		Assert.assertEquals(erwerbspensumContainer, allErwerbspensenenContainer.iterator().next());
-		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumGS());
-		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumGS().getTaetigkeit());
-		Assert.assertEquals(
-			erwerbspensumData.getTaetigkeit(),
-			erwerbspensumContainer.getErwerbspensumGS().getTaetigkeit());
+		Assert.assertTrue(allErwerbspensenenContainer.contains(erwerbspensumContainer));
+		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumJA());
+		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumJA().getTaetigkeit());
+		Assert.assertNotNull(ewpCont.getErwerbspensumJA());
+		Assert.assertEquals(ewpCont.getErwerbspensumJA().getTaetigkeit(), erwerbspensumContainer.getErwerbspensumJA().getTaetigkeit());
 	}
 
 	@Test
 	public void updateFinanzielleSituationTest() {
-		ErwerbspensumContainer insertedEwpCont = insertNewEntity();
+		final Gesuch gesuch = insertNewEntity();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		ErwerbspensumContainer insertedEwpCont = gesuch.getGesuchsteller1().getErwerbspensenContainers().iterator().next();
 		Optional<ErwerbspensumContainer> ewpContOpt = erwerbspensumService.findErwerbspensum(insertedEwpCont.getId());
 		Assert.assertTrue(ewpContOpt.isPresent());
 		ErwerbspensumContainer erwPenCont = ewpContOpt.get();
-		Erwerbspensum changedData = TestDataUtil.createErwerbspensumData();
-		changedData.setGueltigkeit(new DateRange(LocalDate.now(), LocalDate.now().plusDays(80)));
-		erwPenCont.setErwerbspensumGS(changedData);
+		Assert.assertNotNull(erwPenCont.getErwerbspensumJA());
+		erwPenCont.getErwerbspensumJA().setGueltigkeit(new DateRange(LocalDate.now(), LocalDate.now().plusDays(80)));
 
 		ErwerbspensumContainer updatedCont =
-			erwerbspensumService.saveErwerbspensum(erwPenCont, TestDataUtil.createDefaultGesuch());
-		Assert.assertNotNull(updatedCont.getErwerbspensumGS());
-		Assert.assertEquals(LocalDate.now(), updatedCont.getErwerbspensumGS().getGueltigkeit().getGueltigAb());
+			erwerbspensumService.saveErwerbspensum(erwPenCont, gesuch);
+		Assert.assertNotNull(updatedCont.getErwerbspensumJA());
+		Assert.assertEquals(LocalDate.now(), updatedCont.getErwerbspensumJA().getGueltigkeit().getGueltigAb());
 	}
 
 	@Test
@@ -124,11 +122,13 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(erwerbspensumService);
 		Assert.assertEquals(0, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
 
-		ErwerbspensumContainer insertedEwpCont = insertNewEntity();
-		Assert.assertEquals(1, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
+		final Gesuch gesuch = insertNewEntity();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		ErwerbspensumContainer insertedEwpCont = gesuch.getGesuchsteller1().getErwerbspensenContainers().iterator().next();
+		Assert.assertEquals(2, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
 
-		erwerbspensumService.removeErwerbspensum(insertedEwpCont.getId(), TestDataUtil.createDefaultGesuch());
-		Assert.assertEquals(0, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
+		erwerbspensumService.removeErwerbspensum(insertedEwpCont.getId(), gesuch);
+		Assert.assertEquals(1, criteriaQueryHelper.getAll(ErwerbspensumContainer.class).size());
 	}
 
 	@Test
@@ -253,11 +253,15 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(erwerbspensumService.isErwerbspensumRequired(gesuch));
 	}
 
-	private ErwerbspensumContainer insertNewEntity() {
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
+	private Gesuch insertNewEntity() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), AntragStatus.IN_BEARBEITUNG_JA, gesuchsperiode);
+		GesuchstellerContainer gesuchsteller = gesuch.getGesuchsteller1();
+		Assert.assertNotNull(gesuchsteller);
 		ErwerbspensumContainer container = TestDataUtil.createErwerbspensumContainer();
 		gesuchsteller.addErwerbspensumContainer(container);
-		gesuchsteller = persistence.persist(gesuchsteller);
-		return gesuchsteller.getErwerbspensenContainers().iterator().next();
+		persistence.merge(gesuchsteller);
+		return gesuch;
 	}
 }
