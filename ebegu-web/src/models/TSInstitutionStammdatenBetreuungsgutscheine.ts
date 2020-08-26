@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
 import {TSBetreuungsstandort} from './TSBetreuungsstandort';

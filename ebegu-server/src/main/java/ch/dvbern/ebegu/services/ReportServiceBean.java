@@ -2052,12 +2052,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (institutionStammdatenBG != null) {
-			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null)
-			row.setOeffnungszeiten(
-				institutionStammdatenBG.getOffenVon().toString()
-				+ " - "
-				+ institutionStammdatenBG.getOffenBis().toString()
-			);
+			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null) {
+				row.setOeffnungszeiten(
+					institutionStammdatenBG.getOffenVon().toString()
+						+ " - "
+						+ institutionStammdatenBG.getOffenBis().toString()
+				);
+			}
 			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream().map(tag -> {
 				return ServerMessageUtil.translateEnumValue(tag, locale);
 			}).collect(Collectors.joining(", ")));
