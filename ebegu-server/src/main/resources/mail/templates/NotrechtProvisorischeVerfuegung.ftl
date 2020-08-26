@@ -54,7 +54,7 @@ ${institutionStammdaten.mail}
 	<p>
 		Amt für Integration und Soziales<br>
 		<a href="mailto:info.fam@be.ch">info.fam@be.ch</a><br>
-		031 633 78 91
+		+41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
 		<p>
@@ -100,7 +100,7 @@ ${institutionStammdaten.mail}
 	<p>
 		Office de l’intégration et de l’action sociale
 		Courriel : <a href="mailto:info.fam@be.ch">info.fam@be.ch</a>
-		Tél : 031 633 78 91
+		Tél : +41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
 		<p>
