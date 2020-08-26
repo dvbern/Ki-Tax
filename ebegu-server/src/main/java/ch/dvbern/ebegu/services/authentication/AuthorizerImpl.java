@@ -36,13 +36,16 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -50,6 +53,7 @@ import ch.dvbern.ebegu.entities.HasMandant;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -666,7 +670,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkReadAuthorization(@Nullable WizardStep step) {
 		if (step != null) {
-			checkReadAuthorization(step.getGesuch());
+			checkReadAuthorizedGesuchTechnicalData(step.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable WizardStep step) {
+		if (step != null) {
+			checkWriteAuthorizedGesuchTechnicalData(step.getGesuch());
 		}
 	}
 
@@ -1472,6 +1483,62 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
+	@Override
+	public void checkReadAuthorization(@Nullable AntragStatusHistory antragStatusHistory) {
+		if (antragStatusHistory != null) {
+			checkReadAuthorizedGesuchTechnicalData(antragStatusHistory.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable AntragStatusHistory antragStatusHistory) {
+		if (antragStatusHistory != null) {
+			checkWriteAuthorizedGesuchTechnicalData(antragStatusHistory.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable DokumentGrund dokumentGrund) {
+		if (dokumentGrund != null) {
+			checkReadAuthorizedGesuchTechnicalData(dokumentGrund.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable DokumentGrund dokumentGrund) {
+		if (dokumentGrund != null) {
+			checkWriteAuthorizedGesuchTechnicalData(dokumentGrund.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable GeneratedDokument generatedDokument) {
+		if (generatedDokument != null) {
+			checkReadAuthorizedGesuchTechnicalData(generatedDokument.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable GeneratedDokument generatedDokument) {
+		if (generatedDokument != null) {
+			checkWriteAuthorizedGesuchTechnicalData(generatedDokument.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable Mahnung mahnung) {
+		if (mahnung != null) {
+			checkReadAuthorizedGesuchTechnicalData(mahnung.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable Mahnung mahnung) {
+		if (mahnung != null) {
+			checkWriteAuthorizedGesuchTechnicalData(mahnung.getGesuch());
+		}
+	}
+
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {
 		if (mitteilung == null) {
 			return true;
@@ -1508,5 +1575,41 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 		return institutions.stream()
 			.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institution));
+	}
+
+	/**
+	 * Prueft, ob die technischen Daten zu einem Gesuch, die nicht direkt Input-Daten sind,
+	 * geschrieben / geloescht werden duerfen. Dies sind z.B. WizardSteps, AntragStatusHistory etc.
+	 */
+	private void checkWriteAuthorizedGesuchTechnicalData(@Nonnull Gesuch gesuch) {
+		// Als grosser Unterschied zu den eigentlichen Gesuchsdaten muss hier auch das
+		// Lesen und Schreiben von nicht eingereichten Online-Gesuchen moeglich sein, damit
+		// z.B. ein Admin eine Online Mutation eines GS loeschen kann.
+
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		// Das Gesuch darf aber auf keinen Fall bereits verfuegt sein:
+		if (gesuch.getStatus().isAnyStatusOfVerfuegt()) {
+			throwViolation(gesuch);
+		}
+		// Der Benutzer muss zumindest fuer das dazugehoerige Dossier grundsaetzlich zustaendig sein
+		checkWriteAuthorizationDossier(gesuch.getDossier());
+	}
+
+	/**
+	 * Prueft, ob die technischen Daten zu einem Gesuch, die nicht direkt Input-Daten sind,
+	 * gelesen werden duerfen. Dies sind z.B. WizardSteps, AntragStatusHistory etc.
+	 */
+	private void checkReadAuthorizedGesuchTechnicalData(@Nonnull Gesuch gesuch) {
+		// Als grosser Unterschied zu den eigentlichen Gesuchsdaten muss hier auch das
+		// Lesen und Schreiben von nicht eingereichten Online-Gesuchen moeglich sein, damit
+		// z.B. ein Admin eine Online Mutation eines GS loeschen kann.
+
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		// Der Benutzer muss zumindest fuer das dazugehoerige Dossier grundsaetzlich zustaendig sein
+		checkReadAuthorizationDossier(gesuch.getDossier());
 	}
 }

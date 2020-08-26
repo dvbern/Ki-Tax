@@ -983,6 +983,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		Collection<GeneratedDokument> genDokFromGesuch = findGeneratedDokumentsFromGesuch(gesuch);
 		for (GeneratedDokument generatedDokument : genDokFromGesuch) {
+			authorizer.checkWriteAuthorization(generatedDokument);
 			LOGGER.info("Deleting Dokument: {}", generatedDokument.getId());
 			persistence.remove(GeneratedDokument.class, generatedDokument.getId());
 		}
@@ -1016,8 +1017,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Override
 	public Collection<GeneratedDokument> findGeneratedDokumentsFromGesuch(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
-		this.authorizer.checkReadAuthorization(gesuch);
-		return criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch, GeneratedDokument_.gesuch);
+		final Collection<GeneratedDokument> generatedDokumente =
+			criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch,	GeneratedDokument_.gesuch);
+		generatedDokumente.forEach(generatedDokument -> authorizer.checkReadAuthorization(generatedDokument));
+		return generatedDokumente;
 	}
 
 	@Nonnull
