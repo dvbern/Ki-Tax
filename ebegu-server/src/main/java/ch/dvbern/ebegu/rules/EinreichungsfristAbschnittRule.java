@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,7 +79,10 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	private boolean isErstgesuchOrNewPlatzInMutation(@Nonnull AbstractPlatz platz) {
-		return platz.extractGesuch().getTyp().isGesuch() || platz.getVorgaengerId() == null;
+		// Die Frist ist relevant bei Erstgesuch und "Erst-Betreuung", also wenn ein Platz in einer Mutation
+		// neu hinzugekommen ist. Es kann aber sein, dass es zwar einen Vorgaenger gab, dieser aber nicht
+		// verfuegt wurde, darum reicht es nicht, nur die VorgaengerID zu pruefen!
+		return platz.extractGesuch().getTyp().isGesuch() || Objects.isNull(platz.getVorgaengerVerfuegung());
 	}
 
 	@Nullable

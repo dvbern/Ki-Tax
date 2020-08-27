@@ -36,13 +36,16 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -50,6 +53,7 @@ import ch.dvbern.ebegu.entities.HasMandant;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -69,7 +73,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -114,9 +117,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private FallService fallService;
 
 	@Inject
 	private DossierService dossierService;
@@ -170,13 +170,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationGesuchId(@Nullable String gesuchId) {
-		if (gesuchId != null) {
-			checkReadAuthorization(getGesuchById(gesuchId));
-		}
-	}
-
-	@Override
 	public void checkReadAuthorization(@Nullable Gesuch gesuch) {
 		if (gesuch != null) {
 			boolean allowed = isReadAuthorized(gesuch);
@@ -190,32 +183,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkReadAuthorizationGesuche(@Nullable Collection<Gesuch> gesuche) {
 		if (gesuche != null) {
 			gesuche.forEach(this::checkReadAuthorization);
-		}
-	}
-
-	@Override
-	public void checkCreateAuthorizationFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation) {
-		Gesuch gesuch = extractGesuch(finanzielleSituation);
-		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN)) {
-			if (gesuch != null) {
-				validateGemeindeMatches(gesuch.getDossier());
-			}
-			return;
-		}
-		if (principalBean.isCallerInRole(GESUCHSTELLER)
-			&& (gesuch == null || !isWriteAuthorized(() -> extractGesuch(finanzielleSituation)))) {
-			//gesuchsteller darf nur welche machen wenn ihm der zugehoerige Fall gehoert
-			throwCreateViolation();
-
-		}
-	}
-
-	@Override
-	public void checkReadAuthorizationFall(String fallId) {
-		Optional<Fall> fallOptional = fallService.findFall(fallId);
-		if (fallOptional.isPresent()) {
-			Fall fall = fallOptional.get();
-			checkReadAuthorizationFall(fall);
 		}
 	}
 
@@ -478,11 +445,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (finanzielleSituation == null) {
 			return;
 		}
+		UserRole[] allowedRoles =
+			{ SUPER_ADMIN,
+				ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+				ADMIN_BG, SACHBEARBEITER_BG,
+				ADMIN_TS, SACHBEARBEITER_TS };
 		Gesuch gesuch = extractGesuch(finanzielleSituation);
-		boolean writeAllowed = isWriteAuthorized(gesuch);
-		boolean isMutation = finanzielleSituation.getVorgaengerId() != null;
-		//in einer Mutation kann der Gesuchsteller die Finanzielle Situation nicht anpassen
-		if (!writeAllowed || (isMutation && principalBean.isCallerInRole(GESUCHSTELLER))) {
+		Objects.requireNonNull(gesuch);
+		if (!isInRoleOrGSOwner(allowedRoles, () -> gesuch)) {
+			throwViolation(finanzielleSituation);
+		}
+		if (!isWriteAuthorizedGesuchBerechnungsrelevanteDaten(gesuch)) {
 			throwViolation(finanzielleSituation);
 		}
 	}
@@ -666,7 +639,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkReadAuthorization(@Nullable WizardStep step) {
 		if (step != null) {
-			checkReadAuthorization(step.getGesuch());
+			checkReadAuthorizedGesuchTechnicalData(step.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable WizardStep step) {
+		if (step != null) {
+			checkWriteAuthorizedGesuchTechnicalData(step.getGesuch());
 		}
 	}
 
@@ -685,6 +665,25 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		boolean allowed = isWriteAuthorized(abstractPlatz);
 		if (!allowed) {
 			throwViolation(abstractPlatz);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable ErwerbspensumContainer ewpCnt) {
+		if (ewpCnt != null) {
+			UserRole[] allowedRoles =
+				{ SUPER_ADMIN,
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+					ADMIN_BG, SACHBEARBEITER_BG,
+					ADMIN_TS, SACHBEARBEITER_TS };
+			final Gesuch gesuch = extractGesuch(ewpCnt);
+			Objects.requireNonNull(gesuch);
+			if (!isInRoleOrGSOwner(allowedRoles, () -> gesuch)) {
+				throwViolation(ewpCnt);
+			}
+			if (!isWriteAuthorizedGesuchBerechnungsrelevanteDaten(gesuch)) {
+				throwViolation(ewpCnt);
+			}
 		}
 	}
 
@@ -752,11 +751,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE);
 		}
 		return false;
-	}
-
-	@Override
-	public void checkReadAuthorization(@Nonnull Collection<FinanzielleSituationContainer> finanzielleSituationen) {
-		finanzielleSituationen.forEach(this::checkReadAuthorization);
 	}
 
 	private boolean isInRoleOrGSOwner(UserRole[] allowedRoles, Supplier<Gesuch> gesuchSupplier) {
@@ -948,14 +942,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return isWriteAuthorized(() -> entity);
 	}
 
-	private void throwCreateViolation() {
-		throw new EJBAccessException(
-			"Access Violation"
-				+ " user is not allowed to create entity:"
-				+ " for current user: " + principalBean.getPrincipal()
-		);
-	}
-
 	private void throwViolation(AbstractEntity abstractEntity) {
 		throw new EJBAccessException(
 			"Access Violation"
@@ -1134,14 +1120,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	@Override
-	public boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
+	@SuppressWarnings("unused")
+	private boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
 		// Aktuell sind keine Einschraenkungen zum Lesen von Traegerschaften bekannt.
 		return true;
 	}
 
-	@Override
-	public boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
+	private boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
 		if (traegerschaft == null) {
 			return true;
 		}
@@ -1155,8 +1140,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return false;
 	}
 
-	@Override
-	public boolean isReadAuthorizationInstitution(@Nullable Institution institution) {
+	private boolean isReadAuthorizationInstitution(@Nullable Institution institution) {
 		if (institution == null) {
 			return true;
 		}
@@ -1171,8 +1155,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return isReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
-	@Override
-	public boolean isWriteAuthorizationInstitution(@Nullable Institution institution) {
+	private boolean isWriteAuthorizationInstitution(@Nullable Institution institution) {
 		if (institution == null) {
 			return true;
 		}
@@ -1472,6 +1455,62 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
+	@Override
+	public void checkReadAuthorization(@Nullable AntragStatusHistory antragStatusHistory) {
+		if (antragStatusHistory != null) {
+			checkReadAuthorizedGesuchTechnicalData(antragStatusHistory.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable AntragStatusHistory antragStatusHistory) {
+		if (antragStatusHistory != null) {
+			checkWriteAuthorizedGesuchTechnicalData(antragStatusHistory.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable DokumentGrund dokumentGrund) {
+		if (dokumentGrund != null) {
+			checkReadAuthorizedGesuchTechnicalData(dokumentGrund.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable DokumentGrund dokumentGrund) {
+		if (dokumentGrund != null) {
+			checkWriteAuthorizedGesuchTechnicalData(dokumentGrund.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable GeneratedDokument generatedDokument) {
+		if (generatedDokument != null) {
+			checkReadAuthorizedGesuchTechnicalData(generatedDokument.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable GeneratedDokument generatedDokument) {
+		if (generatedDokument != null) {
+			checkWriteAuthorizedGesuchTechnicalData(generatedDokument.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable Mahnung mahnung) {
+		if (mahnung != null) {
+			checkReadAuthorizedGesuchTechnicalData(mahnung.getGesuch());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable Mahnung mahnung) {
+		if (mahnung != null) {
+			checkWriteAuthorizedGesuchTechnicalData(mahnung.getGesuch());
+		}
+	}
+
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {
 		if (mitteilung == null) {
 			return true;
@@ -1508,5 +1547,55 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 		return institutions.stream()
 			.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institution));
+	}
+
+	/**
+	 * Prueft, ob die berechnungsrelevanten Daten dieses Gesuchs noch veraendert werden duerfen.
+	 * Damit sind insbesondere die vom Gesuchsteller eingegebenen Daten gemeint, also keine
+	 * Verfuegungsbemerkungen, Statuswechsel etc. sondern Finanzielle Situation oder Erwerbspensum
+	 */
+	private boolean isWriteAuthorizedGesuchBerechnungsrelevanteDaten(@Nonnull Gesuch gesuch) {
+		// Die generelle (etwas weniger strenge) Ueberpruefung:
+		if (!isWriteAuthorized(gesuch)) {
+			return false;
+		}
+		// Explizit fuer die Gesuchsdaten sind wir strenger:
+		return !gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen();
+	}
+
+	/**
+	 * Prueft, ob die technischen Daten zu einem Gesuch, die nicht direkt Input-Daten sind,
+	 * geschrieben / geloescht werden duerfen. Dies sind z.B. WizardSteps, AntragStatusHistory etc.
+	 */
+	private void checkWriteAuthorizedGesuchTechnicalData(@Nonnull Gesuch gesuch) {
+		// Als grosser Unterschied zu den eigentlichen Gesuchsdaten muss hier auch das
+		// Lesen und Schreiben von nicht eingereichten Online-Gesuchen moeglich sein, damit
+		// z.B. ein Admin eine Online Mutation eines GS loeschen kann.
+
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		// Das Gesuch darf aber auf keinen Fall bereits verfuegt sein:
+		if (gesuch.getStatus().isAnyStatusOfVerfuegt()) {
+			throwViolation(gesuch);
+		}
+		// Der Benutzer muss zumindest fuer das dazugehoerige Dossier grundsaetzlich zustaendig sein
+		checkWriteAuthorizationDossier(gesuch.getDossier());
+	}
+
+	/**
+	 * Prueft, ob die technischen Daten zu einem Gesuch, die nicht direkt Input-Daten sind,
+	 * gelesen werden duerfen. Dies sind z.B. WizardSteps, AntragStatusHistory etc.
+	 */
+	private void checkReadAuthorizedGesuchTechnicalData(@Nonnull Gesuch gesuch) {
+		// Als grosser Unterschied zu den eigentlichen Gesuchsdaten muss hier auch das
+		// Lesen und Schreiben von nicht eingereichten Online-Gesuchen moeglich sein, damit
+		// z.B. ein Admin eine Online Mutation eines GS loeschen kann.
+
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		// Der Benutzer muss zumindest fuer das dazugehoerige Dossier grundsaetzlich zustaendig sein
+		checkReadAuthorizationDossier(gesuch.getDossier());
 	}
 }

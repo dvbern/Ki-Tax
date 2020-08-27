@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,14 +26,12 @@ import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -47,12 +43,10 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 
 	@Inject
 	private Persistence persistence;
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
-	@Inject
-	private GesuchService gesuchService;
+
 	@Inject
 	private WizardStepService wizardStepService;
+
 	@Inject
 	private Authorizer authorizer;
 
@@ -62,7 +56,7 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 		@Valid @Nonnull ErwerbspensumContainer erwerbspensumContainer, @Nonnull Gesuch gesuch
 	) {
 		Objects.requireNonNull(erwerbspensumContainer);
-		authorizer.checkWriteAuthorization(gesuch);
+		authorizer.checkWriteAuthorization(erwerbspensumContainer);
 
 		final ErwerbspensumContainer mergedErwerbspensum = persistence.merge(erwerbspensumContainer);
 		mergedErwerbspensum.getGesuchsteller().addErwerbspensumContainer(mergedErwerbspensum);
@@ -84,42 +78,6 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	}
 
 	@Override
-	public Collection<ErwerbspensumContainer> findErwerbspensenForGesuchsteller(
-		@Nonnull GesuchstellerContainer gesuchsteller) {
-		return criteriaQueryHelper.getEntitiesByAttribute(
-			ErwerbspensumContainer.class,
-			gesuchsteller,
-			ErwerbspensumContainer_.gesuchstellerContainer);
-	}
-
-	@Override
-	@Nonnull
-	public Collection<ErwerbspensumContainer> findErwerbspensenFromGesuch(@Nonnull String gesuchId) {
-		Collection<ErwerbspensumContainer> result = new ArrayList<>();
-		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchId);
-		if (gesuchOptional.isPresent()) {
-			authorizer.checkReadAuthorization(gesuchOptional.get());
-			GesuchstellerContainer gesuchsteller1 = gesuchOptional.get().getGesuchsteller1();
-			if (gesuchsteller1 != null) {
-				result.addAll(findErwerbspensenForGesuchsteller(gesuchsteller1));
-			}
-			GesuchstellerContainer gesuchsteller2 = gesuchOptional.get().getGesuchsteller2();
-			if (gesuchsteller2 != null) {
-				result.addAll(findErwerbspensenForGesuchsteller(gesuchsteller2));
-			}
-		}
-		return result;
-	}
-
-	@Nonnull
-	@Override
-	public Collection<ErwerbspensumContainer> getAllErwerbspensenenContainer() {
-		Collection<ErwerbspensumContainer> ewpContainers = criteriaQueryHelper.getAll(ErwerbspensumContainer.class);
-		ewpContainers.forEach(ewpContainer -> authorizer.checkReadAuthorization(ewpContainer));
-		return ewpContainers;
-	}
-
-	@Override
 	public void removeErwerbspensum(@Nonnull String erwerbspensumContainerID, Gesuch gesuch) {
 		Objects.requireNonNull(erwerbspensumContainerID);
 		authorizer.checkWriteAuthorization(gesuch);
@@ -130,6 +88,7 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				erwerbspensumContainerID)
 		);
+		authorizer.checkWriteAuthorization(ewpCont);
 		GesuchstellerContainer gesuchsteller = ewpCont.getGesuchsteller();
 		persistence.remove(ewpCont);
 

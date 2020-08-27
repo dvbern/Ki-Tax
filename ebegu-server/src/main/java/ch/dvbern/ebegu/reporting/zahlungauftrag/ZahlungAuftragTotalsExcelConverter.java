@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -97,7 +98,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
 				if (iban != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, iban.getIban());
+					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, institutionStammdaten.extractKontoinhaber());
 				Adresse adresse = institutionStammdaten.extractAdresseKontoinhaber();

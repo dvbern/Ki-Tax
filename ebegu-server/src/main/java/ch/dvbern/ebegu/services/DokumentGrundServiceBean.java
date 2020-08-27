@@ -112,9 +112,9 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Override
 	@Nonnull
 	public Collection<DokumentGrund> findAllDokumentGrundByGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorization(gesuch);
-		return this.findAllDokumentGrundByGesuch(gesuch, true);
-
+		final Collection<DokumentGrund> dokumentGruende = this.findAllDokumentGrundByGesuch(gesuch, true);
+		dokumentGruende.forEach(dokumentGrund -> authorizer.checkReadAuthorization(dokumentGrund));
+		return dokumentGruende;
 	}
 
 	@Nonnull
@@ -183,10 +183,10 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 
 	@Override
 	public void removeAllDokumentGrundeFromGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkWriteAuthorization(gesuch);
 		LOGGER.info("Deleting Dokument-Gruende of Gesuch: {} / {}", gesuch.getDossier(), gesuch.getGesuchsperiode().getGesuchsperiodeString());
-		Collection<DokumentGrund> dokumentsFromGesuch = findAllDokumentGrundByGesuch(gesuch);
+		Collection<DokumentGrund> dokumentsFromGesuch = findAllDokumentGrundByGesuch(gesuch, false);
 		for (DokumentGrund dokument : dokumentsFromGesuch) {
+			authorizer.checkWriteAuthorization(dokument);
 			LOGGER.info("Deleting DokumentGrund: {}", dokument.getId());
 			persistence.remove(DokumentGrund.class, dokument.getId());
 		}
