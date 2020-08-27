@@ -41,10 +41,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
@@ -150,22 +150,18 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Nonnull
 	@Override
 	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
-		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
-		Benutzer currentBenutzer = principalBean.getBenutzer();
-		if (currentBenutzer.getRole().isRoleMandant() || currentBenutzer.getRole().isSuperadmin()){
-			return new ArrayList<>(allRueckforderungFormulare);
-		}
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<RueckforderungFormular> query = cb.createQuery(RueckforderungFormular.class);
+
+		final Root<RueckforderungFormular> root = query.from(RueckforderungFormular.class);
+
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
-
-		return allRueckforderungFormulare.stream().filter(formular -> {
-			for (Institution institution : institutionenCurrentBenutzer) {
-				if (institution.getId().equals(formular.getInstitutionStammdaten().getInstitution().getId())) {
-					return true;
-				}
-			}
-			return false;
-		}).collect(Collectors.toList());
+		Predicate predicateBerechtigtInstitution =
+			root.get(RueckforderungFormular_.institutionStammdaten).get(InstitutionStammdaten_.institution)
+				.in(institutionenCurrentBenutzer);
+		query.where(predicateBerechtigtInstitution);
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull

@@ -56,6 +56,7 @@
     "ERROR_NUMBER": "Falsches Zahlenformat",
     "ERROR_VALUE": "Wert zu gross oder falsch formatiert",
     "ERROR_UNEXPECTED": "Es ist ein unerwarteter Fehler aufgetreten",
+    "ERROR_DATA_CHANGED": "Die Daten, die Sie bearbeiten wollen, sind nicht mehr aktuell. Bitte laden Sie die Seite neu.",
     "ERROR_UNEXPECTED_EBEGU_RUNTIME": "Es ist ein Fehler aufgetreten",
     "ERROR_UNAUTHORIZED": "Sie sind für diese Aktion nicht berechtigt",
     "ERWERBSPENSUM_LOESCHEN": "Wollen Sie das Beschäftigungspensum wirklich löschen?",

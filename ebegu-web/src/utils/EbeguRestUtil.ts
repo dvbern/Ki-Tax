@@ -274,6 +274,7 @@ export class EbeguRestUtil {
 
     private parseAbstractEntity(parsedAbstractEntity: TSAbstractEntity, receivedAbstractEntity: any): void {
         parsedAbstractEntity.id = receivedAbstractEntity.id;
+        parsedAbstractEntity.version = receivedAbstractEntity.version;
         parsedAbstractEntity.timestampErstellt =
             DateUtil.localDateTimeToMoment(receivedAbstractEntity.timestampErstellt);
         parsedAbstractEntity.timestampMutiert = DateUtil.localDateTimeToMoment(receivedAbstractEntity.timestampMutiert);
@@ -281,6 +282,7 @@ export class EbeguRestUtil {
 
     private abstractEntityToRestObject(restObject: any, typescriptObject: TSAbstractEntity): void {
         restObject.id = typescriptObject.id;
+        restObject.version = typescriptObject.version;
         if (typescriptObject.timestampErstellt) {
             restObject.timestampErstellt = DateUtil.momentToLocalDateTime(typescriptObject.timestampErstellt);
         }
@@ -4030,13 +4032,11 @@ export class EbeguRestUtil {
         rueckforderungFormularRest.stufe1FreigabeBetrag = rueckforderungFormularTS.stufe1FreigabeBetrag;
         rueckforderungFormularRest.stufe1FreigabeDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeDatum);
-        rueckforderungFormularRest.stufe1FreigabeAusbezahltAm =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeAusbezahltAm);
+        // stufe1FreigabeAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
         rueckforderungFormularRest.stufe2VerfuegungBetrag = rueckforderungFormularTS.stufe2VerfuegungBetrag;
         rueckforderungFormularRest.stufe2VerfuegungDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
-        rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        // stufe2VerfuegungAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
         rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
         rueckforderungFormularRest.extendedEinreichefrist =
             DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);

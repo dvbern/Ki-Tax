@@ -29,6 +29,7 @@ import javax.ws.rs.ext.Provider;
 
 import ch.dvbern.ebegu.api.util.RestUtil;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.StaleObjectStateException;
 import org.jboss.resteasy.api.validation.ResteasyViolationException;
 
 /**
@@ -52,6 +53,10 @@ public class EbeguConstraintValidationExceptionMapper extends AbstractEbeguExcep
 			ResteasyViolationException resteasyViolationException = new ResteasyViolationException(constViolationEx.getConstraintViolations());
 			final MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
 			return ViolationReportCreator.buildViolationReportResponse(resteasyViolationException, Status.CONFLICT, acceptMediaType);
+		}
+		if (rootCause instanceof StaleObjectStateException) {
+			// OptimisticLockingException: Wir werfen einen CONFLICT Fehler
+			return Response.status(Status.CONFLICT).build();
 		}
 		if (rootCause instanceof EJBAccessException) {
 			return RestUtil.sendErrorNotAuthorized();    // nackte 403 status antwort
