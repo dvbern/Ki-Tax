@@ -177,10 +177,7 @@ public class NotrechtResource {
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
 
-		// Version-Attribut korrekt behandeln fuer OptimisticLocking
-		RueckforderungFormular formularWithCorrectVersionNumber = rueckforderungFormularService.checkVersionSaveAndFlush(modifiedRueckforderungFormular, rueckforderungFormularJAXP.getVersion());
-		// Danach unbedingt die korrekte VersionNumber zum Client konvertieren:
-		return converter.rueckforderungFormularToJax(formularWithCorrectVersionNumber);
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 
 	@ApiOperation(value = "Updates a RueckforderungFormular in the database", response =
@@ -213,10 +210,7 @@ public class NotrechtResource {
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.saveAndChangeStatusIfNecessary(rueckforderungFormularToMerge);
 
-		// Version-Attribut korrekt behandeln fuer OptimisticLocking
-		RueckforderungFormular formularWithCorrectVersionNumber = rueckforderungFormularService.checkVersionSaveAndFlush(modifiedRueckforderungFormular, rueckforderungFormularJAXP.getVersion());
-		// Danach unbedingt die korrekte VersionNumber zum Client konvertieren:
-		return converter.rueckforderungFormularToJax(formularWithCorrectVersionNumber);
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
 
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
