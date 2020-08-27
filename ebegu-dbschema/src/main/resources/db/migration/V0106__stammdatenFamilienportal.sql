@@ -78,3 +78,8 @@ alter table betreuungsstandort
 	add constraint FK_betreuungsstandort_betreuungsgutscheine_id
 		foreign key (institution_stammdaten_betreuungsgutscheine_id)
 			references institution_stammdaten_betreuungsgutscheine (id);
+
+alter table betreuungsstandort
+	add constraint FK_institution_stammdaten_bg_adresse_id
+		foreign key (adresse_id)
+			references adresse (id);

@@ -20,9 +20,9 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -121,7 +121,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
 	@Nonnull
-	private List<DayOfWeek> oeffnungstage = new ArrayList<>();
+	private Set<DayOfWeek> oeffnungstage = new HashSet<>();
 
 	@Column(nullable = true)
 	@Nullable
@@ -135,9 +135,9 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungsAbweichungen;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.EAGER)
 	@Nonnull
-	private List<Betreuungsstandort> betreuungsstandorte = new ArrayList<Betreuungsstandort>();
+	private Set<Betreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
@@ -245,11 +245,11 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	}
 
 	@Nonnull
-	public List<DayOfWeek> getOeffnungsTage() {
+	public Set<DayOfWeek> getOeffnungsTage() {
 		return oeffnungstage;
 	}
 
-	public void setOeffnungsTage(@Nonnull List<DayOfWeek> oeffnungstage) {
+	public void setOeffnungsTage(@Nonnull Set<DayOfWeek> oeffnungstage) {
 		this.oeffnungstage = oeffnungstage;
 	}
 
@@ -281,11 +281,11 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	}
 
 	@Nonnull
-	public List<Betreuungsstandort> getBetreuungsstandorte() {
+	public Set<Betreuungsstandort> getBetreuungsstandorte() {
 		return betreuungsstandorte;
 	}
 
-	public void setBetreuungsstandorte(@Nonnull List<Betreuungsstandort> betreuungsstandorte) {
+	public void setBetreuungsstandorte(@Nonnull Set<Betreuungsstandort> betreuungsstandorte) {
 		this.betreuungsstandorte = betreuungsstandorte;
 	}
 

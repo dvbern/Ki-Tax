@@ -19,8 +19,8 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,7 +69,7 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private String oeffnungsAbweichungen;
 
 	@Nullable
-	private List<DayOfWeek> oeffnungstage;
+	private Set<DayOfWeek> oeffnungstage;
 
 	@Nullable
 	private String offenVon;
@@ -78,7 +78,7 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private String offenBis;
 
 	@Nonnull
-	private List<JaxBetreuungsstandort> betreuungsstandorte = new ArrayList<>();
+	private Set<JaxBetreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	@Nullable
 	public String getIban() {
@@ -193,11 +193,11 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	}
 
 	@Nullable
-	public List<DayOfWeek> getOeffnungstage() {
+	public Set<DayOfWeek> getOeffnungstage() {
 		return oeffnungstage;
 	}
 
-	public void setOeffnungstage(@Nullable List<DayOfWeek> oeffnungstage) {
+	public void setOeffnungstage(@Nullable Set<DayOfWeek> oeffnungstage) {
 		this.oeffnungstage = oeffnungstage;
 	}
 
@@ -220,11 +220,11 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	}
 
 	@Nonnull
-	public List<JaxBetreuungsstandort> getBetreuungsstandorte() {
+	public Set<JaxBetreuungsstandort> getBetreuungsstandorte() {
 		return betreuungsstandorte;
 	}
 
-	public void setBetreuungsstandorte(@Nonnull List<JaxBetreuungsstandort> betreuungsstandorte) {
+	public void setBetreuungsstandorte(@Nonnull Set<JaxBetreuungsstandort> betreuungsstandorte) {
 		this.betreuungsstandorte = betreuungsstandorte;
 	}
 }

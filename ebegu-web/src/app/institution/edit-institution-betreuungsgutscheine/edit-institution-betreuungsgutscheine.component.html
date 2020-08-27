@@ -112,7 +112,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="title">
-                <h3 translate>INSTITUTION_BETREUUNGSSTANDORTE</h3>
+                <h3 translate>INSTITUTION_ZWEITER_BETREUUNGSSTANDORT</h3>
             </div>
             <div class="form-group">
                 <div class="row">
@@ -330,29 +330,16 @@
         </div>
 
         <div class="col-sm-6" *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0">
-        <h3 translate>INSTITUTION_BETREUUNGSSTANDORTE</h3>
+        <h3 translate>INSTITUTION_ZWEITER_BETREUUNGSSTANDORT</h3>
         <div class="row">
             <div class="col-sm-12">
-                <p class="betreuungsstandort-title"><span translate>INSTITUTION_BETREUUNGSSTANDORT</span>&nbsp;1:</p>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p>{{stammdaten.adresse.organisation}}</p>
-                        <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
-                        <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
-                    </div>
-                    <div class="col-sm-6">
-                        <p>{{stammdaten.mail}}</p>
-                        <p>{{stammdaten.webseite}}</p>
-                        <p>{{stammdaten.telefon}}</p>
-                    </div>
-                </div>
-                <div *ngFor="let standort of stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte; let i = index">
-                    <p class="betreuungsstandort-title"><span translate>INSTITUTION_BETREUUNGSSTANDORT</span>&nbsp;{{i + 2}}:</p>
+                <div *ngFor="let standort of stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte">
                     <div class="row" >
                         <div class="col-sm-6">
                             <p>{{standort.adresse.organisation}}</p>
                             <p>{{standort.adresse.strasse}} {{standort.adresse.hausnummer}}</p>
                             <p>{{standort.adresse.plz}} {{standort.adresse.ort}}</p>
+                            <p><br></p>
                         </div>
                         <div class="col-sm-6">
                             <p>{{standort.mail}}</p>

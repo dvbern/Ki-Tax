@@ -1646,14 +1646,14 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private List<JaxBetreuungsstandort> betreuungsstandortListToJax(@Nullable final List<Betreuungsstandort> betreuungsstandorte) {
+	private Set<JaxBetreuungsstandort> betreuungsstandortListToJax(@Nullable final Set<Betreuungsstandort> betreuungsstandorte) {
 		if (betreuungsstandorte == null) {
-			return new ArrayList<>();
+			return new HashSet<>();
 		}
 
 		return betreuungsstandorte.stream()
 			.map(this::betreuungsstandortToJax)
-			.collect(Collectors.toList());
+			.collect(Collectors.toSet());
 	}
 
 	private JaxBetreuungsstandort betreuungsstandortToJax(Betreuungsstandort betreuungsstandort) {
@@ -1686,7 +1686,7 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());
 		institutionStammdaten.setTarifProNebenmahlzeit(institutionStammdatenJAXP.getTarifProNebenmahlzeit());
 		if (institutionStammdatenJAXP.getOeffnungstage() == null) {
-			institutionStammdaten.setOeffnungsTage(new ArrayList<>());
+			institutionStammdaten.setOeffnungsTage(new HashSet<>());
 		} else {
 			institutionStammdaten.setOeffnungsTage(institutionStammdatenJAXP.getOeffnungstage());
 		}
@@ -1713,8 +1713,8 @@ public class JaxBConverter extends AbstractConverter {
 		return institutionStammdaten;
 	}
 
-	private List<Betreuungsstandort> betreuungsstandortListToEntity(@Nonnull List<JaxBetreuungsstandort> jaxBetreuungsstandortList,
-		@Nonnull List<Betreuungsstandort> betreuungsstandortList,
+	private Set<Betreuungsstandort> betreuungsstandortListToEntity(@Nonnull Set<JaxBetreuungsstandort> jaxBetreuungsstandortList,
+		@Nonnull Set<Betreuungsstandort> betreuungsstandortList,
 		@Nonnull InstitutionStammdatenBetreuungsgutscheine owner) {
 		final List<Betreuungsstandort> convertedBetreuungsstandorte = new ArrayList<>();
 		for (final JaxBetreuungsstandort jaxBetreuungsstandort : jaxBetreuungsstandortList) {

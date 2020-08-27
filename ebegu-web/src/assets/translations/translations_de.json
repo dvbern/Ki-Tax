@@ -491,7 +491,7 @@
     "INSTITUTION_ANGABEN": "Institution – Allgemeine Angaben",
     "INSTITUTION_ADRESSE": "Adresse",
     "INSTITUTION_ZAHLUNGSANGABEN": "Zahlungsangaben",
-    "INSTITUTION_BETREUUNGSSTANDORTE": "Betreuungsstandorte",
+    "INSTITUTION_ZWEITER_BETREUUNGSSTANDORT": "Zweiter Betreuungsstandort",
     "INSTITUTION_BETREUUNGSSTANDORT": "Betreuungsstandort",
     "IDENTISCH_WIE_KONTAKTANGABEN": "(identisch wie Kontaktangaben)",
     "INSTITUTION_KONTOINHABER": "Kontoinhaber",
@@ -2147,6 +2147,6 @@
     "OFFEN_VON": "Offen von",
     "OFFEN_BIS": "Offen bis",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Abweichungen",
-    "MEHRERE_BETREUUNGSSTANDORTE": "Mehrere Betreuungsstandorte für Familienportal angeben",
+    "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Zweiter Betreuungsstandort für Familienportal angeben",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

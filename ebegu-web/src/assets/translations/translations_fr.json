@@ -492,6 +492,7 @@
     "INSTITUTION_ADRESSE": "Adresse",
     "INSTITUTION_ZAHLUNGSANGABEN": "Données pour le versement",
     "INSTITUTION_KONTOINHABER": "Titulaire du compte",
+    "INSTITUTION_ZWEITER_BETREUUNGSSTANDORT": "",
     "IBAN_NUMMER": "Numéro IBAN",
     "IBAN_NUMMER_HINT": "Le numéro IBAN doit être donné car la réduction de repas supplémentaire vous est directment versée par la ville de Berne",
     "INSTITUTION_ALTERSKATEGORIE": "Classe d’âge",
@@ -2144,6 +2145,6 @@
     "OFFEN_VON": "",
     "OFFEN_BIS": "",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "",
-    "MEHRERE_BETREUUNGSSTANDORTE": "",
+    "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

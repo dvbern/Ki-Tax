@@ -50,7 +50,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 	@ManyToOne(optional = false)
 	private @NotNull InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine;
 
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_adresse_id"), nullable = false)
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@Nonnull
 	private @NotNull Adresse adresse = new Adresse();
