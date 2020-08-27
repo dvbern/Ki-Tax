@@ -20,6 +20,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -31,6 +33,10 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @EntityListeners({ WriteProtectedDokumentListener.class })
+@Table(
+	uniqueConstraints =
+	@UniqueConstraint(columnNames = { "gesuch_id", "filename" }, name = "UK_generated_dokument_gesuch_filename")
+)
 public class GeneratedDokument extends WriteProtectedDokument {
 
 	private static final long serialVersionUID = -895840426576485097L;

@@ -20,6 +20,7 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSFall} from '../../../../models/TSFall';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
@@ -44,7 +45,7 @@ describe('mitteilungenView', () => {
     let $q: angular.IQService;
     let controller: DVMitteilungListController;
     let besitzer: TSBenutzer;
-    let verantwortlicher: TSBenutzer;
+    let verantwortlicher: TSBenutzerNoDetails;
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
 
@@ -74,7 +75,7 @@ describe('mitteilungenView', () => {
         besitzer.nachname = 'Romualdo Besitzer';
         fall.besitzer = besitzer;
         dossier.fall.besitzer = besitzer;
-        verantwortlicher = new TSBenutzer();
+        verantwortlicher = new TSBenutzerNoDetails();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
         dossier.verantwortlicherBG = verantwortlicher;
 

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -54,6 +53,7 @@ import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
+import ch.dvbern.ebegu.entities.GeneratedGeneralDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -110,7 +110,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDokumentServiceBean.class.getSimpleName());
 	public static final byte[] EMPTY_BYTES = new byte[0];
-	private static final Pattern PATTERN = Pattern.compile("\\s+");
 
 	@Inject
 	private Persistence persistence;
@@ -971,7 +970,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Nonnull
 	protected String ibanToUnformattedString(@Nonnull IBAN iban) {
 		Objects.requireNonNull(iban);
-		return PATTERN.matcher(iban.getIban()).replaceAll("");
+		return EbeguUtil.removeWhiteSpaces(iban.getIban());
 	}
 
 	@Override
@@ -1081,11 +1080,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(RueckforderungFormular rueckforderungFormular) throws MimeTypeParseException, MergeDocException {
-		//Institution haben keine Sprache, so default DE
+	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular
+	) throws MimeTypeParseException, MergeDocException {
+
 		String fileNameForGeneratedDokumentTyp = DokumenteUtil
 				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
-					rueckforderungFormular.getId(), Sprache.DEUTSCH.getLocale());
+					rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
@@ -1096,11 +1097,65 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 
 		WriteProtectedDokument persistedDokument = null;
-			byte[] data = pdfService.generateProvisorischeVerfuegungRuckforderungformular(rueckforderungFormular, true,
-				Sprache.DEUTSCH.getLocale());
-			persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
-				rueckforderungFormular, fileNameForGeneratedDokumentTyp, true);
+		byte[] data = pdfService.generateProvisorischeVerfuegungRuckforderungformular(rueckforderungFormular, true);
+		persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+			rueckforderungFormular, fileNameForGeneratedDokumentTyp, true);
 
 		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nullable String auftragIdentifier
+	) throws MimeTypeParseException, MergeDocException {
+
+		String fileNameForGeneratedDokumentTyp = DokumenteUtil
+			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+				rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
+
+		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
+				fileNameForGeneratedDokumentTyp,
+				false);
+		if (documentIfExistsAndIsWriteProtected != null) {
+			return documentIfExistsAndIsWriteProtected;
+		}
+
+		WriteProtectedDokument persistedDokument = null;
+		byte[] data = pdfService.generateDefinitiveVerfuegungRuckforderungformular(rueckforderungFormular, true);
+		persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+			rueckforderungFormular, fileNameForGeneratedDokumentTyp, false);
+
+		if (auftragIdentifier != null) {
+			// Bitzli ein Hack: Wir wollen fuer das Zip das byte[] direkt haben, schreiben es daher (transient) hier rein
+			// Dies ist aber nur notwendig, wenn wir ueberhaupt an einer Massenverfuegung sind (also einen
+			// auftragIdentifier haben)
+			((GeneratedNotrechtDokument)persistedDokument).setContent(data);
+		}
+
+		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument generateMassenVerfuegungenAccessTokenGeneratedDocument(
+		@Nonnull byte[] content,
+		@Nonnull String auftragIdentifier
+	) throws MimeTypeParseException {
+
+		// Der Name des ZipFiles ist der auftragIdentifier.
+		UploadFileInfo savedDokument = fileSaverService.saveZipFile(content, auftragIdentifier);
+
+		GeneratedGeneralDokument writeProtectedDokument = new GeneratedGeneralDokument();
+		writeProtectedDokument.setIdentifier(auftragIdentifier);
+		writeProtectedDokument.setFilename(savedDokument.getFilename());
+		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
+		writeProtectedDokument.setTyp(GeneratedDokumentTyp.NOTRECHT_MASSENVERFUEGUNG);
+		writeProtectedDokument.setWriteProtected(true);
+
+		return this.saveDokument(writeProtectedDokument);
 	}
 }

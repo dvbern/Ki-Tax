@@ -129,4 +129,12 @@ public class AntragStatusHistory extends AbstractMutableEntity implements Compar
 			Objects.equals(getTimestampBis(), otherAntragStatusHistory.getTimestampBis()) &&
 			Objects.equals(getStatus(), otherAntragStatusHistory.getStatus());
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("AntragStatusHistory{");
+		sb.append("status=").append(status);
+		sb.append('}');
+		return sb.toString();
+	}
 }

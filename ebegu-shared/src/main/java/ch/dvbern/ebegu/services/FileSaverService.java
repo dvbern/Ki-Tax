@@ -36,6 +36,9 @@ public interface FileSaverService {
 	UploadFileInfo save(byte[] bytes, String fileName, String folderName) throws MimeTypeParseException;
 
 	@Nonnull
+	UploadFileInfo saveZipFile(byte[] bytes, String fileName) throws MimeTypeParseException;
+
+	@Nonnull
 	UploadFileInfo save(byte[] bytes, String fileName, String folderName, MimeType contentType);
 
 	boolean copy(FileMetadata fileToCopy, String folderName);

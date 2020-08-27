@@ -382,4 +382,5 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.RueckforderungMitteilung"/>
 	<entity class="ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten"/>
 	<entity class="ch.dvbern.ebegu.entities.GeneratedNotrechtDokument"/>
+	<entity class="ch.dvbern.ebegu.entities.GeneratedGeneralDokument"/>
 </entity-mappings>

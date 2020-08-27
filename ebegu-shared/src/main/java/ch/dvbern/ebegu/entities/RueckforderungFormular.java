@@ -37,6 +37,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -161,10 +162,12 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	@Column(name = "stufe_2_voraussichtliche_betrag", nullable = true)
 	@Nullable
+	@Min(0)
 	private BigDecimal stufe2VoraussichtlicheBetrag;
 
 	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
+	@Min(0)
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
@@ -716,6 +719,7 @@ public class RueckforderungFormular extends AbstractEntity {
 			}
 			Objects.requireNonNull(getStufe2KantonKostenuebernahmeBetreuung());
 			BigDecimal result = MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
 			return MathUtil.roundToFrankenRappen(result);
 		}
 
@@ -732,6 +736,7 @@ public class RueckforderungFormular extends AbstractEntity {
 				getBetragEntgangeneElternbeitraege(),
 				getKurzarbeitBetrag(),
 				getCoronaErwerbsersatzBetrag());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
 			return MathUtil.roundToFrankenRappen(result);
 		}
 
@@ -741,6 +746,7 @@ public class RueckforderungFormular extends AbstractEntity {
 			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
 				getCoronaErwerbsersatzBetrag());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
 			return MathUtil.roundToFrankenRappen(result);
 		}
 		// (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
@@ -749,6 +755,7 @@ public class RueckforderungFormular extends AbstractEntity {
 			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
 			getCoronaErwerbsersatzBetrag())
 			.add(getAnzahlNichtAngeboteneEinheiten());
+		result = MathUtil.minimum(result, BigDecimal.ZERO);
 		return MathUtil.roundToFrankenRappen(result);
 	}
 

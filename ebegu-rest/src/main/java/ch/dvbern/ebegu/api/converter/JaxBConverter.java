@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschuleModul;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -970,10 +971,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
 		if (persistedDossier.getVerantwortlicherBG() != null) {
-			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherBG()));
+			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
 		}
 		if (persistedDossier.getVerantwortlicherTS() != null) {
-			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherTS()));
+			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherTS()));
 		}
 		return jaxDossier;
 	}
@@ -1105,6 +1106,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setGesuchBetreuungenStatus(antragJAXP.getGesuchBetreuungenStatus());
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
 		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
+		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -3819,6 +3821,21 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxLoginElement.setBerechtigungen(jaxBerechtigungen);
 
+		return jaxLoginElement;
+	}
+
+	public JaxBenutzerNoDetails benutzerToJaxBenutzerNoDetails(@Nonnull Benutzer benutzer) {
+		JaxBenutzerNoDetails jaxLoginElement = new JaxBenutzerNoDetails();
+		jaxLoginElement.setVorname(benutzer.getVorname());
+		jaxLoginElement.setNachname(benutzer.getNachname());
+		jaxLoginElement.setUsername(benutzer.getUsername());
+		Set<String> gemeindeIds = benutzer.getBerechtigungen()
+			.stream()
+			.flatMap(berechtigung -> berechtigung.getGemeindeList()
+				.stream())
+			.map(AbstractEntity::getId)
+			.collect(Collectors.toSet());
+		jaxLoginElement.setGemeindeIds(gemeindeIds);
 		return jaxLoginElement;
 	}
 

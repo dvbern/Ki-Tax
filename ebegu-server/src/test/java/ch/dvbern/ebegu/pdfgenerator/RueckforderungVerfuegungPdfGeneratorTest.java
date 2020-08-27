@@ -40,6 +40,8 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 	private InstitutionStammdaten institutionStammdaten;
 	private RueckforderungFormular rueckforderungFormular;
 
+	final String PATH_TO_UNTERSCHRIFT = FileUtils.getTempDirectoryPath() + "notverordnung_unterschrift.png";
+
 	@Before
 	public void init() throws IOException {
 		this.institutionStammdaten = initInstitutionStammdaten();
@@ -48,16 +50,43 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 	}
 
 	@Test
-	public void generateProvisorischeVerfuegung() throws IOException, InvoiceGeneratorException {
+	public void generateDefinitiveVerfuegung_negativ() throws IOException, InvoiceGeneratorException {
+		this.rueckforderungFormular.setStufe2VerfuegungBetrag(BigDecimal.valueOf(500));
+
+		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungVerfuegungPdfGenerator generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true, "VerantwortlichePerson", "/temp/unterschrift.png");
-		final String file_de = pfad + "notrecht_provisorische_verfuegung_de.pdf";
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+		final String file_de = pfad + "notrecht_definitive_verfuegung_negativ_de.pdf";
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
+
+		// Das franzoesische Dokument wird mit der Standardbemerkung generiert
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
+		this.rueckforderungFormular.setBemerkungFuerVerfuegung(null);
 		generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, true, "VerantwortlichePerson", "/temp/unterschrift.png");
-		final String file_fr = pfad + "notrecht_provisorische_verfuegung_fr.pdf";
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+		final String file_fr = pfad + "notrecht_definitive_verfuegung_negativ_fr.pdf";
+		System.out.println("PDF generated: " + file_fr);
+		generator.generate(new FileOutputStream(file_fr));
+	}
+
+	@Test
+	public void generateDefinitiveVerfuegung_positiv() throws IOException, InvoiceGeneratorException {
+		this.rueckforderungFormular.setStufe2VerfuegungBetrag(BigDecimal.valueOf(50000));
+
+		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
+		RueckforderungVerfuegungPdfGenerator generator =
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+		final String file_de = pfad + "notrecht_definitive_verfuegung_positiv_de.pdf";
+		generator.generate(new FileOutputStream(file_de));
+		System.out.println("PDF generated: " + file_de);
+
+		// Das franzoesische Dokument wird mit der Standardbemerkung generiert
+		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
+		this.rueckforderungFormular.setBemerkungFuerVerfuegung(null);
+		generator =
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+		final String file_fr = pfad + "notrecht_definitive_verfuegung_positiv_fr.pdf";
 		System.out.println("PDF generated: " + file_fr);
 		generator.generate(new FileOutputStream(file_fr));
 	}
@@ -84,8 +113,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		rueckforderungFormular.setStufe2VoraussichtlicheBetrag(new BigDecimal(5000.0));
 		rueckforderungFormular.setStufe1FreigabeBetrag(new BigDecimal(4000.0));
 		rueckforderungFormular.setInstitutionStammdaten(institutionStammdaten);
-
+		rueckforderungFormular.setBemerkungFuerVerfuegung("Die Verfügungsbemerkung (manuell eingegeben)");
 		return rueckforderungFormular;
-
 	}
 }
