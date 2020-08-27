@@ -70,7 +70,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
-	private String kontoinhaber;
+	private String kontoinhaber; // TODO (team) evt. spaeter limitieren auf 70
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)

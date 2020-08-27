@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -487,13 +488,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	public void removeAllBetreuungMitteilungenForGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkWriteAuthorization(gesuch);
-
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 		final Join<Betreuung, KindContainer> join = root.join(Mitteilung_.betreuung, JoinType.LEFT)
-			.join(Betreuung_.kind, JoinType.LEFT);
+			.join(AbstractPlatz_.kind, JoinType.LEFT);
 
 		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
 		Predicate withBetreuungPred = cb.isNotNull(root.get(Mitteilung_.betreuung));
@@ -502,6 +501,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
 
 		for (Mitteilung mitteilung : mitteilungen) {
+			authorizer.checkWriteAuthorizationMitteilung(mitteilung);
 			persistence.remove(Mitteilung.class, mitteilung.getId());
 		}
 	}

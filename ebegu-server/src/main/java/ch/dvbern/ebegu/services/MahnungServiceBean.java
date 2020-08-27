@@ -142,7 +142,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	@Override
 	@Nonnull
 	public Collection<Mahnung> findMahnungenForGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorization(gesuch);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mahnung> query = cb.createQuery(Mahnung.class);
 		Root<Mahnung> root = query.from(Mahnung.class);
@@ -150,7 +149,9 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 		Predicate prediateGesuch = cb.equal(root.get(Mahnung_.gesuch), gesuch);
 		query.where(prediateGesuch);
 		query.orderBy(cb.asc(root.get(AbstractEntity_.timestampErstellt)));
-		return persistence.getCriteriaResults(query);
+		final List<Mahnung> mahnungen = persistence.getCriteriaResults(query);
+		mahnungen.forEach(mahnung -> authorizer.checkReadAuthorization(mahnung));
+		return mahnungen;
 	}
 
 	@Override
@@ -265,6 +266,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	public void removeAllMahnungenFromGesuch(Gesuch gesuch) {
 		Collection<Mahnung> mahnungenFromGesuch = findMahnungenForGesuch(gesuch);
 		for (Mahnung mahnung : mahnungenFromGesuch) {
+			authorizer.checkWriteAuthorization(mahnung);
 			persistence.remove(Mahnung.class, mahnung.getId());
 		}
 	}

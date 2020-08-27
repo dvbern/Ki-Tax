@@ -90,8 +90,8 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.AuszahlungDTO;
-import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001DTO;
+import ch.dvbern.oss.lib.iso20022.dtos.pain.AuszahlungDTO;
+import ch.dvbern.oss.lib.iso20022.dtos.pain.Pain001DTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001Service;
 import com.lowagie.text.DocumentException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -918,12 +918,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		IBAN ibanGemeinde = gemeindeStammdaten.getIban();
 		Objects.requireNonNull(ibanGemeinde, "Keine IBAN fuer Gemeinde " + gemeindeStammdaten.getGemeinde().getName());
 		String debitorIban = ibanToUnformattedString(ibanGemeinde);
-		String debitorIbanGebuehren = applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
 
 		pain001DTO.setSchuldnerName(debitorName);
 		pain001DTO.setSchuldnerIBAN(debitorIban);
 		pain001DTO.setSchuldnerBIC(debitorBic);
-		pain001DTO.setSchuldnerIBANGebuehren(debitorIbanGebuehren == null ? pain001DTO.getSchuldnerIBAN() : debitorIbanGebuehren);
+		// Wir setzen explizit keine SchuldnerIBAN, da dieses Feld zwar optional ist, aber bei einigen Banken Probleme macht
+		pain001DTO.setSchuldnerIBANGebuehren(null);
 		pain001DTO.setSoftwareName("kiBon");
 		// we use the currentTimeMillis so that it is always different
 		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
@@ -981,6 +981,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		Collection<GeneratedDokument> genDokFromGesuch = findGeneratedDokumentsFromGesuch(gesuch);
 		for (GeneratedDokument generatedDokument : genDokFromGesuch) {
+			authorizer.checkWriteAuthorization(generatedDokument);
 			LOGGER.info("Deleting Dokument: {}", generatedDokument.getId());
 			persistence.remove(GeneratedDokument.class, generatedDokument.getId());
 		}
@@ -1014,8 +1015,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Override
 	public Collection<GeneratedDokument> findGeneratedDokumentsFromGesuch(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
-		this.authorizer.checkReadAuthorization(gesuch);
-		return criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch, GeneratedDokument_.gesuch);
+		final Collection<GeneratedDokument> generatedDokumente =
+			criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch,	GeneratedDokument_.gesuch);
+		generatedDokumente.forEach(generatedDokument -> authorizer.checkReadAuthorization(generatedDokument));
+		return generatedDokumente;
 	}
 
 	@Nonnull

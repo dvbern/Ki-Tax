@@ -52,6 +52,7 @@ export class TestDataUtil {
         abstractEntity.id = undefined;
         abstractEntity.timestampErstellt = undefined;
         abstractEntity.timestampMutiert = undefined;
+        abstractEntity.version = undefined;
     }
 
     public static setAbstractMutableFieldsUndefined(abstractEntity: TSAbstractMutableEntity): void {

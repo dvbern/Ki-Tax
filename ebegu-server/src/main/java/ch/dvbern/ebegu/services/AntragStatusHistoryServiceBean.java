@@ -125,9 +125,9 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 
 	@Override
 	public void removeAllAntragStatusHistoryFromGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkWriteAuthorization(gesuch);
 		Collection<AntragStatusHistory> antragStatusHistoryFromGesuch = findAllAntragStatusHistoryByGesuch(gesuch);
 		for (AntragStatusHistory antragStatusHistory : antragStatusHistoryFromGesuch) {
+			authorizer.checkWriteAuthorization(antragStatusHistory);
 			persistence.remove(AntragStatusHistory.class, antragStatusHistory.getId());
 		}
 	}
@@ -135,9 +135,11 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	@Override
 	@Nonnull
 	public Collection<AntragStatusHistory> findAllAntragStatusHistoryByGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorization(gesuch);
 		Objects.requireNonNull(gesuch);
-		return criteriaQueryHelper.getEntitiesByAttribute(AntragStatusHistory.class, gesuch, AntragStatusHistory_.gesuch);
+		final Collection<AntragStatusHistory> antragStatusHistories =
+			criteriaQueryHelper.getEntitiesByAttribute(AntragStatusHistory.class, gesuch, AntragStatusHistory_.gesuch);
+		antragStatusHistories.forEach(antragStatusHistory -> authorizer.checkReadAuthorization(antragStatusHistory));
+		return antragStatusHistories;
 	}
 
 	@Override
