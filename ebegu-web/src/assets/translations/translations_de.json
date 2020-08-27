@@ -1134,9 +1134,9 @@
     "STATISTIK_KINDER": "Kinder",
     "LASTENAUSGLEICH_KIBON_STATISTIK": "Lastenausgleich BGs - Berechnung Selbstbehalt pro 100% Platz",
     "TAGESSCHULE_ANMELDUNGEN_STATISTIK": "Tagesschule Anmeldungen",
-    "TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO": "Die Statistik zeigt für eine Tagesschule alle Kinder und deren Anmeldungen für die Module. Die Statistik wird pro Periode gemacht.",
+    "TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO": "Die Statistik zeigt pro Tagesschule für jedes Kind die gebuchten Module sowie die Betreuungsstunden und Verpflegungskosten pro Tag und pro Woche.",
     "TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK": "Tagesschule Rechnungsstellung",
-    "TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT": "Die Statistik zeigt alle vergangenen Monate aller Kinder in den Tagesschulen für die der Benutzer berechtigt ist",
+    "TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT": "Die Statistik zeigt folgende Informationen für alle Tagesschulen, für die der Benutzer oder die Benutzerin berechtigt ist: Angemeldete Kinder mit Stammdaten, massgebendem Einkommen und Tarif pro Betreuungsstunde. Die Statistik bildet zusammen mit der Statistik «Tagesschule Anmeldungen» die Grundlage für die Rechnungsstellung.",
     "VERRECHNUNG_KIBON_STATISTIK": "Verechnung kiBon",
     "VERRECHNUNG_KIBON_INFO": "Die Statistik kann als Entwurf oder definitiv generiert werden. Bei einem Entwurf wird das Excel generiert, aber die Daten nicht als 'verrechnet' markiert. Bei der definitiven Generierung werden die aktuell vorhandenen Kinder als 'verrechnet' markiert, dies kann nicht rückgängig gemacht werden!",
     "VERRECHNUNG_KIBON_BETRAG_PRO_KIND": "Zu verrechnender Betrag pro Kind",
@@ -2145,5 +2145,6 @@
     "NOTVERORDNUNG_VERFUEGUNGEN_AUSDRUCKEN": "Verfügungen ausdrucken",
     "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TITLE": "Verfügen & Verfügungen ausdrucken",
     "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT": "Wollen Sie wirklich für alle Rückforderungsformulare im Status \"bereit zur Verfügung\" die Verfügungen generieren?",
+    "TEAMVIEWER_LINK": "Remote Support (TeamViewer)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

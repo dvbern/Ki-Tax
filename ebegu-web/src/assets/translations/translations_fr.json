@@ -1134,9 +1134,9 @@
     "STATISTIK_KINDER": "Enfants",
     "LASTENAUSGLEICH_KIBON_STATISTIK": "Compensation des charges BG - Calcul de la franchise par place de 100%",
     "TAGESSCHULE_ANMELDUNGEN_STATISTIK": "Inscriptions aux écoles à journée continue",
-    "TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO": "Les statistiques présentent tous les enfants et leurs inscriptions aux modules pour une école à journée continue. Les statistiques sont établies par période.",
+    "TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO": "Les statistiques présentent par école à journée continue, pour chaque enfant, les modules réservés ainsi que les heures de gardes et les frais de pension par jour et par semaine.",
     "TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK": "Facturation pour les écoles à jounrée continue",
-    "TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT": "Les statistiques présentent pour tous les derniers mois tous les enfants dans les écoles à journée continue pour lesquels l'utilisateur est autorisé",
+    "TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT": "Cette statistique présente les informations suivantes pour toutes les écoles à journée continue, pour lesquels l'utilisateur ou l'utilisatrice est autorisé(e): les enfants inscrits avec leurs données de base, les revenus déterminants et le tarif par heure de garde. La statistique constitue avec la statistique \"Inscriptions aux écoles à journée continue\" la base pour la facturation.",
     "VERRECHNUNG_KIBON_STATISTIK": "Comptabilité kiBon",
     "VERRECHNUNG_KIBON_INFO": "Les statistiques peuvent être générées sous forme de projet ou de manière définitive. Pour un projet, un fichier Excel est généré, mais les données ne sont pas marquées comme 'calculées'. Lors de la génération définitive, les enfants actuellement disponibles sont marqués comme'calculés', cela ne peut pas être annulé !",
     "VERRECHNUNG_KIBON_BETRAG_PRO_KIND": "Montant à facturer par enfant",
@@ -2144,5 +2144,6 @@
     "NOTVERORDNUNG_VERFUEGUNGEN_AUSDRUCKEN": "Imprimer les décisions",
     "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TITLE": "Décider et imprimer les décisions",
     "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT": "Voulez-vous vraiment générer les décisions pour tous les formulaires de demande de réstitution avec le status \"Prêt pour la décision\" ?",
+    "TEAMVIEWER_LINK": "Remote Support (TeamViewer)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
