@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -50,6 +51,9 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 	@Inject
 	private Persistence persistence;
 
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
 	private Gesuch gesuch;
 
 	@Test
@@ -68,7 +72,8 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		persistence.merge(gesuch);
 
 		finanzielleSituationService.saveFinanzielleSituation(container, gesuch.getId());
-		Collection<FinanzielleSituationContainer> allFinanzielleSituationen = finanzielleSituationService.getAllFinanzielleSituationen();
+		Collection<FinanzielleSituationContainer> allFinanzielleSituationen =
+			criteriaQueryHelper.getAll(FinanzielleSituationContainer.class);
 		Assert.assertEquals(1, allFinanzielleSituationen.size());
 		FinanzielleSituationContainer nextFinanzielleSituation = allFinanzielleSituationen.iterator().next();
 		Assert.assertNotNull(nextFinanzielleSituation.getFinanzielleSituationGS().getNettolohn());
