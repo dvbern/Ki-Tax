@@ -201,6 +201,9 @@ export class EditInstitutionComponent implements OnInit {
         if (this.editMode) {
             this.persistStammdaten();
         } else {
+            this.forms.forEach(form => {
+                form.resetForm();
+            });
             this.editMode = true;
         }
     }

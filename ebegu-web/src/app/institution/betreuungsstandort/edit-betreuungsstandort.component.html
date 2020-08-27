@@ -1,3 +1,4 @@
+<div *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine">
 <div class="row">
     <div class="col-sm-12">
         <div class="form-group">
@@ -16,26 +17,26 @@
         <!-- Anschrift -->
         <div class="col-sm-6">
             <div class="form-group">
-                <label class="required" translate for="anschrift_id">ADRESSE_ANSCHRIFT</label>
-                <input id="anschrift_id" type="text"
-                       name="anschrift_id"
+                <label class="required" translate for="anschrift_bt_id">ADRESSE_ANSCHRIFT</label>
+                <input id="anschrift_bt_id" type="text"
+                       name="anschrift_bt_name"
                        #anschrift="ngModel"
                        [(ngModel)]="standort.adresse.organisation"
                        [maxlength]="255" class="form-control" required>
-                <dv-error-messages [errorObject]="anschrift.errors"
-                                   inputId="anschrift_id"></dv-error-messages>
+                <dv-error-messages [errorObject]="anschrift.control.errors"
+                                   inputId="anschrift_bt_id"></dv-error-messages>
             </div>
         </div>
         <!-- E-Mail -->
         <div class="col-sm-6">
             <div class="form-group">
-                <label translate for="e_mail_id">EMAIL</label>
-                <input id="e_mail_id" type="email" name="e_mail_id"
+                <label translate for="e_mail_bt_id">EMAIL</label>
+                <input id="e_mail_bt_id" type="email" name="e_mail_bt_name"
                        #eMail="ngModel"
                        [(ngModel)]="standort.mail"
                        [maxlength]="255" class="form-control">
                 <dv-error-messages [errorObject]="eMail.errors"
-                                   inputId="e_mail_id"></dv-error-messages>
+                                   inputId="e_mail_bt_id"></dv-error-messages>
             </div>
         </div>
     </div>
@@ -43,39 +44,39 @@
         <!-- Strasse -->
         <div class="col-sm-5">
             <div class="form-group">
-                <label class="required" translate for="strasse_id">ADRESSE_STRASSE</label>
-                <input id="strasse_id" type="text" name="strasse_id"
+                <label class="required" translate for="strasse_bt_id">ADRESSE_STRASSE</label>
+                <input id="strasse_bt_id" type="text" name="strasse_bt_name"
 					   #strasse="ngModel"
                        [(ngModel)]="standort.adresse.strasse"
                        [maxlength]="255" class="form-control" required>
                 <dv-error-messages [errorObject]="strasse.errors"
-                                   inputId="strasse_id"></dv-error-messages>
+                                   inputId="strasse_bt_id"></dv-error-messages>
             </div>
         </div>
         <!-- Hausnummer -->
         <div class="col-sm-1">
             <div class="form-group">
-                <label translate for="hausnummer_id">ADRESSE_NUMMER</label>
-                <input id="hausnummer_id" type="text" name="hausnummer_id"
+                <label translate for="hausnummer_bt_id">ADRESSE_NUMMER</label>
+                <input id="hausnummer_bt_id" type="text" name="hausnummer_bt_name"
 					   #hausnummer="ngModel"
                        [(ngModel)]="standort.adresse.hausnummer"
                        [maxlength]="255" class="form-control">
                 <dv-error-messages [errorObject]="hausnummer.errors"
-                                   inputId="hausnummer_id"></dv-error-messages>
+                                   inputId="hausnummer_bt_id"></dv-error-messages>
             </div>
         </div>
         <!-- Telefon -->
         <div class="col-sm-6">
             <div class="form-group">
-                <label translate for="telefon_id">TELEFON</label>
-                <input id="telefon_id" type="text" name="telefon_id"
+                <label translate for="telefon_bt_id">TELEFON</label>
+                <input id="telefon_bt_id" type="text" name="telefon_bt_name"
 					   #telefon="ngModel"
                        [(ngModel)]="standort.telefon"
                        [maxlength]="255" class="form-control"
                        [pattern]="CONSTANTS.PATTERN_PHONE"
                 >
                 <dv-error-messages [errorObject]="telefon.errors"
-                                   inputId="telefon_id"></dv-error-messages>
+                                   inputId="telefon_bt_id"></dv-error-messages>
             </div>
         </div>
     </div>
@@ -83,38 +84,39 @@
         <!-- PLZ -->
         <div class="col-sm-1">
             <div class="form-group">
-                <label class="required" translate for="plz_id">ADRESSE_PLZ</label>
-                <input id="plz_id" type="text" name="plz_id"
+                <label class="required" translate for="plz_bt_id">ADRESSE_PLZ</label>
+                <input id="plz_bt_id" type="text" name="plz_bt_name"
 					   #plz="ngModel"
                        [(ngModel)]="standort.adresse.plz"
                        [maxlength]="255" class="form-control" required>
                 <dv-error-messages [errorObject]="plz.errors"
-                                   inputId="plz_id"></dv-error-messages>
+                                   inputId="plz_bt_id"></dv-error-messages>
             </div>
         </div>
         <!-- Ort -->
         <div class="col-sm-5">
             <div class="form-group">
-                <label class="required" translate for="ort_id">ADRESSE_ORT</label>
-                <input id="ort_id" type="text" name="ort_id"
+                <label class="required" translate for="ort_bt_id">ADRESSE_ORT</label>
+                <input id="ort_bt_id" type="text" name="ort_bt_name"
 					   #ort="ngModel"
                        [(ngModel)]="standort.adresse.ort"
                        [maxlength]="255" class="form-control" required>
                 <dv-error-messages [errorObject]="ort.errors"
-                                   inputId="ort_id"></dv-error-messages>
+                                   inputId="ort_bt_id"></dv-error-messages>
             </div>
         </div>
         <!-- Webseite -->
         <div class="col-sm-6">
             <div class="form-group">
-                <label translate for="webseite_id">WEBSEITE</label>
-                <input id="webseite_id" type="text" name="webseite_id"
+                <label translate for="webseite_bt_id">WEBSEITE</label>
+                <input id="webseite_bt_id" type="text" name="webseite_bt_id"
 					   #webseite="ngModel"
                        [(ngModel)]="standort.webseite"
                        [maxlength]="255" class="form-control">
                 <dv-error-messages [errorObject]="webseite.errors"
-                                   inputId="webseite_id"></dv-error-messages>
+                                   inputId="webseite_bt_id"></dv-error-messages>
             </div>
         </div>
     </div>
+</div>
 </div>
