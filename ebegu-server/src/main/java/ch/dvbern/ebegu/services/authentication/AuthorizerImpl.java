@@ -73,7 +73,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -118,9 +117,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private FallService fallService;
 
 	@Inject
 	private DossierService dossierService;
@@ -174,13 +170,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationGesuchId(@Nullable String gesuchId) {
-		if (gesuchId != null) {
-			checkReadAuthorization(getGesuchById(gesuchId));
-		}
-	}
-
-	@Override
 	public void checkReadAuthorization(@Nullable Gesuch gesuch) {
 		if (gesuch != null) {
 			boolean allowed = isReadAuthorized(gesuch);
@@ -194,32 +183,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkReadAuthorizationGesuche(@Nullable Collection<Gesuch> gesuche) {
 		if (gesuche != null) {
 			gesuche.forEach(this::checkReadAuthorization);
-		}
-	}
-
-	@Override
-	public void checkCreateAuthorizationFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation) {
-		Gesuch gesuch = extractGesuch(finanzielleSituation);
-		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN)) {
-			if (gesuch != null) {
-				validateGemeindeMatches(gesuch.getDossier());
-			}
-			return;
-		}
-		if (principalBean.isCallerInRole(GESUCHSTELLER)
-			&& (gesuch == null || !isWriteAuthorized(() -> extractGesuch(finanzielleSituation)))) {
-			//gesuchsteller darf nur welche machen wenn ihm der zugehoerige Fall gehoert
-			throwCreateViolation();
-
-		}
-	}
-
-	@Override
-	public void checkReadAuthorizationFall(String fallId) {
-		Optional<Fall> fallOptional = fallService.findFall(fallId);
-		if (fallOptional.isPresent()) {
-			Fall fall = fallOptional.get();
-			checkReadAuthorizationFall(fall);
 		}
 	}
 
@@ -482,11 +445,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (finanzielleSituation == null) {
 			return;
 		}
+		UserRole[] allowedRoles =
+			{ SUPER_ADMIN,
+				ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+				ADMIN_BG, SACHBEARBEITER_BG,
+				ADMIN_TS, SACHBEARBEITER_TS };
 		Gesuch gesuch = extractGesuch(finanzielleSituation);
-		boolean writeAllowed = isWriteAuthorized(gesuch);
-		boolean isMutation = finanzielleSituation.getVorgaengerId() != null;
-		//in einer Mutation kann der Gesuchsteller die Finanzielle Situation nicht anpassen
-		if (!writeAllowed || (isMutation && principalBean.isCallerInRole(GESUCHSTELLER))) {
+		Objects.requireNonNull(gesuch);
+		if (!isInRoleOrGSOwner(allowedRoles, () -> gesuch)) {
+			throwViolation(finanzielleSituation);
+		}
+		if (!isWriteAuthorizedGesuchBerechnungsrelevanteDaten(gesuch)) {
 			throwViolation(finanzielleSituation);
 		}
 	}
@@ -700,6 +669,25 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkWriteAuthorization(@Nullable ErwerbspensumContainer ewpCnt) {
+		if (ewpCnt != null) {
+			UserRole[] allowedRoles =
+				{ SUPER_ADMIN,
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+					ADMIN_BG, SACHBEARBEITER_BG,
+					ADMIN_TS, SACHBEARBEITER_TS };
+			final Gesuch gesuch = extractGesuch(ewpCnt);
+			Objects.requireNonNull(gesuch);
+			if (!isInRoleOrGSOwner(allowedRoles, () -> gesuch)) {
+				throwViolation(ewpCnt);
+			}
+			if (!isWriteAuthorizedGesuchBerechnungsrelevanteDaten(gesuch)) {
+				throwViolation(ewpCnt);
+			}
+		}
+	}
+
+	@Override
 	public void checkReadAuthorization(@Nullable ErwerbspensumContainer ewpCnt) {
 		if (ewpCnt != null) {
 			//Wenn wir hier 100% korrekt sein wollen muessten wir auch noch das Gesuch laden und den status pruefen.
@@ -763,11 +751,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE);
 		}
 		return false;
-	}
-
-	@Override
-	public void checkReadAuthorization(@Nonnull Collection<FinanzielleSituationContainer> finanzielleSituationen) {
-		finanzielleSituationen.forEach(this::checkReadAuthorization);
 	}
 
 	private boolean isInRoleOrGSOwner(UserRole[] allowedRoles, Supplier<Gesuch> gesuchSupplier) {
@@ -959,14 +942,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return isWriteAuthorized(() -> entity);
 	}
 
-	private void throwCreateViolation() {
-		throw new EJBAccessException(
-			"Access Violation"
-				+ " user is not allowed to create entity:"
-				+ " for current user: " + principalBean.getPrincipal()
-		);
-	}
-
 	private void throwViolation(AbstractEntity abstractEntity) {
 		throw new EJBAccessException(
 			"Access Violation"
@@ -1145,14 +1120,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	@Override
-	public boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
+	@SuppressWarnings("unused")
+	private boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft) {
 		// Aktuell sind keine Einschraenkungen zum Lesen von Traegerschaften bekannt.
 		return true;
 	}
 
-	@Override
-	public boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
+	private boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft) {
 		if (traegerschaft == null) {
 			return true;
 		}
@@ -1166,8 +1140,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return false;
 	}
 
-	@Override
-	public boolean isReadAuthorizationInstitution(@Nullable Institution institution) {
+	private boolean isReadAuthorizationInstitution(@Nullable Institution institution) {
 		if (institution == null) {
 			return true;
 		}
@@ -1182,8 +1155,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return isReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
-	@Override
-	public boolean isWriteAuthorizationInstitution(@Nullable Institution institution) {
+	private boolean isWriteAuthorizationInstitution(@Nullable Institution institution) {
 		if (institution == null) {
 			return true;
 		}
@@ -1575,6 +1547,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 		return institutions.stream()
 			.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institution));
+	}
+
+	/**
+	 * Prueft, ob die berechnungsrelevanten Daten dieses Gesuchs noch veraendert werden duerfen.
+	 * Damit sind insbesondere die vom Gesuchsteller eingegebenen Daten gemeint, also keine
+	 * Verfuegungsbemerkungen, Statuswechsel etc. sondern Finanzielle Situation oder Erwerbspensum
+	 */
+	private boolean isWriteAuthorizedGesuchBerechnungsrelevanteDaten(@Nonnull Gesuch gesuch) {
+		// Die generelle (etwas weniger strenge) Ueberpruefung:
+		if (!isWriteAuthorized(gesuch)) {
+			return false;
+		}
+		// Explizit fuer die Gesuchsdaten sind wir strenger:
+		return !gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen();
 	}
 
 	/**

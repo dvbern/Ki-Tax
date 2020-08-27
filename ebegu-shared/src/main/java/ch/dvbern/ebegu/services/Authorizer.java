@@ -58,17 +58,10 @@ public interface Authorizer {
 
 	void checkReadAuthorizationGesuche(@Nullable Collection<Gesuch> gesuche);
 
-	void checkReadAuthorizationGesuchId(String gesuchId);
-
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer das gesuch schreiben darf
 	 */
 	void checkWriteAuthorization(@Nullable Gesuch gesuch);
-
-	/**
-	 * prueft ob ein Benutzer einen Fall lesen kall
-	 */
-	void checkReadAuthorizationFall(String fallId);
 
 	/**
 	 * Returns true when the user is authorized to read the dossier
@@ -170,11 +163,9 @@ public interface Authorizer {
 
 	void checkReadAuthorization(@Nullable FinanzielleSituationContainer finanzielleSituation);
 
-	void checkReadAuthorization(@Nonnull Collection<FinanzielleSituationContainer> finanzielleSituationen);
-
 	void checkWriteAuthorization(@Nullable FinanzielleSituationContainer finanzielleSituation);
 
-	void checkCreateAuthorizationFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation);
+	void checkWriteAuthorization(@Nullable ErwerbspensumContainer ewpCnt);
 
 	void checkReadAuthorization(@Nullable ErwerbspensumContainer ewpCnt);
 
@@ -221,14 +212,6 @@ public interface Authorizer {
 	 * Prueft, ob der aktuelle Benutzer den uebergebenen Zahlungsauftrag editieren/erstellen darf
 	 */
 	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
-
-	boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft);
-
-	boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft);
-
-	boolean isReadAuthorizationInstitution(@Nullable Institution institution);
-
-	boolean isWriteAuthorizationInstitution(@Nullable Institution institution);
 
 	boolean isReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
 

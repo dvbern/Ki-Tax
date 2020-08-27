@@ -945,14 +945,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			// Wenn das EWP required ist, muss grundsaetzlich der Step available sein
 			available = true;
 			if (gesuch.getGesuchsteller1() != null
-				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch.getGesuchsteller1()).isEmpty()) {
+				&& gesuch.getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
 			}
 			if (status != WizardStepStatus.NOK
 				&& gesuch.getGesuchsteller2() != null
-				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch.getGesuchsteller2()).isEmpty()
-			) {
+				&& gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
 			}
