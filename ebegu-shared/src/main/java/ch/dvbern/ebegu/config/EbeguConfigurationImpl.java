@@ -98,6 +98,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String NOTVERORDNUNG_UNTERSCHRIFT_NAME = "ebegu.notverordnung.unterschrift.name";
 	private static final String NOTVERORDNUNG_EMPFAENGER_MAIL = "ebegu.notverordnung.empfaenger.mail";
 
+	private static final String MASSENMUTATION_EMPFAENGER_MAIL = "ebegu.massenmutation.empfaenger.mail";
+
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -398,5 +400,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getNotverordnungEmpfaengerMail() {
 		return getString(NOTVERORDNUNG_EMPFAENGER_MAIL);
+	}
+
+	@Override
+	public String getMassenmutationEmpfaengerMail() {
+		return getString(MASSENMUTATION_EMPFAENGER_MAIL);
 	}
 }
