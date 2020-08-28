@@ -461,4 +461,9 @@ public interface GesuchService {
 	 * It will check all Gesuche independently if the user is allowed to access them or not though.
 	 */
 	boolean hasFolgegesuchForAmt(@Nonnull String gesuchId);
+
+	/**
+	 * Erstellt eine Mutation und verlangt alle Platzbestaetigungen neu.
+	 */
+	void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch);
 }

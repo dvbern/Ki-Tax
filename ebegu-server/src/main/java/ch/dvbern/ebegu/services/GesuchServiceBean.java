@@ -2346,6 +2346,23 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 		return criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, dossier, Gesuch_.dossier);
 	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch) {
+		// Die Mutation erstellen
+		Gesuch mutation = new Gesuch();
+		mutation.setTyp(AntragTyp.MUTATION);
+		mutation.setEingangsdatum(LocalDate.now());
+		mutation.setEingangsart(Eingangsart.PAPIER);
+		mutation.setGesuchsperiode(gesuch.getGesuchsperiode());
+		mutation.setDossier(gesuch.getDossier());
+		mutation = createGesuch(mutation);
+		// Die Betreuungen werden defaultmaessig mit BESTAETIGT uebernommen.
+		// Damit eine Ueberpruefung der Angaben erwzungen werden kann, wird
+		// hier eine neue Platzbestaetigung ausgeloest.
+		mutation.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
+	}
 }
 
 
