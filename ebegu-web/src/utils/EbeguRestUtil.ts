@@ -1387,6 +1387,7 @@ export class EbeguRestUtil {
             institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
             institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
+            institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
             institutionStammdatenTS.sendMailWennOffenePendenzen =
                 institutionStammdatenFromServer.sendMailWennOffenePendenzen;
 

@@ -1512,6 +1512,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
+		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
 		if (persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(
 				institutionStammdatenBetreuungsgutscheineToJAX(
