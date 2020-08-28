@@ -46,6 +46,7 @@ import {TSBelegungFerieninselTag} from '../models/TSBelegungFerieninselTag';
 import {TSBelegungTagesschule} from '../models/TSBelegungTagesschule';
 import {TSBelegungTagesschuleModul} from '../models/TSBelegungTagesschuleModul';
 import {TSBenutzer} from '../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBerechtigung} from '../models/TSBerechtigung';
 import {TSBerechtigungHistory} from '../models/TSBerechtigungHistory';
 import {TSBetreuung} from '../models/TSBetreuung';
@@ -273,6 +274,7 @@ export class EbeguRestUtil {
 
     private parseAbstractEntity(parsedAbstractEntity: TSAbstractEntity, receivedAbstractEntity: any): void {
         parsedAbstractEntity.id = receivedAbstractEntity.id;
+        parsedAbstractEntity.version = receivedAbstractEntity.version;
         parsedAbstractEntity.timestampErstellt =
             DateUtil.localDateTimeToMoment(receivedAbstractEntity.timestampErstellt);
         parsedAbstractEntity.timestampMutiert = DateUtil.localDateTimeToMoment(receivedAbstractEntity.timestampMutiert);
@@ -280,6 +282,7 @@ export class EbeguRestUtil {
 
     private abstractEntityToRestObject(restObject: any, typescriptObject: TSAbstractEntity): void {
         restObject.id = typescriptObject.id;
+        restObject.version = typescriptObject.version;
         if (typescriptObject.timestampErstellt) {
             restObject.timestampErstellt = DateUtil.momentToLocalDateTime(typescriptObject.timestampErstellt);
         }
@@ -817,7 +820,9 @@ export class EbeguRestUtil {
 
     private gemeindeListToRestObject(gemeindeListTS: Array<TSGemeinde>): Array<any> {
         return gemeindeListTS
-            ? gemeindeListTS.map(item => this.gemeindeToRestObject({}, item))
+            ? gemeindeListTS
+                .map(item => this.gemeindeToRestObject({}, item))
+                .filter(gmde => EbeguUtil.isNotNullOrUndefined(gmde))
             : [];
     }
 
@@ -1060,8 +1065,8 @@ export class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restDossier, dossier);
             restDossier.fall = this.fallToRestObject({}, dossier.fall);
             restDossier.gemeinde = this.gemeindeToRestObject({}, dossier.gemeinde);
-            restDossier.verantwortlicherBG = this.userToRestObject({}, dossier.verantwortlicherBG);
-            restDossier.verantwortlicherTS = this.userToRestObject({}, dossier.verantwortlicherTS);
+            restDossier.verantwortlicherBG = this.benutzerNoDetailsToRestObject({}, dossier.verantwortlicherBG);
+            restDossier.verantwortlicherTS = this.benutzerNoDetailsToRestObject({}, dossier.verantwortlicherTS);
             return restDossier;
         }
         return undefined;
@@ -1081,8 +1086,10 @@ export class EbeguRestUtil {
             this.parseAbstractMutableEntity(dossierTS, dossierFromServer);
             dossierTS.fall = this.parseFall(new TSFall(), dossierFromServer.fall);
             dossierTS.gemeinde = this.parseGemeinde(new TSGemeinde(), dossierFromServer.gemeinde);
-            dossierTS.verantwortlicherBG = this.parseUser(new TSBenutzer(), dossierFromServer.verantwortlicherBG);
-            dossierTS.verantwortlicherTS = this.parseUser(new TSBenutzer(), dossierFromServer.verantwortlicherTS);
+            dossierTS.verantwortlicherBG =
+                this.parseUserNoDetails(new TSBenutzerNoDetails(), dossierFromServer.verantwortlicherBG);
+            dossierTS.verantwortlicherTS =
+                this.parseUserNoDetails(new TSBenutzerNoDetails(), dossierFromServer.verantwortlicherTS);
             return dossierTS;
         }
         return undefined;
@@ -2615,6 +2622,17 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    public benutzerNoDetailsToRestObject(user: any, userTS: TSBenutzerNoDetails): TSBenutzerNoDetails {
+        if (!userTS) {
+            return undefined;
+        }
+        user.username = userTS.username;
+        user.nachname = userTS.nachname;
+        user.vorname = userTS.vorname;
+        user.gemeindeIds = userTS.gemeindeIds;
+        return user;
+    }
+
     public parseUser(userTS: TSBenutzer, userFromServer: any): TSBenutzer {
         if (userFromServer) {
             userTS.username = userFromServer.username;
@@ -2628,6 +2646,17 @@ export class EbeguRestUtil {
             userTS.currentBerechtigung =
                 this.parseBerechtigung(new TSBerechtigung(), userFromServer.currentBerechtigung);
             userTS.berechtigungen = this.parseBerechtigungen(userFromServer.berechtigungen);
+            return userTS;
+        }
+        return undefined;
+    }
+
+    public parseUserNoDetails(userTS: TSBenutzerNoDetails, userFromServer: any): TSBenutzerNoDetails {
+        if (userFromServer) {
+            userTS.nachname = userFromServer.nachname;
+            userTS.vorname = userFromServer.vorname;
+            userTS.username = userFromServer.username;
+            userTS.gemeindeIds = userFromServer.gemeindeIds;
             return userTS;
         }
         return undefined;
@@ -2649,6 +2678,15 @@ export class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseUser(new TSBenutzer(), item))
             : [this.parseUser(new TSBenutzer(), data)];
+    }
+
+    public parseUserNoDetailsList(data: any): TSBenutzerNoDetails[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseUserNoDetails(new TSBenutzerNoDetails(), item))
+            : [this.parseUserNoDetails(new TSBenutzerNoDetails(), data)];
     }
 
     public berechtigungToRestObject(berechtigung: any, berechtigungTS: TSBerechtigung): any {
@@ -3994,13 +4032,11 @@ export class EbeguRestUtil {
         rueckforderungFormularRest.stufe1FreigabeBetrag = rueckforderungFormularTS.stufe1FreigabeBetrag;
         rueckforderungFormularRest.stufe1FreigabeDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeDatum);
-        rueckforderungFormularRest.stufe1FreigabeAusbezahltAm =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeAusbezahltAm);
+        // stufe1FreigabeAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
         rueckforderungFormularRest.stufe2VerfuegungBetrag = rueckforderungFormularTS.stufe2VerfuegungBetrag;
         rueckforderungFormularRest.stufe2VerfuegungDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungDatum);
-        rueckforderungFormularRest.stufe2VerfuegungAusbezahltAm =
-            DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe2VerfuegungAusbezahltAm);
+        // stufe2VerfuegungAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
         rueckforderungFormularRest.institutionTyp = rueckforderungFormularTS.institutionTyp;
         rueckforderungFormularRest.extendedEinreichefrist =
             DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);

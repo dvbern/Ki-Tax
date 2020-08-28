@@ -56,7 +56,7 @@ Content-Type: text/html;charset=utf-8
 	<p>
 		Amt für Integration und Soziales
 		info.fam@be.ch
-		031 633 78 91
+		+41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
 		<p>
@@ -93,7 +93,7 @@ Content-Type: text/html;charset=utf-8
 		</li>
 	</ul>
 	<p>
-		En restant à votre disposition en cas de question (info.fam@be.ch ; 031 633 78 91), nous vous présentons,
+		En restant à votre disposition en cas de question (info.fam@be.ch ; +41 31 633 78 83), nous vous présentons,
 		Mesdames, Messieurs, nos salutations les meilleures.
 	</p>
 	<p>

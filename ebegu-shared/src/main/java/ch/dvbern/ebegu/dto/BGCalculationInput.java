@@ -72,7 +72,12 @@ public class BGCalculationInput {
 	private Boolean wohnsitzNichtInGemeindeGS1 = null;
 
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
+	// MaxEinkommen, FinSitAbgelehnt, KeineVerguenstigungGewuenscht: OHNE erweiterteBetreuung
+	// Aber auch bei langer Abwesenheit!
 	private boolean bezahltVollkosten;
+
+	// MaxEinkommen, FinSitAbgelehnt, KeineVerguenstigungGewuenscht (alle egal ob erweiterteBetreuung)
+	private boolean keinAnspruchAufgrundEinkommen;
 
 	private boolean longAbwesenheit;
 
@@ -175,6 +180,7 @@ public class BGCalculationInput {
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
+		this.keinAnspruchAufgrundEinkommen = toCopy.keinAnspruchAufgrundEinkommen;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
 		this.betreuungspensumMustBeAtLeastFachstellenpensum = toCopy.betreuungspensumMustBeAtLeastFachstellenpensum;
@@ -311,6 +317,14 @@ public class BGCalculationInput {
 
 	public void setBezahltVollkosten(boolean bezahltVollkosten) {
 		this.bezahltVollkosten = bezahltVollkosten;
+	}
+
+	public boolean isKeinAnspruchAufgrundEinkommen() {
+		return keinAnspruchAufgrundEinkommen;
+	}
+
+	public void setKeinAnspruchAufgrundEinkommen(boolean keinAnspruchAufgrundEinkommen) {
+		this.keinAnspruchAufgrundEinkommen = keinAnspruchAufgrundEinkommen;
 	}
 
 	public boolean isLongAbwesenheit() {
@@ -729,6 +743,7 @@ public class BGCalculationInput {
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
 
 		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
+		this.setKeinAnspruchAufgrundEinkommen(this.isKeinAnspruchAufgrundEinkommen() || other.isKeinAnspruchAufgrundEinkommen());
 
 		this.setLongAbwesenheit(this.isLongAbwesenheit() || other.isLongAbwesenheit());
 		this.setHasSecondGesuchstellerForFinanzielleSituation(this.isHasSecondGesuchstellerForFinanzielleSituation()
@@ -788,6 +803,7 @@ public class BGCalculationInput {
 			hasSecondGesuchstellerForFinanzielleSituation
 				== other.hasSecondGesuchstellerForFinanzielleSituation &&
 			bezahltVollkosten == other.bezahltVollkosten &&
+			keinAnspruchAufgrundEinkommen == other.keinAnspruchAufgrundEinkommen &&
 			longAbwesenheit == other.longAbwesenheit &&
 			ekv1Alleine == other.ekv1Alleine &&
 			ekv1ZuZweit == other.ekv1ZuZweit &&

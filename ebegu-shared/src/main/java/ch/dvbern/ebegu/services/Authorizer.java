@@ -21,16 +21,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -54,17 +58,10 @@ public interface Authorizer {
 
 	void checkReadAuthorizationGesuche(@Nullable Collection<Gesuch> gesuche);
 
-	void checkReadAuthorizationGesuchId(String gesuchId);
-
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer das gesuch schreiben darf
 	 */
 	void checkWriteAuthorization(@Nullable Gesuch gesuch);
-
-	/**
-	 * prueft ob ein Benutzer einen Fall lesen kall
-	 */
-	void checkReadAuthorizationFall(String fallId);
 
 	/**
 	 * Returns true when the user is authorized to read the dossier
@@ -166,11 +163,9 @@ public interface Authorizer {
 
 	void checkReadAuthorization(@Nullable FinanzielleSituationContainer finanzielleSituation);
 
-	void checkReadAuthorization(@Nonnull Collection<FinanzielleSituationContainer> finanzielleSituationen);
-
 	void checkWriteAuthorization(@Nullable FinanzielleSituationContainer finanzielleSituation);
 
-	void checkCreateAuthorizationFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation);
+	void checkWriteAuthorization(@Nullable ErwerbspensumContainer ewpCnt);
 
 	void checkReadAuthorization(@Nullable ErwerbspensumContainer ewpCnt);
 
@@ -180,6 +175,8 @@ public interface Authorizer {
 	void checkReadAuthorizationFinSit(@Nullable Gesuch gesuch);
 
 	void checkReadAuthorization(@Nullable WizardStep step);
+
+	void checkWriteAuthorization(@Nullable WizardStep step);
 
 	/**
 	 * prueft ob der aktuelle Benutzer ein Gesuch fuer die Freigabe lesen darf
@@ -216,14 +213,6 @@ public interface Authorizer {
 	 */
 	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
 
-	boolean isReadAuthorization(@Nullable Traegerschaft traegerschaft);
-
-	boolean isWriteAuthorization(@Nullable Traegerschaft traegerschaft);
-
-	boolean isReadAuthorizationInstitution(@Nullable Institution institution);
-
-	boolean isWriteAuthorizationInstitution(@Nullable Institution institution);
-
 	boolean isReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
 
 	boolean isWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
@@ -245,4 +234,20 @@ public interface Authorizer {
 	void checkWriteAuthorizationDocument(@Nullable RueckforderungFormular rueckforderungFormular);
 
 	void checkReadAuthorization(@Nullable RueckforderungFormular rueckforderungFormular);
+
+	void checkReadAuthorization(@Nullable AntragStatusHistory antragStatusHistory);
+
+	void checkWriteAuthorization(@Nullable AntragStatusHistory antragStatusHistory);
+
+	void checkReadAuthorization(@Nullable DokumentGrund dokumentGrund);
+
+	void checkWriteAuthorization(@Nullable DokumentGrund dokumentGrund);
+
+	void checkReadAuthorization(@Nullable GeneratedDokument generatedDokument);
+
+	void checkWriteAuthorization(@Nullable GeneratedDokument generatedDokument);
+
+	void checkReadAuthorization(@Nullable Mahnung mahnung);
+
+	void checkWriteAuthorization(@Nullable Mahnung mahnung);
 }

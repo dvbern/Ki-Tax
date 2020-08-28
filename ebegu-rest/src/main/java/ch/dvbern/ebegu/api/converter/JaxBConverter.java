@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschuleModul;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -87,7 +88,6 @@ import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -180,13 +181,13 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -354,6 +355,45 @@ public class JaxBConverter extends AbstractConverter {
 
 	public JaxBConverter() {
 		//nop
+	}
+
+	/**
+	 * Behandlung des Version-Attributes: Dieses wird neu auf den Client geschickt, um
+	 * OptimisticLocking von Hibernate verwenden zu koennen.
+	 * Da es aber bei attachten entities nicht möglich ist die Version manuell zu setzen
+	 * müssen wir die entities detachen um die Version vom Client reinschreiben zu können.
+	 *
+	 * So merkt hibernate beim mergen wenn die Versionsnummer in der Zwischenzeit
+	 * incremented wurde und höher ist als die die auf den client ging. Falls dies
+	 * der Fall ist, wird eine OptimisticLockingException geworfen.
+	 *
+	 * Damit nach dem Speichern die richtige (in der Regel inkrementierte) Version
+	 * auf den Client geht muss das betroffene Entity wirklich schon gemerged
+	 * worden sein oder man muss die Version manuell um eins erhöhen im dto.
+	 * Gelöst wird das aktuell indem em.flush() gemacht wird vor dem erstellen des
+	 * Rückgabe-DTOs.
+	 *
+	 * Muss (falls OptimisticLocking gewuenscht wird) beim Start, also beim Konvertieren
+	 * von JAX zu Entity aufgerufen werden.
+	 */
+	@Nonnull
+	private <T extends AbstractEntity> T checkVersionSaveAndFlush(@Nonnull T entity, long version) {
+		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
+		entity.setVersion(version); // SETVERSION -- set the version we had
+		T saved = persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the version in the DB
+		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
+		return saved; // return the saved object with the updated version number (beware: it is only updated if there was an actual change)
+	}
+
+	/**
+	 * Behandlung des Version-Attributes fuer OptimisticLocking.
+	 * Nachdem die Business-Logik durchgefuehrt worden ist, stimmt moeglicherweise die
+	 * Version bereits wieder nicht mehr. Darum muss am Schluss, also beim Konvertieren
+	 * von Entity zurueck zu Jax, nochmals geflusht werden, damit der Client die
+	 * richtige Version zurueckerhaelt, sonst klappt das naechste Speichern nicht mehr.
+	 */
+	private void flush() {
+		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
 	}
 
 	@Nonnull
@@ -968,10 +1008,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
 		if (persistedDossier.getVerantwortlicherBG() != null) {
-			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherBG()));
+			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
 		}
 		if (persistedDossier.getVerantwortlicherTS() != null) {
-			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherTS()));
+			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherTS()));
 		}
 		return jaxDossier;
 	}
@@ -3735,6 +3775,21 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxLoginElement;
 	}
 
+	public JaxBenutzerNoDetails benutzerToJaxBenutzerNoDetails(@Nonnull Benutzer benutzer) {
+		JaxBenutzerNoDetails jaxLoginElement = new JaxBenutzerNoDetails();
+		jaxLoginElement.setVorname(benutzer.getVorname());
+		jaxLoginElement.setNachname(benutzer.getNachname());
+		jaxLoginElement.setUsername(benutzer.getUsername());
+		Set<String> gemeindeIds = benutzer.getBerechtigungen()
+			.stream()
+			.flatMap(berechtigung -> berechtigung.getGemeindeList()
+				.stream())
+			.map(AbstractEntity::getId)
+			.collect(Collectors.toSet());
+		jaxLoginElement.setGemeindeIds(gemeindeIds);
+		return jaxLoginElement;
+	}
+
 	public Berechtigung berechtigungToEntity(JaxBerechtigung jaxBerechtigung, Berechtigung berechtigung) {
 		convertAbstractDateRangedFieldsToEntity(jaxBerechtigung, berechtigung);
 		berechtigung.setRole(jaxBerechtigung.getRole());
@@ -5193,6 +5248,10 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
+
+		// OptimisticLocking: Version richtig behandeln
+		flush();
+
 		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
 
 		convertAbstractFieldsToJAX(rueckforderungFormular, jaxFormular);
@@ -5282,10 +5341,10 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormularJax.getStufe2InstitutionKostenuebernahmeBetreuung());
 		rueckforderungFormular.setStufe1FreigabeBetrag(rueckforderungFormularJax.getStufe1FreigabeBetrag());
 		rueckforderungFormular.setStufe1FreigabeDatum(rueckforderungFormularJax.getStufe1FreigabeDatum());
-		rueckforderungFormular.setStufe1FreigabeAusbezahltAm(rueckforderungFormularJax.getStufe1FreigabeAusbezahltAm());
+		// Stufe1FreigabeAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
 		rueckforderungFormular.setStufe2VerfuegungBetrag(rueckforderungFormularJax.getStufe2VerfuegungBetrag());
 		rueckforderungFormular.setStufe2VerfuegungDatum(rueckforderungFormularJax.getStufe2VerfuegungDatum());
-		rueckforderungFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormularJax.getStufe2VerfuegungAusbezahltAm());
+		// Stufe2VerfuegungAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
 		rueckforderungFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToEntity(rueckforderungFormularJax.getRueckforderungMitteilungen(), rueckforderungFormular.getRueckforderungMitteilungen()));
 		rueckforderungFormular.setInstitutionTyp(rueckforderungFormularJax.getInstitutionTyp());
 		rueckforderungFormular.setExtendedEinreichefrist(rueckforderungFormularJax.getExtendedEinreichefrist());
@@ -5305,7 +5364,8 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setKorrespondenzSprache(rueckforderungFormularJax.getKorrespondenzSprache());
 		rueckforderungFormular.setBemerkungFuerVerfuegung(rueckforderungFormularJax.getBemerkungFuerVerfuegung());
 
-		return rueckforderungFormular;
+		// OptimisticLocking: Version richtig behandeln
+		return checkVersionSaveAndFlush(rueckforderungFormular, rueckforderungFormularJax.getVersion());
 	}
 
 	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen, @Nonnull String institutionName) {
