@@ -85,6 +85,11 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String webseite;
 
+	// Wird nur noch read-only verwendet, um die Daten-Migration durch die Institutions-Admins zu vereinfachen
+	@Column(nullable = true)
+	@Nullable
+	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungszeiten;
+
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@Nonnull
@@ -197,6 +202,11 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setWebseite(@Nullable String webseite) {
 		this.webseite = webseite;
+	}
+
+	@Nullable
+	public String getOeffnungszeiten() {
+		return oeffnungszeiten;
 	}
 
 	public boolean getSendMailWennOffenePendenzen() {
