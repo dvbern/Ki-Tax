@@ -88,7 +88,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
@@ -111,7 +110,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -528,33 +526,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Collection<Gesuch> getAllGesuche() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Gesuch.class));
-	}
-
-	@Nonnull
-	@Override
-	public Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername) {
-		Objects.requireNonNull(benutzername);
-		Benutzer benutzer = benutzerService.findBenutzer(benutzername)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getGesucheForBenutzerPendenzenBG",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				benutzername));
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-
-		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
-		Path<Dossier> dossierPath = root.get(Gesuch_.dossier);
-		Predicate predicateVerantwortlicher = cb.equal(dossierPath.get(Dossier_.verantwortlicherBG), benutzer);
-		// Gesuchsperiode darf nicht geschlossen sein
-		Predicate predicateGesuchsperiode = root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.status)
-			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
-
-		query.where(predicateStatus, predicateVerantwortlicher, predicateGesuchsperiode);
-		query.orderBy(cb.asc(dossierPath.get(Dossier_.fall).get(Fall_.fallNummer)));
-		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
