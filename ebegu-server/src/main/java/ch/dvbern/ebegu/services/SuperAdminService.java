@@ -19,7 +19,9 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 
 /**
  * Interface um gewisse Services als SUPER_ADMIN aufrufen zu koennen
@@ -57,5 +59,12 @@ public interface SuperAdminService {
 	 * Löscht einen Benutzer von der System. Der aktuelle User muss mitgegeben werden, da der Superadmin-Service
 	 * im @RunAs Modus laeuft und die Information über den tatsächlich eingeloggten Benutzer verloren geht
 	 */
-	void removeFallAndBenutzer(@Nonnull String benutzername, @Nonnull Benutzer eingeloggterBenutzer);
+	void removeFallAndBenutzer(@Nonnull String benutzernameToRemove, @Nonnull Benutzer eingeloggterBenutzer);
+
+	/**
+	 * Macht eine Massenmutation aller geschlossenen Gesuche der uebergebenen Gemeinde fuer die uebergebene
+	 * Gesuchsperiode. Es werden neue Platzbestaetigungen fuer alle Kita/Tfo-Angebote angefordert.
+	 * Sendet ein Protokoll im CSV Format an eine konfigurierbare Mailadresse
+	 */
+	void createMutationForEachClosedAntragOfGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 }
