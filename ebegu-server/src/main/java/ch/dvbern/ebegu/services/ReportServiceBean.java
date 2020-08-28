@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -2099,11 +2100,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 						+ institutionStammdatenBG.getOffenBis().toString()
 				);
 			}
-			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream().map(tag -> {
-				return ServerMessageUtil.translateEnumValue(tag, locale);
-			}).collect(Collectors.joining(", ")));
+			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
+				.sorted()
+				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
+				.collect(Collectors.joining(", ")));
 			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
-		};
+		}
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
 		row.setKindergarten(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieKindergarten());

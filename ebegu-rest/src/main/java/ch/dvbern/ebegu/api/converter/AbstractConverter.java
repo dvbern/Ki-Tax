@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -69,8 +70,7 @@ public class AbstractConverter {
 		return new JaxId(entity.getId());
 	}
 
-	@Nonnull
-	protected <T extends JaxAbstractDTO> T convertAbstractFieldsToJAX(
+	protected <T extends JaxAbstractDTO> void convertAbstractFieldsToJAX(
 		@Nonnull final AbstractEntity abstEntity,
 		final T jaxDTOToConvertTo) {
 
@@ -78,11 +78,10 @@ public class AbstractConverter {
 		jaxDTOToConvertTo.setTimestampMutiert(abstEntity.getTimestampMutiert());
 		jaxDTOToConvertTo.setId(checkNotNull(abstEntity.getId()));
 		jaxDTOToConvertTo.setVersion(abstEntity.getVersion());
-
-		return jaxDTOToConvertTo;
 	}
 
 	@Nonnull
+	@CanIgnoreReturnValue
 	protected <T extends AbstractEntity> T convertAbstractFieldsToEntity(
 		final JaxAbstractDTO jaxToConvert,
 		@Nonnull final T abstEntityToConvertTo) {
@@ -98,6 +97,7 @@ public class AbstractConverter {
 	}
 
 	@Nonnull
+	@CanIgnoreReturnValue
 	protected <T extends JaxAbstractDTO> T convertAbstractVorgaengerFieldsToJAX(
 		@Nonnull final AbstractMutableEntity abstEntity,
 		final T jaxDTOToConvertTo) {
@@ -109,6 +109,7 @@ public class AbstractConverter {
 	}
 
 	@Nonnull
+	@CanIgnoreReturnValue
 	protected <T extends AbstractMutableEntity> T convertAbstractVorgaengerFieldsToEntity(
 		final JaxAbstractDTO jaxToConvert,
 		@Nonnull final T abstEntityToConvertTo) {
@@ -163,6 +164,7 @@ public class AbstractConverter {
 	 * @param dateRangedEntity AbstractDateRanged entity where to store the date into
 	 */
 	@Nonnull
+	@CanIgnoreReturnValue
 	protected AbstractDateRangedEntity convertAbstractDateRangedFieldsToEntity(
 		final JaxAbstractDateRangedDTO dateRangedJAXP, final AbstractDateRangedEntity
 		dateRangedEntity) {

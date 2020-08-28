@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckGesuchstellerContainerComplete;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -93,9 +94,14 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	public GesuchstellerContainer() {
 	}
 
+	@CanIgnoreReturnValue
 	public boolean addAdresse(@Nonnull final GesuchstellerAdresseContainer gesuchstellerAdresseContainer) {
 		gesuchstellerAdresseContainer.setGesuchstellerContainer(this);
-		return !adressen.contains(gesuchstellerAdresseContainer) && adressen.add(gesuchstellerAdresseContainer);
+		if (adressen.contains(gesuchstellerAdresseContainer)) {
+			return false;
+		}
+		adressen.add(gesuchstellerAdresseContainer);
+		return true;
 	}
 
 	@Nullable
@@ -192,10 +198,10 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		}
 	}
 
+	@CanIgnoreReturnValue
 	public boolean addErwerbspensumContainer(final ErwerbspensumContainer erwerbspensumToAdd) {
 		erwerbspensumToAdd.setGesuchsteller(this);
-		return !erwerbspensenContainers.contains(erwerbspensumToAdd) &&
-			erwerbspensenContainers.add(erwerbspensumToAdd);
+		return !erwerbspensenContainers.contains(erwerbspensumToAdd) && erwerbspensenContainers.add(erwerbspensumToAdd);
 	}
 
 	@Nullable
@@ -256,15 +262,13 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			copyErwerbspensen(target, copyType);
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			copyFinanzen(target, copyType);
 			copyErwerbspensen(target, copyType);
-			break;
-		case ERNEUERUNG_NEUES_DOSSIER:
-			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		}
 		return target;

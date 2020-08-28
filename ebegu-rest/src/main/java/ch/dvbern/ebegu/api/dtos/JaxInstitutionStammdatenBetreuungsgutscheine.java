@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,8 +69,8 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	@Nullable
 	private String oeffnungsAbweichungen;
 
-	@Nullable
-	private Set<DayOfWeek> oeffnungstage;
+	@Nonnull
+	private Set<DayOfWeek> oeffnungstage = EnumSet.noneOf(DayOfWeek.class);
 
 	@Nullable
 	private String offenVon;
@@ -192,12 +193,12 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 		this.oeffnungsAbweichungen = oeffnungsAbweichungen;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<DayOfWeek> getOeffnungstage() {
 		return oeffnungstage;
 	}
 
-	public void setOeffnungstage(@Nullable Set<DayOfWeek> oeffnungstage) {
+	public void setOeffnungstage(@Nonnull Set<DayOfWeek> oeffnungstage) {
 		this.oeffnungstage = oeffnungstage;
 	}
 

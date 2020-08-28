@@ -274,6 +274,7 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.common.base.Strings;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -443,6 +444,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
+	@CanIgnoreReturnValue
 	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
 		requireNonNull(adresse);
 		requireNonNull(jaxAdresse);
@@ -1292,9 +1294,6 @@ public class JaxBConverter extends AbstractConverter {
 
 	/**
 	 * Diese Methode verwenden nur wenn man der Institution Count und InstitutionNamen benoetigt
-	 *
-	 * @param persistedTraegerschaft
-	 * @return
 	 */
 	public JaxTraegerschaft traegerschaftToJAX(final Traegerschaft persistedTraegerschaft) {
 		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
@@ -1314,9 +1313,6 @@ public class JaxBConverter extends AbstractConverter {
 
 	/**
 	 * Diese Methode verwenden ausser wenn man der Institution Count und InstitutionNamen benoetigt
-	 *
-	 * @param persistedTraegerschaft
-	 * @return
 	 */
 	public JaxTraegerschaft traegerschaftLightToJAX(final Traegerschaft persistedTraegerschaft) {
 		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
@@ -1688,11 +1684,7 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());
 		institutionStammdaten.setTarifProNebenmahlzeit(institutionStammdatenJAXP.getTarifProNebenmahlzeit());
-		if (institutionStammdatenJAXP.getOeffnungstage() == null) {
-			institutionStammdaten.setOeffnungsTage(new HashSet<>());
-		} else {
-			institutionStammdaten.setOeffnungsTage(institutionStammdatenJAXP.getOeffnungstage());
-		}
+		institutionStammdaten.setOeffnungsTage(institutionStammdatenJAXP.getOeffnungstage());
 		institutionStammdaten.setOeffnungsAbweichungen(institutionStammdatenJAXP.getOeffnungsAbweichungen());
 		if (institutionStammdatenJAXP.getOffenVon() != null) {
 			institutionStammdaten.setOffenVon(hoursAndMinutesToDate(institutionStammdatenJAXP.getOffenVon()));
@@ -1740,19 +1732,21 @@ public class JaxBConverter extends AbstractConverter {
 		return betreuungsstandortList;
 	}
 
-	private Betreuungsstandort betreuungsstandortToEntity(JaxBetreuungsstandort jaxBetreuungsstandort, Betreuungsstandort betreuungsstandort) {
+	private Betreuungsstandort betreuungsstandortToEntity(
+		JaxBetreuungsstandort jaxBetreuungsstandort,
+		Betreuungsstandort betreuungsstandort) {
 
 		convertAbstractFieldsToEntity(jaxBetreuungsstandort, betreuungsstandort);
 
-		betreuungsstandort.setAdresse(adresseToEntity(jaxBetreuungsstandort.getAdresse(), betreuungsstandort.getAdresse()));
+		betreuungsstandort.setAdresse(adresseToEntity(
+			jaxBetreuungsstandort.getAdresse(),
+			betreuungsstandort.getAdresse()));
 		betreuungsstandort.setMail(jaxBetreuungsstandort.getMail());
 		betreuungsstandort.setTelefon(jaxBetreuungsstandort.getTelefon());
 		betreuungsstandort.setWebseite(jaxBetreuungsstandort.getWebseite());
 
 		return betreuungsstandort;
 	}
-
-
 
 	@Nonnull
 	public JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninselToJAX(

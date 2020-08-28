@@ -17,7 +17,7 @@
 
 <fieldset *ngIf="editMode">
 
-<!--    Öffnungszeiten-->
+    <!--    Öffnungszeiten-->
     <div class="row">
         <div class="col-sm-6">
             <div class="row">
@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                    <!--                    Offen von-->
+                        <!--                    Offen von-->
                         <label translate for="zeitVon_id" class="required">OFFEN_VON</label>
                         <input id="zeitVon_id" type="text" name="zeitVon"
                                #zeitVon="ngModel"
@@ -98,7 +98,7 @@
                                   #oeffnungsAbweichungen="ngModel"
                                   id="oeffnungsAbweichungen_id"
                                   [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen"
-                                  maxlength="255">
+                                  maxlength="4000">
                         </textarea>
                         <dv-error-messages [errorObject]="oeffnungsAbweichungen.errors"
                                            inputId="oeffnungszeigen_abweichungen_id"></dv-error-messages>
@@ -266,7 +266,7 @@
                 <div class="form-group">
                     <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
                     <input id="anzahlPlaetzeFirmen_id" type="number" name="anzahlPlaetzeFirmen_id"
-						   #anzahlPlaetzeFirmen="ngModel"
+                           #anzahlPlaetzeFirmen="ngModel"
                            [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
                            class="form-control"
                            customMinMax [minValue]="0"
@@ -292,7 +292,7 @@
                     <div class="form-group">
                         <label translate for="tarifProHauptmahlzeit">TARIF_PRO_HAUPTMAHLZEIT</label>
                         <input id="tarifProHauptmahlzeit" type="number" name="tarifProHauptmahlzeit"
-							   #tarifProHauptmahlzeit="ngModel"
+                               #tarifProHauptmahlzeit="ngModel"
                                [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit"
                                class="form-control"
                                customMinMax [minValue]="0">
@@ -302,7 +302,7 @@
                     <div class="form-group">
                         <label translate for="tarifProNebenmahlzeit">TARIF_PRO_NEBENMAHLZEIT</label>
                         <input id="tarifProNebenmahlzeit" type="number" name="tarifProNebenmahlzeit"
-							   #tarifProNebenmahlzeit="ngModel"
+                               #tarifProNebenmahlzeit="ngModel"
                                [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit"
                                class="form-control"
                                customMinMax [minValue]="0">
@@ -320,38 +320,40 @@
 <fieldset *ngIf="!editMode">
 
     <div class="row">
-<!--        Öffnungszeiten-->
+        <!--        Öffnungszeiten-->
         <div class="col-sm-6">
-            <h3 translate>OEFFNUNGSZEITEN</h3>
-            <p>{{getOeffnungsTageAbkuerzungListe()}}</p>
-            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
-                {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
-            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen}}</p>
+            <div class="form-group">
+                <h3 translate>OEFFNUNGSZEITEN</h3>
+                <p>{{getOeffnungsTageAbkuerzungListe()}}</p>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
+                    {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
+                <p class="nl2br">{{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen}}</p>
+            </div>
         </div>
 
-        <div class="col-sm-6" *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0">
-        <h3 translate>INSTITUTION_ZWEITER_BETREUUNGSSTANDORT</h3>
-        <div class="row">
-            <div class="col-sm-12">
-                <div *ngFor="let standort of stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte">
-                    <div class="row" >
-                        <div class="col-sm-6">
-                            <p>{{standort.adresse.organisation}}</p>
-                            <p>{{standort.adresse.strasse}} {{standort.adresse.hausnummer}}</p>
-                            <p>{{standort.adresse.plz}} {{standort.adresse.ort}}</p>
-                            <p><br></p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p>{{standort.mail}}</p>
-                            <p>{{standort.webseite}}</p>
-                            <p>{{standort.telefon}}</p>
+        <div class="col-sm-6"
+             *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0">
+            <h3 translate>INSTITUTION_ZWEITER_BETREUUNGSSTANDORT</h3>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group"
+                         *ngFor="let standort of stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>{{standort.adresse.organisation}}</p>
+                                <p>{{standort.adresse.strasse}} {{standort.adresse.hausnummer}}</p>
+                                <p>{{standort.adresse.plz}} {{standort.adresse.ort}}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p>{{standort.mail}}</p>
+                                <p>{{standort.webseite}}</p>
+                                <p>{{standort.telefon}}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
     </div>
 
     <div class="row">

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -47,7 +48,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 	private static final long serialVersionUID = -672064202442191630L;
 
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsstandort_institution_stammdaten_betreuungsgutscheine_id"), nullable = false)
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private @NotNull InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine;
 
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_adresse_id"), nullable = false)

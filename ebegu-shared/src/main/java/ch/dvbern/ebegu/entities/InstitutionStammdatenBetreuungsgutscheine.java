@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -50,6 +51,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entitaet zum Speichern von InstitutionStammdatenTagesschule in der Datenbank.
@@ -121,7 +123,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
 	@Nonnull
-	private Set<DayOfWeek> oeffnungstage = new HashSet<>();
+	private Set<DayOfWeek> oeffnungstage = EnumSet.noneOf(DayOfWeek.class);
 
 	@Column(nullable = true)
 	@Nullable
@@ -133,7 +135,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	@Column(nullable = true)
 	@Nullable
-	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungsAbweichungen;
+	private @Size(max = DB_TEXTAREA_LENGTH) String oeffnungsAbweichungen;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.EAGER)
 	@Nonnull
