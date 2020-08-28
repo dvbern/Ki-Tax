@@ -2154,6 +2154,7 @@
     "OFFEN_VON": "Offen von",
     "OFFEN_BIS": "Offen bis",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Abweichungen",
+    "OEFFNUNGSZEITEN_OBSOLETE": "Frühere Eingabe: {{value}}",
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Zweiter Betreuungsstandort für Familienportal angeben",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

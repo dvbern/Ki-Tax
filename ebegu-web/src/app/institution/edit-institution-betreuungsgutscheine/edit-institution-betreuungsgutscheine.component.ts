@@ -36,6 +36,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
     @Input() public editMode: boolean;
 
     public abweichendeZahlungsAdresse: boolean;
+    public incompleteOeffnungszeiten: boolean = false;
 
     public constructor(
         private readonly translate: TranslateService,
@@ -44,9 +45,11 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
 
     //
     public ngOnInit(): void {
-        this.abweichendeZahlungsAdresse =
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine &&
-            !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
+        const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
+        if (stammdatenBg) {
+            this.abweichendeZahlungsAdresse = !!stammdatenBg.adresseKontoinhaber;
+            this.incompleteOeffnungszeiten = !stammdatenBg.offenVon || !stammdatenBg.offenBis;
+        }
     }
 
     public onPrePersist(): void {

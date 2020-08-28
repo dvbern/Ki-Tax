@@ -19,7 +19,7 @@
 
     <!--    Öffnungszeiten-->
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="title">
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                     <div class="form-group" id="oeffnungstag_id">
                         <mat-checkbox id="oeffnungstag_mo_id" name="oeffnungstag_mo_name"
                                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.monday">
@@ -60,7 +60,7 @@
                         </mat-checkbox>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                     <div class="form-group">
                         <!--                    Offen von-->
                         <label translate for="zeitVon_id" class="required">OFFEN_VON</label>
@@ -87,10 +87,13 @@
                                            inputId="zeitBis"></dv-error-messages>
                     </div>
                 </div>
+                <div class="col-sm-6" *ngIf="incompleteOeffnungszeiten">
+                    <p translate [translateParams]="{value: stammdaten.oeffnungszeiten}">OEFFNUNGSZEITEN_OBSOLETE</p>
+                </div>
                 <!--                    Abweichungen-->
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="form-group">
                         <label translate for="oeffnungsAbweichungen_id">OEFFNUNGSZEITEN_ABWEICHUNGEN</label>
                         <textarea name="oeffnungsAbweichungen_name"

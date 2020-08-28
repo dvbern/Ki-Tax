@@ -2151,6 +2151,7 @@
     "OFFEN_VON": "",
     "OFFEN_BIS": "",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "",
+    "OEFFNUNGSZEITEN_OBSOLETE": "",
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
