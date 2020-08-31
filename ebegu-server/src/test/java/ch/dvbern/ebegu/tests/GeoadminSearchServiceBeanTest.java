@@ -28,7 +28,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
@@ -50,5 +49,6 @@ public class GeoadminSearchServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testFindGemeindeBern() {
 		List<JaxWohnadresse> jaxWohnadressen = service.findWohnadressenByStrasseAndOrt(LANG.de, "Spitalgasse", "1", "3011");
 		assertEquals("Bern", jaxWohnadressen.get(0).getGemeinde());
+		assertEquals(351, (long) jaxWohnadressen.get(0).getGemeindeBfsNr());
 	}
 }
