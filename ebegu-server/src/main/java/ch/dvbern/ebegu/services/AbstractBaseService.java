@@ -145,13 +145,4 @@ public abstract class AbstractBaseService {
 			LOG.error("{} {}", message, arg, e);
 		}
 	}
-
-	@Nonnull
-	public <T extends AbstractEntity> T checkVersionSaveAndFlush(@Nonnull T entity, long version) {
-		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
-		entity.setVersion(version); // SETVERSION -- set the version we had
-		T saved = persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the version in the DB
-		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
-		return saved; // return the saved object with the updated version number (beware: it is only updated if there was an actual change)
-	}
 }
