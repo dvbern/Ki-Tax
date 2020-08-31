@@ -40,11 +40,14 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	private String mail;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
+	@Nullable
 	private String mobile;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
+	@Nullable
 	private String telefon;
 
+	@Nullable
 	private String telefonAusland;
 
 	private boolean diplomatenstatus;
@@ -61,27 +64,30 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 		this.mail = mail;
 	}
 
+	@Nullable
 	public String getMobile() {
 		return mobile;
 	}
 
-	public void setMobile(final String mobile) {
+	public void setMobile(@Nullable final String mobile) {
 		this.mobile = mobile;
 	}
 
+	@Nullable
 	public String getTelefon() {
 		return telefon;
 	}
 
-	public void setTelefon(final String telefon) {
+	public void setTelefon(@Nullable final String telefon) {
 		this.telefon = telefon;
 	}
 
+	@Nullable
 	public String getTelefonAusland() {
 		return telefonAusland;
 	}
 
-	public void setTelefonAusland(final String telefonAusland) {
+	public void setTelefonAusland(@Nullable final String telefonAusland) {
 		this.telefonAusland = telefonAusland;
 	}
 

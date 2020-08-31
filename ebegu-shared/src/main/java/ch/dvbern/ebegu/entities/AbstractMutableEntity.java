@@ -25,6 +25,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.Constants;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
 @MappedSuperclass
@@ -54,6 +55,7 @@ public abstract class AbstractMutableEntity extends AbstractEntity {
 	}
 
 	@Nonnull
+	@CanIgnoreReturnValue
 	public AbstractEntity copyAbstractEntity(@Nonnull AbstractMutableEntity target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
 		case MUTATION:

@@ -55,6 +55,7 @@ import {TSBetreuungsmitteilungPensum} from '../models/TSBetreuungsmitteilungPens
 import {TSBetreuungspensum} from '../models/TSBetreuungspensum';
 import {TSBetreuungspensumAbweichung} from '../models/TSBetreuungspensumAbweichung';
 import {TSBetreuungspensumContainer} from '../models/TSBetreuungspensumContainer';
+import {TSBetreuungsstandort} from '../models/TSBetreuungsstandort';
 import {TSBfsGemeinde} from '../models/TSBfsGemeinde';
 import {TSDokument} from '../models/TSDokument';
 import {TSDokumentGrund} from '../models/TSDokumentGrund';
@@ -1356,7 +1357,6 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.mail = institutionStammdaten.mail;
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
-            restInstitutionStammdaten.oeffnungszeiten = institutionStammdaten.oeffnungszeiten;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
 
             restInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine =
@@ -1446,9 +1446,30 @@ export class EbeguRestUtil {
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
             restInstitutionStammdaten.tarifProHauptmahlzeit = institutionStammdaten.tarifProHauptmahlzeit;
             restInstitutionStammdaten.tarifProNebenmahlzeit = institutionStammdaten.tarifProNebenmahlzeit;
+            restInstitutionStammdaten.betreuungsstandorte =
+                this.betreuungsstandortListToRestObject(institutionStammdaten.betreuungsstandorte);
+            restInstitutionStammdaten.oeffnungstage = institutionStammdaten.oeffnungstage.getActiveDaysAsList();
+            restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
+            restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
+            restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
             return restInstitutionStammdaten;
         }
         return undefined;
+    }
+
+    private betreuungsstandortListToRestObject(betreuungsstandorte: Array<TSBetreuungsstandort>): Array<any> {
+        return betreuungsstandorte
+            ? betreuungsstandorte.map(item => this.betreuungsstandortToRestObject({}, item))
+            : [];
+    }
+
+    private betreuungsstandortToRestObject(restStandort: any, standort: TSBetreuungsstandort): any {
+        this.abstractEntityToRestObject(restStandort, standort);
+        restStandort.adresse = this.adresseToRestObject({}, standort.adresse);
+        restStandort.mail = standort.mail;
+        restStandort.telefon = standort.telefon;
+        restStandort.webseite = standort.webseite;
+        return restStandort;
     }
 
     private parseInstitutionStammdatenBetreuungsgutscheine(
@@ -1471,9 +1492,35 @@ export class EbeguRestUtil {
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
             institutionStammdatenTS.tarifProHauptmahlzeit = institutionStammdatenFromServer.tarifProHauptmahlzeit;
             institutionStammdatenTS.tarifProNebenmahlzeit = institutionStammdatenFromServer.tarifProNebenmahlzeit;
+            for (const day of institutionStammdatenFromServer.oeffnungstage) {
+                institutionStammdatenTS.oeffnungstage.setValueForDay(day, true);
+            }
+            institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
+            institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
+            institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
+            institutionStammdatenTS.betreuungsstandorte = this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
             return institutionStammdatenTS;
         }
         return undefined;
+    }
+
+    private parseBetreuungsstandortList(data: Array<any>): Array<any> {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBetreuungsstandort(new TSBetreuungsstandort(), item))
+            : [this.parseBetreuungsstandort(new TSBetreuungsstandort(), data)];
+    }
+
+    private parseBetreuungsstandort(betreuungsstandort: TSBetreuungsstandort, betreuungsstandortFromServer: any):
+        TSBetreuungsstandort {
+        this.parseAbstractEntity(betreuungsstandort, betreuungsstandortFromServer);
+        betreuungsstandort.adresse = this.parseAdresse(new TSAdresse(), betreuungsstandortFromServer.adresse);
+        betreuungsstandort.webseite = betreuungsstandortFromServer.webseite;
+        betreuungsstandort.telefon = betreuungsstandortFromServer.telefon;
+        betreuungsstandort.mail = betreuungsstandortFromServer.mail;
+        return betreuungsstandort;
     }
 
     public institutionStammdatenFerieninselToRestObject(
