@@ -87,7 +87,7 @@
                                            inputId="zeitBis"></dv-error-messages>
                     </div>
                 </div>
-                <div class="col-sm-6" *ngIf="incompleteOeffnungszeiten">
+                <div class="col-sm-6" *ngIf="incompleteOeffnungszeiten && stammdaten.oeffnungszeiten">
                     <p translate [translateParams]="{value: stammdaten.oeffnungszeiten}">OEFFNUNGSZEITEN_OBSOLETE</p>
                 </div>
                 <!--                    Abweichungen-->

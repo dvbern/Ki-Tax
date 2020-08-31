@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -30,7 +30,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 
-export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
+export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean;
@@ -46,9 +46,12 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
     //
     public ngOnInit(): void {
         const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
-        if (stammdatenBg) {
-            this.abweichendeZahlungsAdresse = !!stammdatenBg.adresseKontoinhaber;
-            this.incompleteOeffnungszeiten = !stammdatenBg.offenVon || !stammdatenBg.offenBis;
+        this.abweichendeZahlungsAdresse = stammdatenBg && !!stammdatenBg.adresseKontoinhaber;
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.editMode) {
+            this.initIncompleteOeffnungszeiten();
         }
     }
 
@@ -98,5 +101,10 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
                 return this.translate.instant(`${day}_SHORT`);
             })
             .join(', ');
+    }
+
+    private initIncompleteOeffnungszeiten(): void {
+        const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
+        this.incompleteOeffnungszeiten = stammdatenBg && (!stammdatenBg.offenVon || !stammdatenBg.offenBis);
     }
 }
