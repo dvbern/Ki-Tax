@@ -404,6 +404,7 @@ export class EbeguRestUtil {
             restAdresse.ort = adresse.ort;
             restAdresse.land = adresse.land;
             restAdresse.gemeinde = adresse.gemeinde;
+            restAdresse.bfsNummer = adresse.bfsNummer;
             restAdresse.adresseTyp = TSAdressetyp[adresse.adresseTyp];
             restAdresse.nichtInGemeinde = adresse.nichtInGemeinde;
             restAdresse.organisation = adresse.organisation;
@@ -425,6 +426,7 @@ export class EbeguRestUtil {
                 this.landCodeToTSLand(receivedAdresse.land).code :
                 undefined;
             adresseTS.gemeinde = receivedAdresse.gemeinde;
+            adresseTS.bfsNummer = receivedAdresse.bfsNummer;
             adresseTS.adresseTyp = receivedAdresse.adresseTyp;
             adresseTS.nichtInGemeinde = receivedAdresse.nichtInGemeinde;
             adresseTS.organisation = receivedAdresse.organisation;

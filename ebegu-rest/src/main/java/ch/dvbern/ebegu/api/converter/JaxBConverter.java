@@ -494,6 +494,7 @@ public class JaxBConverter extends AbstractConverter {
 		adresse.setPlz(jaxAdresse.getPlz());
 		adresse.setOrt(jaxAdresse.getOrt());
 		adresse.setGemeinde(jaxAdresse.getGemeinde());
+		adresse.setBfsNummer(jaxAdresse.getBfsNummer());
 		adresse.setLand(jaxAdresse.getLand());
 		adresse.setOrganisation(jaxAdresse.getOrganisation());
 		//adresse gilt per default von start of time an
@@ -514,6 +515,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAdresse.setPlz(adresse.getPlz());
 		jaxAdresse.setOrt(adresse.getOrt());
 		jaxAdresse.setGemeinde(adresse.getGemeinde());
+		jaxAdresse.setBfsNummer(adresse.getBfsNummer());
 		jaxAdresse.setLand(adresse.getLand());
 		jaxAdresse.setOrganisation(adresse.getOrganisation());
 		return jaxAdresse;

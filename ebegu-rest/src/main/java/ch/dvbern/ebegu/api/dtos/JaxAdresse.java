@@ -50,6 +50,8 @@ public class JaxAdresse extends JaxAbstractDateRangedDTO {
 
 	private String gemeinde;
 
+	private Long bfsNummer;
+
 	private AdresseTyp adresseTyp;
 
 	private boolean nichtInGemeinde;
@@ -93,6 +95,14 @@ public class JaxAdresse extends JaxAbstractDateRangedDTO {
 
 	public void setGemeinde(@Nullable String gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	public Long getBfsNummer() {
+		return bfsNummer;
+	}
+
+	public void setBfsNummer(Long bfsNummer) {
+		this.bfsNummer = bfsNummer;
 	}
 
 	public void setOrt(String ort) {
