@@ -87,16 +87,19 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 		client.close();
 	}
 
+	/**
+	 * Sucht in der GeoAdmin API Wohnadressen, die mit strasse, nr und plz übereinstimmen. Liefert die Resultate absteigend
+	 * nach Relevanz geordnet.
+	 */
 	@Override
 	@Nonnull
-	public List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull LANG lang, @Nonnull String strasse, @Nonnull String nr, @Nonnull String plz) {
-		return this.findWohnadressenBySearchText(lang, strasse + " " + nr + " " + plz);
+	public List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nonnull String nr, @Nonnull String plz) {
+		return this.findWohnadressenBySearchText(strasse + " " + nr + " " + plz);
 	}
 
 	@Override
 	@Nonnull
-	public List<JaxWohnadresse> findWohnadressenBySearchText(@Nonnull LANG lang, @Nonnull String searchText) {
-		checkNotNull(lang);
+	public List<JaxWohnadresse> findWohnadressenBySearchText(@Nonnull String searchText) {
 		checkNotNull(searchText);
 
 		JaxGeoadminSearchResult searchResult = searchAddress(searchText, SEARCHSERVICE_MAX_RESULTS);
@@ -109,13 +112,13 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 		if (exactGeoadminAddress.isPresent()) {
 			String featureId = exactGeoadminAddress.get().getAttrs().getFeatureId();
 
-			return searchAdressFromFeature(fuzzy, lang, featureId)
+			return searchAdressFromFeature(fuzzy, featureId)
 				.map(Collections::singletonList)
 				.orElseGet(Collections::emptyList);
 		}
 
 		return searchResult.getResults().stream()
-			.map(a -> searchAdressFromFeature(fuzzy, lang, a.getAttrs().getFeatureId()))
+			.map(a -> searchAdressFromFeature(fuzzy, a.getAttrs().getFeatureId()))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
 			.collect(Collectors.toList());
@@ -183,8 +186,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	 * Ziel ist die <a href="https://api3.geo.admin.ch/services/sdiservices.html#feature-resource">Feature Resource</a>
 	 */
 	@Nonnull
-	private WebTarget getFeatureTarget(@Nonnull LANG lang, @Nonnull String layerBodId, @Nonnull String featureId) {
-		checkNotNull(lang);
+	private WebTarget getFeatureTarget(@Nonnull String layerBodId, @Nonnull String featureId) {
 		checkNotNull(layerBodId);
 		checkNotNull(featureId);
 
@@ -193,19 +195,16 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 		return client.target(mapserverURI)
 			.path(layerBodId)
 			.path(featureId)
-			.queryParam("lang", lang.name())
 			.queryParam("returnGeometry", false);
 	}
 
 	@Nonnull
 	private Optional<JaxWohnadresse> searchAdressFromFeature(
 		boolean fuzzy,
-		@Nonnull LANG lang,
 		@Nonnull String featureId) {
-		checkNotNull(lang);
 		checkNotNull(featureId);
 
-		WebTarget target = getFeatureTarget(lang, API_LAYERBODID_WOHNUNGSREGISTER, featureId);
+		WebTarget target = getFeatureTarget(API_LAYERBODID_WOHNUNGSREGISTER, featureId);
 
 		try {
 			JaxGeoadminFeatureResult featureResult = target
