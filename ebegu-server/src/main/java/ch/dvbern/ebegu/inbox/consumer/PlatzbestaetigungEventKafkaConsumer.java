@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler;
 import ch.dvbern.ebegu.kafka.MessageProcessor;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -81,6 +82,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 		props.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		props.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
 		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
+		props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
 	/*	KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Collections.singletonList("PlatzbestaetigungBetreuungEvents"));*/
