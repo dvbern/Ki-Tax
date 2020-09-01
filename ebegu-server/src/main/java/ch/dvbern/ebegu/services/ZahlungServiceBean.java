@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,7 +46,6 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -76,6 +77,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -86,7 +88,6 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,6 +171,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		LOGGER.info("Erstelle Zahlungsauftrag mit Faelligkeit: {}", Constants.DATE_FORMATTER.format(datumFaelligkeit));
 		Zahlungsauftrag zahlungsauftrag = new Zahlungsauftrag();
+		zahlungsauftrag.setZahlungslaufTyp(ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 		zahlungsauftrag.setStatus(ZahlungauftragStatus.ENTWURF);
 		zahlungsauftrag.setBeschrieb(beschreibung);
 		zahlungsauftrag.setDatumFaellig(datumFaelligkeit);
@@ -485,26 +487,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	private Zahlung createZahlung(@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Zahlungsauftrag zahlungsauftrag) {
 		Zahlung zahlung = new Zahlung();
 		zahlung.setStatus(ZahlungStatus.ENTWURF);
-		// TODO (hefr)
-		// Variante 1: Auszahlungsdaten der Zahlung ist eine Kopie der Auszahlungsdaten der Institution. Darauf werden
-		// direkt die zu verwendenden Daten gesetzt, d.h. falls keine spezifische Zahlungsadresse definiert ist, wird
-		// auf der Zahlung die Postadresse vermerkt. Nachteil: Die Adresse, bzw. vorallem die IBAN, kann nach erstelltem
-		// Zahlungslauf nicht mehr "korrigiert" werden, da eine Anpassung auf der Institution die Daten der Zahlung nicht
-		// mehr veraendert
-		final Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
-		auszahlungsdaten.setIban(requireNonNull(institutionStammdaten.extractIban()));
-		String kontoinhaber = StringUtils.isNotEmpty(institutionStammdaten.extractKontoinhaber())
-			? institutionStammdaten.extractKontoinhaber() : institutionStammdaten.getInstitution().getName();
-		auszahlungsdaten.setKontoinhaber(kontoinhaber);
-		Adresse auszahlungsadresse = institutionStammdaten.extractAdresseKontoinhaber() != null
-			? institutionStammdaten.extractAdresseKontoinhaber() : institutionStammdaten.getAdresse();
-		auszahlungsdaten.setAdresseKontoinhaber(auszahlungsadresse);
-		// Variante 2: Die Zahlung referenziert direkt die Auszahlungsdaten der Institution. Damit koennen die Daten nach
-		// Erstellen des Zahlungslaufes noch korrigiert werden. Nachteil: Die Daten sind hier noch nicht vollstaendig, d.h.
-		// beim Erstellen des PAIN Files muss, falls z.B. keine explizite Zahlungsadresse gesetzt ist, die Postadresse der
-		// Institution ermittelt werden. Bedingt eine unterschiedliche Behandlung der beiden Zahlungslaeufe beim Erstellen
-		// des PAIN Files, da bei Mahlzeiten-Zahlungslaeufen die Wohnadresse des Gesuchsteller der Fallback ist.
-		zahlung.setAuszahlungsdaten(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getAuszahlungsdaten());
+		final InstitutionStammdatenBetreuungsgutscheine stammdatenBG =
+			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		Objects.requireNonNull(stammdatenBG, "Die Stammdaten muessen zu diesem Zeitpunkt definiert sein");
+		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
+		Objects.requireNonNull(auszahlungsdaten);
+		zahlung.setAuszahlungsdaten(auszahlungsdaten);
 		zahlung.setInstitutionId(institutionStammdaten.getInstitution().getId());
 		zahlung.setInstitutionName(institutionStammdaten.getInstitution().getName());
 		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());

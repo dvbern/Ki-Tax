@@ -46,15 +46,15 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = 1991251126987562205L;
 
-	@Nullable
-	@Column(nullable = true)
+	@Nonnull
+	@Column(nullable = false)
 	@Embedded
 	@Valid
 	private IBAN iban;
 
-	@Nullable
+	@Nonnull
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
+	@Column(nullable = false)
 	private String kontoinhaber;
 
 	@Nullable
@@ -63,20 +63,21 @@ public class Auszahlungsdaten extends AbstractEntity {
 	private Adresse adresseKontoinhaber;
 
 
-	public @Nullable IBAN getIban() {
+	@Nonnull
+	public IBAN getIban() {
 		return iban;
 	}
 
-	public void setIban(@Nullable IBAN iban) {
+	public void setIban(@Nonnull IBAN iban) {
 		this.iban = iban;
 	}
 
-	@Nullable
+	@Nonnull
 	public String getKontoinhaber() {
 		return kontoinhaber;
 	}
 
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
+	public void setKontoinhaber(@Nonnull String kontoinhaber) {
 		this.kontoinhaber = kontoinhaber;
 	}
 

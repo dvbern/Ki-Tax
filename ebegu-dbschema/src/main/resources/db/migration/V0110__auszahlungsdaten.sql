@@ -8,8 +8,8 @@ create table auszahlungsdaten (
 	user_erstellt varchar(255) not null,
 	user_mutiert varchar(255) not null,
 	version bigint not null,
-	iban varchar(34),
-	kontoinhaber varchar(255),
+	iban varchar(34) not null,
+	kontoinhaber varchar(255) not null,
 	adresse_kontoinhaber_id binary(16),
 	tmp_id binary(16),
 	primary key (id)
@@ -66,7 +66,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 gp.kontoinhaber							as kontoinhaber,
 			 gp.adresse_kontoinhaber_id                               as adresse_kontoinhaber_id,
 			 gp.id                              as tmp_id
-	  from institution_stammdaten_betreuungsgutscheine as gp) as tmp;
+	  from institution_stammdaten_betreuungsgutscheine as gp where gp.iban is not null) as tmp;
 
 update institution_stammdaten_betreuungsgutscheine isb set isb.auszahlungsdaten_id = (
 	select id from auszahlungsdaten where tmp_id = isb.id
@@ -117,7 +117,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 gp.kontoinhaber							as kontoinhaber,
 			 gp.zahlungsadresse_id                               as adresse_kontoinhaber_id,
 			 gp.id                              as tmp_id
-	  from ebegu.familiensituation as gp) as tmp;
+	  from ebegu.familiensituation as gp where gp.iban is not null) as tmp;
 
 update familiensituation f set f.auszahlungsdaten_id = (
 	select id from auszahlungsdaten where tmp_id = f.id
@@ -169,7 +169,6 @@ update zahlung z set z.traegerschaft_name = (
 					   LEFT JOIN traegerschaft t ON i.traegerschaft_id = t.id where st.id = z.institution_stammdaten_id);
 
 # Erst jetzt koennen die Felder not null gesetzt werden
-ALTER TABLE zahlung	CHANGE COLUMN auszahlungsdaten_id auszahlungsdaten_id binary(16) not null;
 ALTER TABLE zahlung	CHANGE COLUMN betreuungsangebot_typ betreuungsangebot_typ varchar(255) not null;
 ALTER TABLE zahlung	CHANGE COLUMN institution_id institution_id binary(16) not null;
 ALTER TABLE zahlung	CHANGE COLUMN institution_name institution_name varchar(255) not null;

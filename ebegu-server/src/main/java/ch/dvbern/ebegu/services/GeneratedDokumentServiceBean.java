@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
@@ -153,6 +154,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Inject
 	private BetreuungService betreuungService;
+
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
+
 
 
 	@Override
@@ -934,6 +939,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setBetragTotalZahlung(zahlung.getBetragTotalZahlung());
 
 				Adresse adresseKontoinhaber = zahlung.getAuszahlungsdaten().getAdresseKontoinhaber();
+				if (adresseKontoinhaber == null) {
+					final InstitutionStammdaten institutionStammdaten =
+						institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), false);
+					adresseKontoinhaber = institutionStammdaten.getAdresse();
+				}
+
 				Objects.requireNonNull(adresseKontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerName(zahlung.getAuszahlungsdaten().getKontoinhaber());
 				auszahlungDTO.setZahlungsempfaegerStrasse(adresseKontoinhaber.getStrasse());
