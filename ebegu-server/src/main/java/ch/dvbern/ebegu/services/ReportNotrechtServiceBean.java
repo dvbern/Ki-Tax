@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,6 +38,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.notrecht.NotrechtDataRow;
@@ -54,13 +54,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Stateless
 @Local(ReportNotrechtService.class)
-@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 public class ReportNotrechtServiceBean extends AbstractReportServiceBean implements ReportNotrechtService {
 
 	private NotrechtExcelConverter excelConverter = new NotrechtExcelConverter();
@@ -74,7 +69,6 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen) {
 		List<NotrechtDataRow> formulare = new ArrayList<>();
 		Collection<RueckforderungFormular> auszuzahlendeFormulare = findAllAuszuzahlendeFormulare();
@@ -122,12 +116,22 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		row.setStufe1FreigabeAusbezahltAm(formular.getStufe1FreigabeAusbezahltAm());
 		row.setStufe1ZahlungJetztAusgeloest((formular.isStufe1ZahlungJetztAusgeloest()) ? "Ja" : "-");
 
-		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
-		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
-		row.setStufe2InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeBetreuung()));
-		row.setStufe2KantonKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlTage()));
-		row.setStufe2KantonKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlStunden()));
-		row.setStufe2KantonKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2KantonKostenuebernahmeBetreuung()));
+		row.setInstitutionTyp(formular.getInstitutionTyp());
+
+		if (formular.getInstitutionTyp() == null || formular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
+			row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
+			row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
+			row.setStufe2InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeBetreuung()));
+			row.setStufe2KantonKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlTage()));
+			row.setStufe2KantonKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlStunden()));
+			row.setStufe2KantonKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2KantonKostenuebernahmeBetreuung()));
+		} else {
+			row.setBetragEntgangeneElternbeitraege(printBigDecimal(formular.getBetragEntgangeneElternbeitraege()));
+			row.setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(printBigDecimal(formular.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten()));
+			row.setRueckerstattungNichtAngeboteneBetreuungstage(printBigDecimal(formular.getAnzahlNichtAngeboteneEinheiten()));
+			row.setKurzarbeitBetrag(printBigDecimal(formular.getKurzarbeitBetrag()));
+			row.setCoronaErwerbsersatzBetrag(printBigDecimal(formular.getCoronaErwerbsersatzBetrag()));
+		}
 
 		row.setStufe2VerfuegungBetrag(printBigDecimal(formular.getStufe2VerfuegungBetrag()));
 		row.setStufe2VerfuegungDatum(formular.getStufe2VerfuegungDatum());
@@ -156,8 +160,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	private Collection<RueckforderungFormular> findAllAuszuzahlendeFormulare() {
-		// Wir geben immer alle Formulare aus in der Statistik
-		return rueckforderungFormularService.getAllRueckforderungFormulare();
+		return rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
 	}
 
 	@Nonnull
@@ -170,7 +173,6 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException {

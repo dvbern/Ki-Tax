@@ -17,6 +17,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
+import {TSFamiliensituation} from './TSFamiliensituation';
 import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
 import {TSGesuch} from './TSGesuch';
@@ -178,9 +179,14 @@ export class TSFinanzModel {
     }
 
     public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
-        gesuch.extractFamiliensituation().gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
-        gesuch.extractFamiliensituation().sozialhilfeBezueger = this.sozialhilfeBezueger;
-        gesuch.extractFamiliensituation().verguenstigungGewuenscht = this.verguenstigungGewuenscht;
+        let familiensituation = gesuch.extractFamiliensituation();
+        if (EbeguUtil.isNullOrUndefined(familiensituation)) {
+            familiensituation = new TSFamiliensituation();
+            gesuch.familiensituationContainer.familiensituationJA = familiensituation;
+        }
+        familiensituation.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
+        familiensituation.sozialhilfeBezueger = this.sozialhilfeBezueger;
+        familiensituation.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
@@ -190,12 +196,12 @@ export class TSFinanzModel {
         }
         this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
 
-        gesuch.extractFamiliensituation().kontoinhaber = this.zahlungsinformationen.kontoinhaber;
-        gesuch.extractFamiliensituation().iban = this.zahlungsinformationen.iban;
-        gesuch.extractFamiliensituation().abweichendeZahlungsadresse =
+        familiensituation.kontoinhaber = this.zahlungsinformationen.kontoinhaber;
+        familiensituation.iban = this.zahlungsinformationen.iban;
+        familiensituation.abweichendeZahlungsadresse =
             this.zahlungsinformationen.abweichendeZahlungsadresse;
-        gesuch.extractFamiliensituation().zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
-        gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt =
+        familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        familiensituation.keineMahlzeitenverguenstigungBeantragt =
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
 
         return gesuch;
@@ -210,10 +216,17 @@ export class TSFinanzModel {
         if (!(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2)) {
             return;
         }
+        const finSitGS1 = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
+        if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer)) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        }
+        if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA)) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        }
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
-            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
+            = finSitGS1.steuerveranlagungErhalten;
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
-            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt;
+            = finSitGS1.steuererklaerungAusgefuellt;
     }
 
     public copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {

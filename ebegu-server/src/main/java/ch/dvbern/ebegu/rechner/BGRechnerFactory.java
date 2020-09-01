@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rechner;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,8 +39,7 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractRechner getRechner(@Nonnull AbstractPlatz betreuung, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
-		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
+	public static AbstractRechner getRechner(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaRechner(rechnerRulesForGemeinde);
 		}
@@ -57,11 +57,12 @@ public final class BGRechnerFactory {
 	public static AbstractRechner getKitaxRechner(
 		@Nonnull AbstractPlatz betreuung,
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO,
-		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale
 	) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
+			Objects.requireNonNull(oeffnungszeiten);
 			return new KitaKitaxRechner(kitaxParameterDTO, oeffnungszeiten, locale);
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {

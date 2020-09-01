@@ -108,32 +108,32 @@
                     </div>
 
                     <!-- TS-Module -->
-                    <div class="dv-ebegu-calendar__wrapper-tagesschule">
+                    <div class="dv-ebegu-calendar-wrapper-tagesschule">
 
                         <!-- Header mit Wochentagen -->
-                        <div class="dv-ebegu-calendar__row--tagesschule">
-                            <div class="dv-ebegu-calendar__wrapper-small-blank"></div>
-                            <div class="dv-ebegu-calendar__wrapper">
-                                <div class="dv-ebegu-calendar__container-weekdays">
-                                    <div class="dv-ebegu-calendar__weekday dv-ebegu-calendar__weekday--{{day}}"
+                        <div class="dv-ebegu-calendar-row--tagesschule">
+                            <div class="dv-ebegu-calendar-wrapper-small-blank"></div>
+                            <div class="dv-ebegu-calendar-wrapper">
+                                <div class="dv-ebegu-calendar-container-weekdays">
+                                    <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
                                          ng-repeat="day in vm.getWeekDays()">{{ day | translate}}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="dv-ebegu-calendar__row--tagesschule"
+                        <div class="dv-ebegu-calendar-row--tagesschule"
                              ng-repeat="group in vm.modulGroups track by group.group.identifier">
                             <!-- Gruppe (Name und Zeit) -->
-                            <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
-                                <span class="dv-ebegu-calendar__module-name"
+                            <div class="dv-ebegu-calendar-wrapper-small dv-ebegu-calendar-module">
+                                <span class="dv-ebegu-calendar-module-name"
                                       ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
-                                <span class="dv-ebegu-calendar__module-time"
+                                <span class="dv-ebegu-calendar-module-time"
                                       ng-bind="vm.getModulTimeAsString(group.group)"></span>
                             </div>
-                            <div class="dv-ebegu-calendar__wrapper">
-                                <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
+                            <div class="dv-ebegu-calendar-wrapper">
+                                <div class="dv-ebegu-calendar-container dv-ebegu-calendar-container--no-margin">
 
-                                    <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
+                                    <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--1"
                                          ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
                                         <md-checkbox
                                             name="modul_{{mod.modulTagesschule.identifier}}"
@@ -363,10 +363,10 @@
                                 <td class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="result" ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()">
+                                <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
-                                <td class="result" ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()">
+                                <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
                             </tr>
@@ -385,8 +385,8 @@
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th class="result" data-translate="VERGUENSTIGUNG"></th>
-                                <th ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()" class="result" data-translate="VERGUENSTIGUNG_HAUPTMAHLZEITEN"></th>
-                                <th ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()" class="result" data-translate="VERGUENSTIGUNG_NEBENMAHLZEITEN"></th>
+                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_HAUPTMAHLZEITEN"></th>
+                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_NEBENMAHLZEITEN"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
@@ -431,11 +431,11 @@
                                     ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
-                                    ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()"
+                                    ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungHauptmahlzeitTotal | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Nebenmahlzeiten -->
                                 <td class="result"
-                                    ng-if="vm.isMahlzeitenverguenstigungEnabled() && vm.isSuperuser()"
+                                    ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungNebenmahlzeitTotal | currency : '' : 2"></td>
                             </tr>
                             </tbody>

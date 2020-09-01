@@ -390,6 +390,19 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
 	}
 
+
+	public String getInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch,
+		@Nonnull String mailaddressTS,
+		@Nonnull List<Sprache> sprachen) {
+
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS);
+		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
+		paramMap.put(GESUCH, gesuch);
+
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS, sprachen),
+			paramMap);
+	}
+
 	private void addContentInLanguage(
 		@Nonnull Benutzer einladender,
 		@Nonnull Einladung einladung,
@@ -647,5 +660,18 @@ public class MailTemplateConfiguration {
 		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
 
 		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + FTL_FILE_EXTENSION, paramMap);
+	}
+
+	public String getNotrechtProvisorischeVerfuegung(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull InstitutionStammdaten institutionStammdaten,
+		@Nonnull String empfaengerMail
+	) {
+		Map<Object, Object> paramMap = initParamMap();
+		paramMap.put("rueckforderungFormular", rueckforderungFormular);
+		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
+		paramMap.put("empfaenger", empfaengerMail);
+
+		return doProcessTemplate(MailTemplate.NotrechtProvisorischeVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
 	}
 }

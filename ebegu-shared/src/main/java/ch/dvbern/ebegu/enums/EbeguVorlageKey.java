@@ -25,10 +25,16 @@ import javax.annotation.Nullable;
  */
 public enum EbeguVorlageKey {
 
-	VORLAGE_NOTRECHT_KITA_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita.xlsx"),
-	VORLAGE_NOTRECHT_KITA_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_garderie.xlsx"),
-	VORLAGE_NOTRECHT_TFO_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO.xlsx"),
-	VORLAGE_NOTRECHT_TFO_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_accueil_familial_de_jo.xlsx");
+	// Vorlagen fuer oeffentliche Institutionen
+	VORLAGE_NOTRECHT_KITA_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita_Oeffentlich.xlsx"),
+	VORLAGE_NOTRECHT_KITA_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_garderie_publique.xlsx"),
+	VORLAGE_NOTRECHT_TFO_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO_Oeffentlich.xlsx"),
+	VORLAGE_NOTRECHT_TFO_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_accueil_familial_de_jo_publique.xlsx"),
+	// Vorlagen fuer private Institutionen
+	VORLAGE_NOTRECHT_PRIVAT_KITA_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_Kita_Privat.xlsx"),
+	VORLAGE_NOTRECHT_PRIVAT_KITA_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_garderie_prive.xlsx"),
+	VORLAGE_NOTRECHT_PRIVAT_TFO_DE("/vorlagenNotrecht/Belegung_Antrag_Finanzierung_TFO_Privat.xlsx"),
+	VORLAGE_NOTRECHT_PRIVAT_TFO_FR("/vorlagenNotrecht/Formulaire_demande_financement_corona_accueil_familial_de_jo_prive.xlsx");
 
 	private String defaultVorlagePath;
 
@@ -47,7 +53,7 @@ public enum EbeguVorlageKey {
 	}
 
 	@Nullable
-	public static EbeguVorlageKey getNotrechtVorlage(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+	public static EbeguVorlageKey getNotrechtVorlageOeffentlicheInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		if (angebotTyp == BetreuungsangebotTyp.KITA) {
 			if (Locale.FRENCH.getLanguage().equals(language)) {
 				return VORLAGE_NOTRECHT_KITA_FR;
@@ -59,6 +65,23 @@ public enum EbeguVorlageKey {
 				return VORLAGE_NOTRECHT_TFO_FR;
 			}
 			return VORLAGE_NOTRECHT_TFO_DE;
+		}
+		return null;
+	}
+
+	@Nullable
+	public static EbeguVorlageKey getNotrechtVorlagePrivateInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+		if (angebotTyp == BetreuungsangebotTyp.KITA) {
+			if (Locale.FRENCH.getLanguage().equals(language)) {
+				return VORLAGE_NOTRECHT_PRIVAT_KITA_FR;
+			}
+			return VORLAGE_NOTRECHT_PRIVAT_KITA_DE;
+		}
+		if (angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
+			if (Locale.FRENCH.getLanguage().equals(language)) {
+				return VORLAGE_NOTRECHT_PRIVAT_TFO_FR;
+			}
+			return VORLAGE_NOTRECHT_PRIVAT_TFO_DE;
 		}
 		return null;
 	}

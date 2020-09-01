@@ -21,8 +21,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,15 +43,6 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -77,7 +66,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail) {
 		requireNonNull(traegerschaft);
 		requireNonNull(adminEmail);
@@ -102,7 +90,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Traegerschaft saveTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
 		return persistence.merge(traegerschaft);
@@ -110,7 +97,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Traegerschaft> findTraegerschaft(@Nonnull final String traegerschaftId) {
 		requireNonNull(traegerschaftId, "id muss gesetzt sein");
 		Traegerschaft a = persistence.find(Traegerschaft.class, traegerschaftId);
@@ -119,20 +105,17 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Traegerschaft> getAllActiveTraegerschaften() {
 		return criteriaQueryHelper.getEntitiesByAttribute(Traegerschaft.class, true, Traegerschaft_.active);
 	}
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Traegerschaft> getAllTraegerschaften() {
 		return new ArrayList<>(criteriaQueryHelper.getAllOrdered(Traegerschaft.class, Traegerschaft_.name));
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeTraegerschaft(@Nonnull String traegerschaftId) {
 		requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftToRemove = findTraegerschaft(traegerschaftId);
@@ -166,8 +149,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION })
 	public EnumSet<BetreuungsangebotTyp> getAllAngeboteFromTraegerschaft(@Nonnull String traegerschaftId) {
 		requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);

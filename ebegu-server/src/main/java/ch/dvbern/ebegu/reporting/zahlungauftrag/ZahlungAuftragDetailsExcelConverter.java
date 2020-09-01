@@ -18,24 +18,23 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
-import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -45,7 +44,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Dependent
-public class ZahlungAuftragExcelConverter implements ExcelConverter {
+public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -64,8 +63,6 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 	public ExcelMergerDTO toExcelMergerDTO(
 		@Nonnull List<Zahlung> data,
 		@Nonnull Locale locale,
-		@Nullable UserRole userRole,
-		@Nonnull Collection<Institution> allowedInst,
 		@Nonnull String beschrieb,
 		@Nonnull LocalDateTime datumGeneriert,
 		@Nonnull LocalDate datumFaellig,
@@ -83,12 +80,6 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeinde, gemeinde.getName());
 
 		data.stream()
-			.filter(zahlung -> {
-				// Filtere nur die erlaubten Instituionsdaten
-				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
-				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId()));
-			})
 			.sorted()
 			.forEach(zahlung ->
 				filterZahlungspositionenMitSummeUngleich0(zahlung.getZahlungspositionen()).stream()
@@ -102,8 +93,10 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vorname, zahlungsposition.getKind().getVorname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.gebDatum, zahlungsposition.getKind().getGeburtsdatum());
+						final Betreuung betreuung = zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung();
+						Objects.requireNonNull(betreuung);
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.verfuegung,
-							zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer());
+							betreuung.getBGNummer());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vonDatum,
 							zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.bisDatum,
@@ -122,18 +115,24 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 		for (Zahlungsposition zahlungposition : zahlungspositionen) {
 			Optional<Zahlungsposition> inverted = zahlungspositionen.stream()
 				.filter(z ->
-						z.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer()
-							.equals(zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer())
-						&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()
-							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb())
-						&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis()
-							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis())
-						&& MathUtil.isSame(z.getVerfuegungZeitabschnitt().getBgPensum(),
-							zahlungposition.getVerfuegungZeitabschnitt().getBgPensum())
-						&& MathUtil.isSame(z.getBetrag().multiply(BigDecimal.valueOf(-1)),
-							zahlungposition.getBetrag())
-						&& z.getStatus() == zahlungposition.getStatus()
-						&& z.getStatus() == ZahlungspositionStatus.KORREKTUR).findFirst();
+				{
+					final Betreuung betreuungVerfuegung = z.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung();
+					Objects.requireNonNull(betreuungVerfuegung);
+					final Betreuung betreuungZahlungsposition = zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung();
+					Objects.requireNonNull(betreuungZahlungsposition);
+					return betreuungVerfuegung.getBGNummer()
+						.equals(betreuungZahlungsposition.getBGNummer())
+					&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()
+						.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb())
+					&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis()
+						.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis())
+					&& MathUtil.isSame(z.getVerfuegungZeitabschnitt().getBgPensum(),
+						zahlungposition.getVerfuegungZeitabschnitt().getBgPensum())
+					&& MathUtil.isSame(z.getBetrag().multiply(BigDecimal.valueOf(-1)),
+						zahlungposition.getBetrag())
+					&& z.getStatus() == zahlungposition.getStatus()
+					&& z.getStatus() == ZahlungspositionStatus.KORREKTUR;
+				}).findFirst();
 			if (!inverted.isPresent()) {
 				resultat.add(zahlungposition);
 			}

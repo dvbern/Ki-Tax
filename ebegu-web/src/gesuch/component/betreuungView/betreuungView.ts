@@ -184,8 +184,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
+                    // tslint:disable-next-line:early-exit
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
-                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+                    ) {
+                        // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
+                        // -> wir nehmen alle anderen Angebote aus der Liste raus
+                        this.betreuungsangebotValues = new Array<any>();
+                        this.betreuungsangebotValues.push(obj);
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
@@ -212,7 +218,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
-        this.findExistingBetreuungsmitteilung();
+        if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+            || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN
+        ) {
+            // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
+            this.findExistingBetreuungsmitteilung();
+        }
+
         const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
         if (anmeldungMutationZustand) {
             if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
@@ -480,10 +492,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             let betreuungsstatus: TSBetreuungsstatus;
 
             if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
-                (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-                    isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
-                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                    : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+                betreuungsstatus = this.anmeldungTagesschuleDirektUebernehmen()
+                    ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                    : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
             } else {
                 betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
             }
@@ -498,6 +509,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     {gesuchId: this.getGesuchId()});
             }
         });
+    }
+
+    private anmeldungTagesschuleDirektUebernehmen(): boolean {
+        // Falls das Gesuch im Status Verfuegen oder einem Verfuegt-Status ist, soll die Anmeldung
+        // beim akzeptieren direkt auf uebernommen gesetzt werden
+        // Dasselbe gilt im Falle von KEIN_KONTINTENT, da die Tagesschule-Anmeldungen sonst blockiert sind!
+        return this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+            this.gesuchModelManager.getGesuch().status === TSAntragStatus.KEIN_KONTINGENT ||
+            isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public anmeldungSchulamtAblehnen(): void {
@@ -970,28 +990,44 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return super.isMutationsmeldungAllowed(this.getBetreuungModel(), this.isNewestGesuch);
     }
 
-    public mutationsmeldungSenden(): void {
+    public preMutationsmeldungSenden(): void {
         // send mutationsmeldung (dummy copy)
         if (!(this.isGesuchValid() && this.mutationsmeldungModel)) {
             return;
         }
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'MUTATIONSMELDUNG_CONFIRMATION',
-            deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
-            parentController: undefined,
-            elementID: undefined,
-        }).then(() => {   // User confirmed removal
-            this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-                this.mutationsmeldungModel,
-                this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
 
-                this.form.$setUntouched();
-                this.form.$setPristine();
-                // reset values. is needed??????
-                this.isMutationsmeldungStatus = false;
-                this.mutationsmeldungModel = undefined;
-                this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        if (this.showExistingBetreuungsmitteilungInfoBox()) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+                deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {   // User confirmed removal
+                this.mutationsmeldungSenden();
             });
+        } else {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'MUTATIONSMELDUNG_CONFIRMATION',
+                deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+                this.mutationsmeldungSenden();
+            });
+        }
+    }
+
+    public mutationsmeldungSenden(): void {
+        this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
+            this.mutationsmeldungModel,
+            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
+
+            this.form.$setUntouched();
+            this.form.$setPristine();
+            // reset values. is needed??????
+            this.isMutationsmeldungStatus = false;
+            this.mutationsmeldungModel = undefined;
+            this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         });
     }
 
@@ -1036,11 +1072,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (!isJugendamt(this.getBetreuungModel().getAngebotTyp())) {
+        if (EbeguUtil.isNullOrUndefined(this.getBetreuungModel())
+            || EbeguUtil.isNullOrUndefined(isJugendamt(this.getBetreuungModel().getAngebotTyp()))) {
             return;
         }
         if (!(!this.getBetreuungModel().isNew() &&
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+            (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())))) {
             return;
         }
         this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
@@ -1238,7 +1275,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isGesuchsteller(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
     }
 
     public getBetreuungInGemeindeLabel(): string {
@@ -1277,7 +1314,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 

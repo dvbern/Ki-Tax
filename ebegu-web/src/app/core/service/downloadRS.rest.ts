@@ -150,11 +150,21 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenNotrechtvorlage(
+    public getAccessTokenNotrechtvorlageOeffentlicheInstitutionen(
         language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
         const languageEnc = encodeURIComponent(language);
         const angebotTypEnc = encodeURIComponent(angebotTyp);
-        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGE/${languageEnc}/${angebotTypEnc}`)
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGEOEFFENTLICH/${languageEnc}/${angebotTypEnc}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getAccessTokenNotrechtvorlagePrivateInstitutionen(
+        language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
+        const languageEnc = encodeURIComponent(language);
+        const angebotTypEnc = encodeURIComponent(angebotTyp);
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGEPRIVAT/${languageEnc}/${angebotTypEnc}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
@@ -294,6 +304,29 @@ export class DownloadRS {
     public getAccessTokenRueckforderungDokument(rueckForderungDokumentId: string): IPromise<TSDownloadFile> {
         return this.http.get(
             `${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/rueckforderungDokument`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getAccessTokenProvisoricheVerfuegungDokument(rueckforderungFormularId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckforderungFormularId)}/provisorischeVerfuegung`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getAccessTokenDefinitiveVerfuegungDokument(rueckforderungFormularId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckforderungFormularId)}/definitiveVerfuegung`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
+    public getNotverordnungVerfuegungenAccessTokenGeneratedDokument(auftragId: string): IPromise<TSDownloadFile> {
+        return this.http.get(`${this.serviceURL}/massenverfuegung/${encodeURIComponent(auftragId)}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });

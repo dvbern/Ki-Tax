@@ -25,10 +25,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -78,15 +78,9 @@ public final class KitaxUebergangsloesungParameter {
 		KitaxUebergangsloesungInstitutionOeffnungszeiten dto =
 			oeffnungszeitenMap.get(kitaName.toLowerCase(Locale.GERMAN).trim());
 
-		// we use the default parameters if there is no mapping
 		if (dto == null) {
-			dto = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
-			dto.setOeffnungsstunden(BigDecimal.valueOf(11.5));
-			dto.setOeffnungstage(BigDecimal.valueOf(240));
-			dto.setNameKibon(kitaName);
-			dto.setDummyParams(true);
+			throw new EbeguRuntimeException("getOeffnungszeiten", ErrorCodeEnum.ERROR_OEFFNUNGSZEITEN_NOT_FOUND, kitaName);
 		}
-
 		return dto;
 	}
 
@@ -158,11 +152,5 @@ public final class KitaxUebergangsloesungParameter {
 
 	public void setStadtBernAsivConfiguered(boolean stadtBernAsivConfiguered) {
 		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
-	}
-
-	public boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
-		// Zum Testen behandeln wir Paris wie Bern
-		long bfsNummer = gemeinde.getBfsNummer();
-		return bfsNummer == 351 || bfsNummer == 99998;
 	}
 }

@@ -202,6 +202,12 @@ public interface EbeguConfiguration {
 	String getSchemaRegistryURL();
 
 	/**
+	 * @return TRUE, falls neue Betreuungen an den Exchange Service exportiert werden sollen.
+	 */
+	boolean isBetreuungAnfrageApiEnabled();
+
+
+	/**
 	 * @return Filepath zum Keystore in dem der Private Key fuer den Secure-Token-Service Webservice liegt,
 	 * sollte in einer Form sein die den Pfad vom  resource root her aufloest ist zb "/prod/sts-webservice.jks"
 	 * The Idea is to read the keystore from a specific place in the file System
@@ -285,4 +291,16 @@ public interface EbeguConfiguration {
 	String getKitaxHost();
 
 	String getKitaxEndpoint();
+
+	String getClamavHost();
+
+	int getClamavPort();
+
+	boolean isClamavDisabled();
+
+	String getNotverordnungUnterschriftName();
+
+	String getNotverordnungUnterschriftPath();
+
+	String getNotverordnungEmpfaengerMail();
 }

@@ -78,12 +78,20 @@ public class NotrechtExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1FreigabeAusbezahltAm, dataRow.getStufe1FreigabeAusbezahltAm());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1ZahlungJetztAusgeloest, dataRow.getStufe1ZahlungJetztAusgeloest());
 
+			excelRowGroup.addValue(MergeFieldNotrecht.institutionTyp, ServerMessageUtil.translateEnumValue(dataRow.getInstitutionTyp(), locale));
+
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlTage, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlTage());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlStunden, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeBetreuung, dataRow.getStufe2InstitutionKostenuebernahmeBetreuung());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2KantonKostenuebernahmeAnzahlTage, dataRow.getStufe2KantonKostenuebernahmeAnzahlTage());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2KantonKostenuebernahmeAnzahlStunden, dataRow.getStufe2KantonKostenuebernahmeAnzahlStunden());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2KantonKostenuebernahmeBetreuung, dataRow.getStufe2KantonKostenuebernahmeBetreuung());
+
+			excelRowGroup.addValue(MergeFieldNotrecht.betragEntgangeneElternbeitraege, dataRow.getBetragEntgangeneElternbeitraege());
+			excelRowGroup.addValue(MergeFieldNotrecht.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten, dataRow.getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten());
+			excelRowGroup.addValue(MergeFieldNotrecht.rueckerstattungNichtAngeboteneBetreuungstage, dataRow.getRueckerstattungNichtAngeboteneBetreuungstage());
+			excelRowGroup.addValue(MergeFieldNotrecht.kurzarbeitBetrag, dataRow.getKurzarbeitBetrag());
+			excelRowGroup.addValue(MergeFieldNotrecht.coronaErwerbsersatzBetrag, dataRow.getCoronaErwerbsersatzBetrag());
 
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2VerfuegungBetrag, dataRow.getStufe2VerfuegungBetrag());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2VerfuegungDatum, dataRow.getStufe2VerfuegungDatum());

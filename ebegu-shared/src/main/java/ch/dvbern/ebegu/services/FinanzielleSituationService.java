@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -63,12 +62,6 @@ public interface FinanzielleSituationService {
 	 */
 	@Nonnull
 	Optional<FinanzielleSituationContainer> findFinanzielleSituation(@Nonnull String id);
-
-	/**
-	 * @return Liste aller FinanzielleSituationContainer aus der DB
-	 */
-	@Nonnull
-	Collection<FinanzielleSituationContainer> getAllFinanzielleSituationen();
 
 	/**
 	 * Berechnet die Finanzielle Situation beider Gesuchsteller

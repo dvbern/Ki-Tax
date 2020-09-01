@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 
 /**
@@ -45,22 +43,6 @@ public interface ErwerbspensumService {
 	 */
 	@Nonnull
 	Optional<ErwerbspensumContainer> findErwerbspensum(@Nonnull String key);
-
-	/**
-	 * Sucht die Erwerbspensen des übergebenen Gesuchstellers.
-	 */
-	Collection<ErwerbspensumContainer> findErwerbspensenForGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller);
-
-	/**
-	 * Sucht alle Erwerbspensen fuer das eingegebene Gesuch
-	 */
-	Collection<ErwerbspensumContainer> findErwerbspensenFromGesuch(@Nonnull String gesuchId);
-
-	/**
-	 * @return Liste aller ErwerbspensumContainer aus der DB
-	 */
-	@Nonnull
-	Collection<ErwerbspensumContainer> getAllErwerbspensenenContainer();
 
 	/**
 	 * entfernt eine Erwerbspensum aus der Databse

@@ -28,8 +28,6 @@ import java.util.UUID;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,15 +43,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service zum Speichern von Files auf dem File-System
  */
@@ -68,7 +57,6 @@ public class FileSaverServiceBean implements FileSaverService {
 	private EbeguConfiguration ebeguConfiguration;
 
 	@Override
-	@PermitAll
 	public void save(UploadFileInfo uploadFileInfo, String folderName) {
 		Objects.requireNonNull(uploadFileInfo);
 		Objects.requireNonNull(uploadFileInfo.getFilename());
@@ -97,7 +85,6 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public UploadFileInfo save(byte[] bytes, String fileName, String folderName) throws MimeTypeParseException {
 		MimeType contentType = new MimeType("application/pdf");
 		return save(bytes, fileName, folderName, contentType);
@@ -105,7 +92,38 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Nonnull
 	@Override
-	@PermitAll
+	public UploadFileInfo saveZipFile(
+		@Nonnull byte[] bytes,
+		@Nonnull String filename
+	) throws MimeTypeParseException {
+
+		String filenameWithEnding = filename + ".zip";
+
+		final UploadFileInfo uploadFileInfo = new UploadFileInfo(filenameWithEnding, new MimeType("application/zip"));
+		uploadFileInfo.setBytes(bytes);
+		Objects.requireNonNull(uploadFileInfo);
+		Objects.requireNonNull(uploadFileInfo.getFilename());
+
+		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + "/auftraege/" + filenameWithEnding;
+		uploadFileInfo.setPath(absoluteFilePath);
+		uploadFileInfo.setActualFilename(filenameWithEnding);
+
+		Path file = Paths.get(absoluteFilePath);
+		try {
+			if (!Files.exists(file.getParent())) {
+				Files.createDirectories(file.getParent());
+			}
+			uploadFileInfo.setSize(Files.size(Files.write(file, uploadFileInfo.getBytes()))); //here we write to filesystem
+			LOG.info("Save file in FileSystem: {}", absoluteFilePath);
+
+		} catch (IOException e) {
+			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
+		}
+		return uploadFileInfo;
+	}
+
+	@Nonnull
+	@Override
 	public UploadFileInfo save(byte[] bytes, String fileName, String folderName, MimeType contentType) {
 		final UploadFileInfo uploadFileInfo = new UploadFileInfo(fileName, contentType);
 		uploadFileInfo.setBytes(bytes);
@@ -114,7 +132,6 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	@Override
-	@PermitAll
 	public boolean copy(FileMetadata fileToCopy, String folderName) {
 		Objects.requireNonNull(fileToCopy);
 		Objects.requireNonNull(folderName);
@@ -147,7 +164,6 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	@Override
-	@PermitAll
 	public boolean remove(String dokumentPaths) {
 		final Path path = Paths.get(dokumentPaths);
 		try {
@@ -163,7 +179,6 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public boolean removeAllFromSubfolder(@Nonnull String subfolder) {
 		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + subfolder + '/';
 		Path file = Paths.get(absoluteFilePath);
@@ -181,13 +196,11 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void deleteAllFilesInTempReportsFolder() {
 		deleteAllFilesInTempFolder(Constants.TEMP_REPORT_FOLDERNAME);
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void deleteAllFilesInTempNotverordnungFolder() {
 		deleteAllFilesInTempFolder(Constants.TEMP_NOTVERORDNUNG);
 	}

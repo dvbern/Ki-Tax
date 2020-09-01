@@ -18,7 +18,12 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -60,6 +65,21 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal anzahlPlaetzeFirmen;
+
+	@Nullable
+	private String oeffnungsAbweichungen;
+
+	@Nonnull
+	private Set<DayOfWeek> oeffnungstage = EnumSet.noneOf(DayOfWeek.class);
+
+	@Nullable
+	private String offenVon;
+
+	@Nullable
+	private String offenBis;
+
+	@Nonnull
+	private Set<JaxBetreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	@Nullable
 	public String getIban() {
@@ -162,5 +182,50 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
+	}
+
+	@Nullable
+	public String getOeffnungsAbweichungen() {
+		return oeffnungsAbweichungen;
+	}
+
+	public void setOeffnungsAbweichungen(@Nullable String oeffnungsAbweichungen) {
+		this.oeffnungsAbweichungen = oeffnungsAbweichungen;
+	}
+
+	@Nonnull
+	public Set<DayOfWeek> getOeffnungstage() {
+		return oeffnungstage;
+	}
+
+	public void setOeffnungstage(@Nonnull Set<DayOfWeek> oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
+	}
+
+	@Nullable
+	public String getOffenVon() {
+		return offenVon;
+	}
+
+	public void setOffenVon(@Nullable String offenVon) {
+		this.offenVon = offenVon;
+	}
+
+	@Nullable
+	public String getOffenBis() {
+		return offenBis;
+	}
+
+	public void setOffenBis(@Nullable String offenBis) {
+		this.offenBis = offenBis;
+	}
+
+	@Nonnull
+	public Set<JaxBetreuungsstandort> getBetreuungsstandorte() {
+		return betreuungsstandorte;
+	}
+
+	public void setBetreuungsstandorte(@Nonnull Set<JaxBetreuungsstandort> betreuungsstandorte) {
+		this.betreuungsstandorte = betreuungsstandorte;
 	}
 }

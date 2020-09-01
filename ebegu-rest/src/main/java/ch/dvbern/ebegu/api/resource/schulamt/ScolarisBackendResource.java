@@ -162,15 +162,16 @@ public class ScolarisBackendResource {
 				// Betreuung ist Tagesschule
 				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
 
+				if (anmeldungTagesschule.isKeineDetailinformationen()) {
+					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
+					return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+				}
+
 				//check if Gemeinde Scolaris erlaubt:
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
 					return createResponseUnauthorised("Username not allowed for this Gemeinde");
 				}
 
-				if (anmeldungTagesschule.isKeineDetailinformationen()) {
-					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
-					return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
-				}
 				try {
 					JaxExternalAnmeldungTagesschule jaxResult =
 						converter.anmeldungTagesschuleToScolaris(anmeldungTagesschule);

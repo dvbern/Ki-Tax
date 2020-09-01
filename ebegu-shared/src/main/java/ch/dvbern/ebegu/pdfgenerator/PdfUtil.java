@@ -196,6 +196,13 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
+	public static List createListOrdered(java.util.List<String> list) {
+		final List itextList = new List(List.ORDERED);
+		list.forEach(item -> itextList.add(createListItem(item)));
+		return itextList;
+	}
+
+	@Nonnull
 	public static Paragraph createListInParagraph(java.util.List<String> list, final int emptyLinesAfter) {
 		Paragraph paragraph = new Paragraph();
 		final List itextList = createList(list);
@@ -399,9 +406,13 @@ public final class PdfUtil {
 		return destOutputStream.toByteArray();
 	}
 
-	public static Chunk createSuperTextInText(final  String supertext) {
-		final Chunk chunk = new Chunk(supertext, PdfUtilities.createFontWithSize(DEFAULT_FONT, 5));
-		chunk.setTextRise(3);
+	public static Chunk createSuperTextInText(final String supertext) {
+		return createSuperTextInText(supertext, 5, 3);
+	}
+
+	public static Chunk createSuperTextInText(final  String supertext, int fontSize, int textRise) {
+		final Chunk chunk = new Chunk(supertext, PdfUtilities.createFontWithSize(DEFAULT_FONT, fontSize));
+		chunk.setTextRise(textRise);
 		return chunk;
 	}
 }

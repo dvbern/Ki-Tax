@@ -95,7 +95,12 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
                 TSErrorLevel.SEVERE,
                 'ERROR_FILE_TOO_LARGE',
                 response.data));
-
+        } else if (this.isOptimisticLockException(response)) {
+            errors = [];
+            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                TSErrorLevel.SEVERE,
+                'ERROR_DATA_CHANGED',
+                response.data));
         } else {
             this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
             this.$log.error('ResponseData:' + JSON.stringify(response.data));
@@ -187,5 +192,13 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
         const msg = 'java.io.IOException: UT000020: Connection terminated as request was larger than ';
 
         return response.indexOf(msg) > -1;
+    }
+
+    private isOptimisticLockException(data: any): boolean {
+        const http409 = 409;
+        if (!data) {
+            return false;
+        }
+        return data.status === http409;
     }
 }

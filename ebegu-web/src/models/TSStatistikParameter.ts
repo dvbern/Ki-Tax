@@ -30,7 +30,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _ohneFolgegesuche: boolean;
     private _doSave: boolean;
     private _betragProKind: number;
-    private _tagesschuleOhneFinSit: TSInstitutionStammdaten;
+    private _tagesschuleAnmeldungen: TSInstitutionStammdaten;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment,
@@ -138,11 +138,11 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
         this._jahr = value;
     }
 
-    public get tagesschuleOhneFinSit(): TSInstitutionStammdaten {
-        return this._tagesschuleOhneFinSit;
+    public get tagesschuleAnmeldungen(): TSInstitutionStammdaten {
+        return this._tagesschuleAnmeldungen;
     }
 
-    public set tagesschuleOhneFinSit(value: TSInstitutionStammdaten) {
-        this._tagesschuleOhneFinSit = value;
+    public set tagesschuleAnmeldungen(value: TSInstitutionStammdaten) {
+        this._tagesschuleAnmeldungen = value;
     }
 }

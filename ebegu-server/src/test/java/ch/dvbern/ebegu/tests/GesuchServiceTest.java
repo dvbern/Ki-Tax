@@ -342,7 +342,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testAntragEinreichenAndFreigeben() {
 		LocalDate now = LocalDate.now();
 		loginAsGesuchsteller("gesuchst");
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService, gesuchsperiode);
+		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
+			gesuchService, gesuchsperiode);
 
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
@@ -363,7 +364,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testExceptionOnInvalidFreigabe() {
 		LocalDate now = LocalDate.now();
 		loginAsGesuchsteller("gesuchst");
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService, gesuchsperiode);
+		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
+			gesuchService, gesuchsperiode);
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
@@ -468,7 +470,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		loginAsGesuchsteller("gesuchst");
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence, gesuchService, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence,
+			gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, gesuch.getStatus());
 		Assert.assertEquals(Eingangsart.ONLINE, gesuch.getEingangsart());
@@ -784,7 +787,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		betreuungService.saveAnmeldungTagesschule(betreuung, false);
+		betreuungService.saveAnmeldungTagesschule(betreuung);
 
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Assert.assertNotNull(mutation);

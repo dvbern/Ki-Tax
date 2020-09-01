@@ -48,6 +48,7 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	private String telefon;
 	@Nullable
 	private String webseite;
+	// Wird nur noch read-only verwendet, um die Daten-Migration durch die Institutions-Admins zu vereinfachen
 	@Nullable
 	private String oeffnungszeiten;
 	@NotNull @Nonnull

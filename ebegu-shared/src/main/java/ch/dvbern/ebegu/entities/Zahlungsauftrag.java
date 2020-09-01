@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -74,6 +75,11 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String beschrieb;
+
+	@Nullable
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String result;
 
 	@NotNull
 	@ManyToOne(optional = false)
@@ -132,6 +138,15 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 		this.beschrieb = beschrieb;
 	}
 
+	@Nullable
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(@Nullable String result) {
+		this.result = result;
+	}
+
 	@Nonnull
 	public List<Zahlung> getZahlungen() {
 		return zahlungen;
@@ -169,7 +184,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	}
 
 	public String getFilename() {
-		return "Zahlungslauf_" + getGemeinde().getName() + "_" + Constants.SQL_DATE_FORMAT.format(getDatumGeneriert());
+		return "Zahlungen_" + getGemeinde().getName() + '_' + Constants.SQL_DATE_FORMAT.format(getDatumGeneriert());
 	}
 
 	@Override

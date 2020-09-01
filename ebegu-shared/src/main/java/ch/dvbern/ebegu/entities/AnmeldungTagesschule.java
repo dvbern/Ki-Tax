@@ -153,12 +153,16 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 			if (belegungTagesschule != null) {
 				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
 			}
+			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
+				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
 			if (target.isKeineDetailinformationen()) {
 				// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
 				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 			}
 			target.setVerfuegung(null);
+
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

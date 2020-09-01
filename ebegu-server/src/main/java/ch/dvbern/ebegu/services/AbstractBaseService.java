@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -68,7 +67,6 @@ public abstract class AbstractBaseService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
-	@PermitAll
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void updateLuceneIndex(Class<? extends AbstractEntity> clazz, String id) {
 		// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
@@ -81,14 +79,12 @@ public abstract class AbstractBaseService {
 		fullTextSession.index(customer);
 	}
 
-	@PermitAll
 	@Nonnull
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 	}
 
-	@PermitAll
 	@Nonnull
 	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
 		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten = criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
@@ -103,35 +99,43 @@ public abstract class AbstractBaseService {
 	protected void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		platz.setGueltig(true);
-		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(platz);
-		if (vorgaengerVerfuegungOptional.isPresent()) {
-			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOptional.get();
-			Objects.requireNonNull(vorgaengerVerfuegung.getPlatz());
-			vorgaengerVerfuegung.getPlatz().setGueltig(false);
+		Optional<AbstractPlatz> vorgaengerPlatzOptional = findVorgaengerPlatz(platz);
+		if (vorgaengerPlatzOptional.isPresent()) {
+			AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
+			vorgaengerPlatz.setGueltig(false);
 		}
+	}
+
+	/**
+	 * @return gibt die Betreuung/Anmeldunbg der vorherigen verfuegten Betreuung zurueck.
+	 */
+	@Nonnull
+	protected Optional<AbstractPlatz> findVorgaengerPlatz(@Nonnull AbstractPlatz abstractPlatz) {
+		Objects.requireNonNull(abstractPlatz, "abstractPlatz darf nicht null sein");
+		if (abstractPlatz.getVorgaengerId() == null) {
+			return Optional.empty();
+		}
+
+		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
+		// Leseberechtigt bin, fuer die Mutation aber schon!
+		AbstractPlatz vorgaengerPlatz = persistence.find(abstractPlatz.getClass(), abstractPlatz.getVorgaengerId());
+		if (vorgaengerPlatz != null) {
+			if (vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
+				return Optional.of(vorgaengerPlatz);
+			}
+			return findVorgaengerPlatz(vorgaengerPlatz);
+		}
+		return Optional.empty();
 	}
 
 	/**
 	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
 	 */
 	@Nonnull
-	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz betreuung) {
-		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-		if (betreuung.getVorgaengerId() == null) {
-			return Optional.empty();
-		}
-
-		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
-		// Leseberechtigt bin, fuer die Mutation aber schon!
-		AbstractPlatz vorgaengerbetreuung = persistence.find(betreuung.getClass(), betreuung.getVorgaengerId());
-		if (vorgaengerbetreuung != null) {
-			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
-				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
-				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
-			}
-			return findVorgaengerVerfuegung(vorgaengerbetreuung);
-		}
-		return Optional.empty();
+	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz abstractPlatz) {
+		final Optional<AbstractPlatz> vorgaengerPlatz = findVorgaengerPlatz(abstractPlatz);
+		return vorgaengerPlatz.map(AbstractPlatz::getVerfuegung);
 	}
 
 	protected void logExceptionAccordingToEnvironment(@Nonnull Exception e, @Nonnull String message, @Nonnull String arg) {

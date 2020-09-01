@@ -32,11 +32,11 @@
              ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
              ng-if="vm.activeGesuchsperiodenList.length > 0">
 
-            <span class="gdashboard-panel__gesuchstring">
+            <span class="gdashboard-panel-gesuchstring">
                 <span data-translate="PERIODE"></span>
                 <span>{{periode.gesuchsperiodeString}}</span>
             </span>
-            <span class="gdashboard-panel__gesuchrange" flex="nogrow">
+            <span class="gdashboard-panel-gesuchrange" flex="nogrow">
                 <span>{{periode.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YY'}} – {{periode.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YY'}}</span>
             </span>
 

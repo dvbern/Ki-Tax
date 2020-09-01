@@ -28,11 +28,13 @@ import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dial
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
+import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
@@ -98,6 +100,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
         ErrorMessagesComponent,
@@ -113,7 +116,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgGesuchstellerDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
-        FileUploadComponent
+        FileUploadComponent,
+        DvNgConfirmDialogComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
@@ -126,6 +130,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvPosteingangComponent,
         GemeindeMultiselectComponent,
         DvBenutzerEntry,
@@ -135,6 +140,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         FileUploadComponent,
+        DvNgConfirmDialogComponent,
     ],
     exports: [
         CommonModule,
@@ -160,6 +166,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,
         FullHeightContainerComponent,
@@ -172,6 +179,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         FileUploadComponent,
+        DvNgConfirmDialogComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

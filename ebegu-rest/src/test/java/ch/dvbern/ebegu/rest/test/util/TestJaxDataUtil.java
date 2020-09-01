@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
@@ -192,7 +193,7 @@ public final class TestJaxDataUtil {
 
 	public static JaxDossier createTestJaxDossier(@Nullable JaxGemeinde gemeinde) {
 		JaxDossier jaxDossier = new JaxDossier();
-		jaxDossier.setVerantwortlicherBG(createTestJaxBenutzer());
+		jaxDossier.setVerantwortlicherBG(createTestJaxBenutzerNoDetails());
 		jaxDossier.setFall(createTestJaxFall());
 		if (gemeinde != null) {
 			jaxDossier.setGemeinde(gemeinde);
@@ -205,9 +206,17 @@ public final class TestJaxDataUtil {
 		JaxBerechtigung jaxBerechtigung = createTestJaxBerechtigung();
 		jaxBenutzer.getBerechtigungen().add(jaxBerechtigung);
 		jaxBenutzer.setCurrentBerechtigung(jaxBerechtigung);
-		jaxBenutzer.setUsername("TestUser");
+		jaxBenutzer.setUsername("testuser");
 		jaxBenutzer.setPassword("1234");
 		jaxBenutzer.setEmail("testuser@example.com");
+		jaxBenutzer.setNachname("NachnameTest");
+		jaxBenutzer.setVorname("VornameTest");
+		return jaxBenutzer;
+	}
+
+	public static JaxBenutzerNoDetails createTestJaxBenutzerNoDetails() {
+		JaxBenutzerNoDetails jaxBenutzer = new JaxBenutzerNoDetails();
+		jaxBenutzer.setUsername("testuser");
 		jaxBenutzer.setNachname("NachnameTest");
 		jaxBenutzer.setVorname("VornameTest");
 		return jaxBenutzer;

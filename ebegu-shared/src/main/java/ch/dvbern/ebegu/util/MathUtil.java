@@ -252,6 +252,17 @@ public enum MathUtil {
 		return subtractNullSafe(value, subtrahend);
 	}
 
+	@Nonnull
+	public BigDecimal subtractMultiple(@Nonnull BigDecimal value, @Nonnull BigDecimal... subtrahends) {
+		BigDecimal result = value;
+		for (BigDecimal subtrahend : subtrahends) {
+			if (subtrahend != null) {
+				result = subtract(result, subtrahend);
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
@@ -450,19 +461,26 @@ public enum MathUtil {
 	}
 
 	@Nonnull
-	public static BigDecimal minimum(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2) {
-		if (value1.compareTo(value2) > 0) {
+	public static BigDecimal minimum(@Nonnull BigDecimal value1, @Nonnull BigDecimal minimum) {
+		if (value1.compareTo(minimum) > 0) {
 			return value1;
 		}
-		return value2;
+		return minimum;
 	}
 
 	@Nonnull
-	public static BigDecimal maximum(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2) {
-		if (value1.compareTo(value2) < 0) {
+	public static BigDecimal maximum(@Nonnull BigDecimal value1, @Nonnull BigDecimal maximum) {
+		if (value1.compareTo(maximum) < 0) {
 			return value1;
 		}
-		return value2;
+		return maximum;
+	}
+
+	@Nonnull
+	public static BigDecimal minimumMaximum(@Nonnull BigDecimal value, @Nonnull BigDecimal minimum, @Nonnull BigDecimal maximum) {
+		value = minimum(value, minimum);
+		value = maximum(value, maximum);
+		return value;
 	}
 
 	@Nonnull

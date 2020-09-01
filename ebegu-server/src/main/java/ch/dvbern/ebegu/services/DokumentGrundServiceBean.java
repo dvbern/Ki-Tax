@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,16 +44,11 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer Kind
  */
 @Stateless
 @Local(DokumentGrundService.class)
-@PermitAll
 public class DokumentGrundServiceBean extends AbstractBaseService implements DokumentGrundService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DokumentGrundServiceBean.class.getSimpleName());
@@ -79,11 +72,16 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Override
 	public DokumentGrund saveDokumentGrund(@Nonnull DokumentGrund dokumentGrund) {
 		Objects.requireNonNull(dokumentGrund);
+
+		// Wir muessen zuerst den TimestampUpload setzen, bevor der Authorizer aufgerufen wird,
+		// da dieser u.U. flusht und die Daten dann noch ungueltig waeren
 		dokumentGrund.getDokumente().forEach(dokument -> {
 			if (dokument.getTimestampUpload() == null) {
 				dokument.setTimestampUpload(LocalDateTime.now());
 			}
 		});
+		authorizer.checkWriteAuthorization(dokumentGrund.getGesuch());
+
 		// Falls es der Gesuchsteller war, der das Dokument hochgeladen hat, soll das Flag auf dem Gesuch gesetzt werden,
 		// damit das Jugendamt es sieht. Allerdings nur wenn das Gesuch schon freigegeben wurde
 		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER) && !dokumentGrund.getGesuch().getStatus().isAnyOfInBearbeitungGS()) {
@@ -114,8 +112,9 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Override
 	@Nonnull
 	public Collection<DokumentGrund> findAllDokumentGrundByGesuch(@Nonnull Gesuch gesuch) {
-		return this.findAllDokumentGrundByGesuch(gesuch, true);
-
+		final Collection<DokumentGrund> dokumentGruende = this.findAllDokumentGrundByGesuch(gesuch, true);
+		dokumentGruende.forEach(dokumentGrund -> authorizer.checkReadAuthorization(dokumentGrund));
+		return dokumentGruende;
 	}
 
 	@Nonnull
@@ -165,6 +164,7 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Nullable
 	public DokumentGrund updateDokumentGrund(@Nonnull DokumentGrund dokumentGrund) {
 		Objects.requireNonNull(dokumentGrund);
+		authorizer.checkWriteAuthorization(dokumentGrund.getGesuch());
 
 		//Wenn DokumentGrund keine Dokumente mehr hat und nicht gebraucht wird, wird er entfernt ausser es ist SONSTIGE NACHWEISE oder PAPIERGESUCH  (da ist needed immer false)
 		if (!DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrund.getDokumentGrundTyp()) && !dokumentGrund.isNeeded() && dokumentGrund.getDokumente().isEmpty()) {
@@ -182,11 +182,11 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE})
 	public void removeAllDokumentGrundeFromGesuch(@Nonnull Gesuch gesuch) {
 		LOGGER.info("Deleting Dokument-Gruende of Gesuch: {} / {}", gesuch.getDossier(), gesuch.getGesuchsperiode().getGesuchsperiodeString());
-		Collection<DokumentGrund> dokumentsFromGesuch = findAllDokumentGrundByGesuch(gesuch);
+		Collection<DokumentGrund> dokumentsFromGesuch = findAllDokumentGrundByGesuch(gesuch, false);
 		for (DokumentGrund dokument : dokumentsFromGesuch) {
+			authorizer.checkWriteAuthorization(dokument);
 			LOGGER.info("Deleting DokumentGrund: {}", dokument.getId());
 			persistence.remove(DokumentGrund.class, dokument.getId());
 		}
@@ -194,6 +194,7 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 
 	@Override
 	public void removeIfEmpty(@Nonnull DokumentGrund dokumentGrund) {
+		authorizer.checkWriteAuthorization(dokumentGrund.getGesuch());
 		if (dokumentGrund.isEmpty()) {
 			persistence.remove(dokumentGrund);
 		}

@@ -41,14 +41,6 @@ export class ApplicationPropertyRS {
         });
     }
 
-    public getByName(name: string): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/key/${encodeURIComponent(name)}`).then(
-            (response: any) => {
-                return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-            },
-        );
-    }
-
     public isDevMode(): IPromise<boolean> {
         return this.getPublicPropertiesCached().then(response => {
             return response.devmode;
@@ -124,6 +116,18 @@ export class ApplicationPropertyRS {
     public getBackgroundColorFromServer(): IPromise<TSApplicationProperty> {
         return this.http.get(`${this.serviceURL}/public/background`).then(response => {
             return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
+        });
+    }
+
+    public getNotverordnungDefaultEinreichefristPrivat(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.notverordnungDefaultEinreichefristOeffentlich;
+        });
+    }
+
+    public getNotverordnungDefaultEinreichefristOeffentlich(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.notverordnungDefaultEinreichefristPrivat;
         });
     }
 }

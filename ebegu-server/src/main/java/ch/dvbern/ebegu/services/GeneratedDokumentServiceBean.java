@@ -30,13 +30,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -56,11 +53,15 @@ import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
+import ch.dvbern.ebegu.entities.GeneratedGeneralDokument;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -88,8 +89,8 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.AuszahlungDTO;
-import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001DTO;
+import ch.dvbern.oss.lib.iso20022.dtos.pain.AuszahlungDTO;
+import ch.dvbern.oss.lib.iso20022.dtos.pain.Pain001DTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001Service;
 import com.lowagie.text.DocumentException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -97,32 +98,16 @@ import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer GeneratedDokument
  */
 @SuppressWarnings("InstanceMethodNamingConvention")
 @Stateless
 @Local(GeneratedDokumentService.class)
-@PermitAll
 public class GeneratedDokumentServiceBean extends AbstractBaseService implements GeneratedDokumentService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDokumentServiceBean.class.getSimpleName());
 	public static final byte[] EMPTY_BYTES = new byte[0];
-	private static final Pattern PATTERN = Pattern.compile("\\s+");
 
 	@Inject
 	private Persistence persistence;
@@ -179,13 +164,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Override
 	@Nullable
-	public WriteProtectedDokument findGeneratedDokument(@Nonnull String gesuchId, @Nonnull String filename) {
+	public WriteProtectedDokument findGeneratedDokument(@Nonnull String id, @Nonnull String filename) {
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GeneratedDokument> query = cb.createQuery(GeneratedDokument.class);
 		Root<GeneratedDokument> root = query.from(GeneratedDokument.class);
 
-		Predicate predGesuch = cb.equal(root.get(GeneratedDokument_.gesuch).get(AbstractEntity_.id), gesuchId);
+		Predicate predGesuch = cb.equal(root.get(GeneratedDokument_.gesuch).get(AbstractEntity_.id), id);
 		Predicate predFileName = cb.equal(root.get(FileMetadata_.filename), filename);
 
 		query.where(predGesuch, predFileName);
@@ -207,6 +192,22 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		query.where(predZahlungsauftrag, predFileName);
 		return persistence.getCriteriaSingleResult(query);
 	}
+
+	@Override
+	@Nullable
+	public WriteProtectedDokument findGeneratedNotrechtDokument(@Nonnull String id, @Nonnull String filename) {
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<GeneratedNotrechtDokument> query = cb.createQuery(GeneratedNotrechtDokument.class);
+		Root<GeneratedNotrechtDokument> root = query.from(GeneratedNotrechtDokument.class);
+
+		Predicate predGesuch = cb.equal(root.get(GeneratedNotrechtDokument_.rueckforderungFormular).get(AbstractEntity_.id), id);
+		Predicate predFileName = cb.equal(root.get(FileMetadata_.filename), filename);
+
+		query.where(predGesuch, predFileName);
+		return persistence.getCriteriaSingleResult(query);
+	}
+
 
 	/**
 	 * Sucht ein WriteProtectedDokument mit demselben Namen und Pfad und vom selben Gesuch. Wen das Dokument
@@ -233,6 +234,16 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				filePathToRemove = writeProtectedDokument.getFilepfad();
 			}
 			((GeneratedDokument) writeProtectedDokument).setGesuch((Gesuch) entity);
+		}
+		else if (entity instanceof RueckforderungFormular){
+			writeProtectedDokument = this.findGeneratedNotrechtDokument(entity.getId(), fileName);
+			if (writeProtectedDokument == null) {
+				writeProtectedDokument = new GeneratedNotrechtDokument();
+			} else {
+				//Die Datei wird am Ende geloscht, um unvollstaenige Daten zu vermeiden falls was kaputt geht
+				filePathToRemove = writeProtectedDokument.getFilepfad();
+			}
+			((GeneratedNotrechtDokument) writeProtectedDokument).setRueckforderungFormular((RueckforderungFormular) entity);
 		} else { // case of pain001
 			writeProtectedDokument = this.findPain001Dokument(entity.getId(), fileName);
 			if (writeProtectedDokument == null) {
@@ -561,6 +572,15 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		return Optional.ofNullable(persistedDokument);
 	}
 
+	@Nonnull
+	private Optional<WriteProtectedDokument> getMaybeExistingGeneratedNotrechtDokument(
+		String rueckforderungFormularId,
+		String fileNameForGeneratedDokumentTyp) {
+		final WriteProtectedDokument persistedDokument =
+			findGeneratedNotrechtDokument(rueckforderungFormularId, fileNameForGeneratedDokumentTyp);
+		return Optional.ofNullable(persistedDokument);
+	}
+
 	@SuppressWarnings("Duplicates")
 	@Nullable
 	private WriteProtectedDokument getDocumentIfExistsAndIsWriteProtected(
@@ -578,6 +598,26 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				// mit
 				// einer eventuellen Fehlermeldung sowieso nichts anfangen könnte, geben wir das bereits vorhandene
 				// Dokument zurück, loggen aber den Vorfall.
+				LOGGER.error(
+					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
+						+ "PersistedDokument-ID: {}",
+					optionalDokument.get()
+						.getId());
+			}
+			return optionalDokument.get();
+		}
+		return null;
+	}
+
+	@Nullable
+	private WriteProtectedDokument getNotrechtDocumentIfExistsAndIsWriteProtected(
+		String rueckforderungFormularId,
+		String fileNameForGeneratedDokumentTyp,
+		@Nonnull Boolean forceCreation) {
+		Optional<WriteProtectedDokument> optionalDokument =
+			getMaybeExistingGeneratedNotrechtDokument(rueckforderungFormularId, fileNameForGeneratedDokumentTyp);
+		if (optionalDokument.isPresent() && optionalDokument.get().isWriteProtected()) {
+			if (forceCreation) {
 				LOGGER.error(
 					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
 						+ "PersistedDokument-ID: {}",
@@ -805,9 +845,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public WriteProtectedDokument getPain001DokumentAccessTokenGeneratedDokument(
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Boolean forceCreation
@@ -879,12 +916,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		IBAN ibanGemeinde = gemeindeStammdaten.getIban();
 		Objects.requireNonNull(ibanGemeinde, "Keine IBAN fuer Gemeinde " + gemeindeStammdaten.getGemeinde().getName());
 		String debitorIban = ibanToUnformattedString(ibanGemeinde);
-		String debitorIbanGebuehren = applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
 
 		pain001DTO.setSchuldnerName(debitorName);
 		pain001DTO.setSchuldnerIBAN(debitorIban);
 		pain001DTO.setSchuldnerBIC(debitorBic);
-		pain001DTO.setSchuldnerIBANGebuehren(debitorIbanGebuehren == null ? pain001DTO.getSchuldnerIBAN() : debitorIbanGebuehren);
+		// Wir setzen explizit keine SchuldnerIBAN, da dieses Feld zwar optional ist, aber bei einigen Banken Probleme macht
+		pain001DTO.setSchuldnerIBANGebuehren(null);
 		pain001DTO.setSoftwareName("kiBon");
 		// we use the currentTimeMillis so that it is always different
 		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
@@ -927,11 +964,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Nonnull
 	protected String ibanToUnformattedString(@Nonnull IBAN iban) {
 		Objects.requireNonNull(iban);
-		return PATTERN.matcher(iban.getIban()).replaceAll("");
+		return EbeguUtil.removeWhiteSpaces(iban.getIban());
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeAllGeneratedDokumenteFromGesuch(@Nonnull Gesuch gesuch) {
 		LOGGER.info(
 			"Searching GeneratedDokuments of Gesuch: {} / {}",
@@ -939,13 +975,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		Collection<GeneratedDokument> genDokFromGesuch = findGeneratedDokumentsFromGesuch(gesuch);
 		for (GeneratedDokument generatedDokument : genDokFromGesuch) {
+			authorizer.checkWriteAuthorization(generatedDokument);
 			LOGGER.info("Deleting Dokument: {}", generatedDokument.getId());
 			persistence.remove(GeneratedDokument.class, generatedDokument.getId());
 		}
 	}
 
 	@Override
-	@PermitAll
 	public void removeFreigabequittungFromGesuch(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
 
@@ -973,8 +1009,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Override
 	public Collection<GeneratedDokument> findGeneratedDokumentsFromGesuch(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
-		this.authorizer.checkReadAuthorization(gesuch);
-		return criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch, GeneratedDokument_.gesuch);
+		final Collection<GeneratedDokument> generatedDokumente =
+			criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch,	GeneratedDokument_.gesuch);
+		generatedDokumente.forEach(generatedDokument -> authorizer.checkReadAuthorization(generatedDokument));
+		return generatedDokumente;
 	}
 
 	@Nonnull
@@ -1035,5 +1073,86 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				gesuch, fileNameForGeneratedDokumentTyp, forceCreation);
 		}
 		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getRueckforderungProvVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular
+	) throws MimeTypeParseException, MergeDocException {
+
+		String fileNameForGeneratedDokumentTyp = DokumenteUtil
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+					rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
+
+		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
+				fileNameForGeneratedDokumentTyp,
+				false);
+		if (documentIfExistsAndIsWriteProtected != null) {
+			return documentIfExistsAndIsWriteProtected;
+		}
+
+		WriteProtectedDokument persistedDokument = null;
+		byte[] data = pdfService.generateProvisorischeVerfuegungRuckforderungformular(rueckforderungFormular, true);
+		persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+			rueckforderungFormular, fileNameForGeneratedDokumentTyp, true);
+
+		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getRueckforderungDefinitiveVerfuegungAccessTokenGeneratedDokument(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nullable String auftragIdentifier
+	) throws MimeTypeParseException, MergeDocException {
+
+		String fileNameForGeneratedDokumentTyp = DokumenteUtil
+			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+				rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
+
+		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
+				fileNameForGeneratedDokumentTyp,
+				false);
+		if (documentIfExistsAndIsWriteProtected != null) {
+			return documentIfExistsAndIsWriteProtected;
+		}
+
+		WriteProtectedDokument persistedDokument = null;
+		byte[] data = pdfService.generateDefinitiveVerfuegungRuckforderungformular(rueckforderungFormular, true);
+		persistedDokument = saveGeneratedDokumentInDB(data,  GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+			rueckforderungFormular, fileNameForGeneratedDokumentTyp, false);
+
+		if (auftragIdentifier != null) {
+			// Bitzli ein Hack: Wir wollen fuer das Zip das byte[] direkt haben, schreiben es daher (transient) hier rein
+			// Dies ist aber nur notwendig, wenn wir ueberhaupt an einer Massenverfuegung sind (also einen
+			// auftragIdentifier haben)
+			((GeneratedNotrechtDokument)persistedDokument).setContent(data);
+		}
+
+		return persistedDokument;
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument generateMassenVerfuegungenAccessTokenGeneratedDocument(
+		@Nonnull byte[] content,
+		@Nonnull String auftragIdentifier
+	) throws MimeTypeParseException {
+
+		// Der Name des ZipFiles ist der auftragIdentifier.
+		UploadFileInfo savedDokument = fileSaverService.saveZipFile(content, auftragIdentifier);
+
+		GeneratedGeneralDokument writeProtectedDokument = new GeneratedGeneralDokument();
+		writeProtectedDokument.setIdentifier(auftragIdentifier);
+		writeProtectedDokument.setFilename(savedDokument.getFilename());
+		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
+		writeProtectedDokument.setTyp(GeneratedDokumentTyp.NOTRECHT_MASSENVERFUEGUNG);
+		writeProtectedDokument.setWriteProtected(true);
+
+		return this.saveDokument(writeProtectedDokument);
 	}
 }

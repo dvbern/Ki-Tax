@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -45,12 +46,13 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String gs1Plz;
 	@Nullable private String gs1Ort;
 	@Nullable private Boolean gs1Diplomatenstatus;
-	private Integer gs1EwpAngestellt;
-	private Integer gs1EwpAusbildung;
-	private Integer gs1EwpSelbstaendig;
-	private Integer gs1EwpRav;
-	private Integer gs1EwpGesundhtl;
-	private Integer gs1EwpIntegration;
+	@Nonnull private Integer gs1EwpAngestellt = 0;
+	@Nonnull private Integer gs1EwpAusbildung = 0;
+	@Nonnull private Integer gs1EwpSelbstaendig = 0;
+	@Nonnull private Integer gs1EwpRav = 0;
+	@Nonnull private Integer gs1EwpGesundhtl = 0;
+	@Nonnull private Integer gs1EwpIntegration = 0;
+	@Nonnull private Integer gs1EwpFreiwillig = 0;
 
 
 	@Nullable private String gs2Name;
@@ -61,12 +63,13 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String gs2Plz;
 	@Nullable private String gs2Ort;
 	@Nullable private Boolean gs2Diplomatenstatus;
-	private Integer gs2EwpAngestellt;
-	private Integer gs2EwpAusbildung;
-	private Integer gs2EwpSelbstaendig;
-	private Integer gs2EwpRav;
-	private Integer gs2EwpGesundhtl;
-	private Integer gs2EwpIntegration;
+	@Nonnull private Integer gs2EwpAngestellt = 0;
+	@Nonnull private Integer gs2EwpAusbildung = 0;
+	@Nonnull private Integer gs2EwpSelbstaendig = 0;
+	@Nonnull private Integer gs2EwpRav = 0;
+	@Nonnull private Integer gs2EwpGesundhtl = 0;
+	@Nonnull private Integer gs2EwpIntegration = 0;
+	@Nonnull private Integer gs2EwpFreiwillig = 0;
 
 	@Nullable private EnumFamilienstatus familiensituation;
 	@Nullable private BigDecimal familiengroesse;
@@ -101,6 +104,8 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal bgPensumTotal;
 
 	@Nullable private BigDecimal bgStunden;
+	@Nullable private String bgPensumZeiteinheit;
+
 	@Nullable private BigDecimal vollkosten;
 	@Nullable private BigDecimal elternbeitrag;
 	@Nullable private BigDecimal verguenstigungKanton;
@@ -263,44 +268,58 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.gs1Diplomatenstatus = gs1Diplomatenstatus;
 	}
 
+	@Nonnull
 	public Integer getGs1EwpAngestellt() {
 		return gs1EwpAngestellt;
 	}
 
-	public void setGs1EwpAngestellt(@Nullable Integer gs1EwpAngestellt) {
+	public void setGs1EwpAngestellt(@Nonnull Integer gs1EwpAngestellt) {
 		this.gs1EwpAngestellt = gs1EwpAngestellt;
 	}
 
+	@Nonnull
 	public Integer getGs1EwpAusbildung() {
 		return gs1EwpAusbildung;
 	}
 
-	public void setGs1EwpAusbildung(@Nullable Integer gs1EwpAusbildung) {
+	public void setGs1EwpAusbildung(@Nonnull Integer gs1EwpAusbildung) {
 		this.gs1EwpAusbildung = gs1EwpAusbildung;
 	}
 
+	@Nonnull
 	public Integer getGs1EwpSelbstaendig() {
 		return gs1EwpSelbstaendig;
 	}
 
-	public void setGs1EwpSelbstaendig(@Nullable Integer gs1EwpSelbstaendig) {
+	public void setGs1EwpSelbstaendig(@Nonnull Integer gs1EwpSelbstaendig) {
 		this.gs1EwpSelbstaendig = gs1EwpSelbstaendig;
 	}
 
+	@Nonnull
 	public Integer getGs1EwpRav() {
 		return gs1EwpRav;
 	}
 
-	public void setGs1EwpRav(@Nullable Integer gs1EwpRav) {
+	public void setGs1EwpRav(@Nonnull Integer gs1EwpRav) {
 		this.gs1EwpRav = gs1EwpRav;
 	}
 
+	@Nonnull
 	public Integer getGs1EwpGesundhtl() {
 		return gs1EwpGesundhtl;
 	}
 
-	public void setGs1EwpGesundhtl(@Nullable Integer gs1EwpGesundhtl) {
+	public void setGs1EwpGesundhtl(@Nonnull Integer gs1EwpGesundhtl) {
 		this.gs1EwpGesundhtl = gs1EwpGesundhtl;
+	}
+
+	@Nonnull
+	public Integer getGs1EwpFreiwillig() {
+		return gs1EwpFreiwillig;
+	}
+
+	public void setGs1EwpFreiwillig(@Nonnull Integer gs1EwpFreiwillig) {
+		this.gs1EwpFreiwillig = gs1EwpFreiwillig;
 	}
 
 	@Nullable
@@ -375,43 +394,48 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.gs2Diplomatenstatus = gs2Diplomatenstatus;
 	}
 
+	@Nonnull
 	public Integer getGs2EwpAngestellt() {
 		return gs2EwpAngestellt;
 	}
 
-	public void setGs2EwpAngestellt(@Nullable Integer gs2EwpAngestellt) {
+	public void setGs2EwpAngestellt(@Nonnull Integer gs2EwpAngestellt) {
 		this.gs2EwpAngestellt = gs2EwpAngestellt;
 	}
 
+	@Nonnull
 	public Integer getGs2EwpAusbildung() {
 		return gs2EwpAusbildung;
 	}
 
-	public void setGs2EwpAusbildung(@Nullable Integer gs2EwpAusbildung) {
+	public void setGs2EwpAusbildung(@Nonnull Integer gs2EwpAusbildung) {
 		this.gs2EwpAusbildung = gs2EwpAusbildung;
 	}
 
+	@Nonnull
 	public Integer getGs2EwpSelbstaendig() {
 		return gs2EwpSelbstaendig;
 	}
 
-	public void setGs2EwpSelbstaendig(@Nullable Integer gs2EwpSelbstaendig) {
+	public void setGs2EwpSelbstaendig(@Nonnull Integer gs2EwpSelbstaendig) {
 		this.gs2EwpSelbstaendig = gs2EwpSelbstaendig;
 	}
 
+	@Nonnull
 	public Integer getGs2EwpRav() {
 		return gs2EwpRav;
 	}
 
-	public void setGs2EwpRav(@Nullable Integer gs2EwpRav) {
+	public void setGs2EwpRav(@Nonnull Integer gs2EwpRav) {
 		this.gs2EwpRav = gs2EwpRav;
 	}
 
+	@Nonnull
 	public Integer getGs2EwpGesundhtl() {
 		return gs2EwpGesundhtl;
 	}
 
-	public void setGs2EwpGesundhtl(@Nullable Integer gs2EwpGesundhtl) {
+	public void setGs2EwpGesundhtl(@Nonnull Integer gs2EwpGesundhtl) {
 		this.gs2EwpGesundhtl = gs2EwpGesundhtl;
 	}
 
@@ -653,6 +677,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
+	public String getBgPensumZeiteinheit() {
+		return bgPensumZeiteinheit;
+	}
+
+	public void setBgPensumZeiteinheit(@Nullable String bgPensumZeiteinheit) {
+		this.bgPensumZeiteinheit = bgPensumZeiteinheit;
+	}
+
+	@Nullable
 	public BigDecimal getVollkosten() {
 		return vollkosten;
 	}
@@ -697,19 +730,30 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.verguenstigungTotal = verguenstigungTotal;
 	}
 
+	@Nonnull
 	public Integer getGs1EwpIntegration() {
 		return gs1EwpIntegration;
 	}
 
-	public void setGs1EwpIntegration(Integer gs1EwpIntegration) {
+	public void setGs1EwpIntegration(@Nonnull Integer gs1EwpIntegration) {
 		this.gs1EwpIntegration = gs1EwpIntegration;
 	}
 
+	@Nonnull
 	public Integer getGs2EwpIntegration() {
 		return gs2EwpIntegration;
 	}
 
-	public void setGs2EwpIntegration(Integer gs2EwpIntegration) {
+	public void setGs2EwpIntegration(@Nonnull Integer gs2EwpIntegration) {
 		this.gs2EwpIntegration = gs2EwpIntegration;
+	}
+
+	@Nonnull
+	public Integer getGs2EwpFreiwillig() {
+		return gs2EwpFreiwillig;
+	}
+
+	public void setGs2EwpFreiwillig(@Nonnull Integer gs2EwpFreiwillig) {
+		this.gs2EwpFreiwillig = gs2EwpFreiwillig;
 	}
 }

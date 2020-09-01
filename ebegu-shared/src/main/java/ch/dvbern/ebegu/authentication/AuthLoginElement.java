@@ -20,6 +20,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.util.EbeguUtil;
 
 /**
  * Wrapper fuer einen Login Request
@@ -43,11 +44,11 @@ public class AuthLoginElement implements Serializable {
 
 	public AuthLoginElement(@Nonnull String username, @Nonnull String plainTextpassword, @Nonnull String nachname,
 		@Nonnull String vorname, @Nonnull String email, @Nonnull UserRole role) {
-		this.username = Objects.requireNonNull(username);
+		this.username = Objects.requireNonNull(EbeguUtil.preProcessString(username));
 		this.plainTextPassword = Objects.requireNonNull(plainTextpassword);
 		this.nachname = Objects.requireNonNull(nachname);
 		this.vorname = Objects.requireNonNull(vorname);
-		this.email = Objects.requireNonNull(email);
+		this.email = Objects.requireNonNull(EbeguUtil.preProcessString(email));
 		this.role = Objects.requireNonNull(role);
 	}
 
@@ -57,7 +58,7 @@ public class AuthLoginElement implements Serializable {
 	}
 
 	public void setUsername(@Nonnull final String username) {
-		this.username = username;
+		this.username = EbeguUtil.preProcessString(username);
 	}
 
 	@Nonnull
@@ -93,7 +94,7 @@ public class AuthLoginElement implements Serializable {
 	}
 
 	public void setEmail(@Nonnull String email) {
-		this.email = email;
+		this.email = EbeguUtil.preProcessString(email);
 	}
 
 	@Nonnull

@@ -25,11 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,10 +39,6 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Stateless
 @Local(RueckforderungMitteilungService.class)
@@ -62,7 +56,6 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 	@Inject
 	private Persistence persistence;
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	public void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull List<RueckforderungStatus> statusList) {
 		Collection<RueckforderungFormular> formulareWithStatus =
@@ -70,7 +63,6 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		send(formulareWithStatus, rueckforderungMitteilung, statusList);
 	}
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	public void sendEinladung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 		ArrayList<RueckforderungStatus> statusNeu = new ArrayList<>();

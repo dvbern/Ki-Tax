@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -57,12 +60,20 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * Resource fuer Parameter
  */
 @Path("einstellung")
 @Stateless
 @Api(description = "Resource fuer Einstellungen")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class EinstellungResource {
 
 	@Inject
@@ -84,6 +95,7 @@ public class EinstellungResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response saveEinstellung(
 		@Nonnull @NotNull @Valid JaxEinstellung jaxEinstellung,
 		@Context UriInfo uriInfo,
@@ -112,6 +124,7 @@ public class EinstellungResource {
 	@Path("/key/{key}/gemeinde/{gemeindeId}/gp/{gesuchsperiodeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public JaxEinstellung findEinstellung(
 		@Nonnull @PathParam("key") String key,
 		@Nonnull @PathParam("gemeindeId") String gemeindeId,
@@ -133,6 +146,7 @@ public class EinstellungResource {
 	@Path("/gesuchsperiode/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public List<JaxEinstellung> getAllEinstellungenBySystem(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
@@ -153,6 +167,7 @@ public class EinstellungResource {
 	@Path("/mandant/gesuchsperiode/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public List<JaxEinstellung> getAllEinstellungenByMandant(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 

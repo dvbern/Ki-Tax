@@ -52,7 +52,6 @@ public class EmptyKitaxRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
-//		result.setBetreuungspensumProzent(BigDecimal.ZERO);
 		result.setAnspruchspensumProzent(0);
 		result.setVerguenstigungHauptmahlzeitenTotal(BigDecimal.ZERO);
 		result.setVerguenstigungNebenmahlzeitenTotal(BigDecimal.ZERO);

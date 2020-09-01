@@ -169,6 +169,10 @@ public interface MailService {
 	 * Sendet eine Email mit der Information, dass ein Angebot für eine Gemeinde aktiviert wurde
 	 */
 	void sendInfoGemeineAngebotAktiviert(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeAngebotTyp angebot);
+	/**
+	 * schickt eine email an den Verantwortlichen Tagesschule und informiert, dass das Gesuch verfuegt wurde
+	 */
+	void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS) throws MailException;
 
 	void sendNotrechtGenerischeMitteilung(
 		@Nonnull RueckforderungMitteilung mitteilung,
@@ -179,5 +183,7 @@ public interface MailService {
 	 * Sendet eine Email mit der Informatiom, dass ein Ruckforderungformular bei der Kanton geprueft wurde
 	 */
 	@Nullable
-	String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
+	String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular);
+
+	void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
 }

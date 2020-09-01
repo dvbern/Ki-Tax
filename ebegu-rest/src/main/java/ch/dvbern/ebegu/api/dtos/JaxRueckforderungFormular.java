@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungFormular extends JaxAbstractDTO {
@@ -44,6 +48,11 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	@Nonnull
 	private RueckforderungStatus status;
+
+	private boolean hasBeenProvisorisch = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
+
+	@Nullable
+	private RueckforderungInstitutionTyp institutionTyp = null;
 
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden;
@@ -93,6 +102,9 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
 	@Nullable
+	private BigDecimal stufe2VoraussichtlicheBetrag;
+
+	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Nullable
@@ -102,6 +114,64 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate extendedEinreichefrist = null;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate relevantEinreichungsfrist;
+
+	@Nullable
+	private BigDecimal betragEntgangeneElternbeitraege;
+
+	@Nullable
+	private BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten; // Kita in TAGE, TFO in STUNDEN
+
+	@Nullable
+	private BigDecimal anzahlNichtAngeboteneEinheiten; // Neu: Rueckerstattung fuer nicht angebotene Einheiten
+
+	@Nullable
+	private Boolean kurzarbeitBeantragt;
+
+	@Nullable
+	private BigDecimal kurzarbeitBetrag;
+
+	@Nullable
+	private Boolean kurzarbeitDefinitivVerfuegt;
+
+	@Nullable
+	private String kurzarbeitKeinAntragBegruendung;
+
+	@Nullable
+	private String kurzarbeitSonstiges;
+
+	@Nullable
+	private Boolean coronaErwerbsersatzBeantragt;
+
+	@Nullable
+	private BigDecimal coronaErwerbsersatzBetrag;
+
+	@Nullable
+	private Boolean coronaErwerbsersatzDefinitivVerfuegt;
+
+	@Nullable
+	private String coronaErwerbsersatzKeinAntragBegruendung;
+
+	@Nullable
+	private String coronaErwerbsersatzSonstiges;
+
+	@Nonnull
+	private Sprache korrespondenzSprache;
+
+	@Nullable
+	private String verantwortlicherName;
+
+	private boolean uncheckedDocuments;
+
+	@Nullable
+	private String bemerkungFuerVerfuegung;
 
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
@@ -119,6 +189,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStatus(@Nonnull RueckforderungStatus status) {
 		this.status = status;
+	}
+
+	public boolean isHasBeenProvisorisch() {
+		return hasBeenProvisorisch;
+	}
+
+	public void setHasBeenProvisorisch(boolean hasBeenProvisorisch) {
+		this.hasBeenProvisorisch = hasBeenProvisorisch;
 	}
 
 	@Nullable
@@ -290,5 +368,193 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStufe2VerfuegungAusbezahltAm(@Nullable LocalDateTime stufe2VerfuegungAusbezahltAm) {
 		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
+	}
+
+	@Nullable
+	public RueckforderungInstitutionTyp getInstitutionTyp() {
+		return institutionTyp;
+	}
+
+	public void setInstitutionTyp(@Nullable RueckforderungInstitutionTyp institutionTyp) {
+		this.institutionTyp = institutionTyp;
+	}
+
+	@Nullable
+	public LocalDate getExtendedEinreichefrist() {
+		return extendedEinreichefrist;
+	}
+
+	public void setExtendedEinreichefrist(@Nullable LocalDate extendedEinreichefrist) {
+		this.extendedEinreichefrist = extendedEinreichefrist;
+	}
+
+	@Nullable
+	public LocalDate getRelevantEinreichungsfrist() {
+		return relevantEinreichungsfrist;
+	}
+
+	public void setRelevantEinreichungsfrist(@Nullable LocalDate relevantEinreichungsfrist) {
+		this.relevantEinreichungsfrist = relevantEinreichungsfrist;
+	}
+
+	@Nullable
+	public BigDecimal getBetragEntgangeneElternbeitraege() {
+		return betragEntgangeneElternbeitraege;
+	}
+
+	public void setBetragEntgangeneElternbeitraege(@Nullable BigDecimal betragEntgangeneElternbeitraege) {
+		this.betragEntgangeneElternbeitraege = betragEntgangeneElternbeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten() {
+		return betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	public void setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(@Nullable BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten) {
+		this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten = betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlNichtAngeboteneEinheiten() {
+		return anzahlNichtAngeboteneEinheiten;
+	}
+
+	public void setAnzahlNichtAngeboteneEinheiten(@Nullable BigDecimal anzahlNichtAngeboteneEinheiten) {
+		this.anzahlNichtAngeboteneEinheiten = anzahlNichtAngeboteneEinheiten;
+	}
+
+	@Nullable
+	public Boolean getKurzarbeitBeantragt() {
+		return kurzarbeitBeantragt;
+	}
+
+	public void setKurzarbeitBeantragt(@Nullable Boolean kurzarbeitBeantragt) {
+		this.kurzarbeitBeantragt = kurzarbeitBeantragt;
+	}
+
+	@Nullable
+	public BigDecimal getKurzarbeitBetrag() {
+		return kurzarbeitBetrag;
+	}
+
+	public void setKurzarbeitBetrag(@Nullable BigDecimal kurzarbeitBetrag) {
+		this.kurzarbeitBetrag = kurzarbeitBetrag;
+	}
+
+	@Nullable
+	public Boolean getKurzarbeitDefinitivVerfuegt() {
+		return kurzarbeitDefinitivVerfuegt;
+	}
+
+	public void setKurzarbeitDefinitivVerfuegt(@Nullable Boolean kurzarbeitDefinitivVerfuegt) {
+		this.kurzarbeitDefinitivVerfuegt = kurzarbeitDefinitivVerfuegt;
+	}
+
+	@Nullable
+	public String getKurzarbeitKeinAntragBegruendung() {
+		return kurzarbeitKeinAntragBegruendung;
+	}
+
+	public void setKurzarbeitKeinAntragBegruendung(@Nullable String kurzarbeitKeinAntragBegruendung) {
+		this.kurzarbeitKeinAntragBegruendung = kurzarbeitKeinAntragBegruendung;
+	}
+
+	@Nullable
+	public String getKurzarbeitSonstiges() {
+		return kurzarbeitSonstiges;
+	}
+
+	public void setKurzarbeitSonstiges(@Nullable String kurzarbeitSonstiges) {
+		this.kurzarbeitSonstiges = kurzarbeitSonstiges;
+	}
+
+	@Nullable
+	public Boolean getCoronaErwerbsersatzBeantragt() {
+		return coronaErwerbsersatzBeantragt;
+	}
+
+	public void setCoronaErwerbsersatzBeantragt(@Nullable Boolean coronaErwerbsersatzBeantragt) {
+		this.coronaErwerbsersatzBeantragt = coronaErwerbsersatzBeantragt;
+	}
+
+	@Nullable
+	public BigDecimal getCoronaErwerbsersatzBetrag() {
+		return coronaErwerbsersatzBetrag;
+	}
+
+	public void setCoronaErwerbsersatzBetrag(@Nullable BigDecimal coronaErwerbsersatzBetrag) {
+		this.coronaErwerbsersatzBetrag = coronaErwerbsersatzBetrag;
+	}
+
+	@Nullable
+	public Boolean getCoronaErwerbsersatzDefinitivVerfuegt() {
+		return coronaErwerbsersatzDefinitivVerfuegt;
+	}
+
+	public void setCoronaErwerbsersatzDefinitivVerfuegt(@Nullable Boolean coronaErwerbsersatzDefinitivVerfuegt) {
+		this.coronaErwerbsersatzDefinitivVerfuegt = coronaErwerbsersatzDefinitivVerfuegt;
+	}
+
+	@Nullable
+	public String getCoronaErwerbsersatzKeinAntragBegruendung() {
+		return coronaErwerbsersatzKeinAntragBegruendung;
+	}
+
+	public void setCoronaErwerbsersatzKeinAntragBegruendung(@Nullable String coronaErwerbsersatzKeinAntragBegruendung) {
+		this.coronaErwerbsersatzKeinAntragBegruendung = coronaErwerbsersatzKeinAntragBegruendung;
+	}
+
+	@Nullable
+	public String getCoronaErwerbsersatzSonstiges() {
+		return coronaErwerbsersatzSonstiges;
+	}
+
+	public void setCoronaErwerbsersatzSonstiges(@Nullable String coronaErwerbsersatzSonstiges) {
+		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	public void setKorrespondenzSprache(@Nonnull Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	@Nullable
+	public String getVerantwortlicherName() {
+		return verantwortlicherName;
+	}
+
+	public void setVerantwortlicherName(@Nullable String verantwortlicherName) {
+		this.verantwortlicherName = verantwortlicherName;
+	}
+
+	public boolean hasUncheckedDocuments() {
+		return uncheckedDocuments;
+	}
+
+	public void setUncheckedDocuments(boolean uncheckedDocuments) {
+		this.uncheckedDocuments = uncheckedDocuments;
+	}
+
+	@Nullable
+	public String getBemerkungFuerVerfuegung() {
+		return bemerkungFuerVerfuegung;
+	}
+
+	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
+		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
 	}
 }

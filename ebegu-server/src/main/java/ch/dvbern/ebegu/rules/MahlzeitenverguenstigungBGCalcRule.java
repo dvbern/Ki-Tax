@@ -123,18 +123,18 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			BigDecimal verguenstigungTotal = inputData.getAnzahlNebenmahlzeiten().multiply(verguenstigungProNebenmahlzeitEffektiv);
 			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
 				verguenstigungTotal;
-			
+
 			inputData.getParent().setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 		}
 
 		if (verguenstigungProHauptmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0 ||
 			verguenstigungProNebenmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0) {
-			addBemerkung(inputData, verguenstigungProHauptmahlzeitEffektiv, verguenstigungProNebenmahlzeitEffektiv);
+			addBemerkung(inputData);
 		}
 	}
 
-	private void addBemerkung(@Nonnull BGCalculationInput inputData, @Nonnull BigDecimal haupt, @Nonnull BigDecimal neben) {
-		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, getLocale(), haupt, neben);
+	private void addBemerkung(@Nonnull BGCalculationInput inputData) {
+		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, getLocale());
 	}
 
 	private boolean validateInput(@Nonnull BGCalculationInput inputData) {

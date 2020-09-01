@@ -85,6 +85,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String webseite;
 
+	// Wird nur noch read-only verwendet, um die Daten-Migration durch die Institutions-Admins zu vereinfachen
 	@Column(nullable = true)
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungszeiten;
@@ -206,10 +207,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	public String getOeffnungszeiten() {
 		return oeffnungszeiten;
-	}
-
-	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
-		this.oeffnungszeiten = oeffnungszeiten;
 	}
 
 	public boolean getSendMailWennOffenePendenzen() {

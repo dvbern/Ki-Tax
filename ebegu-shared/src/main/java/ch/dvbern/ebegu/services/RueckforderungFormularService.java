@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +44,6 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular createRueckforderungFormular(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
-	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
-
-	@Nonnull
 	List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer();
 
 	@Nonnull
@@ -55,11 +53,25 @@ public interface RueckforderungFormularService {
 	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
 
 	@Nonnull
+	RueckforderungFormular saveAndChangeStatusIfNecessary(RueckforderungFormular rueckforderungFormular);
+
+	@Nonnull
 	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status);
 
 	@Nonnull
 	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
 
-	@Nonnull
 	void initializePhase2();
+
+	@Nonnull
+	RueckforderungFormular resetStatusToInBearbeitungInstitutionPhase2(@Nonnull String id);
+
+	@Nonnull
+	RueckforderungFormular resetStatusToInPruefungKantonPhase2(@Nonnull String id);
+
+	@Nonnull
+	RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular);
+
+	@Nonnull
+	byte[] massenVerfuegungDefinitiv(@Nonnull String auftragIdentifier) throws IOException;
 }

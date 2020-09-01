@@ -137,6 +137,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpRav, MathUtil.GANZZAHL.from(dataRow.getGs1EwpRav()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs1EwpGesundhtl()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpIntegration, MathUtil.GANZZAHL.from(dataRow.getGs1EwpIntegration()));
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpFreiwillig, MathUtil.GANZZAHL.from(dataRow.getGs1EwpFreiwillig()));
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2Name, dataRow.getGs2Name());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2Vorname, dataRow.getGs2Vorname());
@@ -152,6 +153,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpRav, MathUtil.GANZZAHL.from(dataRow.getGs2EwpRav()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs2EwpGesundhtl()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpIntegration, MathUtil.GANZZAHL.from(dataRow.getGs2EwpIntegration()));
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpFreiwillig, MathUtil.GANZZAHL.from(dataRow.getGs2EwpFreiwillig()));
 
 			String familiensituation = dataRow.getFamiliensituation() != null
 				? ServerMessageUtil.translateEnumValue(dataRow.getFamiliensituation(), locale)
@@ -186,6 +188,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumKanton, dataRow.getAnspruchsPensumKanton());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumGemeinde, dataRow.getAnspruchsPensumGemeinde());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumTotal, anspruchsPensumTotal);
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumZeiteinheit, dataRow.getBgPensumZeiteinheit());
 			if (anspruchsPensumTotal != null && anspruchsPensumTotal.compareTo(BigDecimal.ZERO) > 0) {
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, dataRow.getBgPensumKanton());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, dataRow.getBgPensumGemeinde());
@@ -297,6 +300,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesIndikationTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesIndikationTitle, ServerMessageUtil.getMessage("Reports_gesIndikationTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.freiwilligenarbeitTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.freiwilligenarbeitTitle, ServerMessageUtil.getMessage("Reports_freiwilligenarbeitTitle", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.familieTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.familieTitle, ServerMessageUtil.getMessage("Reports_familieTitle", locale));
@@ -417,6 +423,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumStdTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumStdTitle, ServerMessageUtil.getMessage("Reports_bgPensumStdTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumZeiteinheitTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumZeiteinheitTitle, ServerMessageUtil.getMessage("Reports_bgPensumZeiteinheitTitle", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgMonatspensumTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgMonatspensumTitle, ServerMessageUtil.getMessage("Reports_bgMonatspensumTitle", locale));

@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -77,7 +76,6 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @Local(WizardStepService.class)
-@PermitAll
 public class WizardStepServiceBean extends AbstractBaseService implements WizardStepService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WizardStepServiceBean.class);
@@ -476,8 +474,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	/**
 	 * In dieser Methode werden alle Sachen gemacht, die gebraucht werden, um ein Gesuch zu verfuegen.
 	 */
-	@Override
-	public void gesuchVerfuegen(@NotNull WizardStep verfuegenWizardStep) {
+	private void gesuchVerfuegen(@NotNull WizardStep verfuegenWizardStep) {
 		if (verfuegenWizardStep.getWizardStepName() == WizardStepName.VERFUEGEN) {
 			verfuegenWizardStep.setWizardStepStatus(WizardStepStatus.OK);
 			verfuegenWizardStep.getGesuch().setStatus(AntragStatus.VERFUEGT);
@@ -569,8 +566,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstaendig(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
-		} else if (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
-			// the FinSit/EKV is required but has not been created yet, so it must be NOK
+		} else if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
+			wizardStep.getWizardStepName())) {
+			// the FinSit/EKV is required but has not been created yet or is only partialy filled, so it must be NOK
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
@@ -827,7 +825,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch()))
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
 						&& erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
-						wizardStep.setVerfuegbar(false);
+						// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
+						wizardStep.setVerfuegbar(true);
 						wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 
 					}
@@ -854,6 +853,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 						if (wizardStep.getGesuch().getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
 							if (wizardStep.getWizardStepStatus() != WizardStepStatus.NOK) {
+								// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 								wizardStep.setVerfuegbar(true);
 								wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 							}
@@ -917,39 +917,17 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 			List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
 
-			BetreuungsangebotTyp dominantType = getDominantBetreuungsangebotTyp(allPlaetze);
+			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
-			}
-			if ((dominantType == BetreuungsangebotTyp.KITA || dominantType == BetreuungsangebotTyp.TAGESSCHULE)
-				&& EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
+			} else if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
+				wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 					|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
-				//TODO we dont check if there is a finsit container if the field are set or not
-				//so the step is ok if there's a finsit or Einkommsverschlt but without value
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 			}
 		}
-	}
-
-	/**
-	 * Von allen Betreuungen der Liste gib den Typ zurueck der Betreuung, die ueber die anderen dominiert.
-	 * KITA > TAGESSCHULE > FERINEINSEL
-	 */
-	@Nonnull
-	private BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<AbstractPlatz> betreuungenFromGesuch) {
-		BetreuungsangebotTyp dominantType = BetreuungsangebotTyp.FERIENINSEL; // less dominant type
-		for (AbstractPlatz betreuung : betreuungenFromGesuch) {
-			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
-				dominantType = BetreuungsangebotTyp.TAGESSCHULE;
-			}
-			if (!betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
-				dominantType = BetreuungsangebotTyp.KITA;
-				break;
-			}
-		}
-		return dominantType;
 	}
 
 	/**
@@ -962,15 +940,19 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		boolean erwerbspensumRequired = erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch());
 
 		WizardStepStatus status = null;
+		boolean available = wizardStep.getVerfuegbar();
 		if (erwerbspensumRequired) {
+			// Wenn das EWP required ist, muss grundsaetzlich der Step available sein
+			available = true;
 			if (gesuch.getGesuchsteller1() != null
-				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch.getGesuchsteller1()).isEmpty()) {
+				&& gesuch.getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
+				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
 			}
 			if (status != WizardStepStatus.NOK
 				&& gesuch.getGesuchsteller2() != null
-				&& erwerbspensumService.findErwerbspensenForGesuchsteller(gesuch
-				.getGesuchsteller2()).isEmpty()) {
+				&& gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
+				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
 			}
 		} else if (changesBecauseOtherStates && wizardStep.getWizardStepStatus() != WizardStepStatus.MUTIERT) {
@@ -981,6 +963,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			status = getWizardStepStatusOkOrMutiert(wizardStep);
 		}
 		wizardStep.setWizardStepStatus(status);
+		wizardStep.setVerfuegbar(available);
 	}
 
 	/**
@@ -1011,6 +994,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	public void removeSteps(Gesuch gesToRemove) {
 		List<WizardStep> wizardStepsFromGesuch = findWizardStepsFromGesuch(gesToRemove.getId());
 		for (WizardStep wizardStep : wizardStepsFromGesuch) {
+			authorizer.checkWriteAuthorization(wizardStep);
 			persistence.remove(WizardStep.class, wizardStep.getId());
 		}
 	}

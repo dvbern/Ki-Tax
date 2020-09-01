@@ -77,14 +77,6 @@ const ng1States: Ng1StateDeclaration[] = [
             roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
-    {
-        name: 'admin.ferieninsel',
-        template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
-        url: '/ferieninsel',
-        data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
-        },
-    },
 ];
 
 adminRun.$inject = ['RouterHelper'];

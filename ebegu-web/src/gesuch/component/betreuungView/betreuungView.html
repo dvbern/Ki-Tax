@@ -364,9 +364,6 @@
                                              dv-enable-expression="vm.isBetreuungsstatusWarten()">
                                     <span>{{vm.getBetreuungInGemeindeLabel()}}</span>
                                 </md-checkbox>
-                                <dv-bisher gs="vm.getErweiterteBetreuungGS().betreuungInGemeinde"
-                                           ja="vm.getErweiterteBetreuungJA().betreuungInGemeinde"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -397,7 +394,8 @@
                                       dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                       dv-enable-expression="vm.isPensumEditable()">
 
-                                <p class="inlineHint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"></p>
+                                <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
+                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
@@ -665,6 +663,7 @@
                                         <ul>
                                             <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
                                             <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
+                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_4' | translate}}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -795,7 +794,7 @@
                                            aria-label="{{MUTATIONSMELDUNG_ERSTELLEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_ERSTELLEN"></span>
                         </dv-loading-button>
-                        <dv-loading-button button-click="vm.mutationsmeldungSenden()"
+                        <dv-loading-button button-click="vm.preMutationsmeldungSenden()"
                                            ng-if="vm.isMutationsmeldungStatus"
                                            aria-label="{{MUTATIONSMELDUNG_SENDEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_SENDEN"></span>
