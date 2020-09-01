@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.services.GeoadminSearchService;
-import ch.dvbern.ebegu.services.GeoadminSearchService.LANG;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Test;
@@ -40,14 +39,14 @@ public class GeoadminSearchServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchAddressesFromWohnungsregister() {
 		List<JaxWohnadresse> jaxWohnadresses =
-			service.findWohnadressenBySearchText(LANG.de, "Laubeggstrasse 30 3006");
+			service.findWohnadressenBySearchText("Laubeggstrasse 30 3006");
 
 		assertEquals(1, jaxWohnadresses.size());
 	}
 
 	@Test
 	public void testFindGemeindeBern() {
-		List<JaxWohnadresse> jaxWohnadressen = service.findWohnadressenByStrasseAndOrt(LANG.de, "Spitalgasse", "1", "3011");
+		List<JaxWohnadresse> jaxWohnadressen = service.findWohnadressenByStrasseAndOrt("Spitalgasse", "1", "3011");
 		assertEquals("Bern", jaxWohnadressen.get(0).getGemeinde());
 		assertEquals(351, (long) jaxWohnadressen.get(0).getGemeindeBfsNr());
 	}
