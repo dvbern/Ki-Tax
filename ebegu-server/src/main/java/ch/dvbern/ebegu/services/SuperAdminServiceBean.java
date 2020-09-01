@@ -219,7 +219,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 			final Gesuch neuesterAntrag = persistence.find(Gesuch.class, antragIdOptional.get());
 			if (neuesterAntrag == null) {
 				throw new EbeguEntityNotFoundException(
-					"createMutationForEachClosedAntragOfGemeinde", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragIdOptional.get());
+					"getNeuestesGesuchFuerGpAndWithBetreuungen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragIdOptional.get());
 			}
 			if (!neuesterAntrag.extractAllBetreuungen().isEmpty()) {
 				// In diesem Antrag gibt es Kita und/oder TFO Angebote
