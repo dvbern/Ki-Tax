@@ -62,7 +62,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
@@ -1326,10 +1325,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	public boolean isNeustesGesuch(@Nonnull Gesuch gesuch) {
-		final Optional<Gesuch> neustesGesuchFuerGesuch =
-			getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
-		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(
-			neustesGesuchFuerGesuch.get().getId(),
+		final Optional<String> idOfNeuestesGesuchOptional =
+			getIdOfNeuestesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier());
+		return idOfNeuestesGesuchOptional.isPresent() && Objects.equals(
+			idOfNeuestesGesuchOptional.get(),
 			gesuch.getId());
 	}
 
@@ -1337,10 +1336,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Dossier dossier) {
+		@Nonnull Dossier dossier
+	) {
 		// Da wir nur die ID zurueckgeben, koennen wir den AuthCheck weglassen
-		Optional<Gesuch> gesuchOptional = getNeustesGesuchForDossierAndGesuchsperiode(gesuchsperiode, dossier, false);
-		return gesuchOptional.map(AbstractEntity::getId);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+		Predicate predicateDossier = cb.equal(root.get(Gesuch_.dossier), dossier);
+
+		query.where(predicateGesuchsperiode, predicateDossier);
+		query.select(root.get(Gesuch_.id));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+
+		final List<String> criteriaResults = persistence.getCriteriaResults(query, 1);
+		if (criteriaResults.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(criteriaResults.get(0));
 	}
 
 	/**
@@ -2350,18 +2364,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch) {
+		// Falls im "alten" Gesuch noch Tagesschule-Anmeldungen im status AUSGELOEST sind, müssen
+		// diese nun gespeichert (im gleichen Status, Verfügung erstellen) werden, damit künftig für
+		// die Berechnung die richtige FinSit verwendet wird!
+		zuMutierendeAnmeldungenAbschliessen(gesuch);
+
 		// Die Mutation erstellen
-		Gesuch mutation = new Gesuch();
+		Gesuch mutation = gesuch.copyForMutation(new Gesuch(), Eingangsart.PAPIER);
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setEingangsdatum(LocalDate.now());
+		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		mutation.setEingangsart(Eingangsart.PAPIER);
 		mutation.setGesuchsperiode(gesuch.getGesuchsperiode());
 		mutation.setDossier(gesuch.getDossier());
-		mutation = createGesuch(mutation);
+		Gesuch persistedGesuch = persistence.persist(mutation);
+		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
+		// Gesuch ohne WizardSteps gibt
+		wizardStepService.createWizardStepList(persistedGesuch);
+		antragStatusHistoryService.saveStatusChange(persistedGesuch, gesuch.getDossier().getVerantwortlicherBG());
+
 		// Die Betreuungen werden defaultmaessig mit BESTAETIGT uebernommen.
 		// Damit eine Ueberpruefung der Angaben erwzungen werden kann, wird
 		// hier eine neue Platzbestaetigung ausgeloest.
-		mutation.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
+		persistedGesuch.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
 	}
 }
 

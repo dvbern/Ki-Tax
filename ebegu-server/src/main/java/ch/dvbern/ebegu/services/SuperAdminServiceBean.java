@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.CsvCreator;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
@@ -83,6 +84,9 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private Persistence persistence;
 
 
 	@Override
@@ -153,7 +157,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 		try {
 			LOG.info("Starting Massenmutation...");
 			// Alle Dossiers der gewuenschten Gemeinde untersuchen
-			final Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde.getId());
+			final Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde);
 			CsvCreator csvCreator = new CsvCreator();
 			csvCreator.append("Fall", "Resultat", "Detail");
 			for (Dossier dossier : allDossiers) {
@@ -210,11 +214,13 @@ public class SuperAdminServiceBean implements SuperAdminService {
 		final Optional<String> antragIdOptional =
 			gesuchService.getIdOfNeuestesGesuchForDossierAndGesuchsperiode(gesuchsperiode, dossier);
 		if (antragIdOptional.isPresent()) {
-			// Es gibt in der gewuenschten Periode einen Antrag
-			final Gesuch neuesterAntrag = gesuchService
-				.findGesuch(antragIdOptional.get())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"createMutationForEachClosedAntragOfGemeinde", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragIdOptional.get()));
+			// Es gibt in der gewuenschten Periode einen Antrag. Wir lesen diesen direkt ueber persistence.find()
+			// da der Authorizer hier nicht benoetigt wird.
+			final Gesuch neuesterAntrag = persistence.find(Gesuch.class, antragIdOptional.get());
+			if (neuesterAntrag == null) {
+				throw new EbeguEntityNotFoundException(
+					"createMutationForEachClosedAntragOfGemeinde", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragIdOptional.get());
+			}
 			if (!neuesterAntrag.extractAllBetreuungen().isEmpty()) {
 				// In diesem Antrag gibt es Kita und/oder TFO Angebote
 				return Optional.of(neuesterAntrag);
