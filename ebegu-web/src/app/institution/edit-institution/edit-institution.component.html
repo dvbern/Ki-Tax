@@ -278,6 +278,12 @@
                                 <p>{{stammdaten.adresse.organisation}}</p>
                                 <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
                                 <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+                                <p *ngIf="stammdaten.adresse.gemeinde">
+                                    <span translate>GEMEINDE</span>
+                                    {{stammdaten.adresse.gemeinde}} (
+                                    <span translate>GEMEINDE_BFS_NR</span>
+                                    {{stammdaten.adresse.bfsNummer}})
+                                </p>
                             </div>
                         </div>
                         <!-- E-Mail, Telefon, Webseite -->

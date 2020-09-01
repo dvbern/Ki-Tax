@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -41,6 +43,9 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private GeoadminSearchService geoadminSearchService;
 
 	@Nonnull
 	@Override
@@ -68,5 +73,18 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 	@Nonnull
 	public Collection<Adresse> getAllAdressen() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Adresse.class));
+	}
+
+	@Override
+	public void updateGemeindeAndBFS(Adresse adresse) {
+		List<JaxWohnadresse> wohnadresseList = geoadminSearchService.findWohnadressenByStrasseAndOrt(
+			adresse.getStrasse(),
+			adresse.getHausnummer(),
+			adresse.getOrt());
+
+		Adresse adresseFromDB = persistence.find(Adresse.class, adresse.getId());
+		adresseFromDB.setGemeinde(wohnadresseList.get(0).getGemeinde());
+		adresseFromDB.setBfsNummer(wohnadresseList.get(0).getGemeindeBfsNr());
+		persistence.merge(adresseFromDB);
 	}
 }

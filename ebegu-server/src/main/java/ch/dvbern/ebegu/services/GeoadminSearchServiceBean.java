@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Local;
@@ -93,8 +94,12 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	 */
 	@Override
 	@Nonnull
-	public List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nonnull String nr, @Nonnull String plz) {
-		return this.findWohnadressenBySearchText(strasse + " " + nr + " " + plz);
+	public List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz) {
+		String nrStr = "";
+		if (nr != null) {
+			nrStr = nr + " ";
+		}
+		return this.findWohnadressenBySearchText(strasse + " " + nrStr + plz);
 	}
 
 	@Override

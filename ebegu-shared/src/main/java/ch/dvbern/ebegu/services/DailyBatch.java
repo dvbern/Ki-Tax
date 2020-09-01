@@ -40,4 +40,6 @@ public interface DailyBatch {
 	void runBatchInfoOffenePendenzenInstitution();
 
 	void runBatchInstitutionCheckRequired();
+
+	Future<Boolean> runBatchUpdateGemeindeForBGInstitutionen();
 }

@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 
@@ -30,5 +31,5 @@ public interface GeoadminSearchService {
 	List<JaxWohnadresse> findWohnadressenBySearchText(@Nonnull String searchText);
 
 	@Nonnull
-	List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nonnull String nr, @Nonnull String plz);
+	List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz);
 }

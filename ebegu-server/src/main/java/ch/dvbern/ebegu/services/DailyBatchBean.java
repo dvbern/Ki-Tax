@@ -78,6 +78,9 @@ public class DailyBatchBean implements DailyBatch {
 	@Inject
 	private InstitutionService institutionService;
 
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
+
 
 	@Override
 	@Asynchronous
@@ -228,6 +231,19 @@ public class DailyBatchBean implements DailyBatch {
 			LOGGER.info("... Job InstitutionCheckRequired finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job InstitutionCheckRequired konnte nicht durchgefuehrt werden!", e);
+		}
+	}
+
+	@Override
+	public Future<Boolean> runBatchUpdateGemeindeForBGInstitutionen() {
+		try {
+			LOGGER.info("Starting Job UpdateGemeindeForBGInstitutionen...");
+			institutionStammdatenService.updateGemeindeForBGInstitutionen();
+			LOGGER.info("... Job UpdateGemeindeForBGInstitutionen finished");
+			return new AsyncResult<>(Boolean.TRUE);
+		} catch (RuntimeException e) {
+			LOGGER.error("Batch-Job UpdateGemeindeForBGInstitutionen konnte nicht durchgefuehrt werden!", e);
+			return new AsyncResult<>(Boolean.FALSE);
 		}
 	}
 }

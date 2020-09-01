@@ -40,7 +40,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuungsstandort;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -94,6 +96,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private AdresseService adresseService;
 
 	@SuppressWarnings("PMD.PreserveStackTrace")
 	@Nonnull
@@ -338,4 +343,28 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
 		return q.getResultList();
 	}
+
+	@Override
+	public void updateGemeindeForBGInstitutionen() {
+		// update Adressen aller Betreuungsstandorte
+		Collection<Betreuungsstandort> betreuungsstandortCollection =
+			criteriaQueryHelper.getAll(Betreuungsstandort.class);
+		betreuungsstandortCollection.forEach(betreuungsstandort -> {
+			Adresse a = betreuungsstandort.getAdresse();
+			adresseService.updateGemeindeAndBFS(a);
+		});
+
+		// update Adressen aller BG-Insitutionen
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		root.join(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine);
+		query.select(root).distinct(true);
+		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
+		q.getResultList().forEach(instStammdaten -> {
+			Adresse a = instStammdaten.getAdresse();
+			adresseService.updateGemeindeAndBFS(a);
+		});
+
+	};
 }

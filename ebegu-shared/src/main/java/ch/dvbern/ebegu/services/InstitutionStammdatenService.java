@@ -92,4 +92,10 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getTagesschulenForCurrentBenutzer();
 
 	Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft);
+
+	/**
+	 * Findet über den GeoAdmin Service für Adresse in den InsitutionStammdaten sowie für jeden Betreuungsstandort die
+	 * politische Gemeinde und speichert diese ab. Dazu wird der GeoAdminService genutzt
+	 */
+	void updateGemeindeForBGInstitutionen();
 }
