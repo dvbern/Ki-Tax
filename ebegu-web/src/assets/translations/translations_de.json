@@ -2146,5 +2146,7 @@
     "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TITLE": "Verfügen & Verfügungen ausdrucken",
     "VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT": "Wollen Sie wirklich für alle Rückforderungsformulare im Status \"bereit zur Verfügung\" die Verfügungen generieren?",
     "TEAMVIEWER_LINK": "Remote Support (TeamViewer)",
+    "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "ASIV Berechnung für die Stadt Bern einschalten",
+    "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Achtung: Mit dieser Funktion wird eine Massenmutation für alle Berner Gesuche ausgelöst. Dies kann nicht rückgängig gemacht werden. Wollen Sie fortfahren?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
