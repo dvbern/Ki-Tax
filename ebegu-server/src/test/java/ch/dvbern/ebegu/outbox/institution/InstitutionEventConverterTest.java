@@ -17,22 +17,41 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.EnumSet;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Betreuungsstandort;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.kibon.exchange.commons.institution.AdresseDTO;
+import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
+import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
+import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
+import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
+import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
+import com.spotify.hamcrest.pojo.IsPojo;
 import org.junit.Test;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 public class InstitutionEventConverterTest {
 
@@ -43,7 +62,22 @@ public class InstitutionEventConverterTest {
 	public void testCreatedEvent() {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		Institution institution = institutionStammdaten.getInstitution();
-		Adresse adresse = institutionStammdaten.getAdresse();
+
+		InstitutionStammdatenBetreuungsgutscheine bgStammdaten =
+			checkNotNull(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine());
+
+		Betreuungsstandort betreuungsstandort = createBetreuungsstandort();
+		bgStammdaten.getBetreuungsstandorte().add(betreuungsstandort);
+
+		bgStammdaten.setOeffnungsTage(EnumSet.of(DayOfWeek.THURSDAY, DayOfWeek.MONDAY));
+		bgStammdaten.setOffenVon(LocalTime.of(7, 0));
+		bgStammdaten.setOffenBis(LocalTime.of(18, 0));
+		bgStammdaten.setOeffnungsAbweichungen("Freitag bieten wir auf Wunsch auch eine Betreuung an.");
+		bgStammdaten.setAlterskategorieBaby(true);
+		bgStammdaten.setAlterskategorieVorschule(true);
+		bgStammdaten.setSubventioniertePlaetze(false);
+		bgStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
+		bgStammdaten.setAnzahlPlaetzeFirmen(BigDecimal.ONE);
 
 		InstitutionChangedEvent event = converter.of(institutionStammdaten);
 
@@ -60,14 +94,60 @@ public class InstitutionEventConverterTest {
 			.where(InstitutionEventDTO::getId, is(institution.getId()))
 			.where(InstitutionEventDTO::getName, is(institution.getName()))
 			.where(InstitutionEventDTO::getTraegerschaft, is(checkNotNull(institution.getTraegerschaft()).getName()))
-			.where(InstitutionEventDTO::getAdresse, is(pojo(AdresseDTO.class)
-				.where(AdresseDTO::getStrasse, is(adresse.getStrasse()))
-				.where(AdresseDTO::getHausnummer, is(adresse.getHausnummer()))
-				.where(AdresseDTO::getAdresszusatz, is(adresse.getZusatzzeile()))
-				.where(AdresseDTO::getOrt, is(adresse.getOrt()))
-				.where(AdresseDTO::getPlz, is(adresse.getPlz()))
-				.where(AdresseDTO::getLand, is(adresse.getLand().name()))
+			.where(
+				InstitutionEventDTO::getBetreuungsArt,
+				is(BetreuungsangebotTyp.valueOf(institutionStammdaten.getBetreuungsangebotTyp().name())))
+			.where(InstitutionEventDTO::getAdresse, matchesKontaktAngaben(institutionStammdaten))
+			.where(InstitutionEventDTO::getBetreuungsAdressen, contains(
+				// implicitly, the institution address is also a betreuungs address
+				matchesKontaktAngaben(institutionStammdaten),
+				matchesKontaktAngaben(betreuungsstandort)
 			))
+			.where(InstitutionEventDTO::getOeffnungsTage, contains(Wochentag.MONDAY, Wochentag.THURSDAY))
+			.where(InstitutionEventDTO::getOffenVon, is(TimeConverter.serialize(bgStammdaten.getOffenVon())))
+			.where(InstitutionEventDTO::getOffenBis, is(TimeConverter.serialize(bgStammdaten.getOffenBis())))
+			.where(InstitutionEventDTO::getOeffnungsAbweichungen, is(bgStammdaten.getOeffnungsAbweichungen()))
+			.where(InstitutionEventDTO::getAltersKategorien, containsInAnyOrder(
+				AltersKategorie.BABY,
+				AltersKategorie.VORSCHULE)
+			)
+			.where(InstitutionEventDTO::getSubventioniertePlaetze, is(bgStammdaten.getSubventioniertePlaetze()))
+			.where(InstitutionEventDTO::getAnzahlPlaetze, comparesEqualTo(bgStammdaten.getAnzahlPlaetze()))
+			.where(InstitutionEventDTO::getAnzahlPlaetzeFirmen, comparesEqualTo(bgStammdaten.getAnzahlPlaetzeFirmen()))
+			.where(InstitutionEventDTO::getTimestampMutiert, is(notNullValue()))
 		));
+	}
+
+	@Nonnull
+	private IsPojo<KontaktAngabenDTO> matchesKontaktAngaben(@Nonnull KontaktAngaben kontaktAngaben) {
+		Adresse adresse = kontaktAngaben.getAdresse();
+
+		return pojo(KontaktAngabenDTO.class)
+			.where(KontaktAngabenDTO::getAnschrift, is(adresse.getOrganisation()))
+			.where(KontaktAngabenDTO::getStrasse, is(adresse.getStrasse()))
+			.where(KontaktAngabenDTO::getHausnummer, is(adresse.getHausnummer()))
+			.where(KontaktAngabenDTO::getAdresszusatz, is(adresse.getZusatzzeile()))
+			.where(KontaktAngabenDTO::getPlz, is(adresse.getPlz()))
+			.where(KontaktAngabenDTO::getOrt, is(adresse.getOrt()))
+			.where(KontaktAngabenDTO::getLand, is(adresse.getLand().name()))
+			.where(KontaktAngabenDTO::getGemeinde, pojo(GemeindeDTO.class)
+				.where(GemeindeDTO::getName, is(adresse.getGemeinde()))
+				.where(GemeindeDTO::getBfsNummer, is(nullValue()))
+			)
+			.where(KontaktAngabenDTO::getEmail, is(kontaktAngaben.getMail()))
+			.where(KontaktAngabenDTO::getTelefon, is(kontaktAngaben.getTelefon()))
+			.where(KontaktAngabenDTO::getWebseite, is(kontaktAngaben.getWebseite()));
+	}
+
+	@Nonnull
+	private Betreuungsstandort createBetreuungsstandort() {
+		Betreuungsstandort betreuungsstandort = new Betreuungsstandort();
+		betreuungsstandort.setAdresse(TestDataUtil.createDefaultAdresse());
+
+		betreuungsstandort.setMail("hallo@kibon.ch");
+		betreuungsstandort.setTelefon("031 111 11 11");
+		betreuungsstandort.setWebseite("https://www.kibon.ch");
+
+		return betreuungsstandort;
 	}
 }
