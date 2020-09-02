@@ -19,9 +19,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,9 +41,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuungsstandort;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -61,6 +60,8 @@ import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer InstitutionStammdaten
@@ -104,7 +105,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Nonnull
 	@Override
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
-		Objects.requireNonNull(institutionStammdaten);
+		requireNonNull(institutionStammdaten);
 		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
@@ -118,15 +119,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		} catch (PersistenceException e) {
 			String sqlError = e.getCause().getCause().getMessage();
 			//if the FK_belegung_ts_modul_modul_ts constraint is raised then we need to inform the user
-			if(sqlError.contains("FK_belegung_ts_modul_modul_ts")) {
+			if (sqlError.contains("FK_belegung_ts_modul_modul_ts")) {
 				throw new EntityExistsException(KibonLogLevel.ERROR, InstitutionStammdaten.class, "Anmeldungen",
 					institutionStammdaten.getId(),
 					ErrorCodeEnum.ERROR_ANMELDUNGEN_EXISTS);
 			}
-			else{
-				//otherwise its an unexpected exception
-				throw e;
-			}
+			//otherwise its an unexpected exception
+			throw e;
 		}
 	}
 
@@ -138,7 +137,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Nonnull
 	@Override
 	public Optional<InstitutionStammdaten> findInstitutionStammdaten(@Nonnull final String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		requireNonNull(id, "id muss gesetzt sein");
 		InstitutionStammdaten institutionStammdaten = persistence.find(InstitutionStammdaten.class, id);
 		authorizer.checkReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 		return Optional.ofNullable(institutionStammdaten);
@@ -150,8 +149,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
-			JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitution =
+			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
@@ -178,12 +177,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	@Nonnull
-	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft) {
+	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(
+		@Nonnull Traegerschaft trageschaft) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
-			JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitution =
+			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
@@ -214,8 +214,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
-		Objects.requireNonNull(institutionId);
-		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId,
+		requireNonNull(institutionId);
+		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(
+			institutionId,
 			true);
 		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
@@ -243,8 +244,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		@Nonnull Collection<Gemeinde> gemeinden
 	) {
 
-		Objects.requireNonNull(gesuchsperiodeId);
-		Objects.requireNonNull(gemeinden);
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(gemeinden);
 
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
 
@@ -337,34 +338,42 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution)
 			.in(institutionenForCurrentBenutzer);
-		Predicate predicateTypTagesschule = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+		Predicate predicateTypTagesschule =
+			cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
 
 		query.where(institutionPredicate, predicateTypTagesschule);
 		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
 		return q.getResultList();
 	}
 
+	@Nonnull
 	@Override
-	public void updateGemeindeForBGInstitutionen() {
-		// update Adressen aller Betreuungsstandorte
-		Collection<Betreuungsstandort> betreuungsstandortCollection =
-			criteriaQueryHelper.getAll(Betreuungsstandort.class);
-		betreuungsstandortCollection.forEach(betreuungsstandort -> {
-			Adresse a = betreuungsstandort.getAdresse();
-			adresseService.updateGemeindeAndBFS(a);
-		});
+	public Set<InstitutionStammdaten> updateGemeindeForBGInstitutionen() {
+		Set<InstitutionStammdaten> changed = new HashSet<>();
 
-		// update Adressen aller BG-Insitutionen
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		root.join(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine);
-		query.select(root).distinct(true);
+		Predicate hasBgStammdaten =
+			cb.isNotNull(root.get(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine));
+
+		query.where(hasBgStammdaten);
+
 		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
 		q.getResultList().forEach(instStammdaten -> {
-			Adresse a = instStammdaten.getAdresse();
-			adresseService.updateGemeindeAndBFS(a);
+			// update Adressen aller BG-Insitutionen
+			if (adresseService.updateGemeindeAndBFS(instStammdaten.getAdresse())) {
+				changed.add(instStammdaten);
+			}
+
+			if (requireNonNull(instStammdaten.getInstitutionStammdatenBetreuungsgutscheine()).getBetreuungsstandorte()
+				.stream()
+				// update Adressen aller Betreuungsstandorte
+				.anyMatch(b -> adresseService.updateGemeindeAndBFS(b.getAdresse()))) {
+				changed.add(instStammdaten);
+			}
 		});
 
-	};
+		return changed;
+	}
 }

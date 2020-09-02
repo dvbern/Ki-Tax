@@ -58,6 +58,8 @@ public interface AdresseService {
 
 	/**
 	 * Aktuealisiert mit Hilfe der GeoAdmin API die Gemeinde und BFS Nummer der Adresse
+	 *
+	 * @return TRUE when Gemeinde or BFS changed.
 	 */
-	void updateGemeindeAndBFS(Adresse adresse);
+	boolean updateGemeindeAndBFS(@Nonnull Adresse adresse);
 }

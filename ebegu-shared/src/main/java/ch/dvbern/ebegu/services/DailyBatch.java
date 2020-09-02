@@ -41,5 +41,8 @@ public interface DailyBatch {
 
 	void runBatchInstitutionCheckRequired();
 
-	Future<Boolean> runBatchUpdateGemeindeForBGInstitutionen();
+	/**
+	 * @return the number of changed InstitutionStammdaten
+	 */
+	Future<Integer> runBatchUpdateGemeindeForBGInstitutionen();
 }

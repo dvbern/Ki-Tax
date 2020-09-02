@@ -80,7 +80,7 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 	}
 
 	@Override
-	public void updateGemeindeAndBFS(Adresse adresse) {
+	public boolean updateGemeindeAndBFS(@Nonnull Adresse adresse) {
 		// für ein paar Millisekunden warten, um die GeoAdmin Api nicht mit Requests zu überladen
 		try {
 			TimeUnit.MILLISECONDS.sleep(WAIT_MILLISECONDS_BEFORE_REQUEST);
@@ -92,17 +92,20 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 			adresse.getHausnummer(),
 			adresse.getOrt());
 
-		String gemeinde = null;
-		Long bfs = null;
+		String originalGemeinde = adresse.getGemeinde();
+		Long originalBfs = adresse.getBfsNummer();
+
+		String newGemeinde = null;
+		Long newBfs = null;
 		if (!wohnadresseList.isEmpty()) {
-			// Gemeinde und BFS Nummer vom besten Restulat übernehmen (absteigend sortiert)
-			gemeinde = wohnadresseList.get(0).getGemeinde();
-			bfs = wohnadresseList.get(0).getGemeindeBfsNr();
+			// Gemeinde und BFS Nummer vom besten Resultat übernehmen (absteigend sortiert)
+			newGemeinde = wohnadresseList.get(0).getGemeinde();
+			newBfs = wohnadresseList.get(0).getGemeindeBfsNr();
 		}
 
-		Adresse adresseFromDB = persistence.find(Adresse.class, adresse.getId());
-		adresseFromDB.setGemeinde(gemeinde);
-		adresseFromDB.setBfsNummer(bfs);
-		persistence.merge(adresseFromDB);
+		adresse.setGemeinde(newGemeinde);
+		adresse.setBfsNummer(newBfs);
+
+		return !Objects.equals(originalGemeinde, newGemeinde) || !Objects.equals(originalBfs, newBfs);
 	}
 }

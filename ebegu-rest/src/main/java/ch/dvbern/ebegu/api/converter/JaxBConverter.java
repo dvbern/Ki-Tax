@@ -493,8 +493,7 @@ public class JaxBConverter extends AbstractConverter {
 		adresse.setZusatzzeile(jaxAdresse.getZusatzzeile());
 		adresse.setPlz(jaxAdresse.getPlz());
 		adresse.setOrt(jaxAdresse.getOrt());
-		adresse.setGemeinde(jaxAdresse.getGemeinde());
-		adresse.setBfsNummer(jaxAdresse.getBfsNummer());
+		// Gemeinde ist read-only und wird nicht gesetzt
 		adresse.setLand(jaxAdresse.getLand());
 		adresse.setOrganisation(jaxAdresse.getOrganisation());
 		//adresse gilt per default von start of time an

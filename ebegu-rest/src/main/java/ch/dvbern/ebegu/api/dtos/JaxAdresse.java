@@ -38,6 +38,7 @@ public class JaxAdresse extends JaxAbstractDateRangedDTO {
 	private String strasse;
 	private String hausnummer;
 
+	@Nullable
 	private String zusatzzeile;
 	@NotNull
 	private String plz;
@@ -48,8 +49,10 @@ public class JaxAdresse extends JaxAbstractDateRangedDTO {
 	@XmlJavaTypeAdapter(LandConverter.class)
 	private Land land = Land.CH;
 
+	@Nullable
 	private String gemeinde;
 
+	@Nullable
 	private Long bfsNummer;
 
 	private AdresseTyp adresseTyp;
@@ -97,11 +100,12 @@ public class JaxAdresse extends JaxAbstractDateRangedDTO {
 		this.gemeinde = gemeinde;
 	}
 
+	@Nullable
 	public Long getBfsNummer() {
 		return bfsNummer;
 	}
 
-	public void setBfsNummer(Long bfsNummer) {
+	public void setBfsNummer(@Nullable Long bfsNummer) {
 		this.bfsNummer = bfsNummer;
 	}
 

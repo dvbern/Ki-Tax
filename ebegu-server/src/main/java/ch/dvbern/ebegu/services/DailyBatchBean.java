@@ -18,7 +18,9 @@ package ch.dvbern.ebegu.services;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
@@ -28,6 +30,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +84,6 @@ public class DailyBatchBean implements DailyBatch {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
-
 
 	@Override
 	@Asynchronous
@@ -235,15 +238,24 @@ public class DailyBatchBean implements DailyBatch {
 	}
 
 	@Override
-	public Future<Boolean> runBatchUpdateGemeindeForBGInstitutionen() {
+	@Asynchronous
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.HOURS, value = 1)
+	public Future<Integer> runBatchUpdateGemeindeForBGInstitutionen() {
 		try {
 			LOGGER.info("Starting Job UpdateGemeindeForBGInstitutionen...");
-			institutionStammdatenService.updateGemeindeForBGInstitutionen();
+			Set<InstitutionStammdaten> changed = institutionStammdatenService.updateGemeindeForBGInstitutionen();
 			LOGGER.info("... Job UpdateGemeindeForBGInstitutionen finished");
-			return new AsyncResult<>(Boolean.TRUE);
+
+			if (!changed.isEmpty()) {
+				LOGGER.info("Starting InstitutionChangedEvent export...");
+				changed.forEach(s -> institutionStammdatenService.fireStammdatenChangedEvent(s));
+			}
+
+			return new AsyncResult<>(changed.size());
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job UpdateGemeindeForBGInstitutionen konnte nicht durchgefuehrt werden!", e);
-			return new AsyncResult<>(Boolean.FALSE);
+			return new AsyncResult<>(-1);
 		}
 	}
 }

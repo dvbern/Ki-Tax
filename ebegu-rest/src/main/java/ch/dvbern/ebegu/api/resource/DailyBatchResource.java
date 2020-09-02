@@ -96,9 +96,9 @@ public class DailyBatchResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchUpdateGemeindeForBGInstitutionen() {
-		Future<Boolean> booleanFuture = dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
+		Future<Integer> count = dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
 		try {
-			String info = String.format("Manuelle ausführung! Batchjob UpdateGemeindeForBGInstitutionen durchgefuehrt mit Resultat: {%s}", booleanFuture.get());
+			String info = String.format("Manuelle ausführung! Batchjob UpdateGemeindeForBGInstitutionen durchgefuehrt. Anzahl Änderungen: {%s}", count.get());
 			LOGGER.info(info);
 			return Response.ok(info).build();
 		} catch (InterruptedException | ExecutionException e) {
