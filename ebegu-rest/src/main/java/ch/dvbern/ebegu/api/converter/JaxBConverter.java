@@ -736,17 +736,18 @@ public class JaxBConverter extends AbstractConverter {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
 			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 				Objects.requireNonNull(familiensituationJAXP.getIban(), "IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+				Objects.requireNonNull(familiensituationJAXP.getKontoinhaber(), "Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
 				if (familiensituation.getAuszahlungsdaten() == null) {
 					familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
-					familiensituation.getAuszahlungsdaten().setIban(new IBAN(familiensituationJAXP.getIban()));
-					familiensituation.getAuszahlungsdaten().setKontoinhaber(familiensituationJAXP.getKontoinhaber());
-
-					if (familiensituationJAXP.getZahlungsadresse() != null) {
-						familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(adresseToEntity(familiensituationJAXP.getZahlungsadresse(),
-							familiensituation.getAuszahlungsdaten().getAdresseKontoinhaber() == null ? new Adresse() :
-								familiensituation.getAuszahlungsdaten().getAdresseKontoinhaber()));
-					}
 				}
+				familiensituation.getAuszahlungsdaten().setIban(new IBAN(familiensituationJAXP.getIban()));
+				familiensituation.getAuszahlungsdaten().setKontoinhaber(familiensituationJAXP.getKontoinhaber());
+				Adresse convertedAdresse = null;
+				if (familiensituationJAXP.getZahlungsadresse() != null) {
+					Adresse a = Optional.ofNullable(familiensituation.getAuszahlungsdaten().getAdresseKontoinhaber()).orElseGet(Adresse::new);
+					convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresse(), a);
+				}
+				familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 			}
 			familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresse());
 		} else {
@@ -1656,10 +1657,11 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxInstitutionStammdatenBetreuungsgutscheine();
 		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
 
-		if (persistedInstStammdaten.getIban() != null) {
-			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
+		final IBAN persistedIban = persistedInstStammdaten.extractIban();
+		if (persistedIban != null) {
+			jaxInstStammdaten.setIban(persistedIban.getIban());
 		}
-		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
+		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.extractKontoinhaber());
 		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
 		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
 		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
@@ -1680,8 +1682,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxInstStammdaten.setBetreuungsstandorte(betreuungsstandortListToJax(persistedInstStammdaten.getBetreuungsstandorte()));
 
-		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
-			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
+		final Adresse persistedAdresseKontoinhaber = persistedInstStammdaten.extractAdresseKontoinhaber();
+		if (persistedAdresseKontoinhaber != null) {
+			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedAdresseKontoinhaber));
 		}
 		return jaxInstStammdaten;
 	}
@@ -1713,10 +1716,23 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final InstitutionStammdatenBetreuungsgutscheine institutionStammdaten
 	) {
 		convertAbstractFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
-		if (institutionStammdatenJAXP.getIban() != null) {
-			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
+
+		if (institutionStammdatenJAXP.getIban() != null || institutionStammdatenJAXP.getKontoinhaber() != null) {
+			Objects.requireNonNull(institutionStammdatenJAXP.getIban(), "IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+			Objects.requireNonNull(institutionStammdatenJAXP.getKontoinhaber(), "Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+			if (institutionStammdaten.getAuszahlungsdaten() == null) {
+				institutionStammdaten.setAuszahlungsdaten(new Auszahlungsdaten());
+			}
+			institutionStammdaten.getAuszahlungsdaten().setIban(new IBAN(institutionStammdatenJAXP.getIban()));
+			institutionStammdaten.getAuszahlungsdaten().setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+			Adresse convertedAdresse = null;
+			if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
+				Adresse a = Optional.ofNullable(institutionStammdaten.getAuszahlungsdaten().getAdresseKontoinhaber()).orElseGet(Adresse::new);
+				convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
+			}
+			institutionStammdaten.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 		}
-		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+
 		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
 		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
 		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
@@ -1741,12 +1757,6 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdaten)
 		);
 
-		Adresse convertedAdresse = null;
-		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
-			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
-			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
-		}
-		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 		return institutionStammdaten;
 	}
 

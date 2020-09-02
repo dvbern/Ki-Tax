@@ -143,48 +143,27 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	}
 
 	@Nullable
-	public IBAN getIban() {
+	public IBAN extractIban() {
 		if (auszahlungsdaten != null) {
 			return auszahlungsdaten.getIban();
 		}
 		return null;
 	}
 
-	public void setIban(@Nonnull IBAN iban) {
-		if (auszahlungsdaten == null) {
-			auszahlungsdaten = new Auszahlungsdaten();
-		}
-		auszahlungsdaten.setIban(iban);
-	}
-
 	@Nullable
-	public String getKontoinhaber() {
+	public String extractKontoinhaber() {
 		if (auszahlungsdaten != null) {
 			return auszahlungsdaten.getKontoinhaber();
 		}
 		return null;
 	}
 
-	public void setKontoinhaber(@Nonnull String kontoinhaber) {
-		if (auszahlungsdaten == null) {
-			auszahlungsdaten = new Auszahlungsdaten();
-		}
-		auszahlungsdaten.setKontoinhaber(kontoinhaber);
-	}
-
 	@Nullable
-	public Adresse getAdresseKontoinhaber() {
+	public Adresse extractAdresseKontoinhaber() {
 		if (auszahlungsdaten != null) {
 			return auszahlungsdaten.getAdresseKontoinhaber();
 		}
 		return null;
-	}
-
-	public void setAdresseKontoinhaber(@Nullable Adresse adresseKontoinhaber) {
-		if (auszahlungsdaten == null) {
-			auszahlungsdaten = new Auszahlungsdaten();
-		}
-		auszahlungsdaten.setAdresseKontoinhaber(adresseKontoinhaber);
 	}
 
 	public boolean getAlterskategorieBaby() {
