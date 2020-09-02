@@ -830,9 +830,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
 		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
-			ZahlungDataRow row = new ZahlungDataRow();
-			row.setZahlung(zahlung);
-			row.setInstitutionStammdaten(institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true));
+			ZahlungDataRow row = new ZahlungDataRow(
+				zahlung,
+				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
+			);
 			zahlungDataRows.add(row);
 		}
 
@@ -863,11 +864,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		ZahlungDataRow dataRow = new ZahlungDataRow();
-		dataRow.setZahlung(zahlung);
 		final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
 			.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true);
-		dataRow.setInstitutionStammdaten(institutionStammdaten);
+		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, institutionStammdaten);
 
 		reportData.add(dataRow);
 

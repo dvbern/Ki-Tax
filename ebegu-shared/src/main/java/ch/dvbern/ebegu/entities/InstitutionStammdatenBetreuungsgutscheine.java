@@ -31,7 +31,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -42,7 +41,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -50,7 +48,6 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
@@ -151,7 +148,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 		return null;
 	}
 
-	public void setIban(IBAN iban) {
+	public void setIban(@Nonnull IBAN iban) {
 		if (auszahlungsdaten == null) {
 			auszahlungsdaten = new Auszahlungsdaten();
 		}
@@ -166,7 +163,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 		return null;
 	}
 
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
+	public void setKontoinhaber(@Nonnull String kontoinhaber) {
 		if (auszahlungsdaten == null) {
 			auszahlungsdaten = new Auszahlungsdaten();
 		}

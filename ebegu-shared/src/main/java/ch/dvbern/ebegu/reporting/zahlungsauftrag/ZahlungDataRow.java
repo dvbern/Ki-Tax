@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.reporting.zahlungsauftrag;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -24,28 +26,54 @@ import ch.dvbern.ebegu.entities.Zahlung;
 
 public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 
+	@Nonnull
 	private Zahlung zahlung;
 
+	@Nonnull
 	private InstitutionStammdaten institutionStammdaten;
 
+	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nonnull InstitutionStammdaten institutionStammdaten) {
+		this.zahlung = zahlung;
+		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nonnull
 	public Zahlung getZahlung() {
 		return zahlung;
 	}
 
-	public void setZahlung(Zahlung zahlung) {
+	public void setZahlung(@Nonnull Zahlung zahlung) {
 		this.zahlung = zahlung;
 	}
 
+	@Nonnull
 	public InstitutionStammdaten getInstitutionStammdaten() {
 		return institutionStammdaten;
 	}
 
-	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
+	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
 	}
 
 	@Override
 	public int compareTo(@Nonnull ZahlungDataRow o) {
 		return this.getZahlung().compareTo(o.getZahlung());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof ZahlungDataRow)) {
+			return false;
+		}
+		ZahlungDataRow dataRow = (ZahlungDataRow) o;
+		return Objects.equals(getZahlung(), dataRow.getZahlung());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getZahlung());
 	}
 }
