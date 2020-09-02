@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -669,8 +670,11 @@ public final class TestDataUtil {
 		instStammdaten.getInstitution().setName(name);
 		instStammdaten.setAdresse(createDefaultAdresse());
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
-		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN(iban));
 		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+		auszahlungsdaten.setIban(new IBAN(iban));
+		auszahlungsdaten.setKontoinhaber("Kontoinhaber " + name);
+		institutionStammdatenBetreuungsgutscheine.setAuszahlungsdaten(auszahlungsdaten);
 		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return instStammdaten;
 	}

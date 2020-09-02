@@ -53,7 +53,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = 5758088668232796741L;
 
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ZahlungslaufTyp zahlungslaufTyp;
@@ -98,11 +98,12 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	private Boolean hasNegativeZahlungen = false;
 
 
+	@Nonnull
 	public ZahlungslaufTyp getZahlungslaufTyp() {
 		return zahlungslaufTyp;
 	}
 
-	public void setZahlungslaufTyp(ZahlungslaufTyp zahlungslaufTyp) {
+	public void setZahlungslaufTyp(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
 		this.zahlungslaufTyp = zahlungslaufTyp;
 	}
 

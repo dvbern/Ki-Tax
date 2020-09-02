@@ -159,8 +159,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
 			if (!keineMahlzeitenverguenstigungGewuenscht) {
-				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
 				Objects.requireNonNull(iban, "IBAN muss angegeben werden, wenn Mahlzeitenverguenstigung gewuenscht");
+				Objects.requireNonNull(kontoinhaber, "Kontoinhaber muss angegeben werden, wenn Mahlzeitenverguenstigung gewuenscht");
+
+				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
 				auszahlungsdaten.setIban(new IBAN(iban));
 				auszahlungsdaten.setKontoinhaber(kontoinhaber);
 				auszahlungsdaten.setAdresseKontoinhaber(zahlungsadresse);

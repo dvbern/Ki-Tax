@@ -61,11 +61,6 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Zahlung_zahlungsauftrag_id"), nullable = false)
 	private Zahlungsauftrag zahlungsauftrag;
 
-//	@NotNull
-//	@ManyToOne(optional = false)
-//	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Zahlung_institutionStammdaten_id"))
-//	private InstitutionStammdaten institutionStammdaten;
-
 	@NotNull @Nonnull
 	@Column(nullable = false, length = 16)
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
@@ -111,14 +106,6 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	public void setZahlungsauftrag(Zahlungsauftrag zahlungsauftrag) {
 		this.zahlungsauftrag = zahlungsauftrag;
 	}
-
-//	public InstitutionStammdaten getInstitutionStammdaten() {
-//		return institutionStammdaten;
-//	}
-
-//	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
-//		this.institutionStammdaten = institutionStammdaten;
-//	}
 
 	@Nonnull
 	public String getInstitutionId() {

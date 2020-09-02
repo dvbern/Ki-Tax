@@ -777,9 +777,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAbweichendeZahlungsadresse(persistedFamiliensituation.isAbweichendeZahlungsadresse());
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdaten();
 		if (persistedAuszahlungsdaten != null) {
-			if (persistedAuszahlungsdaten.getIban() != null) {
-				jaxFamiliensituation.setIban(persistedAuszahlungsdaten.getIban().getIban());
-			}
+			jaxFamiliensituation.setIban(persistedAuszahlungsdaten.getIban().getIban());
 			jaxFamiliensituation.setKontoinhaber(persistedAuszahlungsdaten.getKontoinhaber());
 			if (persistedAuszahlungsdaten.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
@@ -5179,14 +5177,14 @@ public class JaxBConverter extends AbstractConverter {
 			if (famSit.getAuszahlungsdaten() == null) {
 				famSit.setAuszahlungsdaten(new Auszahlungsdaten());
 			}
-			if (properties.getIban() != null) {
+			if (properties.getIban() != null || properties.getKontoinhaber() != null) {
+				// Wenn eines gesetzt ist, sind beide zwingend!
+				Objects.requireNonNull(properties.getIban());
+				Objects.requireNonNull(properties.getKontoinhaber());
 				famSit.getAuszahlungsdaten().setIban(new IBAN(properties.getIban()));
-			} else {
-				famSit.getAuszahlungsdaten().setIban(null);
+				famSit.getAuszahlungsdaten().setKontoinhaber(properties.getKontoinhaber());
 			}
-			famSit.getAuszahlungsdaten().setKontoinhaber(properties.getKontoinhaber());
 			famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
-
 			if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
 				famSit.getAuszahlungsdaten().setAdresseKontoinhaber(this.adresseToEntity(properties.getZahlungsadresse(),
 					famSit.getAuszahlungsdaten().getAdresseKontoinhaber() == null ? new Adresse() : famSit.getAuszahlungsdaten().getAdresseKontoinhaber()));

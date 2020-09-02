@@ -32,6 +32,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -79,28 +80,14 @@ public class Familiensituation extends AbstractMutableEntity {
 	private boolean keineMahlzeitenverguenstigungBeantragt;
 
 	@Nullable
+	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_id"), nullable = true)
 	private Auszahlungsdaten auszahlungsdaten;
 
-//	@Nullable
-//	@Column(nullable = true)
-//	@Embedded
-//	@Valid
-//	private IBAN iban;
-//
-//	@Nullable
-//	@Size(max = DB_DEFAULT_MAX_LENGTH)
-//	@Column(nullable = true)
-//	private String kontoinhaber;
-
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
 
-//	@Nullable
-//	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_zahlungs_adresse"), nullable = true)
-//	private Adresse zahlungsadresse;
 
 	public Familiensituation() {
 	}
@@ -187,24 +174,6 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.auszahlungsdaten = auszahlungsdaten;
 	}
 
-//	@Nullable
-//	public IBAN getIban() {
-//		return iban;
-//	}
-//
-//	public void setIban(@Nullable IBAN iban) {
-//		this.iban = iban;
-//	}
-//
-//	@Nullable
-//	public String getKontoinhaber() {
-//		return kontoinhaber;
-//	}
-//
-//	public void setKontoinhaber(@Nullable String kontoinhaber) {
-//		this.kontoinhaber = kontoinhaber;
-//	}
-
 	public boolean isAbweichendeZahlungsadresse() {
 		return abweichendeZahlungsadresse;
 	}
@@ -212,15 +181,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
 		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
 	}
-
-//	@Nullable
-//	public Adresse getZahlungsadresse() {
-//		return zahlungsadresse;
-//	}
-//
-//	public void setZahlungsadresse(@Nullable Adresse zahlungsadresse) {
-//		this.zahlungsadresse = zahlungsadresse;
-//	}
 
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
@@ -297,6 +257,5 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
-
 	}
 }

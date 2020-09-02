@@ -41,6 +41,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -62,6 +63,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	private static final long serialVersionUID = -5937387773922925929L;
 
 	@Nullable
+	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_auszahlungsdaten_id"), nullable = true)
 	private Auszahlungsdaten auszahlungsdaten;
