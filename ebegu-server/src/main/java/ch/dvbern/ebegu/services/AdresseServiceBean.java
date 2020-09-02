@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -46,6 +48,8 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Inject
 	private GeoadminSearchService geoadminSearchService;
+
+	private static final int WAIT_MILLISECONDS_BEFORE_REQUEST = 200;
 
 	@Nonnull
 	@Override
@@ -77,14 +81,28 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Override
 	public void updateGemeindeAndBFS(Adresse adresse) {
+		// für ein paar Millisekunden warten, um die GeoAdmin Api nicht mit Requests zu überladen
+		try {
+			TimeUnit.MILLISECONDS.sleep(WAIT_MILLISECONDS_BEFORE_REQUEST);
+		} catch (InterruptedException e) {
+			throw new EbeguRuntimeException("updateGemeindeAndBFS", "Program Interrupted", e);
+		}
 		List<JaxWohnadresse> wohnadresseList = geoadminSearchService.findWohnadressenByStrasseAndOrt(
 			adresse.getStrasse(),
 			adresse.getHausnummer(),
 			adresse.getOrt());
 
+		String gemeinde = null;
+		Long bfs = null;
+		if (!wohnadresseList.isEmpty()) {
+			// Gemeinde und BFS Nummer vom besten Restulat übernehmen (absteigend sortiert)
+			gemeinde = wohnadresseList.get(0).getGemeinde();
+			bfs = wohnadresseList.get(0).getGemeindeBfsNr();
+		}
+
 		Adresse adresseFromDB = persistence.find(Adresse.class, adresse.getId());
-		adresseFromDB.setGemeinde(wohnadresseList.get(0).getGemeinde());
-		adresseFromDB.setBfsNummer(wohnadresseList.get(0).getGemeindeBfsNr());
+		adresseFromDB.setGemeinde(gemeinde);
+		adresseFromDB.setBfsNummer(bfs);
 		persistence.merge(adresseFromDB);
 	}
 }

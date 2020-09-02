@@ -554,6 +554,7 @@ describe('EbeguRestUtil', () => {
         adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
         TestDataUtil.setAbstractMutableFieldsUndefined(adresse);
         adresse.gemeinde = 'Testingen';
+        adresse.bfsNummer = 1;
         adresse.land = 'CH';
         adresse.ort = 'Testort';
         adresse.strasse = 'Teststrasse';
