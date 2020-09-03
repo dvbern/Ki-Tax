@@ -151,7 +151,7 @@ alter table zahlung_aud add institution_id binary(16);
 alter table zahlung_aud add institution_name varchar(255);
 alter table zahlung_aud add traegerschaft_name varchar(255);
 
-# TODO Migrieren betreuungsangebotTyp, InstitutionId, institutionName, traegerschaftNAme
+# Migrieren betreuungsangebotTyp, InstitutionId, institutionName, traegerschaftName
 
 update zahlung z set z.betreuungsangebot_typ = (
 	select betreuungsangebot_typ from institution_stammdaten where id = z.institution_stammdaten_id);
@@ -177,7 +177,10 @@ ALTER TABLE zahlung	CHANGE COLUMN institution_name institution_name varchar(255)
 # Migration der Daten von Zahlung zu Auszahlungsdaten
 
 update zahlung z set z.auszahlungsdaten_id = (
-	select id from auszahlungsdaten where tmp_id = z.institution_stammdaten_id);
+	select id from auszahlungsdaten where tmp_id = (
+		select institution_stammdaten_betreuungsgutscheine_id from institution_stammdaten where id = z.institution_stammdaten_id
+	)
+);
 
 # Nicht mehr benoetigte Daten aufraeumen
 ALTER  TABLE  zahlung drop CONSTRAINT FK_Zahlung_institutionstammdaten_id;
