@@ -46,7 +46,7 @@ public class GeoadminSearchServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testFindGemeindeBern() {
-		List<JaxWohnadresse> jaxWohnadressen = service.findWohnadressenByStrasseAndOrt("Spitalgasse", "1", "3011");
+		List<JaxWohnadresse> jaxWohnadressen = service.findWohnadressenByStrasseAndPlz("Spitalgasse", "1", "3011");
 		assertEquals("Bern", jaxWohnadressen.get(0).getGemeinde());
 		assertEquals(351, (long) jaxWohnadressen.get(0).getGemeindeBfsNr());
 	}

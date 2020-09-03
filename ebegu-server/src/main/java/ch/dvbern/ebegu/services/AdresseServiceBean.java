@@ -87,10 +87,10 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 		} catch (InterruptedException e) {
 			throw new EbeguRuntimeException("updateGemeindeAndBFS", "Program Interrupted", e);
 		}
-		List<JaxWohnadresse> wohnadresseList = geoadminSearchService.findWohnadressenByStrasseAndOrt(
+		List<JaxWohnadresse> wohnadresseList = geoadminSearchService.findWohnadressenByStrasseAndPlz(
 			adresse.getStrasse(),
 			adresse.getHausnummer(),
-			adresse.getOrt());
+			adresse.getPlz());
 
 		String originalGemeinde = adresse.getGemeinde();
 		Long originalBfs = adresse.getBfsNummer();
