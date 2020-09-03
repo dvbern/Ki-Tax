@@ -82,6 +82,10 @@ public class Adresse extends AbstractDateRangedEntity {
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String gemeinde;
 
+	@Nullable
+	@Column(nullable = true)
+	private Long bfsNummer;
+
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -129,6 +133,15 @@ public class Adresse extends AbstractDateRangedEntity {
 
 	public void setGemeinde(@Nullable String gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nullable
+	public Long getBfsNummer() {
+		return bfsNummer;
+	}
+
+	public void setBfsNummer(@Nullable Long bfsNummer) {
+		this.bfsNummer = bfsNummer;
 	}
 
 	public void setOrt(@Nonnull String ort) {

@@ -91,6 +91,20 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(stammdatenByInstitution);
 	}
 
+	@Test
+	public void updateBGInsitutionenGemeinden() {
+		Assert.assertNotNull(institutionStammdatenService);
+		createGesuchsperiode1718();
+		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
+		String id = insertedInstitutionStammdaten.getInstitution().getId();
+		institutionStammdatenService.updateGemeindeForBGInstitutionen();
+
+		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id, false);
+		Assert.assertEquals("Bern", stammdatenByInstitution.getAdresse().getGemeinde());
+		Assert.assertNotNull(stammdatenByInstitution.getAdresse().getBfsNummer());
+		Assert.assertEquals(351, (long) stammdatenByInstitution.getAdresse().getBfsNummer());
+	}
+
 	// HELP METHODS
 
 	private InstitutionStammdaten insertInstitutionStammdaten() {

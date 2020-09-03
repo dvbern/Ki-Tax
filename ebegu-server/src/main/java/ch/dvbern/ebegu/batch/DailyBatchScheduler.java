@@ -103,4 +103,9 @@ public class DailyBatchScheduler {
 	public void runBatchInstitutionCheckRequired() {
 		dailyBatch.runBatchInstitutionCheckRequired();
 	}
+
+	@Schedule(second = "59", minute = "30", hour = "04", persistent = true)
+	public void runBatchUpdateGemeindeForBGInstitutionen() {
+		dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
+	}
 }
