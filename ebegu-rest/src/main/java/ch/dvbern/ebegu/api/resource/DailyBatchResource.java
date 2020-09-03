@@ -88,4 +88,22 @@ public class DailyBatchResource {
 			return Response.serverError().build();
 		}
 	}
+
+	@ApiOperation(value = "Führt den Job UpdateBGInstitutionGemeinden aus.", response = String.class)
+	@Nullable
+	@GET
+	@Path("/updateGemeindeForBGInstitutionen")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response runBatchUpdateGemeindeForBGInstitutionen() {
+		Future<Integer> count = dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
+		try {
+			String info = String.format("Manuelle ausführung! Batchjob UpdateGemeindeForBGInstitutionen durchgefuehrt. Anzahl Änderungen: {%s}", count.get());
+			LOGGER.info(info);
+			return Response.ok(info).build();
+		} catch (InterruptedException | ExecutionException e) {
+			LOGGER.error("Manuelle ausführung! Batch-Job UpdateGemeindeForBGInstitutionen konnte nicht durchgefuehrt werden!", e);
+			return Response.serverError().build();
+		}
+	}
 }

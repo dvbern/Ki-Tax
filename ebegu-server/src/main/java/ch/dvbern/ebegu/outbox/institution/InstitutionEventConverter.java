@@ -164,6 +164,8 @@ public class InstitutionEventConverter {
 	@Nonnull
 	private GemeindeDTO toGemeindeDTO(@Nonnull Adresse adr) {
 		return GemeindeDTO.newBuilder()
-			.setName(adr.getGemeinde()).build();
+			.setName(adr.getGemeinde())
+			.setBfsNummer(adr.getBfsNummer())
+			.build();
 	}
 }

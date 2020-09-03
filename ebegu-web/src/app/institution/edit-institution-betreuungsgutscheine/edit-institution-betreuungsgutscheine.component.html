@@ -346,6 +346,12 @@
                                 <p>{{standort.adresse.organisation}}</p>
                                 <p>{{standort.adresse.strasse}} {{standort.adresse.hausnummer}}</p>
                                 <p>{{standort.adresse.plz}} {{standort.adresse.ort}}</p>
+                                <p *ngIf="standort.adresse.gemeinde">
+                                    <span translate>GEMEINDE</span>
+                                    {{standort.adresse.gemeinde}} (
+                                    <span translate>GEMEINDE_BFS_NR</span>
+                                    {{standort.adresse.bfsNummer}})
+                                </p>
                             </div>
                             <div class="col-sm-6">
                                 <p>{{standort.mail}}</p>
