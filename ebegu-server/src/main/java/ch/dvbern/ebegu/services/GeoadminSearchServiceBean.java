@@ -94,7 +94,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	 */
 	@Override
 	@Nonnull
-	public List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz) {
+	public List<JaxWohnadresse> findWohnadressenByStrasseAndPlz(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz) {
 		String nrStr = "";
 		if (nr != null) {
 			nrStr = nr + " ";

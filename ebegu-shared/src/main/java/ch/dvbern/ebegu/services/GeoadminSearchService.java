@@ -31,5 +31,5 @@ public interface GeoadminSearchService {
 	List<JaxWohnadresse> findWohnadressenBySearchText(@Nonnull String searchText);
 
 	@Nonnull
-	List<JaxWohnadresse> findWohnadressenByStrasseAndOrt(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz);
+	List<JaxWohnadresse> findWohnadressenByStrasseAndPlz(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz);
 }
