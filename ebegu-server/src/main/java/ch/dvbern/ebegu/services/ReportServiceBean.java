@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -2085,15 +2086,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (institutionStammdaten.getWebseite() != null) {
 			row.setUrl(institutionStammdaten.getWebseite());
 		}
-		if (institutionStammdaten.getOeffnungszeiten() != null) {
-			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
-		}
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		if (institutionStammdatenBG != null) {
+			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null) {
+				row.setOeffnungszeiten(
+					institutionStammdatenBG.getOffenVon().toString()
+						+ " - "
+						+ institutionStammdatenBG.getOffenBis().toString()
+				);
+			}
+			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
+				.sorted()
+				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
+				.collect(Collectors.joining(", ")));
+			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
+		}
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
 		row.setKindergarten(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieKindergarten());

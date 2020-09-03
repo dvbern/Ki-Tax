@@ -21,6 +21,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
+import {EditBetreuungsstandortComponent} from './betreuungsstandort/edit-betreuungsstandort.component';
 import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
 import {DialogImportFromOtherInstitution} from './edit-institution-tagesschule/dialog-import-from-other-institution/dialog-import-from-other-institution.component';
@@ -50,7 +51,8 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
         ModulTagesschuleDialogComponent,
-        DialogImportFromOtherInstitution
+        DialogImportFromOtherInstitution,
+        EditBetreuungsstandortComponent
     ],
     entryComponents: [
         InstitutionListComponent,

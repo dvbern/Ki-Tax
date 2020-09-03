@@ -17,6 +17,8 @@
 
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
+import {TSBetreuungsstandort} from './TSBetreuungsstandort';
+import {TSOeffnungstageInstitution} from './TSOeffnungstageInstitution';
 
 export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntity {
 
@@ -32,6 +34,11 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public anzahlPlaetzeFirmen: number = undefined;
     public tarifProHauptmahlzeit: number = undefined;
     public tarifProNebenmahlzeit: number = undefined;
+    public oeffnungstage: TSOeffnungstageInstitution = new TSOeffnungstageInstitution();
+    public offenVon: string = undefined;
+    public offenBis: string = undefined;
+    public oeffnungsAbweichungen: string;
+    public betreuungsstandorte: TSBetreuungsstandort[] = [];
 
     public constructor() {
         super();

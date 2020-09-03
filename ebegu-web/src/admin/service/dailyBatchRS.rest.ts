@@ -37,6 +37,10 @@ export class DailyBatchRS {
         return this.callServer(this.serviceURL + '/mahnungFristAblauf');
     }
 
+    public runBatchUpdateGemeindeForBGInstitutionen(): IPromise<boolean> {
+        return this.callServer(this.serviceURL + '/updateGemeindeForBGInstitutionen');
+    }
+
     private callServer(url: string): IPromise<boolean> {
         return this.http.get(url)
             .then((response: any) => {

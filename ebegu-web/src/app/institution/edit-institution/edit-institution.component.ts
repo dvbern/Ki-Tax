@@ -200,9 +200,12 @@ export class EditInstitutionComponent implements OnInit {
     public onSubmit(): void {
         if (this.editMode) {
             this.persistStammdaten();
-        } else {
-            this.editMode = true;
+            return;
         }
+        this.forms.forEach(form => {
+            form.resetForm();
+        });
+        this.editMode = true;
     }
 
     public submitButtonLabel(): string {
