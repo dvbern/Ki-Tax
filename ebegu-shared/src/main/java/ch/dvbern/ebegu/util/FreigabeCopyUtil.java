@@ -139,7 +139,7 @@ public final class FreigabeCopyUtil {
 			auszahlungsdatenGS = new Auszahlungsdaten();
 			copyAuszahlungsdaten(auszahlungsdatenGS, auszahlungsdatenJA);
 		}
-		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenJA);
+		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenGS);
 	}
 
 	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {
@@ -151,7 +151,7 @@ public final class FreigabeCopyUtil {
 			zahlungsadresseGS = new Adresse();
 			copyAdresse(zahlungsadresseGS, zahlungsadresseJA);
 		}
-		auszahlungsdatenGS.setAdresseKontoinhaber(zahlungsadresseJA);
+		auszahlungsdatenGS.setAdresseKontoinhaber(zahlungsadresseGS);
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {

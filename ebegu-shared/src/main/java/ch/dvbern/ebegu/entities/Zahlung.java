@@ -32,7 +32,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -82,7 +81,7 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	private String traegerschaftName;
 
 	@NotNull @Nonnull
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_zahlung_auszahlungsdaten_id"), nullable = false)
 	private Auszahlungsdaten auszahlungsdaten;
 
