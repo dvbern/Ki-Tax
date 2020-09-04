@@ -54,6 +54,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 
 public class InstitutionEventConverterTest {
 
@@ -61,7 +62,7 @@ public class InstitutionEventConverterTest {
 	private final InstitutionEventConverter converter = new InstitutionEventConverter();
 
 	@Test
-	public void testCreatedEvent() {
+	public void testChangedEvent() {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		Institution institution = institutionStammdaten.getInstitution();
 		institutionStammdaten.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
@@ -125,6 +126,25 @@ public class InstitutionEventConverterTest {
 			.where(InstitutionEventDTO::getAnzahlPlaetzeFirmen, comparesEqualTo(bgStammdaten.getAnzahlPlaetzeFirmen()))
 			.where(InstitutionEventDTO::getTimestampMutiert, is(notNullValue()))
 		));
+	}
+
+	@Test
+	public void testDeletedEvent() {
+		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
+		Institution institution = institutionStammdaten.getInstitution();
+		InstitutionChangedEvent event = converter.deleteEvent(institutionStammdaten);
+
+		assertThat(event, is(pojo(ExportedEvent.class)
+			.where(ExportedEvent::getAggregateId, is(institution.getId()))
+			.where(ExportedEvent::getAggregateType, is("Institution"))
+			.where(ExportedEvent::getType, is("InstitutionChanged")))
+		);
+
+		//noinspection deprecation
+		InstitutionEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
+
+		assertThat(specificRecord, is(pojo(InstitutionEventDTO.class)
+			.where(InstitutionEventDTO::getStatus, is(InstitutionStatus.DELETED))));
 	}
 
 	@Nonnull

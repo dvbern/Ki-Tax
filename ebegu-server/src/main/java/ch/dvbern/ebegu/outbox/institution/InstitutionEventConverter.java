@@ -55,9 +55,23 @@ public class InstitutionEventConverter {
 	@Nonnull
 	public InstitutionChangedEvent of(@Nonnull InstitutionStammdaten stammdaten) {
 		InstitutionEventDTO dto = toInstitutionEventDTO(stammdaten);
+
+		return toEvent(stammdaten.getInstitution().getId(), dto);
+	}
+
+	@Nonnull
+	public InstitutionChangedEvent deleteEvent(@Nonnull InstitutionStammdaten stammdaten) {
+		InstitutionEventDTO dto = toInstitutionEventDTO(stammdaten);
+		dto.setStatus(InstitutionStatus.DELETED);
+
+		return toEvent(stammdaten.getInstitution().getId(), dto);
+	}
+
+	@Nonnull
+	private InstitutionChangedEvent toEvent(@Nonnull String institutionId, InstitutionEventDTO dto) {
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new InstitutionChangedEvent(stammdaten.getInstitution().getId(), payload, dto.getSchema());
+		return new InstitutionChangedEvent(institutionId, payload, dto.getSchema());
 	}
 
 	@Nonnull
