@@ -207,7 +207,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
             this.provisorischeBetreuung = false;
 
-            if (this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
+            if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
+                    && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
                 this.provisorischeBetreuung = true;
             }
 
