@@ -18,6 +18,7 @@ import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
 import {TSFamiliensituation} from './TSFamiliensituation';
+import {TSFamiliensituationContainer} from './TSFamiliensituationContainer';
 import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
 import {TSGesuch} from './TSGesuch';
@@ -179,6 +180,9 @@ export class TSFinanzModel {
     }
 
     public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
+        if (EbeguUtil.isNullOrUndefined(gesuch.familiensituationContainer)) {
+            gesuch.familiensituationContainer = new TSFamiliensituationContainer();
+        }
         let familiensituation = gesuch.extractFamiliensituation();
         if (EbeguUtil.isNullOrUndefined(familiensituation)) {
             familiensituation = new TSFamiliensituation();
