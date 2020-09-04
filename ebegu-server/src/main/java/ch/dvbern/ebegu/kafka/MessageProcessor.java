@@ -48,13 +48,13 @@ public class MessageProcessor {
 		try {
 			String key = record.key();
 			Headers headers = record.headers();
-//TODO find out whate to do with eventId as we dont necessary have one!
-/*			Optional<String> eventIdOpt = getHeaderValue(headers, EventUtil.MESSAGE_HEADER_EVENT_ID);
-			if (eventIdOpt.isEmpty()) {
+
+			Optional<String> eventIdOpt = getHeaderValue(headers, EventUtil.MESSAGE_HEADER_EVENT_ID);
+			if (!eventIdOpt.isPresent()) {
 				LOG.warn("Skipping Kafka message with key = {}, eventId header was missing", key);
 
 				return;
-			}*/
+			}
 
 			Optional<String> eventTypeOpt = getHeaderValue(headers, EventUtil.MESSAGE_HEADER_EVENT_TYPE);
 			if (!eventTypeOpt.isPresent()) {
@@ -67,7 +67,7 @@ public class MessageProcessor {
 
 			T eventDTO = record.value();
 
-			handler.onEvent(key, eventTime, eventTypeOpt.get(), eventDTO);
+			handler.onEvent(eventIdOpt.get(), key, eventTime, eventTypeOpt.get(), eventDTO);
 		} catch (Throwable t) {
 			LOG.error("Error in message processing", t);
 		}

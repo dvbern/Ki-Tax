@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -88,18 +89,22 @@ public class PlatzbestaetigungEventKafkaConsumer {
 		consumer.subscribe(Collections.singletonList("PlatzbestaetigungBetreuungEvents"));*/
 		consumer = new KafkaConsumer(props);
 		consumer.subscribe(Arrays.asList("PlatzbestaetigungBetreuungEvents"));
+
+	}
+
+	@Schedule(info = "consume kafka events",second="*/10", minute = "*", hour = "*", persistent = true)
+	private void workKafkaData(){
 		try {
-		while(true){
-			ConsumerRecords<String, BetreuungEventDTO> consumerRecordes =
-				consumer.poll(Duration.ofMillis(1000));
-			for (ConsumerRecord<String, BetreuungEventDTO> record : consumerRecordes) {
-				LOG.info("BetreuungEvent received for Betreuung with refnr " + record.key());
-				processor.process(record, eventHandler);
-			}
-		}
-		} finally {
-			//consumer.unsubscribe();
-			consumer.close();
+			//while(true){
+				ConsumerRecords<String, BetreuungEventDTO> consumerRecordes =
+					consumer.poll(Duration.ofMillis(5000));
+				for (ConsumerRecord<String, BetreuungEventDTO> record : consumerRecordes) {
+					LOG.info("BetreuungEvent received for Betreuung with refnr " + record.key());
+					processor.process(record, eventHandler);
+				}
+			//}
+		} catch (Exception e){
+			LOG.error("There's a problem with the kafka Platzbestaetigung Consumer", e);
 		}
 	}
 

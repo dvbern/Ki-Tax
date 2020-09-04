@@ -21,7 +21,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.ReceivedEvent;
+import ch.dvbern.ebegu.services.ReceivedEventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,21 +32,25 @@ public abstract class BaseEventHandler<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseEventHandler.class);
 
+	@Inject
+	private ReceivedEventService receivedEventService;
+
+
 	public void onEvent(
 		@Nonnull String key,
-		//@Nonnull UUID eventId,
+		@Nonnull String eventId,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
 		@Nonnull T dto) {
-/*
-		if (consumedMessageService.alreadyProcessed(eventId)) {
+
+		ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, dto.toString());
+
+		if (receivedEventService.saveReceivedEvent(receivedEvent)) {
 			LOG.info("Event with UUID '{}' of type '{}' was already retrieved, ignoring it", eventId, eventType);
 
 			return;
-		}*/
+		}
 
-	/*	LOG.info("Received '{}' event -- key: '{}', event id: '{}', event type: '{}'",
-			dto.getClass().getSimpleName(), key, eventId, eventType);*/
 		LOG.info("Received '{}' event -- key: '{}', event type: '{}'",
 			dto.getClass().getSimpleName(), key, eventType);
 
