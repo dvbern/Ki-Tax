@@ -152,14 +152,14 @@ export class TSFinanzModel {
         this.einkommensverschlechterungInfoContainer = gesuch.einkommensverschlechterungInfoContainer ?
             angular.copy(gesuch.einkommensverschlechterungInfoContainer) :
             new TSEinkommensverschlechterungInfoContainer();
-        // geesuchstelelr1 nullsave?
-        this.einkommensverschlechterungContainerGS1 =
-            angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
+        if (gesuch.gesuchsteller1) {
+            this.einkommensverschlechterungContainerGS1 =
+                angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
+        }
         if (gesuch.gesuchsteller2) {
             this.einkommensverschlechterungContainerGS2 =
                 angular.copy(gesuch.gesuchsteller2.einkommensverschlechterungContainer);
         }
-
     }
 
     public initFinSit(): void {
