@@ -270,7 +270,7 @@ public final class TestDataUtil {
 		gesuchstellerAdresse.setStrasse(TEST_STRASSE);
 		gesuchstellerAdresse.setHausnummer("21");
 		gesuchstellerAdresse.setZusatzzeile("c/o Uwe Untermieter");
-		gesuchstellerAdresse.setPlz("3014");
+		gesuchstellerAdresse.setPlz("3006");
 		gesuchstellerAdresse.setOrt("Bern");
 		gesuchstellerAdresse.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		gesuchstellerAdresse.setAdresseTyp(AdresseTyp.WOHNADRESSE);
@@ -283,7 +283,7 @@ public final class TestDataUtil {
 		adresse.setStrasse("Nussbaumstrasse");
 		adresse.setHausnummer("21");
 		adresse.setZusatzzeile("c/o Uwe Untermieter");
-		adresse.setPlz("3014");
+		adresse.setPlz("3006");
 		adresse.setOrt("Bern");
 		adresse.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		return adresse;
