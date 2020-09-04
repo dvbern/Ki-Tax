@@ -74,8 +74,6 @@ describe('freigabeView', () => {
         controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
             wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout);
 
-        expect(controller.gemeindeName).toBe(dossier.extractGemeindeName());
-
         controller.form = {} as any;
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
         controller.form = TestDataUtil.createDummyForm();
