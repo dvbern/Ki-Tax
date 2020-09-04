@@ -1194,6 +1194,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.instStamm = undefined;
             this.searchQuery = null;
             this.getBetreuungModel().institutionStammdaten = undefined;
+            // Im Falle von "nicht mehr keine Detailinfos" muss die Belegung wieder initialisiert werden
+            if (this.isTagesschule()) {
+                this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
+            }
         }
     }
 
