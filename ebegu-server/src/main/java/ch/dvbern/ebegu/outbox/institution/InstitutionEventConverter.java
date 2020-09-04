@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,14 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
 import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO.Builder;
+import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
@@ -67,6 +71,7 @@ public class InstitutionEventConverter {
 			.setName(institution.getName())
 			.setTraegerschaft(getTraegerschaft(institution))
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(stammdaten.getBetreuungsangebotTyp().name()))
+			.setStatus(InstitutionStatus.valueOf(institution.getStatus().name()))
 			.setAdresse(institutionKontaktAngaben)
 			.setTimestampMutiert(DateConverter.serialize(DateConverter.of(LocalDateTime.now())));
 
@@ -74,6 +79,8 @@ public class InstitutionEventConverter {
 			stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (bgStammdaten != null) {
 			builder
+				.setBetreuungsGutscheineAb(stammdaten.getGueltigkeit().getGueltigAb())
+				.setBetreuungsGutscheineBis(getGueltigBis(stammdaten.getGueltigkeit()))
 				.setBetreuungsAdressen(getBetreuungsAdressen(institutionKontaktAngaben, bgStammdaten))
 				.setOeffnungsTage(getOeffnungsTage(bgStammdaten))
 				.setOffenVon(TimeConverter.serialize(bgStammdaten.getOffenVon()))
@@ -167,5 +174,13 @@ public class InstitutionEventConverter {
 			.setName(adr.getGemeinde())
 			.setBfsNummer(adr.getBfsNummer())
 			.build();
+	}
+
+	/**
+	 * @return NULL, if gueltigBis == END_OF_TIME
+	 */
+	@Nullable
+	private LocalDate getGueltigBis(@Nonnull DateRange gueltigkeit) {
+		return Constants.END_OF_TIME.equals(gueltigkeit.getGueltigBis()) ? null : gueltigkeit.getGueltigBis();
 	}
 }

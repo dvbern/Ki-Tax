@@ -32,9 +32,11 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
 import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
+import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
@@ -62,6 +64,7 @@ public class InstitutionEventConverterTest {
 	public void testCreatedEvent() {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		Institution institution = institutionStammdaten.getInstitution();
+		institutionStammdaten.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 
 		InstitutionStammdatenBetreuungsgutscheine bgStammdaten =
 			checkNotNull(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine());
@@ -94,6 +97,12 @@ public class InstitutionEventConverterTest {
 			.where(InstitutionEventDTO::getId, is(institution.getId()))
 			.where(InstitutionEventDTO::getName, is(institution.getName()))
 			.where(InstitutionEventDTO::getTraegerschaft, is(checkNotNull(institution.getTraegerschaft()).getName()))
+			.where(InstitutionEventDTO::getStatus, is(InstitutionStatus.valueOf(institution.getStatus().name())))
+			.where(
+				InstitutionEventDTO::getBetreuungsGutscheineAb,
+				is(institutionStammdaten.getGueltigkeit().getGueltigAb()))
+			// END_OF_TIME shall be converted to NULL
+			.where(InstitutionEventDTO::getBetreuungsGutscheineBis, nullValue())
 			.where(
 				InstitutionEventDTO::getBetreuungsArt,
 				is(BetreuungsangebotTyp.valueOf(institutionStammdaten.getBetreuungsangebotTyp().name())))
