@@ -218,8 +218,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
-        if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
-            || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN
+        if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
+            && (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+                || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN)
         ) {
             // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
             this.findExistingBetreuungsmitteilung();
