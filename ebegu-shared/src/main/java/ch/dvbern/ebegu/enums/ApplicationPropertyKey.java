@@ -31,11 +31,6 @@ public enum ApplicationPropertyKey {
 	BACKGROUND_COLOR,
 
 	/**
-	 * {ChrgsAcct} {IBAN} IBAN Belastungskonto Gebühren?
-	 */
-	DEBTOR_IBAN_GEBUEHREN,
-
-	/**
 	 * Anzahl Tage nach Erstellungsdatum bis der GS gewarnt wird, wenn er nicht freigibt
 	 */
 	ANZAHL_TAGE_BIS_WARNUNG_FREIGABE,
@@ -86,5 +81,15 @@ public enum ApplicationPropertyKey {
 	 * Wenn TRUE ist die zweite Phase aktiv
 	 */
 	KANTON_NOTVERORDNUNG_PHASE_2_AKTIV,
+
+	/**
+	 * Default Datum bis wann die öffentlichen Gesuche der Notverordnung einreicht werden können
+	 */
+	NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH,
+	/**
+	 * Default Datum bis wann die privaten Gesuche der Notverordnung einreicht werden können
+	 */
+	NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
+
 
 }

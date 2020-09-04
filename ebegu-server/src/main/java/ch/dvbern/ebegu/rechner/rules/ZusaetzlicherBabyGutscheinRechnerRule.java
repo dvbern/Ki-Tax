@@ -72,10 +72,15 @@ public class ZusaetzlicherBabyGutscheinRechnerRule implements RechnerRule {
 	public void prepareParameter(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull RechnerRuleParameterDTO recherParameter
+		@Nonnull RechnerRuleParameterDTO rechnerParameter
 	) {
 		final BigDecimal babyGutscheinBetrag = calculateBetragZusaetzlicherBabyGutschein(inputGemeinde, parameterDTO);
-		recherParameter.setZusaetzlicherBabyGutscheinBetrag(babyGutscheinBetrag);
+		rechnerParameter.setZusaetzlicherBabyGutscheinBetrag(babyGutscheinBetrag);
+	}
+
+	@Override
+	public void resetParameter(@Nonnull RechnerRuleParameterDTO rechnerParameter) {
+		rechnerParameter.setZusaetzlicherBabyGutscheinBetrag(BigDecimal.ZERO);
 	}
 
 	private BigDecimal calculateBetragZusaetzlicherBabyGutschein(
@@ -106,8 +111,9 @@ public class ZusaetzlicherBabyGutscheinRechnerRule implements RechnerRule {
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO rechnerParameterDTO
 	) {
-		// Zusatzgutschein gibts nur, wenn grundsaetzlich Anspruch vorhanden
-		if (inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
+		// BabyGutschein gibts nur, wenn grundsaetzlich Anspruch *aufgrund des Einkommens* vorhanden
+		// also nicht, wenn nur Anspruch auf die Pauschale fuer erweiterte Betreuung!
+		if (!inputGemeinde.isKeinAnspruchAufgrundEinkommen() && inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
 			if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
 				BigDecimal betragKita = rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherBabyGutscheinBetragKita();
 				if (betragKita != null) {

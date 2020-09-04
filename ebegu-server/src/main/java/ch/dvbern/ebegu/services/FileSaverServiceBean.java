@@ -92,6 +92,38 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Nonnull
 	@Override
+	public UploadFileInfo saveZipFile(
+		@Nonnull byte[] bytes,
+		@Nonnull String filename
+	) throws MimeTypeParseException {
+
+		String filenameWithEnding = filename + ".zip";
+
+		final UploadFileInfo uploadFileInfo = new UploadFileInfo(filenameWithEnding, new MimeType("application/zip"));
+		uploadFileInfo.setBytes(bytes);
+		Objects.requireNonNull(uploadFileInfo);
+		Objects.requireNonNull(uploadFileInfo.getFilename());
+
+		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + "/auftraege/" + filenameWithEnding;
+		uploadFileInfo.setPath(absoluteFilePath);
+		uploadFileInfo.setActualFilename(filenameWithEnding);
+
+		Path file = Paths.get(absoluteFilePath);
+		try {
+			if (!Files.exists(file.getParent())) {
+				Files.createDirectories(file.getParent());
+			}
+			uploadFileInfo.setSize(Files.size(Files.write(file, uploadFileInfo.getBytes()))); //here we write to filesystem
+			LOG.info("Save file in FileSystem: {}", absoluteFilePath);
+
+		} catch (IOException e) {
+			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
+		}
+		return uploadFileInfo;
+	}
+
+	@Nonnull
+	@Override
 	public UploadFileInfo save(byte[] bytes, String fileName, String folderName, MimeType contentType) {
 		final UploadFileInfo uploadFileInfo = new UploadFileInfo(fileName, contentType);
 		uploadFileInfo.setBytes(bytes);

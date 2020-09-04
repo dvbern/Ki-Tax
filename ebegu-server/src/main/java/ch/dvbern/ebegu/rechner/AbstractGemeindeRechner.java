@@ -65,6 +65,9 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 		return Optional.of(super.calculateAsiv(input, parameterDTO));
 	}
 
+	/**
+	 * Dieser Mehtode darf nicht bei der calculateGemeinde verwendet werden
+	 */
 	private void prepareRechnerParameterForAsiv() {
 		rechnerParameter.reset();
 	}
@@ -76,13 +79,12 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 		for (RechnerRule rechnerRule : rechnerRulesForGemeinde) {
 			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
 			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
-				rechnerParameter.setHasGemeindeRules(true);
 				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
 					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
 				} else {
-					// Wenn es fuer diese Verfuegung nicht gilt, muessen wieder die Parameter nach ASIV
-					// verwendet werden!
-					prepareRechnerParameterForAsiv();
+					//Hier muss man nur der Parameter die nicht relevant ist zuruecksetzen nicht alle parametern
+					//sonst man verliert die andere Gemeinde Relevanten Rules
+					rechnerRule.resetParameter(rechnerParameter);
 				}
 			}
 		}

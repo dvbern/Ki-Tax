@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -72,6 +74,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -98,6 +101,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -231,6 +235,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@SuppressWarnings("Duplicates")
 	@Nonnull
@@ -485,6 +492,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			KantonDataRow row = new KantonDataRow();
 			Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+			Objects.requireNonNull(betreuung);
 			final Gesuch gesuch = betreuung.extractGesuch();
 
 			row.setGemeinde(gesuch.extractGemeinde().getName());
@@ -1184,13 +1192,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Locale locale
 	) {
 
-		row.setInstitution(zeitabschnitt.getVerfuegung()
-			.getBetreuung()
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		row.setInstitution(betreuung
 			.getInstitutionStammdaten()
 			.getInstitution()
 			.getName());
 
-		row.setBetreuungsTyp(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungsangebotTyp());
+		row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
 		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale));
@@ -1202,12 +1211,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		row.setFallId(Integer.parseInt(String.valueOf(gesuch.getFall().getFallNummer())));
 		row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
-		row.setBgNummer(zeitabschnitt.getVerfuegung().getBetreuung().getBGNummer());
+		row.setBgNummer(betreuung.getBGNummer());
 	}
 
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
-		GesuchstellerKinderBetreuungDataRow row,
-		@Nullable GesuchstellerContainer containerGS1
+		@Nonnull GesuchstellerKinderBetreuungDataRow row,
+		@Nullable GesuchstellerContainer containerGS1,
+		@Nonnull Einstellung freiwilligenArbeitMax
 	) {
 		if (containerGS1 == null) {
 			return;
@@ -1248,12 +1258,20 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpIntegration(row.getGs1EwpIntegration() + erwerbspensumJA.getPensum());
 			}
+			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs1EwpFreiwillig(Math.min(
+					row.getGs1EwpFreiwillig() + erwerbspensumJA.getPensum(),
+					freiwilligenArbeitMax.getValueAsInteger()
+				));
+			}
 		}
 	}
 
 	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(
-		GesuchstellerKinderBetreuungDataRow row,
-		GesuchstellerContainer containerGS2) {
+		@Nonnull GesuchstellerKinderBetreuungDataRow row,
+		@Nonnull GesuchstellerContainer containerGS2,
+		@Nonnull Einstellung freiwilligenArbeitMax
+	) {
 
 		Gesuchsteller gs2 = containerGS2.getGesuchstellerJA();
 		row.setGs2Name(gs2.getNachname());
@@ -1288,6 +1306,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpIntegration(row.getGs2EwpIntegration() + erwerbspensumJA.getPensum());
+			}
+			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs2EwpFreiwillig(Math.min(
+					row.getGs2EwpFreiwillig() + erwerbspensumJA.getPensum(),
+					freiwilligenArbeitMax.getValueAsInteger()
+				));
 			}
 		}
 	}
@@ -1454,9 +1478,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
 		@Nonnull Locale locale
 	) {
-		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
-		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(gueltigeBetreuung);
+		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
+		Gesuch gueltigeGesuch = null;
+
+
+		Einstellung freiwilligenArbeitMax = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+			gesuch.getDossier().getGemeinde(),
+			gesuch.getGesuchsperiode());
 
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
@@ -1483,9 +1514,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpRav(0);
 		row.setGs1EwpGesundhtl(0);
 		row.setGs1EwpIntegration(0);
+		row.setGs1EwpFreiwillig(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
-			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
+			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container, freiwilligenArbeitMax);
 		}
 		// Gesuchsteller 2: Prozent-Felder initialisieren, damit im Excel das Total sicher berechnet werden kann
 		row.setGs2EwpAngestellt(0);
@@ -1494,8 +1526,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpRav(0);
 		row.setGs2EwpGesundhtl(0);
 		row.setGs2EwpIntegration(0);
+		row.setGs2EwpFreiwillig(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
-			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
+			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2(), freiwilligenArbeitMax);
 		}
 		// Familiensituation / Einkommen
 		FamiliensituationContainer familiensituationContainer = gueltigeGesuch.getFamiliensituationContainer();
@@ -1602,9 +1635,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
 		@Nonnull Locale locale
 	) {
-		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
-		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(gueltigeBetreuung);
+		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
+		Gesuch gueltigeGesuch = null;
+
 
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
@@ -1661,16 +1696,22 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
 
 		return gueltigeKind
-			.map(gk -> gk.getBetreuungen().stream().filter(betreuung -> betreuung
-				.getBetreuungNummer()
-				.equals(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungNummer()))
-				.findFirst()
-				.orElse(zeitabschnitt.getVerfuegung().getBetreuung()))
+			.map(gk -> {
+				final Betreuung betr = zeitabschnitt.getVerfuegung().getBetreuung();
+				Objects.requireNonNull(betr);
+				return gk.getBetreuungen().stream().filter(betreuung -> betreuung
+					.getBetreuungNummer()
+					.equals(betr.getBetreuungNummer()))
+					.findFirst()
+					.orElse(betr);
+			})
 			.orElse(gueltigeBetreuung);
 	}
 
 	private Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
-		Integer kindNummer = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindNummer();
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		Integer kindNummer = betreuung.getKind().getKindNummer();
 
 		return gueltigeGesuch.getKindContainers().stream()
 			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
@@ -2045,15 +2086,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (institutionStammdaten.getWebseite() != null) {
 			row.setUrl(institutionStammdaten.getWebseite());
 		}
-		if (institutionStammdaten.getOeffnungszeiten() != null) {
-			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
-		}
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		if (institutionStammdatenBG != null) {
+			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null) {
+				row.setOeffnungszeiten(
+					institutionStammdatenBG.getOffenVon().toString()
+						+ " - "
+						+ institutionStammdatenBG.getOffenBis().toString()
+				);
+			}
+			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
+				.sorted()
+				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
+				.collect(Collectors.joining(", ")));
+			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
+		}
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
 		row.setKindergarten(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieKindergarten());

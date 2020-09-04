@@ -1435,7 +1435,8 @@
                 </div>
             </div>
 <!--            Verfuegungen-->
-            <div class="col-md-8 col-md-offset-2" *ngIf="rueckforderungFormular.hasBeenProvisorisch"> <!--TODO: auch anzeigen wenn definitve Verfügung-->
+            <div class="col-md-8 col-md-offset-2"
+                 *ngIf="rueckforderungFormular.hasBeenProvisorisch || rueckforderungFormular.status === 'VERFUEGT'">
                 <div class="row" id="verfuegungen">
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">NOTVERORDNUNG_VERFUEGUNG</h2>
@@ -1444,6 +1445,12 @@
                             <button type="button" class="dv-btn btn-link link-underline"
                                     (click)="openProvisorischeVerfuegung(rueckforderungFormular)">
                                 <span translate="RUECKFORDERUNG_PROVISORISCHE_VERFUEGUNG_LINK_TEXT"></span>
+                            </button>
+                        </div>
+                        <div *ngIf="rueckforderungFormular.status === 'VERFUEGT'">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    (click)="openDefinitiveVerfuegung(rueckforderungFormular)">
+                                <span translate="RUECKFORDERUNG_DEFINITIVE_VERFUEGUNG_LINK_TEXT"></span>
                             </button>
                         </div>
                     </div>

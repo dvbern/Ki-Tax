@@ -269,7 +269,7 @@ public final class TestDataUtil {
 		gesuchstellerAdresse.setStrasse(TEST_STRASSE);
 		gesuchstellerAdresse.setHausnummer("21");
 		gesuchstellerAdresse.setZusatzzeile("c/o Uwe Untermieter");
-		gesuchstellerAdresse.setPlz("3014");
+		gesuchstellerAdresse.setPlz("3006");
 		gesuchstellerAdresse.setOrt("Bern");
 		gesuchstellerAdresse.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		gesuchstellerAdresse.setAdresseTyp(AdresseTyp.WOHNADRESSE);
@@ -282,7 +282,7 @@ public final class TestDataUtil {
 		adresse.setStrasse("Nussbaumstrasse");
 		adresse.setHausnummer("21");
 		adresse.setZusatzzeile("c/o Uwe Untermieter");
-		adresse.setPlz("3014");
+		adresse.setPlz("3006");
 		adresse.setOrt("Bern");
 		adresse.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		return adresse;
@@ -1113,6 +1113,27 @@ public final class TestDataUtil {
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.setErweiterteBetreuungContainer(TestDataUtil.createDefaultErweiterteBetreuungContainer());
 		return betreuung;
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	public static AnmeldungTagesschule createGesuchWithAnmeldungTagesschule() {
+		Gesuch gesuch = new Gesuch();
+		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setDossier(createDefaultDossier());
+		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
+		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(new FinanzielleSituation());
+		final KindContainer kindContainer = createDefaultKindContainer();
+		kindContainer.setGesuch(gesuch);
+		gesuch.getKindContainers().add(kindContainer);
+		final AnmeldungTagesschule anmeldung = createAnmeldungTagesschuleWithModules(kindContainer, gesuch.getGesuchsperiode());
+		anmeldung.setKind(kindContainer);
+		kindContainer.getAnmeldungenTagesschule().add(anmeldung);
+		return anmeldung;
 	}
 
 	public static void calculateFinanzDaten(Gesuch gesuch) {

@@ -24,7 +24,7 @@ import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/en
 import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragDTO} from '../../../../models/TSAbstractAntragDTO';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
-import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSFallAntragDTO} from '../../../../models/TSFallAntragDTO';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
@@ -70,8 +70,8 @@ export class DVQuicksearchListController implements IController {
     public tableId: string;
     public tableTitle: string;
 
-    public selectedVerantwortlicherBG: TSBenutzer;
-    public selectedVerantwortlicherTS: TSBenutzer;
+    public selectedVerantwortlicherBG: TSBenutzerNoDetails;
+    public selectedVerantwortlicherTS: TSBenutzerNoDetails;
     public selectedEingangsdatum: string;
     public selectedKinder: string;
     public selectedFallNummer: string;
@@ -101,7 +101,7 @@ export class DVQuicksearchListController implements IController {
     ) {
     }
 
-    public userChanged(selectedUser: TSBenutzer): void {
+    public userChanged(selectedUser: TSBenutzerNoDetails): void {
         this.onUserChanged({user: selectedUser});
     }
 

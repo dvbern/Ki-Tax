@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -70,4 +71,7 @@ public interface RueckforderungFormularService {
 
 	@Nonnull
 	RueckforderungFormular provisorischeVerfuegung(RueckforderungFormular formular);
+
+	@Nonnull
+	byte[] massenVerfuegungDefinitiv(@Nonnull String auftragIdentifier) throws IOException;
 }

@@ -145,7 +145,7 @@ public final class Constants {
 	// Sollte ins TestDataUtil verschoben werden oder in ein TestConstants, damit sie nicht aus
 	// Versehen in produktivem Code verwendet werden
 	public interface EinstellungenDefaultWerteAsiv {
-		BigDecimal MAX_EINKOMMEN = MathUtil.DEFAULT.from(160000);
+		BigDecimal MAX_EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(160000);
 		String EINSTELLUNG_MAX_EINKOMMEN = String.valueOf(MAX_EINKOMMEN);
 		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 = "3800";
 		String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 = "6000";

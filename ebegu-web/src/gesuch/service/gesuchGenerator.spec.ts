@@ -113,7 +113,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier).not.toBe(dossier);
                     expect(gesuch.dossier.fall).toBeDefined();
                     expect(gesuch.dossier.fall).not.toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toBe(user);
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
         it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', async(() => {
@@ -128,7 +128,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier).not.toBe(dossier);
                     expect(gesuch.dossier.fall).toBeDefined();
                     expect(gesuch.dossier.fall).not.toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toBe(user);
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
         it('creates a new Gesuch and Dossier linked to the existing fall', async(() => {
@@ -140,7 +140,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier).not.toBe(dossier);
                     expect(gesuch.dossier.fall).toBeDefined();
                     expect(gesuch.dossier.fall).toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toBe(user);
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
         it('creates a new Gesuch linked to the existing fall and Dossier', async(() => {
@@ -152,7 +152,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier).toBe(dossier);
                     expect(gesuch.dossier.fall).toBeDefined();
                     expect(gesuch.dossier.fall).toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toBe(user);
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
     });
@@ -171,7 +171,7 @@ describe('gesuchGenerator', () => {
                     expect(mutation.dossier).toBe(dossier);
                     expect(mutation.dossier.fall).toBeDefined();
                     expect(mutation.dossier.fall).toBe(fall);
-                    expect(mutation.dossier.verantwortlicherBG).toBe(user);
+                    expect(mutation.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
     });
@@ -190,7 +190,7 @@ describe('gesuchGenerator', () => {
                     expect(mutation.dossier).toBe(dossier);
                     expect(mutation.dossier.fall).toBeDefined();
                     expect(mutation.dossier.fall).toBe(fall);
-                    expect(mutation.dossier.verantwortlicherBG).toBe(user);
+                    expect(mutation.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
     });

@@ -27,6 +27,7 @@ import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
@@ -44,7 +45,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public creationType: string = 'verfuegt';
     public selectedBesitzer: TSBenutzer;
-    public gesuchstellerList: Array<TSBenutzer>;
+    public gesuchstellerList: Array<TSBenutzerNoDetails>;
 
     public selectedGesuchsperiode: TSGesuchsperiode;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;

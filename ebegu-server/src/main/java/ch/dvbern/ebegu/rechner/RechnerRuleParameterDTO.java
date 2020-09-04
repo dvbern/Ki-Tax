@@ -24,24 +24,12 @@ import java.math.BigDecimal;
  */
 public final class RechnerRuleParameterDTO {
 
-	private boolean hasGemeindeRules = false;
 	private BigDecimal zusaetzlicherGutscheinGemeindeBetrag = BigDecimal.ZERO;
 	private BigDecimal zusaetzlicherBabyGutscheinBetrag = BigDecimal.ZERO;
 
-
 	public void reset() {
-		this.hasGemeindeRules = false;
 		this.zusaetzlicherGutscheinGemeindeBetrag = BigDecimal.ZERO;
 		this.zusaetzlicherBabyGutscheinBetrag = BigDecimal.ZERO;
-	}
-
-
-	public boolean isHasGemeindeRules() {
-		return hasGemeindeRules;
-	}
-
-	public void setHasGemeindeRules(boolean hasGemeindeRules) {
-		this.hasGemeindeRules = hasGemeindeRules;
 	}
 
 	public BigDecimal getZusaetzlicherGutscheinGemeindeBetrag() {

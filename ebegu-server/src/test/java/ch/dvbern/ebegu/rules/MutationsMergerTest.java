@@ -61,6 +61,7 @@ public class MutationsMergerTest {
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.setVorgaengerId(erstgesuchBetreuung.getId());
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMutation);
 		List<VerfuegungZeitabschnitt> zaBetrMutiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
@@ -93,6 +94,7 @@ public class MutationsMergerTest {
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.setVorgaengerId(erstgesuchBetreuung.getId());
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		List<VerfuegungZeitabschnitt> zabetrMutiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
@@ -126,6 +128,7 @@ public class MutationsMergerTest {
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.setVorgaengerId(erstgesuchBetreuung.getId());
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		List<VerfuegungZeitabschnitt> zabetrMutiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);

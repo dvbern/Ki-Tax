@@ -171,18 +171,6 @@
                                                inputId="webseite_id"></dv-error-messages>
                         </div>
                     </div>
-                    <!-- Öffnungszeiten -->
-                    <div class="col-sm-6" *ngIf="isBetreuungsgutschein()">
-                        <div class="form-group">
-                            <label class="required" translate for="oeffnungszeiten_id">OEFFNUNGSZEITEN</label>
-                            <input id="oeffnungszeiten_id" type="text" name="oeffnungszeiten_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.oeffnungszeiten"
-                                   [maxlength]="255" class="form-control"
-                                   placeholder="{{getPlaceholderForOeffnungszeiten()}}" required>
-                            <dv-error-messages [errorObject]="form.controls.oeffnungszeiten_id?.errors"
-                                               inputId="oeffnungszeiten_id"></dv-error-messages>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <!-- Betreuungsgutscheine akzeptieren ab/bis -->
@@ -290,6 +278,12 @@
                                 <p>{{stammdaten.adresse.organisation}}</p>
                                 <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
                                 <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+                                <p *ngIf="stammdaten.adresse.gemeinde">
+                                    <span translate>GEMEINDE</span>
+                                    {{stammdaten.adresse.gemeinde}} (
+                                    <span translate>GEMEINDE_BFS_NR</span>
+                                    {{stammdaten.adresse.bfsNummer}})
+                                </p>
                             </div>
                         </div>
                         <!-- E-Mail, Telefon, Webseite -->
@@ -300,13 +294,6 @@
                                 <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
                                 <p><a href="{{ebeguUtil.formatHrefUrl(stammdaten.webseite)}}"
                                       target="tah">{{stammdaten.webseite}}</a></p>
-                            </div>
-                        </div>
-                        <!-- Öffnungszeiten -->
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <h3 translate>OEFFNUNGSZEITEN</h3>
-                                <p>{{stammdaten.oeffnungszeiten}}</p>
                             </div>
                         </div>
                     </div>

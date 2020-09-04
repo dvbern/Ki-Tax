@@ -2,9 +2,9 @@
 <#-- @ftlvariable name="institutionStammdaten" type="ch.dvbern.ebegu.entities.InstitutionStammdaten" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
-<#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="empfaenger" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: ${institutionStammdaten.mail}
+To: ${empfaenger}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung
 	für Kitas und TFO: Provisorische Verfügung / Coronavirus et accueil extrafamilial : décision provisoire</@base64Header>
 Content-Type: text/html;charset=utf-8
@@ -19,7 +19,9 @@ Content-Type: text/html;charset=utf-8
 </head>
 
 <body>
-
+${institutionStammdaten.mail}<br>
+${institutionStammdaten.institution.name}<br>
+<p></p>
 <div>
 	<p>
 		<b>
@@ -54,7 +56,7 @@ Content-Type: text/html;charset=utf-8
 	<p>
 		Amt für Integration und Soziales<br>
 		<a href="mailto:info.fam@be.ch">info.fam@be.ch</a><br>
-		031 633 78 91
+		+41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
 		<p>
@@ -100,7 +102,7 @@ Content-Type: text/html;charset=utf-8
 	<p>
 		Office de l’intégration et de l’action sociale
 		Courriel : <a href="mailto:info.fam@be.ch">info.fam@be.ch</a>
-		Tél : 031 633 78 91
+		Tél : +41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
 		<p>

@@ -52,7 +52,7 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
 import {TSAdresseContainer} from '../../models/TSAdresseContainer';
-import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../models/TSBenutzerNoDetails';
 import {TSBetreuung} from '../../models/TSBetreuung';
 import {TSDossier} from '../../models/TSDossier';
 import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
@@ -1099,7 +1099,7 @@ export class GesuchModelManager {
     /**
      * Sets the current user as VerantwortlicherTS and saves it in the DB
      */
-    public setUserAsFallVerantwortlicherTS(user: TSBenutzer): void {
+    public setUserAsFallVerantwortlicherTS(user: TSBenutzerNoDetails): void {
         if (!(this.gesuch && this.gesuch.dossier)) {
             return;
         }
@@ -1113,7 +1113,7 @@ export class GesuchModelManager {
     /**
      * Sets the current user as VerantwortlicherBG and saves it in the DB
      */
-    public setUserAsFallVerantwortlicherBG(user: TSBenutzer): void {
+    public setUserAsFallVerantwortlicherBG(user: TSBenutzerNoDetails): void {
         if (!this.gesuch || !this.gesuch.dossier || !this.gesuch.dossier.id) {
             return;
         }
@@ -1123,11 +1123,11 @@ export class GesuchModelManager {
             });
     }
 
-    public getFallVerantwortlicherBG(): TSBenutzer {
+    public getFallVerantwortlicherBG(): TSBenutzerNoDetails {
         return this.gesuch && this.gesuch.dossier ? this.gesuch.dossier.getHauptverantwortlicher() : undefined;
     }
 
-    public getFallVerantwortlicherTS(): TSBenutzer {
+    public getFallVerantwortlicherTS(): TSBenutzerNoDetails {
         return this.gesuch && this.gesuch.dossier ? this.gesuch.dossier.verantwortlicherTS : undefined;
     }
 

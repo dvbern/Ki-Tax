@@ -560,12 +560,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public void removeGesuch(@Nonnull String gesuchId, GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(gesuchId);
-		Gesuch gesToRemove = findGesuch(gesuchId)
+		// Gesuch loeschen ist auch moeglich, wenn der Zugriff darauf nicht erlaubt ist:
+		// Beim Loeschen einer Online-Mutation durch den Admin. Darum hier kein Auth-Check
+		Gesuch gesToRemove = findGesuch(gesuchId, false)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"removeGesuch",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchId));
-		authorizer.checkWriteAuthorization(gesToRemove);
+		// Da die Auth Pruefung nicht auf dem Gesuch selber gemacht werden kann (siehe oben)
+		// machen wir sie auf dem Dossier: Der Benutzer muss grundsaetzlich fuer dieses Dossier
+		// zustaendig sein
+		authorizer.checkWriteAuthorizationDossier(gesToRemove.getDossier());
 		//Remove all depending objects
 		wizardStepService.removeSteps(gesToRemove);  //wizard steps removen
 		mahnungService.removeAllMahnungenFromGesuch(gesToRemove);
