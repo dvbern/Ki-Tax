@@ -64,6 +64,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		return tagesschuleAbschnitte;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull AnmeldungTagesschule anmeldungTagesschule){
 		// Tageschulanmeldungen gelten immer fuer die ganze Gesuchsperiode
