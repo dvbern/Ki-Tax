@@ -40,4 +40,9 @@ public interface DailyBatch {
 	void runBatchInfoOffenePendenzenInstitution();
 
 	void runBatchInstitutionCheckRequired();
+
+	/**
+	 * @return the number of changed InstitutionStammdaten
+	 */
+	Future<Integer> runBatchUpdateGemeindeForBGInstitutionen();
 }

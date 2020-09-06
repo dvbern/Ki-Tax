@@ -169,6 +169,7 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		@Nonnull BigDecimal massgebendesEinkommen,
 		boolean bezahltVollkosten) {
 
+		// BezahltVollkosten ist/darf nur TRUE sein, wenn keine erweiterteBetreuung besteht!
 		if (bezahltVollkosten) {
 			return BigDecimal.ZERO;
 		}

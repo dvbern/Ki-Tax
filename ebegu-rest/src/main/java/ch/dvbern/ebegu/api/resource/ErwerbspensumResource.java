@@ -16,10 +16,8 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -153,30 +151,6 @@ public class ErwerbspensumResource {
 		}
 		ErwerbspensumContainer erwerbspenCont = optional.get();
 		return converter.erwerbspensumContainerToJAX(erwerbspenCont);
-	}
-
-	@ApiOperation(value = "Returns all the ErwerbspensumContainer for the Gesuchsteller with the specified ID",
-		responseContainer = "Collection", response = JaxErwerbspensumContainer.class)
-	@Nullable
-	@GET
-	@Path("/gesuchsteller/{gesuchstellerID}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
-	public Collection<JaxErwerbspensumContainer> findErwerbspensumForGesuchsteller(
-		@Nonnull @NotNull @PathParam("gesuchstellerID") JaxId gesuchstellerID) throws EbeguEntityNotFoundException {
-
-		Objects.requireNonNull(gesuchstellerID.getId());
-		String gesEntityID = converter.toEntityId(gesuchstellerID);
-		Optional<GesuchstellerContainer> gesuchsteller = gesuchstellerService.findGesuchsteller(gesEntityID);
-		GesuchstellerContainer gs = gesuchsteller.orElseThrow(
-			() -> new EbeguEntityNotFoundException("findErwerbspensumForGesuchsteller",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"GesuchstellerId invalid: " + gesEntityID));
-		Collection<ErwerbspensumContainer> pensen = erwerbspensumService.findErwerbspensenForGesuchsteller(gs);
-		return pensen.stream()
-			.map(erwerbspensumContainer -> converter.erwerbspensumContainerToJAX(erwerbspensumContainer))
-			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Remove the ErwerbspensumContainer with the specified ID from the database.",

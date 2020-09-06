@@ -31,11 +31,6 @@ public enum ApplicationPropertyKey {
 	BACKGROUND_COLOR,
 
 	/**
-	 * {ChrgsAcct} {IBAN} IBAN Belastungskonto Gebühren?
-	 */
-	DEBTOR_IBAN_GEBUEHREN,
-
-	/**
 	 * Anzahl Tage nach Erstellungsdatum bis der GS gewarnt wird, wenn er nicht freigibt
 	 */
 	ANZAHL_TAGE_BIS_WARNUNG_FREIGABE,

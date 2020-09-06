@@ -51,6 +51,13 @@ export class BatchjobTriggerViewComponent {
         });
     }
 
+    public runBatchUpdateGemeindeForBGInstitutionen(): void {
+        this.dailyBatchRS.runBatchUpdateGemeindeForBGInstitutionen().then(response => {
+            const title = response ? 'Gemeinden erfolgreich aktualisiert' : 'Fehler beim aktualisieren der Gemeinden';
+            this.createAndOpenDialog(title);
+        });
+    }
+
     private createAndOpenDialog(title: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {title};
