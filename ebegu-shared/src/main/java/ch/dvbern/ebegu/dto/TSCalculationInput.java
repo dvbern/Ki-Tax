@@ -46,6 +46,10 @@ public class TSCalculationInput {
 	@Nonnull
 	private Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten = new HashMap<>();
 
+	@NotNull
+	@Nonnull
+	private Map<BigDecimal, Integer> verpflegungskostenUndMahlzeitenZweiWochen = new HashMap<>();
+
 	public TSCalculationInput() {
 	}
 
@@ -54,6 +58,7 @@ public class TSCalculationInput {
 		this.verpflegungskosten = other.verpflegungskosten;
 		this.verpflegungskostenVerguenstigt = other.verpflegungskostenVerguenstigt;
 		this.verpflegungskostenUndMahlzeiten = other.verpflegungskostenUndMahlzeiten;
+		this.verpflegungskostenUndMahlzeitenZweiWochen = other.verpflegungskostenUndMahlzeitenZweiWochen;
 	}
 
 	public void add(@Nonnull TSCalculationInput other) {
@@ -66,13 +71,21 @@ public class TSCalculationInput {
 		merged.putAll(other.verpflegungskostenUndMahlzeiten);
 
 		this.verpflegungskostenUndMahlzeiten = merged;
+
+		Map<BigDecimal, Integer> mergedZweiWochen = new HashMap<>();
+
+		mergedZweiWochen.putAll(this.verpflegungskostenUndMahlzeitenZweiWochen);
+		mergedZweiWochen.putAll(other.verpflegungskostenUndMahlzeitenZweiWochen);
+
+		this.verpflegungskostenUndMahlzeitenZweiWochen = mergedZweiWochen;
 	}
 
 	public boolean isSame(@Nonnull TSCalculationInput other) {
 		return Objects.equals(this.betreuungszeitProWoche, other.betreuungszeitProWoche)
 			&& MathUtil.isSame(this.verpflegungskosten, other.verpflegungskosten)
 			&& MathUtil.isSame(this.verpflegungskostenVerguenstigt, other.verpflegungskostenVerguenstigt)
-			&& Objects.equals(this.verpflegungskostenUndMahlzeiten, other.verpflegungskostenUndMahlzeiten);
+			&& Objects.equals(this.verpflegungskostenUndMahlzeiten, other.verpflegungskostenUndMahlzeiten)
+			&& Objects.equals(this.verpflegungskostenUndMahlzeitenZweiWochen, other.verpflegungskostenUndMahlzeitenZweiWochen);
 	}
 
 	@Nonnull
@@ -128,4 +141,14 @@ public class TSCalculationInput {
 	public void setVerpflegungskostenUndMahlzeiten(@Nonnull Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
 		this.verpflegungskostenUndMahlzeiten = verpflegungskostenUndMahlzeiten;
 	}
+
+	@Nonnull
+	public Map<BigDecimal, Integer> getVerpflegungskostenUndMahlzeitenZweiWochen() {
+		return verpflegungskostenUndMahlzeitenZweiWochen;
+	}
+
+	public void setVerpflegungskostenUndMahlzeitenZweiWochen(@Nonnull Map<BigDecimal, Integer> verpflegungskostenUndMahlzeitenZweiWochen) {
+		this.verpflegungskostenUndMahlzeitenZweiWochen = verpflegungskostenUndMahlzeitenZweiWochen;
+	}
+
 }
