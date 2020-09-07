@@ -37,7 +37,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.EinstellungServiceBean;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private BetreuungService betreuungService;
 
 	@Inject
-	private EinstellungServiceBean einstellungServiceBean;
+	private EinstellungService einstellungService;
 
 	@Override
 	protected void processEvent(@Nonnull LocalDateTime eventTime, @Nonnull EventType eventType,
@@ -100,7 +100,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			Gemeinde gemeinde = betreuung.extractGemeinde();
 			Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
 			Einstellung zusaetzlicherGutscheinEnabled =
-				einstellungServiceBean.findEinstellung(EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED,
+				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED,
 					gemeinde,
 					gesuchsperiode);
 			if (zusaetzlicherGutscheinEnabled.getValueAsBoolean() && gemeinde.getName().equals("Bern") && !gemeinde.getName().equalsIgnoreCase(dto.getGemeindeName())) {

@@ -76,7 +76,8 @@ public class PlatzbestaetigungEventKafkaConsumer {
 		}
 		Properties props = new Properties();
 		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
-		props.setProperty(GROUP_ID_CONFIG, "kibon-platzbestaetigung-group");
+		props.setProperty(GROUP_ID_CONFIG,
+			"kibon-platzbestaetigung-" + ebeguConfiguration.getKafkaPlatzbestaetigungGroupId());
 		props.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "true");
 		props.setProperty(AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");

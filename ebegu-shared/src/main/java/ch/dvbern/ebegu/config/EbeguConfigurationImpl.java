@@ -89,6 +89,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
 	private static final String KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED = "kibon.exchange.betreuunganfrage.enabled";
+	private static final String KIBON_KAFKA_PLATZBESTAETIGUNG_GROUP_ID = "kibon.kafka.platzbestaetigung.group.id";
 
 	private static final String CLAMAV_HOST = "ebegu.clamav.host";
 	private static final String CLAMAV_PORT = "ebegu.clamav.port";
@@ -398,5 +399,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getNotverordnungEmpfaengerMail() {
 		return getString(NOTVERORDNUNG_EMPFAENGER_MAIL);
+	}
+
+	@Override
+	public String getKafkaPlatzbestaetigungGroupId() {
+		return getString(KIBON_KAFKA_PLATZBESTAETIGUNG_GROUP_ID, "dev");
 	}
 }
