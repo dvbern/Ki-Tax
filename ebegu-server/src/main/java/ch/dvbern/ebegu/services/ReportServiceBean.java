@@ -1217,7 +1217,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
 		@Nonnull GesuchstellerKinderBetreuungDataRow row,
 		@Nullable GesuchstellerContainer containerGS1,
-		@Nonnull Einstellung freiwilligenArbeitMax
+		@Nonnull Integer freiwilligenArbeitMax
 	) {
 		if (containerGS1 == null) {
 			return;
@@ -1261,7 +1261,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpFreiwillig(Math.min(
 					row.getGs1EwpFreiwillig() + erwerbspensumJA.getPensum(),
-					freiwilligenArbeitMax.getValueAsInteger()
+					freiwilligenArbeitMax
 				));
 			}
 		}
@@ -1270,7 +1270,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(
 		@Nonnull GesuchstellerKinderBetreuungDataRow row,
 		@Nonnull GesuchstellerContainer containerGS2,
-		@Nonnull Einstellung freiwilligenArbeitMax
+		@Nonnull Integer freiwilligenArbeitMax
 	) {
 
 		Gesuchsteller gs2 = containerGS2.getGesuchstellerJA();
@@ -1310,7 +1310,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpFreiwillig(Math.min(
 					row.getGs2EwpFreiwillig() + erwerbspensumJA.getPensum(),
-					freiwilligenArbeitMax.getValueAsInteger()
+					freiwilligenArbeitMax
 				));
 			}
 		}
@@ -1462,20 +1462,28 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache = new HashMap<>();
+		Map<String, Integer> maxFreiwilligenarbeitCache = new HashMap<>();
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			GesuchstellerKinderBetreuungDataRow row =
-				createRowForGesuchstellerKinderBetreuungReport(zeitabschnitt, neustesVerfuegtesGesuchCache, locale);
+				createRowForGesuchstellerKinderBetreuungReport(
+					zeitabschnitt, neustesVerfuegtesGesuchCache, maxFreiwilligenarbeitCache, locale);
 			dataRowList.add(row);
 		}
 
 		return dataRowList;
 	}
 
+	@Nonnull
+	private String getMaxFreiwilligenarbeitCacheKey(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		return gemeinde.getId() + "_" + gesuchsperiode.getId();
+	}
+
 	@SuppressWarnings({ "Duplicates", "PMD.NcssMethodCount" })
 	private GesuchstellerKinderBetreuungDataRow createRowForGesuchstellerKinderBetreuungReport(
 		VerfuegungZeitabschnitt zeitabschnitt,
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
+		Map<String, Integer> maxFreiwilligenarbeitCache,
 		@Nonnull Locale locale
 	) {
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
@@ -1483,11 +1491,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
 		Gesuch gueltigeGesuch = null;
 
-
-		Einstellung freiwilligenArbeitMax = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
-			gesuch.getDossier().getGemeinde(),
-			gesuch.getGesuchsperiode());
+		final String maxFreiwilligenarbeitCacheKey = getMaxFreiwilligenarbeitCacheKey(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		Integer maxFreiwilligenarbeit = null;
+		if (maxFreiwilligenarbeitCache.containsKey(maxFreiwilligenarbeitCacheKey)) {
+			maxFreiwilligenarbeit = maxFreiwilligenarbeitCache.get(maxFreiwilligenarbeitCacheKey);
+		} else {
+			Einstellung maxFreiwilligenarbeitEinstellung = einstellungService.findEinstellung(
+				EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+				gesuch.getDossier().getGemeinde(),
+				gesuch.getGesuchsperiode());
+			maxFreiwilligenarbeit = maxFreiwilligenarbeitEinstellung.getValueAsInteger();
+			maxFreiwilligenarbeitCache.put(maxFreiwilligenarbeitCacheKey, maxFreiwilligenarbeit);
+		}
 
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
@@ -1517,7 +1532,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpFreiwillig(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
-			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container, freiwilligenArbeitMax);
+			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container, maxFreiwilligenarbeit);
 		}
 		// Gesuchsteller 2: Prozent-Felder initialisieren, damit im Excel das Total sicher berechnet werden kann
 		row.setGs2EwpAngestellt(0);
@@ -1528,7 +1543,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpIntegration(0);
 		row.setGs2EwpFreiwillig(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
-			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2(), freiwilligenArbeitMax);
+			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2(), maxFreiwilligenarbeit);
 		}
 		// Familiensituation / Einkommen
 		FamiliensituationContainer familiensituationContainer = gueltigeGesuch.getFamiliensituationContainer();
