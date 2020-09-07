@@ -209,8 +209,7 @@
                     <!--Institutionen-->
                     <div ng-if="vm.getBetreuungModel().vertrag">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
-                        <div class="row"
-                             ng-if="vm.showInstitutionenList()">
+                        <div class="row hide-sm hide-xs" id="institution_search" ng-if="vm.showInstitutionenList()">
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="INSTITUTION" for="institution">
                                 </label>
@@ -220,7 +219,7 @@
                                                  md-min-length="0"
                                                  md-no-cache="true"
                                                  md-delay="0"
-                                                 class="form-control hide-sm hide-xs"
+                                                 class="form-control"
                                                  ng-attr-placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}"
                                                  md-select-on-focus="true"
                                                  md-selected-item="vm.instStamm"
@@ -231,26 +230,37 @@
                                                  md-require-match="true"
                                                  md-items="item in vm.querySearch(vm.searchQuery)"
                                                  md-item-text="item.institution.name"
-                                                 ng-required="true">
+                                                 ng-required="!vm.isInstitutionMobileSelection()">
                                     <md-item-template>
                                         <span md-highlight-text="vm.searchQuery">
                                             {{item.getAutocompleteText()}}
                                         </span>
                                     </md-item-template>
                                 </md-autocomplete>
-                                <div class="dv-select-style  hide-gt-sm">
-                                    <select aria-describedby="institution-error" name="institution" id="institution"
-                                            ng-model="vm.instStammId"
-                                            class="form-control"
-                                            ng-options="institutionSD.id as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
-                                            ng-required="true" ng-change="vm.setSelectedInstitutionStammdaten()"
-                                            ng-disabled="!(vm.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
-                                    </select>
-                                    <dv-error-messages input-id="betreuungsangebot"
-                                                       for="vm.form.betreuungsangebot.$error"></dv-error-messages>
-                                </div>
                                 <span ng-if="vm.form.institution.$touched">
                                     <dv-error-messages input-id="institution"
+                                                       for="vm.form.institution.$error"></dv-error-messages>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row hide-gt-sm"
+                             ng-if="vm.showInstitutionenList()">
+                            <div class="col-sm-12 dv-input-container-medium form-group">
+                                <label class="md-no-float required" data-translate="INSTITUTION" for="institution_mobile">
+                                </label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="institution-error" name="institution"
+                                            id="institution_mobile"
+                                            ng-model="vm.instStamm"
+                                            class="form-control"
+                                            ng-options="institutionSD as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
+                                            ng-required="vm.isInstitutionMobileSelection()"
+                                            ng-change="vm.setSelectedInstitutionStammdaten()"
+                                            ng-disabled="!(vm.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
+                                    </select>
+                                </div>
+                                <span ng-if="vm.form.institution.$touched">
+                                    <dv-error-messages input-id="institution_mobile"
                                                        for="vm.form.institution.$error"></dv-error-messages>
                                 </span>
                             </div>
