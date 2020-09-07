@@ -1352,6 +1352,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isInstitutionMobileSelection(): boolean {
-        return "none" == document.getElementById("institution_search").style.display
+        return 'none' === document.getElementById('institution_search').style.display;
     }
 }
