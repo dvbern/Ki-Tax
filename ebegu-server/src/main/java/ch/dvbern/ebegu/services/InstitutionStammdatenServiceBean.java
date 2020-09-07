@@ -220,6 +220,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			true);
 		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
+			event.fire(institutionEventConverter.deleteEvent(institutionStammdatenToRemove));
 			persistence.remove(institutionStammdatenToRemove);
 		}
 	}
