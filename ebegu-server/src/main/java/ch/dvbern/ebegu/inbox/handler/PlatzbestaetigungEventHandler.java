@@ -25,14 +25,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -117,18 +118,46 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (dto.getZeitabschnitte().isEmpty()) {
 			isReadyForBestaetigen = false;
 		} else {
+			betreuung.getBetreuungspensumContainers().clear();
 			for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
 				Betreuungspensum betreuungspensum = new Betreuungspensum();
-				//TODO ausfüllen
+				betreuungspensum.setPensum(zeitabschnittDTO.getBetreuungspensum()); // schauen ob es so korrekt ist
+				if(betreuung.isAngebotKita()){
+					if(!zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.DAYS.name())){
+						LOG.error("Pensum is not supported, Zeitabschnitt ist corrupted");
+						isReadyForBestaetigen = false;
+						break;
+					}
+					betreuungspensum.setUnitForDisplay(PensumUnits.DAYS);
+				}
+				else if(betreuung.isAngebotTagesfamilien()){
+					if(!zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())){
+						LOG.error("Pensum is not supported, Zeitabschnitt ist corrupted");
+						isReadyForBestaetigen = false;
+						break;
+					}
+					betreuungspensum.setUnitForDisplay(PensumUnits.HOURS);
+				}
+				betreuungspensum.setPensum(zeitabschnittDTO.getBetreuungspensum());
+				betreuungspensum.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
+				betreuungspensum.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
+				betreuungspensum.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
+				betreuungspensum.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
+				betreuungspensum.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
+				//Die Mahlzeitkosten koennen null sein, wir muessen dann die Gemeinde Werten nehmen oder default
+				if(zeitabschnittDTO.getTarifProHauptmahlzeiten() != null){
+					betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
+				}
+				if(zeitabschnittDTO.getTarifProNebenmahlzeiten() != null){
+					betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
+				}
+				//set betreuungpensum in model
+				BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
+				betreuungspensumContainer.setBetreuung(betreuung);
+				betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
+				betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 			}
-
-
 		}
 		return isReadyForBestaetigen;
 	}
-
-	private void checkZeitabschnittVollstaendig() {
-
-	}
-
 }
