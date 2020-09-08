@@ -1350,4 +1350,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return !betreuungspensum.isNew() &&
             (this.isMutationsmeldungStatus || this.isMutation());
     }
+
+    public isInstitutionMobileSelection(): boolean {
+        return 'none' === document.getElementById('institution_search').style.display;
+    }
 }
