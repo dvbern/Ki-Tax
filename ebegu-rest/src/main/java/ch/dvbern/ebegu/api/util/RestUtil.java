@@ -186,7 +186,7 @@ public final class RestUtil {
 		if (!allowedInst.isEmpty()) {
 			jaxZahlungsauftrag.getZahlungen().removeIf(zahlung ->
 				allowedInst.stream().noneMatch(institution ->
-					institution.getId().equals(zahlung.getInstitutionsId())
+					institution.getId().equals(zahlung.getEmpfaengerId())
 				)
 			);
 		}

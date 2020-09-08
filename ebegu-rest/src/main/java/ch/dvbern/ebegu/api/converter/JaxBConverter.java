@@ -236,6 +236,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -4591,6 +4592,11 @@ public class JaxBConverter extends AbstractConverter {
 			ADMIN_INSTITUTION,
 			SACHBEARBEITER_INSTITUTION)
 		) {
+			// Institutionsbenutzer duerfen nur Zahlungslaeufe vom Typ GEMEINDE_INSTITUTION sehen
+			if (persistedZahlungsauftrag.getZahlungslaufTyp() != ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+				throw new EbeguRuntimeException("zahlungsauftragToJAX", "Institutionsbenutzer darf nur Institutions-Zahlungslaeufe sehen");
+			}
+			// und davon nur diejenigen seiner Institution/Traegerschaft
 			RestUtil.purgeZahlungenOfInstitutionen(jaxZahlungsauftrag, allowedInst);
 			// es muss nochmal das Auftragstotal berechnet werden. Diesmal nur mit den erlaubten Zahlungen
 			// Dies nur fuer Institutionen
@@ -4615,9 +4621,9 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlung);
 		jaxZahlung.setStatus(persistedZahlung.getStatus());
 		jaxZahlung.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
-		jaxZahlung.setInstitutionsName(persistedZahlung.getInstitutionName());
+		jaxZahlung.setEmpfaengerName(persistedZahlung.getEmpfaengerName());
 		jaxZahlung.setBetreuungsangebotTyp(persistedZahlung.getBetreuungsangebotTyp());
-		jaxZahlung.setInstitutionsId(persistedZahlung.getInstitutionId());
+		jaxZahlung.setEmpfaengerId(persistedZahlung.getEmpfaengerId());
 		return jaxZahlung;
 	}
 

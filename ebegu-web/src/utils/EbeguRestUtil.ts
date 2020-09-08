@@ -3376,7 +3376,7 @@ export class EbeguRestUtil {
             this.parseAbstractMutableEntity(tsZahlung, zahlungFromServer);
 
             tsZahlung.betragTotalZahlung = zahlungFromServer.betragTotalZahlung;
-            tsZahlung.institutionsName = zahlungFromServer.institutionsName;
+            tsZahlung.empfaengerName = zahlungFromServer.empfaengerName;
             tsZahlung.betreuungsangebotTyp = zahlungFromServer.betreuungsangebotTyp;
             tsZahlung.status = zahlungFromServer.status;
 

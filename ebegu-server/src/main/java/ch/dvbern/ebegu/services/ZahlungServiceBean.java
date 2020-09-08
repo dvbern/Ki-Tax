@@ -497,8 +497,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
 		Objects.requireNonNull(auszahlungsdaten);
 		zahlung.setAuszahlungsdaten(auszahlungsdaten);
-		zahlung.setInstitutionId(institutionStammdaten.getInstitution().getId());
-		zahlung.setInstitutionName(institutionStammdaten.getInstitution().getName());
+		zahlung.setEmpfaengerId(institutionStammdaten.getInstitution().getId());
+		zahlung.setEmpfaengerName(institutionStammdaten.getInstitution().getName());
 		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());
 		if (institutionStammdaten.getInstitution().getTraegerschaft() != null) {
 			zahlung.setTraegerschaftName(institutionStammdaten.getInstitution().getTraegerschaft().getName());

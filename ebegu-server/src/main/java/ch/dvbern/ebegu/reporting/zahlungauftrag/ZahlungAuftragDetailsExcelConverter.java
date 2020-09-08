@@ -87,7 +87,7 @@ public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 					.forEach(zahlungsposition -> {
 						ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
 						final Zahlung zahlung = zahlungDataRow.getZahlung();
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getInstitutionName());
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getEmpfaengerName());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
 							ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());

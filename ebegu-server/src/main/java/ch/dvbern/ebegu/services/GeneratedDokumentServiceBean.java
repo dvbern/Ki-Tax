@@ -945,7 +945,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				if (adresseKontoinhaber == null) {
 					if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
 						final InstitutionStammdaten institutionStammdaten =
-							institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), false);
+							institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), false);
 						adresseKontoinhaber = institutionStammdaten.getAdresse();
 					} else {
 						// TODO (Team): Achtung: Im Fall von Gemeinde-Gesuchsteller Auszahlungen muss hier ein anderer Default genommen werden!
@@ -962,13 +962,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
 				IBAN ibanInstitution = auszahlungsdaten.getIban();
-				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Institution " + zahlung.getInstitutionName());
+				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Empfaenger " + zahlung.getEmpfaengerName());
 				auszahlungDTO.setZahlungsempfaegerIBAN(ibanToUnformattedString(ibanInstitution));
 				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(ibanInstitution.extractClearingNumberWithoutLeadingZeros());
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
 				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
 					gemeindeStammdaten.getGemeinde().getName(),
-					zahlung.getInstitutionName(),
+					zahlung.getEmpfaengerName(),
 					monat);
 				auszahlungDTO.setZahlungText(zahlungstext);
 

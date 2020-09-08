@@ -832,7 +832,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
 			ZahlungDataRow row = new ZahlungDataRow(
 				zahlung,
-				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
+				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true)
 			);
 			zahlungDataRows.add(row);
 		}
@@ -865,14 +865,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				zahlungId));
 
 		final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
-			.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true);
+			.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true);
 		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, institutionStammdaten);
 
 		reportData.add(dataRow);
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getEmpfaengerName();
 
 		return getUploadFileInfoZahlung(
 			reportData,
@@ -905,11 +905,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
-			.filter(zahlung -> {
+			.filter(zahlungDataRow -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
 				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
 			}).collect(Collectors.toList());
 
 		// Blatt Details
