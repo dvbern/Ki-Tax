@@ -26,6 +26,7 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
     private _ort: string;
     private _land: string = 'CH';
     private _gemeinde: string;
+    private _bfsNummer: number;
     private _adresseTyp: TSAdressetyp = TSAdressetyp.WOHNADRESSE;
     private _nichtInGemeinde: boolean;
     private _organisation: string;
@@ -105,6 +106,14 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
 
     public set gemeinde(value: string) {
         this._gemeinde = value;
+    }
+
+    public get bfsNummer(): number {
+        return this._bfsNummer;
+    }
+
+    public set bfsNummer(value: number) {
+        this._bfsNummer = value;
     }
 
     public get adresseTyp(): TSAdressetyp {

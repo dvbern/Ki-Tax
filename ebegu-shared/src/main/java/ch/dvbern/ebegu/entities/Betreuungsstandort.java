@@ -43,7 +43,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class Betreuungsstandort extends AbstractMutableEntity {
+public class Betreuungsstandort extends AbstractMutableEntity implements KontaktAngaben {
 
 	private static final long serialVersionUID = -672064202442191630L;
 
@@ -79,6 +79,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 		this.institutionStammdatenBetreuungsgutscheine = institutionStammdaten;
 	}
 
+	@Override
 	@Nonnull
 	public Adresse getAdresse() {
 		return adresse;
@@ -88,6 +89,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 		this.adresse = adresse;
 	}
 
+	@Override
 	@Nullable
 	public String getMail() {
 		return mail;
@@ -97,6 +99,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 		this.mail = mail;
 	}
 
+	@Override
 	@Nullable
 	public String getTelefon() {
 		return telefon;
@@ -106,6 +109,7 @@ public class Betreuungsstandort extends AbstractMutableEntity {
 		this.telefon = telefon;
 	}
 
+	@Override
 	@Nullable
 	public String getWebseite() {
 		return webseite;

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -89,6 +88,20 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		String id = insertedInstitutionStammdaten.getInstitution().getId();
 		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id, true);
 		Assert.assertNotNull(stammdatenByInstitution);
+	}
+
+	@Test
+	public void updateBGInsitutionenGemeinden() {
+		Assert.assertNotNull(institutionStammdatenService);
+		createGesuchsperiode1718();
+		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
+		String id = insertedInstitutionStammdaten.getInstitution().getId();
+		institutionStammdatenService.updateGemeindeForBGInstitutionen();
+
+		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id, false);
+		Assert.assertEquals("Bern", stammdatenByInstitution.getAdresse().getGemeinde());
+		Assert.assertNotNull(stammdatenByInstitution.getAdresse().getBfsNummer());
+		Assert.assertEquals(351, (long) stammdatenByInstitution.getAdresse().getBfsNummer());
 	}
 
 	// HELP METHODS
