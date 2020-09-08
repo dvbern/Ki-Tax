@@ -27,6 +27,9 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -34,6 +37,9 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.reporting.ErklaerungEinkommen;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * DTO fuer die TagesschuleStatistik
@@ -57,6 +63,7 @@ public class TagesschuleRechnungsstellungDataRow {
 	private @Nullable BigDecimal massgebendesEinkommenVorFamAbzug;
 	private @Nullable BigDecimal famGroesse;
 	private @Nullable BigDecimal massgebendesEinkommenNachFamAbzug;
+	private @Nullable ErklaerungEinkommen erklaerungEinkommen;
 	private @Nullable LocalDate eintrittsdatum;
 	private @Nullable BigDecimal gebuehrProStundeMitBetreuung;
 	private @Nullable BigDecimal gebuehrProStundeOhneBetreuung;
@@ -182,6 +189,15 @@ public class TagesschuleRechnungsstellungDataRow {
 		this.massgebendesEinkommenNachFamAbzug = massgebendesEinkommenNachFamAbzug;
 	}
 
+	@Nullable
+	public ErklaerungEinkommen getErklaerungEinkommen() {
+		return erklaerungEinkommen;
+	}
+
+	public void setErklaerungEinkommen(@Nullable ErklaerungEinkommen erklaerungEinkommen) {
+		this.erklaerungEinkommen = erklaerungEinkommen;
+	}
+
 	public @Nullable  LocalDate getEintrittsdatum() {
 		return eintrittsdatum;
 	}
@@ -261,7 +277,10 @@ public class TagesschuleRechnungsstellungDataRow {
 		final BGCalculationResult bgCalculationResult = zeitabschnitt.getRelevantBgCalculationResult();
 		dataRow.massgebendesEinkommenVorFamAbzug = bgCalculationResult.getMassgebendesEinkommenVorAbzugFamgr();
 		dataRow.famGroesse = bgCalculationResult.getFamGroesse();
-		dataRow.massgebendesEinkommenNachFamAbzug = bgCalculationResult.getMassgebendesEinkommen();
+
+		dataRow.massgebendesEinkommenNachFamAbzug = MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO);
+		dataRow.erklaerungEinkommen = getErklaerungEinkommen(dataRow, anmeldungTagesschule);
+
 		final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
 		if (tsMitBetreuung != null) {
 			dataRow.gebuehrProStundeMitBetreuung = tsMitBetreuung.getGebuehrProStunde();
@@ -271,5 +290,44 @@ public class TagesschuleRechnungsstellungDataRow {
 			dataRow.gebuehrProStundeOhneBetreuung = tsOhneBetreuung.getGebuehrProStunde();
 		}
 		return dataRow;
+	}
+
+	// massgebendes Einkommen nach Familienabzug kann aus verschiedenen Gründen kleiner oder gleich 0 sein
+	// 1) Finanzielle Situation wurde nicht akzeptiert
+	// 2) Sozialhilfebezüger
+	// 3) Einkommen wurde nicht deklariert
+	// 4) Einkommen ist effektiv kleiner als Familienabzug
+	private static ErklaerungEinkommen getErklaerungEinkommen(@Nonnull TagesschuleRechnungsstellungDataRow dataRow,
+		@Nullable AnmeldungTagesschule anmeldungTagesschule) {
+
+		if (anmeldungTagesschule == null) {
+			return ErklaerungEinkommen.KEINE_ERKLAERUNG;
+		}
+		Gesuch gesuch = anmeldungTagesschule.getKind().getGesuch();
+
+		// 1)
+		if (gesuch.getFinSitStatus() != null && gesuch.getFinSitStatus() == FinSitStatus.ABGELEHNT) {
+			return ErklaerungEinkommen.FINANZIELLE_SITUATION_NICHT_AKZEPTIERT;
+		}
+
+		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
+		if (familiensituationContainer == null) {
+			return ErklaerungEinkommen.KEINE_ERKLAERUNG;
+		}
+		Familiensituation familiensituationJA = familiensituationContainer.getFamiliensituationJA();
+		if (familiensituationJA == null) {
+			return ErklaerungEinkommen.KEINE_ERKLAERUNG;
+		}
+
+		// 2)
+		if (familiensituationJA.getSozialhilfeBezueger() != null && familiensituationJA.getSozialhilfeBezueger()) {
+			return ErklaerungEinkommen.SOZIALHILFEBEZUEGER;
+		}
+		// 3)
+		if (familiensituationJA.getVerguenstigungGewuenscht() != null && !familiensituationJA.getVerguenstigungGewuenscht()) {
+			return ErklaerungEinkommen.KEIN_EINKOMMEN_DEKLARIERT;
+		}
+		// 4)
+		return ErklaerungEinkommen.KEINE_ERKLAERUNG;
 	}
 }
