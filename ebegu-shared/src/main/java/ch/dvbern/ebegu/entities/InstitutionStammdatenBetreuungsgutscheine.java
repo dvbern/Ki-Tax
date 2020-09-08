@@ -316,6 +316,8 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	}
 
 	public boolean isZahlungsinformationValid() {
-		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(iban.getIban());
+		return StringUtils.isNotEmpty(kontoinhaber)
+			&& iban != null
+			&& StringUtils.isNotEmpty(iban.getIban());
 	}
 }
