@@ -3347,6 +3347,7 @@ export class EbeguRestUtil {
         if (zahlungsauftragFromServer) {
             this.parseDateRangeEntity(tsZahlungsauftrag, zahlungsauftragFromServer);
 
+            tsZahlungsauftrag.zahlungslaufTyp = zahlungsauftragFromServer.zahlungslaufTyp;
             tsZahlungsauftrag.status = zahlungsauftragFromServer.status;
             tsZahlungsauftrag.beschrieb = zahlungsauftragFromServer.beschrieb;
             tsZahlungsauftrag.datumFaellig = DateUtil.localDateToMoment(zahlungsauftragFromServer.datumFaellig);

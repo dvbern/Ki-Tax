@@ -15,6 +15,7 @@
 
 import * as moment from 'moment';
 import {TSZahlungsauftragsstatus} from './enums/TSZahlungsauftragstatus';
+import {TSZahlungslaufTyp} from './enums/TSZahlungslaufTyp';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSGemeinde} from './TSGemeinde';
 import {TSZahlung} from './TSZahlung';
@@ -22,16 +23,18 @@ import {TSDateRange} from './types/TSDateRange';
 
 export class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
 
-    private _datumGeneriert: moment.Moment;
-    private _datumFaellig: moment.Moment;
-    private _status: TSZahlungsauftragsstatus;
-    private _beschrieb: string;
-    private _betragTotalAuftrag: number;
-    private _hasNegativeZahlungen: boolean = false;
-    private _gemeinde: TSGemeinde;
-    private _zahlungen: Array<TSZahlung>;
+    public zahlungslaufTyp: TSZahlungslaufTyp;
+    public datumGeneriert: moment.Moment;
+    public datumFaellig: moment.Moment;
+    public status: TSZahlungsauftragsstatus;
+    public beschrieb: string;
+    public betragTotalAuftrag: number;
+    public hasNegativeZahlungen: boolean = false;
+    public gemeinde: TSGemeinde;
+    public zahlungen: Array<TSZahlung>;
 
     public constructor(
+        zahlungslaufTyp?: TSZahlungslaufTyp,
         gueltigkeit?: TSDateRange,
         datumGeneriert?: moment.Moment,
         datumFaellig?: moment.Moment,
@@ -43,77 +46,14 @@ export class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         zahlungen?: Array<TSZahlung>,
     ) {
         super(gueltigkeit);
-        this._datumGeneriert = datumGeneriert;
-        this._datumFaellig = datumFaellig;
-        this._status = status;
-        this._beschrieb = beschrieb;
-        this._betragTotalAuftrag = betragTotalAuftrag;
-        this._hasNegativeZahlungen = hasNegativeZahlungen;
-        this._gemeinde = gemeinde;
-        this._zahlungen = zahlungen;
-    }
-
-    public get datumGeneriert(): moment.Moment {
-        return this._datumGeneriert;
-    }
-
-    public set datumGeneriert(value: moment.Moment) {
-        this._datumGeneriert = value;
-    }
-
-    public get datumFaellig(): moment.Moment {
-        return this._datumFaellig;
-    }
-
-    public set datumFaellig(value: moment.Moment) {
-        this._datumFaellig = value;
-    }
-
-    public get beschrieb(): string {
-        return this._beschrieb;
-    }
-
-    public set beschrieb(value: string) {
-        this._beschrieb = value;
-    }
-
-    public get betragTotalAuftrag(): number {
-        return this._betragTotalAuftrag;
-    }
-
-    public set betragTotalAuftrag(value: number) {
-        this._betragTotalAuftrag = value;
-    }
-
-    public get hasNegativeZahlungen(): boolean {
-        return this._hasNegativeZahlungen;
-    }
-
-    public set hasNegativeZahlungen(value: boolean) {
-        this._hasNegativeZahlungen = value;
-    }
-
-    public get zahlungen(): Array<TSZahlung> {
-        return this._zahlungen;
-    }
-
-    public set zahlungen(value: Array<TSZahlung>) {
-        this._zahlungen = value;
-    }
-
-    public get status(): TSZahlungsauftragsstatus {
-        return this._status;
-    }
-
-    public set status(value: TSZahlungsauftragsstatus) {
-        this._status = value;
-    }
-
-    public get gemeinde(): TSGemeinde {
-        return this._gemeinde;
-    }
-
-    public set gemeinde(value: TSGemeinde) {
-        this._gemeinde = value;
+        this.zahlungslaufTyp = zahlungslaufTyp;
+        this.datumGeneriert = datumGeneriert;
+        this.datumFaellig = datumFaellig;
+        this.status = status;
+        this.beschrieb = beschrieb;
+        this.betragTotalAuftrag = betragTotalAuftrag;
+        this.hasNegativeZahlungen = hasNegativeZahlungen;
+        this.gemeinde = gemeinde;
+        this.zahlungen = zahlungen;
     }
 }

@@ -4558,6 +4558,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxZahlungsauftrag jaxZahlungsauftrag = new JaxZahlungsauftrag();
 		convertAbstractDateRangedFieldsToJAX(persistedZahlungsauftrag, jaxZahlungsauftrag);
+		jaxZahlungsauftrag.setZahlungslaufTyp(persistedZahlungsauftrag.getZahlungslaufTyp());
 		jaxZahlungsauftrag.setStatus(persistedZahlungsauftrag.getStatus());
 		jaxZahlungsauftrag.setBeschrieb(persistedZahlungsauftrag.getBeschrieb());
 		jaxZahlungsauftrag.setBetragTotalAuftrag(persistedZahlungsauftrag.getBetragTotalAuftrag());
