@@ -47,6 +47,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -312,5 +313,11 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getId(), o.getId());
 		return builder.toComparison();
+	}
+
+	public boolean isZahlungsinformationValid() {
+		return StringUtils.isNotEmpty(kontoinhaber)
+			&& iban != null
+			&& StringUtils.isNotEmpty(iban.getIban());
 	}
 }
