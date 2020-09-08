@@ -288,6 +288,20 @@ public interface EbeguConfiguration {
 	 */
 	String getEbeguPersonensucheGERESWsdl();
 
+	/**
+	 * @return GEOADMIN Webservice Endpoint für den SearchServer
+	 * Beispiel: https://api3.geo.admin.ch/rest/services/api/SearchServer
+	 * Siehe GeoAdmin Dokumentation: https://api3.geo.admin.ch/services/sdiservices.html
+	 */
+	String getEbeguGeoadminSearchServerUrl();
+
+	/**
+	 * @return GeoAdmin Webservice Endpoint für den MapServer
+	 * Beispiel: "https://api3.geo.admin.ch/rest/services/api/MapServer"
+	 * Siehe GeoAdmin Dokumentation: https://api3.geo.admin.ch/services/sdiservices.html
+	 */
+	String getEbeguGeoadminMapServerUrl();
+
 	String getKitaxHost();
 
 	String getKitaxEndpoint();

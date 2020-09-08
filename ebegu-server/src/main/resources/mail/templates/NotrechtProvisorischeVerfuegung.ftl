@@ -19,7 +19,9 @@ Content-Type: text/html;charset=utf-8
 </head>
 
 <body>
-${institutionStammdaten.mail}
+${institutionStammdaten.mail}<br>
+${institutionStammdaten.institution.name}<br>
+<p></p>
 <div>
 	<p>
 		<b>

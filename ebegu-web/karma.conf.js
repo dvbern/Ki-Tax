@@ -85,7 +85,7 @@ module.exports = function (config) {
         junitReporter: {
             outputFile: 'build/karma-results.xml',
             useBrowserName: false,
-            xmlVersion: 1
+            xmlVersion: null
         },
 
         sonarqubeReporter: {

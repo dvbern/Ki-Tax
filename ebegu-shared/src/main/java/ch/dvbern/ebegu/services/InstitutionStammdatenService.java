@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -30,8 +31,8 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 public interface InstitutionStammdatenService {
 
 	/**
-	 * Erstellt eine InstitutionStammdaten in der DB. Wenn eine InstitutionStammdaten mit demselben ID bereits existiert
-	 * wird diese dann aktualisiert.
+	 * Erstellt eine InstitutionStammdaten in der DB. Wenn eine InstitutionStammdaten mit demselben ID bereits
+	 * existiert wird diese dann aktualisiert.
 	 *
 	 * @param institutionStammdaten Die InstitutionStammdaten als DTO
 	 */
@@ -58,7 +59,8 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getAllInstitonStammdatenForBatchjobs();
 
 	/**
-	 * totally removes a InstitutionStammdaten from the Database. It takes the InstitutionStammdaten based on the given Institution ID
+	 * totally removes a InstitutionStammdaten from the Database. It takes the InstitutionStammdaten based on the
+	 * given Institution ID
 	 */
 	void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId);
 
@@ -92,4 +94,13 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getTagesschulenForCurrentBenutzer();
 
 	Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft);
+
+	/**
+	 * Findet über den GeoAdmin Service für Adresse in den InsitutionStammdaten sowie für jeden Betreuungsstandort die
+	 * politische Gemeinde und speichert diese ab. Dazu wird der GeoAdminService genutzt
+	 *
+	 * @return Set containing all changed InstitutionStammdaten
+	 */
+	@Nonnull
+	Set<InstitutionStammdaten> updateGemeindeForBGInstitutionen();
 }

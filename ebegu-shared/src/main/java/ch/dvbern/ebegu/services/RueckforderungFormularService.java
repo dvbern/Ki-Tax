@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 /**
  * Service fuer die Rueckforderungsformulare
  */
-public interface RueckforderungFormularService extends BaseService {
+public interface RueckforderungFormularService {
 
 	/**
 	 * Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren

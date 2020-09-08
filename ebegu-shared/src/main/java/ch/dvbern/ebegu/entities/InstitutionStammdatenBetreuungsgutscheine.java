@@ -18,15 +18,27 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -39,6 +51,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entitaet zum Speichern von InstitutionStammdatenTagesschule in der Datenbank.
@@ -102,6 +115,31 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	private BigDecimal tarifProNebenmahlzeit;
 
+	@ElementCollection(targetClass = DayOfWeek.class, fetch = FetchType.EAGER)
+	@CollectionTable(
+		name = "institutionStammdatenBetreuungsgutscheineOeffnungstag",
+		joinColumns = @JoinColumn(name = "insitutionStammdatenBetreuungsgutscheine")
+	)
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	@Nonnull
+	private Set<DayOfWeek> oeffnungstage = EnumSet.noneOf(DayOfWeek.class);
+
+	@Column(nullable = true)
+	@Nullable
+	private LocalTime offenVon;
+
+	@Column(nullable = true)
+	@Nullable
+	private LocalTime offenBis;
+
+	@Column(nullable = true)
+	@Nullable
+	private @Size(max = DB_TEXTAREA_LENGTH) String oeffnungsAbweichungen;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.EAGER)
+	@Nonnull
+	private Set<Betreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
@@ -206,6 +244,51 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
+	}
+
+	@Nonnull
+	public Set<DayOfWeek> getOeffnungsTage() {
+		return oeffnungstage;
+	}
+
+	public void setOeffnungsTage(@Nonnull Set<DayOfWeek> oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
+	}
+
+	@Nullable
+	public String getOeffnungsAbweichungen() {
+		return oeffnungsAbweichungen;
+	}
+
+	public void setOeffnungsAbweichungen(@Nullable String oeffnungsAbweichungen) {
+		this.oeffnungsAbweichungen = oeffnungsAbweichungen;
+	}
+
+	@Nullable
+	public LocalTime getOffenVon() {
+		return offenVon;
+	}
+
+	public void setOffenVon(@Nullable LocalTime offenVon) {
+		this.offenVon = offenVon;
+	}
+
+	@Nullable
+	public LocalTime getOffenBis() {
+		return offenBis;
+	}
+
+	public void setOffenBis(@Nullable LocalTime offenBis) {
+		this.offenBis = offenBis;
+	}
+
+	@Nonnull
+	public Set<Betreuungsstandort> getBetreuungsstandorte() {
+		return betreuungsstandorte;
+	}
+
+	public void setBetreuungsstandorte(@Nonnull Set<Betreuungsstandort> betreuungsstandorte) {
+		this.betreuungsstandorte = betreuungsstandorte;
 	}
 
 	@Override

@@ -66,6 +66,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_ENDPOINT = "ebegu.personensuche.sts.renewal.assertion.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_GERES_ENDPOINT = "ebegu.personensuche.geres.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_GERES_WSDL = "ebegu.personensuche.geres.wsdl";
+	public static final String EBEGU_GEOADMIN_SEARCHSERVER_URL = "ebegu.geoadmin.searchserver.url";
+	public static final String EBEGU_GEOADMIN_MAPSERVER_URL = "ebegu.geoadmin.mapserver.url";
 
 
 	public static final String EBEGU_KITAX_HOST = "ebegu.kitax.host";
@@ -359,6 +361,16 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getEbeguPersonensucheGERESWsdl() {
 		return getString(EBEGU_PERSONENSUCHE_GERES_WSDL);
+	}
+
+	@Override
+	public String getEbeguGeoadminSearchServerUrl() {
+		return getString(EBEGU_GEOADMIN_SEARCHSERVER_URL, "https://api3.geo.admin.ch/rest/services/api/SearchServer");
+	}
+
+	@Override
+	public String getEbeguGeoadminMapServerUrl() {
+		return getString(EBEGU_GEOADMIN_MAPSERVER_URL, "https://api3.geo.admin.ch/rest/services/api/MapServer");
 	}
 
 	@Override
