@@ -98,6 +98,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -106,6 +107,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -830,9 +832,28 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
 		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			// TODO (hefr) die ganze chose hier irgendwie auslagern
+			Adresse defaultAdresseKontoinhaber = null;
+			if (zahlung.getAuszahlungsdaten().getAdresseKontoinhaber() == null) {
+				if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+					final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
+						.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true);
+					defaultAdresseKontoinhaber = institutionStammdaten.getAdresse();
+				} else if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+					// Beim Antragsteller muss die Adresse ueber die Betreuung gesucht werden
+					final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
+					if (firstZahlungsposition.isPresent()) {
+						final GesuchstellerContainer gesuchsteller1 =
+							firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz().extractGesuch().getGesuchsteller1();
+						Objects.requireNonNull(gesuchsteller1);
+						defaultAdresseKontoinhaber =
+							gesuchsteller1.getWohnadresseAm(LocalDate.now());
+					}
+				}
+			}
 			ZahlungDataRow row = new ZahlungDataRow(
 				zahlung,
-				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true)
+				defaultAdresseKontoinhaber
 			);
 			zahlungDataRows.add(row);
 		}
@@ -864,9 +885,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
-			.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true);
-		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, institutionStammdaten);
+		// TODO (hefr) die ganze chose hier irgendwie auslagern
+		Adresse defaultAdresseKontoinhaber = null;
+		if (zahlung.getAuszahlungsdaten().getAdresseKontoinhaber() == null) {
+			if (zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+				final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
+					.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true);
+				defaultAdresseKontoinhaber = institutionStammdaten.getAdresse();
+			} else if (zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+				// Beim Antragsteller muss die Adresse ueber die Betreuung gesucht werden
+				final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
+				if (firstZahlungsposition.isPresent()) {
+					final GesuchstellerContainer gesuchsteller1 =
+						firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz().extractGesuch().getGesuchsteller1();
+					Objects.requireNonNull(gesuchsteller1);
+					defaultAdresseKontoinhaber =
+						gesuchsteller1.getWohnadresseAm(LocalDate.now());
+				}
+			}
+		}
+		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, defaultAdresseKontoinhaber);
 
 		reportData.add(dataRow);
 

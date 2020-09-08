@@ -20,15 +20,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
 import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -83,28 +82,28 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 			.sorted()
 			.forEach(zahlungDataRow -> {
 				ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungTotalsRow);
-				InstitutionStammdaten institutionStammdaten = zahlungDataRow.getInstitutionStammdaten();
-				Institution institution = institutionStammdaten.getInstitution();
-				final Traegerschaft traegerschaft = institution.getTraegerschaft();
-				final IBAN iban = institutionStammdaten.extractIban();
+				final String traegerschaft = zahlungDataRow.getZahlung().getTraegerschaftName();
 
+				final Zahlung zahlung = zahlungDataRow.getZahlung();
+				final IBAN iban = zahlung.getAuszahlungsdaten().getIban();
 
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institutionStammdaten.getInstitution().getName());
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institutionId, institution.getId());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getEmpfaengerName());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institutionId, zahlung.getEmpfaengerId());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
-					ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale));
+					ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 				if (traegerschaft != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.traegerschaft, traegerschaft.getName());
+					excelRowGroup.addValue(MergeFieldZahlungAuftrag.traegerschaft, traegerschaft);
 				}
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlungDataRow.getZahlung().getBetragTotalZahlung());
-				if (iban != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
-				}
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, institutionStammdaten.extractKontoinhaber());
-				Adresse adresse = institutionStammdaten.extractAdresseKontoinhaber();
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, zahlung.getAuszahlungsdaten().getKontoinhaber());
+				Adresse adresse = zahlung.getAuszahlungsdaten().getAdresseKontoinhaber();
 				if (adresse == null) {
-					adresse = institutionStammdaten.getAdresse();
+					adresse = zahlungDataRow.getDefaultAdresseKontoinhaber();
 				}
+				// Jetzt muss eine Adresse vorhanden sein (die aus den Auszahlungsdaten oder die Defaultadresse
+				Objects.requireNonNull(adresse);
+
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.organisation, adresse.getOrganisation());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.strasse, adresse.getStrasse());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.hausnummer, adresse.getHausnummer());

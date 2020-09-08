@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
@@ -67,6 +68,7 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -944,9 +946,22 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				Adresse adresseKontoinhaber = auszahlungsdaten.getAdresseKontoinhaber();
 				if (adresseKontoinhaber == null) {
 					if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
-						final InstitutionStammdaten institutionStammdaten =
-							institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), false);
-						adresseKontoinhaber = institutionStammdaten.getAdresse();
+						// TODO (hefr) die ganze chose hier irgendwie auslagern
+						if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+							final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
+								.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true);
+							adresseKontoinhaber = institutionStammdaten.getAdresse();
+						} else if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+							// Beim Antragsteller muss die Adresse ueber die Betreuung gesucht werden
+							final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
+							if (firstZahlungsposition.isPresent()) {
+								final GesuchstellerContainer gesuchsteller1 =
+									firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz().extractGesuch().getGesuchsteller1();
+								Objects.requireNonNull(gesuchsteller1);
+								adresseKontoinhaber =
+									gesuchsteller1.getWohnadresseAm(LocalDate.now());
+							}
+						}
 					} else {
 						// TODO (Team): Achtung: Im Fall von Gemeinde-Gesuchsteller Auszahlungen muss hier ein anderer Default genommen werden!
 						throw new NotImplementedException(

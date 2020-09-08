@@ -20,8 +20,9 @@ package ch.dvbern.ebegu.reporting.zahlungsauftrag;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Zahlung;
 
 public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
@@ -29,12 +30,12 @@ public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 	@Nonnull
 	private Zahlung zahlung;
 
-	@Nonnull
-	private InstitutionStammdaten institutionStammdaten;
+	@Nullable
+	private Adresse defaultAdresseKontoinhaber;
 
-	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nonnull InstitutionStammdaten institutionStammdaten) {
+	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nullable Adresse defaultAdresseKontoinhaber) {
 		this.zahlung = zahlung;
-		this.institutionStammdaten = institutionStammdaten;
+		this.defaultAdresseKontoinhaber = defaultAdresseKontoinhaber;
 	}
 
 	@Nonnull
@@ -46,13 +47,13 @@ public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 		this.zahlung = zahlung;
 	}
 
-	@Nonnull
-	public InstitutionStammdaten getInstitutionStammdaten() {
-		return institutionStammdaten;
+	@Nullable
+	public Adresse getDefaultAdresseKontoinhaber() {
+		return defaultAdresseKontoinhaber;
 	}
 
-	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
-		this.institutionStammdaten = institutionStammdaten;
+	public void setDefaultAdresseKontoinhaber(@Nullable Adresse defaultAdresseKontoinhaber) {
+		this.defaultAdresseKontoinhaber = defaultAdresseKontoinhaber;
 	}
 
 	@Override
