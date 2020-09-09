@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,6 +39,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -201,5 +203,16 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 		return getStatus() == otherZahlung.getStatus() &&
 			Objects.equals(getEmpfaengerId(), otherZahlung.getEmpfaengerId()) &&
 			MathUtil.isSame(getBetragTotalZahlung(), otherZahlung.getBetragTotalZahlung());
+	}
+
+	@Nonnull
+	public Institution extractInstitution() {
+		final Optional<Zahlungsposition> firstZahlungsposition = getZahlungspositionen().stream().findFirst();
+		if (firstZahlungsposition.isPresent()) {
+			final AbstractPlatz platz =
+				firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz();
+			return platz.getInstitutionStammdaten().getInstitution();
+		}
+		throw new EbeguEntityNotFoundException("extractInstitution", "No Institution found for Zahlung " + getId());
 	}
 }

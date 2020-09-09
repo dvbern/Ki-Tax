@@ -18,7 +18,9 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatColMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
@@ -67,8 +69,11 @@ public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 	isIgnoriert(new SimpleMergeField<>("isIgnoriert", BOOLEAN_X_CONVERTER)),
 
 	// Zusaetzliche Felder fuer die Totals-Page
+	repeatAntragsteller(new RepeatColMergeField<>("repeatAntragsteller", STRING_CONVERTER)),
+
 	institutionIdTitle(new SimpleMergeField<>("institutionIdTitle", STRING_CONVERTER)),
 	traegerschaftTitle(new SimpleMergeField<>("traegerschaftTitle", STRING_CONVERTER)),
+	antragstellerTitle(new RepeatValMergeField<>("antragstellerTitle", STRING_CONVERTER)),
 	auszahlungTitle(new SimpleMergeField<>("auszahlungTitle", STRING_CONVERTER)),
 	betragAusbezahltTitle(new SimpleMergeField<>("betragAusbezahltTitle", STRING_CONVERTER)),
 	ibanTitle(new SimpleMergeField<>("ibanTitle", STRING_CONVERTER)),
@@ -82,6 +87,7 @@ public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 
 	institutionId(new SimpleMergeField<>("institutionId", STRING_CONVERTER)),
 	traegerschaft(new SimpleMergeField<>("traegerschaft", STRING_CONVERTER)),
+	antragsteller(new RepeatValMergeField<>("antragsteller", STRING_CONVERTER)),
 	betragAusbezahlt(new SimpleMergeField<>("betragAusbezahlt", BIGDECIMAL_CONVERTER)),
 	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
 	kontoinhaber(new SimpleMergeField<>("kontoinhaber", STRING_CONVERTER)),

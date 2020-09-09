@@ -104,9 +104,9 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 			// Falls keine spezifische Adresse definiert ist, nehmen wir die Adresse der Institution
 			final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
 			if (firstZahlungsposition.isPresent()) {
-				final AbstractPlatz gesuchsteller1 =
+				final AbstractPlatz platz =
 					firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz();
-				auszahlungsadresse = gesuchsteller1.getInstitutionStammdaten().getAdresse();
+				auszahlungsadresse = platz.getInstitutionStammdaten().getAdresse();
 			}
 		}
 		// Jetzt muss zwingend eine Adresse vorhanden sein
