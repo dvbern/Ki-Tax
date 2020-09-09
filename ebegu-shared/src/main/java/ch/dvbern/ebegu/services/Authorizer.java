@@ -82,6 +82,11 @@ public interface Authorizer {
 	boolean isReadCompletelyAuthorizedDossier(@Nullable Dossier dossier);
 
 	/**
+	 * Wirft eine Exception, wenn der eingeloggte Benutzer nicht die Superadmin Rolle hat.
+	 */
+	void checkSuperadmin();
+
+	/**
 	 * prueft ob der aktuell eingeloggte benutzer den Fall mit id schreibend bearbeiten darf
 	 */
 	void checkWriteAuthorization(@Nullable Fall fall);
