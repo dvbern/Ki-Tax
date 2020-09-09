@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -124,5 +125,9 @@ public class Auszahlungsdaten extends AbstractEntity {
 			break;
 		}
 		return target;
+	}
+
+	public boolean isZahlungsinformationValid() {
+		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(iban.getIban());
 	}
 }

@@ -60,7 +60,6 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
@@ -939,6 +938,14 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		zahlungsauftrag.getZahlungen().stream()
 			.filter(zahlung -> zahlung.getBetragTotalZahlung().signum() == 1)
 			.forEach(zahlung -> {
+				// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+				if (!zahlung.getAuszahlungsdaten().isZahlungsinformationValid()) {
+					throw new EbeguRuntimeException(KibonLogLevel.INFO,
+						"wrapZahlungsauftrag",
+						ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
+						zahlung.getInstitutionName());
+				}
+
 				AuszahlungDTO auszahlungDTO = new AuszahlungDTO();
 				auszahlungDTO.setBetragTotalZahlung(zahlung.getBetragTotalZahlung());
 
