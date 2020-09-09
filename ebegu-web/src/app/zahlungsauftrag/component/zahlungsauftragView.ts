@@ -305,4 +305,8 @@ export class ZahlungsauftragViewController implements IController {
     public getZahlungsauftraegeFiltered(): TSZahlungsauftrag[] {
         return this.zahlungsAuftraegeFiltered;
     }
+
+    public showInfotext(): boolean {
+        return this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
+    }
 }

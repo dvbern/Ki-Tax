@@ -19,7 +19,7 @@
      'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
 
     <!-- Toggle fuer den Auszahlungstyp (anstelle von Tabs, da GUI sonst identisch) -->
-    <div ng-if="vm.showAuszahlungsTypToggle()">
+    <div ng-if="vm.showAuszahlungsTypToggle()" class="switch-auszahlungstyp">
         <dv-switch
             (switch-value-change)="vm.toggleAuszahlungslaufTyp()"
             [switch-option-left]="'GEMEINDE_INSTITUTION'"
@@ -100,7 +100,7 @@
         </div>
     </form>
 
-    <div class="col-md-12">
+    <div class="col-md-12" ng-show="vm.showInfotext()">
         <p data-translate="ZAHLUNGSLAUF_INFO_1"></p>
         <p data-translate="ZAHLUNGSLAUF_INFO_2"></p>
     </div>

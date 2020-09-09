@@ -2157,5 +2157,9 @@
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Abweichungen",
     "OEFFNUNGSZEITEN_OBSOLETE": "Frühere Eingabe: {{value}}",
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Zweiter Betreuungsstandort für Familienportal angeben",
+    "GEMEINDE_INSTITUTION": "Zahlungen an Institutionen",
+    "GEMEINDE_ANTRAGSTELLER": "Zahlungen Mahlzeitenvergünstigung",
+    "BUTTON_GEMEINDE_INSTITUTION": "Zahlungslauf erstellen",
+    "BUTTON_GEMEINDE_ANTRAGSTELLER": "Mahlzeitenvergünstigung erstellen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
