@@ -99,7 +99,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, zahlung.getAuszahlungsdaten().getKontoinhaber());
 				Adresse adresse = zahlung.getAuszahlungsdaten().getAdresseKontoinhaber();
 				if (adresse == null) {
-					adresse = zahlungDataRow.getDefaultAdresseKontoinhaber();
+					adresse = zahlungDataRow.getAdresseKontoinhaber();
 				}
 				// Jetzt muss eine Adresse vorhanden sein (die aus den Auszahlungsdaten oder die Defaultadresse
 				Objects.requireNonNull(adresse);
