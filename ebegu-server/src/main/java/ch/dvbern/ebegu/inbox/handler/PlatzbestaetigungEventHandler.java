@@ -126,6 +126,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			isReadyForBestaetigen = false;
 		} else {
 			betreuung.getBetreuungspensumContainers().clear();
+			//Check if die Gemeinde erlaubt mahlzeitvergunstigung:
+			Gemeinde gemeinde = betreuung.extractGemeinde();
+			Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
+			Einstellung mahlzeitVergunstigungEnabled =
+				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+					gemeinde,
+					gesuchsperiode);
 			for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
 				Betreuungspensum betreuungspensum = new Betreuungspensum();
 				if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
@@ -158,16 +165,19 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				betreuungspensum.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 				betreuungspensum.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 				betreuungspensum.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
-				//Die Mahlzeitkosten koennen null sein, wir muessen dann die Gemeinde Werten nehmen oder default
-				if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
-					betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-				} else {
-					isReadyForBestaetigen = false;
-				}
-				if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
-					betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-				} else {
-					isReadyForBestaetigen = false;
+
+				if(mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
+					//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
+					if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
+						betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
+					} else {
+						isReadyForBestaetigen = false;
+					}
+					if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
+						betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
+					} else {
+						isReadyForBestaetigen = false;
+					}
 				}
 				//set betreuungpensum in model
 				BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
