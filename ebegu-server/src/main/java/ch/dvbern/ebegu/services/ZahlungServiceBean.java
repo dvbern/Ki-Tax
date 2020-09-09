@@ -589,33 +589,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	}
 
 	@Override
-	public void deleteAllZahlungsauftraege() {
-		// Es koennen nur ALLE Auftaege geloescht werden, da wir bei einem einzelnen Auftrag nicht wissen, wie der Status des Abschnitts vorher war
-		// (1) Alle  Zeitabschnitte wieder auf noch-nicht-verrechnet setzen, also entweder NEU oder IGNORIEREND
-			Collection<VerfuegungZeitabschnitt> allVerfuegungZeitabschnitt = criteriaQueryHelper.getAll(VerfuegungZeitabschnitt.class);
-			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : allVerfuegungZeitabschnitt) {
-				// TODO (hefr) Achtung: Zahlungsstatus ist immer INSTITUTION!!!
-					if (verfuegungZeitabschnitt.getZahlungsstatus().isVerrechnet()) {
-						verfuegungZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
-						persistence.merge(verfuegungZeitabschnitt);
-					}else if (verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriert()) {
-				verfuegungZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
-				persistence.merge(verfuegungZeitabschnitt);
-			}
-		}
-		// (2) Alle Pain-Files loeschen
-		criteriaQueryHelper.deleteAllBefore(Pain001Dokument.class, LocalDateTime.now());
-		// (3) Alle Zahlungspositionen löschen
-		criteriaQueryHelper.deleteAllBefore(Zahlungsposition.class, LocalDateTime.now());
-		// (4) Alle Zahlungen loeschen
-		criteriaQueryHelper.deleteAllBefore(Zahlung.class, LocalDateTime.now());
-		// (5) Alle Zahlungsauftraege loeschen
-		criteriaQueryHelper.deleteAllBefore(Zahlungsauftrag.class, LocalDateTime.now());
-
-		LOGGER.info("All Zahlungsauftraege and their Zahlungen removed");
-	}
-
-	@Override
 	@Nonnull
 	public Collection<Zahlungsauftrag> getAllZahlungsauftraege() {
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
@@ -665,6 +638,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Zeitraum
 		Predicate predicateZeitraum = cb.between(root.get(Zahlungsauftrag_.datumGeneriert), cb.literal(von.atStartOfDay()), cb.literal(bis.atTime(LocalTime.MAX)));
 		predicatesToUse.add(predicateZeitraum);
+		// Dieser Report betrifft nur Institutionszahlungen
+		Predicate predicateAuftragTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
+		predicatesToUse.add(predicateAuftragTyp);
 
 		// Gemeinde
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(

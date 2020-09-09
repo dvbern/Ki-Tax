@@ -522,18 +522,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void deleteZahlungsauftrag() {
-		createGesuch(true);
-		Zahlungsauftrag zahlungsauftrag =
-			zahlungService.zahlungsauftragErstellen(
-				ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
-
-		Assert.assertTrue(zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).isPresent());
-		zahlungService.deleteAllZahlungsauftraege();
-		Assert.assertFalse(zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).isPresent());
-	}
-
-	@Test
 	public void getAllZahlungsauftraege() {
 		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
 

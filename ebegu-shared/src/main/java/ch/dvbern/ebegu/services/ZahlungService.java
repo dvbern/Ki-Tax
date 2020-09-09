@@ -88,11 +88,6 @@ public interface ZahlungService {
 	Optional<Zahlung> findZahlung(@Nonnull String zahlungId);
 
 	/**
-	 * Loescht ALLE Zahlungsauftraege
-	 */
-	void deleteAllZahlungsauftraege();
-
-	/**
 	 * Gibt alle Zahlungsauftraege zurueck
 	 */
 	@Nonnull
