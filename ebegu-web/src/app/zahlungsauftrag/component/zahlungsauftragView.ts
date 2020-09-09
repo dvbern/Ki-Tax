@@ -196,6 +196,7 @@ export class ZahlungsauftragViewController implements IController {
                     this.zahlungsAuftraege[index] = response;
                 }
                 EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
+                this.toggleAuszahlungslaufTyp();
             });
         });
     }
