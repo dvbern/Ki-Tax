@@ -743,6 +743,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
 		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(
 			gemeinde,
+			zahlungslaufTyp,
 			zahlungsauftrag.getId(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getBeschrieb()));
