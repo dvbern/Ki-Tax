@@ -117,9 +117,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		Objects.requireNonNull(zahlungsauftragId);
 		Objects.requireNonNull(datumLetzteZahlung);
 
-		Objects.requireNonNull(zahlungsauftragId);
-		Objects.requireNonNull(datumLetzteZahlung);
-
 		resetAllData();
 		LOGGER.info("Pruefe Zahlungen fuer Gemeinde {}", gemeinde.getName());
 		zahlungenIstMap = pruefeZahlungenIst(gemeinde);

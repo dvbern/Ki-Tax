@@ -958,7 +958,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
 
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
-				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
+				String msgKey = "ZahlungstextPainFile_" + zahlungsauftrag.getZahlungslaufTyp();
+				String zahlungstext = ServerMessageUtil.getMessage(
+					msgKey,
+					locale,
 					gemeindeStammdaten.getGemeinde().getName(),
 					zahlung.getEmpfaengerName(),
 					monat);
