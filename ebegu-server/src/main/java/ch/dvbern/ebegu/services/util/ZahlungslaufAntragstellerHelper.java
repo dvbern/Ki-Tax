@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -46,6 +47,12 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Helper fuer die Auszahlung der Mahlzeitenverguenstigung der Gemeinde an die Antragsteller
  */
 public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
+
+	@Nonnull
+	@Override
+	public ZahlungslaufTyp getZahlungslaufTyp() {
+		return ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER;
+	}
 
 	@Nonnull
 	@Override

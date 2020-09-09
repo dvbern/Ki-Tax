@@ -35,11 +35,18 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
 /**
  * Helper fuer die "normalen" BG Auszahlungen der Gemeinde an die Institutionen.
  */
 public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
+
+	@Nonnull
+	@Override
+	public ZahlungslaufTyp getZahlungslaufTyp() {
+		return ZahlungslaufTyp.GEMEINDE_INSTITUTION;
+	}
 
 	@Nonnull
 	@Override

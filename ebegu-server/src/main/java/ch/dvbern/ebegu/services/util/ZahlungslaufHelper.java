@@ -27,12 +27,19 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
 /**
  * Interface fuer Zahlungshelper. In diesen wird alles ausgelagert, was pro ZahlungslaufTyp
  * unterschiedlich ist, z.B. je nach Empfaenger unterschiedliche Zahlungsadresse
  */
 public interface ZahlungslaufHelper {
+
+	/**
+	 * Gibt den ZahlungslaufTyp zurueck, welcher mit diesem Helper behandelt wird
+	 */
+	@Nonnull
+	ZahlungslaufTyp getZahlungslaufTyp();
 
 	/**
 	 * Gibt den Zahlungsstatus dieses Zeitabschnitts zurueck.
