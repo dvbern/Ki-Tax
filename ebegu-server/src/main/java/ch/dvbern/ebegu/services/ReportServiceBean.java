@@ -129,8 +129,8 @@ import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConver
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
-import ch.dvbern.ebegu.services.util.ZahlungslaufHelper;
-import ch.dvbern.ebegu.services.util.ZahlungslaufHelperFactory;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;

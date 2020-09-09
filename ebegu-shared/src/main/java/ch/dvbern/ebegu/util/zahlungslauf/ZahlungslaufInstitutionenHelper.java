@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services.util;
+package ch.dvbern.ebegu.util.zahlungslauf;
 
 import java.math.BigDecimal;
 import java.util.Map;
