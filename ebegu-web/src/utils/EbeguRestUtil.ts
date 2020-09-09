@@ -2936,6 +2936,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
+            verfuegungZeitabschnittTS.zahlungsstatusMahlzeitenverguenstigung = zeitabschnittFromServer.zahlungsstatusMahlzeitenverguenstigung;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
             verfuegungZeitabschnittTS.tsCalculationResultMitPaedagogischerBetreuung =

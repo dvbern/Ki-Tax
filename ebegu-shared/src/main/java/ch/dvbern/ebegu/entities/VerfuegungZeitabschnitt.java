@@ -122,6 +122,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Enumerated(EnumType.STRING)
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+
 	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
 	// "bemerkungen" geschrieben
@@ -154,6 +159,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bemerkungenList.mergeBemerkungenMap(toCopy.bemerkungenList);
 		this.bemerkungen = toCopy.bemerkungen;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
+		this.zahlungsstatusMahlzeitenverguenstigung = toCopy.zahlungsstatusMahlzeitenverguenstigung;
 	}
 
 	/**
@@ -590,6 +596,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	@Nonnull
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusMahlzeitenverguenstigung() {
+		return zahlungsstatusMahlzeitenverguenstigung;
+	}
+
+	public void setZahlungsstatusMahlzeitenverguenstigung(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
+		this.zahlungsstatusMahlzeitenverguenstigung = zahlungsstatusMahlzeitenverguenstigung;
+	}
+
+	@Nonnull
 	public List<Zahlungsposition> getZahlungsposition() {
 		return zahlungsposition;
 	}
@@ -623,6 +638,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
 			+ " Regelwerk: " + regelwerk + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
+			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung + '\t'
 			+ " Bemerkungen: " + bemerkungen;
 		return sb;
 	}
@@ -649,6 +665,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			EbeguUtil.isSame(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
+			zahlungsstatusMahlzeitenverguenstigung == otherVerfuegungZeitabschnitt.zahlungsstatusMahlzeitenverguenstigung &&
 			this.bemerkungenList.isSame(((VerfuegungZeitabschnitt) other).bemerkungenList) &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}

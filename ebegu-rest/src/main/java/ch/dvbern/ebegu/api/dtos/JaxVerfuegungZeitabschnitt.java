@@ -114,6 +114,9 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
+	@NotNull
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+
 	private boolean kategorieMaxEinkommen = false;
 
 	private boolean kategorieKeinPensum = false;
@@ -336,6 +339,14 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
 		this.zahlungsstatus = zahlungsstatus;
+	}
+
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusMahlzeitenverguenstigung() {
+		return zahlungsstatusMahlzeitenverguenstigung;
+	}
+
+	public void setZahlungsstatusMahlzeitenverguenstigung(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
+		this.zahlungsstatusMahlzeitenverguenstigung = zahlungsstatusMahlzeitenverguenstigung;
 	}
 
 	public boolean isKategorieMaxEinkommen() {
