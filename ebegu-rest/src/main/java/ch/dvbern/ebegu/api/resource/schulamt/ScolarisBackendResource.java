@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource.schulamt;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -162,14 +163,14 @@ public class ScolarisBackendResource {
 				// Betreuung ist Tagesschule
 				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
 
-				if (anmeldungTagesschule.isKeineDetailinformationen()) {
-					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
-					return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
-				}
-
 				//check if Gemeinde Scolaris erlaubt:
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
 					return createResponseUnauthorised("Username not allowed for this Gemeinde");
+				}
+
+				if (anmeldungTagesschule.isKeineDetailinformationen()) {
+					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_CONTENT zurueck
+					return createKeineDetailangabenResponse(referenznummer);
 				}
 
 				try {
@@ -246,25 +247,26 @@ public class ScolarisBackendResource {
 
 
 			//check if Gemeinde Scolaris erlaubt:
-			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
+			final List<AbstractAnmeldung> anmeldungenList = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
 
-			if (betreuungen == null || betreuungen.isEmpty()) {
+			if (anmeldungenList == null || anmeldungenList.isEmpty()) {
 				// Betreuung not found
-				return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+				return createNoResultsResponse("No Anmeldung with id " + referenznummer + " found");
 			}
-			if (betreuungen.size() > 1) {
-				// More than one betreuung
-				return createTooManyResultsResponse("More than one Betreuung with id " + referenznummer + " found");
+			if (anmeldungenList.size() > 1) {
+				// More than one Anmeldung
+				return createTooManyResultsResponse("More than one Anmeldung with id " + referenznummer + " found");
 			}
 
-			final AbstractAnmeldung betreuung = betreuungen.get(0);
+			final AbstractAnmeldung anmeldung = anmeldungenList.get(0);
 
 			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp =
-				converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
+				converter.betreuungsangebotTypToScolaris(anmeldung.getBetreuungsangebotTyp());
 
 			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.TAGESSCHULE) {
-				// Betreuung ist Tagesschule
-				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
+				// Anmeldung ist Tagesschule
+				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) anmeldung;
+
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
 					return createResponseUnauthorised("username");
 				}
@@ -328,6 +330,14 @@ public class ScolarisBackendResource {
 				message)).build();
 	}
 
+	private Response createKeineDetailangabenResponse(String bgNumber) {
+		String message = MessageFormat.format("Keine Detailinformationen zu Anmeldung {0} vorhanden", bgNumber);
+		return Response.status(Response.Status.NO_CONTENT).entity(
+			new JaxExternalError(
+				JaxExternalErrorCode.NO_CONTENT,
+				message)).build();
+	}
+
 	private Response createBadParameterResponse(String message) {
 		return Response.status(Response.Status.BAD_REQUEST).entity(
 			new JaxExternalError(
@@ -355,7 +365,6 @@ public class ScolarisBackendResource {
 		).build();
 	}
 
-	@Nonnull
 	private boolean isScolarisAktiviert(@Nonnull AnmeldungTagesschule anmeldungTagesschule,
 		@Nonnull HttpServletRequest request) {
 		//Extract username:
@@ -370,9 +379,9 @@ public class ScolarisBackendResource {
 		final String scolarisGemeindeUsername = strings[0];
 
 		//check if Gemeinde erlaubt Scolaris
-		Objects.requireNonNull(anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule());
+		Objects.requireNonNull(anmeldungTagesschule.extractGemeinde());
 		GemeindeStammdaten gemeindeStammdaten =
-			gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule().getGemeinde().getId()).get();
+			gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGemeinde().getId()).get();
 		AtomicBoolean isScolarisErlaubt = new AtomicBoolean(false);
 		gemeindeStammdaten.getExternalClients().forEach(externalClient -> {
 			if (externalClient.getClientName().equals("scolaris")) {

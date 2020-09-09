@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
@@ -171,13 +172,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Override
 	@Nullable
-	public WriteProtectedDokument findGeneratedDokument(@Nonnull String id, @Nonnull String filename) {
+	public WriteProtectedDokument findGeneratedDokument(@Nonnull String gesuchId, @Nonnull String filename) {
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GeneratedDokument> query = cb.createQuery(GeneratedDokument.class);
 		Root<GeneratedDokument> root = query.from(GeneratedDokument.class);
 
-		Predicate predGesuch = cb.equal(root.get(GeneratedDokument_.gesuch).get(AbstractEntity_.id), id);
+		Predicate predGesuch = cb.equal(root.get(GeneratedDokument_.gesuch).get(AbstractEntity_.id), gesuchId);
 		Predicate predFileName = cb.equal(root.get(FileMetadata_.filename), filename);
 
 		query.where(predGesuch, predFileName);
@@ -259,7 +260,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				//Die Datei wird am Ende geloscht, um unvollstaenige Daten zu vermeiden falls was kaputt geht
 				filePathToRemove = writeProtectedDokument.getFilepfad();
 			}
-			Pain001Dokument.class.cast(writeProtectedDokument).setZahlungsauftrag((Zahlungsauftrag) entity);
+			((Pain001Dokument) writeProtectedDokument).setZahlungsauftrag((Zahlungsauftrag) entity);
 		}
 
 		final UploadFileInfo savedDokument = fileSaverService.save(data,
@@ -494,7 +495,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				GeneratedDokumentTyp.FREIGABEQUITTUNG,
 				fileNameForGeneratedDokumentTyp);
 		}
-		if (persistedDokument == null || forceCreation) {
+		if (persistedDokument == null) {
 
 			authorizer.checkReadAuthorizationFinSit(gesuch);
 
@@ -869,7 +870,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		if (!stammdaten.isZahlungsinformationValid()) {
 			throw new EbeguRuntimeException(KibonLogLevel.INFO,
 				"getPain001DokumentAccessTokenGeneratedDokument",
-				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INCOMPLETE,
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_GEMEINDE_INCOMPLETE,
 				zahlungsauftrag.getGemeinde().getName());
 		}
 
@@ -911,7 +912,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		if (!gemeindeStammdaten.isZahlungsinformationValid()) {
 			throw new EbeguRuntimeException(KibonLogLevel.INFO,
 				"wrapZahlungsauftrag",
-				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INCOMPLETE,
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_GEMEINDE_INCOMPLETE,
 				zahlungsauftrag.getGemeinde().getName());
 		}
 
@@ -931,7 +932,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		pain001DTO.setSchuldnerIBANGebuehren(null);
 		pain001DTO.setSoftwareName("kiBon");
 		// we use the currentTimeMillis so that it is always different
-		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
+		//noinspection StringConcatenationMissingWhitespace
+		pain001DTO.setMsgId("kiBon" + System.currentTimeMillis());
 
 		pain001DTO.setAuszahlungen(new ArrayList<>());
 		zahlungsauftrag.getZahlungen().stream()

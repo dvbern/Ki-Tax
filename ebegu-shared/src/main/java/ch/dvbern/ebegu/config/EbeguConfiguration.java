@@ -317,4 +317,6 @@ public interface EbeguConfiguration {
 	String getNotverordnungUnterschriftPath();
 
 	String getNotverordnungEmpfaengerMail();
+
+	String getMassenmutationEmpfaengerMail();
 }

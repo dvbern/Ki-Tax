@@ -304,6 +304,9 @@ export class NotrechtComponent implements OnInit {
 
     public filterRueckforderungFormulare(): void {
         let filteredFormulare = this.rueckforderungFormulare;
+        if (EbeguUtil.isNullOrUndefined(filteredFormulare)) {
+            return;
+        }
         if (this.showOnlyOffenePendenzen) {
             filteredFormulare = filteredFormulare.filter(d => this.isOffenePendenz(d));
         }

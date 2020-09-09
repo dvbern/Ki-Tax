@@ -127,15 +127,6 @@ public interface GesuchService {
 	Collection<Gesuch> getAllGesuche();
 
 	/**
-	 * Gibt alle existierenden Gesuche zurueck, deren Status nicht VERFUEGT ist
-	 * und die dem übergebenen Benutzer als "Verantwortliche Person" zugeteilt sind.
-	 *
-	 * @return Liste aller Gesuche aus der DB
-	 */
-	@Nonnull
-	Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername);
-
-	/**
 	 * entfernt ein Gesuch aus der Database. Es wird ein LogEintrag erstellt mit dem Grund des Löschens-
 	 */
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -470,4 +461,9 @@ public interface GesuchService {
 	 * It will check all Gesuche independently if the user is allowed to access them or not though.
 	 */
 	boolean hasFolgegesuchForAmt(@Nonnull String gesuchId);
+
+	/**
+	 * Erstellt eine Mutation und verlangt alle Platzbestaetigungen neu.
+	 */
+	void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch);
 }

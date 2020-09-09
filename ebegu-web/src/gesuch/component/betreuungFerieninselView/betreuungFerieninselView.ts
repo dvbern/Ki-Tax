@@ -306,7 +306,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             return undefined;
         }
         const stammdatenFerieninsel = institutionStammdaten.institutionStammdatenFerieninsel;
-        if (!stammdatenFerieninsel) {
+        if (!stammdatenFerieninsel || EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
             return undefined;
         }
         const tsEinstellungenTFerieninsel =
