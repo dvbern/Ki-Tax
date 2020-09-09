@@ -22,10 +22,10 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
 /**
  * Service zum Verwalten von Zahlungen
@@ -38,37 +38,54 @@ public interface ZahlungService {
 	 * Der Zahlungsauftrag hat den initialen Status ENTWURF
 	 * Als datumGeneriert wird "Jetzt" verwendet
 	 */
-	Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung);
-
-	/**
-	 * Aktualisiert das Fälligkeitsdatum und die Beschreibung im übergebenen Auftrag. Die Zahlungspositionen werden
-	 * *nicht* neu generiert
-	 */
-	Zahlungsauftrag zahlungsauftragAktualisieren(String auftragId, LocalDate datumFaelligkeit, String beschreibung);
+	@Nonnull
+	Zahlungsauftrag zahlungsauftragErstellen(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull String gemeindeId,
+		@Nonnull LocalDate datumFaelligkeit,
+		@Nonnull String beschreibung);
 
 	/**
 	 * Ermittelt alle im aktuellen Monat gueltigen Verfuegungen, sowie aller seit dem letzten Auftrag eingeganegenen
 	 * Mutationen.
 	 * Der Zahlungsauftrag hat den initialen Status ENTWURF
 	 */
-	Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung,
+	@Nonnull
+	Zahlungsauftrag zahlungsauftragErstellen(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull String gemeindeId,
+		@Nonnull LocalDate datumFaelligkeit,
+		@Nonnull String beschreibung,
 		@Nonnull LocalDateTime datumGeneriert);
+
+	/**
+	 * Aktualisiert das Fälligkeitsdatum und die Beschreibung im übergebenen Auftrag. Die Zahlungspositionen werden
+	 * *nicht* neu generiert
+	 */
+	@Nonnull
+	Zahlungsauftrag zahlungsauftragAktualisieren(
+		@Nonnull String auftragId,
+		@Nonnull LocalDate datumFaelligkeit,
+		@Nonnull String beschreibung);
 
 	/**
 	 * Nachdem alle Daten kontrolliert wurden, wird der Zahlungsauftrag ausgeloest. Danach kann er nicht mehr
 	 * geloescht werden
 	 */
-	Zahlungsauftrag zahlungsauftragAusloesen(String auftragId);
+	@Nonnull
+	Zahlungsauftrag zahlungsauftragAusloesen(@Nonnull String auftragId);
 
 	/**
 	 * Sucht einen einzelnen Zahlungsauftrag.
 	 */
-	Optional<Zahlungsauftrag> findZahlungsauftrag(String auftragId);
+	@Nonnull
+	Optional<Zahlungsauftrag> findZahlungsauftrag(@Nonnull String auftragId);
 
 	/**
 	 * Gibt die Zahlung mit der uebergebenen Id zurueck.
 	 */
-	Optional<Zahlung> findZahlung(String zahlungId);
+	@Nonnull
+	Optional<Zahlung> findZahlung(@Nonnull String zahlungId);
 
 	/**
 	 * Loescht ALLE Zahlungsauftraege
@@ -78,18 +95,21 @@ public interface ZahlungService {
 	/**
 	 * Gibt alle Zahlungsauftraege zurueck
 	 */
+	@Nonnull
 	Collection<Zahlungsauftrag> getAllZahlungsauftraege();
 
 	/**
 	 * Eine Kita kann/muss den Zahlungseingang bestaetigen
 	 */
-	Zahlung zahlungBestaetigen(String zahlungId);
+	@Nonnull
+	Zahlung zahlungBestaetigen(@Nonnull String zahlungId);
 
 	/**
 	 * Gibt alle Zahlungsaufträge des übergebenen Zeitraums zurück. Es werden nur Zahlungsaufträge aufgefuehrt, fuer die der eingeloggte Benutzer berechtigt
 	 * ist (d.h. für die Gemeinde).
 	 */
-	Collection<Zahlungsauftrag> getZahlungsauftraegeInPeriode(LocalDate von, @Nonnull LocalDate bis);
+	@Nonnull
+	Collection<Zahlungsauftrag> getZahlungsauftraegeInPeriode(@Nonnull LocalDate von, @Nonnull LocalDate bis);
 
 	/**
 	 * Entfernt alle Zahlungspositionen des übergebenen Gesuchs
@@ -100,5 +120,5 @@ public interface ZahlungService {
 	 * Kontrolliert die Zahlungen Stand heute: Es werden die Zahlen aus der letzt gueltigen Verfuegung jedes Falls
 	 * verglichen mit den tatsaechlich erfolgten Zahlungen.
 	 */
-	void zahlungenKontrollieren(@Nonnull String gemeindeId);
+	void zahlungenKontrollieren(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull String gemeindeId);
 }

@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.reporting.zahlungsauftrag;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -30,12 +29,17 @@ public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 	@Nonnull
 	private Zahlung zahlung;
 
-	@Nullable
-	private Adresse defaultAdresseKontoinhaber;
+	/**
+	 * Da in den Auszahlungsdaten nur eine Adresse steht, falls es eine spezifische Auszahlungsadresse
+	 * hat, merken wir uns hier die effektiv zu verwendende Adresse (also entweder Auszahlungsadresse
+	 * oder ein sinnvoller Defaultwert)
+	 */
+	@Nonnull
+	private Adresse adresseKontoinhaber;
 
-	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nullable Adresse defaultAdresseKontoinhaber) {
+	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nonnull Adresse adresseKontoinhaber) {
 		this.zahlung = zahlung;
-		this.defaultAdresseKontoinhaber = defaultAdresseKontoinhaber;
+		this.adresseKontoinhaber = adresseKontoinhaber;
 	}
 
 	@Nonnull
@@ -47,13 +51,13 @@ public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 		this.zahlung = zahlung;
 	}
 
-	@Nullable
-	public Adresse getDefaultAdresseKontoinhaber() {
-		return defaultAdresseKontoinhaber;
+	@Nonnull
+	public Adresse getAdresseKontoinhaber() {
+		return adresseKontoinhaber;
 	}
 
-	public void setDefaultAdresseKontoinhaber(@Nullable Adresse defaultAdresseKontoinhaber) {
-		this.defaultAdresseKontoinhaber = defaultAdresseKontoinhaber;
+	public void setAdresseKontoinhaber(@Nonnull Adresse adresseKontoinhaber) {
+		this.adresseKontoinhaber = adresseKontoinhaber;
 	}
 
 	@Override

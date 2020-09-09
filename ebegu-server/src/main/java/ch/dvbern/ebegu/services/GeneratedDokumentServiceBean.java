@@ -59,8 +59,6 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
@@ -68,7 +66,6 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -77,7 +74,6 @@ import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
-import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -86,6 +82,8 @@ import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.services.util.ZahlungslaufHelper;
+import ch.dvbern.ebegu.services.util.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -99,7 +97,6 @@ import ch.dvbern.oss.lib.iso20022.dtos.pain.Pain001DTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001Service;
 import com.lowagie.text.DocumentException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -936,6 +933,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
 
 		pain001DTO.setAuszahlungen(new ArrayList<>());
+
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
 		zahlungsauftrag.getZahlungen().stream()
 			.filter(zahlung -> zahlung.getBetragTotalZahlung().signum() == 1)
 			.forEach(zahlung -> {
@@ -943,43 +942,21 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setBetragTotalZahlung(zahlung.getBetragTotalZahlung());
 
 				final Auszahlungsdaten auszahlungsdaten = zahlung.getAuszahlungsdaten();
-				Adresse adresseKontoinhaber = auszahlungsdaten.getAdresseKontoinhaber();
-				if (adresseKontoinhaber == null) {
-					if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
-						// TODO (hefr) die ganze chose hier irgendwie auslagern
-						if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
-							final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
-								.fetchInstitutionStammdatenByInstitution(zahlung.getEmpfaengerId(), true);
-							adresseKontoinhaber = institutionStammdaten.getAdresse();
-						} else if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
-							// Beim Antragsteller muss die Adresse ueber die Betreuung gesucht werden
-							final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
-							if (firstZahlungsposition.isPresent()) {
-								final GesuchstellerContainer gesuchsteller1 =
-									firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz().extractGesuch().getGesuchsteller1();
-								Objects.requireNonNull(gesuchsteller1);
-								adresseKontoinhaber =
-									gesuchsteller1.getWohnadresseAm(LocalDate.now());
-							}
-						}
-					} else {
-						// TODO (Team): Achtung: Im Fall von Gemeinde-Gesuchsteller Auszahlungen muss hier ein anderer Default genommen werden!
-						throw new NotImplementedException(
-							"Default-Zahlungsadresse fuer Zahlungslauftyp " + zahlungsauftrag.getZahlungslaufTyp() + " ist nicht definiert");
-					}
-				}
-
-				Objects.requireNonNull(adresseKontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerName(auszahlungsdaten.getKontoinhaber());
+
+				IBAN ibanInstitution = auszahlungsdaten.getIban();
+				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Empfaenger " + zahlung.getEmpfaengerName());
+				auszahlungDTO.setZahlungsempfaegerIBAN(ibanToUnformattedString(ibanInstitution));
+				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(ibanInstitution.extractClearingNumberWithoutLeadingZeros());
+
+				Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+				Objects.requireNonNull(adresseKontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerStrasse(adresseKontoinhaber.getStrasse());
 				auszahlungDTO.setZahlungsempfaegerHausnummer(adresseKontoinhaber.getHausnummer());
 				auszahlungDTO.setZahlungsempfaegerPlz(adresseKontoinhaber.getPlz());
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
-				IBAN ibanInstitution = auszahlungsdaten.getIban();
-				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Empfaenger " + zahlung.getEmpfaengerName());
-				auszahlungDTO.setZahlungsempfaegerIBAN(ibanToUnformattedString(ibanInstitution));
-				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(ibanInstitution.extractClearingNumberWithoutLeadingZeros());
+
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
 				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
 					gemeindeStammdaten.getGemeinde().getName(),

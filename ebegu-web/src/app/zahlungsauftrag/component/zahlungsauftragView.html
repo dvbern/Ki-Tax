@@ -18,6 +18,16 @@
      'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'JURIST', 'REVISOR',
      'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
 
+    <!-- Toggle fuer den Auszahlungstyp (anstelle von Tabs, da GUI sonst identisch) -->
+    <div ng-if="vm.showAuszahlungsTypToggle()">
+        <dv-switch
+            (switch-value-change)="vm.toggleAuszahlungslaufTyp()"
+            [switch-option-left]="'GEMEINDE_INSTITUTION'"
+            [switch-option-right]="'GEMEINDE_ANTRAGSTELLER'"
+            [(switch-value)]="vm.zahlungslaufTyp"
+        ></dv-switch>
+    </div>
+
     <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
         <div class="row" dv-show-element dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
             <div class="col-md-8 col-md-offset-2">
@@ -81,8 +91,8 @@
                     <div ng-class="{'col-md-3': !vm.testMode,'col-md-2': vm.testMode}" flex layout="row"
                          layout-align="center center">
                         <dv-loading-button button-click="vm.createZahlungsauftrag()"
-                                           aria-label="{{'ZAHLUNG_ERSTELLEN' | translate}}" type="submit">
-                            <span class="uppercase" data-translate="ZAHLUNG_ERSTELLEN"></span>
+                                           aria-label="{{vm.getLabelZahlungslaufErstellen()}}" type="submit">
+                            <span class="uppercase">{{vm.getLabelZahlungslaufErstellen()}}</span>
                         </dv-loading-button>
                     </div>
                 </div>
@@ -100,11 +110,11 @@
             <h3 data-translate="ZAHLUNGSAUFTRAEGE"></h3>
         </div>
         <div class="col-md-1 text-right">
-            <h3 ng-bind="vm.zahlungsAuftraege.length"></h3>
+            <h3 ng-bind="vm.getZahlungsauftraegeFiltered().length"></h3>
         </div>
     </div>
     <div class="table-responsive">
-        <table st-table="displayedCollection" st-safe-src="vm.zahlungsAuftraege"
+        <table st-table="displayedCollection" st-safe-src="vm.getZahlungsauftraegeFiltered()"
                st-delay="20" class="table ebegu-table fixedtable table-striped">
             <thead>
             <tr dv-show-element dv-show-allowed-roles="['SUPER_ADMIN']">

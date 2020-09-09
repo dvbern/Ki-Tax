@@ -72,6 +72,7 @@ import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AntragStatusHistoryService;
@@ -211,7 +212,11 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final DokumentGrund dokumentGrund = TestDataUtil.createDefaultDokumentGrund();
 		dokumentGrund.setGesuch(gesuch);
 		persistence.persist(dokumentGrund);
-		zahlungService.zahlungsauftragErstellen(bern.getId(), LocalDate.now(), "Testauftrag",
+		zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+			bern.getId(),
+			LocalDate.now(),
+			"Testauftrag",
 			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0));
 
 		//check all objects exist
