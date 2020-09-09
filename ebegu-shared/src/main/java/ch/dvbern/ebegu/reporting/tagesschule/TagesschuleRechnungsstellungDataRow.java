@@ -279,7 +279,7 @@ public class TagesschuleRechnungsstellungDataRow {
 		dataRow.famGroesse = bgCalculationResult.getFamGroesse();
 
 		dataRow.massgebendesEinkommenNachFamAbzug = MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO);
-		dataRow.erklaerungEinkommen = getErklaerungEinkommen(anmeldungTagesschule, zeitabschnitt);
+		dataRow.erklaerungEinkommen = getErklaerungEinkommen(anmeldungTagesschule);
 
 		final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
 		if (tsMitBetreuung != null) {
@@ -297,7 +297,7 @@ public class TagesschuleRechnungsstellungDataRow {
 	// 2) Sozialhilfebezüger
 	// 3) Einkommen wurde nicht deklariert
 	// 4) Einkommen ist effektiv kleiner als Familienabzug
-	private static ErklaerungEinkommen getErklaerungEinkommen(@Nullable AnmeldungTagesschule anmeldungTagesschule, VerfuegungZeitabschnitt zeitabschnitt) {
+	private static ErklaerungEinkommen getErklaerungEinkommen(@Nullable AnmeldungTagesschule anmeldungTagesschule) {
 
 		if (anmeldungTagesschule == null) {
 			return ErklaerungEinkommen.KEINE_ERKLAERUNG;
