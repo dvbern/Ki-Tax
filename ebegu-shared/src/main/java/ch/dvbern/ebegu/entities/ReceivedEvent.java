@@ -89,7 +89,7 @@ public class ReceivedEvent extends AbstractEntity {
 		return this.equals(other);
 	}
 
-
+	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) {
 			return true;
@@ -110,6 +110,17 @@ public class ReceivedEvent extends AbstractEntity {
 			Objects.equal(getEventType(), that.getEventType()) &&
 			Objects.equal(getEventTimestamp(), that.getEventTimestamp()) &&
 			Objects.equal(getEventKey(), that.getEventKey());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(
+			super.hashCode(),
+			getEventId(),
+			getEventType(),
+			getEventTimestamp(),
+			getEventKey(),
+			getEventDto());
 	}
 
 	@Nonnull
