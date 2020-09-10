@@ -68,8 +68,8 @@ public class MessageProcessor {
 			T eventDTO = record.value();
 
 			handler.onEvent(eventIdOpt.get(), key, eventTime, eventTypeOpt.get(), eventDTO);
-		} catch (Throwable t) {
-			LOG.error("Error in message processing", t);
+		} catch (Exception e) {
+			LOG.error("Error in message processing", e);
 		}
 	}
 

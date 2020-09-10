@@ -97,7 +97,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 	}
 
 	@Schedule(info = "consume kafka events",second="*/10", minute = "*", hour = "*", persistent = true)
-	private void workKafkaData(){
+	public void workKafkaData(){
 		try {
 			//while(true){
 				ConsumerRecords<String, BetreuungEventDTO> consumerRecordes =
@@ -113,7 +113,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 	}
 
 	@PreDestroy
-	private void close() {
+	public void close() {
 		consumer.close();
 	}
 }

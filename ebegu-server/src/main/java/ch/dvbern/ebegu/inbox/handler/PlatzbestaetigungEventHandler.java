@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
-	private static final BigDecimal MAX_TAGE_PRO_MONAT = new BigDecimal(20.0);
-	private static final BigDecimal MAX_STUNDEN_PRO_MONAT = new BigDecimal(220.0);
+	private static final BigDecimal MAX_TAGE_PRO_MONAT = new BigDecimal("20.00");
+	private static final BigDecimal MAX_STUNDEN_PRO_MONAT = new BigDecimal("220.00");
 
 	@Inject
 	private BetreuungService betreuungService;
@@ -93,6 +93,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	 * @param dto
 	 * @return
 	 */
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private boolean setBetreuungDaten(Betreuung betreuung, BetreuungEventDTO dto) {
 		boolean isReadyForBestaetigen = true;
 		//erweiterte Betreuung muss true sein um der checkbox zu setzen! Sonst ist der Wert von DTO ignoriert
