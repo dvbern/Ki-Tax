@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +28,9 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 
 /**
  * Allgemeine Utils fuer Verfuegung
@@ -122,27 +126,41 @@ public final class VerfuegungUtil {
 			.findAny();
 	}
 
-	public static void setZahlungsstatus(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung verfuegungOnGesuchForMutation) {
+	public static void setZahlungsstatusForAllZahlungslauftypes(
+		@Nonnull Verfuegung verfuegung,
+		@Nullable Verfuegung verfuegungOnGesuchForMutation
+	) {
 		if (verfuegungOnGesuchForMutation == null) {
 			return;
 		}
-
 		List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
 		List<VerfuegungZeitabschnitt> zeitabschnitteGSM = verfuegungOnGesuchForMutation.getZeitabschnitte();
 
 		for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
-			VerfuegungsZeitabschnittZahlungsstatus oldStatusZeitabschnitt = findStatusOldZeitabschnitt(zeitabschnitteGSM, newZeitabschnitt);
-			newZeitabschnitt.setZahlungsstatus(oldStatusZeitabschnitt);
+			// Der Zahlungsstatus ist pro Zahlungslauf unterschiedlich!
+			Arrays.stream(ZahlungslaufTyp.values()).iterator().forEachRemaining(zahlungslaufTyp -> {
+				final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
+				final Optional<VerfuegungZeitabschnitt> oldZeitabschnitt = findOldZeitabschnitt(zeitabschnitteGSM, newZeitabschnitt);
+				VerfuegungsZeitabschnittZahlungsstatus statusOldZeitabchnitt = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+				if (oldZeitabschnitt.isPresent()) {
+					statusOldZeitabchnitt = zahlungslaufHelper.getZahlungsstatus(oldZeitabschnitt.get());
+				}
+				zahlungslaufHelper.setZahlungsstatus(newZeitabschnitt, statusOldZeitabchnitt);
+			});
 		}
 	}
 
-	private static VerfuegungsZeitabschnittZahlungsstatus findStatusOldZeitabschnitt(List<VerfuegungZeitabschnitt> zeitabschnitteGSM, VerfuegungZeitabschnitt newZeitabschnitt) {
+	@Nonnull
+	private static Optional<VerfuegungZeitabschnitt> findOldZeitabschnitt(
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitteGSM,
+		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt
+	) {
 		for (VerfuegungZeitabschnitt zeitabschnittGSM : zeitabschnitteGSM) {
 			if (zeitabschnittGSM.getGueltigkeit().getOverlap(newZeitabschnitt.getGueltigkeit()).isPresent()) {
 				// Wenn ein Vorgaenger vorhanden ist, wird der Status von diesem uebernommen
-				return zeitabschnittGSM.getZahlungsstatus();
+				return Optional.of(zeitabschnittGSM);
 			}
 		}
-		return VerfuegungsZeitabschnittZahlungsstatus.NEU;
+		return Optional.empty();
 	}
 }

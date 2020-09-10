@@ -275,7 +275,7 @@ public class BetreuungsgutscheinEvaluator {
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
 		if (ausbezahlteVorgaenger != null) {
 			// Zahlungsstatus aus vorgaenger uebernehmen
-			VerfuegungUtil.setZahlungsstatus(verfuegungZuBerechnen, ausbezahlteVorgaenger);
+			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, ausbezahlteVorgaenger);
 			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen, ausbezahlteVorgaenger);
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
