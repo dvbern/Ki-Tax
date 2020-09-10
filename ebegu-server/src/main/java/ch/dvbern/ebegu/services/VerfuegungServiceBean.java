@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -80,6 +81,8 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -641,15 +644,17 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Override
 	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu,
 		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
 
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
+
 		findVorgaengerAusbezahlteVerfuegung(betreuungNeu)
 			.map(verfuegung -> findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(), verfuegung))
 			.ifPresent(zeitabschnitte -> zeitabschnitte.forEach(zeitabschnitt -> {
-
-				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zeitabschnitt.getZahlungsstatus();
+				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zahlungslaufHelper.getZahlungsstatus(zeitabschnitt);
 
 				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())
 					&& isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte)) {
@@ -662,6 +667,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter
 					// zurueckgehen
 					findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+						zahlungslaufTyp,
 						zeitabschnittNeu,
 						vorgaengerBetreuung,
 						vorgaengerZeitabschnitte);

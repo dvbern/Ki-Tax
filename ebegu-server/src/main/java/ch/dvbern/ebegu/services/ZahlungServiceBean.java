@@ -424,7 +424,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		final Verfuegung verfuegung = zeitabschnittNeu.getVerfuegung();
 		Objects.requireNonNull(verfuegung);
 		Objects.requireNonNull(verfuegung.getBetreuung());
-		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnittNeu, verfuegung.getBetreuung(), zeitabschnittOnVorgaengerVerfuegung);
+
+		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+			helper.getZahlungslaufTyp(),
+			zeitabschnittNeu,
+			verfuegung.getBetreuung(),
+			zeitabschnittOnVorgaengerVerfuegung);
+
 		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) { // Korrekturen
 			Zahlung zahlung = helper.findZahlungForEmpfaenger(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
 			createZahlungspositionKorrekturNeuerWert(helper, zeitabschnittNeu, zahlung); // Dies braucht man immer

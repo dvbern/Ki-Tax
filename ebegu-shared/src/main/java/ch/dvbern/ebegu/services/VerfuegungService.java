@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
 /**
  * Service zum berechnen und speichern der Verfuegung
@@ -129,9 +130,12 @@ public interface VerfuegungService {
 	/**
 	 * Sucht den Zeitabschnitt / die Zeitabschnitte mit demselben Zeitraum auf der Vorgängerverfügung,
 	 * und die verrechnet oder ignoriert sind. Rekursive Methode, die die gegebene Liste mit den richtigen Objekten
-	 * ausfuellt
+	 * ausfuellt.
+	 * Da je nach Zahlungslauftyp ein unterschiedliches Feld analyisiert werden muss, muss der Zahlungslauftyp
+	 * uebergeben werden.
 	 */
 	void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu,
 		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
