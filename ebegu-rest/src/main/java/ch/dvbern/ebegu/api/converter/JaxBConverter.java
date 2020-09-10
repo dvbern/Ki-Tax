@@ -736,19 +736,23 @@ public class JaxBConverter extends AbstractConverter {
 		if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
 			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
-				Objects.requireNonNull(familiensituationJAXP.getIban(), "IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
-				Objects.requireNonNull(familiensituationJAXP.getKontoinhaber(), "Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
-				if (familiensituation.getAuszahlungsdaten() == null) {
-					familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
+				// keineMahlzeitenverguenstigungBeantragt ist boolean mit default FALSE.
+				// Wir sind aber evtl. noch gar nicht bei der FinSit und muessen trotzdem speichern koennen!
+				if (familiensituationJAXP.getIban() != null || familiensituationJAXP.getKontoinhaber() != null) {
+					Objects.requireNonNull(familiensituationJAXP.getIban(), "IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+					Objects.requireNonNull(familiensituationJAXP.getKontoinhaber(), "Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+					if (familiensituation.getAuszahlungsdaten() == null) {
+						familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
+					}
+					familiensituation.getAuszahlungsdaten().setIban(new IBAN(familiensituationJAXP.getIban()));
+					familiensituation.getAuszahlungsdaten().setKontoinhaber(familiensituationJAXP.getKontoinhaber());
+					Adresse convertedAdresse = null;
+					if (familiensituationJAXP.getZahlungsadresse() != null) {
+						Adresse a = Optional.ofNullable(familiensituation.getAuszahlungsdaten().getAdresseKontoinhaber()).orElseGet(Adresse::new);
+						convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresse(), a);
+					}
+					familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 				}
-				familiensituation.getAuszahlungsdaten().setIban(new IBAN(familiensituationJAXP.getIban()));
-				familiensituation.getAuszahlungsdaten().setKontoinhaber(familiensituationJAXP.getKontoinhaber());
-				Adresse convertedAdresse = null;
-				if (familiensituationJAXP.getZahlungsadresse() != null) {
-					Adresse a = Optional.ofNullable(familiensituation.getAuszahlungsdaten().getAdresseKontoinhaber()).orElseGet(Adresse::new);
-					convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresse(), a);
-				}
-				familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 			}
 			familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresse());
 		} else {
