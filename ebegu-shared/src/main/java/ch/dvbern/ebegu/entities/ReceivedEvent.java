@@ -59,7 +59,7 @@ public class ReceivedEvent extends AbstractEntity {
 	@Column(nullable = false, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	private final String eventDTO;
+	private final String eventDto;
 
 	/**
 	 * just for JPA
@@ -71,17 +71,17 @@ public class ReceivedEvent extends AbstractEntity {
 		this.eventKey = "";
 		this.eventType = "";
 		this.eventTimestamp = null;
-		this.eventDTO = null;
+		this.eventDto = null;
 	}
 
 	public ReceivedEvent(@Nonnull @NotEmpty String eventId, @Nonnull @NotEmpty String eventKey,
 		@Nonnull @NotEmpty String eventType,
-		@Nonnull LocalDateTime eventTimestamp, @Nonnull String eventDTO) {
+		@Nonnull LocalDateTime eventTimestamp, @Nonnull String eventDto) {
 		this.eventId = eventId;
 		this.eventKey = eventKey;
 		this.eventType = eventType;
 		this.eventTimestamp = eventTimestamp;
-		this.eventDTO = eventDTO;
+		this.eventDto = eventDto;
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class ReceivedEvent extends AbstractEntity {
 
 		ReceivedEvent that = (ReceivedEvent) o;
 
-		return Objects.equal(getEventDTO(), that.getEventDTO()) &&
+		return Objects.equal(getEventDto(), that.getEventDto()) &&
 			Objects.equal(getEventId(), that.getEventId()) &&
 			Objects.equal(getEventType(), that.getEventType()) &&
 			Objects.equal(getEventTimestamp(), that.getEventTimestamp()) &&
@@ -133,7 +133,7 @@ public class ReceivedEvent extends AbstractEntity {
 	}
 
 	@Nonnull
-	public String getEventDTO() {
-		return eventDTO;
+	public String getEventDto() {
+		return eventDto;
 	}
 }

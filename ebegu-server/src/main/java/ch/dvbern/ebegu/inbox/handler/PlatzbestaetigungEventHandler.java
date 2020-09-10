@@ -62,7 +62,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	protected void processEvent(@Nonnull LocalDateTime eventTime, @Nonnull EventType eventType,
 		@Nonnull BetreuungEventDTO dto) {
 		try {
-			Optional<Betreuung> betreuungOpt = betreuungService.findGueltigeBetreuungByBGNummer(dto.getRefnr());
+			Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false);
 			if (!betreuungOpt.isPresent()) {
 				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " existiert nicht!");
 				return;
@@ -159,7 +159,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 						MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()).divide(MAX_STUNDEN_PRO_MONAT);
 					betreuungspensum.setPensum(pensumInPercent);
 				}
-				betreuungspensum.setPensum(zeitabschnittDTO.getBetreuungspensum());
 				betreuungspensum.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
 				betreuungspensum.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
 				betreuungspensum.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());

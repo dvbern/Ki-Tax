@@ -23,12 +23,14 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler;
 import ch.dvbern.ebegu.kafka.MessageProcessor;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
@@ -53,6 +55,7 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_COMMIT_INTER
 
 @Startup
 @Singleton
+@RunAs(UserRoleName.SUPER_ADMIN)
 public class PlatzbestaetigungEventKafkaConsumer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventKafkaConsumer.class);

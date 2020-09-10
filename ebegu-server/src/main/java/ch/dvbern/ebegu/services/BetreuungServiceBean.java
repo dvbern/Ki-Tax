@@ -610,7 +610,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<Betreuung> findGueltigeBetreuungByBGNummer(@Nonnull String bgNummer) {
+	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, @Nonnull boolean onlyGueltig) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
@@ -636,7 +636,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
 
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
-		Predicate predGueltig = cb.equal(root.get(Betreuung_.gueltig), Boolean.TRUE);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -646,7 +645,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicates.add(predGesuchsperiode);
 		predicates.add(predKindNummer);
 		predicates.add(predBetreuungNummer);
-		predicates.add(predGueltig);
+
+		if(onlyGueltig) {
+			Predicate predGueltig = cb.equal(root.get(Betreuung_.gueltig), Boolean.TRUE);
+			predicates.add(predGueltig);
+		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
