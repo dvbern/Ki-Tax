@@ -292,7 +292,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
 public class JaxBConverter extends AbstractConverter {
 
 	@Inject
