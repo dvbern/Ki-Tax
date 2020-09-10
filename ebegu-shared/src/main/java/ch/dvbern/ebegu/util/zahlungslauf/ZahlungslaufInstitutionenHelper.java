@@ -54,6 +54,14 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		return zeitabschnitt.getZahlungsstatus();
 	}
 
+	@Override
+	public void setZahlungsstatus(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status
+	) {
+		zeitabschnitt.setZahlungsstatus(status);
+	}
+
 	@Nonnull
 	@Override
 	public Zahlung findZahlungForEmpfaenger(

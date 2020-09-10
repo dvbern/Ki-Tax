@@ -60,6 +60,14 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		return zeitabschnitt.getZahlungsstatusMahlzeitenverguenstigung();
 	}
 
+	@Override
+	public void setZahlungsstatus(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status
+	) {
+		zeitabschnitt.setZahlungsstatusMahlzeitenverguenstigung(status);
+	}
+
 	@Nonnull
 	@Override
 	public Zahlung findZahlungForEmpfaenger(

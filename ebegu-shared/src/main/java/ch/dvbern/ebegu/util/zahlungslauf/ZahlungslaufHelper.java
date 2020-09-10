@@ -48,6 +48,13 @@ public interface ZahlungslaufHelper {
 	VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus(@Nonnull VerfuegungZeitabschnitt zeitabschnitt);
 
 	/**
+	 * Setzt den Zahlungsstatus dieses Zeitabschnitts auf den uebergebenen Wert
+	 */
+	void setZahlungsstatus(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status);
+
+	/**
 	 * Ermittelt das Zahlungsobjekt fuer den Empfaenger des uebergebenen Zeitabschnitts. Falls im uebergebenen
 	 * Auftrag schon eine Zahlung fuer diesen Empfaenger vorhanden ist, wird diese zurueckgegeben, ansonsten
 	 * eine neue erstellt.
