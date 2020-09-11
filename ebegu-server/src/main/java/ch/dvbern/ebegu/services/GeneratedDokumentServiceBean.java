@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
 import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
@@ -82,14 +83,14 @@ import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
-import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
-import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.iso20022.dtos.pain.AuszahlungDTO;
@@ -938,10 +939,11 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			.forEach(zahlung -> {
 				// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
 				if (!zahlung.getAuszahlungsdaten().isZahlungsinformationValid()) {
+					final Institution institution = zahlung.extractInstitution();
 					throw new EbeguRuntimeException(KibonLogLevel.INFO,
 						"wrapZahlungsauftrag",
 						ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
-						zahlung.getInstitutionName());
+						institution.getName());
 				}
 
 				AuszahlungDTO auszahlungDTO = new AuszahlungDTO();

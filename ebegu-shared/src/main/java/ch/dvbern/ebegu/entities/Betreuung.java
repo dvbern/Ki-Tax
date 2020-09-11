@@ -374,7 +374,6 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	public Map<ZahlungslaufTyp, Verfuegung> getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp() {
 		checkVorgaengerInitialized();
-		Objects.requireNonNull(vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
 		return vorgaengerAusbezahlteVerfuegungProAuszahlungstyp;
 	}
 
