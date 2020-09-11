@@ -332,6 +332,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			return;
 		}
 
+		// TODO (hefr) IGNORIEREN? Falls fuer Mahlzeiten nicht moeglich: bei Mahleziten einfach false schicken...
+
 		final Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes =
 			findVorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes(betreuung);
 		for (ZahlungslaufTyp zahlungslaufTyp : vorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes.keySet()) {
