@@ -484,9 +484,19 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setVerpflegungskostenUndMahlzeitenMitBetreuung(kostenMahlzeitMap);
 	}
 
+	public void setVerpflegungskostenUndMahlzeitenMitBetreuungZweiWochenForAsivAndGemeinde(Map<BigDecimal, Integer> kostenMahlzeitMap) {
+		this.getBgCalculationInputAsiv().setVerpflegungskostenUndMahlzeitenMitBetreuungZweiWochen(kostenMahlzeitMap);
+		this.getBgCalculationInputGemeinde().setVerpflegungskostenUndMahlzeitenMitBetreuungZweiWochen(kostenMahlzeitMap);
+	}
+
 	public void setVerpflegungskostenUndMahlzeitenOhneBetreuungForAsivAndGemeinde(Map<BigDecimal, Integer> kostenMahlzeitMap) {
 		this.getBgCalculationInputAsiv().setVerpflegungskostenUndMahlzeitenOhneBetreuung(kostenMahlzeitMap);
 		this.getBgCalculationInputGemeinde().setVerpflegungskostenUndMahlzeitenOhneBetreuung(kostenMahlzeitMap);
+	}
+
+	public void setVerpflegungskostenUndMahlzeitenOhneBetreuungZweiWochenForAsivAndGemeinde(Map<BigDecimal, Integer> kostenMahlzeitMap) {
+		this.getBgCalculationInputAsiv().setVerpflegungskostenUndMahlzeitenOhneBetreuungZweiWochen(kostenMahlzeitMap);
+		this.getBgCalculationInputGemeinde().setVerpflegungskostenUndMahlzeitenOhneBetreuungZweiWochen(kostenMahlzeitMap);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {

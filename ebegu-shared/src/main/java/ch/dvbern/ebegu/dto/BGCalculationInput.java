@@ -553,8 +553,16 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskostenUndMahlzeiten(verpflegungskostenUndMahlzeiten);
 	}
 
+	public void setVerpflegungskostenUndMahlzeitenMitBetreuungZweiWochen(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.tsInputMitBetreuung.setVerpflegungskostenUndMahlzeitenZweiWochen(verpflegungskostenUndMahlzeiten);
+	}
+
 	public void setVerpflegungskostenUndMahlzeitenOhneBetreuung(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
 		this.tsInputOhneBetreuung.setVerpflegungskostenUndMahlzeiten(verpflegungskostenUndMahlzeiten);
+	}
+
+	public void setVerpflegungskostenUndMahlzeitenOhneBetreuungZweiWochen(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.tsInputOhneBetreuung.setVerpflegungskostenUndMahlzeitenZweiWochen(verpflegungskostenUndMahlzeiten);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {

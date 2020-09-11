@@ -36,9 +36,13 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.ApplicationProperty_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -59,6 +63,12 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	private Persistence persistence;
 
 	@Inject
+	private SuperAdminService superAdminService;
+
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 	private static final String NAME_MISSING_MSG = "name muss gesetzt sein";
 
@@ -72,10 +82,30 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		Optional<ApplicationProperty> property = readApplicationProperty(key);
 		if (property.isPresent()) {
 			property.get().setValue(value);
-			return persistence.merge(property.get());
-		} else {
-			return persistence.persist(new ApplicationProperty(key, value));
+			final ApplicationProperty mergedProperty = persistence.merge(property.get());
+			// Falls es sich um die Einschaltung der ASIV Regeln fuer Bern handelt, muss
+			// hier eine Massenmutation ausgeloest werden
+			if (mergedProperty.getName() == ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED
+					&& "true".equals(mergedProperty.getValue())) {
+				createMutationForEachClosedAntragForBern();
+			}
+			return mergedProperty;
 		}
+		return persistence.persist(new ApplicationProperty(key, value));
+	}
+
+	private void createMutationForEachClosedAntragForBern() {
+		final Collection<Gemeinde> bernCandidates = criteriaQueryHelper.getEntitiesByAttribute(Gemeinde.class, "Bern", Gemeinde_.name);
+		if (bernCandidates.size() != 1) {
+			throw new EbeguRuntimeException("createMutationForEachClosedAntragForBern", "Gemeinde Bern wurde nicht eindeutig gefunden");
+		}
+		final Gemeinde bern = bernCandidates.stream().findFirst().get();
+		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode()
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"createMutationForEachClosedAntragForBern",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"newest"));
+		superAdminService.createMutationForEachClosedAntragOfGemeinde(bern, gesuchsperiode);
 	}
 
 	@Nonnull

@@ -116,16 +116,15 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
-	public Collection<Dossier> findDossiersByGemeinde(@Nonnull String gemeindeId) {
-		final Gemeinde gemeinde =
-			gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("findDossiersByGemeinde",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
-
-		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, gemeinde, Dossier_.gemeinde);
-
-		return dossiers.stream()
-			.filter(authorizer::isReadCompletelyAuthorizedDossier).
-				collect(Collectors.toList());
+	public Collection<Dossier> findDossiersByGemeinde(@Nonnull Gemeinde gemeinde) {
+		// Theoretisch muesste hier fuer jedes gelesene Gesuch ein AuthCheck gemacht werden,
+		// dies ist aber ein ziemlicher Performance-Killer.
+		// Da die Methode aktuell nur als Superadmin verwendet wird, stellen wir hier einfach
+		// nochmals sicher, dass wir SUPERADMIN sind und verzichten auf den weiteren Check.
+		// Sollte diese Methode spaeter an anderen Orten verwendet werden, muss hier unbedingt
+		// fuer jedes gelesene Dossier ein AuthCheck durchgefuehrt werden!
+		authorizer.checkSuperadmin();
+		return criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, gemeinde, Dossier_.gemeinde);
 	}
 
 	@Nonnull

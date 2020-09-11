@@ -346,6 +346,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkSuperadmin() {
+		if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
+			throw new EJBAccessException("Access Violation. Only accessible for SUPERADMIN");
+		}
+	}
+
+	@Override
 	public void checkWriteAuthorization(@Nullable Fall fall) {
 		if (fall != null) {
 			boolean allowed = isReadAuthorizedFall(fall);

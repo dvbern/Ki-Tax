@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
@@ -57,7 +58,7 @@ public interface DossierService {
 	 * Gibt eine Liste aller Dossiers der uebergebenen Gemeinde zurück.
 	 */
 	@Nonnull
-	Collection<Dossier> findDossiersByGemeinde(@Nonnull String gemeindeId);
+	Collection<Dossier> findDossiersByGemeinde(@Nonnull Gemeinde gemeinde);
 
 	/**
 	 * Gibt das Dossier (falls vorhanden) fuer die uebergebene Gemeinde und den uebergebenen Fall zurueck

@@ -204,7 +204,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		Objects.requireNonNull(datumLetzteZahlung);
 
 		LOGGER.info("Pruefe Gesuchsperiode {}", gesuchsperiode.toString());
-		Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde.getId());
+		Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde);
 		for (Dossier dossier : allDossiers) {
 			Optional<Gesuch> gesuchOptional = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, dossier, false);
 			gesuchOptional.ifPresent(gesuch -> pruefeZahlungenSollFuerGesuch(gesuch, datumLetzteZahlung));
