@@ -1432,6 +1432,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@Nonnull
 	public Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Long fallnummer) {
 
@@ -1439,14 +1440,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		final Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier);
+		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 		Predicate predicateFallNummer = cb.equal(
 			root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer),
-			fallnummer); // TODO KIBON es sollte pro Dossier sein <- existiert schulamtInterface in Kibon? wie???
+			fallnummer);
 		// zuerst dies klaeren
 		Predicate predicateFinSit = root.get(Gesuch_.finSitStatus).isNotNull();
 
-		query.where(predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
+		query.where(predicateGemeinde, predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
 		query.select(root);
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
