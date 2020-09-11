@@ -39,8 +39,8 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public minimalerElternbeitrag: number;
     public minimalerElternbeitragGekuerzt: number;
     public minimalesEwpUnterschritten: boolean;
-    public sameAusbezahlteVerguenstigung: boolean;
-    public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
+    public sameAusbezahlteVerguenstigung: boolean; // Fuer Frage nach Ignorieren
+    public sameVerfuegteVerfuegungsrelevanteDaten: boolean; // Fuer Anzeige "Identische Berechnung"
     public verfuegteAnzahlZeiteinheiten: number;
     public verguenstigung: number;
     public verguenstigungOhneBeruecksichtigungMinimalbeitrag: number;

@@ -45,10 +45,12 @@ public class BGCalculationInput {
 
 	private VerfuegungZeitabschnitt parent;
 
+	// Wird benoetigt, um clientseitig "Identische Berechnung" anzuzeigen (betrifft nur Verfuegungsbetrag, nicht Mahlzeiten)
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
+	// TODO (hefr) IGNORIEREN? Wir nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, fuer Mahlzeiten nicht!
 	private boolean sameAusbezahlteVerguenstigung;
 
 	@Nullable

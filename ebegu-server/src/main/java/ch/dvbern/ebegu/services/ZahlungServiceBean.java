@@ -251,8 +251,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
-			if (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf() || zahlungslaufHelper.getZahlungsstatus(zeitabschnitt) == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
-				createZahlungspositionenKorrekturUndNachzahlung(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution); // TODO diesen
+			if (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
+				|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt) == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
+				createZahlungspositionenKorrekturUndNachzahlung(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 			}
 		}
 
@@ -406,7 +407,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Zahlung zahlung = helper.findZahlungForEmpfaenger(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 		zahlungsposition.setZahlung(zahlung);
 		zahlung.getZahlungspositionen().add(zahlungsposition);
-		zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+		helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
 	}
 
 	/**
@@ -472,9 +473,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		ZahlungspositionStatus status = ZahlungspositionStatus.KORREKTUR;
 		zahlungsposition.setStatus(status);
 		if (helper.getZahlungsstatus(zeitabschnittNeu).isIgnoriertIgnorierend()) {
-			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
+			helper.setZahlungsstatus(zeitabschnittNeu, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else {
-			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+			helper.setZahlungsstatus(zeitabschnittNeu, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 		zahlung.getZahlungspositionen().add(zahlungsposition);
 	}
@@ -497,9 +498,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		korrekturPosition.setStatus(status);
 		zahlung.getZahlungspositionen().add(korrekturPosition);
 		if (helper.getZahlungsstatus(vorgaengerZeitabschnitt).isIgnoriertIgnorierend()) {
-			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
+			helper.setZahlungsstatus(vorgaengerZeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else {
-			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+			helper.setZahlungsstatus(vorgaengerZeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 	}
 

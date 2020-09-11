@@ -29,6 +29,7 @@ import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
@@ -87,7 +88,8 @@ public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 					.forEach(zahlungsposition -> {
 						ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
 						final Zahlung zahlung = zahlungDataRow.getZahlung();
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getEmpfaengerName());
+						final Institution institution = zahlung.extractInstitution();
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institution.getName());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
 							ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
@@ -162,7 +164,7 @@ public class BetreuungsgutscheinEvaluator {
 
 				//initiale Restansprueche vorberechnen
 				if ((platz.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-					&& platz.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
+					&& platz.getVerfuegungOrVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_INSTITUTION) == null)
 					|| platz.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
 					// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen
 					// Vorgaenger und keine aktuelle verfuegung und wir muessen keinen restanspruch berechnen (vergl
@@ -269,14 +271,18 @@ public class BetreuungsgutscheinEvaluator {
 		if (verfuegungZuBerechnen == null) {
 			return;
 		}
-		Verfuegung ausbezahlteVorgaenger = betreuung.getVorgaengerAusbezahlteVerfuegung();
+		final Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungProAuszahlungstyp =
+			betreuung.getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
 		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
-		if (ausbezahlteVorgaenger != null) {
+		if (vorgaengerAusbezahlteVerfuegungProAuszahlungstyp != null) {
 			// Zahlungsstatus aus vorgaenger uebernehmen
-			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, ausbezahlteVorgaenger);
-			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen, ausbezahlteVorgaenger);
+			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
+			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder eben nicht)
+			// TODO (hefr) IGNORIEREN. Braucht es die Frage nach Ignorieren fuer die Mahlzeiten separat? Gehe aktuell davon aus, dass nicht, wobei dann
+			//  Ignorieren gar nicht zugelassen werden duerfte!
+			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION));
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {

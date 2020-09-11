@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -60,9 +61,10 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -151,7 +153,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
-			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ", " + zahlungslaufHelper.getZahlungslaufTyp() + ')';
+			final String typ = ServerMessageUtil.translateEnumValue(zahlungslaufHelper.getZahlungslaufTyp(), Locale.GERMAN);
+			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ", " + typ + ')';
 			String autragResult = "Pending";
 			if (potentielleFehlerList.isEmpty()) {
 				mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",

@@ -693,6 +693,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// zuSpaetEingereicht und zahlungsstatus sind hier nicht aufgefuehrt, weil;
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
+		// TODO (hefr) Achtung: isSamePersistedValuees beachtet die Mahlzeitenverguenstigung nicht!!!
 		return
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			(!this.isHasGemeindeSpezifischeBerechnung() ||
