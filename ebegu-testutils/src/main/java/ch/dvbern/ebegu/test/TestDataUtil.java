@@ -670,6 +670,7 @@ public final class TestDataUtil {
 		instStammdaten.setAdresse(createDefaultAdresse());
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
 		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN(iban));
+		institutionStammdatenBetreuungsgutscheine.setKontoinhaber("Kontoinhaber " + name);
 		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
 		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return instStammdaten;

@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.services;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -27,10 +29,13 @@ import javax.transaction.TransactionSynchronizationRegistry;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.MultiPartEmail;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
@@ -71,6 +76,25 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		}
 	}
 
+	public void sendMessageWithAttachment(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress,
+		@Nonnull UploadFileInfo uploadFileInfo
+	) throws MailException {
+
+		Objects.requireNonNull(subject);
+		Objects.requireNonNull(messageBody);
+		Objects.requireNonNull(mailadress);
+		Objects.requireNonNull(uploadFileInfo);
+
+		if (configuration.isSendingOfMailsDisabled()) {
+			pretendToSendMessage(messageBody, mailadress);
+		} else {
+			doSendMessageWithAttachment(subject, messageBody, mailadress, uploadFileInfo);
+		}
+	}
+
 	private void doSendMessage(
 		@Nonnull String subject,
 		@Nonnull String messageBody,
@@ -88,6 +112,42 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			email.send();
 		} catch (final EmailException e) {
 			throw new MailException("Error while sending Mail to: '" + mailadress + '\'', e);
+		}
+	}
+
+	private void doSendMessageWithAttachment(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress,
+		@Nonnull UploadFileInfo uploadFileInfo)
+		throws MailException {
+		try {
+			// Create the attachment
+			EmailAttachment attachment = new EmailAttachment();
+			final String pathOfAttachment = "File://" + uploadFileInfo.getPath();
+			attachment.setURL(new URL(pathOfAttachment));
+			attachment.setDisposition(EmailAttachment.ATTACHMENT);
+			attachment.setDescription(uploadFileInfo.getFilename());
+			attachment.setName(uploadFileInfo.getFilename());
+
+			// Create the email message
+			MultiPartEmail email = new MultiPartEmail();
+			email.setHostName(configuration.getSMTPHost());
+			email.setSmtpPort(configuration.getSMTPPort());
+			email.setSSLOnConnect(false);
+
+			email.setFrom(configuration.getSenderAddress());
+			email.setSubject(subject);
+			email.setMsg(messageBody);
+			email.addTo(mailadress);
+
+			// add the attachment
+			email.attach(attachment);
+
+			// send the email
+			email.send();
+		} catch (final EmailException | MalformedURLException e) {
+			throw new MailException("Error while sending Mail with Attachment to: '" + mailadress + '\'', e);
 		}
 	}
 

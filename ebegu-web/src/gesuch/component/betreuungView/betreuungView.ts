@@ -207,7 +207,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
             this.provisorischeBetreuung = false;
 
-            if (this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
+            if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
+                    && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
                 this.provisorischeBetreuung = true;
             }
 
@@ -218,19 +219,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
-        if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
-            || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN
-        ) {
-            // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
-            this.findExistingBetreuungsmitteilung();
-        }
+        if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())) {
+            if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+                || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+                // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
+                this.findExistingBetreuungsmitteilung();
+            }
 
-        const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
-        if (anmeldungMutationZustand) {
-            if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
-                this.aktuellGueltig = false;
-            } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-                this.aktuellGueltig = false;
+            const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
+            if (anmeldungMutationZustand) {
+                if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
+                    this.aktuellGueltig = false;
+                } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+                    this.aktuellGueltig = false;
+                }
             }
         }
 
@@ -1193,6 +1195,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.instStamm = undefined;
             this.searchQuery = null;
             this.getBetreuungModel().institutionStammdaten = undefined;
+            // Im Falle von "nicht mehr keine Detailinfos" muss die Belegung wieder initialisiert werden
+            if (this.isTagesschule()) {
+                this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
+            }
         }
     }
 
@@ -1349,5 +1355,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showOverrideWarning(betreuungspensum: TSBetreuungspensum): boolean {
         return !betreuungspensum.isNew() &&
             (this.isMutationsmeldungStatus || this.isMutation());
+    }
+
+    public isInstitutionMobileSelection(): boolean {
+        return 'none' === document.getElementById('institution_search').style.display;
     }
 }

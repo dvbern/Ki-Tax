@@ -19,6 +19,7 @@ import {Component, Input} from '@angular/core';
 import {TSVerantwortung} from '../../../../models/enums/TSVerantwortung';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-benutzer-entry',
@@ -35,7 +36,11 @@ export class DvBenutzerEntry {
     }
 
     public getVerantwortungClasses(): string[][] {
-        switch (this.benutzer.getCurrentRole()) {
+        const currentRole = this.benutzer.getCurrentRole();
+        if (EbeguUtil.isNullOrUndefined(currentRole)) {
+            return [];
+        }
+        switch (currentRole) {
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_BG:
                 return [['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG]];

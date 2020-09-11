@@ -54,7 +54,7 @@
             </div>
             <!-- Application Properties Detail -->
             <div class="row margin-top-10" ng-if="!vm.isReadonly()">
-                <form ng-submit="form.$valid && vm.submit()" name="form" role="form" class="" novalidate
+                <form ng-submit="vm.form.$valid && vm.submit()" name="vm.form" role="form" class="" novalidate
                       ng-if="vm.applicationProperty"
                       unsaved-warning-form>
                     <div class="row">
