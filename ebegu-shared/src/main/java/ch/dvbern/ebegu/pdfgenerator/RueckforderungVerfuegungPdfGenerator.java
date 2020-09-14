@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -38,12 +39,8 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
-
-	private static final Logger LOG = LoggerFactory.getLogger(RueckforderungVerfuegungPdfGenerator.class);
 
 	private static final String VERFUEGUNG_TITLE =
 		"PdfGeneration_VerfuegungNotrecht_Title";
@@ -202,7 +199,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		} else {
 			createZweiteSeite(document);
 		}
-		createSignatur(document, generator.getDirectContent());
+		createSignatur(document);
 
 		document.newPage();
 
@@ -211,17 +208,27 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		createFusszeileDritteSeite(generator.getDirectContent());
 	}
 
-	private void createSignatur(Document document, PdfContentByte directContent) {
+	private void createSignatur(Document document) {
 
-		Paragraph empty = PdfUtil.createParagraph("", 2);
-		Paragraph signaturStart = PdfUtil.createParagraph(
-			translate(BEGRUESSUNG_ENDE) + "\n" + translate(BEGRUESSUNG_AMT),
-			4
-		);
+		if (sprache.equals(Locale.GERMAN)) {
+			Paragraph empty = PdfUtil.createParagraph("", 2);
+			Paragraph begruessungEnde = PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE));
+			Paragraph begruessungAmt = PdfUtil.createParagraph(translate(BEGRUESSUNG_AMT), 4);
+
+			document.add(empty);
+			document.add(begruessungEnde);
+			document.add(begruessungAmt);
+		} else {
+			Paragraph begruessungEnde = PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE), 3);
+			Paragraph begruessungAmt = PdfUtil.createParagraph(
+				translate(BEGRUESSUNG_AMT),
+				4
+			);
+			document.add(begruessungEnde);
+			document.add(begruessungAmt);
+		}
+
 		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + "\n" + translate(VORSTEHERIN));
-
-		document.add(empty);
-		document.add(signaturStart);
 		document.add(signaturEnde);
 	}
 
