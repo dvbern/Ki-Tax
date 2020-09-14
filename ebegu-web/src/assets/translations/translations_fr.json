@@ -2158,5 +2158,6 @@
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Entrer un deuxième lieu de garde pour le portail famille",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "Activer le calcul OPIS pour la ville de Berne",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Attention: cette fonction va déclencher une mutation de masse pour toutes les demandes de la ville de Berne. Vous ne pourrez plus revenir en arrière. Voulez-vous continuer?",
+    "ONBOARDING_ZULASSUNG_KANTON": "Admission garderie / organisation de parent de jour",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
