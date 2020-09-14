@@ -2159,5 +2159,6 @@
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Zweiter Betreuungsstandort für Familienportal angeben",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "ASIV Berechnung für die Stadt Bern einschalten",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Achtung: Mit dieser Funktion wird eine Massenmutation für alle Berner Gesuche ausgelöst. Dies kann nicht rückgängig gemacht werden. Wollen Sie fortfahren?",
+    "ONBOARDING_ZULASSUNG_KANTON": "Zulassung Kita / Tagesfamilienorganisationen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
