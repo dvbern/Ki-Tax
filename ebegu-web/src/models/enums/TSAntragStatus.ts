@@ -175,6 +175,12 @@ export function isAnyStatusOfVerfuegt(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.KEIN_ANGEBOT;
 }
 
+// KeinKontingent darf zwar nicht zu den "verfuegt" Status hinzugefuegt werden, wird
+// aber fuer gewissen Validierungen gleich behandelt
+export function isAnyStatusOfVerfuegtOrKeinKontingent(status: TSAntragStatus): boolean {
+    return isAnyStatusOfVerfuegt(status) || status === TSAntragStatus.KEIN_KONTINGENT;
+}
+
 export function isAnyStatusOfVerfuegtButSchulamt(status: TSAntragStatus): boolean {
     return status === TSAntragStatus.VERFUEGT
         || status === TSAntragStatus.BESCHWERDE_HAENGIG
