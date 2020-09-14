@@ -126,8 +126,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 
 	public RueckforderungVerfuegungPdfGenerator(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
-		@Nonnull String nameVerantwortlichePerson,
-		@Nonnull String pathToUnterschrift
+		@Nonnull String nameVerantwortlichePerson
 	) {
 		super(rueckforderungFormular.getKorrespondenzSprache());
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
