@@ -17,13 +17,10 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -38,11 +35,8 @@ import com.google.common.collect.Lists;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfContentByte;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +119,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	private static final int superTextSize = 6;
 	private static final int superTextRise = 4;
 	private final String nameVerantwortlichePerson;
-	private final String pathToUnterschrift;
 	private BigDecimal voraussichtlicheAusfallentschaedigung; // A
 	private BigDecimal gewaehrteAusfallentschaedigung; // B
 	private BigDecimal entschaedigungStufe1; // C
@@ -140,7 +133,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		this.rueckforderungFormular = rueckforderungFormular;
 		this.nameVerantwortlichePerson = nameVerantwortlichePerson;
-		this.pathToUnterschrift = pathToUnterschrift;
 
 		// sollten nicht null sein, es handelt sich aber einer gewissen stufe um pflichtfelder
 		Objects.requireNonNull(rueckforderungFormular.getStufe2VoraussichtlicheBetrag());
@@ -211,7 +203,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		} else {
 			createZweiteSeite(document);
 		}
-		createEndBegruessung(document, generator.getDirectContent());
+		createSignatur(document, generator.getDirectContent());
 
 		document.newPage();
 
@@ -220,33 +212,18 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		createFusszeileDritteSeite(generator.getDirectContent());
 	}
 
-	private void createEndBegruessung(Document document, PdfContentByte directContent) {
-		int startOfEndbegruessung = 150;
-		if (sprache.equals(Locale.GERMAN)) {
-			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), startOfEndbegruessung, 122,
-				getPageConfiguration().getFont(),
-				10f);
-		} else {
-			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
-		}
+	private void createSignatur(Document document, PdfContentByte directContent) {
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), startOfEndbegruessung - 25, 122, getPageConfiguration().getFont(), 10f);
-		try {
-			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
-			Image image = Image.getInstance(signature);
-			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
-			image.scalePercent(percent);
-			image.setAbsolutePosition(330, startOfEndbegruessung - 100);
-			document.add(image);
-		} catch (IOException e) {
-			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
-		}
-		createContentWhereIWant(directContent, nameVerantwortlichePerson, startOfEndbegruessung - 145, 122,
-			getPageConfiguration().getFont(),
-			10f);
-		createContentWhereIWant(directContent, translate(VORSTEHERIN), startOfEndbegruessung - 160, 122,
-			getPageConfiguration().getFont(),
-			10f);
+		Paragraph empty = PdfUtil.createParagraph("", 2);
+		Paragraph signaturStart = PdfUtil.createParagraph(
+			translate(BEGRUESSUNG_ENDE) + "\n" + translate(BEGRUESSUNG_AMT),
+			4
+		);
+		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + "\n" + translate(VORSTEHERIN));
+
+		document.add(empty);
+		document.add(signaturStart);
+		document.add(signaturEnde);
 	}
 
 	private void createHeaderSecondPage(PdfContentByte directContent) {
