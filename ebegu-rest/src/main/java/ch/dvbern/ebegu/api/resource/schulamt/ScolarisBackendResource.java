@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -284,7 +285,8 @@ public class ScolarisBackendResource {
 			LocalDate stichtag = rearrangeStichtag(parsedStichtag, gesuchsperiodeFromBGNummer);
 
 			//Get "neustes" Gesuch on Stichtag an fallnummer
-			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gesuchsperiodeFromBGNummer,
+			Gemeinde gemeinde = anmeldung.extractGemeinde();
+			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gemeinde, gesuchsperiodeFromBGNummer,
 				fallNummer)
 				.map(neustesGesuch -> toFinanzielleSituationDTO(fallNummer, stichtag, neustesGesuch)
 					.map(dto -> Response.ok(dto).build())
@@ -295,6 +297,7 @@ public class ScolarisBackendResource {
 			return createInternalServerErrorResponse("Please inform the adminstrator of this application");
 		}
 	}
+
 	@Nonnull
 	private Optional<JaxExternalFinanzielleSituation> toFinanzielleSituationDTO(
 		long fallNummer,

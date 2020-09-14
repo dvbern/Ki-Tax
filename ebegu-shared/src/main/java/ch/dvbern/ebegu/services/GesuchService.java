@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Massenversand;
@@ -283,6 +284,7 @@ public interface GesuchService {
 	 * muss nicht NULL sein, sonst gilt es als nicht geprueft.
 	 */
 	Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Long fallnummer);
 
