@@ -2139,7 +2139,6 @@
     "LABEL_OK_FORFAHREN": "Oui, continuer",
     "LABEL_NEIN_ABBRECHEN": "Non, interrompre",
     "LABEL_ZUWEISEN": "Devenir le responsable",
-    "VERANTWORTLICHER": "Responsable",
     "RUECKFORDERUNG_PROVISORISCH_VERFUEGEN": "Décision provisoire",
     "RUECKFORDERUNG_FREIGEBEN_ZUR_VERFUEGUNG": "Libérer pour la décision",
     "RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG": "Montant définitif de l’indemnité",
@@ -2157,5 +2156,7 @@
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Différences",
     "OEFFNUNGSZEITEN_OBSOLETE": "Saisie précédente",
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Entrer un deuxième lieu de garde pour le portail famille",
+    "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "Activer le calcul OPIS pour la ville de Berne",
+    "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Attention: cette fonction va déclencher une mutation de masse pour toutes les demandes de la ville de Berne. Vous ne pourrez plus revenir en arrière. Voulez-vous continuer?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
