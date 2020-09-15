@@ -62,7 +62,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
@@ -88,7 +87,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
@@ -111,7 +109,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -528,33 +525,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Collection<Gesuch> getAllGesuche() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Gesuch.class));
-	}
-
-	@Nonnull
-	@Override
-	public Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername) {
-		Objects.requireNonNull(benutzername);
-		Benutzer benutzer = benutzerService.findBenutzer(benutzername)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getGesucheForBenutzerPendenzenBG",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				benutzername));
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-
-		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
-		Path<Dossier> dossierPath = root.get(Gesuch_.dossier);
-		Predicate predicateVerantwortlicher = cb.equal(dossierPath.get(Dossier_.verantwortlicherBG), benutzer);
-		// Gesuchsperiode darf nicht geschlossen sein
-		Predicate predicateGesuchsperiode = root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.status)
-			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
-
-		query.where(predicateStatus, predicateVerantwortlicher, predicateGesuchsperiode);
-		query.orderBy(cb.asc(dossierPath.get(Dossier_.fall).get(Fall_.fallNummer)));
-		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
@@ -1355,10 +1325,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	public boolean isNeustesGesuch(@Nonnull Gesuch gesuch) {
-		final Optional<Gesuch> neustesGesuchFuerGesuch =
-			getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
-		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(
-			neustesGesuchFuerGesuch.get().getId(),
+		final Optional<String> idOfNeuestesGesuchOptional =
+			getIdOfNeuestesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier());
+		return idOfNeuestesGesuchOptional.isPresent() && Objects.equals(
+			idOfNeuestesGesuchOptional.get(),
 			gesuch.getId());
 	}
 
@@ -1366,10 +1336,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Dossier dossier) {
+		@Nonnull Dossier dossier
+	) {
 		// Da wir nur die ID zurueckgeben, koennen wir den AuthCheck weglassen
-		Optional<Gesuch> gesuchOptional = getNeustesGesuchForDossierAndGesuchsperiode(gesuchsperiode, dossier, false);
-		return gesuchOptional.map(AbstractEntity::getId);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+		Predicate predicateDossier = cb.equal(root.get(Gesuch_.dossier), dossier);
+
+		query.where(predicateGesuchsperiode, predicateDossier);
+		query.select(root.get(Gesuch_.id));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+
+		final List<String> criteriaResults = persistence.getCriteriaResults(query, 1);
+		if (criteriaResults.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(criteriaResults.get(0));
 	}
 
 	/**
@@ -1447,6 +1432,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@Nonnull
 	public Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Long fallnummer) {
 
@@ -1454,14 +1440,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		final Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier);
+		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 		Predicate predicateFallNummer = cb.equal(
 			root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer),
-			fallnummer); // TODO KIBON es sollte pro Dossier sein <- existiert schulamtInterface in Kibon? wie???
+			fallnummer);
 		// zuerst dies klaeren
 		Predicate predicateFinSit = root.get(Gesuch_.finSitStatus).isNotNull();
 
-		query.where(predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
+		query.where(predicateGemeinde, predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
 		query.select(root);
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
@@ -2374,6 +2362,34 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				"findGesucheByDossier",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 		return criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, dossier, Gesuch_.dossier);
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch) {
+		// Falls im "alten" Gesuch noch Tagesschule-Anmeldungen im status AUSGELOEST sind, müssen
+		// diese nun gespeichert (im gleichen Status, Verfügung erstellen) werden, damit künftig für
+		// die Berechnung die richtige FinSit verwendet wird!
+		zuMutierendeAnmeldungenAbschliessen(gesuch);
+
+		// Die Mutation erstellen
+		Gesuch mutation = gesuch.copyForMutation(new Gesuch(), Eingangsart.PAPIER);
+		mutation.setTyp(AntragTyp.MUTATION);
+		mutation.setEingangsdatum(LocalDate.now());
+		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
+		mutation.setEingangsart(Eingangsart.PAPIER);
+		mutation.setGesuchsperiode(gesuch.getGesuchsperiode());
+		mutation.setDossier(gesuch.getDossier());
+		Gesuch persistedGesuch = persistence.persist(mutation);
+		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
+		// Gesuch ohne WizardSteps gibt
+		wizardStepService.createWizardStepList(persistedGesuch);
+		antragStatusHistoryService.saveStatusChange(persistedGesuch, gesuch.getDossier().getVerantwortlicherBG());
+
+		// Die Betreuungen werden defaultmaessig mit BESTAETIGT uebernommen.
+		// Damit eine Ueberpruefung der Angaben erwzungen werden kann, wird
+		// hier eine neue Platzbestaetigung ausgeloest.
+		persistedGesuch.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
 	}
 }
 

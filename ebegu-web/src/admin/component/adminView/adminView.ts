@@ -13,13 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IHttpPromise} from 'angular';
+import {IComponentOptions, IFormController, IHttpPromise} from 'angular';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {AbstractAdminViewController} from '../../abstractAdminView';
 import {ReindexRS} from '../../service/reindexRS.rest';
+
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class AdminViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -32,8 +36,14 @@ export class AdminViewComponentConfig implements IComponentOptions {
 }
 
 export class AdminViewController extends AbstractAdminViewController {
-    public static $inject = ['ApplicationPropertyRS', 'EbeguRestUtil', 'ReindexRS', 'AuthServiceRS'];
+    public static $inject = [
+        'ApplicationPropertyRS',
+        'EbeguRestUtil',
+        'ReindexRS',
+        'AuthServiceRS',
+        'DvDialog'];
 
+    public form: IFormController;
     public applicationProperty: TSApplicationProperty;
     public applicationPropertyRS: ApplicationPropertyRS;
     public applicationProperties: TSApplicationProperty[];
@@ -44,6 +54,7 @@ export class AdminViewController extends AbstractAdminViewController {
         ebeguRestUtil: EbeguRestUtil,
         private readonly reindexRS: ReindexRS,
         authServiceRS: AuthServiceRS,
+        private readonly dvDialog: DvDialog,
     ) {
         super(authServiceRS);
         this.applicationProperty = undefined;
@@ -52,10 +63,30 @@ export class AdminViewController extends AbstractAdminViewController {
     }
 
     public submit(): void {
+        if (!this.form.$valid) {
+            return;
+        }
+        // Bei STADT_BERN_ASIV_CONFIGURED eine Sicherheitsabfrage machen
+        // tslint:disable-next-line:early-exit
+        if (this.applicationProperty.name === 'STADT_BERN_ASIV_CONFIGURED'
+                && this.applicationProperty.value === 'true') {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'CREATE_MASSENMUTATION_BERN_DIALOG_TITLE',
+                deleteText: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+                this.doSave();
+            });
+        } else {
+            this.doSave();
+        }
+    }
+
+    private doSave(): void {
         // testen ob aktuelles property schon gespeichert ist
         if (this.applicationProperty.isNew()) {
             this.applicationPropertyRS.update(this.applicationProperty.name, this.applicationProperty.value);
-
         } else {
             this.applicationPropertyRS.create(this.applicationProperty.name, this.applicationProperty.value);
         }

@@ -60,7 +60,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     public isFreigebenClicked: boolean = false;
     public showGesuchFreigebenSimulationButton: boolean = false;
     public readonly TSRoleUtil = TSRoleUtil;
-    public gemeindeName: string;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -83,7 +82,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
             TSWizardStepName.FREIGABE,
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.initDevModeParameter();
-        this.gemeindeName = this.gesuchModelManager.getDossier().extractGemeindeName();
     }
 
     public gesuchEinreichen(): IPromise<void> {
