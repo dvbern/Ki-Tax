@@ -5342,6 +5342,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular, boolean flush) {
 
 		// OptimisticLocking: Version richtig behandeln
