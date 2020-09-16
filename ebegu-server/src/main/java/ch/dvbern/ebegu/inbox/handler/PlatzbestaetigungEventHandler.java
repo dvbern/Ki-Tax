@@ -188,7 +188,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					betreuung);
 				if (betreuungspensum == null) {
 					isReadyForBestaetigen = false;
-					break;
+					continue;
 				}
 				if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
 					//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
@@ -257,12 +257,15 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				gesuchsperiode);
 		String message = "";
 		int counter = 1;
+		boolean areZeitabschnittCorrupted = false;
 		for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
 				, zeitabschnittDTO, betreuung);
 			if (betreuungsmitteilungPensum == null) {
-				return null;
+				areZeitabschnittCorrupted = true;
+				continue;
 			}
+			betreuungsmitteilungPensum.setVollstaendig(!areZeitabschnittCorrupted);
 
 			if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
 				//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten

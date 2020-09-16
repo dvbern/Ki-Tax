@@ -53,7 +53,7 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
 
 	@Column(nullable = false)
-	private boolean isVollstaendig = true;
+	private boolean vollstaendig = true;
 
 	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
@@ -101,10 +101,10 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	}
 
 	public boolean isVollstaendig() {
-		return isVollstaendig;
+		return vollstaendig;
 	}
 
 	public void setVollstaendig(boolean vollstaendig) {
-		isVollstaendig = vollstaendig;
+		this.vollstaendig = vollstaendig;
 	}
 }
