@@ -108,19 +108,27 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				} else {
 					betreuungService.saveBetreuung(betreuung, false);
 				}
-			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)){
+			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.BESTAETIGT)) {
+				//Update the Betreuung and check if all data are available
+				if (setBetreuungDaten(betreuung, dto)) {
+					betreuungService.saveBetreuung(betreuung, false);
+				} else {
+					betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
+					betreuungService.saveBetreuung(betreuung, false);
+				}
+			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)) {
 				//MutationMitteilungErstellen
-			    //we map all the data we know in a mitteilung object, we are only interested into Zeitabschnitt:
+				//we map all the data we know in a mitteilung object, we are only interested into Zeitabschnitt:
 				Betreuungsmitteilung betreuungsmitteilung = this.setBetreuungsmitteilungDaten(dto, betreuung);
-				if(betreuungsmitteilung != null) {
+				if (betreuungsmitteilung != null) {
 					// we first clear all the Mutationsmeldungen for the current Betreuung
 					mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 					// and then send the new Betreuungsmitteilung an die Gemeinde
-					Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
+					this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 				}
-			}
-			else {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " war schon bestaetigt!");
+			} else {
+				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " hat einen ungültigen "
+					+ "Status: " + betreuung.getBetreuungsstatus());
 			}
 		} catch (Exception e) {
 			LOG.error("Error while processing the record: " + dto.getRefnr() + " error: " + e.getMessage());
@@ -176,12 +184,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					gemeinde,
 					gesuchsperiode);
 			for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
-				Betreuungspensum betreuungspensum = mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuung);
-				if(betreuungspensum == null){
+				Betreuungspensum betreuungspensum = mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO,
+					betreuung);
+				if (betreuungspensum == null) {
 					isReadyForBestaetigen = false;
 					break;
 				}
-				if(mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
+				if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
 					//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
 					if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
 						betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
@@ -221,9 +230,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		Gesuch gesuch = betreuung.extractGesuch();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
-		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION );
+		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
 		//we don't have any sender...
-		Benutzer benutzer = benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID).orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, TECHNICAL_BENUTZER_ID));
+		Benutzer benutzer =
+			benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID).orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, TECHNICAL_BENUTZER_ID));
 		betreuungsmitteilung.setSender(benutzer);
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
@@ -231,7 +241,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Gemeinde gemeinde = betreuung.extractGemeinde();
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId());
 		Locale sprache = Sprache.DEUTSCH.getLocale();
-		if(stammdaten.isPresent() && stammdaten.get().getKorrespondenzsprache() == KorrespondenzSpracheTyp.FR){
+		if (stammdaten.isPresent() && stammdaten.get().getKorrespondenzsprache() == KorrespondenzSpracheTyp.FR) {
 			sprache = Sprache.FRANZOESISCH.getLocale();
 		}
 
@@ -250,11 +260,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
 				, zeitabschnittDTO, betreuung);
-			if(betreuungsmitteilungPensum == null){
+			if (betreuungsmitteilungPensum == null) {
 				return null;
 			}
 
-			if(mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
+			if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
 				//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
 				if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
 					betreuungsmitteilungPensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
@@ -277,8 +287,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					betreuungsmitteilungPensum.getTarifProHauptmahlzeit(),
 					betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten(),
 					betreuungsmitteilungPensum.getTarifProNebenmahlzeit());
-			}
-			else{
+			} else {
 				message = message + translate(MESSAGE_KEY, sprache, counter,
 					betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb(),
 					betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis(),
@@ -294,7 +303,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	private <T extends AbstractMahlzeitenPensum> T mapZeitabschnitt(T neueBetreuung,
-		ZeitabschnittDTO zeitabschnittDTO, Betreuung betreuung){
+		ZeitabschnittDTO zeitabschnittDTO, Betreuung betreuung) {
 		if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
 			neueBetreuung.setPensum(zeitabschnittDTO.getBetreuungspensum()); // schauen ob es so korrekt ist
 			neueBetreuung.setUnitForDisplay(PensumUnits.PERCENTAGE);

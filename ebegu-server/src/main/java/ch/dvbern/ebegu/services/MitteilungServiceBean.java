@@ -1050,7 +1050,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Betreuung existingBetreuung = betreuungToChangeOpt.get();
 			existingBetreuung.getBetreuungspensumContainers()
 				.clear();//delete all current Betreuungspensen before we add the modified list
+			boolean betreuungsMitteilungVollstaendig = true;
 			for (final BetreuungsmitteilungPensum betPensumMitteilung : mitteilung.getBetreuungspensen()) {
+				if(!betPensumMitteilung.isVollstaendig()) betreuungsMitteilungVollstaendig = false;
 				BetreuungspensumContainer betPenCont = new BetreuungspensumContainer();
 				betPenCont.setBetreuung(existingBetreuung);
 				Betreuungspensum betPensumJA = new Betreuungspensum(betPensumMitteilung);
@@ -1063,8 +1065,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
 				}
 			}
-			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT
-			existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT wenn Vollstaendig,
+			// sonst warten
+			if (betreuungsMitteilungVollstaendig) {
+				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+			} else {
+				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
+			}
 			betreuungService.saveBetreuung(existingBetreuung, false);
 			mitteilung.setApplied(true);
 			mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
