@@ -5325,16 +5325,33 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public List<JaxRueckforderungFormular> rueckforderungFormularListToJax(@Nonnull List<RueckforderungFormular> rueckforderungFormularList) {
-		return rueckforderungFormularList.stream()
-			.map(this::rueckforderungFormularToJax)
+		// wir deaktivieren flush() in der #rueckforderungFormularToJax Methode und führen es dann einmal aus.
+		// ansonsten dauert das konvertieren zu lange.
+		flush();
+
+		List<JaxRueckforderungFormular> converted = rueckforderungFormularList.stream()
+			.map(rueckforderungFormular -> this.rueckforderungFormularToJax(rueckforderungFormular, false))
 			.collect(Collectors.toList());
+
+		return converted;
 	}
 
 	@Nonnull
-	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
+	public JaxRueckforderungFormular  rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		// per Default soll flush() ausgeführt werden
+		return rueckforderungFormularToJax(rueckforderungFormular, true);
+	}
+
+	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
+	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular, boolean flush) {
 
 		// OptimisticLocking: Version richtig behandeln
-		flush();
+		// da Flush die Performance verringert kann dies optional deaktiviert werden. Dies kann insbesondere dann gemacht
+		// werden, wenn eine Liste an Ruckforderungsformulare konvertiert wird.
+		if (flush) {
+			flush();
+		}
 
 		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
 
