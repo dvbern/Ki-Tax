@@ -5325,13 +5325,14 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public List<JaxRueckforderungFormular> rueckforderungFormularListToJax(@Nonnull List<RueckforderungFormular> rueckforderungFormularList) {
+		// wir deaktivieren flush() in der #rueckforderungFormularToJax Methode und führen es dann einmal aus.
+		// ansonsten dauert das konvertieren zu lange.
+		flush();
+
 		List<JaxRueckforderungFormular> converted = rueckforderungFormularList.stream()
 			.map(rueckforderungFormular -> this.rueckforderungFormularToJax(rueckforderungFormular, false))
 			.collect(Collectors.toList());
 
-		// wir deaktivieren flush() in der #rueckforderungFormularToJax Methode und führen es dann einmal am Ende aus.
-		// ansonsten dauert das konvertieren zu lange.
-		flush();
 		return converted;
 	}
 
