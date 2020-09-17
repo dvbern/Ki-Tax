@@ -652,8 +652,25 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		Betreuung resultOrNull = null;
+		if(onlyGueltig){
+			resultOrNull = persistence.getCriteriaSingleResult(query);
+		}
+		else{
+			//wir abholen alle moegliche Betreuung fuer dieser BG Nummer, wir muessen nur die letzte zuruckgeben:
+			List<Betreuung> betreuungs = persistence.getCriteriaResults(query);
+			for(Betreuung betreuung : betreuungs){
+				if(resultOrNull == null){
+					resultOrNull = betreuung;
+				}
+				else if (betreuung.getTimestampErstellt() != null
+					&& resultOrNull.getTimestampErstellt() != null
+					&& betreuung.getTimestampErstellt().isAfter(resultOrNull.getTimestampErstellt())){
+					resultOrNull = betreuung;
+				}
+			}
+		}
 
-		Betreuung resultOrNull = persistence.getCriteriaSingleResult(query);
 		return Optional.ofNullable(resultOrNull);
 	}
 

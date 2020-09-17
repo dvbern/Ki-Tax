@@ -108,15 +108,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				} else {
 					betreuungService.saveBetreuung(betreuung, false);
 				}
-			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.BESTAETIGT)) {
-				//Update the Betreuung and check if all data are available
-				if (setBetreuungDaten(betreuung, dto)) {
-					betreuungService.saveBetreuung(betreuung, false);
-				} else {
-					betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
-					betreuungService.saveBetreuung(betreuung, false);
-				}
-			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)) {
+			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)
+				|| betreuung.getBetreuungsstatus().equals(Betreuungsstatus.BESTAETIGT)) {
 				//MutationMitteilungErstellen
 				//we map all the data we know in a mitteilung object, we are only interested into Zeitabschnitt:
 				Betreuungsmitteilung betreuungsmitteilung = this.setBetreuungsmitteilungDaten(dto, betreuung);
