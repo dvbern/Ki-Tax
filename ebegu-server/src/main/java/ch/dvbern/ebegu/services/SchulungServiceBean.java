@@ -46,6 +46,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -408,9 +409,11 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setMail(email);
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
-		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
-		institutionStammdatenBetreuungsgutscheine.setKontoinhaber("DvBern");
 		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+		auszahlungsdaten.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		auszahlungsdaten.setKontoinhaber("DvBern");
+		institutionStammdatenBetreuungsgutscheine.setAuszahlungsdaten(auszahlungsdaten);
 		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return institutionStammdatenService.saveInstitutionStammdaten(instStammdaten);
 	}

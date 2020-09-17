@@ -147,6 +147,7 @@ import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -291,7 +292,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
 public class JaxBConverter extends AbstractConverter {
 
 	@Inject
@@ -734,22 +735,29 @@ public class JaxBConverter extends AbstractConverter {
 		// Falls er eine wuenscht, muss er mindestens die IBAN Nummer sowie den Kontoinhaber ausfuellen.
 		if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
-			if (familiensituationJAXP.getIban() != null) {
-				familiensituation.setIban(new IBAN(familiensituationJAXP.getIban()));
+			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
+				// keineMahlzeitenverguenstigungBeantragt ist boolean mit default FALSE.
+				// Wir sind aber evtl. noch gar nicht bei der FinSit und muessen trotzdem speichern koennen!
+				if (familiensituationJAXP.getIban() != null || familiensituationJAXP.getKontoinhaber() != null) {
+					Objects.requireNonNull(familiensituationJAXP.getIban(), "IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+					Objects.requireNonNull(familiensituationJAXP.getKontoinhaber(), "Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+					if (familiensituation.getAuszahlungsdaten() == null) {
+						familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
+					}
+					familiensituation.getAuszahlungsdaten().setIban(new IBAN(familiensituationJAXP.getIban()));
+					familiensituation.getAuszahlungsdaten().setKontoinhaber(familiensituationJAXP.getKontoinhaber());
+					Adresse convertedAdresse = null;
+					if (familiensituationJAXP.getZahlungsadresse() != null) {
+						Adresse a = Optional.ofNullable(familiensituation.getAuszahlungsdaten().getAdresseKontoinhaber()).orElseGet(Adresse::new);
+						convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresse(), a);
+					}
+					familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
+				}
 			}
-			familiensituation.setKontoinhaber(familiensituationJAXP.getKontoinhaber());
 			familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresse());
-
-			if (familiensituationJAXP.getZahlungsadresse() != null) {
-				familiensituation.setZahlungsadresse(adresseToEntity(familiensituationJAXP.getZahlungsadresse(),
-					familiensituation.getZahlungsadresse() == null ? new Adresse() :
-						familiensituation.getZahlungsadresse()));
-			}
 		} else {
-			familiensituation.setIban(null);
-			familiensituation.setKontoinhaber(null);
+			familiensituation.setAuszahlungsdaten(null);
 			familiensituation.setAbweichendeZahlungsadresse(false);
-			familiensituation.setZahlungsadresse(null);
 		}
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
 		familiensituation.setFamilienstatus(familiensituationJAXP.getFamilienstatus());
@@ -772,15 +780,15 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
-		if (persistedFamiliensituation.getIban() != null) {
-			jaxFamiliensituation.setIban(persistedFamiliensituation.getIban().getIban());
-		}
-		jaxFamiliensituation.setKontoinhaber(persistedFamiliensituation.getKontoinhaber());
 		jaxFamiliensituation.setAbweichendeZahlungsadresse(persistedFamiliensituation.isAbweichendeZahlungsadresse());
-		if (persistedFamiliensituation.getZahlungsadresse() != null) {
-			jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedFamiliensituation.getZahlungsadresse()));
+		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdaten();
+		if (persistedAuszahlungsdaten != null) {
+			jaxFamiliensituation.setIban(persistedAuszahlungsdaten.getIban().getIban());
+			jaxFamiliensituation.setKontoinhaber(persistedAuszahlungsdaten.getKontoinhaber());
+			if (persistedAuszahlungsdaten.getAdresseKontoinhaber() != null) {
+				jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
+			}
 		}
-
 		return jaxFamiliensituation;
 	}
 
@@ -1654,10 +1662,11 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxInstitutionStammdatenBetreuungsgutscheine();
 		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
 
-		if (persistedInstStammdaten.getIban() != null) {
-			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
+		final IBAN persistedIban = persistedInstStammdaten.extractIban();
+		if (persistedIban != null) {
+			jaxInstStammdaten.setIban(persistedIban.getIban());
 		}
-		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
+		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.extractKontoinhaber());
 		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
 		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
 		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
@@ -1678,8 +1687,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxInstStammdaten.setBetreuungsstandorte(betreuungsstandortListToJax(persistedInstStammdaten.getBetreuungsstandorte()));
 
-		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
-			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
+		final Adresse persistedAdresseKontoinhaber = persistedInstStammdaten.extractAdresseKontoinhaber();
+		if (persistedAdresseKontoinhaber != null) {
+			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedAdresseKontoinhaber));
 		}
 		return jaxInstStammdaten;
 	}
@@ -1711,10 +1721,23 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final InstitutionStammdatenBetreuungsgutscheine institutionStammdaten
 	) {
 		convertAbstractFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
-		if (institutionStammdatenJAXP.getIban() != null) {
-			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
+
+		if (institutionStammdatenJAXP.getIban() != null || institutionStammdatenJAXP.getKontoinhaber() != null) {
+			Objects.requireNonNull(institutionStammdatenJAXP.getIban(), "IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+			Objects.requireNonNull(institutionStammdatenJAXP.getKontoinhaber(), "Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
+			if (institutionStammdaten.getAuszahlungsdaten() == null) {
+				institutionStammdaten.setAuszahlungsdaten(new Auszahlungsdaten());
+			}
+			institutionStammdaten.getAuszahlungsdaten().setIban(new IBAN(institutionStammdatenJAXP.getIban()));
+			institutionStammdaten.getAuszahlungsdaten().setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+			Adresse convertedAdresse = null;
+			if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
+				Adresse a = Optional.ofNullable(institutionStammdaten.getAuszahlungsdaten().getAdresseKontoinhaber()).orElseGet(Adresse::new);
+				convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
+			}
+			institutionStammdaten.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 		}
-		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+
 		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
 		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
 		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
@@ -1739,12 +1762,6 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdaten)
 		);
 
-		Adresse convertedAdresse = null;
-		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
-			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
-			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
-		}
-		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 		return institutionStammdaten;
 	}
 
@@ -4601,9 +4618,9 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlung);
 		jaxZahlung.setStatus(persistedZahlung.getStatus());
 		jaxZahlung.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
-		jaxZahlung.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
-		jaxZahlung.setBetreuungsangebotTyp(persistedZahlung.getInstitutionStammdaten().getBetreuungsangebotTyp());
-		jaxZahlung.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
+		jaxZahlung.setInstitutionsName(persistedZahlung.getInstitutionName());
+		jaxZahlung.setBetreuungsangebotTyp(persistedZahlung.getBetreuungsangebotTyp());
+		jaxZahlung.setInstitutionsId(persistedZahlung.getInstitutionId());
 		return jaxZahlung;
 	}
 
@@ -5172,17 +5189,20 @@ public class JaxBConverter extends AbstractConverter {
 				properties.setZahlungsadresse(null);
 			}
 
-			if (properties.getIban() != null) {
-				famSit.setIban(new IBAN(properties.getIban()));
-			} else {
-				famSit.setIban(null);
+			if (famSit.getAuszahlungsdaten() == null) {
+				famSit.setAuszahlungsdaten(new Auszahlungsdaten());
 			}
-			famSit.setKontoinhaber(properties.getKontoinhaber());
+			if (properties.getIban() != null || properties.getKontoinhaber() != null) {
+				// Wenn eines gesetzt ist, sind beide zwingend!
+				Objects.requireNonNull(properties.getIban());
+				Objects.requireNonNull(properties.getKontoinhaber());
+				famSit.getAuszahlungsdaten().setIban(new IBAN(properties.getIban()));
+				famSit.getAuszahlungsdaten().setKontoinhaber(properties.getKontoinhaber());
+			}
 			famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
-
 			if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
-				famSit.setZahlungsadresse(this.adresseToEntity(properties.getZahlungsadresse(),
-					famSit.getZahlungsadresse() == null ? new Adresse() : famSit.getZahlungsadresse()));
+				famSit.getAuszahlungsdaten().setAdresseKontoinhaber(this.adresseToEntity(properties.getZahlungsadresse(),
+					famSit.getAuszahlungsdaten().getAdresseKontoinhaber() == null ? new Adresse() : famSit.getAuszahlungsdaten().getAdresseKontoinhaber()));
 			}
 		}
 	}

@@ -111,7 +111,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN) &&
 				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)
 				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null
-				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getIban() != null) {
+				&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().extractIban() != null) {
 
 				RueckforderungFormular formular = new RueckforderungFormular();
 				formular.setInstitutionStammdaten(institutionStammdaten);

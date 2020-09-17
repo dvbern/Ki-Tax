@@ -382,4 +382,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten"/>
 	<entity class="ch.dvbern.ebegu.entities.GeneratedNotrechtDokument"/>
 	<entity class="ch.dvbern.ebegu.entities.GeneratedGeneralDokument"/>
+	<entity class="ch.dvbern.ebegu.entities.Auszahlungsdaten"/>
 </entity-mappings>
