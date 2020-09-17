@@ -1266,8 +1266,7 @@ export class GesuchModelManager {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT
-                    && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+                if (betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT
