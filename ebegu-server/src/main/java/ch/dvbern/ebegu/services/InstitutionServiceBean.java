@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
@@ -365,30 +366,30 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	public void saveExternalClients(
+	public void saveInstitutionExternalClients(
 		@Nonnull Institution institution,
-		@Nonnull Collection<ExternalClient> externalClients) {
+		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients) {
 
 		String id = institution.getId();
-		Set<ExternalClient> existingExternalClients = institution.getExternalClients();
+		Set<InstitutionExternalClient> existingExternalClients = institution.getInstitutionExternalClients();
 
 		// find out which are removed
-		HashSet<ExternalClient> removed = new HashSet<>(existingExternalClients);
-		removed.removeAll(externalClients);
+		HashSet<InstitutionExternalClient> removed = new HashSet<>(existingExternalClients);
+		removed.removeAll(institutionExternalClients);
 
 		removed.stream()
 			.map(client -> institutionClientEventConverter.clientRemovedEventOf(id, client))
 			.forEach(event -> exportedEvent.fire(event));
 
 		// find out which are added
-		HashSet<ExternalClient> added = new HashSet<>(externalClients);
+		HashSet<InstitutionExternalClient> added = new HashSet<>(institutionExternalClients);
 		added.removeAll(existingExternalClients);
 
 		added.stream()
 			.map(client -> institutionClientEventConverter.clientAddedEventOf(id, client))
 			.forEach(event -> exportedEvent.fire(event));
 
-		institution.setExternalClients(new HashSet<>(externalClients));
+		institution.setInstitutionExternalClients(new HashSet<>(institutionExternalClients));
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {

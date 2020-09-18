@@ -314,11 +314,12 @@ public class InstitutionResource {
 			institutionService.updateInstitution(institution);
 		}
 
-		if (update.getExternalClients() != null) {
+		//TODO
+	/*	if (update.getExternalClients() != null) {
 			Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
 			availableClients.removeIf(client -> !update.getExternalClients().contains(client.getId()));
-			institutionService.saveExternalClients(institution, availableClients);
-		}
+			institutionService.saveInstitutionExternalClients(institution, availableClients);
+		}*/
 
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
@@ -452,12 +453,12 @@ public class InstitutionResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				institutionJAXPId.getId()));
 
-		Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
-		availableClients.removeAll(institution.getExternalClients());
+		/*Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
+		availableClients.removeAll(institution.getExternalClients());*/
 
 		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
-		jaxExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
-		jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(institution.getExternalClients()));
+		/*jaxExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
+		jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(institution.getExternalClients()));*/
 
 		return Response.ok(jaxExternalClientAssignment).build();
 	}

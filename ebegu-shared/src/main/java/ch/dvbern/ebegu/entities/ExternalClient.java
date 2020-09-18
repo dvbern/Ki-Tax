@@ -17,16 +17,24 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringJoiner;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -56,6 +64,11 @@ public class ExternalClient extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private @NotNull ExternalClientType type;
+
+/*	@Nullable
+	@Valid
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "externalClient")
+	private Set<InstitutionExternalClient> institutionExternalClients = new HashSet<>();*/
 
 	public ExternalClient() {
 		this.clientName = "";

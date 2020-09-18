@@ -17,11 +17,16 @@
 
 package ch.dvbern.ebegu.outbox.institutionclient;
 
+import java.time.LocalDate;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import org.hamcrest.Matcher;
@@ -41,7 +46,7 @@ public class InstitutionClientEventConverterTest {
 
 	@Test
 	public void testAddedEvent() {
-		InstitutionClientAddedEvent event = converter.clientAddedEventOf(INSTITUTION_ID, CLIENT);
+		InstitutionClientAddedEvent event = converter.clientAddedEventOf(INSTITUTION_ID, createInstitutionExternalClient());
 
 		assertThat(event, exportedEventMatcher("ClientAdded"));
 
@@ -50,7 +55,7 @@ public class InstitutionClientEventConverterTest {
 
 	@Test
 	public void testRemovedEvent() {
-		InstitutionClientRemovedEvent event = converter.clientRemovedEventOf(INSTITUTION_ID, CLIENT);
+		InstitutionClientRemovedEvent event = converter.clientRemovedEventOf(INSTITUTION_ID, createInstitutionExternalClient());
 
 		assertThat(event, exportedEventMatcher("ClientRemoved"));
 
@@ -75,4 +80,20 @@ public class InstitutionClientEventConverterTest {
 			.where(InstitutionClientEventDTO::getClientType, is(CLIENT.getType().name()))
 		));
 	}
+
+	private  InstitutionExternalClient createInstitutionExternalClient() {
+		InstitutionExternalClient institutionExternalClient = new InstitutionExternalClient();
+		institutionExternalClient.setExternalClient(CLIENT);
+		Institution institution = new Institution();
+		institution.setId(INSTITUTION_ID);
+		institutionExternalClient.setInstitution(institution);
+		DateRange dateRange = new DateRange();
+		dateRange.setGueltigAb(LocalDate.of(2000,1,1));
+		dateRange.setGueltigBis(LocalDate.of(9999,1,1));
+		institutionExternalClient.setGueltigkeit(dateRange);
+
+		return institutionExternalClient;
+	}
+
+
 }
