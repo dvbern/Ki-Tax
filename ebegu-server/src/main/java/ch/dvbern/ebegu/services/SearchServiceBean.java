@@ -162,6 +162,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
+		// Predicates derived from PredicateDTO (Filter coming from client)
+		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDto.getSearch().getPredicateObject();
+
 		// Special role based predicates
 		switch (role) {
 		case SUPER_ADMIN:
@@ -183,13 +186,34 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			predicates.add(
-				cb.or(
-					cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
-					cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
-					cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
-				));
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
+				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+				case KITA:
+				case TAGESFAMILIEN:
+					predicates.add(
+							cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft())
+						);
+					predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+					break;
+				case TAGESSCHULE:
+					predicates.add(cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+					break;
+				case FERIENINSEL:
+					predicates.add(cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+					break;
+				}
+			}
+			else{
+				predicates.add(
+					cb.or(
+						cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
+						cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
+						cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
+					));
+				predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+			}
 			break;
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
@@ -214,8 +238,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		}
 
-		// Predicates derived from PredicateDTO (Filter coming from client)
-		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDto.getSearch().getPredicateObject();
 		if (predicateObjectDto != null) {
 			if (predicateObjectDto.getFallNummer() != null) {
 				// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114" kommen
@@ -241,7 +263,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getAntragTyp() != null) {
 				List<AntragTyp> values = AntragTyp.getValuesForFilter(predicateObjectDto.getAntragTyp());
 
-				if (values != null && !values.isEmpty()) {
+				if (!values.isEmpty()) {
 					predicates.add(root.get(Gesuch_.typ).in(values));
 				}
 			}
