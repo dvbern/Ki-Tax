@@ -551,8 +551,16 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskostenUndMahlzeiten(verpflegungskostenUndMahlzeiten);
 	}
 
+	public void setVerpflegungskostenUndMahlzeitenMitBetreuungZweiWochen(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.tsInputMitBetreuung.setVerpflegungskostenUndMahlzeitenZweiWochen(verpflegungskostenUndMahlzeiten);
+	}
+
 	public void setVerpflegungskostenUndMahlzeitenOhneBetreuung(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
 		this.tsInputOhneBetreuung.setVerpflegungskostenUndMahlzeiten(verpflegungskostenUndMahlzeiten);
+	}
+
+	public void setVerpflegungskostenUndMahlzeitenOhneBetreuungZweiWochen(Map<BigDecimal, Integer> verpflegungskostenUndMahlzeiten) {
+		this.tsInputOhneBetreuung.setVerpflegungskostenUndMahlzeitenZweiWochen(verpflegungskostenUndMahlzeiten);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
@@ -832,7 +840,8 @@ public class BGCalculationInput {
 			Objects.equals(einkommensjahr, other.einkommensjahr) &&
 			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
 			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
-			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung);
+			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
+			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {

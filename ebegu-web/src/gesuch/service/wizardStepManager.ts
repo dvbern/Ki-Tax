@@ -17,7 +17,7 @@ import {IPromise, IQService} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegtOrKeinKontingent} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
@@ -355,8 +355,7 @@ export class WizardStepManager {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
                 !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
-                    !isAnyStatusOfVerfuegt(gesuch.status)) {
-
+                    !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
             }
             return this.areAllStepsOK(gesuch);

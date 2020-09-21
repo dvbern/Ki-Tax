@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -130,17 +131,27 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
 		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
-		familiensituationGS.setIban(familiensituationJA.getIban());
-		familiensituationGS.setKontoinhaber(familiensituationJA.getKontoinhaber());
 		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
 
-		Adresse zahlungsadresseJA = familiensituationJA.getZahlungsadresse();
+		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdaten();
+		Auszahlungsdaten auszahlungsdatenGS = null;
+		if (auszahlungsdatenJA != null) {
+			auszahlungsdatenGS = new Auszahlungsdaten();
+			copyAuszahlungsdaten(auszahlungsdatenGS, auszahlungsdatenJA);
+		}
+		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenGS);
+	}
+
+	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {
+		auszahlungsdatenGS.setIban(auszahlungsdatenJA.getIban());
+		auszahlungsdatenGS.setKontoinhaber(auszahlungsdatenJA.getKontoinhaber());
+		Adresse zahlungsadresseJA = auszahlungsdatenJA.getAdresseKontoinhaber();
 		Adresse zahlungsadresseGS = null;
 		if (zahlungsadresseJA != null) {
 			zahlungsadresseGS = new Adresse();
 			copyAdresse(zahlungsadresseGS, zahlungsadresseJA);
 		}
-		familiensituationGS.setZahlungsadresse(zahlungsadresseJA);
+		auszahlungsdatenGS.setAdresseKontoinhaber(zahlungsadresseGS);
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {

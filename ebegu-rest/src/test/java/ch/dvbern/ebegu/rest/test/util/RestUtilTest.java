@@ -117,7 +117,7 @@ public class RestUtilTest {
 	public void purgeSingleKindAndBetreuungenOfInstitutionenTestStatusSCHULAMT() {
 		// Neu sehen grundsätzlich alle alles!
 		final JaxKindContainer kind = prepareKindData();
-		kind.getBetreuungen().iterator().next().setBetreuungsstatus(Betreuungsstatus.SCHULAMT);
+		kind.getBetreuungen().iterator().next().setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 		Collection<Institution> institutionen = createArrayWithTwoInstitutions();
 
 		RestUtil.purgeSingleKindAndBetreuungenOfInstitutionen(kind, institutionen);

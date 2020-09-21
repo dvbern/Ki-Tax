@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,12 +34,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
-import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von Zahlungen (=Auftrag fuer 1 Kita) in der Datenbank.
@@ -54,10 +60,30 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Zahlung_zahlungsauftrag_id"), nullable = false)
 	private Zahlungsauftrag zahlungsauftrag;
 
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Zahlung_institutionStammdaten_id"))
-	private InstitutionStammdaten institutionStammdaten;
+	@NotNull @Nonnull
+	@Column(nullable = false, length = 16)
+	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
+	@Type( type = "string-uuid-binary" )
+	private String institutionId;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	private String institutionName;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private  BetreuungsangebotTyp betreuungsangebotTyp;
+
+	@Nullable
+	@Column(nullable = true)
+	private String traegerschaftName;
+
+	@NotNull @Nonnull
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_zahlung_auszahlungsdaten_id"), nullable = false)
+	private Auszahlungsdaten auszahlungsdaten;
 
 	@NotNull
 	@Column(nullable = false)
@@ -80,12 +106,49 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 		this.zahlungsauftrag = zahlungsauftrag;
 	}
 
-	public InstitutionStammdaten getInstitutionStammdaten() {
-		return institutionStammdaten;
+	@Nonnull
+	public String getInstitutionId() {
+		return institutionId;
 	}
 
-	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
-		this.institutionStammdaten = institutionStammdaten;
+	public void setInstitutionId(@Nonnull String institutionId) {
+		this.institutionId = institutionId;
+	}
+
+	@Nonnull
+	public String getInstitutionName() {
+		return institutionName;
+	}
+
+	public void setInstitutionName(@Nonnull String institutionName) {
+		this.institutionName = institutionName;
+	}
+
+	@Nonnull
+	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
+		return betreuungsangebotTyp;
+	}
+
+	public void setBetreuungsangebotTyp(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
+		this.betreuungsangebotTyp = betreuungsangebotTyp;
+	}
+
+	@Nullable
+	public String getTraegerschaftName() {
+		return traegerschaftName;
+	}
+
+	public void setTraegerschaftName(@Nullable String traegerschaftName) {
+		this.traegerschaftName = traegerschaftName;
+	}
+
+	@Nonnull
+	public Auszahlungsdaten getAuszahlungsdaten() {
+		return auszahlungsdaten;
+	}
+
+	public void setAuszahlungsdaten(@Nonnull Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdaten = auszahlungsdaten;
 	}
 
 	public ZahlungStatus getStatus() {
@@ -117,7 +180,7 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	@Override
 	public int compareTo(@Nonnull Zahlung o) {
 		CompareToBuilder builder = new CompareToBuilder();
-		builder.append(this.getInstitutionStammdaten().getInstitution().getName(), o.getInstitutionStammdaten().getInstitution().getName());
+		builder.append(this.getInstitutionName(), o.getInstitutionName());
 		builder.append(this.getZahlungsauftrag().getDatumFaellig(), o.getZahlungsauftrag().getDatumFaellig());
 		return builder.toComparison();
 	}
@@ -135,8 +198,8 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 			return false;
 		}
 		final Zahlung otherZahlung = (Zahlung) other;
-		return Objects.equals(getStatus(), otherZahlung.getStatus()) &&
-			EbeguUtil.isSame(getInstitutionStammdaten(), otherZahlung.getInstitutionStammdaten()) &&
+		return getStatus() == otherZahlung.getStatus() &&
+			Objects.equals(getInstitutionId(), otherZahlung.getInstitutionId()) &&
 			MathUtil.isSame(getBetragTotalZahlung(), otherZahlung.getBetragTotalZahlung());
 	}
 }

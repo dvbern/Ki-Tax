@@ -18,21 +18,22 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.CsvCreator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class LastenausgleichBerechnungCSVConverter {
+
+	private CsvCreator csvHelper = new CsvCreator();
 
 	@Nonnull
 	public String createLastenausgleichCSV(
@@ -102,7 +103,7 @@ public class LastenausgleichBerechnungCSVConverter {
 	}
 
 	private String generateCSVHeader() {
-		return convertToCSVLine(new String[] {
+		return csvHelper.convertToCSVLine(new String[] {
 			"BFS-Nr.",
 			"kibon_Belegung",
 			"kibon_Gutscheine",
@@ -112,28 +113,13 @@ public class LastenausgleichBerechnungCSVConverter {
 	}
 
 	private String dataRowToCSV(LastenausgleichBerechnungCSVDataRow row) {
-		return convertToCSVLine(new String[] {
+		return csvHelper.convertToCSVLine(new String[] {
 			row.getBfsNummer(),
 			row.getTotalBelegung().toString(),
 			row.getTotalGutscheine().toString(),
 			row.getEingabeLastenausgleich().add(row.getTotalRevision()).toString(),
 			row.getSelbstbehaltGemeinde().toString()
 		});
-	}
-
-	private String escapeSpecialCharacters(String data) {
-		String escapedData = data.replaceAll("\\R", " ");
-		if (data.contains(Constants.CSV_DELIMITER) || data.contains("\"") || data.contains("'") || data.contains("|")) {
-			data = data.replace("\"", "\"\"");
-			escapedData = '"' + data + '"';
-		}
-		return escapedData;
-	}
-
-	private String convertToCSVLine(String[] data) {
-		return Stream.of(data)
-			.map(this::escapeSpecialCharacters)
-			.collect(Collectors.joining(Constants.CSV_DELIMITER));
 	}
 
 	private String appendNewLine(String csvString) {

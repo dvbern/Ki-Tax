@@ -151,10 +151,6 @@ export class CreateAngebotListViewController implements IController {
                         this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum = ersterSchultag;
                     }
                 }
-            } else {
-                // "Alte" Tagesschule: Noch keine Modulanmeldung moeglich. Wir setzen Default-Institution
-                this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT;
-
             }
             this.anmeldungDTO.betreuung.belegungFerieninsel = undefined;
         } else {

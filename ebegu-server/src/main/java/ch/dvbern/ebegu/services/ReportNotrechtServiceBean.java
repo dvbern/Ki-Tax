@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.reporting.notrecht.NotrechtExcelConverter;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -140,12 +141,13 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 		InstitutionStammdatenBetreuungsgutscheine stammdatenBetreuungsgutscheine = stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (stammdatenBetreuungsgutscheine != null) {
-			if (stammdatenBetreuungsgutscheine.getIban() != null) {
-				row.setIban(stammdatenBetreuungsgutscheine.getIban().getIban());
+			final IBAN extractIban = stammdatenBetreuungsgutscheine.extractIban();
+			if (extractIban != null) {
+				row.setIban(extractIban.getIban());
 			}
-			row.setKontoinhaber(stammdatenBetreuungsgutscheine.getKontoinhaber());
+			row.setKontoinhaber(stammdatenBetreuungsgutscheine.extractKontoinhaber());
 
-			Adresse zahlungsadresse = stammdatenBetreuungsgutscheine.getAdresseKontoinhaber();
+			Adresse zahlungsadresse = stammdatenBetreuungsgutscheine.extractAdresseKontoinhaber();
 			if (zahlungsadresse == null) {
 				zahlungsadresse = stammdaten.getAdresse();
 			}

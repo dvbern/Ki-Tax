@@ -29,11 +29,11 @@ import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
+import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -60,7 +60,7 @@ public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
-		@Nonnull List<Zahlung> data,
+		@Nonnull List<ZahlungDataRow> data,
 		@Nonnull Locale locale,
 		@Nonnull String beschrieb,
 		@Nonnull LocalDateTime datumGeneriert,
@@ -80,16 +80,16 @@ public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 
 		data.stream()
 			.sorted()
-			.forEach(zahlung ->
-				filterZahlungspositionenMitSummeUngleich0(zahlung.getZahlungspositionen()).stream()
+			.forEach(zahlungDataRow ->
+				filterZahlungspositionenMitSummeUngleich0(zahlungDataRow.getZahlung().getZahlungspositionen()).stream()
 					.filter(zahlungsposition -> MathUtil.isPositive(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum()))
 					.sorted()
 					.forEach(zahlungsposition -> {
 						ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
-						InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institutionStammdaten.getInstitution().getName());
+						final Zahlung zahlung = zahlungDataRow.getZahlung();
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getInstitutionName());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
-							ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale));
+							ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vorname, zahlungsposition.getKind().getVorname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.gebDatum, zahlungsposition.getKind().getGeburtsdatum());

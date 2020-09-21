@@ -493,7 +493,7 @@
     "INSTITUTION_ADRESSE": "Adresse",
     "INSTITUTION_ZAHLUNGSANGABEN": "Zahlungsangaben",
     "INSTITUTION_ZWEITER_BETREUUNGSSTANDORT": "Zweiter Betreuungsstandort",
-    "INSTITUTION_ZWEITER_BETREUUNGSSTANDORT_INFO": "Kitas und Tagesfamilienorganisationen, die in kiBon erstellt werden, können auch über das Familienportal (<a href='https://www.be.ch/familie'>www.be.ch/familie</a>) des Kantons Bern gefunden werden. Dazu werden die Stammdaten regelmässig abgeglichen. <br>Die Suche nach Kitas und Tagesfamilienorganisationen im Familienportal kann auch über eine Karte erfolgen, auf welcher die Standorte eingetragen sind. In seltenen Fällen verfügt eine Kita über mehrere Standorte/Adressen. Damit Eltern auch einen ggf. näher von ihnen gelegenen Standort finden können, kann hier die Adresse des zweiten Betreuungsstandortes angegeben werden. Gemeint sind nur Standorte derselben Kita, nicht die Adressen von unterschiedlichen Kitas derselben Trägerschaft (diese werden in kiBon einzeln als Kitas erfasst).",
+    "INSTITUTION_ZWEITER_BETREUUNGSSTANDORT_INFO": "Kitas und Tagesfamilienorganisationen, die in kiBon erstellt werden, können auch über das Familienportal (<a href='https://www.be.ch/familie' target='_blank'>www.be.ch/familie</a>) des Kantons Bern gefunden werden. Dazu werden die Stammdaten regelmässig abgeglichen. <br>Die Suche nach Kitas und Tagesfamilienorganisationen im Familienportal kann auch über eine Karte erfolgen, auf welcher die Standorte eingetragen sind. In seltenen Fällen verfügt eine Kita über mehrere Standorte/Adressen. Damit Eltern auch einen ggf. näher von ihnen gelegenen Standort finden können, kann hier die Adresse des zweiten Betreuungsstandortes angegeben werden. Gemeint sind nur Standorte derselben Kita, nicht die Adressen von unterschiedlichen Kitas derselben Trägerschaft (diese werden in kiBon einzeln als Kitas erfasst).",
     "INSTITUTION_BETREUUNGSSTANDORT": "Betreuungsstandort",
     "IDENTISCH_WIE_KONTAKTANGABEN": "(identisch wie Kontaktangaben)",
     "INSTITUTION_KONTOINHABER": "Kontoinhaber",
@@ -2139,7 +2139,6 @@
     "LABEL_OK_FORFAHREN": "Ja, Fortfahren",
     "LABEL_NEIN_ABBRECHEN": "Nein, Abbrechen",
     "LABEL_ZUWEISEN": "Mir zuweisen",
-    "VERANTWORTLICHER": "Verantwortlich",
     "RUECKFORDERUNG_PROVISORISCH_VERFUEGEN": "Provisorisch Verfügen",
     "RUECKFORDERUNG_FREIGEBEN_ZUR_VERFUEGUNG": "Freigeben zur Verfügung",
     "RUECKFORDERUNGFORMULAR_GEWAEHRTE_AUSFALLENTSCHAEDIGUNG": "Gewährte Ausfallentschädigung",
@@ -2157,5 +2156,8 @@
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Abweichungen",
     "OEFFNUNGSZEITEN_OBSOLETE": "Frühere Eingabe: {{value}}",
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Zweiter Betreuungsstandort für Familienportal angeben",
+    "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "ASIV Berechnung für die Stadt Bern einschalten",
+    "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Achtung: Mit dieser Funktion wird eine Massenmutation für alle Berner Gesuche ausgelöst. Dies kann nicht rückgängig gemacht werden. Wollen Sie fortfahren?",
+    "ONBOARDING_ZULASSUNG_KANTON": "Zulassung Kita / Tagesfamilienorganisationen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
