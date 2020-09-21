@@ -190,19 +190,16 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
 				case KITA:
 				case TAGESFAMILIEN:
-					predicates.add(
-							cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft())
-						);
-					predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+					predicates.add(cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()));
 					break;
 				case TAGESSCHULE:
 					predicates.add(cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()));
-					predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 					break;
 				case FERIENINSEL:
 					predicates.add(cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft()));
-					predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 					break;
+				default:
+					throw new EbeguRuntimeException("searchAntraege", "BetreuungsangebotTyp nicht gefunden: " + BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
 				}
 			}
 			else{
@@ -212,18 +209,35 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 						cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
 						cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
 					));
-				predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			}
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			break;
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des eingeloggten benutzers
-			predicates.add(
-				cb.or(
-					cb.equal(joinInstitutionBetreuungen, user.getInstitution()),
-					cb.equal(joinInstitutionFerieninsel, user.getInstitution()),
-					cb.equal(joinInstitutionTagesschule, user.getInstitution())
-				));
+			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
+				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+				case KITA:
+				case TAGESFAMILIEN:
+					predicates.add(cb.equal(joinInstitutionBetreuungen, user.getInstitution()));
+					break;
+				case TAGESSCHULE:
+					predicates.add(cb.equal(joinInstitutionTagesschule, user.getInstitution()));
+					break;
+				case FERIENINSEL:
+					predicates.add(cb.equal(joinInstitutionFerieninsel, user.getInstitution()));
+					break;
+				default:
+					throw new EbeguRuntimeException("searchAntraege", "BetreuungsangebotTyp nicht gefunden: " + BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+				}
+			} else {
+				predicates.add(
+					cb.or(
+						cb.equal(joinInstitutionBetreuungen, user.getInstitution()),
+						cb.equal(joinInstitutionFerieninsel, user.getInstitution()),
+						cb.equal(joinInstitutionTagesschule, user.getInstitution())
+					));
+			}
 			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			break;
 		case SACHBEARBEITER_TS:
