@@ -38,6 +38,8 @@ import {TSAdresse} from '../../../models/TSAdresse';
 import {TSExternalClient} from '../../../models/TSExternalClient';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionExternalClient} from '../../../models/TSInstitutionExternalClient';
+import {TSInstitutionExternalClientAssignment} from '../../../models/TSInstitutionExternalClientAssignment';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {TSMandant} from '../../../models/TSMandant';
@@ -71,7 +73,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
-    public externalClients?: TSExternalClientAssignment;
+    public externalClients?: TSInstitutionExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
 
@@ -82,7 +84,7 @@ export class EditInstitutionComponent implements OnInit {
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     private isRegisteringInstitution: boolean = false;
-    private initiallyAssignedClients: TSExternalClient[];
+    private initiallyAssignedClients: TSInstitutionExternalClient[];
     public ebeguUtil = EbeguUtil;
 
     public constructor(
@@ -130,7 +132,7 @@ export class EditInstitutionComponent implements OnInit {
             .then(externalClients => this.initExternalClients(externalClients));
     }
 
-    private initExternalClients(externalClients: TSExternalClientAssignment): void {
+    private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
         this.initiallyAssignedClients = [...externalClients.assignedClients];
@@ -271,8 +273,8 @@ export class EditInstitutionComponent implements OnInit {
                 this.initiallyAssignedClients.indexOf(assignedClient) < 0
             ).forEach(assignedClient =>
                 drittanwendungen.length > 0 ?
-                    drittanwendungen += ', ' + assignedClient.clientName
-                    : drittanwendungen = assignedClient.clientName
+                    drittanwendungen += ', ' + assignedClient.externalClient.clientName
+                    : drittanwendungen = assignedClient.externalClient.clientName
             );
             // show warning popup
             const dialogConfig = new MatDialogConfig();
@@ -304,8 +306,8 @@ export class EditInstitutionComponent implements OnInit {
             // no backed update necessary
             return null;
         }
-
-        return assignedClients.map(client => client.id);
+//TODO change we need to return the list of client with gueltigkeit
+        return assignedClients.map(client => client.externalClient.id);
     }
 
     private getTraegerschaftsUpdate(): string | null {
@@ -394,5 +396,22 @@ export class EditInstitutionComponent implements OnInit {
             return TSMandant.earliestDateOfTSAnmeldung.toDate();
         }
         return new Date(0);
+    }
+
+    public assignAvailableClient(availableClient: TSExternalClient) {
+        const index = this.externalClients.availableClients.indexOf(availableClient);
+        if(index > -1){
+            this.externalClients.availableClients.splice(index, 1);
+        }
+        this.externalClients.assignedClients.push(new TSInstitutionExternalClient(availableClient));
+    }
+
+    public unassignClient(assignedClient: TSInstitutionExternalClient) {
+        const index = this.externalClients.assignedClients.indexOf(assignedClient);
+        if(index > -1){
+            this.externalClients.assignedClients.splice(index, 1);
+        }
+        this.externalClients.availableClients.push(assignedClient.externalClient);
+
     }
 }

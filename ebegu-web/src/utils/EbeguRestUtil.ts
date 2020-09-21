@@ -99,6 +99,8 @@ import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
 import {TSInstitution} from '../models/TSInstitution';
+import {TSInstitutionExternalClient} from '../models/TSInstitutionExternalClient';
+import {TSInstitutionExternalClientAssignment} from '../models/TSInstitutionExternalClientAssignment';
 import {TSInstitutionListDTO} from '../models/TSInstitutionListDTO';
 import {TSInstitutionStammdaten} from '../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenBetreuungsgutscheine} from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
@@ -4149,5 +4151,27 @@ export class EbeguRestUtil {
             return dokument;
         }
         return undefined;
+    }
+
+    public parseInstitutionExternalClientAssignment(data: any): TSInstitutionExternalClientAssignment{
+        const tsInstitutionExternalClients = new TSInstitutionExternalClientAssignment();
+
+        tsInstitutionExternalClients.availableClients = data.availableClients
+            .map((client: any) => this.parseExternalClient(client));
+
+        tsInstitutionExternalClients.assignedClients = data.assignedClients
+            .map((client: any) => this.parseInstitutionExternalClient(client));
+
+        return tsInstitutionExternalClients;
+    }
+
+    public parseInstitutionExternalClient(data: any): TSInstitutionExternalClient {
+        const tsInstitutionExternalClient = new TSInstitutionExternalClient();
+        tsInstitutionExternalClient.externalClient = this.parseExternalClient(data.externalClient);
+        const ab = DateUtil.localDateToMoment(data.gueltigAb);
+        const bis =
+            DateUtil.localDateToMoment(data.gueltigBis);
+        tsInstitutionExternalClient.gueltigkeit =  new TSDateRange(ab, bis);
+        return tsInstitutionExternalClient;
     }
 }

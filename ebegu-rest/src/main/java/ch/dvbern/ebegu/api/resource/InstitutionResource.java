@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
@@ -65,6 +66,7 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
@@ -314,12 +316,11 @@ public class InstitutionResource {
 			institutionService.updateInstitution(institution);
 		}
 
-		//TODO
-	/*	if (update.getExternalClients() != null) {
-			Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
-			availableClients.removeIf(client -> !update.getExternalClients().contains(client.getId()));
-			institutionService.saveInstitutionExternalClients(institution, availableClients);
-		}*/
+		if (update.getInstitutionExternalClients() != null) {
+			List<InstitutionExternalClient> institutionExternalClients =
+				converter.institutionExternalClientListToEntity(update.getInstitutionExternalClients());
+			institutionService.saveInstitutionExternalClients(institution, institutionExternalClients);
+		}
 
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
@@ -453,14 +454,20 @@ public class InstitutionResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				institutionJAXPId.getId()));
 
-		/*Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
-		availableClients.removeAll(institution.getExternalClients());*/
+		Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
 
-		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
-		/*jaxExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
-		jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(institution.getExternalClients()));*/
+		List<ExternalClient> existingExternalClient = institution.getInstitutionExternalClients().stream()
+			.map(InstitutionExternalClient::getExternalClient).collect(Collectors.toList());
 
-		return Response.ok(jaxExternalClientAssignment).build();
+		availableClients.removeAll(existingExternalClient);
+
+		JaxInstitutionExternalClientAssignment jaxInstitutionExternalClientAssignment =
+			new JaxInstitutionExternalClientAssignment();
+		jaxInstitutionExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
+
+		jaxInstitutionExternalClientAssignment.getAssignedClients().addAll(converter.institutionExternalClientsToJAX(institution.getInstitutionExternalClients()));
+
+		return Response.ok(jaxInstitutionExternalClientAssignment).build();
 	}
 
 	@ApiOperation(

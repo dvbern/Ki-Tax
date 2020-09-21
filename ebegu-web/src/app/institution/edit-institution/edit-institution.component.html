@@ -17,7 +17,7 @@
 
 <dv-full-height-inner-padding-container>
     <form role="form"
-          #form="ngForm"
+		  #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="stammdaten"
           (ngSubmit)="onSubmit()"
@@ -131,7 +131,7 @@
                                    [(ngModel)]="stammdaten.telefon"
                                    [maxlength]="255" class="form-control"
                                    [pattern]="CONSTANTS.PATTERN_PHONE"
-                                   >
+                            >
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
                                                inputId="telefon_id"></dv-error-messages>
                         </div>
@@ -222,9 +222,56 @@
                     </div>
 
                     <div *ngIf="externalClients && !isTagesschule()" class="col-sm-6">
-                        <dv-external-client-multiselect
-                            [externalClients]="externalClients">
-                        </dv-external-client-multiselect>
+                        <div *ngFor="let availableClient of externalClients.availableClients">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <mat-checkbox (change)="assignAvailableClient(availableClient)">
+                                        {{availableClient.clientName}}
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <mat-checkbox checked="true" (change)="unassignClient(assignedClient)">
+                                        {{assignedClient.externalClient.clientName}}
+                                    </mat-checkbox>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input class="dv-mat-datepicker"
+                                           type="text"
+                                           name="client_start_id"
+                                           id="client_start_id_{{i}}"
+                                           [matDatepicker]="client_start_id"
+                                           [min]="getMinStartDate()"
+                                           placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                           [(ngModel)]="assignedClient.gueltigkeit.gueltigAb">
+                                    <mat-datepicker-toggle matSuffix
+                                                           [for]="client_start_id"></mat-datepicker-toggle>
+                                    <mat-datepicker #client_start_id></mat-datepicker>
+                                    <dv-error-messages inputId="client_start_id"
+                                                       [errorObject]="form.controls.client_start_id?.errors">
+                                    </dv-error-messages>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input class="dv-mat-datepicker"
+                                           type="text"
+                                           name="client_end_id"
+                                           id="client_end_id_{{i}}"
+                                           [matDatepicker]="client_end_id"
+                                           [min]="getMinStartDate()"
+                                           placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                           [(ngModel)]="assignedClient.gueltigkeit.gueltigBis">
+                                    <mat-datepicker-toggle matSuffix
+                                                           [for]="client_end_id"></mat-datepicker-toggle>
+                                    <mat-datepicker #client_end_id></mat-datepicker>
+                                    <dv-error-messages inputId="client_end_id"
+                                                       [errorObject]="form.controls.client_end_id?.errors">
+                                    </dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

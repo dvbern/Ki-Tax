@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,27 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+import {TSExternalClient} from './TSExternalClient';
+import {TSInstitutionExternalClient} from './TSInstitutionExternalClient';
 
-import java.util.Collection;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.enums.ExternalClientType;
-
-/**
- * Service to get information about external (3rd-party) clients
- */
-public interface ExternalClientService {
-
-	@Nonnull
-	Collection<ExternalClient> getAllForGemeinde();
-
-	@Nonnull
-	Collection<ExternalClient> getAllForInstitution();
-
-	Optional<ExternalClient> findExternalClient(@Nullable String id);
+export class TSInstitutionExternalClientAssignment {
+    public availableClients: TSExternalClient[] = [];
+    public assignedClients: TSInstitutionExternalClient[] = [];
 }

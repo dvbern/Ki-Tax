@@ -377,11 +377,13 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		HashSet<InstitutionExternalClient> removed = new HashSet<>(existingExternalClients);
 		removed.removeAll(institutionExternalClients);
 
+		//TODO with new DTO as soon as available and check if it works with different constellation
+		//the best would be to have two comparator, one with type + clientname, one with all the fields
 		removed.stream()
 			.map(client -> institutionClientEventConverter.clientRemovedEventOf(id, client))
 			.forEach(event -> exportedEvent.fire(event));
 
-		// find out which are added
+		// find out which are added or modified
 		HashSet<InstitutionExternalClient> added = new HashSet<>(institutionExternalClients);
 		added.removeAll(existingExternalClients);
 

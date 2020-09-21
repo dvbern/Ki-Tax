@@ -17,5 +17,59 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.time.LocalDate;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+
+@XmlRootElement(name = "externalClient")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class JaxInstitutionExternalClient {
+
+	private static final long serialVersionUID = 4045567623627216321L;
+
+	@Nonnull
+	private @NotNull JaxExternalClient jaxExternalClient;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate gueltigAb = null;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate gueltigBis = null;
+
+	@Nullable
+	public LocalDate getGueltigAb() {
+		return gueltigAb;
+	}
+
+	public void setGueltigAb(@Nullable LocalDate gueltigAb) {
+		this.gueltigAb = gueltigAb;
+	}
+
+	@Nullable
+	public LocalDate getGueltigBis() {
+		return gueltigBis;
+	}
+
+	public void setGueltigBis(@Nullable LocalDate gueltigBis) {
+		this.gueltigBis = gueltigBis;
+	}
+
+	@Nonnull
+	public JaxExternalClient getJaxExternalClient() {
+		return jaxExternalClient;
+	}
+
+	public void setJaxExternalClient(@Nonnull JaxExternalClient jaxExternalClient) {
+		this.jaxExternalClient = jaxExternalClient;
+	}
 }

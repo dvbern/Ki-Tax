@@ -47,7 +47,6 @@ public class InstitutionExternalClient {
 	@NotNull
 	@Nonnull
 	@Embedded
-	@Valid
 	private DateRange gueltigkeit = new DateRange();
 
 	@NotNull
