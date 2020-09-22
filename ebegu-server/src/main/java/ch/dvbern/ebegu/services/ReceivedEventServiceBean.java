@@ -17,12 +17,19 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
 import ch.dvbern.ebegu.entities.ReceivedEvent_;
@@ -36,12 +43,9 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
-
 	@Override
 	public boolean saveReceivedEvent(@Nonnull ReceivedEvent event) {
-		Optional<ReceivedEvent> receivedEventOpt = findByEventId(event.getEventId());
+		Optional<ReceivedEvent> receivedEventOpt = findByEventIdAndTimestamp(event.getEventId(), event.getEventTimestamp());
 		if(receivedEventOpt.isPresent()){
 			return false;
 		}
@@ -49,7 +53,17 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 		return true;
 	}
 
-	private Optional<ReceivedEvent> findByEventId(String eventId){
-		return criteriaQueryHelper.getEntityByUniqueAttribute(ReceivedEvent.class, eventId, ReceivedEvent_.eventId);
+	private Optional<ReceivedEvent> findByEventIdAndTimestamp(String eventId, LocalDateTime timestamp){
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<ReceivedEvent> query = cb.createQuery(ReceivedEvent.class);
+		Root<ReceivedEvent> root = query.from(ReceivedEvent.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateEventId = cb.equal(root.get(ReceivedEvent_.eventId), eventId);
+		Predicate predicateTimestamp = cb.equal(root.get(ReceivedEvent_.eventTimestamp), timestamp);
+		predicates.add(predicateEventId);
+		predicates.add(predicateTimestamp);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 }

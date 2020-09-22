@@ -45,8 +45,9 @@ public abstract class BaseEventHandler<T> {
 
 		ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, dto.toString());
 
-		if (receivedEventService.saveReceivedEvent(receivedEvent)) {
-			LOG.info("Event with UUID '{}' of type '{}' was already retrieved, ignoring it", eventId, eventType);
+		if (!receivedEventService.saveReceivedEvent(receivedEvent)) {
+			LOG.info("Event with UUID '{}' and timestamp '{}' of type '{}' was already retrieved, ignoring it",
+				eventId, eventTime,	eventType);
 
 			return;
 		}
