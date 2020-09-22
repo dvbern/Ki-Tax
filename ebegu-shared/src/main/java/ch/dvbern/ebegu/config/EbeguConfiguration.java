@@ -318,5 +318,7 @@ public interface EbeguConfiguration {
 
 	String getNotverordnungEmpfaengerMail();
 
+	String getKafkaPlatzbestaetigungGroupId();
+
 	String getMassenmutationEmpfaengerMail();
 }

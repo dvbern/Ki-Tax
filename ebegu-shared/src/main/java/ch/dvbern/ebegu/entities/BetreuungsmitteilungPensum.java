@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -50,6 +51,9 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
+
+	@Column(nullable = false)
+	private boolean vollstaendig = true;
 
 	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
@@ -94,5 +98,13 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 		}
 		final BetreuungsmitteilungPensum otherBetreuungsmitteilungPensum = (BetreuungsmitteilungPensum) other;
 		return getBetreuungsmitteilung().isSame(otherBetreuungsmitteilungPensum.getBetreuungsmitteilung());
+	}
+
+	public boolean isVollstaendig() {
+		return vollstaendig;
+	}
+
+	public void setVollstaendig(boolean vollstaendig) {
+		this.vollstaendig = vollstaendig;
 	}
 }
