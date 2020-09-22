@@ -22,14 +22,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 
 import ch.dvbern.kibon.exchange.commons.util.EventUtil;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;

@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.kafka;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -59,12 +58,9 @@ public abstract class BaseEventHandler<T> {
 		} catch (IllegalArgumentException e) {
 			LOG.warn("Unknown event type '{}'", eventType);
 		}
-
-		//consumedMessageService.processed(eventId);
 	}
 
 	protected abstract void processEvent(
-		//@Nonnull UUID eventId,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
 		@Nonnull T dto);

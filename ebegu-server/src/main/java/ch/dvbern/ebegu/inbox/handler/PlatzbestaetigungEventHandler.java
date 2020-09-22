@@ -153,7 +153,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED,
 					gemeinde,
 					gesuchsperiode);
-			if (zusaetzlicherGutscheinEnabled.getValueAsBoolean() && gemeinde.getName().equals("Bern") && !gemeinde.getName().equalsIgnoreCase(dto.getGemeindeName())) {
+			if (zusaetzlicherGutscheinEnabled.getValueAsBoolean() && !gemeinde.getName().equalsIgnoreCase(dto.getGemeindeName())) {
 				if (erweiterteBetreuung == null) {
 					erweiterteBetreuung = new ErweiterteBetreuung();
 				}
@@ -209,7 +209,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	/**
 	 * Create a new Betreuungsmitteilung Object and return if its ready for Bestaetigen
 	 *
-	 * @param betreuungsmitteilung
 	 * @param dto
 	 * @return Betreuungsmitteilung oder null
 	 */
@@ -217,7 +216,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private Betreuungsmitteilung setBetreuungsmitteilungDaten(BetreuungEventDTO dto,
 		Betreuung betreuung) {
 		if (dto.getZeitabschnitte().isEmpty()) {
-			LOG.error("Zeitabschnitt are missing, we cannot work this dto");
+			LOG.error("Zeitabschnitt are missing, we cannot work with this dto");
 			return null;
 		}
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
@@ -310,7 +309,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			neueBetreuung.setUnitForDisplay(PensumUnits.DAYS);
 			BigDecimal pensumInPercent =
-				MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()).divide(MAX_TAGE_PRO_MONAT);
+				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()), MAX_TAGE_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		} else if (betreuung.isAngebotTagesfamilien()) {
 			if (!zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())) {
@@ -319,7 +318,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			neueBetreuung.setUnitForDisplay(PensumUnits.HOURS);
 			BigDecimal pensumInPercent =
-				MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()).divide(MAX_STUNDEN_PRO_MONAT);
+				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()), MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
 		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());

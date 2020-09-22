@@ -89,8 +89,6 @@ public class PlatzbestaetigungEventKafkaConsumer {
 		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
 		props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
-	/*	KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Collections.singletonList("PlatzbestaetigungBetreuungEvents"));*/
 		consumer = new KafkaConsumer(props);
 		consumer.subscribe(Arrays.asList("PlatzbestaetigungBetreuungEvents"));
 
@@ -99,14 +97,12 @@ public class PlatzbestaetigungEventKafkaConsumer {
 	@Schedule(info = "consume kafka events",second="*/10", minute = "*", hour = "*", persistent = true)
 	public void workKafkaData(){
 		try {
-			//while(true){
-				ConsumerRecords<String, BetreuungEventDTO> consumerRecordes =
-					consumer.poll(Duration.ofMillis(5000));
-				for (ConsumerRecord<String, BetreuungEventDTO> record : consumerRecordes) {
-					LOG.info("BetreuungEvent received for Betreuung with refnr " + record.key());
-					processor.process(record, eventHandler);
-				}
-			//}
+			ConsumerRecords<String, BetreuungEventDTO> consumerRecordes =
+				consumer.poll(Duration.ofMillis(5000));
+			for (ConsumerRecord<String, BetreuungEventDTO> record : consumerRecordes) {
+				LOG.info("BetreuungEvent received for Betreuung with refnr " + record.key());
+				processor.process(record, eventHandler);
+			}
 		} catch (Exception e){
 			LOG.error("There's a problem with the kafka Platzbestaetigung Consumer", e);
 		}
