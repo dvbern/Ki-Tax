@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -98,6 +99,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				return;
 			}
 			Betreuung betreuung = betreuungOpt.get();
+			if (betreuung.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
+				LOG.warn("Platzbestaetigung: die Gesuchsperiode fuer die Betreuung mit RefNr: " + dto.getRefnr()
+					+ " ist nicht aktiv!");
+				return;
+			}
 			if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
 				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " war spaeter als dieser "
 					+ "Event im kiBon bearbeitet! Event ist ignoriert");
@@ -309,7 +315,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			neueBetreuung.setUnitForDisplay(PensumUnits.DAYS);
 			BigDecimal pensumInPercent =
-				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()), MAX_TAGE_PRO_MONAT);
+				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+					MAX_TAGE_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		} else if (betreuung.isAngebotTagesfamilien()) {
 			if (!zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())) {
@@ -318,7 +325,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			neueBetreuung.setUnitForDisplay(PensumUnits.HOURS);
 			BigDecimal pensumInPercent =
-				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()), MAX_STUNDEN_PRO_MONAT);
+				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+					MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
 		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
