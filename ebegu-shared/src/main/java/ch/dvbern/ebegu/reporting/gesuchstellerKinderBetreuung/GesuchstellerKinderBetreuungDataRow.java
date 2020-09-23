@@ -81,7 +81,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private Boolean ekvVorhanden;
 	@Nullable private Boolean stvGeprueft;
 	@Nullable private Boolean veranlagt;
-	@Nullable private Boolean sozialhilfebezueger;
+	@Nullable private Boolean sozialhilfeBezueger;
 
 	@Nullable private String kindName;
 	@Nullable private String kindVorname;
@@ -522,12 +522,12 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public Boolean isSozialhilfebezueger() {
-		return sozialhilfebezueger;
+	public Boolean isSozialhilfeBezueger() {
+		return sozialhilfeBezueger;
 	}
 
-	public void setSozialhilfebezueger(@Nullable Boolean sozialhilfebezueger) {
-		this.sozialhilfebezueger = sozialhilfebezueger;
+	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
+		this.sozialhilfeBezueger = sozialhilfeBezueger;
 	}
 
 	@Nullable

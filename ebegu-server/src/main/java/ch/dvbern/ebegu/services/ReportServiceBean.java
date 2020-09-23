@@ -1565,7 +1565,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Familiensituation familiensituation =
 				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
-			row.setSozialhilfebezueger(isSozialhilfeBezueger(zeitabschnitt, familiensituationContainer, familiensituation));
+			row.setSozialhilfeBezueger(isSozialhilfeBezueger(zeitabschnitt, familiensituationContainer, familiensituation));
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
