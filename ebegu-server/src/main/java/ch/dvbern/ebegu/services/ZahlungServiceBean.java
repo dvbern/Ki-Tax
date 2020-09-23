@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -54,6 +56,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -74,6 +77,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -167,6 +171,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		LOGGER.info("Erstelle Zahlungsauftrag mit Faelligkeit: {}", Constants.DATE_FORMATTER.format(datumFaelligkeit));
 		Zahlungsauftrag zahlungsauftrag = new Zahlungsauftrag();
+		zahlungsauftrag.setZahlungslaufTyp(ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 		zahlungsauftrag.setStatus(ZahlungauftragStatus.ENTWURF);
 		zahlungsauftrag.setBeschrieb(beschreibung);
 		zahlungsauftrag.setDatumFaellig(datumFaelligkeit);
@@ -394,7 +399,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	private void createZahlungspositionenKorrekturUndNachzahlung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu, @Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Map<String, Zahlung> zahlungProInstitution) {
 		// Ermitteln, ob die Vollkosten geaendert haben, seit der letzten Verfuegung, die auch verrechnet wurde!
 		List<VerfuegungZeitabschnitt> zeitabschnittOnVorgaengerVerfuegung = new ArrayList<>();
-		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnittNeu, zeitabschnittNeu.getVerfuegung().getBetreuung(), zeitabschnittOnVorgaengerVerfuegung);
+		final Verfuegung verfuegung = zeitabschnittNeu.getVerfuegung();
+		Objects.requireNonNull(verfuegung);
+		Objects.requireNonNull(verfuegung.getBetreuung());
+		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnittNeu, verfuegung.getBetreuung(), zeitabschnittOnVorgaengerVerfuegung);
 		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) { // Korrekturen
 			Zahlung zahlung = findZahlungForInstitution(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
 			createZahlungspositionKorrekturNeuerWert(zeitabschnittNeu, zahlung); // Dies braucht man immer
@@ -465,6 +473,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 */
 	@Nonnull
 	private Zahlung findZahlungForInstitution(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, @Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Map<String, Zahlung> zahlungProInstitution) {
+		Objects.requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung());
 		InstitutionStammdaten institution = zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten();
 		if (zahlungProInstitution.containsKey(institution.getId())) {
 			return zahlungProInstitution.get(institution.getId());
@@ -479,10 +488,21 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 * Erstellt eine Zahlung fuer eine bestimmte Institution, welche zum uebergebenen Auftrag gehoert
 	 */
 	@Nonnull
-	private Zahlung createZahlung(@Nonnull InstitutionStammdaten institution, @Nonnull Zahlungsauftrag zahlungsauftrag) {
+	private Zahlung createZahlung(@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Zahlungsauftrag zahlungsauftrag) {
 		Zahlung zahlung = new Zahlung();
 		zahlung.setStatus(ZahlungStatus.ENTWURF);
-		zahlung.setInstitutionStammdaten(institution);
+		final InstitutionStammdatenBetreuungsgutscheine stammdatenBG =
+			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		Objects.requireNonNull(stammdatenBG, "Die Stammdaten muessen zu diesem Zeitpunkt definiert sein");
+		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
+		Objects.requireNonNull(auszahlungsdaten);
+		zahlung.setAuszahlungsdaten(auszahlungsdaten);
+		zahlung.setInstitutionId(institutionStammdaten.getInstitution().getId());
+		zahlung.setInstitutionName(institutionStammdaten.getInstitution().getName());
+		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());
+		if (institutionStammdaten.getInstitution().getTraegerschaft() != null) {
+			zahlung.setTraegerschaftName(institutionStammdaten.getInstitution().getTraegerschaft().getName());
+		}
 		zahlung.setZahlungsauftrag(zahlungsauftrag);
 		zahlungsauftrag.getZahlungen().add(zahlung);
 		return zahlung;

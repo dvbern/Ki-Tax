@@ -272,7 +272,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	@Nullable
 	public String extractKontoinhaber() {
 		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			return getInstitutionStammdatenBetreuungsgutscheine().getKontoinhaber();
+			return getInstitutionStammdatenBetreuungsgutscheine().extractKontoinhaber();
 		}
 		return null;
 	}
@@ -280,7 +280,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	@Nullable
 	public Adresse extractAdresseKontoinhaber() {
 		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			return getInstitutionStammdatenBetreuungsgutscheine().getAdresseKontoinhaber();
+			return getInstitutionStammdatenBetreuungsgutscheine().extractAdresseKontoinhaber();
 		}
 		return null;
 	}
@@ -288,7 +288,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	@Nullable
 	public IBAN extractIban() {
 		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			return getInstitutionStammdatenBetreuungsgutscheine().getIban();
+			return getInstitutionStammdatenBetreuungsgutscheine().extractIban();
 		}
 		return null;
 	}

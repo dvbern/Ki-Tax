@@ -23,31 +23,29 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.hibernate.envers.Audited;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von Familiensituation in der Datenbank.
  */
 @Audited
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id", name = "UK_familiensituation_auszahlungsdaten_id"))
 public class Familiensituation extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6534582356181164632L;
@@ -82,23 +80,14 @@ public class Familiensituation extends AbstractMutableEntity {
 	private boolean keineMahlzeitenverguenstigungBeantragt;
 
 	@Nullable
-	@Column(nullable = true)
-	@Embedded
 	@Valid
-	private IBAN iban;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String kontoinhaber;
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdaten;
 
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
 
-	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_zahlungs_adresse"), nullable = true)
-	private Adresse zahlungsadresse;
 
 	public Familiensituation() {
 	}
@@ -177,21 +166,12 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public IBAN getIban() {
-		return iban;
+	public Auszahlungsdaten getAuszahlungsdaten() {
+		return auszahlungsdaten;
 	}
 
-	public void setIban(@Nullable IBAN iban) {
-		this.iban = iban;
-	}
-
-	@Nullable
-	public String getKontoinhaber() {
-		return kontoinhaber;
-	}
-
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
+	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdaten = auszahlungsdaten;
 	}
 
 	public boolean isAbweichendeZahlungsadresse() {
@@ -200,15 +180,6 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
 		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
-	}
-
-	@Nullable
-	public Adresse getZahlungsadresse() {
-		return zahlungsadresse;
-	}
-
-	public void setZahlungsadresse(@Nullable Adresse zahlungsadresse) {
-		this.zahlungsadresse = zahlungsadresse;
 	}
 
 	@Transient
@@ -245,24 +216,20 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			target.setIban(this.getIban());
-			target.setKontoinhaber(this.getKontoinhaber());
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
-			if (this.getZahlungsadresse() != null) {
-				target.setZahlungsadresse(this.getZahlungsadresse().copyAdresse(new Adresse(), copyType));
+			if (this.getAuszahlungsdaten() != null) {
+				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
+			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			target.setIban(this.getIban());
-			target.setKontoinhaber(this.getKontoinhaber());
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
-			if (this.getZahlungsadresse() != null) {
-				target.setZahlungsadresse(this.getZahlungsadresse().copyAdresse(new Adresse(), copyType));
+			if (this.getAuszahlungsdaten() != null) {
+				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
+			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -290,6 +257,5 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
-
 	}
 }

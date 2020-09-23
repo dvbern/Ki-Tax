@@ -840,7 +840,8 @@ public class BGCalculationInput {
 			Objects.equals(einkommensjahr, other.einkommensjahr) &&
 			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
 			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
-			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung);
+			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
+			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {

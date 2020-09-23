@@ -135,10 +135,13 @@ public interface BetreuungService {
 	List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
 
 	/**
+	 * Wenn onlyGueltig = true:
 	 * Gibt die aktuell gültige Betreuung für die übergebene BG Nummer zurück (z.B. 18.000116.1.2)
 	 * Achtung: Diese kann sich auf einem noch nicht verfügten Gesuch befinden! (VERFUEGEN)
+	 * Wenn onlyGueltig = false:
+	 * return auch die Betreuung in andere Status (Warten Z.B.)
 	 */
-	Optional<Betreuung> findGueltigeBetreuungByBGNummer(@Nonnull String bgNummer);
+	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, @Nonnull boolean onlyGueltig);
 
 	/**
 	 * @param key PK (id) der Betreuung
