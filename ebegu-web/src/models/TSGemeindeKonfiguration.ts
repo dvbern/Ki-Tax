@@ -45,16 +45,16 @@ export class TSGemeindeKonfiguration {
     public konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean; // only on client
     public konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent: number; // only on client
     public konfigMahlzeitenverguenstigungEnabled: boolean; // only on client
-    public konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungMahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen: number; // only on client
-    public konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungMahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen: number; // only on client
-    public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
-    public konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit: number; // only on client
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
@@ -201,8 +201,8 @@ export class TSGemeindeKonfiguration {
                     break;
                 }
                 case TSEinstellungKey.
-                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT: {
-                    this.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit = Number(property.value);
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungMahlzeit = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.
@@ -215,8 +215,8 @@ export class TSGemeindeKonfiguration {
                     break;
                 }
                 case TSEinstellungKey.
-                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT: {
-                    this.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit = Number(property.value);
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungMahlzeit = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.
@@ -229,8 +229,8 @@ export class TSGemeindeKonfiguration {
                     break;
                 }
                 case TSEinstellungKey.
-                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT: {
-                    this.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit = Number(property.value);
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.
@@ -242,8 +242,8 @@ export class TSGemeindeKonfiguration {
                     this.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled = (property.value === 'true');
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT: {
-                    this.konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit = Number(property.value);
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT: {
