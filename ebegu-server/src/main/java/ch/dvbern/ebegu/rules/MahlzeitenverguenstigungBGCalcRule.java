@@ -81,36 +81,28 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			return;
 		}
 
-		BigDecimal verguenstigungProHauptmahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
-		BigDecimal verguenstigungProNebenmahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProNebenmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
+		BigDecimal verguenstigungProMahlzeit =
+			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
 
-		BigDecimal verguenstigungProHauptmahlzeitEffektiv = BigDecimal.ZERO;
-		BigDecimal verguenstigungProNebenmahlzeitEffektiv = BigDecimal.ZERO;
+		BigDecimal verguenstigungProMahlzeitEffektiv = BigDecimal.ZERO;
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungProMahlzeit.compareTo(BigDecimal.ZERO) > 0) {
 
 			// vergünstigung für Hauptmahlzeiten ist gegeben
 
 			// vergünstigung pro hauptmahlzeit berechnen
-			verguenstigungProHauptmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProHauptmahlzeit,
+			verguenstigungProMahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProMahlzeit,
 				inputData.getTarifHauptmahlzeit(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
 
 			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlHauptmahlzeiten().multiply(verguenstigungProHauptmahlzeitEffektiv);
+			BigDecimal verguenstigungTotal = inputData.getAnzahlHauptmahlzeiten().multiply(verguenstigungProMahlzeitEffektiv);
 
 			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
 				verguenstigungTotal;
 
 			inputData.getParent().setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
-		}
-
-		if (verguenstigungProHauptmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0 ||
-			verguenstigungProNebenmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0) {
-			addBemerkung(inputData);
 		}
 	}
 

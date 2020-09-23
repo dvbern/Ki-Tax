@@ -31,13 +31,9 @@ public class MahlzeitenverguenstigungParameter {
 
 	private boolean enabledFuerSozHilfeBez = false;
 
-	private RangeMap<BigDecimal, BigDecimal> verguenstigungProHauptmahlzeit = TreeRangeMap.create();
+	private RangeMap<BigDecimal, BigDecimal> verguenstigungProMahlzeit = TreeRangeMap.create();
 
-	private RangeMap<BigDecimal, BigDecimal> verguenstigungProNebenmahlzeit = TreeRangeMap.create();
-
-	private BigDecimal minimalerElternbeitragHauptmahlzeit = BigDecimal.ZERO;
-
-	private BigDecimal minimalerElternbeitragNebenmahlzeit = BigDecimal.ZERO;
+	private BigDecimal minimalerElternbeitragMahlzeit = BigDecimal.ZERO;
 
 	public MahlzeitenverguenstigungParameter(
 		boolean enabled,
@@ -47,68 +43,29 @@ public class MahlzeitenverguenstigungParameter {
 		BigDecimal verguenstigungStufe1Hauptmahlzeit,
 		BigDecimal verguenstigungStufe2Hauptmahlzeit,
 		BigDecimal verguenstigungStufe3Hauptmahlzeit,
-		BigDecimal verguenstigungStufe1Nebenmahlzeit,
-		BigDecimal verguenstigungStufe2Nebenmahlzeit,
-		BigDecimal verguenstigungStufe3Nebenmahlzeit,
-		BigDecimal minimalerElternbeitragHauptmahlzeit,
-		BigDecimal minimalerElternbeitragNebenmahlzeit
+		BigDecimal minimalerElternbeitragMahlzeit
 	) {
 		this.enabled = enabled;
 		this.enabledFuerSozHilfeBez = enabledFuerSozHilfeBez;
-		verguenstigungProHauptmahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Hauptmahlzeit);
-		verguenstigungProHauptmahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Hauptmahlzeit);
-		verguenstigungProHauptmahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Hauptmahlzeit);
+		verguenstigungProMahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Hauptmahlzeit);
+		verguenstigungProMahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Hauptmahlzeit);
+		verguenstigungProMahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Hauptmahlzeit);
 
-		verguenstigungProNebenmahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Nebenmahlzeit);
-		verguenstigungProNebenmahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Nebenmahlzeit);
-		verguenstigungProNebenmahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Nebenmahlzeit);
-
-		this.minimalerElternbeitragHauptmahlzeit = minimalerElternbeitragHauptmahlzeit;
-		this.minimalerElternbeitragNebenmahlzeit = minimalerElternbeitragNebenmahlzeit;
+		this.minimalerElternbeitragMahlzeit = minimalerElternbeitragMahlzeit;
 	}
 
 	public boolean hasAnspruch(BigDecimal massgebendesEinkommen, boolean sozialhilfebezueger) {
-
-		if (getVerguenstigungProHauptmahlzeitWithParam(massgebendesEinkommen, sozialhilfebezueger).compareTo(BigDecimal.ZERO) > 0 ||
-			getVerguenstigungProNebenmahlzeitWithParam(massgebendesEinkommen, sozialhilfebezueger).compareTo(BigDecimal.ZERO) > 0 ) {
-			return true;
-		}
-
-		return false;
+		return getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfebezueger).compareTo(BigDecimal.ZERO) > 0;
 	}
 
-	public BigDecimal getVerguenstigungProHauptmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
+	public BigDecimal getVerguenstigungProMahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
 
-		BigDecimal verguenstigung = verguenstigungProHauptmahlzeit.get(massgebendesEinkommen);
+		BigDecimal verguenstigung = verguenstigungProMahlzeit.get(massgebendesEinkommen);
 
 		// falls es sich um einen Sozialhilfebezüger handelt und Die Vergünstigung für diese aktiv ist, nehmen wir
 		// die Vergünstigung der Stufe 0
 		if (sozialhilfeBezueger && enabledFuerSozHilfeBez) {
-			verguenstigung = verguenstigungProHauptmahlzeit.get(BigDecimal.ZERO);
-		}
-
-		// falls es sich um einen Sozialhilfebezüger handelt aber die Mahlzeitenvergünstigung nicht an diese
-		// ausbezahlt wird, geben wir 0 zurück
-		if (sozialhilfeBezueger && !enabledFuerSozHilfeBez) {
-			return BigDecimal.ZERO;
-		}
-
-		// falls keine Vergünstigung deklariert ist, geben wir 0 zurück
-		if (verguenstigung == null) {
-			return BigDecimal.ZERO;
-		}
-
-		return verguenstigung;
-	}
-
-	public BigDecimal getVerguenstigungProNebenmahlzeitWithParam(BigDecimal massgebendesEinkommen, boolean sozialhilfeBezueger) {
-
-		BigDecimal verguenstigung = verguenstigungProNebenmahlzeit.get(massgebendesEinkommen);
-
-		// falls es sich um einen Sozialhilfebezüger handelt und Die Vergünstigung für diese aktiv ist, nehmen wir
-		// die Vergünstigung der Stufe 0
-		if (sozialhilfeBezueger && enabledFuerSozHilfeBez) {
-			verguenstigung = verguenstigungProNebenmahlzeit.get(BigDecimal.ZERO);
+			verguenstigung = verguenstigungProMahlzeit.get(BigDecimal.ZERO);
 		}
 
 		// falls es sich um einen Sozialhilfebezüger handelt aber die Mahlzeitenvergünstigung nicht an diese
@@ -147,35 +104,20 @@ public class MahlzeitenverguenstigungParameter {
 		this.enabled = enabled;
 	}
 
-	public RangeMap<BigDecimal, BigDecimal> getVerguenstigungProHauptmahlzeit() {
-		return verguenstigungProHauptmahlzeit;
+	public RangeMap<BigDecimal, BigDecimal> getverguenstigungproMahlzeit() {
+		return verguenstigungProMahlzeit;
 	}
 
-	public void setVerguenstigungProHauptmahlzeit(RangeMap<BigDecimal, BigDecimal> verguenstigungProHauptmahlzeit) {
-		this.verguenstigungProHauptmahlzeit = verguenstigungProHauptmahlzeit;
+	public void setVerguenstigungProMahlzeit(RangeMap<BigDecimal, BigDecimal> verguenstigungPromahlzeit) {
+		this.verguenstigungProMahlzeit = verguenstigungPromahlzeit;
 	}
 
-	public RangeMap<BigDecimal, BigDecimal> getVerguenstigungProNebenmahlzeit() {
-		return verguenstigungProNebenmahlzeit;
+	public BigDecimal getMinimalerElternbeitragMahlzeit() {
+		return minimalerElternbeitragMahlzeit;
 	}
 
-	public void setVerguenstigungProNebenmahlzeit(RangeMap<BigDecimal, BigDecimal> verguenstigungProNebenmahlzeit) {
-		this.verguenstigungProNebenmahlzeit = verguenstigungProNebenmahlzeit;
+	public void setMinimalerElternbeitragMahlzeit(BigDecimal minimalerElternbeitragMahlzeit) {
+		this.minimalerElternbeitragMahlzeit = minimalerElternbeitragMahlzeit;
 	}
 
-	public BigDecimal getMinimalerElternbeitragHauptmahlzeit() {
-		return minimalerElternbeitragHauptmahlzeit;
-	}
-
-	public void setMinimalerElternbeitragHauptmahlzeit(BigDecimal minimalerElternbeitragHauptmahlzeit) {
-		this.minimalerElternbeitragHauptmahlzeit = minimalerElternbeitragHauptmahlzeit;
-	}
-
-	public BigDecimal getMinimalerElternbeitragNebenmahlzeit() {
-		return minimalerElternbeitragNebenmahlzeit;
-	}
-
-	public void setMinimalerElternbeitragNebenmahlzeit(BigDecimal minimalerElternbeitragNebenmahlzeit) {
-		this.minimalerElternbeitragNebenmahlzeit = minimalerElternbeitragNebenmahlzeit;
-	}
 }
