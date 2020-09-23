@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -106,25 +105,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
 				verguenstigungTotal;
 
-			inputData.getParent().setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
-		}
-
-		// Wenn die Vergünstigung pro Nebenmahlzeit grösser 0 ist
-		if (verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
-
-			// vergünstigung für Nebenmahlzeiten ist gegeben
-
-			// vergünstigung pro hauptmahlzeit berechnen
-			verguenstigungProNebenmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProNebenmahlzeit,
-				inputData.getTarifNebenmahlzeit(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragNebenmahlzeit());
-
-			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlNebenmahlzeiten().multiply(verguenstigungProNebenmahlzeitEffektiv);
-			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
-				verguenstigungTotal;
-
-			inputData.getParent().setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
+			inputData.getParent().setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 		}
 
 		if (verguenstigungProHauptmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0 ||

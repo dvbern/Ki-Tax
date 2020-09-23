@@ -432,11 +432,7 @@
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungHauptmahlzeitTotal | currency : '' : 2"></td>
-                                <!-- Mahlzeitenverguenstigung Nebenmahlzeiten -->
-                                <td class="result"
-                                    ng-if="vm.showMahlzeitenverguenstigung()"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungNebenmahlzeitTotal | currency : '' : 2"></td>
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">

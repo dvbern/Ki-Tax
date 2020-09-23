@@ -156,9 +156,7 @@ public class BGCalculationInput {
 
 	private BigDecimal tarifNebenmahlzeit = BigDecimal.ZERO;
 
-	private BigDecimal verguenstigungHauptmahlzeitenTotal = BigDecimal.ZERO;
-
-	private BigDecimal verguenstigungNebenmahlzeitenTotal = BigDecimal.ZERO;
+	private BigDecimal verguenstigungMahlzeitenTotal = BigDecimal.ZERO;
 
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
@@ -189,8 +187,7 @@ public class BGCalculationInput {
 		this.anzahlNebenmahlzeiten = toCopy.anzahlNebenmahlzeiten;
 		this.tarifHauptmahlzeit = toCopy.tarifHauptmahlzeit;
 		this.tarifNebenmahlzeit = toCopy.tarifNebenmahlzeit;
-		this.verguenstigungHauptmahlzeitenTotal = toCopy.verguenstigungHauptmahlzeitenTotal;
-		this.verguenstigungNebenmahlzeitenTotal = toCopy.getVerguenstigungNebenmahlzeitenTotal();
+		this.verguenstigungMahlzeitenTotal = toCopy.verguenstigungMahlzeitenTotal;
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
 		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
@@ -633,20 +630,12 @@ public class BGCalculationInput {
 		this.tarifNebenmahlzeit = tarifNebenmahlzeit;
 	}
 
-	public BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
-		return verguenstigungHauptmahlzeitenTotal;
+	public BigDecimal getVerguenstigungMahlzeitenTotal() {
+		return verguenstigungMahlzeitenTotal;
 	}
 
-	public void setVerguenstigungHauptmahlzeitenTotal(BigDecimal verguenstigungHauptmahlzeitenTotal) {
-		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
-	}
-
-	public BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
-		return verguenstigungNebenmahlzeitenTotal;
-	}
-
-	public void setVerguenstigungNebenmahlzeitenTotal(BigDecimal verguenstigungNebenmahlzeitenTotal) {
-		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
+	public void setVerguenstigungMahlzeitenTotal(BigDecimal verguenstigungMahlzeitenTotal) {
+		this.verguenstigungMahlzeitenTotal = verguenstigungMahlzeitenTotal;
 	}
 
 	@Override
@@ -728,23 +717,14 @@ public class BGCalculationInput {
 		}
 		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
 
-		BigDecimal newVerguenstigungHaupt = BigDecimal.ZERO;
-		if (this.getVerguenstigungHauptmahlzeitenTotal() != null) {
-			newVerguenstigungHaupt = newVerguenstigungHaupt.add(this.getVerguenstigungHauptmahlzeitenTotal());
+		BigDecimal newVerguenstigungMahlzeit = BigDecimal.ZERO;
+		if (this.getVerguenstigungMahlzeitenTotal() != null) {
+			newVerguenstigungMahlzeit = newVerguenstigungMahlzeit.add(this.getVerguenstigungMahlzeitenTotal());
 		}
 		if (other.getTarifNebenmahlzeit() != null) {
-			newVerguenstigungHaupt = newVerguenstigungHaupt.add(other.getVerguenstigungHauptmahlzeitenTotal());
+			newVerguenstigungMahlzeit = newVerguenstigungMahlzeit.add(other.getVerguenstigungMahlzeitenTotal());
 		}
-		this.setVerguenstigungHauptmahlzeitenTotal(newVerguenstigungHaupt);
-
-		BigDecimal newVerguenstigungNeben = BigDecimal.ZERO;
-		if (this.getVerguenstigungNebenmahlzeitenTotal() != null) {
-			newVerguenstigungNeben = newVerguenstigungNeben.add(this.getVerguenstigungNebenmahlzeitenTotal());
-		}
-		if (other.getVerguenstigungNebenmahlzeitenTotal() != null) {
-			newVerguenstigungNeben = newVerguenstigungNeben.add(other.getVerguenstigungNebenmahlzeitenTotal());
-		}
-		this.setVerguenstigungNebenmahlzeitenTotal(newVerguenstigungNeben);
+		this.setVerguenstigungMahlzeitenTotal(newVerguenstigungMahlzeit);
 
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
@@ -823,8 +803,7 @@ public class BGCalculationInput {
 			einschulungTyp == other.einschulungTyp &&
 			betreuungsangebotTyp == other.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
-			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, other.verguenstigungHauptmahlzeitenTotal) &&
-			MathUtil.isSame(verguenstigungNebenmahlzeitenTotal, other.verguenstigungNebenmahlzeitenTotal) &&
+			MathUtil.isSame(verguenstigungMahlzeitenTotal, other.verguenstigungMahlzeitenTotal) &&
 			MathUtil.isSame(tarifHauptmahlzeit, other.tarifHauptmahlzeit) &&
 			MathUtil.isSame(tarifNebenmahlzeit, other.tarifNebenmahlzeit) &&
 			MathUtil.isSame(anzahlHauptmahlzeiten, other.anzahlHauptmahlzeiten) &&
@@ -853,8 +832,7 @@ public class BGCalculationInput {
 			einschulungTyp == that.einschulungTyp &&
 			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
-			MathUtil.isSame(verguenstigungHauptmahlzeitenTotal, that.verguenstigungHauptmahlzeitenTotal) &&
-			MathUtil.isSame(verguenstigungNebenmahlzeitenTotal, that.verguenstigungNebenmahlzeitenTotal) &&
+			MathUtil.isSame(verguenstigungMahlzeitenTotal, that.verguenstigungMahlzeitenTotal) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == that.anspruchspensumProzent &&

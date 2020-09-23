@@ -1,0 +1,8 @@
+ALTER TABLE ebegu.bgcalculation_result
+	DROP COLUMN verguenstigung_nebenmahlzeiten_total;
+
+ALTER TABLE ebegu.bgcalculation_result_aud
+	DROP COLUMN verguenstigung_nebenmahlzeiten_total;
+
+ALTER TABLE ebegu.bgcalculation_result CHANGE COLUMN verguenstigung_hauptmahlzeiten_total verguenstigung_mahlzeiten_total decimal(19,2);
+ALTER TABLE ebegu.bgcalculation_result_aud CHANGE COLUMN verguenstigung_hauptmahlzeiten_total verguenstigung_mahlzeiten_total decimal(19,2);

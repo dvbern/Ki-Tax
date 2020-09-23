@@ -53,8 +53,7 @@ public class EmptyKitaxRechner extends AbstractRechner {
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 		result.setAnspruchspensumProzent(0);
-		result.setVerguenstigungHauptmahlzeitenTotal(BigDecimal.ZERO);
-		result.setVerguenstigungNebenmahlzeitenTotal(BigDecimal.ZERO);
+		result.setVerguenstigungMahlzeitenTotal(BigDecimal.ZERO);
 		// Wir loeschen alle Bemerkungen, die den Zeitraum nach dem Stichtag betreffen
 		input.getParent().getBemerkungenList().clear();
 		// Bemerkung, dass der Gutschein noch nicht berechnet werden kann
