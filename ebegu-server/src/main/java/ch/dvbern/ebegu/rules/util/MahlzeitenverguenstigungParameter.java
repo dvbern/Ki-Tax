@@ -104,7 +104,7 @@ public class MahlzeitenverguenstigungParameter {
 		this.enabled = enabled;
 	}
 
-	public RangeMap<BigDecimal, BigDecimal> getverguenstigungproMahlzeit() {
+	public RangeMap<BigDecimal, BigDecimal> getVerguenstigungProMahlzeit() {
 		return verguenstigungProMahlzeit;
 	}
 
