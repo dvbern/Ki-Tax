@@ -344,22 +344,18 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		return ServerMessageUtil.getMessage(key, sprache, args);
 	}
 
+	/**
+	 * Dieser Methode prueft ob die Zeitabschnitt gleich sind als die von der letzte Gesuch
+	 * Wenn gleich dann soll keine MutationMitteilung erstellt werden
+	 *
+	 * Deswegen sind alle Parametern die nicht vorhanden sind (im MutationMitteilung) ignoriert
+	 * So man muss nur die Zeitabschnitt Werten ueberpruefen
+	 *
+	 * @param betreuungEventDTO
+	 * @param betreuung
+	 * @return
+	 */
 	protected boolean isSame(BetreuungEventDTO betreuungEventDTO, Betreuung betreuung) {
-		if (betreuungEventDTO.getAusserordentlicherBetreuungsaufwand()) {
-			ErweiterteBetreuung erweiterteBetreuung =
-				betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
-			if (erweiterteBetreuung == null ||
-				!erweiterteBetreuung.getErweiterteBeduerfnisse() || !erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt()) {
-				return false;
-			}
-		}
-		if (betreuungEventDTO.getGemeindeName() != null) {
-			Gemeinde gemeinde = betreuung.extractGemeinde();
-			if (!gemeinde.getName().equalsIgnoreCase(betreuungEventDTO.getGemeindeName())) {
-				return false;
-			}
-		}
-		//if GemeindeName is not set, we ignore it and check if Zeitabschnitt are the same
 		Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
 		List<ZeitabschnittDTO> zeitabschnittDTOS = betreuungEventDTO.getZeitabschnitte();
 		if (betreuungspensumContainers.size() != zeitabschnittDTOS.size()) {
