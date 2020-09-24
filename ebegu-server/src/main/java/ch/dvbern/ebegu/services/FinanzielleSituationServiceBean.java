@@ -158,10 +158,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
 		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
-			if (!keineMahlzeitenverguenstigungGewuenscht) {
-				Objects.requireNonNull(iban, "IBAN muss angegeben werden, wenn Mahlzeitenverguenstigung gewuenscht");
-				Objects.requireNonNull(kontoinhaber, "Kontoinhaber muss angegeben werden, wenn Mahlzeitenverguenstigung gewuenscht");
-
+			if (!keineMahlzeitenverguenstigungGewuenscht && iban != null && kontoinhaber != null) {
+				//Hier aufpassen, per Default sind die Mahlzeitverguenstigung Gewunscht
+				//aber wenn die Gemeinde keine Mahlzeitverguenstigung anbietet kann der Gesuchsteller oder Gemeinde
+				//gar keinen Iban oder Kontoinhaber eingeben, deswegen waren diese Feldern nullable before!
 				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
 				auszahlungsdaten.setIban(new IBAN(iban));
 				auszahlungsdaten.setKontoinhaber(kontoinhaber);
