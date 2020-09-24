@@ -113,7 +113,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)
 				|| betreuung.getBetreuungsstatus().equals(Betreuungsstatus.BESTAETIGT)) {
 				if (isSame(dto, betreuung)) {
-					LOG.warn("Platzbestaetigung: die Betreuung  is gleich als der Event mit RefNr: " + dto.getRefnr() +
+					LOG.warn("Platzbestaetigung: die Betreuung  ist identisch wie der Event mit RefNr: " + dto.getRefnr() +
 						" - MutationMitteilung wird nicht erstellt!");
 					return;
 				}
