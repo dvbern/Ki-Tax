@@ -94,8 +94,8 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		// Für Differenz zwischen Anzahl Nebenmahlzeit - Anzahl Hauptmahlzeit*2 wird jeweils angenommen, dass
 		// es sich z.B. und reine Nachmittagsbetreuungen handelt
 		BigDecimal anzahlTageMitHM = inputData.getAnzahlHauptmahlzeiten();
-		BigDecimal anzahlTageOhneHM = anzahlTageMitHM.subtract(
-			inputData.getAnzahlHauptmahlzeiten().multiply(anzahlNebenmahlzeitenStandardTag)
+		BigDecimal anzahlTageOhneHM = inputData.getAnzahlNebenmahlzeiten().subtract(
+			anzahlTageMitHM.multiply(anzahlNebenmahlzeitenStandardTag)
 		);
 		anzahlTageOhneHM = MathUtil.minimum(anzahlTageOhneHM, BigDecimal.ZERO);
 
@@ -113,14 +113,14 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		maxTagesansatzOhneHM = MathUtil.minimum(maxTagesansatzOhneHM, BigDecimal.ZERO);
 
 		// Vergünstigung für Tage mit Hauptmahlzeit
-		BigDecimal verguenstigungTageMitHM = MathUtil.minimum(
+		BigDecimal verguenstigungTageMitHM = MathUtil.maximum(
 			anzahlTageMitHM.multiply(verguenstigungMahlzeit),
 			anzahlTageMitHM.multiply(maxTagesansatzMitHM)
 		);
 		verguenstigungTageMitHM = MathUtil.minimum(verguenstigungTageMitHM, BigDecimal.ZERO);
 
-		// Vergünstigung für Tage mit Hauptmahlzeit
-		BigDecimal verguenstigungTageOhneHM = MathUtil.minimum(
+		// Vergünstigung für Tage ohne Hauptmahlzeit
+		BigDecimal verguenstigungTageOhneHM = MathUtil.maximum(
 			anzahlTageOhneHM.multiply(verguenstigungMahlzeit),
 			anzahlTageOhneHM.multiply(maxTagesansatzOhneHM)
 		);
