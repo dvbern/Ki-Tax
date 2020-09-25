@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -59,7 +60,6 @@ import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
@@ -75,6 +75,7 @@ import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -96,7 +97,7 @@ import ch.dvbern.oss.lib.iso20022.dtos.pain.Pain001DTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001Service;
 import com.lowagie.text.DocumentException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,6 +157,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Inject
 	private BetreuungService betreuungService;
+
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 
 
 	@Override
@@ -934,40 +938,46 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		zahlungsauftrag.getZahlungen().stream()
 			.filter(zahlung -> zahlung.getBetragTotalZahlung().signum() == 1)
 			.forEach(zahlung -> {
-				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
-				final InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
-					institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
-
 				// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-				if (institutionStammdatenBG == null || !institutionStammdatenBG.isZahlungsinformationValid()) {
+				if (!zahlung.getAuszahlungsdaten().isZahlungsinformationValid()) {
 					throw new EbeguRuntimeException(KibonLogLevel.INFO,
 						"wrapZahlungsauftrag",
 						ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
-						institutionStammdaten.getInstitution().getName());
+						zahlung.getInstitutionName());
 				}
 
 				AuszahlungDTO auszahlungDTO = new AuszahlungDTO();
 				auszahlungDTO.setBetragTotalZahlung(zahlung.getBetragTotalZahlung());
-				String kontoinhaber = StringUtils.isNotEmpty(institutionStammdatenBG.getKontoinhaber())
-					? institutionStammdatenBG.getKontoinhaber() : institutionStammdaten.getInstitution().getName();
 
-				Adresse adresseKontoinhaber = institutionStammdatenBG.getAdresseKontoinhaber() != null
-					? institutionStammdatenBG.getAdresseKontoinhaber() : institutionStammdaten.getAdresse();
+				final Auszahlungsdaten auszahlungsdaten = zahlung.getAuszahlungsdaten();
+				Adresse adresseKontoinhaber = auszahlungsdaten.getAdresseKontoinhaber();
+				if (adresseKontoinhaber == null) {
+					if (zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+						final InstitutionStammdaten institutionStammdaten =
+							institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), false);
+						adresseKontoinhaber = institutionStammdaten.getAdresse();
+					} else {
+						// TODO (Team): Achtung: Im Fall von Gemeinde-Gesuchsteller Auszahlungen muss hier ein anderer Default genommen werden!
+						throw new NotImplementedException(
+							"Default-Zahlungsadresse fuer Zahlungslauftyp " + zahlungsauftrag.getZahlungslaufTyp() + " ist nicht definiert");
+					}
+				}
+
 				Objects.requireNonNull(adresseKontoinhaber);
-				auszahlungDTO.setZahlungsempfaegerName(kontoinhaber);
+				auszahlungDTO.setZahlungsempfaegerName(auszahlungsdaten.getKontoinhaber());
 				auszahlungDTO.setZahlungsempfaegerStrasse(adresseKontoinhaber.getStrasse());
 				auszahlungDTO.setZahlungsempfaegerHausnummer(adresseKontoinhaber.getHausnummer());
 				auszahlungDTO.setZahlungsempfaegerPlz(adresseKontoinhaber.getPlz());
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
-				IBAN ibanInstitution = institutionStammdatenBG.getIban();
-				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Institution " + institutionStammdaten.getInstitution().getName());
+				IBAN ibanInstitution = auszahlungsdaten.getIban();
+				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Institution " + zahlung.getInstitutionName());
 				auszahlungDTO.setZahlungsempfaegerIBAN(ibanToUnformattedString(ibanInstitution));
 				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(ibanInstitution.extractClearingNumberWithoutLeadingZeros());
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
 				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
 					gemeindeStammdaten.getGemeinde().getName(),
-					institutionStammdaten.getInstitution().getName(),
+					zahlung.getInstitutionName(),
 					monat);
 				auszahlungDTO.setZahlungText(zahlungstext);
 

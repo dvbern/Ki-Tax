@@ -141,7 +141,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/BgOrGemeinde/all")
@@ -158,7 +158,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/BgOrGemeinde/{gemeindeId}")
@@ -189,7 +189,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public List<JaxBenutzerNoDetails> getBenutzerTsBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+	public List<JaxBenutzer> getBenutzerTsBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		Objects.requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -197,14 +197,14 @@ public class BenutzerResource {
 			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return benutzerService.getBenutzerTsBgOrGemeinde(gemeinde).stream()
-			.map(converter::benutzerToJaxBenutzerNoDetails)
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/BgTsOrGemeinde/all")
@@ -222,7 +222,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/TsOrGemeinde/all")
@@ -239,7 +239,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/TsOrGemeinde/{gemeindeId}")
@@ -261,7 +261,7 @@ public class BenutzerResource {
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle Gesuchsteller zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/gesuchsteller")

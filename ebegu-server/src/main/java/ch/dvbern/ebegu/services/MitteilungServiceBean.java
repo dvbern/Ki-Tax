@@ -94,6 +94,7 @@ import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
@@ -217,52 +218,58 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private void setSenderAndEmpfaengerAndCheckAuthorization(@Nonnull Mitteilung mitteilung) {
-		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
-
-		switch (currentBenutzer.getRole()) {
-		case GESUCHSTELLER: {
+		Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
+		//wenn man direkt aus Kafka Event liest sind man nicht eingeloggt, aber man hat der Rolle SUPER_ADMIN
+		if (!currentBenutzer.isPresent() && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
+			throw new IllegalStateException("Benutzer ist nicht eingeloggt!");
+		}
+		if (!currentBenutzer.isPresent() && principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
 			mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
-			mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-			mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
-			break;
-		}
-		case ADMIN_INSTITUTION:
-		case SACHBEARBEITER_INSTITUTION:
-		case ADMIN_TRAEGERSCHAFT:
-		case SACHBEARBEITER_TRAEGERSCHAFT: {
-			mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
-			mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-			mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-			break;
-		}
-		case SACHBEARBEITER_BG:
-		case ADMIN_BG:
-		case SACHBEARBEITER_GEMEINDE:
-		case ADMIN_GEMEINDE:
-		case SACHBEARBEITER_TS:
-		case ADMIN_TS: {
-			mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
-			mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
-			mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-			break;
-		}
-		case SUPER_ADMIN: {
-			// Superadmin kann als verschiedene Rollen Mitteilungen schicken
-			if (mitteilung instanceof Betreuungsmitteilung) {
+		} else {
+			switch (currentBenutzer.get().getRole()) {
+			case GESUCHSTELLER: {
+				mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
+				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
+				break;
+			}
+			case ADMIN_INSTITUTION:
+			case SACHBEARBEITER_INSTITUTION:
+			case ADMIN_TRAEGERSCHAFT:
+			case SACHBEARBEITER_TRAEGERSCHAFT: {
 				mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
 				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-			} else {
+				break;
+			}
+			case SACHBEARBEITER_BG:
+			case ADMIN_BG:
+			case SACHBEARBEITER_GEMEINDE:
+			case ADMIN_GEMEINDE:
+			case SACHBEARBEITER_TS:
+			case ADMIN_TS: {
 				mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
 				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
 				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				break;
 			}
+			case SUPER_ADMIN: {
+				// Superadmin kann als verschiedene Rollen Mitteilungen schicken
+				if (mitteilung instanceof Betreuungsmitteilung) {
+					mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				} else {
+					mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
+					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				}
+			}
+			}
+			authorizer.checkWriteAuthorizationMitteilung(mitteilung);
+			// Der Sender darf erst nach dem CHECK gesetzt werden! Sonst kann eine Mitteilung gekaptert werden
+			mitteilung.setSender(currentBenutzer.get());
 		}
-		}
-		authorizer.checkWriteAuthorizationMitteilung(mitteilung);
-		// Der Sender darf erst nach dem CHECK gesetzt werden! Sonst kann eine Mitteilung gekaptert werden
-		mitteilung.setSender(currentBenutzer);
 	}
 
 	private Benutzer getEmpfaengerBeiMitteilungAnGemeinde(@Nonnull Mitteilung mitteilung) {
@@ -303,7 +310,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Mitteilung setMitteilungErledigt(@Nonnull String mitteilungsId) {
-		return setMitteilungsStatusIfBerechtigt(mitteilungsId, MitteilungStatus.ERLEDIGT, MitteilungStatus.GELESEN, MitteilungStatus.NEU);
+		return setMitteilungsStatusIfBerechtigt(mitteilungsId, MitteilungStatus.ERLEDIGT, MitteilungStatus.GELESEN,
+			MitteilungStatus.NEU);
 	}
 
 	@Nonnull
@@ -579,6 +587,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU); // vorsichtshalber
 		betreuungsmitteilung.setSentDatum(LocalDateTime.now());
+
 		setSenderAndEmpfaengerAndCheckAuthorization(betreuungsmitteilung);
 
 		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
@@ -1050,7 +1059,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Betreuung existingBetreuung = betreuungToChangeOpt.get();
 			existingBetreuung.getBetreuungspensumContainers()
 				.clear();//delete all current Betreuungspensen before we add the modified list
+			boolean betreuungsMitteilungVollstaendig = true;
 			for (final BetreuungsmitteilungPensum betPensumMitteilung : mitteilung.getBetreuungspensen()) {
+				if (!betPensumMitteilung.isVollstaendig()) {
+					betreuungsMitteilungVollstaendig = false;
+				}
 				BetreuungspensumContainer betPenCont = new BetreuungspensumContainer();
 				betPenCont.setBetreuung(existingBetreuung);
 				Betreuungspensum betPensumJA = new Betreuungspensum(betPensumMitteilung);
@@ -1063,8 +1076,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
 				}
 			}
-			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT
-			existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT wenn Vollstaendig,
+			// sonst warten
+			if (betreuungsMitteilungVollstaendig) {
+				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+			} else {
+				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
+			}
 			betreuungService.saveBetreuung(existingBetreuung, false);
 			mitteilung.setApplied(true);
 			mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);

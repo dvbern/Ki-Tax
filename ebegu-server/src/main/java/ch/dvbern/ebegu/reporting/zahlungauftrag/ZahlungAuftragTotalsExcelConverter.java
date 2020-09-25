@@ -29,8 +29,8 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
+import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -61,7 +61,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
-		@Nonnull List<Zahlung> zahlungenBerechtigt,
+		@Nonnull List<ZahlungDataRow> zahlungenBerechtigt,
 		@Nonnull Locale locale,
 		@Nonnull String beschrieb,
 		@Nonnull LocalDateTime datumGeneriert,
@@ -81,9 +81,9 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 		zahlungenBerechtigt.stream()
 			.sorted()
-			.forEach(zahlung -> {
+			.forEach(zahlungDataRow -> {
 				ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungTotalsRow);
-				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
+				InstitutionStammdaten institutionStammdaten = zahlungDataRow.getInstitutionStammdaten();
 				Institution institution = institutionStammdaten.getInstitution();
 				final Traegerschaft traegerschaft = institution.getTraegerschaft();
 				final IBAN iban = institutionStammdaten.extractIban();
@@ -96,7 +96,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				if (traegerschaft != null) {
 					excelRowGroup.addValue(MergeFieldZahlungAuftrag.traegerschaft, traegerschaft.getName());
 				}
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlungDataRow.getZahlung().getBetragTotalZahlung());
 				if (iban != null) {
 					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
 				}

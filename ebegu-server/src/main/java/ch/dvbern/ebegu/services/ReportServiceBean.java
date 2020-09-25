@@ -128,6 +128,7 @@ import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelCo
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -827,8 +828,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				auftragId));
 
+		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			ZahlungDataRow row = new ZahlungDataRow(
+				zahlung,
+				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
+			);
+			zahlungDataRows.add(row);
+		}
+
 		return getUploadFileInfoZahlung(
-			zahlungsauftrag.getZahlungen(),
+			zahlungDataRows,
 			zahlungsauftrag.getFilename(),
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
@@ -846,7 +856,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
-		List<Zahlung> reportData = new ArrayList<>();
+		List<ZahlungDataRow> reportData = new ArrayList<>();
 
 		Zahlung zahlung = zahlungService.findZahlung(zahlungId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -854,13 +864,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		reportData.add(zahlung);
+		final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
+			.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true);
+		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, institutionStammdaten);
+
+		reportData.add(dataRow);
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionStammdaten()
-			.getInstitution()
-			.getName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionName();
 
 		return getUploadFileInfoZahlung(
 			reportData,
@@ -875,7 +887,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	private UploadFileInfo getUploadFileInfoZahlung(
-		@Nonnull List<Zahlung> reportData,
+		@Nonnull List<ZahlungDataRow> reportData,
 		@Nonnull String excelFileName,
 		@Nonnull String bezeichnung,
 		@Nonnull LocalDateTime datumGeneriert,
@@ -892,7 +904,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-		List<Zahlung> zahlungenBerechtigt = reportData.stream()
+		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
 			.filter(zahlung -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
