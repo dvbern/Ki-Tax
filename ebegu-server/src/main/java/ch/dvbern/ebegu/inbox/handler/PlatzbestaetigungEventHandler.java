@@ -24,7 +24,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -205,11 +204,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		boolean mahlzeitVergunstigungEnabled =
 			isEnabled(betreuung, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
 
-		Set<BetreuungspensumContainer> betreuungspensumContainers = zeitabschnitte.stream()
+		zeitabschnitte.stream()
 			.map(z -> zeitabschnittToBetreuungspensumContainer(mahlzeitVergunstigungEnabled, ctx, z))
 			.filter(Objects::nonNull)
-			.collect(Collectors.toSet());
-		betreuung.setBetreuungspensumContainers(betreuungspensumContainers);
+			.forEach(c -> betreuung.getBetreuungspensumContainers().add(c));
 	}
 
 	@Nullable
