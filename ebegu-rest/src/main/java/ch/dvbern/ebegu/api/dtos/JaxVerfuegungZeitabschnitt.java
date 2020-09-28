@@ -124,6 +124,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	private boolean sameAusbezahlteVerguenstigung;
+	private boolean sameAusbezahlteMahlzeiten;
 
 	@Nullable
 	private JaxTsCalculationResult tsCalculationResultMitPaedagogischerBetreuung;
@@ -376,6 +377,14 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
 		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
+	}
+
+	public boolean isSameAusbezahlteMahlzeiten() {
+		return sameAusbezahlteMahlzeiten;
+	}
+
+	public void setSameAusbezahlteMahlzeiten(boolean sameAusbezahlteMahlzeiten) {
+		this.sameAusbezahlteMahlzeiten = sameAusbezahlteMahlzeiten;
 	}
 
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {

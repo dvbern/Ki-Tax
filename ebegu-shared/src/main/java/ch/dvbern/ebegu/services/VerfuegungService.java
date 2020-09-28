@@ -45,6 +45,7 @@ public interface VerfuegungService {
 	 * @param betreuungId ID der Betreuung, welche verfügt werden soll
 	 * @param manuelleBemerkungen, user-provided Bemerkung zur Verfügung
 	 * @param ignorieren true wenn die ausbezahlten Zeitabschnitte nicht neu berechnet werden muessen
+	 * @param ignorierenMahlzeiten true wenn die ausbezahlten Mahlzeiten-Zeitabschnitte nicht neu berechnet werden muessen
 	 * @param sendEmail true wenn eine Info EMail versendet werden soll
 	 */
 	@Nonnull
@@ -53,6 +54,7 @@ public interface VerfuegungService {
 		@Nonnull String betreuungId,
 		@Nullable String manuelleBemerkungen,
 		boolean ignorieren,
+		boolean ignorierenMahlzeiten,
 		boolean sendEmail);
 
 	/**

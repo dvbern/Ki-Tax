@@ -25,8 +25,10 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -122,11 +124,10 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 	@Nonnull
 	@Override
 	public BigDecimal getAuszahlungsbetrag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		BigDecimal auszahlungsbetrag = BigDecimal.ZERO;
-		auszahlungsbetrag = MathUtil.DEFAULT.addNullSafe(
-			auszahlungsbetrag,
-			zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungHauptmahlzeitenTotal(),
-			zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungNebenmahlzeitenTotal());
+		BigDecimal auszahlungsbetrag = zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungMahlzeitenTotal();
+		if (auszahlungsbetrag == null) {
+			auszahlungsbetrag = BigDecimal.ZERO;
+		}
 		return auszahlungsbetrag;
 	}
 
@@ -149,5 +150,38 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		// Jetzt muss zwingend eine Adresse vorhanden sein
 		Objects.requireNonNull(auszahlungsadresse);
 		return auszahlungsadresse;
+	}
+
+	@Override
+	public void setIsSameAusbezahlteVerguenstigung(
+		@Nonnull Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional,
+		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt) {
+		if (oldSameZeitabschnittOptional.isPresent()) {
+			VerfuegungZeitabschnitt oldSameZeitabschnitt = oldSameZeitabschnittOptional.get();
+			// Der Vergleich muuss fuer ASIV und Gemeinde separat erfolgen
+			setIsSameAusbezahlteVerguenstigungMahlzeiten(
+				newZeitabschnitt.getBgCalculationInputAsiv(),
+				newZeitabschnitt.getBgCalculationResultAsiv(),
+				oldSameZeitabschnitt.getBgCalculationResultAsiv());
+			if (newZeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+				Objects.requireNonNull(newZeitabschnitt.getBgCalculationResultGemeinde());
+				Objects.requireNonNull(oldSameZeitabschnitt.getBgCalculationResultGemeinde());
+				setIsSameAusbezahlteVerguenstigungMahlzeiten(
+					newZeitabschnitt.getBgCalculationInputGemeinde(),
+					newZeitabschnitt.getBgCalculationResultGemeinde(),
+					oldSameZeitabschnitt.getBgCalculationResultGemeinde());
+			}
+		} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
+			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteMahlzeiten(false);
+			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteMahlzeiten(false);
+		}
+	}
+
+	private static void setIsSameAusbezahlteVerguenstigungMahlzeiten(
+		@Nonnull BGCalculationInput inputNeu,
+		@Nonnull BGCalculationResult resultNeu,
+		@Nonnull BGCalculationResult resultBisher
+	) {
+		inputNeu.setSameAusbezahlteMahlzeiten(MathUtil.isSame(resultNeu.getVerguenstigungMahlzeitenTotal(), resultBisher.getVerguenstigungMahlzeitenTotal()));
 	}
 }

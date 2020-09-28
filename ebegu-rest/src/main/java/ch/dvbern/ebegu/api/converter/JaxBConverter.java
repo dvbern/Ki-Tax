@@ -3573,6 +3573,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setZahlungsstatusMahlzeitenverguenstigung(zeitabschnitt.getZahlungsstatusMahlzeitenverguenstigung());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput().isSameAusbezahlteVerguenstigung());
+		jaxZeitabschn.setSameAusbezahlteMahlzeiten(zeitabschnitt.getRelevantBgCalculationInput().isSameAusbezahlteMahlzeiten());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(

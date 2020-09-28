@@ -16,16 +16,14 @@
 package ch.dvbern.ebegu.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
@@ -68,43 +66,31 @@ public final class VerfuegungUtil {
 	 * zuletzt ausbezahlte Verfuegung
 	 * Wird verwendet, um zu entscheiden, ob die Frage Ignorieren/Uebernehmen gestellt werden muss
 	 */
-	public static void setIsSameAusbezahlteVerguenstigung(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung letzteAusbezahlteVerfuegung) {
-		if (letzteAusbezahlteVerfuegung != null) {
+	public static void setIsSameAusbezahlteVerguenstigung(
+		@Nonnull Verfuegung verfuegung,
+		@Nullable Verfuegung letzteAusbezahlteVerfuegung,
+		@Nullable Verfuegung letzteAusbezahlteVerfuegungMahlzeiten
+	) {
+		if (letzteAusbezahlteVerfuegung != null || letzteAusbezahlteVerfuegungMahlzeiten != null) {
 			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
-			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte = letzteAusbezahlteVerfuegung.getZeitabschnitte();
+
+			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte =
+				letzteAusbezahlteVerfuegung != null ? letzteAusbezahlteVerfuegung.getZeitabschnitte() : Collections.emptyList();
+			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitteMahlzeiten =
+				letzteAusbezahlteVerfuegungMahlzeiten != null ? letzteAusbezahlteVerfuegungMahlzeiten.getZeitabschnitte() : Collections.emptyList();
+
+			final ZahlungslaufHelper zahlungslaufHelperGemeindeInstitution = ZahlungslaufHelperFactory.getZahlungslaufHelper(ZahlungslaufTyp.GEMEINDE_INSTITUTION);
+			final ZahlungslaufHelper zahlungslaufHelperGemeindeAntragsteller = ZahlungslaufHelperFactory.getZahlungslaufHelper(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER);
 
 			for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
+				// "Normale" Auszahlungen
 				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
-				if (oldSameZeitabschnittOptional.isPresent()) {
-					VerfuegungZeitabschnitt oldSameZeitabschnitt = oldSameZeitabschnittOptional.get();
-					// Der Vergleich muuss fuer ASIV und Gemeinde separat erfolgen
-					// TODO (hefr) IGNORIEREN? Falls ja, muss dies auch fuer Mahlzeiten gemacht werden!
-					setIsSameAusbezahlteVerguenstigung(
-						newZeitabschnitt.getBgCalculationInputAsiv(),
-						newZeitabschnitt.getBgCalculationResultAsiv(),
-						oldSameZeitabschnitt.getBgCalculationResultAsiv());
-					if (newZeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
-						Objects.requireNonNull(newZeitabschnitt.getBgCalculationResultGemeinde());
-						Objects.requireNonNull(oldSameZeitabschnitt.getBgCalculationResultGemeinde());
-						setIsSameAusbezahlteVerguenstigung(
-							newZeitabschnitt.getBgCalculationInputGemeinde(),
-							newZeitabschnitt.getBgCalculationResultGemeinde(),
-							oldSameZeitabschnitt.getBgCalculationResultGemeinde());
-					}
-				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-					newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(false);
-					newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(false);
-				}
+				zahlungslaufHelperGemeindeInstitution.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittOptional, newZeitabschnitt);
+				// Dasselbe auch fuer Mahlzeiten
+				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittMahlzeitenOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitteMahlzeiten, newZeitabschnitt);
+				zahlungslaufHelperGemeindeAntragsteller.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittMahlzeitenOptional, newZeitabschnitt);
 			}
 		}
-	}
-
-	private static void setIsSameAusbezahlteVerguenstigung(
-		@Nonnull BGCalculationInput inputNeu,
-		@Nonnull BGCalculationResult resultNeu,
-		@Nonnull BGCalculationResult resultBisher
-	) { // TODO (hefr) IGNORIEREN? Falls ja, muss dies auch fuer Mahlzeiten gemacht werden!
-		inputNeu.setSameAusbezahlteVerguenstigung(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
 	}
 
 	@Nonnull

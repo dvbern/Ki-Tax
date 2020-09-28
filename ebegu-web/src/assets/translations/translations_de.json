@@ -997,6 +997,8 @@
     "CONFIRM_MUTIERTE_VERFUEGUNG_IGNORIEREN": "Ja, Korrekturen aber ignorieren",
     "CONFIRM_ALREADY_IGNORED": "Zu diesem Betreuungsgutschein wurden bereits Korrektur-Zahlungen ignoriert und ausserhalb von kiBon verarbeitet",
     "BESCHREIBUNG_CONFIRM_ALREADY_IGNORED": "Diese Mutation beinhaltet ebenfalls Korrekturen von bereits ausbezahlten Beträgen. Auch diese müssen Sie ausserhalb von kiBon direkt mit den Eltern abgleichen. Dies gilt nicht für noch nicht ausbezahlte Beträge. Diese werden in jedem Fall direkt über die Institutionen abgewickelt. Möchten Sie die Betreuung trotzdem verfügen?",
+    "CONFIRM_ALREADY_IGNORED_MAHLZEITEN": "Zu den Mahlzeitenvergünstigungen dieses Betreuungsgutscheins wurden bereits Korrektur-Zahlungen ignoriert und ausserhalb von kiBon verarbeitet",
+    "BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN": "Diese Mutation beinhaltet ebenfalls Korrekturen von bereits ausbezahlten Mahlzeitenvergünstigungen. Auch diese müssen Sie ausserhalb von kiBon direkt mit den Eltern abgleichen. Dies gilt nicht für noch nicht ausbezahlte Beträge. Diese werden normal über den Zahlungslauf abgehandelt. Möchten Sie die Betreuung trotzdem verfügen?",
     "PDF_VERFUEGUNG_ANZEIGEN": "Verfügung als PDF anzeigen",
     "PDF_NICHT_EINTRETEN_ANZEIGEN": "Nichteintretensverfügung als PDF anzeigen",
     "PDF_FINSITUATION_ANZEIGEN": "Berechnung der finanziellen Verhältnisse als PDF anzeigen",

@@ -50,8 +50,9 @@ public class BGCalculationInput {
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
-	// TODO (hefr) IGNORIEREN? Wir nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, fuer Mahlzeiten nicht!
+	// Wird nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, muss fuer Mahlzeiten separat berechnet werden!
 	private boolean sameAusbezahlteVerguenstigung;
+	private boolean sameAusbezahlteMahlzeiten;
 
 	@Nullable
 	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
@@ -404,6 +405,14 @@ public class BGCalculationInput {
 
 	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
 		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
+	}
+
+	public boolean isSameAusbezahlteMahlzeiten() {
+		return sameAusbezahlteMahlzeiten;
+	}
+
+	public void setSameAusbezahlteMahlzeiten(boolean sameAusbezahlteMahlzeiten) {
+		this.sameAusbezahlteMahlzeiten = sameAusbezahlteMahlzeiten;
 	}
 
 	public boolean isAbschnittLiegtNachBEGUStartdatum() {

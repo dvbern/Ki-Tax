@@ -149,6 +149,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		@Nonnull String betreuungId,
 		@Nullable String manuelleBemerkungen,
 		boolean ignorieren,
+		boolean ignorierenMahlzeiten,
 		boolean sendEmail) {
 		// verfuegung in das preview Feld der Betreuung berechnen lassen
 		Betreuung betreuungMitVerfuegungPreview = (Betreuung) calculateAndExtractPlatz(gesuchId, betreuungId);
@@ -162,7 +163,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
 			Betreuungsstatus.VERFUEGT);
-		setZahlungsstatus(persistedVerfuegung, ignorieren);
+		setZahlungsstatus(persistedVerfuegung, ignorieren, ignorierenMahlzeiten);
 		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 
@@ -322,7 +323,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 * Aendert den Status der Zahlung auf NEU oder IGNORIEREND fuer alle Zahlungen wo etwas korrigiert wurde.
 	 * Wird auf NEU gesetzt wenn ignorieren==false, sonst wird es auf IGNORIEREND gesetzt.
 	 */
-	private void setZahlungsstatus(@Nonnull Verfuegung verfuegung, boolean ignorieren) {
+	private void setZahlungsstatus(@Nonnull Verfuegung verfuegung, boolean ignorieren, boolean ignorierenMahlzeiten) {
 		Betreuung betreuung = verfuegung.getBetreuung();
 		Objects.requireNonNull(betreuung);
 		Gesuch gesuch = betreuung.extractGesuch();
@@ -332,14 +333,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			return;
 		}
 
-		// TODO (hefr) IGNORIEREN? Falls fuer Mahlzeiten nicht moeglich: bei Mahleziten einfach false schicken...
+		findVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_INSTITUTION, betreuung)
+			.ifPresent(vorgaenger -> setZahlungsstatus(ZahlungslaufTyp.GEMEINDE_INSTITUTION, verfuegung, vorgaenger, ignorieren));
 
-		final Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes =
-			findVorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes(betreuung);
-		for (ZahlungslaufTyp zahlungslaufTyp : vorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes.keySet()) {
-			findVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp, betreuung)
-				.ifPresent(vorgaenger -> setZahlungsstatus(zahlungslaufTyp, verfuegung, vorgaenger, ignorieren));
-		}
+		findVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, betreuung)
+			.ifPresent(vorgaenger -> setZahlungsstatus(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, verfuegung, vorgaenger, ignorierenMahlzeiten));
 	}
 
 	private void setZahlungsstatus(

@@ -1,3 +1,4 @@
+/* tslint:disable:early-exit */
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland
@@ -14,7 +15,7 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {IComponentOptions, ILogService, IPromise, IScope, IWindowService} from 'angular';
+import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -75,6 +76,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$timeout',
         'AuthServiceRS',
         'I18nServiceRSRest',
+        '$q'
     ];
 
     // this is the model...
@@ -83,6 +85,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showSchemas: boolean;
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
     public fragenObIgnorieren: boolean;
+    public fragenObIgnorierenMahlzeiten: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
     public showPercent: boolean;
@@ -110,6 +113,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         $timeout: ITimeoutService,
         private readonly authServiceRs: AuthServiceRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
+        private readonly $q: IQService,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -206,18 +210,23 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      */
     private setFragenObIgnorieren(): void {
         this.fragenObIgnorieren = false; // by default
+        this.fragenObIgnorierenMahlzeiten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
             this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
+            this.fragenObIgnorierenMahlzeiten = this.getVerfuegenToWorkWith().fragenObIgnorierenMahlzeiten();
         }
-    }
-
-    private isFragenObIgnorieren(): boolean {
-        return this.fragenObIgnorieren;
     }
 
     private isAlreadyIgnored(): boolean {
         if (this.getVerfuegenToWorkWith()) {
             return this.getVerfuegenToWorkWith().isAlreadyIgnored();
+        }
+        return false; // by default
+    }
+
+    private isAlreadyIgnoredMahlzeiten(): boolean {
+        if (this.getVerfuegenToWorkWith()) {
+            return this.getVerfuegenToWorkWith().isAlreadyIgnoredMahlzeiten();
         }
         return false; // by default
     }
@@ -228,30 +237,73 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return;
         }
 
-        const direktVerfuegen = !this.isFragenObIgnorieren() || !this.isMutation()
-            || this.isAlreadyIgnored();
+        // Wir muessen die Frage nach dem Verfuegen fuer die Verguenstigung und die Mahlzeiten separat stellen!
+        const direktVerfuegenVerguenstigung = !this.fragenObIgnorieren || !this.isMutation() || this.isAlreadyIgnored();
+        const direktVerfuegenMahlzeiten = !this.fragenObIgnorierenMahlzeiten || !this.isMutation() || this.isAlreadyIgnoredMahlzeiten();
+
+        // Zuerst zeigen wir aber eine Warnung an, falls schon ignoriert war (wiederum separat fuer Verguenstigung
+        // und Mahlzeiten)
+        // Normal
+        this.warnIfAlreadyIgnored(
+            this.isAlreadyIgnored(),
+            'CONFIRM_ALREADY_IGNORED',
+            'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED')
+        .then(() => {
+            // Mahlzeiten
+            this.warnIfAlreadyIgnored(
+                this.isAlreadyIgnoredMahlzeiten(),
+                'CONFIRM_ALREADY_IGNORED_MAHLZEITEN',
+                'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN')
+             .then(() => {
+                // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
+                this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung, direktVerfuegenMahlzeiten).then(() => {
+                    this.goToVerfuegen();
+                });
+            });
+        });
+    }
+
+    private warnIfAlreadyIgnored(alreadyIgnored: boolean, warningTitle: string, warningText: string): IPromise<void> {
         // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
-        if (this.isAlreadyIgnored()) {
-            this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-                title: 'CONFIRM_ALREADY_IGNORED',
-                deleteText: 'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED',
+        if (alreadyIgnored) {
+            return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+                title: warningTitle,
+                deleteText: warningText,
                 parentController: undefined,
                 elementID: undefined,
             }).then(() => {
-                const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
-                promise.then(() => this.goToVerfuegen());
+                return this.createDeferPromise<void>();
             });
-        } else {
-            const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
-            promise.then(() => this.goToVerfuegen());
         }
+        return this.createDeferPromise<void>();
     }
 
-    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean): IPromise<TSVerfuegung> {
-        return direktVerfuegen
-            ? this.saveVerfuegung()
-            // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-            : this.saveMutierteVerfuegung();
+    private createDeferPromise<T>(): IPromise<T> {
+        const defer = this.$q.defer<T>();
+        defer.resolve();
+        return defer.promise;
+    }
+
+    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean, direktVerfuegenMahlzeiten: boolean): IPromise<TSVerfuegung> {
+        // Falls sowohl die Verfuegung wie die Mahlzeiten "direkt" verfuegt werden duerfen, kann direkt weitergefahren werden
+        if (direktVerfuegen && direktVerfuegenMahlzeiten) {
+            return this.saveVerfuegung();
+        }
+        return this.askForIgnoringIfNecessary(false, direktVerfuegen).then(ignoreVerguenstigung => {
+            return this.askForIgnoringIfNecessary(true, direktVerfuegenMahlzeiten).then(ignoreMahlzeiten => {
+                return this.saveMutierteVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten);
+            });
+        });
+    }
+
+    private askForIgnoringIfNecessary(isMahlzeiten: boolean, isDirektVerfuegen: boolean): IPromise<boolean> {
+        if (isDirektVerfuegen) {
+            return this.createDeferPromise<boolean>();
+        }
+        return this.askIfIgnorieren(isMahlzeiten)
+            .then(ignoreVerguenstigung => {
+                return ignoreVerguenstigung;
+            });
     }
 
     private isVerfuegenValid(): boolean {
@@ -379,17 +431,22 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             elementID: undefined,
         }).then(() => {
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(false, this.bemerkungen);
+            return this.gesuchModelManager.saveVerfuegung(false, false, this.bemerkungen);
         });
     }
 
-    public saveMutierteVerfuegung(): IPromise<TSVerfuegung> {
+    public saveMutierteVerfuegung(ignoreVerguenstigung: boolean, ignoreMahlzeiten: boolean): IPromise<TSVerfuegung> {
+        return this.gesuchModelManager.saveVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten, this.bemerkungen);
+    }
+
+    private askIfIgnorieren(isMahlzeiten: boolean): IPromise<boolean> {
+        console.warn('Is Mahlzeiten: ', isMahlzeiten); // TODO (hefr) hier sollte der Titel uebergeben werden!
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             institutionName: this.getInstitutionName(),
             institutionPhone: this.getInstitutionPhone(),
         }).then(response => {
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(response === 2, this.bemerkungen);
+            return response === 2;
         });
     }
 

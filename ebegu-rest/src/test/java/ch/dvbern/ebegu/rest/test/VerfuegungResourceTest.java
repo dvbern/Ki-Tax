@@ -81,7 +81,12 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 		String manuelleBemerkung = "manuelleBemerkung";
 
-		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, manuelleBemerkung);
+		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(
+			new JaxId(gesuch.getId()),
+			new JaxId(betreuung.getId()),
+			false,
+			false,
+			manuelleBemerkung);
 
 		assert persistedVerfuegung != null;
 		Assert.assertNotNull(persistedVerfuegung.getGeneratedBemerkungen());
@@ -111,12 +116,13 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void testCalculateVerfuegung() {
+	public void calculateVerfuegung() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		//noinspection ConstantConditions
 		Response response = verfuegungResource.calculateVerfuegung(new JaxId(gesuch.getId()), null, null);
+		Assert.assertNotNull(response);
 
 		// Sicherstellen, dass nach dem Berechnen die Vefügung nciht gespeichert wurde
 		Set<JaxKindContainer> kinderList = (Set<JaxKindContainer>) response.getEntity();

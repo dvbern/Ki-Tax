@@ -280,9 +280,9 @@ public class BetreuungsgutscheinEvaluator {
 			// Zahlungsstatus aus vorgaenger uebernehmen
 			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
 			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder eben nicht)
-			// TODO (hefr) IGNORIEREN. Braucht es die Frage nach Ignorieren fuer die Mahlzeiten separat? Gehe aktuell davon aus, dass nicht, wobei dann
-			//  Ignorieren gar nicht zugelassen werden duerfte!
-			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION));
+			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen,
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION),
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER));
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {

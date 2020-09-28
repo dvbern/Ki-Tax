@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.util.zahlungslauf;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -77,4 +78,13 @@ public interface ZahlungslaufHelper {
 	 */
 	@Nonnull
 	Adresse getAuszahlungsadresseOrDefaultadresse(@Nonnull Zahlung zahlung);
+
+	/**
+	 * Setzt das Flag, ob der auszuzahlende Betrag fuer diesen Zahlunglauf geaendert hat.
+	 * Wird benoetigt, um die Frage nach dem Ignorieren korrekt stellen zu koennen und um
+	 * keine 'leeren' Auszahlungen zu machen.
+	 */
+	void setIsSameAusbezahlteVerguenstigung(
+		@Nonnull Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional,
+		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt);
 }
