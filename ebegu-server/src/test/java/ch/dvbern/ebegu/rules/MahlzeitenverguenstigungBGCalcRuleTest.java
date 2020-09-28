@@ -64,7 +64,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 	public void getAnwendbareAngebote() {
 		Assert.assertTrue(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.KITA));
 		Assert.assertTrue(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.TAGESFAMILIEN));
-		Assert.assertTrue(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.TAGESSCHULE));
+		Assert.assertFalse(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.TAGESSCHULE));
 		Assert.assertFalse(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.FERIENINSEL));
 	}
 
@@ -80,11 +80,11 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 3),
-			28
+			36
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 3),
-			36
+			30
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 2),
