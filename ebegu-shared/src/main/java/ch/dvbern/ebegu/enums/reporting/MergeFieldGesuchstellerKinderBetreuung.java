@@ -68,6 +68,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	massEinkommenTitle(new SimpleMergeField<>("massEinkommenTitle", STRING_CONVERTER)),
 	einkommensjahrTitle(new SimpleMergeField<>("einkommensjahrTitle", STRING_CONVERTER)),
 	einkommensverschlechterungTitle(new SimpleMergeField<>("einkommensverschlechterungTitle", STRING_CONVERTER)),
+	sozialhilfebezuegerTitle(new SimpleMergeField<>("sozialhilfebezuegerTitle", STRING_CONVERTER)),
 	geprueftSTVTitle(new SimpleMergeField<>("geprueftSTVTitle", STRING_CONVERTER)),
 	veranlagtTitle(new SimpleMergeField<>("veranlagtTitle", STRING_CONVERTER)),
 	kinderTitle(new SimpleMergeField<>("kinderTitle", STRING_CONVERTER)),
@@ -167,6 +168,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	massgEink(new SimpleMergeField<>("massgEink", BIGDECIMAL_CONVERTER)),
 	einkommensjahr(new SimpleMergeField<>("einkommensjahr", INTEGER_CONVERTER)),
 	ekvVorhanden(new SimpleMergeField<>("ekvVorhanden", BOOLEAN_X_CONVERTER)),
+	sozialhilfebezueger(new SimpleMergeField<>("sozialhilfebezueger", BOOLEAN_X_CONVERTER)),
 	stvGeprueft(new SimpleMergeField<>("stvGeprueft", BOOLEAN_X_CONVERTER)),
 	veranlagt(new SimpleMergeField<>("veranlagt", BOOLEAN_X_CONVERTER)),
 
