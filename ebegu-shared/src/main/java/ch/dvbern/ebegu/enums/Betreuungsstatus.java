@@ -25,7 +25,6 @@ public enum Betreuungsstatus {
 
 	// Ablauf beim Jugendamt
 	WARTEN,
-	SCHULAMT, //TODO (team) Diesen Status später entfernen?
 	ABGEWIESEN,
 	NICHT_EINGETRETEN,
 	STORNIERT,
@@ -63,13 +62,13 @@ public enum Betreuungsstatus {
 	 * Alle SCH-Status, die ausgeloest sind, gelten als geschlossen, da sie im Verfuegungsprozess nicht beruecksichtigt werden.
 	 */
 	public boolean isGeschlossen() {
-		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this || SCHULAMT == this
+		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
 			|| SCHULAMT_FALSCHE_INSTITUTION == this;
 	}
 
 	public boolean isAnyStatusOfVerfuegt() {
-		return VERFUEGT == this || SCHULAMT == this
+		return VERFUEGT == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this;
 	}
 
@@ -78,7 +77,7 @@ public enum Betreuungsstatus {
 	}
 
 	public boolean isSchulamt() {
-		return SCHULAMT == this || SCHULAMT_ANMELDUNG_ERFASST  == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
+		return SCHULAMT_ANMELDUNG_ERFASST  == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this|| SCHULAMT_ANMELDUNG_ABGELEHNT == this  || SCHULAMT_FALSCHE_INSTITUTION == this
 			|| SCHULAMT_MODULE_AKZEPTIERT == this;
 	}

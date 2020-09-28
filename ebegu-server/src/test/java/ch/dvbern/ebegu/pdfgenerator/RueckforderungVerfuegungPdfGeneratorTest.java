@@ -40,8 +40,6 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 	private InstitutionStammdaten institutionStammdaten;
 	private RueckforderungFormular rueckforderungFormular;
 
-	final String PATH_TO_UNTERSCHRIFT = FileUtils.getTempDirectoryPath() + "notverordnung_unterschrift.png";
-
 	@Before
 	public void init() throws IOException {
 		this.institutionStammdaten = initInstitutionStammdaten();
@@ -55,7 +53,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungVerfuegungPdfGenerator generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson");
 		final String file_de = pfad + "notrecht_definitive_verfuegung_negativ_de.pdf";
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
@@ -64,7 +62,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		this.rueckforderungFormular.setBemerkungFuerVerfuegung(null);
 		generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson");
 		final String file_fr = pfad + "notrecht_definitive_verfuegung_negativ_fr.pdf";
 		System.out.println("PDF generated: " + file_fr);
 		generator.generate(new FileOutputStream(file_fr));
@@ -76,7 +74,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungVerfuegungPdfGenerator generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson");
 		final String file_de = pfad + "notrecht_definitive_verfuegung_positiv_de.pdf";
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
@@ -85,7 +83,7 @@ public class RueckforderungVerfuegungPdfGeneratorTest {
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		this.rueckforderungFormular.setBemerkungFuerVerfuegung(null);
 		generator =
-			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson", PATH_TO_UNTERSCHRIFT);
+			new RueckforderungVerfuegungPdfGenerator(this.rueckforderungFormular, "VerantwortlichePerson");
 		final String file_fr = pfad + "notrecht_definitive_verfuegung_positiv_fr.pdf";
 		System.out.println("PDF generated: " + file_fr);
 		generator.generate(new FileOutputStream(file_fr));

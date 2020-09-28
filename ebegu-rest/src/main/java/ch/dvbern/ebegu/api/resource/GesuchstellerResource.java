@@ -41,6 +41,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -75,6 +76,9 @@ public class GesuchstellerResource {
 	private GesuchService gesuchService;
 
 	@Inject
+	private ResourceHelper resourceHelper;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Updates a Gesuchsteller or creates it if it doesn't exist in the database. The transfer " +
@@ -100,8 +104,7 @@ public class GesuchstellerResource {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchContJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("createGesuchsteller", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchContJAXPId.getId()));
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
-		//TODO (team): Sobald das Speichern der Email/Telefon NACH dem Verfuegen in einem separaten Service ist, wieder einkommentieren
-		//		resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
+		resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
 
 		GesuchstellerContainer gesuchstellerToMerge = new GesuchstellerContainer();
 		if (gesuchstellerJAXP.getId() != null) {

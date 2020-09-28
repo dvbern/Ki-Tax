@@ -296,10 +296,9 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(rueckforderungFormular, "Das Argument 'rueckforderungFormular' darf nicht leer sein");
 
 		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
-		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
 		RueckforderungVerfuegungPdfGenerator pdfGenerator =
-			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson,
-				unterschriftPath);
+			new RueckforderungVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson
+			);
 		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
 	}
 

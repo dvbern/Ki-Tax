@@ -833,12 +833,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.save(TSBetreuungsstatus.STORNIERT, PENDENZEN_BETREUUNG, undefined);
     }
 
-    public saveSchulamt(): void {
-        if (this.isGesuchValid()) {
-            this.save(TSBetreuungsstatus.SCHULAMT, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-        }
-    }
-
     /**
      * Returns true when the user is allowed to edit the content. This happens when the status is AUSSTEHEHND
      * or SCHULAMT and we are not yet in the KorrekturmodusJugendamt
@@ -856,9 +850,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel() && this.getBetreuungModel().betreuungsstatus) {
             return !this.getBetreuungModel().hasVorgaenger()
                 && (this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND)
-                    || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST)
-                    || (this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT)
-                        && this.getBetreuungModel().isNew()))
+                    || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST))
                 && !this.isFreigabequittungAusstehend();
         }
 
@@ -902,10 +894,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isBetreuungsstatusAusstehendOrUnbekannteInstitution(): boolean {
         return this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND) ||
             this.isBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
-    }
-
-    public isBetreuungsstatusSchulamt(): boolean {
-        return this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT);
     }
 
     public isBetreuungsstatusStorniert(): boolean {
