@@ -26,63 +26,69 @@ public class MahlzeitenverguenstigungParameterTest {
 
 	@Test
 	public void mahlzeitenverguenstigungVerguenstigungEffektivTest() {
-		MahlzeitenverguenstigungParameter params = new MahlzeitenverguenstigungParameter(true, false,
-			BigDecimal.valueOf(51000), BigDecimal.valueOf(70000), BigDecimal.valueOf(6), BigDecimal.valueOf(3),
-			BigDecimal.valueOf(0), BigDecimal.valueOf(3), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
-			BigDecimal.valueOf(2), BigDecimal.valueOf(2));
+		MahlzeitenverguenstigungParameter params = new MahlzeitenverguenstigungParameter(
+			true,
+			false,
+			BigDecimal.valueOf(51000),
+			BigDecimal.valueOf(70000),
+			BigDecimal.valueOf(6),
+			BigDecimal.valueOf(3),
+			BigDecimal.valueOf(0),
+			BigDecimal.valueOf(2)
+		);
 
 
-		BigDecimal verguenstigung = params.getVerguenstigungProHauptmahlzeitWithParam(BigDecimal.valueOf(50000), false);
+		BigDecimal verguenstigung = params.getVerguenstigungProMahlzeitWithParam(BigDecimal.valueOf(50000), false);
 
 		Assert.assertEquals(verguenstigung, BigDecimal.valueOf(6));
 
 		BigDecimal verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(9),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(6));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(8),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(6));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(7),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(5));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(6),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(4));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(5),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(3));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(4),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(2));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(3),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(1));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(2),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(0));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(1),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(0));
 
 		verguenstigungEffektiv = params.getVerguenstigungEffektiv(verguenstigung, BigDecimal.valueOf(0),
-			params.getMinimalerElternbeitragHauptmahlzeit());
+			params.getMinimalerElternbeitragMahlzeit());
 
 		Assert.assertEquals(verguenstigungEffektiv, BigDecimal.valueOf(0));
 	}
