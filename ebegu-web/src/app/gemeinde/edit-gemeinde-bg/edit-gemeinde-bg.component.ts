@@ -112,14 +112,9 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gk.konfigBeguBisUndMitSchulstufe, gk);
     }
 
-    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_HAUPTMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragHauptmahlzeit, gk);
-    }
-
-    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_NEBENMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragNebenmahlzeit, gk);
+    public changeKonfigMahlzeitenverguenstigungMinmalerElternanteilMahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit, gk);
     }
 
     public changeKonfigErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
@@ -274,18 +269,10 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungMahlzeit(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit,
-            gk
-        );
-    }
-
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit,
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungMahlzeit,
             gk
         );
     }
@@ -303,18 +290,10 @@ export class EditGemeindeComponentBG implements OnInit {
         stufe2MaxInput.updateValueAndValidity();
     }
 
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungMahlzeit(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit,
-            gk
-        );
-    }
-
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit,
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungMahlzeit,
             gk
         );
     }
@@ -327,18 +306,10 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit,
-            gk
-        );
-    }
-
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT,
-            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit,
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit,
             gk
         );
     }

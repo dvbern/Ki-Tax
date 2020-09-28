@@ -3575,8 +3575,7 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
-		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungHauptmahlzeitenTotal());
-		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungNebenmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungMahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungMahlzeitenTotal());
 		return jaxZeitabschn;
 	}
 

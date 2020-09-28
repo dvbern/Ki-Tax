@@ -51,6 +51,5 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public zuSpaetEingereicht: boolean;
     public tsCalculationResultMitPaedagogischerBetreuung: TSTsCalculationResult;
     public tsCalculationResultOhnePaedagogischerBetreuung: TSTsCalculationResult;
-    public verguenstigungHauptmahlzeitTotal: number;
-    public verguenstigungNebenmahlzeitTotal: number;
+    public verguenstigungMahlzeitTotal: number;
 }

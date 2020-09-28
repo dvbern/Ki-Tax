@@ -82,55 +82,57 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			return;
 		}
 
-		BigDecimal verguenstigungProHauptmahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
-		BigDecimal verguenstigungProNebenmahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProNebenmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
+		BigDecimal verguenstigungMahlzeit =
+			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
 
-		BigDecimal verguenstigungProHauptmahlzeitEffektiv = BigDecimal.ZERO;
-		BigDecimal verguenstigungProNebenmahlzeitEffektiv = BigDecimal.ZERO;
+		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
+		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
 
-		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
+		// Wir machen eine Annahme für die Anzahl Tage, bei denen das Kind eine Betreuung hat
+		// Für jeden Tag wo das Kind eine Hauptmahlzeit bezieht wird angenommen, dass es eine Ganztagesbetreuung hat
+		// (1 Hauptmahlzeit, 2 Nebenmahlzeiten).
+		// Für Differenz zwischen Anzahl Nebenmahlzeit - Anzahl Hauptmahlzeit*2 wird jeweils angenommen, dass
+		// es sich z.B. und reine Nachmittagsbetreuungen handelt
+		BigDecimal anzahlTageMitHM = inputData.getAnzahlHauptmahlzeiten();
+		BigDecimal anzahlTageOhneHM = inputData.getAnzahlNebenmahlzeiten().subtract(
+			anzahlTageMitHM.multiply(anzahlNebenmahlzeitenStandardTag)
+		);
+		anzahlTageOhneHM = MathUtil.minimum(anzahlTageOhneHM, BigDecimal.ZERO);
 
-			// vergünstigung für Hauptmahlzeiten ist gegeben
+		// maximaler Tagesansatz für Tage mit Hauptmahlzeit ist Hauptmahlzeit + 2*Preis Nebenmahlzeit - minimaler Elternbeitrag.
+		BigDecimal maxTagesansatzMitHM = inputData.getTarifNebenmahlzeit()
+			.multiply(anzahlNebenmahlzeitenStandardTag)
+			.add(inputData.getTarifHauptmahlzeit())
+			.subtract(mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
+		maxTagesansatzMitHM = MathUtil.minimum(maxTagesansatzMitHM, BigDecimal.ZERO);
 
-			// vergünstigung pro hauptmahlzeit berechnen
-			verguenstigungProHauptmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProHauptmahlzeit,
-				inputData.getTarifHauptmahlzeit(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+		// maximaler Tagesansatz für Tage ohne Hauptmahlzeit ist 2*Preis Nebenmahlzeit - minimaler Elternbeitrag.
+		BigDecimal maxTagesansatzOhneHM = inputData.getTarifNebenmahlzeit()
+			.multiply(anzahlNebenmahlzeitenStandardTag)
+			.subtract(mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
+		maxTagesansatzOhneHM = MathUtil.minimum(maxTagesansatzOhneHM, BigDecimal.ZERO);
 
-			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlHauptmahlzeiten().multiply(verguenstigungProHauptmahlzeitEffektiv);
+		// Vergünstigung für Tage mit Hauptmahlzeit
+		BigDecimal verguenstigungTageMitHM = MathUtil.maximum(
+			anzahlTageMitHM.multiply(verguenstigungMahlzeit),
+			anzahlTageMitHM.multiply(maxTagesansatzMitHM)
+		);
+		verguenstigungTageMitHM = MathUtil.minimum(verguenstigungTageMitHM, BigDecimal.ZERO);
 
-			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
-				verguenstigungTotal;
+		// Vergünstigung für Tage ohne Hauptmahlzeit
+		BigDecimal verguenstigungTageOhneHM = MathUtil.maximum(
+			anzahlTageOhneHM.multiply(verguenstigungMahlzeit),
+			anzahlTageOhneHM.multiply(maxTagesansatzOhneHM)
+		);
+		verguenstigungTageOhneHM = MathUtil.minimum(verguenstigungTageOhneHM, BigDecimal.ZERO);
 
-			inputData.getParent().setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
-		}
+		BigDecimal verguenstigungTotal = verguenstigungTageMitHM.add(verguenstigungTageOhneHM);
 
-		// Wenn die Vergünstigung pro Nebenmahlzeit grösser 0 ist
-		if (verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
-
-			// vergünstigung für Nebenmahlzeiten ist gegeben
-
-			// vergünstigung pro hauptmahlzeit berechnen
-			verguenstigungProNebenmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProNebenmahlzeit,
-				inputData.getTarifNebenmahlzeit(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragNebenmahlzeit());
-
-			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlNebenmahlzeiten().multiply(verguenstigungProNebenmahlzeitEffektiv);
-			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
-				verguenstigungTotal;
-
-			inputData.getParent().setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
-		}
-
-		if (verguenstigungProHauptmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0 ||
-			verguenstigungProNebenmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungTotal.compareTo(BigDecimal.ZERO) > 0) {
 			addBemerkung(inputData);
 		}
+
+		inputData.getParent().setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
 	}
 
 	private void addBemerkung(@Nonnull BGCalculationInput inputData) {
