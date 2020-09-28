@@ -2943,8 +2943,7 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultMitPaedagogischerBetreuung);
             verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
-            verfuegungZeitabschnittTS.verguenstigungHauptmahlzeitTotal = zeitabschnittFromServer.verguenstigungHauptmahlzeitTotal;
-            verfuegungZeitabschnittTS.verguenstigungNebenmahlzeitTotal = zeitabschnittFromServer.verguenstigungNebenmahlzeitTotal;
+            verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
             return verfuegungZeitabschnittTS;
         }
         return undefined;

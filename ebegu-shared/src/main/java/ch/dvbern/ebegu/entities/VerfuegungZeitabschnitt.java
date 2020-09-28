@@ -559,14 +559,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setTarifNebenmahlzeit(tarifNebenmahlzeit);
 	}
 
-	public void setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungHauptmahlzeitenTotal) {
-		this.getBgCalculationInputAsiv().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
-		this.getBgCalculationInputGemeinde().setVerguenstigungHauptmahlzeitenTotal(verguenstigungHauptmahlzeitenTotal);
-	}
-
-	public void setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungNebenmahlzeitenTotal) {
-		this.getBgCalculationInputAsiv().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
-		this.getBgCalculationInputGemeinde().setVerguenstigungNebenmahlzeitenTotal(verguenstigungNebenmahlzeitenTotal);
+	public void setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungMahlzeitenTotal) {
+		this.getBgCalculationInputAsiv().setVerguenstigungMahlzeitenTotal(verguenstigungMahlzeitenTotal);
+		this.getBgCalculationInputGemeinde().setVerguenstigungMahlzeitenTotal(verguenstigungMahlzeitenTotal);
 	}
 
 	public void setPensumUnitForAsivAndGemeinde(PensumUnits unit) {
@@ -784,7 +779,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
-		result.setVerguenstigungHauptmahlzeitenTotal(input.getVerguenstigungHauptmahlzeitenTotal());
-		result.setVerguenstigungNebenmahlzeitenTotal(input.getVerguenstigungNebenmahlzeitenTotal());
+		result.setVerguenstigungMahlzeitenTotal(input.getVerguenstigungMahlzeitenTotal());
 	}
 }

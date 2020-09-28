@@ -143,11 +143,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal verguenstigungHauptmahlzeitenTotal;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal verguenstigungNebenmahlzeitenTotal;
+	private BigDecimal verguenstigungMahlzeitenTotal;
 
 	@Valid
 	@Nullable
@@ -194,8 +190,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 
-		this.verguenstigungHauptmahlzeitenTotal = toCopy.verguenstigungHauptmahlzeitenTotal;
-		this.verguenstigungNebenmahlzeitenTotal = toCopy.verguenstigungNebenmahlzeitenTotal;
+		this.verguenstigungMahlzeitenTotal = toCopy.verguenstigungMahlzeitenTotal;
 
 		if (toCopy.tsCalculationResultMitPaedagogischerBetreuung != null) {
 			this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
@@ -250,8 +245,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
-		this.verguenstigungHauptmahlzeitenTotal = roundToFrankenRappen(verguenstigungHauptmahlzeitenTotal);
-		this.verguenstigungNebenmahlzeitenTotal = roundToFrankenRappen(verguenstigungNebenmahlzeitenTotal);
+		this.verguenstigungMahlzeitenTotal = roundToFrankenRappen(verguenstigungMahlzeitenTotal);
 		return this;
 	}
 
@@ -316,8 +310,7 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.abzugFamGroesse, otherEntity.abzugFamGroesse) &&
 				MathUtil.isSame(thisEntity.famGroesse, otherEntity.famGroesse) &&
 				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
-				MathUtil.isSame(thisEntity.verguenstigungHauptmahlzeitenTotal, otherEntity.verguenstigungHauptmahlzeitenTotal) &&
-				MathUtil.isSame(thisEntity.verguenstigungNebenmahlzeitenTotal, otherEntity.verguenstigungNebenmahlzeitenTotal) &&
+				MathUtil.isSame(thisEntity.verguenstigungMahlzeitenTotal, otherEntity.verguenstigungMahlzeitenTotal) &&
 				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
 				(thisEntity.besondereBeduerfnisseBestaetigt == otherEntity.besondereBeduerfnisseBestaetigt) &&
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
@@ -623,19 +616,12 @@ public class BGCalculationResult extends AbstractEntity {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
-	public @Nullable BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
-		return verguenstigungHauptmahlzeitenTotal;
+	public @Nullable BigDecimal getVerguenstigungMahlzeitenTotal() {
+		return verguenstigungMahlzeitenTotal;
 	}
 
-	public void setVerguenstigungHauptmahlzeitenTotal(@Nullable BigDecimal verguenstigungHauptmahlzeitenTotal) {
-		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
+	public void setVerguenstigungMahlzeitenTotal(@Nullable BigDecimal verguenstigungMahlzeitenTotal) {
+		this.verguenstigungMahlzeitenTotal = verguenstigungMahlzeitenTotal;
 	}
 
-	public @Nullable BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
-		return verguenstigungNebenmahlzeitenTotal;
-	}
-
-	public void setVerguenstigungNebenmahlzeitenTotal(@Nullable BigDecimal verguenstigungNebenmahlzeitenTotal) {
-		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
-	}
 }
