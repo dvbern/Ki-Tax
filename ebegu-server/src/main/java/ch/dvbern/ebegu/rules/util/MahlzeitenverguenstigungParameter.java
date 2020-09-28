@@ -40,16 +40,16 @@ public class MahlzeitenverguenstigungParameter {
 		boolean enabledFuerSozHilfeBez,
 		BigDecimal maxEinkommenStufe1,
 		BigDecimal maxEinkommenStufe2,
-		BigDecimal verguenstigungStufe1Hauptmahlzeit,
-		BigDecimal verguenstigungStufe2Hauptmahlzeit,
-		BigDecimal verguenstigungStufe3Hauptmahlzeit,
+		BigDecimal verguenstigungStufe1Mahlzeit,
+		BigDecimal verguenstigungStufe2Mahlzeit,
+		BigDecimal verguenstigungStufe3Mahlzeit,
 		BigDecimal minimalerElternbeitragMahlzeit
 	) {
 		this.enabled = enabled;
 		this.enabledFuerSozHilfeBez = enabledFuerSozHilfeBez;
-		verguenstigungProMahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Hauptmahlzeit);
-		verguenstigungProMahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Hauptmahlzeit);
-		verguenstigungProMahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Hauptmahlzeit);
+		verguenstigungProMahlzeit.put(Range.closed(BigDecimal.valueOf(Integer.MAX_VALUE).negate(), maxEinkommenStufe1), verguenstigungStufe1Mahlzeit);
+		verguenstigungProMahlzeit.put(Range.closed(maxEinkommenStufe1.add(BigDecimal.ONE), maxEinkommenStufe2), verguenstigungStufe2Mahlzeit);
+		verguenstigungProMahlzeit.put(Range.closed(maxEinkommenStufe2.add(BigDecimal.ONE), BigDecimal.valueOf(Integer.MAX_VALUE)),	verguenstigungStufe3Mahlzeit);
 
 		this.minimalerElternbeitragMahlzeit = minimalerElternbeitragMahlzeit;
 	}

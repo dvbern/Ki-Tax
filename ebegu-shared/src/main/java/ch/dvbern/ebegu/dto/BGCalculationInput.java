@@ -721,7 +721,7 @@ public class BGCalculationInput {
 		if (this.getVerguenstigungMahlzeitenTotal() != null) {
 			newVerguenstigungMahlzeit = newVerguenstigungMahlzeit.add(this.getVerguenstigungMahlzeitenTotal());
 		}
-		if (other.getTarifNebenmahlzeit() != null) {
+		if (other.getVerguenstigungMahlzeitenTotal() != null) {
 			newVerguenstigungMahlzeit = newVerguenstigungMahlzeit.add(other.getVerguenstigungMahlzeitenTotal());
 		}
 		this.setVerguenstigungMahlzeitenTotal(newVerguenstigungMahlzeit);

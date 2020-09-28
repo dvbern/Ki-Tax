@@ -83,7 +83,7 @@ public abstract class AbstractRechner {
 		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
 		// derselben mit dem Anteil des Monats sowie dem Anteil des verguenstigten Pensums am
 		// Betreuungspensum korrigiert werden
-		final BigDecimal hauptmahlzeitenTotal = result.getVerguenstigungMahlzeitenTotal();
-		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(hauptmahlzeitenTotal, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum));
+		final BigDecimal mahlzeitenTotal = result.getVerguenstigungMahlzeitenTotal();
+		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum));
 	}
 }
