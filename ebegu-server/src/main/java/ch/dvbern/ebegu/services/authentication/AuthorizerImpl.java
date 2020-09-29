@@ -508,7 +508,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case ADMIN_TRAEGERSCHAFT:
 		case ADMIN_INSTITUTION: {
 			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.TRAEGERSCHAFT
-			|| benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
+				&& benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
 				throwViolation(benutzer);
 			}
 			return;
