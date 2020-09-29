@@ -7,3 +7,5 @@ ALTER TABLE zahlung_aud	CHANGE COLUMN institution_name empfaenger_name varchar(2
 # Neuer Zahlungsstatus fuer Mahlzeiten-Zahlungslaeufe
 ALTER TABLE verfuegung_zeitabschnitt ADD zahlungsstatus_mahlzeitenverguenstigung varchar(255) not null;
 ALTER TABLE verfuegung_zeitabschnitt_aud ADD zahlungsstatus_mahlzeitenverguenstigung varchar(255);
+
+UPDATE verfuegung_zeitabschnitt SET zahlungsstatus_mahlzeitenverguenstigung = 'NEU';
