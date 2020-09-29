@@ -96,7 +96,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
 		Assert.assertNull(betreuung.getVerfuegungOrVerfuegungPreview());
-		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(
+			betreuung.extractGesuch().getId(),
+			betreuung.getId(),
+			null,
+			false,
+			false,
+			true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegungOrVerfuegungPreview(), persistedVerfuegung);
@@ -254,7 +260,14 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Nonnull
 	private Betreuung createAndPersistVerfuegteVerfuegung(@Nonnull Betreuung betreuung) {
 		final Verfuegung createdVerf =
-		verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
+		verfuegungService.verfuegen(
+			betreuung.extractGesuch().getId(),
+			betreuung.getId(),
+			null,
+			false,
+			false,
+			true);
+		Assert.assertNotNull(createdVerf.getBetreuung());
 		return createdVerf.getBetreuung();
 	}
 
