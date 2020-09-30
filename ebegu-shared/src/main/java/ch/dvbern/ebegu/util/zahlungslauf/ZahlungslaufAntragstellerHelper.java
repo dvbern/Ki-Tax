@@ -177,11 +177,28 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		}
 	}
 
-	private static void setIsSameAusbezahlteVerguenstigungMahlzeiten(
+	private void setIsSameAusbezahlteVerguenstigungMahlzeiten(
 		@Nonnull BGCalculationInput inputNeu,
 		@Nonnull BGCalculationResult resultNeu,
 		@Nonnull BGCalculationResult resultBisher
 	) {
 		inputNeu.setSameAusbezahlteMahlzeiten(MathUtil.isSame(resultNeu.getVerguenstigungMahlzeitenTotal(), resultBisher.getVerguenstigungMahlzeitenTotal()));
+	}
+
+	@Override
+	public boolean isSamePersistedValues(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull VerfuegungZeitabschnitt otherAbschnitt) {
+		// Fuer die Antragsteller-Auszahlungen koennen wir nicht die normale isSamePersistedValues verwenden. Dort werden die
+		// Mahlzeiten nicht verglichen
+		boolean isSame = MathUtil.isSame(
+			abschnitt.getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal(),
+			otherAbschnitt.getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal())
+			&& (!abschnitt.isHasGemeindeSpezifischeBerechnung()
+				|| (abschnitt.getBgCalculationResultGemeinde() != null
+					&& 	otherAbschnitt.getBgCalculationResultGemeinde() != null
+					&& MathUtil.isSame(
+						abschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(),
+						otherAbschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal())))
+					&& abschnitt.getGueltigkeit().compareTo(otherAbschnitt.getGueltigkeit()) == 0;
+		return isSame;
 	}
 }

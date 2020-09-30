@@ -87,4 +87,10 @@ public interface ZahlungslaufHelper {
 	void setIsSameAusbezahlteVerguenstigung(
 		@Nonnull Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional,
 		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt);
+
+	/**
+	 * Gibt zurueck, ob die gespeicherten Daten, welche fuer diesen Zahlungslauftyp relevant sind,
+	 * identisch sind
+	 */
+	boolean isSamePersistedValues(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull VerfuegungZeitabschnitt otherAbschnitt);
 }

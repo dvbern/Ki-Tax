@@ -681,9 +681,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.ifPresent(zeitabschnitte -> zeitabschnitte.forEach(zeitabschnitt -> {
 				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zahlungslaufHelper.getZahlungsstatus(zeitabschnitt);
 
-				// TODO (hefr) isNotInZeitabschnitteList prueft die persistedValues, dort sind Mahlzeiten nicht drin
 				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())
-					&& isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte)) {
+					&& isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte, zahlungslaufHelper)) {
 					// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
 					// kein Vorgaenger
 					vorgaengerZeitabschnitte.add(zeitabschnitt);
@@ -785,10 +784,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 */
 	private boolean isNotInZeitabschnitteList(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte,
+		@Nonnull ZahlungslaufHelper zahlungslaufHelper) {
 
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : vorgaengerZeitabschnitte) {
-			if (verfuegungZeitabschnitt.isSamePersistedValues(zeitabschnitt)) {
+			if (zahlungslaufHelper.isSamePersistedValues(verfuegungZeitabschnitt, zeitabschnitt)) {
 				return false;
 			}
 		}

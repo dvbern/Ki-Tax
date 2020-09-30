@@ -157,11 +157,17 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		}
 	}
 
-	private static void setIsSameAusbezahlteVerguenstigung(
+	private void setIsSameAusbezahlteVerguenstigung(
 		@Nonnull BGCalculationInput inputNeu,
 		@Nonnull BGCalculationResult resultNeu,
 		@Nonnull BGCalculationResult resultBisher
 	) {
 		inputNeu.setSameAusbezahlteVerguenstigung(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
+	}
+
+	@Override
+	public boolean isSamePersistedValues(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull VerfuegungZeitabschnitt otherAbschnitt) {
+		// Im Fall der Institutionszahlungen koennen wir die "normale" Berechnung von isSamePersistedValues verwenden:
+		return abschnitt.isSamePersistedValues(otherAbschnitt);
 	}
 }
