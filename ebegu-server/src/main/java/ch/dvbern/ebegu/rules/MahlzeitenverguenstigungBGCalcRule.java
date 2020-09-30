@@ -106,10 +106,10 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			.subtract(mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
 		maxTagesansatzMitHM = MathUtil.minimum(maxTagesansatzMitHM, BigDecimal.ZERO);
 
-		// maximaler Tagesansatz für Tage ohne Hauptmahlzeit ist 2*Preis Nebenmahlzeit - minimaler Elternbeitrag.
-		BigDecimal maxTagesansatzOhneHM = inputData.getTarifNebenmahlzeit()
-			.multiply(anzahlNebenmahlzeitenStandardTag)
-			.subtract(mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
+		// maximaler Tagesansatz für Tage ohne Hauptmahlzeit ist 2*Preis Nebenmahlzeit - 2*minimaler Elternbeitrag.
+		final BigDecimal a = inputData.getTarifNebenmahlzeit().multiply(anzahlNebenmahlzeitenStandardTag);
+		final BigDecimal b = mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit().multiply(anzahlNebenmahlzeitenStandardTag);
+		BigDecimal maxTagesansatzOhneHM = a.subtract(b);
 		maxTagesansatzOhneHM = MathUtil.minimum(maxTagesansatzOhneHM, BigDecimal.ZERO);
 
 		// Vergünstigung für Tage mit Hauptmahlzeit

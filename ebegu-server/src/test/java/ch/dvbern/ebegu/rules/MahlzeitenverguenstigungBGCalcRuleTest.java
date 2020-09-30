@@ -72,7 +72,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 	public void executeRule() {
 		assertResults(
 			createInputData(einkommenStufe2, 0, 4, 6, 3),
-			12
+			8
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 8, 16, 10, 3),
@@ -80,7 +80,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 3),
-			36
+			32
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 3),
@@ -88,15 +88,15 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 2),
-			32
+			24
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 2),
 			30
 		);
 		assertResults(
-			createInputData(einkommenStufe1, 8, 20, 6, 3),
-			64
+			createInputData(einkommenStufe2, 8, 20, 6, 3),
+			32
 		);
 		assertResults(
 			createInputData(einkommenStufe1, 8, 0, 6, 3),
@@ -104,7 +104,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 0, 4, 6, 3),
-			12
+			8
 		);
 	}
 
