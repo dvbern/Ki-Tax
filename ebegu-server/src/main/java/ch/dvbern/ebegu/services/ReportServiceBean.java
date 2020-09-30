@@ -832,16 +832,20 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				auftragId));
 
-		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
-		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
-		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
-			Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
-			ZahlungDataRow row = new ZahlungDataRow(
+		// Je nach Rolle duerfen im Excel nicht alle Institutionen aufgefuehrt werden
+		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
+		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+
+		List<ZahlungDataRow> zahlungDataRows = zahlungsauftrag.getZahlungen()
+			.stream()
+			.filter(zahlung -> !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+								allowedInst
+									.stream()
+									.anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId())))
+			.map(zahlung -> new ZahlungDataRow(
 				zahlung,
-				adresseKontoinhaber
-			);
-			zahlungDataRows.add(row);
-		}
+				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
+		)).collect(Collectors.toList());
 
 		return getUploadFileInfoZahlung(
 			zahlungDataRows,
