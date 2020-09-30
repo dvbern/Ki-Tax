@@ -836,16 +836,21 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 
-		List<ZahlungDataRow> zahlungDataRows = zahlungsauftrag.getZahlungen()
-			.stream()
-			.filter(zahlung -> !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-								allowedInst
-									.stream()
-									.anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId())))
-			.map(zahlung -> new ZahlungDataRow(
-				zahlung,
-				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
-		)).collect(Collectors.toList());
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
+		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			if (!EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+				allowedInst
+					.stream()
+					.anyMatch(institution -> institution.getId().equals(zahlung.getEmpfaengerId()))) {
+				Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+				ZahlungDataRow row = new ZahlungDataRow(
+					zahlung,
+					adresseKontoinhaber
+				);
+				zahlungDataRows.add(row);
+			}
+		}
 
 		return getUploadFileInfoZahlung(
 			zahlungDataRows,
