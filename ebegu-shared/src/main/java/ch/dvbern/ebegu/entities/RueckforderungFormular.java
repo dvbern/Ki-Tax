@@ -178,6 +178,7 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
 
+	@Column(name = "stufe_2_provisorisch_verfuegt_datum", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2ProvisorischVerfuegtDatum;
 
