@@ -73,6 +73,8 @@ import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -548,7 +550,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		antragStatusHistoryService.removeAllAntragStatusHistoryFromGesuch(gesToRemove);
 		zahlungService.deleteZahlungspositionenOfGesuch(gesToRemove);
 		mitteilungService.removeAllBetreuungMitteilungenForGesuch(gesToRemove);
-
+		// Abweichungen muessen ebenfalls separat geloescht werden
+		removeAllAbweichungenForGesuch(gesToRemove);
 		resetMutierteAnmeldungen(gesToRemove);
 
 		// Jedes Loeschen eines Gesuchs muss protokolliert werden
@@ -557,6 +560,23 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		//Finally remove the Gesuch when all other objects are really removed
 		persistence.remove(gesToRemove);
+	}
+
+	private void removeAllAbweichungenForGesuch(@Nonnull Gesuch gesuch) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BetreuungspensumAbweichung> query = cb.createQuery(BetreuungspensumAbweichung.class);
+		Root<BetreuungspensumAbweichung> root = query.from(BetreuungspensumAbweichung.class);
+		final Join<Betreuung, KindContainer> join = root
+			.join(BetreuungspensumAbweichung_.betreuung, JoinType.LEFT)
+			.join(Betreuung_.kind, JoinType.LEFT);
+
+		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
+		query.where(gesuchPred);
+		final List<BetreuungspensumAbweichung> abweichungen = persistence.getCriteriaResults(query);
+
+		for (BetreuungspensumAbweichung abweichung : abweichungen) {
+			persistence.remove(BetreuungspensumAbweichung.class, abweichung.getId());
+		}
 	}
 
 	/**
