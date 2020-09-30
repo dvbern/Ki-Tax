@@ -179,6 +179,9 @@ public class RueckforderungFormular extends AbstractEntity {
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
 
 	@Nullable
+	private LocalDateTime stufe2ProvisorischVerfuegtDatum;
+
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate extendedEinreichefrist = null; // Wenn null gilt die Default-Einreichefrist
 
@@ -474,6 +477,15 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setStufe2VerfuegungAusbezahltAm(@Nullable LocalDateTime stufe2VerfuegungAusbezahltAm) {
 		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
+	}
+
+	@Nullable
+	public LocalDateTime getStufe2ProvisorischVerfuegtDatum() {
+		return stufe2ProvisorischVerfuegtDatum;
+	}
+
+	public void setStufe2ProvisorischVerfuegtDatum(@Nullable LocalDateTime stufe2ProvisorischVerfuegtDatum) {
+		this.stufe2ProvisorischVerfuegtDatum = stufe2ProvisorischVerfuegtDatum;
 	}
 
 	@Nullable
