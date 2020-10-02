@@ -502,6 +502,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final Join<Betreuung, KindContainer> join = root.join(Mitteilung_.betreuung, JoinType.LEFT)
 			.join(AbstractPlatz_.kind, JoinType.LEFT);
 
+		// TODO KIBON-1606: das equals ist kaputt und es werden keine Betreuungsmitteilungen gelöscht in diesem Fall
 		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
 		Predicate withBetreuungPred = cb.isNotNull(root.get(Mitteilung_.betreuung));
 
