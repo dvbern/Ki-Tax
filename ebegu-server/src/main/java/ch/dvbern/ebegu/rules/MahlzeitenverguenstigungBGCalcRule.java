@@ -130,7 +130,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	) {
 		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
 		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
-		BigDecimal dieOeminoeseZwei = new BigDecimal("2.00");
 
 		// Nicht in HMZ berechnete NMZ
 		BigDecimal nichtBerechneteNebenmahlzeiten = getNichtInHauptmahlzeitenBerechneteNebenmahlzeiten(
@@ -148,7 +147,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		BigDecimal verguenstigungHauptmahlzeiten = getVerguenstigungHauptmahlzeiten(anzahlHauptmahlzeiten, tatsaechlicherBetragProTag);
 
 		// Vergünstigung der in HMZ nicht enthaltene NMZ:
-		BigDecimal verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(dieOeminoeseZwei, nichtBerechneteNebenmahlzeiten, minBetragProTag);
+		BigDecimal verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(anzahlNebenmahlzeitenStandardTag, nichtBerechneteNebenmahlzeiten, minBetragProTag);
 
 		// Vergünstigung:
 		// =Q2+R2
