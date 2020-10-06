@@ -270,6 +270,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		//Set status to Verfuegt Provisorisch
 		formular.setStatus(RueckforderungStatus.VERFUEGT_PROVISORISCH);
 		formular.setStufe2VoraussichtlicheBetrag(formular.calculateFreigabeBetragStufe2());
+		formular.setStufe2ProvisorischVerfuegtDatum(LocalDateTime.now());
 		formular.setHasBeenProvisorisch(true);
 		final RueckforderungFormular persistedRueckforderungFormular = persistence.merge(formular);
 		try {
@@ -293,9 +294,13 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		try {
 			ZipCreator zipCreator = new ZipCreator();
 			for (RueckforderungFormular rueckforderungFormular : toVerfuegen) {
+				boolean hasBeenProvisorisch = rueckforderungFormular.isHasBeenProvisorisch();
+				String filenamePrefix = hasBeenProvisorisch ? "Schlussabrechnung_" : "Verfügung_";
 				byte[] content = definitivVerfuegen(rueckforderungFormular, auftragIdentifier);
 				// Als Dateinamen innerhalb des Zips nehmen wir den Namen der Institution:
-				String zipEntryName = EbeguUtil.toFilename(rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName() + ".pdf");
+				String zipEntryName = filenamePrefix
+					+ EbeguUtil.toFilename(
+						rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName() + ".pdf");
 				zipCreator.append(new ByteArrayInputStream(content), zipEntryName);
 			}
 			return zipCreator.create();
@@ -313,19 +318,16 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 		ParameterExpression<RueckforderungStatus> statusParam = cb.parameter(RueckforderungStatus.class, "status");
 		ParameterExpression<RueckforderungInstitutionTyp> institutionTypParam = cb.parameter(RueckforderungInstitutionTyp.class, "institutionTyp");
-		ParameterExpression<Boolean> hasBeenProvisorischParam = cb.parameter(Boolean.class, "hasBeenProvisorisch");
 
 		// Alle im Status BEREIT_ZUM_VERFUEGEN, die Typ PRIVAT sind und nie eine Provisorische Verfuegung hatten
 		Predicate statusPredicate = cb.equal(root.get(RueckforderungFormular_.status), statusParam);
 		Predicate privatPredicate = cb.equal(root.get(RueckforderungFormular_.institutionTyp), institutionTypParam);
-		Predicate hasNotBeenProvisorischParam = cb.equal(root.get(RueckforderungFormular_.hasBeenProvisorisch), hasBeenProvisorischParam);
 
-		query.where(statusPredicate, privatPredicate, hasNotBeenProvisorischParam);
+		query.where(statusPredicate, privatPredicate);
 
 		TypedQuery<RueckforderungFormular> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(statusParam, RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
 		q.setParameter(institutionTypParam, RueckforderungInstitutionTyp.PRIVAT);
-		q.setParameter(hasBeenProvisorischParam, Boolean.FALSE);
 		return q.getResultList();
 	}
 
