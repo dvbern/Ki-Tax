@@ -117,14 +117,14 @@ public class RueckforderungPdfGeneratorTest {
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungPrivatDefinitivVerfuegungPdfGenerator generator =
-			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson, pathToUnterschrift);
+			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson);
 		final String file_de = pfad + "notrecht_privat_definitive_verfuegung_nach_provisorisch_positiv_standardbemerkung_de.pdf";
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		generator =
-			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson, pathToUnterschrift);
+			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson);
 		final String file_fr = pfad + "notrecht_privat_definitive_verfuegung_nach_provisorisch_positiv_standardbemerkung_fr.pdf";
 		System.out.println("PDF generated: " + file_fr);
 		generator.generate(new FileOutputStream(file_fr));
@@ -140,14 +140,14 @@ public class RueckforderungPdfGeneratorTest {
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungPrivatDefinitivVerfuegungPdfGenerator generator =
-			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson, pathToUnterschrift);
+			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson);
 		final String file_de = pfad + "notrecht_privat_definitive_verfuegung_nach_provisorisch_positiv_de.pdf";
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		generator =
-			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson, pathToUnterschrift);
+			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson);
 		final String file_fr = pfad + "notrecht_privat_definitive_verfuegung_nach_provisorisch_positiv_fr.pdf";
 		System.out.println("PDF generated: " + file_fr);
 		generator.generate(new FileOutputStream(file_fr));
@@ -159,11 +159,12 @@ public class RueckforderungPdfGeneratorTest {
 		this.rueckforderungFormular.setStufe1FreigabeBetrag(BigDecimal.valueOf(3300));
 		this.rueckforderungFormular.setStufe2VoraussichtlicheBetrag(BigDecimal.valueOf(950));
 		this.rueckforderungFormular.setStufe2VerfuegungBetrag(BigDecimal.valueOf(900));
-		this.rueckforderungFormular.setBemerkungFuerVerfuegung("Betrag wurde auf 900 gerundet. Dies ist eine manuelle Bemerkung.");
+		this.rueckforderungFormular.setBemerkungFuerVerfuegung(
+			"Betrag wurde auf 900 gerundet. \nDies ist eine manuelle Bemerkung.\nUnd noch eine Bemerkung");
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungPrivatDefinitivVerfuegungPdfGenerator generator =
-			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson, pathToUnterschrift);
+			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson);
 		final String file_de = pfad + "notrecht_privat_definitive_verfuegung_nach_provisorisch_negativ_de.pdf";
 		generator.generate(new FileOutputStream(file_de));
 		System.out.println("PDF generated: " + file_de);
@@ -171,7 +172,7 @@ public class RueckforderungPdfGeneratorTest {
 		// Das franzoesische Dokument wird mit der Standardbemerkung generiert
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.FRANZOESISCH);
 		generator =
-			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson, pathToUnterschrift);
+			new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(this.rueckforderungFormular, verantwortlichePerson);
 		final String file_fr = pfad + "notrecht_privat_definitive_verfuegung_nach_provisorisch_negativ_fr.pdf";
 		System.out.println("PDF generated: " + file_fr);
 		generator.generate(new FileOutputStream(file_fr));

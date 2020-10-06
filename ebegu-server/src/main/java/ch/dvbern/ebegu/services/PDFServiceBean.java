@@ -301,7 +301,7 @@ public class PDFServiceBean implements PDFService {
 		if (rueckforderungFormular.isHasBeenProvisorisch()) {
 			String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
 			pdfGenerator = new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
-				rueckforderungFormular, nameVerantwortlichePerson, unterschriftPath);
+				rueckforderungFormular, nameVerantwortlichePerson);
 		} else {
 			pdfGenerator = new RueckforderungVerfuegungPdfGenerator(
 				rueckforderungFormular, nameVerantwortlichePerson);
