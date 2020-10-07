@@ -55,6 +55,7 @@ public abstract class MandantPdfGenerator {
 	protected static final String DIVISION = "PdfGeneration_ProvisorischeVerfuegung_Division";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
 	protected static final String EINSCHREIBEN = "PdfGeneration_VerfuegungEingeschrieben"; //wird bei der Definitiv
+	protected static final String POSTFACH = "PdfGeneration_Postfach";
 	// verwendet werden
 	protected Locale sprache;
 
@@ -130,7 +131,7 @@ public abstract class MandantPdfGenerator {
 		sb.append(Constants.LINE_BREAK);
 		sb.append("Rathausgasse 1");
 		sb.append(Constants.LINE_BREAK);
-		sb.append("Postfach");
+		sb.append(ServerMessageUtil.getMessage(POSTFACH, sprache));
 		sb.append(Constants.LINE_BREAK);
 		sb.append("3000 Bern 8");
 		sb.append(Constants.LINE_BREAK);

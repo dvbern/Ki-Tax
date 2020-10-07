@@ -246,11 +246,11 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 
 		document.add(PdfUtil.createParagraph(translate(
 			INHALT_2A,
-			this.voraussichtlicheAusfallentschaedigung,
+			PdfUtil.printBigDecimal(this.voraussichtlicheAusfallentschaedigung),
 			datumProvVerfuegtFormatted,
-			this.voraussichtlicheAusfallentschaedigung)));
+			PdfUtil.printBigDecimal(this.voraussichtlicheAusfallentschaedigung))));
 
-		document.add(PdfUtil.createParagraph(translate(INHALT_2B, gewaehrteAusfallentschaedigung), 1));
+		document.add(PdfUtil.createParagraph(translate(INHALT_2B, PdfUtil.printBigDecimal(gewaehrteAusfallentschaedigung)), 1));
 
 		String verfuegungsbemerkung;
 		if (MathUtil.isSame(this.voraussichtlicheAusfallentschaedigung, this.gewaehrteAusfallentschaedigung)) {
@@ -266,7 +266,10 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 		String inhaltPositivOrNegativ = isNegativ ? INHALT_2C_NEGATIV : INHALT_2C_POSITIV;
 		String grundPositivOrNegativ = isNegativ ? GRUND_3_NEGATIV : GRUND_3_POSITIV;
 
-		final Paragraph paragraph = PdfUtil.createParagraph(translate(INHALT_2C, entschaedigungStufe1, relevanterBetragAbs));
+		final Paragraph paragraph = PdfUtil.createParagraph(translate(
+			INHALT_2C,
+			PdfUtil.printBigDecimal(entschaedigungStufe1),
+			PdfUtil.printBigDecimal(relevanterBetragAbs)));
 		paragraph.add(new Chunk(translate(inhaltPositivOrNegativ)));
 		document.add(paragraph);
 
@@ -274,9 +277,9 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 		document.add(PdfUtil.createParagraph(translate(VERFUEGT), 1, PdfUtil.DEFAULT_FONT_BOLD));
 
 		List<String> verfuegtList = new ArrayList();
-		verfuegtList.add(translate(GRUND_1, this.gewaehrteAusfallentschaedigung));
+		verfuegtList.add(translate(GRUND_1, PdfUtil.printBigDecimal(this.gewaehrteAusfallentschaedigung)));
 		verfuegtList.add(translate(GRUND_2, datumProvVerfuegtFormatted));
-		verfuegtList.add(translate(grundPositivOrNegativ, relevanterBetragAbs));
+		verfuegtList.add(translate(grundPositivOrNegativ, PdfUtil.printBigDecimal(relevanterBetragAbs)));
 		document.add(PdfUtil.createListOrdered(verfuegtList));
 
 		document.add(PdfUtil.createParagraph("", 2));
