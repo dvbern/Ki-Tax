@@ -118,6 +118,19 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 	}
 
+	public static void assertZeitabschnitt(
+		VerfuegungZeitabschnitt abschnitt,
+		int betreuungspensum,
+		int anspruchsberechtigtesPensum,
+		int bgPensum,
+		int anspruchspensumRest) {
+		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
+		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
+		assertEquals(MathUtil.DEFAULT.from(anspruchspensumRest), MathUtil.DEFAULT.from(abschnitt.getRelevantBgCalculationInput().getAnspruchspensumRest()));
+	}
+
 	protected void assertZeitabschnitt(
 		@Nonnull VerfuegungZeitabschnitt abschnitt,
 		@Nonnull LocalDate gueltigAb,

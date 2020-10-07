@@ -324,6 +324,8 @@ public class BetreuungsgutscheinEvaluator {
 		List<RechnerRule> rechnerRules = new LinkedList<>();
 		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinEnabled()) {
 			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
+		}
+		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherBabyGutscheinEnabled()) {
 			rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(locale));
 		}
 		return rechnerRules;
