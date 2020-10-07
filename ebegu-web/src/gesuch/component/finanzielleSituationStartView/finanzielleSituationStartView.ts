@@ -207,6 +207,11 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION,
                 TSWizardStepStatus.NOK);
+        } else if (!this.model.gemeinsameSteuererklaerung) {
+            // Wenn neu NEIN -> Fragen loeschen wenn noch nichts eingegeben worden ist
+            this.model.finanzielleSituationContainerGS1 = undefined;
+            this.model.finanzielleSituationContainerGS2 = undefined;
+            this.model.initFinSit();
         } else {
             this.model.initFinSit();
         }
