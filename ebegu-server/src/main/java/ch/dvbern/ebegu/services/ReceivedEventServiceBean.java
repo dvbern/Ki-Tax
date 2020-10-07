@@ -17,9 +17,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -33,7 +30,6 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
 import ch.dvbern.ebegu.entities.ReceivedEvent_;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -45,7 +41,7 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 
 	@Override
 	public boolean saveReceivedEvent(@Nonnull ReceivedEvent event) {
-		Optional<ReceivedEvent> receivedEventOpt = findByEventIdAndTimestamp(event.getEventId(), event.getEventTimestamp());
+		Optional<ReceivedEvent> receivedEventOpt = findByEventId(event.getEventId());
 		if(receivedEventOpt.isPresent()){
 			return false;
 		}
@@ -53,17 +49,12 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 		return true;
 	}
 
-	private Optional<ReceivedEvent> findByEventIdAndTimestamp(String eventId, LocalDateTime timestamp){
+	private Optional<ReceivedEvent> findByEventId(String eventId){
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<ReceivedEvent> query = cb.createQuery(ReceivedEvent.class);
 		Root<ReceivedEvent> root = query.from(ReceivedEvent.class);
-		List<Predicate> predicates = new ArrayList<>();
-
 		Predicate predicateEventId = cb.equal(root.get(ReceivedEvent_.eventId), eventId);
-		Predicate predicateTimestamp = cb.equal(root.get(ReceivedEvent_.eventTimestamp), timestamp);
-		predicates.add(predicateEventId);
-		predicates.add(predicateTimestamp);
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.where(predicateEventId);
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 }
