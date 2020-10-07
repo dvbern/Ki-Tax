@@ -132,9 +132,9 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in STUNDEN berechnen
 		result.setZeiteinheit(PensumUnits.HOURS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierPensum, betreuungsstundenProMonat100Prozent));
-		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierAnspruch, betreuungsstundenProMonat100Prozent));
-		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierBgPensum, betreuungsstundenProMonat100Prozent));
+		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierPensum, betreuungsstundenProMonat100Prozent, anteilMonat));
+		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierAnspruch, betreuungsstundenProMonat100Prozent, anteilMonat));
+		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierBgPensum, betreuungsstundenProMonat100Prozent, anteilMonat));
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
 		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
