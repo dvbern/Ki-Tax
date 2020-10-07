@@ -28,6 +28,7 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -289,18 +290,22 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (direktVerfuegen && direktVerfuegenMahlzeiten) {
             return this.saveVerfuegung();
         }
-        return this.askForIgnoringIfNecessary(false, direktVerfuegen).then(ignoreVerguenstigung => {
-            return this.askForIgnoringIfNecessary(true, direktVerfuegenMahlzeiten).then(ignoreMahlzeiten => {
+        return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_INSTITUTION, direktVerfuegen)
+            .then(ignoreVerguenstigung => {
+            return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, direktVerfuegenMahlzeiten)
+                .then(ignoreMahlzeiten => {
                 return this.saveMutierteVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten);
             });
         });
     }
 
-    private askForIgnoringIfNecessary(isMahlzeiten: boolean, isDirektVerfuegen: boolean): IPromise<boolean> {
+    private askForIgnoringIfNecessary(
+        zahlungslaufTyp: TSZahlungslaufTyp, isDirektVerfuegen: boolean
+    ): IPromise<boolean> {
         if (isDirektVerfuegen) {
             return this.createDeferPromise<boolean>();
         }
-        return this.askIfIgnorieren(isMahlzeiten)
+        return this.askIfIgnorieren(zahlungslaufTyp)
             .then(ignoreVerguenstigung => {
                 return ignoreVerguenstigung;
             });
@@ -439,11 +444,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.gesuchModelManager.saveVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten, this.bemerkungen);
     }
 
-    private askIfIgnorieren(isMahlzeiten: boolean): IPromise<boolean> {
-        console.warn('Is Mahlzeiten: ', isMahlzeiten); // TODO (hefr) hier sollte der Titel uebergeben werden!
+    private askIfIgnorieren(myZahlungslaufTyp: TSZahlungslaufTyp): IPromise<boolean> {
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             institutionName: this.getInstitutionName(),
             institutionPhone: this.getInstitutionPhone(),
+            zahlungslaufTyp: myZahlungslaufTyp
         }).then(response => {
             this.isVerfuegenClicked = false;
             return response === 2;
