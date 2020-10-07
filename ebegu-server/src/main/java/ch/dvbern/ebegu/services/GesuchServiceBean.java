@@ -581,6 +581,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
 				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
