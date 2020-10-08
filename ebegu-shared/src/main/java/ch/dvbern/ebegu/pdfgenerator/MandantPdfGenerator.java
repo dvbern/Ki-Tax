@@ -56,6 +56,7 @@ public abstract class MandantPdfGenerator {
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
 	protected static final String EINSCHREIBEN = "PdfGeneration_VerfuegungEingeschrieben"; //wird bei der Definitiv
 	protected static final String POSTFACH = "PdfGeneration_Postfach";
+	protected static final String PLZ_ORT = "PdfGeneration_PlzOrt";
 	// verwendet werden
 	protected Locale sprache;
 
@@ -133,7 +134,7 @@ public abstract class MandantPdfGenerator {
 		sb.append(Constants.LINE_BREAK);
 		sb.append(ServerMessageUtil.getMessage(POSTFACH, sprache));
 		sb.append(Constants.LINE_BREAK);
-		sb.append("3000 Bern 8");
+		sb.append(ServerMessageUtil.getMessage(PLZ_ORT, sprache));
 		sb.append(Constants.LINE_BREAK);
 		return sb.toString();
 	}
@@ -157,7 +158,12 @@ public abstract class MandantPdfGenerator {
 		return ServerMessageUtil.getMessage(key, sprache, args);
 	}
 
-	protected void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte, List<String> content, int start) throws DocumentException {
+	protected void createFusszeile(
+		@Nonnull PdfContentByte dirPdfContentByte,
+		@Nonnull List<String> content,
+		int start,
+		int anzeigeNummerStart
+	) throws DocumentException {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
 		final float height = millimetersToPoints(30);
 		final float width = millimetersToPoints(170);
@@ -167,7 +173,7 @@ public abstract class MandantPdfGenerator {
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
 		Font fontWithSize = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6.5f);
 		for (int i = start; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(),
+			Chunk chunk = new Chunk((i + anzeigeNummerStart + 1) + " ", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(),
 				5));
 			chunk.setTextRise(2);
 			fz.addText(chunk);

@@ -338,7 +338,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	private void createDritteSeite(Document document) {
 		Paragraph title = PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE),0);
 		Paragraph belehrung = PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG), 2);
-		belehrung.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
+		belehrung.add(PdfUtil.createSuperTextInText("7", superTextSize, superTextRise));
 		document.add(title);
 		document.add(belehrung);
 	}
@@ -348,7 +348,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_1), translate(FUSSZEILE_2), translate(FUSSZEILE_3),
 				translate(FUSSZEILE_4), translate(FUSSZEILE_5), translate(FUSSZEILE_6)),
-			0
+			0, 0
 		);
 	}
 
@@ -356,7 +356,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_7)),
-			0
+			0, 6
 		);
 	}
 }
