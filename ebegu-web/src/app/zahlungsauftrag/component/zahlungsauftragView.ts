@@ -78,7 +78,12 @@ export class ZahlungsauftragViewController implements IController {
     public testMode: boolean = false;
     public minDateForTestlauf: moment.Moment;
     public gemeinde: TSGemeinde;
+    // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
     public gemeindenList: Array<TSGemeinde> = [];
+    // Alle Gemeinden fuer die ich berechtigt bin fuer die normalen Auftraege
+    public berechtigteGemeindenList: Set<TSGemeinde> = new Set<TSGemeinde>();
+    // Alle Gemeinden fuer die ich berechtigt bin fuer die Mahlzeitenverguenstigungen
+    public berechtigteGemeindenMitMahlzeitenList: Set<TSGemeinde> = new Set<TSGemeinde>();
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -304,8 +309,7 @@ export class ZahlungsauftragViewController implements IController {
             this.showMahlzeitenZahlungslaeufe = false;
             return;
         }
-        const gemeinden = this.authServiceRS.getPrincipal().extractCurrentAktiveGemeinden();
-        for (const gemeinde of gemeinden) {
+        this.berechtigteGemeindenList.forEach(gemeinde => {
             this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then((value: TSGemeindeStammdaten) => {
                 const konfigurationListe = value.konfigurationsListe;
                 for (const konfiguration of konfigurationListe) {
@@ -315,17 +319,21 @@ export class ZahlungsauftragViewController implements IController {
                         // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
                         // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
                         this.showMahlzeitenZahlungslaeufe = true;
-                        return;
+                        this.berechtigteGemeindenMitMahlzeitenList.add(gemeinde);
                     }
                 }
             });
-        }
+        });
     }
 
     public toggleAuszahlungslaufTyp(): void {
         this.zahlungsAuftraegeFiltered =
             this.zahlungsAuftraege
                 .filter(value => value.zahlungslaufTyp === this.zahlungslaufTyp);
+        this.gemeindenList
+            = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
+            ? Array.from(this.berechtigteGemeindenList)
+            : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
     }
 
     public showAuszahlungsTypToggle(): boolean {
