@@ -188,7 +188,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal multiplierBgPensum = EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
 
 		result.setBetreuungspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierPensum, anteilMonat));
-		result.setAnspruchspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierAnspruch, anteilMonat)); // TODO hier falsch bei untermonatlichen
+		result.setAnspruchspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierAnspruch, anteilMonat));
 		result.setBgPensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierBgPensum, anteilMonat));
 
 		return result;
