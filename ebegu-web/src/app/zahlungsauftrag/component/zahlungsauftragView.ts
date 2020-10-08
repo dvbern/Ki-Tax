@@ -26,6 +26,7 @@ import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -80,6 +81,8 @@ export class ZahlungsauftragViewController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
 
+    private showMahlzeitenZahlungslaeufe: boolean = false;
+
     public constructor(
         private readonly zahlungRS: ZahlungRS,
         private readonly $state: StateService,
@@ -100,6 +103,7 @@ export class ZahlungsauftragViewController implements IController {
         this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
         this.updateZahlungsauftrag();
         this.updateGemeindenList();
+        this.updateShowMahlzeitenZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
@@ -288,6 +292,28 @@ export class ZahlungsauftragViewController implements IController {
             );
     }
 
+    private updateShowMahlzeitenZahlungslaeufe(): void {
+        // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+            this.showMahlzeitenZahlungslaeufe = false;
+            return;
+        }
+        const gemeinden = this.authServiceRS.getPrincipal().extractCurrentAktiveGemeinden();
+        for (const gemeinde of gemeinden) {
+            this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then((value: TSGemeindeStammdaten) => {
+                const konfigurationListe = value.konfigurationsListe;
+                for (const konfiguration of konfigurationListe) {
+                    if (konfiguration.konfigMahlzeitenverguenstigungEnabled) {
+                        // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
+                        // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
+                        this.showMahlzeitenZahlungslaeufe = true;
+                        return;
+                    }
+                }
+            });
+        }
+    }
+
     public toggleAuszahlungslaufTyp(): void {
         this.zahlungsAuftraegeFiltered =
             this.zahlungsAuftraege
@@ -295,8 +321,7 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public showAuszahlungsTypToggle(): boolean {
-        // TODO (hefr) nur anzeigen, wenn eine meiner berechtigten Gemeinden Mahlzeitenverguenstigung hat
-        return true;
+       return this.showMahlzeitenZahlungslaeufe;
     }
 
     public getLabelZahlungslaufErstellen(): string {
