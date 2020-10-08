@@ -136,7 +136,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal verguenstigungIntervall = vollkostenIntervall.subtract(elternbeitragIntervall);
 
 		// Resultat erstellen
-		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
+		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall, anteilMonat);
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
 		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
@@ -158,7 +158,8 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		@Nonnull BGCalculationInput input,
 		@Nonnull BigDecimal vollkostenIntervall,
 		@Nonnull BigDecimal verguenstigungIntervall,
-		@Nonnull BigDecimal elternbeitragIntervall
+		@Nonnull BigDecimal elternbeitragIntervall,
+		@Nonnull BigDecimal anteilMonat
 	) {
 		Objects.requireNonNull(oeffnungszeiten);
 		// Resultat erstellen und benoetigte Daten aus Input kopieren
@@ -186,9 +187,9 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal multiplierAnspruch =	EXACT.divide(EXACT.from(result.getAnspruchspensumProzent()), BigDecimal.valueOf(100));
 		BigDecimal multiplierBgPensum = EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
 
-		result.setBetreuungspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierPensum));
-		result.setAnspruchspensumZeiteinheit(EXACT.multiply(tageProMonat, multiplierAnspruch));
-		result.setBgPensumZeiteinheit(EXACT.multiply(tageProMonat, multiplierBgPensum));
+		result.setBetreuungspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierPensum, anteilMonat));
+		result.setAnspruchspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierAnspruch, anteilMonat));
+		result.setBgPensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierBgPensum, anteilMonat));
 
 		return result;
 	}
