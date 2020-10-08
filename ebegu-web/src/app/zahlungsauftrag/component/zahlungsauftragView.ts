@@ -21,6 +21,7 @@ import {switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
@@ -293,7 +294,12 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     private updateShowMahlzeitenZahlungslaeufe(): void {
+        this.showMahlzeitenZahlungslaeufe = false;
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
+        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
+            this.showMahlzeitenZahlungslaeufe = true;
+            return;
+        }
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
             this.showMahlzeitenZahlungslaeufe = false;
             return;
@@ -303,6 +309,8 @@ export class ZahlungsauftragViewController implements IController {
             this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then((value: TSGemeindeStammdaten) => {
                 const konfigurationListe = value.konfigurationsListe;
                 for (const konfiguration of konfigurationListe) {
+                    konfiguration.initProperties();
+                    // tslint:disable-next-line:early-exit
                     if (konfiguration.konfigMahlzeitenverguenstigungEnabled) {
                         // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
                         // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
