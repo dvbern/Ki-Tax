@@ -36,8 +36,8 @@ public abstract class BaseEventHandler<T> {
 
 
 	public void onEvent(
-		@Nonnull String key,
 		@Nonnull String eventId,
+		@Nonnull String key,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
 		@Nonnull T dto) {
