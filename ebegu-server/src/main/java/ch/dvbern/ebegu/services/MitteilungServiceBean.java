@@ -72,6 +72,7 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung_;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
@@ -369,12 +370,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Collection<Betreuungsmitteilung> findAllBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
-		// Diese Methode wird nur beim Loeschen einer Online-Mutation durch den Admin beim Erstellen einer
-		// Papier-Mutation verwendet.
-		// Wir koennen in diesem Fall die normale AuthCheck verwenden, da niemand vom JA fuer die vorhandene
-		// Online-Mutation des GS nach herkoemmlichem Schema berechtigt ist. Wir duerfen hier aber trotzdem
-		// loeschen. Methode ist aber nur fuer ADMIN_BG und SUPER_ADMIN verfuegbar.
-
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
 		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
@@ -389,6 +384,31 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<Betreuungsmitteilung> tq = persistence.getEntityManager().createQuery(query);
+
+		tq.setParameter("betreuunParam", betreuung);
+		return tq.getResultList();
+	}
+
+	@Nonnull
+	@Override
+	public Collection<BetreuungspensumAbweichung> findAllBetreuungspensumAbweichungenForBetreuung(
+		@Nonnull Betreuung betreuung
+	) {
+		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BetreuungspensumAbweichung> query = cb.createQuery(BetreuungspensumAbweichung.class);
+		Root<BetreuungspensumAbweichung> root = query.from(BetreuungspensumAbweichung.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
+
+		Predicate predicateLinkedObject = cb.equal(root.get(BetreuungspensumAbweichung_.betreuung), betreuungParam);
+		predicates.add(predicateLinkedObject);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<BetreuungspensumAbweichung> tq = persistence.getEntityManager().createQuery(query);
 
 		tq.setParameter("betreuunParam", betreuung);
 		return tq.getResultList();
@@ -511,6 +531,25 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		for (Mitteilung mitteilung : mitteilungen) {
 			authorizer.checkWriteAuthorizationMitteilung(mitteilung);
 			persistence.remove(Mitteilung.class, mitteilung.getId());
+		}
+	}
+
+	@Override
+	public void removeAllBetreuungspensumAbweichungenForGesuch(@Nonnull Gesuch gesuch) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BetreuungspensumAbweichung> query = cb.createQuery(BetreuungspensumAbweichung.class);
+		Root<BetreuungspensumAbweichung> root = query.from(BetreuungspensumAbweichung.class);
+		final Join<Betreuung, KindContainer> join = root
+			.join(BetreuungspensumAbweichung_.betreuung, JoinType.LEFT)
+			.join(Betreuung_.kind, JoinType.LEFT);
+
+		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
+		query.where(gesuchPred);
+		final List<BetreuungspensumAbweichung> abweichungen = persistence.getCriteriaResults(query);
+
+		for (BetreuungspensumAbweichung abweichung : abweichungen) {
+			authorizer.checkWriteAuthorization(abweichung.getBetreuung());
+			persistence.remove(BetreuungspensumAbweichung.class, abweichung.getId());
 		}
 	}
 

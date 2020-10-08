@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -547,8 +548,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		fileSaverService.removeAllFromSubfolder(gesToRemove.getId());
 		antragStatusHistoryService.removeAllAntragStatusHistoryFromGesuch(gesToRemove);
 		zahlungService.deleteZahlungspositionenOfGesuch(gesToRemove);
+		// Wir loeschen hier alle Mitteilungn und Abweichungen.
+		// Im Fall einer Loeschung einer OnlineMutation sind die Mitteilungen und auch die Abweichungen
+		// zu diesem Zeitpunkt bereits auf das Vorgaenger Gesuch umgehaengt.
 		mitteilungService.removeAllBetreuungMitteilungenForGesuch(gesToRemove);
-
+		mitteilungService.removeAllBetreuungspensumAbweichungenForGesuch(gesToRemove);
 		resetMutierteAnmeldungen(gesToRemove);
 
 		// Jedes Loeschen eines Gesuchs muss protokolliert werden
@@ -577,6 +581,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
 				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
@@ -1685,7 +1690,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public void removeOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		logDeletingOfGesuchstellerAntrag(dossier, gesuchsperiode);
 		final Gesuch onlineMutation = findOnlineMutation(dossier, gesuchsperiode);
-		moveBetreuungmitteilungenToPreviousAntrag(onlineMutation);
+		moveBetreuungmitteilungenAndAbweichungenToPreviousAntrag(onlineMutation);
 		List<Betreuung> betreuungen = new ArrayList<>(onlineMutation.extractAllBetreuungen());
 		superAdminService.removeGesuch(onlineMutation.getId());
 
@@ -1706,11 +1711,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	/**
-	 * Takes all Betreuungsmitteilungen of the given Gesuch and links them to the previous corresponding Betreuung
+	 * Takes all Betreuungsmitteilungen and Abweichungen of the given Gesuch and links them to the previous corresponding Betreuung
 	 * (vorgaengerId),
 	 * so that the mitteilungen don't get lost.
 	 */
-	private void moveBetreuungmitteilungenToPreviousAntrag(@Nonnull Gesuch onlineMutation) {
+	private void moveBetreuungmitteilungenAndAbweichungenToPreviousAntrag(@Nonnull Gesuch onlineMutation) {
 		if (onlineMutation.hasVorgaenger()) {
 			for (Betreuung betreuung : onlineMutation.extractAllBetreuungen()) {
 				if (betreuung.hasVorgaenger()) {
@@ -1723,10 +1728,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 							betreuung.getVorgaengerId()));
 
+					// Diese Methode wird gebraucht, um eine OnlineMutation des GS zu loeschen. Fuer diese ist nie jemand
+					// regulaer berechtigt. Wir pruefen daher, ob wir fuer den Vorgaenger, auf die wir kopieren wollen,
+					// berechtigt sind.
+					authorizer.checkWriteAuthorization(vorgaengerBetreuung);
+
+					// Es muessen alle Mitteilungen umgehaengt werden
 					final Collection<Betreuungsmitteilung> mitteilungen =
 						mitteilungService.findAllBetreuungsmitteilungenForBetreuung(betreuung);
 					mitteilungen.forEach(mitteilung -> mitteilung.setBetreuung(vorgaengerBetreuung)); // should be
 					// saved automatically
+
+					// Es muessen alle Abweichungen umgehaengt werden
+					final Collection<BetreuungspensumAbweichung> abweichungen =
+						mitteilungService.findAllBetreuungspensumAbweichungenForBetreuung(betreuung);
+					abweichungen.forEach(abweichung -> abweichung.setBetreuung(vorgaengerBetreuung));
 				}
 			}
 		} else {
