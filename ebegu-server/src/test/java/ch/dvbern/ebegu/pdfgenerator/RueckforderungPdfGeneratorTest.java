@@ -136,7 +136,7 @@ public class RueckforderungPdfGeneratorTest {
 		this.rueckforderungFormular.setStufe1FreigabeBetrag(BigDecimal.valueOf(3300));
 		this.rueckforderungFormular.setStufe2VoraussichtlicheBetrag(BigDecimal.valueOf(7910));
 		this.rueckforderungFormular.setStufe2VerfuegungBetrag(BigDecimal.valueOf(7500));
-		this.rueckforderungFormular.setBemerkungFuerVerfuegung("Betrag wurde auf 7'500 gerundet. Dies ist eine manuelle Bemerkung.");
+		this.rueckforderungFormular.setBemerkungFuerVerfuegung("Betrag wurde auf 7'500.00 gerundet. Dies ist eine manuelle Bemerkung.");
 
 		this.rueckforderungFormular.setKorrespondenzSprache(Sprache.DEUTSCH);
 		RueckforderungPrivatDefinitivVerfuegungPdfGenerator generator =
