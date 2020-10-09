@@ -181,4 +181,10 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		// Im Fall der Institutionszahlungen koennen wir die "normale" Berechnung von isSamePersistedValues verwenden:
 		return abschnitt.isSamePersistedValues(otherAbschnitt);
 	}
+
+	@Override
+	public boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		// An Institutionen wird immer ausbezahlt
+		return true;
+	}
 }

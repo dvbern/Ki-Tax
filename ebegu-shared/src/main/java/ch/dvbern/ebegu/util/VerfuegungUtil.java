@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.util;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,38 +71,46 @@ public final class VerfuegungUtil {
 		@Nullable Verfuegung letzteAusbezahlteVerfuegungMahlzeiten,
 		boolean mahlzeitenverguenstigungEnabled
 	) {
-		if (letzteAusbezahlteVerfuegung != null || letzteAusbezahlteVerfuegungMahlzeiten != null) {
-			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
-
-			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte
-				= letzteAusbezahlteVerfuegung != null
-				? letzteAusbezahlteVerfuegung.getZeitabschnitte()
-				: Collections.emptyList();
-
-			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitteMahlzeiten
-				= mahlzeitenverguenstigungEnabled && letzteAusbezahlteVerfuegungMahlzeiten != null
-				? letzteAusbezahlteVerfuegungMahlzeiten.getZeitabschnitte()
-				: Collections.emptyList();
-
-			final ZahlungslaufHelper zahlungslaufHelperGemeindeInstitution = ZahlungslaufHelperFactory.getZahlungslaufHelper(ZahlungslaufTyp.GEMEINDE_INSTITUTION);
-			final ZahlungslaufHelper zahlungslaufHelperGemeindeAntragsteller = ZahlungslaufHelperFactory.getZahlungslaufHelper(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER);
-
-			for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
-				// "Normale" Auszahlungen
-				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
-				zahlungslaufHelperGemeindeInstitution.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittOptional, newZeitabschnitt);
-				if (mahlzeitenverguenstigungEnabled) {
-					// Dasselbe auch fuer Mahlzeiten, jedoch nur, wenn diese fuer die Gemeinde enabled sind
-					// Das Feld ist transient, daher brauchen wir es auch nicht, falls die Mahlzeiten spaeter
-					// fuer die Gemeinde aktiviert werden
-					Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittMahlzeitenOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitteMahlzeiten, newZeitabschnitt);
-					zahlungslaufHelperGemeindeAntragsteller.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittMahlzeitenOptional, newZeitabschnitt);
-				} else {
-					// Wenn es keine Mahlzeitenverguenstigung gibt, wollen wir die Unterschiede nicht beachten. Wir setzen es einfach auf TRUE.
-					newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteMahlzeiten(true);
-					newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteMahlzeiten(true);
-				}
+		// "Normale" Auszahlungen
+		if (letzteAusbezahlteVerfuegung != null) {
+			setIsSameAusbezahlteVerguenstigungForZahlungslaufTyp(verfuegung, letzteAusbezahlteVerfuegung, ZahlungslaufTyp.GEMEINDE_INSTITUTION);
+		} else {
+			// Wenn es noch gar nie eine Auszahlung gab, gibt es auch nichts zu ignorieren
+			for (VerfuegungZeitabschnitt newZeitabschnitt : verfuegung.getZeitabschnitte()) {
+				newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(true);
+				newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(true);
 			}
+		}
+		// Dasselbe auch fuer Mahlzeiten, jedoch nur, wenn diese fuer die Gemeinde enabled sind
+		// Das Feld ist transient, daher brauchen wir es auch nicht, falls die Mahlzeiten spaeter
+		// fuer die Gemeinde aktiviert werden
+		if (mahlzeitenverguenstigungEnabled && letzteAusbezahlteVerfuegungMahlzeiten != null) {
+			setIsSameAusbezahlteVerguenstigungForZahlungslaufTyp(verfuegung, letzteAusbezahlteVerfuegungMahlzeiten, ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER);
+		} else {
+			// Wenn es noch gar nie eine Auszahlung gab, gibt es auch nichts zu ignorieren
+			for (VerfuegungZeitabschnitt newZeitabschnitt : verfuegung.getZeitabschnitte()) {
+				newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteMahlzeiten(true);
+				newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteMahlzeiten(true);
+			}
+		}
+	}
+
+	private static void setIsSameAusbezahlteVerguenstigungForZahlungslaufTyp(
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull Verfuegung letzteAusbezahlteVerfuegungForZahlungslauftyp,
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp
+	) {
+		final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
+
+		final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitteForZahlungslauftyp =
+			letzteAusbezahlteVerfuegungForZahlungslauftyp.getZeitabschnitte();
+
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
+
+		for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
+			// "Normale" Auszahlungen
+			Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitteForZahlungslauftyp, newZeitabschnitt);
+			zahlungslaufHelper.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittOptional, newZeitabschnitt);
 		}
 	}
 

@@ -39,10 +39,12 @@ import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -105,6 +107,14 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
 
 		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdaten();
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
+			throw new EbeguRuntimeException(KibonLogLevel.INFO,
+				"createZahlung",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
+				gesuch.getJahrFallAndGemeindenummer());
+		}
+
 		Objects.requireNonNull(auszahlungsdaten, "Die Auszahlungsdaten muessen zu diesem Zeitpunkt definiert sein");
 
 		final Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
@@ -201,5 +211,12 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 						otherAbschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal())))
 					&& abschnitt.getGueltigkeit().compareTo(otherAbschnitt.getGueltigkeit()) == 0;
 		return isSame;
+	}
+
+	@Override
+	public boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		// Nur auszuzahlen, wenn Mahlzeitenverguenstigung beantragt
+		final Familiensituation familiensituation = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch().extractFamiliensituation();
+		return familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
 	}
 }

@@ -232,7 +232,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte = getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
 				zeitabschnittBis);
 			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
-				if (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isNeu()) {
+				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isNeu()) {
 					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 				}
 			}
@@ -251,8 +251,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
-			if (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
-				|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt) == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
+			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt)
+				&& (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
+					|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt) == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT)) {
 				createZahlungspositionenKorrekturUndNachzahlung(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 			}
 		}

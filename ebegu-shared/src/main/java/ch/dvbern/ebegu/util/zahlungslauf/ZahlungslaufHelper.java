@@ -93,4 +93,9 @@ public interface ZahlungslaufHelper {
 	 * identisch sind
 	 */
 	boolean isSamePersistedValues(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull VerfuegungZeitabschnitt otherAbschnitt);
+
+	/**
+	 * Gibt zurueck, ob fuer diesen Zeitabschnitt grundsaetzlich eine Auszahlung in Frage kommt.
+	 */
+	boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt);
 }
