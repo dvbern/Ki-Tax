@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.bedag.geres.schemas._20180101.geresresidentinforesponse.BaseDeliveryType;
 import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
@@ -89,10 +90,14 @@ public final class GeresConverter {
 		return ewkPerson;
 	}
 
+	@Nullable
 	private static EWKBeziehung createFromGeres(@Nonnull ParentalRelationshipType parentalRelationshipType) {
+		final PersonIdentificationType personIdentificationPartner = parentalRelationshipType.getPartner().getPersonIdentification();
+		if (personIdentificationPartner == null) {
+			return null;
+		}
 		EWKBeziehung ewkBeziehung = new EWKBeziehung();
 		ewkBeziehung.setBeziehungstyp("EWK_BEZIEHUNG_" + parentalRelationshipType.getTypeOfRelationship());
-		final PersonIdentificationType personIdentificationPartner = parentalRelationshipType.getPartner().getPersonIdentification();
 		ewkBeziehung.setPersonID(personIdentificationPartner.getLocalPersonId().getPersonId());
 		ewkBeziehung.setNachname(personIdentificationPartner.getOfficialName());
 		ewkBeziehung.setVorname(personIdentificationPartner.getFirstName());
