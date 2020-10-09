@@ -69,15 +69,21 @@ public final class VerfuegungUtil {
 	public static void setIsSameAusbezahlteVerguenstigung(
 		@Nonnull Verfuegung verfuegung,
 		@Nullable Verfuegung letzteAusbezahlteVerfuegung,
-		@Nullable Verfuegung letzteAusbezahlteVerfuegungMahlzeiten
+		@Nullable Verfuegung letzteAusbezahlteVerfuegungMahlzeiten,
+		boolean mahlzeitenverguenstigungEnabled
 	) {
 		if (letzteAusbezahlteVerfuegung != null || letzteAusbezahlteVerfuegungMahlzeiten != null) {
 			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
 
-			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte =
-				letzteAusbezahlteVerfuegung != null ? letzteAusbezahlteVerfuegung.getZeitabschnitte() : Collections.emptyList();
-			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitteMahlzeiten =
-				letzteAusbezahlteVerfuegungMahlzeiten != null ? letzteAusbezahlteVerfuegungMahlzeiten.getZeitabschnitte() : Collections.emptyList();
+			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte
+				= letzteAusbezahlteVerfuegung != null
+				? letzteAusbezahlteVerfuegung.getZeitabschnitte()
+				: Collections.emptyList();
+
+			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitteMahlzeiten
+				= mahlzeitenverguenstigungEnabled && letzteAusbezahlteVerfuegungMahlzeiten != null
+				? letzteAusbezahlteVerfuegungMahlzeiten.getZeitabschnitte()
+				: Collections.emptyList();
 
 			final ZahlungslaufHelper zahlungslaufHelperGemeindeInstitution = ZahlungslaufHelperFactory.getZahlungslaufHelper(ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 			final ZahlungslaufHelper zahlungslaufHelperGemeindeAntragsteller = ZahlungslaufHelperFactory.getZahlungslaufHelper(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER);
@@ -86,9 +92,17 @@ public final class VerfuegungUtil {
 				// "Normale" Auszahlungen
 				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
 				zahlungslaufHelperGemeindeInstitution.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittOptional, newZeitabschnitt);
-				// Dasselbe auch fuer Mahlzeiten
-				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittMahlzeitenOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitteMahlzeiten, newZeitabschnitt);
-				zahlungslaufHelperGemeindeAntragsteller.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittMahlzeitenOptional, newZeitabschnitt);
+				if (mahlzeitenverguenstigungEnabled) {
+					// Dasselbe auch fuer Mahlzeiten, jedoch nur, wenn diese fuer die Gemeinde enabled sind
+					// Das Feld ist transient, daher brauchen wir es auch nicht, falls die Mahlzeiten spaeter
+					// fuer die Gemeinde aktiviert werden
+					Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittMahlzeitenOptional = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitteMahlzeiten, newZeitabschnitt);
+					zahlungslaufHelperGemeindeAntragsteller.setIsSameAusbezahlteVerguenstigung(oldSameZeitabschnittMahlzeitenOptional, newZeitabschnitt);
+				} else {
+					// Wenn es keine Mahlzeitenverguenstigung gibt, wollen wir die Unterschiede nicht beachten. Wir setzen es einfach auf TRUE.
+					newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteMahlzeiten(true);
+					newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteMahlzeiten(true);
+				}
 			}
 		}
 	}

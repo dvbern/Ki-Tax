@@ -155,7 +155,8 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 	@Override
 	public void setIsSameAusbezahlteVerguenstigung(
 		@Nonnull Optional<VerfuegungZeitabschnitt> oldSameZeitabschnittOptional,
-		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt) {
+		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt
+	) {
 		if (oldSameZeitabschnittOptional.isPresent()) {
 			VerfuegungZeitabschnitt oldSameZeitabschnitt = oldSameZeitabschnittOptional.get();
 			// Der Vergleich muuss fuer ASIV und Gemeinde separat erfolgen

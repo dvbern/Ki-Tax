@@ -233,7 +233,7 @@ public class BetreuungsgutscheinEvaluator {
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 				if (!isTagesschule) {
-					setZahlungRelevanteDaten((Betreuung) platz);
+					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
 				}
 			}
 		}
@@ -266,7 +266,10 @@ public class BetreuungsgutscheinEvaluator {
 	 * in die ueberlappenden neuen Zeitabschnitte
 	 * @param betreuung in deren zu berechnenend verfuegung die Zahlungsrelevanten Daten gesetzt wurden
 	 */
-	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
+	private void setZahlungRelevanteDaten(
+		@Nonnull Betreuung betreuung,
+		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO
+	) {
 		Verfuegung verfuegungZuBerechnen = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegungZuBerechnen == null) {
 			return;
@@ -278,11 +281,14 @@ public class BetreuungsgutscheinEvaluator {
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
 		if (vorgaengerAusbezahlteVerfuegungProAuszahlungstyp != null) {
 			// Zahlungsstatus aus vorgaenger uebernehmen
+			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
+			// die Mahlzeiten evtl. spaeter erst enabled werden!
 			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
 			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder eben nicht)
 			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen,
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION),
-				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER));
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER),
+				bgRechnerParameterDTO.getMahlzeitenverguenstigungEnabled());
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {
