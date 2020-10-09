@@ -21,7 +21,6 @@ import {switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
