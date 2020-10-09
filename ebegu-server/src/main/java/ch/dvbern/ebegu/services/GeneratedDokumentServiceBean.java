@@ -858,9 +858,16 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		GeneratedDokumentTyp dokumentTyp = GeneratedDokumentTyp.PAIN001;
 
-		final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId()).orElseThrow(
-			() -> new EbeguEntityNotFoundException("getPain001DokumentAccessTokenGeneratedDokument",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungsauftrag.getGemeinde().getId()));
+		final Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId());
+		if (!stammdatenOptional.isPresent()) {
+			// Wenn die Stammdaten nicht ausgefuellt sind, fahren wir hier nicht weiter.
+			throw new EbeguRuntimeException(KibonLogLevel.INFO,
+				"getPain001DokumentAccessTokenGeneratedDokument",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_GEMEINDE_INCOMPLETE,
+				zahlungsauftrag.getGemeinde().getName());
+		}
+
+		GemeindeStammdaten stammdaten = stammdatenOptional.get();
 
 		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
 		if (!stammdaten.isZahlungsinformationValid()) {
