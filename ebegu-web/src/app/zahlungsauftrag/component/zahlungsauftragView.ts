@@ -292,7 +292,7 @@ export class ZahlungsauftragViewController implements IController {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 gemeinden => {
-                    this.gemeindenList = gemeinden;
+                    this.berechtigteGemeindenList = new Set(gemeinden);
                 },
                 err => LOG.error(err),
             );
@@ -301,10 +301,6 @@ export class ZahlungsauftragViewController implements IController {
     private updateShowMahlzeitenZahlungslaeufe(): void {
         this.showMahlzeitenZahlungslaeufe = false;
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            this.showMahlzeitenZahlungslaeufe = true;
-            return;
-        }
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
             this.showMahlzeitenZahlungslaeufe = false;
             return;
