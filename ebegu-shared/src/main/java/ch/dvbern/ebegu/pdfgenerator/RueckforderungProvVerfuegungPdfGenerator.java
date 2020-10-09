@@ -257,7 +257,7 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_1), translate(FUSSZEILE_2), translate(FUSSZEILE_3),
 				translate(FUSSZEILE_4), translate(FUSSZEILE_5)),
-			0
+			0, 0
 		);
 	}
 }

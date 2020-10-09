@@ -21,10 +21,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,6 +39,7 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -92,7 +95,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private BenutzerService benutzerService;
 
 	@Override
-	protected void processEvent(@Nonnull LocalDateTime eventTime, @Nonnull EventType eventType,
+	protected void processEvent(
+		@Nonnull LocalDateTime eventTime,
+		@Nonnull EventType eventType,
 		@Nonnull BetreuungEventDTO dto) {
 		try {
 			Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false);
@@ -111,7 +116,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					+ "Event im kiBon bearbeitet! Event ist ignoriert");
 			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.WARTEN)) {
 				//Update the Betreuung and check if all data are available
-				if (setBetreuungDaten(betreuung, dto)) {
+				if (setBetreuungDaten(new PlatzbestaetigungProcessingContext(betreuung, dto))) {
 					betreuungService.betreuungPlatzBestaetigen(betreuung);
 				} else {
 					betreuungService.saveBetreuung(betreuung, false);
@@ -143,90 +148,141 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	/**
 	 * Update the Betreuung Object and return if its ready for Bestaetigen
-	 *
-	 * @param betreuung
-	 * @param dto
-	 * @return
 	 */
-	@SuppressWarnings("PMD.NcssMethodCount")
-	private boolean setBetreuungDaten(Betreuung betreuung, BetreuungEventDTO dto) {
-		boolean isReadyForBestaetigen = true;
-		//erweiterte Betreuung muss true sein um der checkbox zu setzen! Sonst ist der Wert von DTO ignoriert
-		ErweiterteBetreuung erweiterteBetreuung =
-			betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
-		if (erweiterteBetreuung != null && erweiterteBetreuung.getErweiterteBeduerfnisse()) {
-			erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(dto.getAusserordentlicherBetreuungsaufwand());
-			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(erweiterteBetreuung);
+	private boolean setBetreuungDaten(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+		setErweitereBeduerfnisseBestaetigt(ctx);
+		setBetreuungInGemeinde(ctx);
+		setZeitabschnitte(ctx);
+
+		return ctx.isReadyForBestaetigen();
+	}
+
+	private void setErweitereBeduerfnisseBestaetigt(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+		ErweiterteBetreuung eb = ctx.getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+		// Der Wert aus dem DTO wird nur berücksichtigt, wenn bereits bei dem Antrag erweitere Bedürfnisse angemeldet
+		// wurden.
+		if (eb != null && eb.getErweiterteBeduerfnisse()) {
+			eb.setErweiterteBeduerfnisseBestaetigt(ctx.getDto().getAusserordentlicherBetreuungsaufwand());
 		}
-		if (dto.getGemeindeName() != null) {
-			//Check if Gemeinde Bern und if ja ob es ist gleich, sonst checkbox setzen
-			Gemeinde gemeinde = betreuung.extractGemeinde();
-			Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-			Einstellung zusaetzlicherGutscheinEnabled =
-				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED,
-					gemeinde,
-					gesuchsperiode);
-			if (zusaetzlicherGutscheinEnabled.getValueAsBoolean() && !gemeinde.getName().equalsIgnoreCase(dto.getGemeindeName())) {
-				if (erweiterteBetreuung == null) {
-					erweiterteBetreuung = new ErweiterteBetreuung();
-				}
-				erweiterteBetreuung.setBetreuungInGemeinde(false);
-				betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(erweiterteBetreuung);
-			}
+	}
+
+	private void setBetreuungInGemeinde(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+		Betreuung betreuung = ctx.getBetreuung();
+		boolean enabled = isEnabled(betreuung, EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED);
+
+		if (!enabled) {
+			// no need to set BetreuungInGemeinde -> continue automated processing
+			return;
+		}
+
+		String incomingGemeindeName = ctx.getDto().getGemeindeName();
+		if (incomingGemeindeName == null) {
+			// Gemeinde not received, cannot evaluate -> abort automated processing
+			ctx.requireHumanConfirmation();
+			return;
+		}
+
+		Gemeinde gemeinde = betreuung.extractGemeinde();
+
+		if (!gemeinde.getName().equalsIgnoreCase(incomingGemeindeName)) {
+			getOrCreateErweiterteBetreuung(betreuung)
+				.setBetreuungInGemeinde(false);
+		}
+	}
+
+	private void setZeitabschnitte(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+		List<ZeitabschnittDTO> zeitabschnitte = ctx.getDto().getZeitabschnitte();
+		if (zeitabschnitte.isEmpty()) {
+			ctx.requireHumanConfirmation();
+
+			return;
+		}
+
+		Betreuung betreuung = ctx.getBetreuung();
+		betreuung.getBetreuungspensumContainers().clear();
+		//Check if die Gemeinde erlaubt mahlzeitvergunstigung:
+		boolean mahlzeitVergunstigungEnabled =
+			isEnabled(betreuung, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+
+		zeitabschnitte.stream()
+			.map(z -> zeitabschnittToBetreuungspensumContainer(mahlzeitVergunstigungEnabled, ctx, z))
+			.filter(Objects::nonNull)
+			.forEach(c -> betreuung.getBetreuungspensumContainers().add(c));
+	}
+
+	@Nullable
+	private BetreuungspensumContainer zeitabschnittToBetreuungspensumContainer(
+		boolean mahlzeitVergunstigungEnabled,
+		@Nonnull PlatzbestaetigungProcessingContext ctx,
+		@Nonnull ZeitabschnittDTO zeitabschnittDTO) {
+
+		Betreuung betreuung = ctx.getBetreuung();
+		Betreuungspensum betreuungspensum = mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuung);
+		if (betreuungspensum == null) {
+			ctx.requireHumanConfirmation();
+			return null;
+		}
+
+		if (mahlzeitVergunstigungEnabled) {
+			setTarifeProMahlzeiten(ctx, zeitabschnittDTO, betreuungspensum);
+		}
+
+		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
+		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
+		betreuungspensumContainer.setBetreuung(betreuung);
+
+		return betreuungspensumContainer;
+	}
+
+	private void setTarifeProMahlzeiten(
+		@Nonnull PlatzbestaetigungProcessingContext ctx,
+		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
+		@Nonnull Betreuungspensum betreuungspensum) {
+
+		// Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
+		if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
+			betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
 		} else {
-			//falls Kiadmin keine Gemeinde sendet, muss einen Institution Benutzer der Platz Bestaetigen
-			isReadyForBestaetigen = false;
+			ctx.requireHumanConfirmation();
 		}
-		//Erstellen die Zeitabschnitte auf basis der DTO:
-		if (dto.getZeitabschnitte().isEmpty()) {
-			isReadyForBestaetigen = false;
+		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
+			betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
 		} else {
-			betreuung.getBetreuungspensumContainers().clear();
-			//Check if die Gemeinde erlaubt mahlzeitvergunstigung:
-			Gemeinde gemeinde = betreuung.extractGemeinde();
-			Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-			Einstellung mahlzeitVergunstigungEnabled =
-				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-					gemeinde,
-					gesuchsperiode);
-			for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
-				Betreuungspensum betreuungspensum = mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO,
-					betreuung);
-				if (betreuungspensum == null) {
-					isReadyForBestaetigen = false;
-					continue;
-				}
-				if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
-					//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
-					if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
-						betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-					} else {
-						isReadyForBestaetigen = false;
-					}
-					if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
-						betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-					} else {
-						isReadyForBestaetigen = false;
-					}
-				}
-				//set betreuungpensum in model
-				BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
-				betreuungspensumContainer.setBetreuung(betreuung);
-				betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
-				betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
-			}
+			ctx.requireHumanConfirmation();
 		}
-		return isReadyForBestaetigen;
+	}
+
+	private boolean isEnabled(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
+		Gemeinde gemeinde = betreuung.extractGemeinde();
+		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
+
+		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBoolean();
+	}
+
+	@Nonnull
+	private ErweiterteBetreuung getOrCreateErweiterteBetreuung(@Nonnull Betreuung betreuung) {
+		ErweiterteBetreuungContainer container = betreuung.getErweiterteBetreuungContainer();
+		ErweiterteBetreuung erweiterteBetreuung = container.getErweiterteBetreuungJA();
+
+		if (erweiterteBetreuung != null) {
+			return erweiterteBetreuung;
+		}
+
+		ErweiterteBetreuung created = new ErweiterteBetreuung();
+		betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(created);
+
+		return created;
 	}
 
 	/**
 	 * Create a new Betreuungsmitteilung Object and return if its ready for Bestaetigen
 	 *
-	 * @param dto
 	 * @return Betreuungsmitteilung oder null
 	 */
 	@SuppressWarnings("PMD.NcssMethodCount")
-	private Betreuungsmitteilung setBetreuungsmitteilungDaten(BetreuungEventDTO dto,
+	@Nullable
+	private Betreuungsmitteilung setBetreuungsmitteilungDaten(
+		BetreuungEventDTO dto,
 		Betreuung betreuung) {
 		if (dto.getZeitabschnitte().isEmpty()) {
 			LOG.error("Zeitabschnitt are missing, we cannot work with this dto");
@@ -310,8 +366,12 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		return betreuungsmitteilung;
 	}
 
-	protected <T extends AbstractMahlzeitenPensum> T mapZeitabschnitt(T neueBetreuung,
-		ZeitabschnittDTO zeitabschnittDTO, Betreuung betreuung) {
+	@Nullable
+	protected <T extends AbstractMahlzeitenPensum> T mapZeitabschnitt(
+		T neueBetreuung,
+		ZeitabschnittDTO zeitabschnittDTO,
+		Betreuung betreuung) {
+
 		if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
 			neueBetreuung.setPensum(zeitabschnittDTO.getBetreuungspensum()); // schauen ob es so korrekt ist
 			neueBetreuung.setUnitForDisplay(PensumUnits.PERCENTAGE);
@@ -356,10 +416,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	 *
 	 * Deswegen sind alle Parametern die nicht vorhanden sind (im MutationMitteilung) ignoriert
 	 * So man muss nur die Zeitabschnitt Werten ueberpruefen
-	 *
-	 * @param betreuungEventDTO
-	 * @param betreuung
-	 * @return
 	 */
 	protected boolean isSame(BetreuungEventDTO betreuungEventDTO, Betreuung betreuung) {
 		Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();

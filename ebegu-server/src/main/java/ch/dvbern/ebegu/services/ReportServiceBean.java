@@ -92,6 +92,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
@@ -828,14 +830,20 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				auftragId));
 
-		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
-		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
-			ZahlungDataRow row = new ZahlungDataRow(
+		// Je nach Rolle duerfen im Excel nicht alle Institutionen aufgefuehrt werden
+		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
+		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+
+		List<ZahlungDataRow> zahlungDataRows = zahlungsauftrag.getZahlungen()
+			.stream()
+			.filter(zahlung -> !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+								allowedInst
+									.stream()
+									.anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId())))
+			.map(zahlung -> new ZahlungDataRow(
 				zahlung,
 				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
-			);
-			zahlungDataRows.add(row);
-		}
+		)).collect(Collectors.toList());
 
 		return getUploadFileInfoZahlung(
 			zahlungDataRows,
@@ -1563,6 +1571,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Familiensituation familiensituation =
 				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
+			row.setSozialhilfeBezueger(isSozialhilfeBezueger(zeitabschnitt, familiensituationContainer, familiensituation));
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
@@ -1588,6 +1597,30 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Kind
 		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung);
 		return row;
+	}
+
+	private boolean isSozialhilfeBezueger(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull FamiliensituationContainer familiensituationContainer,
+		@Nonnull Familiensituation familiensituation
+	) {
+		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
+			return false;
+		}
+
+		// falls keine sozialhilfeContainer existieren, Sozialhilfe von Familiensituation nehmen
+		Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = familiensituationContainer.getSozialhilfeZeitraumContainers();
+		if (sozialhilfeZeitraumContainers.isEmpty()) {
+			return familiensituation.getSozialhilfeBezueger();
+		}
+
+		// falls sozialhilfeContainer existieren, überprüfen ob diese für den aktuellen Zeitabschnitt gelten
+		return sozialhilfeZeitraumContainers.stream().anyMatch(sozialhilfeZeitraumContainer -> {
+			SozialhilfeZeitraum sozialhilfeZeitraumJA = sozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA();
+			return sozialhilfeZeitraumJA != null &&
+				zeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(sozialhilfeZeitraumJA.getGueltigkeit().getGueltigAb()) >= 0 &&
+				zeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(sozialhilfeZeitraumJA.getGueltigkeit().getGueltigBis()) <= 0;
+		});
 	}
 
 	@SuppressWarnings("Duplicates")
