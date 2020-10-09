@@ -334,10 +334,18 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		}
 
 		findVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_INSTITUTION, betreuung)
-			.ifPresent(vorgaenger -> setZahlungsstatus(ZahlungslaufTyp.GEMEINDE_INSTITUTION, verfuegung, vorgaenger, ignorieren));
+			.ifPresent(vorgaenger -> setZahlungsstatus(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				verfuegung,
+				vorgaenger,
+				ignorieren));
 
 		findVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, betreuung)
-			.ifPresent(vorgaenger -> setZahlungsstatus(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, verfuegung, vorgaenger, ignorierenMahlzeiten));
+			.ifPresent(vorgaenger -> setZahlungsstatus(
+				ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER,
+				verfuegung,
+				vorgaenger,
+				ignorierenMahlzeiten));
 	}
 
 	private void setZahlungsstatus(
@@ -609,10 +617,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck, die ausbezahlt ist.
 	 */
 	@Nonnull
-	private Map<ZahlungslaufTyp, Verfuegung> findVorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes(@Nonnull Betreuung betreuung) {
+	private Map<ZahlungslaufTyp, Verfuegung> findVorgaengerAusbezahlteVerfuegungForAllZahlungslaufTypes(
+		@Nonnull Betreuung betreuung
+	) {
 		Map<ZahlungslaufTyp, Verfuegung> result = new HashMap<>();
 		Arrays.stream(ZahlungslaufTyp.values()).iterator().forEachRemaining(zahlungslaufTyp -> {
-			final Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp, betreuung);
+			final Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung =
+				findVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp, betreuung);
 			vorgaengerAusbezahlteVerfuegung.ifPresent(verfuegung -> result.put(zahlungslaufTyp, verfuegung));
 		});
 		return result;
@@ -622,7 +633,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck, die ausbezahlt ist.
 	 */
 	@Nonnull
-	private Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull Betreuung betreuung) {
+	private Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull Betreuung betreuung
+	) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
 		if (betreuung.getVorgaengerId() == null) {
 			return Optional.empty();
@@ -672,8 +686,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu,
-		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
-
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte
+	) {
 		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
 
 		findVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp, betreuungNeu)
@@ -785,8 +799,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private boolean isNotInZeitabschnitteList(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte,
-		@Nonnull ZahlungslaufHelper zahlungslaufHelper) {
-
+		@Nonnull ZahlungslaufHelper zahlungslaufHelper
+	) {
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : vorgaengerZeitabschnitte) {
 			if (zahlungslaufHelper.isSamePersistedValues(verfuegungZeitabschnitt, zeitabschnitt)) {
 				return false;

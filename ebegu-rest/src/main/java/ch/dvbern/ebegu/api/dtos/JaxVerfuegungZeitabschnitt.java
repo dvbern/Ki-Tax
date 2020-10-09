@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -111,10 +112,10 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private String bemerkungen;
 
-	@NotNull
+	@NotNull @Nonnull
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
-	@NotNull
+	@NotNull @Nonnull
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	private boolean kategorieMaxEinkommen = false;
@@ -331,19 +332,21 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.bemerkungen = bemerkungen;
 	}
 
+	@Nonnull
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
 		return zahlungsstatus;
 	}
 
-	public void setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+	public void setZahlungsstatus(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
 		this.zahlungsstatus = zahlungsstatus;
 	}
 
+	@Nonnull
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusMahlzeitenverguenstigung() {
 		return zahlungsstatusMahlzeitenverguenstigung;
 	}
 
-	public void setZahlungsstatusMahlzeitenverguenstigung(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
+	public void setZahlungsstatusMahlzeitenverguenstigung(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
 		this.zahlungsstatusMahlzeitenverguenstigung = zahlungsstatusMahlzeitenverguenstigung;
 	}
 

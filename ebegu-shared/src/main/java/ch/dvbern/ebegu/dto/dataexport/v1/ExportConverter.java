@@ -171,7 +171,11 @@ public class ExportConverter {
 		List<VerfuegungZeitabschnitt> nochGueltigeZeitabschnitte = new ArrayList<>();
 
 		ignoredAbschnitte.forEach(z -> verfuegungService
-			.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(ZahlungslaufTyp.GEMEINDE_INSTITUTION, z, betreuung, nochGueltigeZeitabschnitte));
+			.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				z,
+				betreuung,
+				nochGueltigeZeitabschnitte));
 
 		return nochGueltigeZeitabschnitte;
 	}
