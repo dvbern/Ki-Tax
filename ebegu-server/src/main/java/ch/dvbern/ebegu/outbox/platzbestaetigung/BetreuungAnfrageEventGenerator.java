@@ -57,7 +57,14 @@ public class BetreuungAnfrageEventGenerator {
 	@Inject
 	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
 
-	@Schedule(info = "Migration-aid, pushes already existing institutions to outbox", hour = "4", persistent = true)
+	/**
+	 * This is a job starting every night, there must be no more need for this job after the first execution
+	 * but this could be a great help if we want to re-export something, then we just have to change the database
+	 * column event_published value and it is re-exported automatically during the following night
+	 */
+	@Schedule(info = "Migration-aid, pushes Betreuung waiting for Platzbestaetigung and not yet published",
+		hour = "4",
+		persistent = true)
 	public void publishWartendeBetreuung() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -68,7 +75,8 @@ public class BetreuungAnfrageEventGenerator {
 		Join<Betreuung, InstitutionStammdaten> institutionStammdatenJoin =
 			root.join(Betreuung_.institutionStammdaten);
 		Predicate isKitaOderTFO =
-			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
+			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
+				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
 		predicates.add(isKitaOderTFO);
 
 		//Event muss noch nicht plubliziert sein
