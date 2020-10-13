@@ -157,8 +157,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private GesuchService gesuchService;
 
-	@Inject
-	private MitteilungService mitteilungService;
 
 	@Nonnull
 	@Override
