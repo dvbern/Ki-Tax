@@ -720,9 +720,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
 			predicatesToUse.add(dossierPredicate);
 
-			// Alle AUSSER Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
+			// Alle AUSSER Superadmin, Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
 			// d.h. sie duerfen IN_BEARBEITUNG_GS und FREIGABEQUITTUNG NICHT sehen
 			if (!(principalBean.isCallerInAnyOfRole(
+				UserRole.SUPER_ADMIN,
 				UserRole.GESUCHSTELLER,
 				UserRole.ADMIN_TRAEGERSCHAFT,
 				UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
