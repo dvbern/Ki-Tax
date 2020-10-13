@@ -26,7 +26,6 @@ import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
-import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -80,9 +79,9 @@ export class ZahlungsauftragViewController implements IController {
     // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
     public gemeindenList: Array<TSGemeinde> = [];
     // Alle Gemeinden fuer die ich berechtigt bin fuer die normalen Auftraege
-    public berechtigteGemeindenList: Set<TSGemeinde> = new Set<TSGemeinde>();
+    public berechtigteGemeindenList: Array<TSGemeinde> = [];
     // Alle Gemeinden fuer die ich berechtigt bin fuer die Mahlzeitenverguenstigungen
-    public berechtigteGemeindenMitMahlzeitenList: Set<TSGemeinde> = new Set<TSGemeinde>();
+    public berechtigteGemeindenMitMahlzeitenList: Array<TSGemeinde> = [];
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -291,7 +290,7 @@ export class ZahlungsauftragViewController implements IController {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 gemeinden => {
-                    this.berechtigteGemeindenList = new Set(gemeinden);
+                    this.berechtigteGemeindenList = gemeinden;
                 },
                 err => LOG.error(err),
             );
@@ -304,20 +303,14 @@ export class ZahlungsauftragViewController implements IController {
             this.showMahlzeitenZahlungslaeufe = false;
             return;
         }
-        this.berechtigteGemeindenList.forEach(gemeinde => {
-            this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then((value: TSGemeindeStammdaten) => {
-                const konfigurationListe = value.konfigurationsListe;
-                for (const konfiguration of konfigurationListe) {
-                    konfiguration.initProperties();
-                    // tslint:disable-next-line:early-exit
-                    if (konfiguration.konfigMahlzeitenverguenstigungEnabled) {
-                        // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
-                        // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
-                        this.showMahlzeitenZahlungslaeufe = true;
-                        this.berechtigteGemeindenMitMahlzeitenList.add(gemeinde);
-                    }
-                }
-            });
+        // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
+        this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
+            if (value.length > 0) {
+                // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
+                // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
+                this.showMahlzeitenZahlungslaeufe = true;
+                this.berechtigteGemeindenMitMahlzeitenList = value;
+            }
         });
     }
 
