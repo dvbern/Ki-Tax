@@ -1371,9 +1371,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			Benutzer benutzer = benutzerOptional.get();
 			// Es gelten dieselben Regeln wie beim Loeschen
 			authorizer.checkWriteAuthorization(benutzer);
-			if (!isBenutzerDeleteable(benutzer)) {
-				return;
-			}
 			LOG.warn("ExternalUUID von Benutzer wird gelöscht: {}", benutzer);
 			benutzer.addBemerkung("ExternalUUID " + benutzer.getExternalUUID() + " gelöscht");
 			benutzer.setExternalUUID(null);
@@ -1391,33 +1388,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			+ "/einladung?typ=" + einladung.getEinladungTyp()
 			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
 			+ "&userid=" + eingeladener.getId();
-	}
-
-	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {
-		if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
-			// Gesuchsteller darf noch kein Dossier haben
-			Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
-			if (fallOptional.isPresent()) {
-				Fall fall = fallOptional.get();
-				if (!gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty()) {
-					return false;
-				}
-			}
-		} else {
-			// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
-			if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
-				return false;
-			}
-		}
-		// Es darf keine Mitteilungen von oder an diesen Benutzer geben
-		if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
-			return false;
-		}
-		// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
-		if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
-			return false;
-		}
-		return true;
 	}
 
 	private BenutzerStatus findLastNotGesperrtStatus(Benutzer benutzer) {
