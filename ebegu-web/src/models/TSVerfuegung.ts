@@ -130,7 +130,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
             // tslint:disable-next-line:early-exit
-            if (zeitabschnitt.zahlungsstatus !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
+            if (zeitabschnitt.zahlungsstatusMahlzeitenverguenstigung !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                 && !zeitabschnitt.sameAusbezahlteMahlzeiten) {
                 // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
                 // gestellt werden
