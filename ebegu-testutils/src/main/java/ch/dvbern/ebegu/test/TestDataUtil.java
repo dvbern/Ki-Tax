@@ -895,6 +895,26 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
+	public static Betreuung createDefaultBetreuung(int betreuungspensum, LocalDate von, LocalDate bis) {
+		Betreuung betreuung = new Betreuung();
+		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+		betreuung.setBetreuungspensumContainers(new TreeSet<>());
+		final BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
+		final Betreuungspensum pensum = createBetreuungspensum();
+		pensum.setPensum(BigDecimal.valueOf(betreuungspensum));
+		pensum.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
+		pensum.setGueltigkeit(new DateRange(von, bis));
+		betPensContainer.setBetreuungspensumJA(pensum);
+		betreuung.getBetreuungspensumContainers().add(betPensContainer);
+		betreuung.setAbwesenheitContainers(new HashSet<>());
+		betreuung.setKind(createDefaultKindContainer());
+		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		erweitContainer.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(erweitContainer);
+		return betreuung;
+	}
+
 	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
 		belegungTagesschule.setBemerkung("Dies ist eine Bemerkung!");
@@ -2126,6 +2146,7 @@ public final class TestDataUtil {
 		ErweiterteBetreuung erwBet = new ErweiterteBetreuung();
 		erwBet.setErweiterteBeduerfnisse(false);
 		erwBet.setKeineKesbPlatzierung(true);
+		erwBet.setBetreuungInGemeinde(true);
 		erwBetContainer.setErweiterteBetreuungJA(erwBet);
 		return erwBetContainer;
 	}
@@ -2148,6 +2169,8 @@ public final class TestDataUtil {
 	@Nonnull
 	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
 		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> collection = new ArrayList<>();
+		collection.add(createKitaxOeffnungszeiten("Kita Brünnen"));
+		collection.add(createKitaxOeffnungszeiten("Kita Weissenstein"));
 		collection.add(createKitaxOeffnungszeiten("Kita Aaregg"));
 		collection.add(createKitaxOeffnungszeiten("Testinstitution"));
 		// Fuer Tests gehen wir im Allgemeinen davon aus, dass Bern (Paris) bereits in der Vergangenheit zu ASIV gewechselt hat
