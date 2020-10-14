@@ -281,8 +281,7 @@ export class GemeindeRS implements IEntityRS {
     }
 
     public getGemeindenWithMahlzeitenverguenstigungForBenutzer(): IPromise<TSGemeinde[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_WITH_MAHLZEITENVERGUENSTIGUNG);
-        return this.$http.get(`${this.serviceURL}/mahlzeitenverguenstigung`, {cache})
+        return this.$http.get(`${this.serviceURL}/mahlzeitenverguenstigung`)
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 }
