@@ -514,7 +514,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			BigDecimal pensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 			BigDecimal pensumGemeinde = BigDecimal.ZERO;
 			BigDecimal pensumTotal = pensumKanton;
-			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 				BigDecimal pensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
 				pensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(pensumTotalGemeinde, pensumKanton);
@@ -530,7 +530,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 			BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
 			BigDecimal verguenstigungTotal = verguenstigungKanton;
-			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 				BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
 				verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
@@ -1379,7 +1379,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
 		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal anspruchsPensumTotalGemeinde =
 				new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
@@ -1394,7 +1394,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 		BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal bgPensumTotal = bgPensumKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
 			bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
@@ -1415,7 +1415,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 		BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
 		BigDecimal verguenstigungTotal = verguenstigungKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
 			verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
