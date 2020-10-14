@@ -337,7 +337,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		reportDataBenutzer.stream()
 			.filter(benutzerDataRow -> benutzerDataRow.getUsername().equals("blku"))
 			.forEach(row -> {
-				assertEquals("Administrator BG", row.getRole());
+				assertEquals("Administrator/in BG", row.getRole());
 				assertEquals(BenutzerStatus.AKTIV, row.getStatus());
 				assertNull(row.getTraegerschaft());
 				assertNull(row.getInstitution());
