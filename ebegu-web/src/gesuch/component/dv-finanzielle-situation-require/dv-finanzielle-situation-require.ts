@@ -77,7 +77,7 @@ export class DVFinanzielleSituationRequireController implements IController {
         const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger,
             this.verguenstigungGewuenscht);
         // Wenn es sich geändert und nicht den Initialwert "undefined" hat, müssen gewisse Daten gesetzt werden
-        if (this.finanzielleSituationRequired &&
+        if (EbeguUtil.isNotNullOrUndefined(this.finanzielleSituationRequired) &&
             required !== this.finanzielleSituationRequired &&
             this.gesuchModelManager.getGesuch()) {
             this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
