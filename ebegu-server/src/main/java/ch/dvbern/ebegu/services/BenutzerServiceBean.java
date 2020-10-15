@@ -716,6 +716,35 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			return saveBenutzer(foundUser);
 		}
 
+		// Benutzer nicht ueber ExternalUUID gefunden. Es koennte aber sein, dass wir den Benutzer resettet wurde
+		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername());
+		if (benutzerByUsernameOptional.isPresent()) {
+			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
+			Benutzer foundUser = benutzerByUsernameOptional.get();
+			// Wir ueberpruefen, ob sich die Daten aus IAM geaendert haben (ausser der ExternalUUID,
+			// die wir uebernehmen wollen)
+			if (!foundUser.getNachname().equalsIgnoreCase(benutzer.getNachname())
+				|| !foundUser.getVorname().equalsIgnoreCase(benutzer.getVorname())
+			 	|| !foundUser.getEmail().equalsIgnoreCase(benutzer.getEmail())) {
+				String message = String.format("External User has new User-Data: Username %s, "
+						+ "Nachname bisher %s, neu %s; "
+						+ "Vorname bisher %s, neu %s}; "
+						+ "E-Mail bisher %s, neu %s. Updating and setting Bemerkung!",
+					benutzer.getUsername(),
+					foundUser.getNachname(), benutzer.getNachname(),
+					foundUser.getVorname(), benutzer.getVorname(),
+					foundUser.getEmail(), benutzer.getEmail());
+				LOG.warn(message);
+				foundUser.addBemerkung(message);
+				foundUser.setNachname(benutzer.getNachname());
+				foundUser.setVorname(benutzer.getVorname());
+				foundUser.setEmail(benutzer.getEmail());
+			}
+			// Wir uebernehmen nur die externalUUID
+			foundUser.setExternalUUID(benutzer.getExternalUUID());
+			return saveBenutzer(foundUser);
+		}
+
 		// Wir kennen den Benutzer noch nicht: Wir uebernehmen alles, setzen aber grundsätzlich die Rolle auf
 		// GESUCHSTELLER
 		Berechtigung berechtigung = new Berechtigung();
