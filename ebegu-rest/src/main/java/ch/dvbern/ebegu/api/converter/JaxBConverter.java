@@ -3575,8 +3575,7 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
-		jaxZeitabschn.setVerguenstigungHauptmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungHauptmahlzeitenTotal());
-		jaxZeitabschn.setVerguenstigungNebenmahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungNebenmahlzeitenTotal());
+		jaxZeitabschn.setVerguenstigungMahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungMahlzeitenTotal());
 		return jaxZeitabschn;
 	}
 
@@ -5189,20 +5188,21 @@ public class JaxBConverter extends AbstractConverter {
 				properties.setZahlungsadresse(null);
 			}
 
-			if (famSit.getAuszahlungsdaten() == null) {
-				famSit.setAuszahlungsdaten(new Auszahlungsdaten());
-			}
 			if (properties.getIban() != null || properties.getKontoinhaber() != null) {
 				// Wenn eines gesetzt ist, sind beide zwingend!
 				Objects.requireNonNull(properties.getIban());
 				Objects.requireNonNull(properties.getKontoinhaber());
+				if (famSit.getAuszahlungsdaten() == null) {
+					famSit.setAuszahlungsdaten(new Auszahlungsdaten());
+				}
 				famSit.getAuszahlungsdaten().setIban(new IBAN(properties.getIban()));
 				famSit.getAuszahlungsdaten().setKontoinhaber(properties.getKontoinhaber());
-			}
-			famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
-			if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
-				famSit.getAuszahlungsdaten().setAdresseKontoinhaber(this.adresseToEntity(properties.getZahlungsadresse(),
-					famSit.getAuszahlungsdaten().getAdresseKontoinhaber() == null ? new Adresse() : famSit.getAuszahlungsdaten().getAdresseKontoinhaber()));
+
+				famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
+				if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
+					famSit.getAuszahlungsdaten().setAdresseKontoinhaber(this.adresseToEntity(properties.getZahlungsadresse(),
+						famSit.getAuszahlungsdaten().getAdresseKontoinhaber() == null ? new Adresse() : famSit.getAuszahlungsdaten().getAdresseKontoinhaber()));
+				}
 			}
 		}
 	}
@@ -5466,6 +5466,7 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setStufe2VerfuegungBetrag(rueckforderungFormularJax.getStufe2VerfuegungBetrag());
 		rueckforderungFormular.setStufe2VerfuegungDatum(rueckforderungFormularJax.getStufe2VerfuegungDatum());
 		// Stufe2VerfuegungAusbezahltAm darf nie vom Client uebernommen werden, es muss Clientseitig gesetzt werden
+		// stufe2ProvisorischVerfuegtDatum darf nie vom Client uebernommen werden
 		rueckforderungFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToEntity(rueckforderungFormularJax.getRueckforderungMitteilungen(), rueckforderungFormular.getRueckforderungMitteilungen()));
 		rueckforderungFormular.setInstitutionTyp(rueckforderungFormularJax.getInstitutionTyp());
 		rueckforderungFormular.setExtendedEinreichefrist(rueckforderungFormularJax.getExtendedEinreichefrist());

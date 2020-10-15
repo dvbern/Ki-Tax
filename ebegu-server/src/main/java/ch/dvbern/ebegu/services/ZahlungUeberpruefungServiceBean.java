@@ -46,6 +46,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -59,6 +60,7 @@ import ch.dvbern.ebegu.entities.Zahlungsposition_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
@@ -85,9 +87,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
-	private DossierService dossierService;
-
-	@Inject
 	private GesuchService gesuchService;
 
 	@Inject
@@ -101,6 +100,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 
 	private Map<String, List<Zahlungsposition>> zahlungenIstMap = new HashMap<>();
@@ -193,7 +195,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		Objects.requireNonNull(datumLetzteZahlung);
 
 		LOGGER.info("Pruefe Gesuchsperiode {}", gesuchsperiode.toString());
-		Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde);
+		Collection<Dossier> allDossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, gemeinde, Dossier_.gemeinde);
 		for (Dossier dossier : allDossiers) {
 			Optional<Gesuch> gesuchOptional = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, dossier, false);
 			gesuchOptional.ifPresent(gesuch -> pruefeZahlungenSollFuerGesuch(gesuch, datumLetzteZahlung));

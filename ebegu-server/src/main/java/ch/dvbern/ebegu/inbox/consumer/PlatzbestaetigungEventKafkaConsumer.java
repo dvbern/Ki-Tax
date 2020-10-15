@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.security.RunAs;
@@ -45,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG;
@@ -82,8 +82,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 		String groupId = ebeguConfiguration.getKafkaPlatzbestaetigungGroupId();
 		props.setProperty(GROUP_ID_CONFIG, "kibon-platzbestaetigung-" + groupId);
 		props.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "true");
-		props.setProperty(AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		props.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
 		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
@@ -97,21 +96,22 @@ public class PlatzbestaetigungEventKafkaConsumer {
 	@Schedule(info = "consume kafka events", second = "*/10", minute = "*", hour = "*", persistent = true)
 	public void workKafkaData() {
 		try {
-			if (ebeguConfiguration.getKafkaURL().isPresent() || ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
-				if (consumer == null) {
-					startKafkaPlatzbestaetigungConsumer();
-				} else {
-					ConsumerRecords<String, BetreuungEventDTO> consumerRecordes =
-						consumer.poll(Duration.ofMillis(5000));
-					for (ConsumerRecord<String, BetreuungEventDTO> record : consumerRecordes) {
-						LOG.info("BetreuungEvent received for Betreuung with refnr {}", record.key());
-						processor.process(record, eventHandler);
-					}
-				}
+			if (consumer == null) {
+				startKafkaPlatzbestaetigungConsumer();
+				return;
 			}
+
+			ConsumerRecords<String, BetreuungEventDTO> consumerRecordes = consumer.poll(Duration.ofMillis(5000));
+			consumerRecordes.forEach(this::process);
+			consumer.commitSync();
 		} catch (Exception e) {
 			LOG.error("There's a problem with the kafka Platzbestaetigung Consumer", e);
 		}
+	}
+
+	private void process(@Nonnull ConsumerRecord<String, BetreuungEventDTO> record) {
+		LOG.info("BetreuungEvent received for Betreuung with refnr {}", record.key());
+		processor.process(record, eventHandler);
 	}
 
 	@PreDestroy

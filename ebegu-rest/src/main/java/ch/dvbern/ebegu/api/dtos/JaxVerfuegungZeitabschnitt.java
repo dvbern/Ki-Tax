@@ -128,10 +128,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private JaxTsCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
 
-	private BigDecimal verguenstigungHauptmahlzeitTotal;
-
-	private BigDecimal verguenstigungNebenmahlzeitTotal;
-
+	private BigDecimal verguenstigungMahlzeitTotal;
 
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
@@ -396,19 +393,12 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
-	public BigDecimal getVerguenstigungHauptmahlzeitTotal() {
-		return verguenstigungHauptmahlzeitTotal;
+	public BigDecimal getVerguenstigungMahlzeitTotal() {
+		return verguenstigungMahlzeitTotal;
 	}
 
-	public void setVerguenstigungHauptmahlzeitTotal(BigDecimal verguenstigungHauptmahlzeitTotal) {
-		this.verguenstigungHauptmahlzeitTotal = verguenstigungHauptmahlzeitTotal;
+	public void setVerguenstigungMahlzeitTotal(BigDecimal verguenstigungMahlzeitTotal) {
+		this.verguenstigungMahlzeitTotal = verguenstigungMahlzeitTotal;
 	}
 
-	public BigDecimal getVerguenstigungNebenmahlzeitTotal() {
-		return verguenstigungNebenmahlzeitTotal;
-	}
-
-	public void setVerguenstigungNebenmahlzeitTotal(BigDecimal verguenstigungNebenmahlzeitTotal) {
-		this.verguenstigungNebenmahlzeitTotal = verguenstigungNebenmahlzeitTotal;
-	}
 }
