@@ -159,8 +159,8 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
-            const alreadyIgnored = abschnitt.zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
-                || abschnitt.zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            const alreadyIgnored = abschnitt.zahlungsstatusMahlzeitenverguenstigung === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
+                || abschnitt.zahlungsstatusMahlzeitenverguenstigung === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
