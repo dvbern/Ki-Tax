@@ -35,6 +35,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
 import {ZahlungRS} from '../../core/service/zahlungRS.rest';
+import {IBooleanStateParams} from '../zahlungsauftrag.route';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -54,6 +55,7 @@ export class ZahlungsauftragViewController implements IController {
     public static $inject: string[] = [
         'ZahlungRS',
         '$state',
+        '$stateParams',
         'DownloadRS',
         'ApplicationPropertyRS',
         'ReportRS',
@@ -90,6 +92,7 @@ export class ZahlungsauftragViewController implements IController {
     public constructor(
         private readonly zahlungRS: ZahlungRS,
         private readonly $state: StateService,
+        private readonly $stateParams: IBooleanStateParams,
         private readonly downloadRS: DownloadRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly reportRS: ReportRS,
@@ -101,8 +104,10 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public $onInit(): void {
-        // Wir starten immer auf der "normalen" Zahlungslauf Seite
-        this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
+        const isMahlzeitenzahlungen = this.$stateParams.isMahlzeitenzahlungen;
+        EbeguUtil.isNotNullOrUndefined(isMahlzeitenzahlungen) && isMahlzeitenzahlungen ?  this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER :
+            this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
+
         // Testlauf darf auch nur in die Zukunft gemacht werden!
         this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
         this.updateZahlungsauftrag();
@@ -141,6 +146,7 @@ export class ZahlungsauftragViewController implements IController {
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag): void {
         this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id,
+            isMahlzeitenzahlungen: this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER,
         });
     }
 
