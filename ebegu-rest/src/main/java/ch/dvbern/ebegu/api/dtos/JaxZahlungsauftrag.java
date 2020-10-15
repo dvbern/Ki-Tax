@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
@@ -40,6 +41,9 @@ import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 public class JaxZahlungsauftrag extends JaxAbstractDateRangedDTO {
 
 	private static final long serialVersionUID = 5908117979039694339L;
+
+	@NotNull @Nonnull
+	private ZahlungslaufTyp zahlungslaufTyp;
 
 	@NotNull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -65,6 +69,15 @@ public class JaxZahlungsauftrag extends JaxAbstractDateRangedDTO {
 
 	@Nonnull
 	private List<JaxZahlung> zahlungen = new ArrayList<>();
+
+	@Nonnull
+	public ZahlungslaufTyp getZahlungslaufTyp() {
+		return zahlungslaufTyp;
+	}
+
+	public void setZahlungslaufTyp(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
+		this.zahlungslaufTyp = zahlungslaufTyp;
+	}
 
 	public LocalDate getDatumFaellig() {
 		return datumFaellig;

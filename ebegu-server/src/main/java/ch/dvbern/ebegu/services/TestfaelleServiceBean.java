@@ -638,6 +638,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					betreuung.getId(),
 					null,
 					ignorierenInZahlungslauf,
+					ignorierenInZahlungslauf,
 					false)
 			);
 			if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {

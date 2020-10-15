@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Zahlung;
 
 public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
@@ -29,12 +29,17 @@ public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 	@Nonnull
 	private Zahlung zahlung;
 
+	/**
+	 * Da in den Auszahlungsdaten nur eine Adresse steht, falls es eine spezifische Auszahlungsadresse
+	 * hat, merken wir uns hier die effektiv zu verwendende Adresse (also entweder Auszahlungsadresse
+	 * oder ein sinnvoller Defaultwert)
+	 */
 	@Nonnull
-	private InstitutionStammdaten institutionStammdaten;
+	private Adresse adresseKontoinhaber;
 
-	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nonnull InstitutionStammdaten institutionStammdaten) {
+	public ZahlungDataRow(@Nonnull Zahlung zahlung, @Nonnull Adresse adresseKontoinhaber) {
 		this.zahlung = zahlung;
-		this.institutionStammdaten = institutionStammdaten;
+		this.adresseKontoinhaber = adresseKontoinhaber;
 	}
 
 	@Nonnull
@@ -47,12 +52,12 @@ public class ZahlungDataRow implements Comparable<ZahlungDataRow> {
 	}
 
 	@Nonnull
-	public InstitutionStammdaten getInstitutionStammdaten() {
-		return institutionStammdaten;
+	public Adresse getAdresseKontoinhaber() {
+		return adresseKontoinhaber;
 	}
 
-	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
-		this.institutionStammdaten = institutionStammdaten;
+	public void setAdresseKontoinhaber(@Nonnull Adresse adresseKontoinhaber) {
+		this.adresseKontoinhaber = adresseKontoinhaber;
 	}
 
 	@Override

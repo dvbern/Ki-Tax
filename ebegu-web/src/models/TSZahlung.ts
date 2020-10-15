@@ -19,51 +19,21 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSZahlung extends TSAbstractMutableEntity {
 
-    private _institutionsName: string;
+    public empfaengerName: string;
+    public betreuungsangebotTyp: TSBetreuungsangebotTyp;
+    public status: TSZahlungsstatus;
+    public betragTotalZahlung: number;
 
-    private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
-
-    private _status: TSZahlungsstatus;
-
-    private _betragTotalZahlung: number;
-
-    public constructor(institutionsName?: string, betreuungsangebotTyp?: TSBetreuungsangebotTyp, status?: TSZahlungsstatus, betragTotalZahlung?: number) {
+    public constructor(
+        empfaengerName?: string,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        status?: TSZahlungsstatus,
+        betragTotalZahlung?: number
+    ) {
         super();
-        this._institutionsName = institutionsName;
-        this._betreuungsangebotTyp = betreuungsangebotTyp;
-        this._status = status;
-        this._betragTotalZahlung = betragTotalZahlung;
-    }
-
-    public get institutionsName(): string {
-        return this._institutionsName;
-    }
-
-    public set institutionsName(value: string) {
-        this._institutionsName = value;
-    }
-
-    public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
-        return this._betreuungsangebotTyp;
-    }
-
-    public set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
-        this._betreuungsangebotTyp = value;
-    }
-
-    public get status(): TSZahlungsstatus {
-        return this._status;
-    }
-
-    public set status(value: TSZahlungsstatus) {
-        this._status = value;
-    }
-
-    public get betragTotalZahlung(): number {
-        return this._betragTotalZahlung;
-    }
-
-    public set betragTotalZahlung(value: number) {
-        this._betragTotalZahlung = value;
+        this.empfaengerName = empfaengerName;
+        this.betreuungsangebotTyp = betreuungsangebotTyp;
+        this.status = status;
+        this.betragTotalZahlung = betragTotalZahlung;
     }
 }

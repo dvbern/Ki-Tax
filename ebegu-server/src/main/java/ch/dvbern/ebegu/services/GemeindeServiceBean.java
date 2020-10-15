@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +38,8 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.BfsGemeinde_;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Einstellung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
@@ -46,11 +49,13 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -586,5 +591,39 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 				persistence.merge(newGemeindeStammdatenGesuchsperiode);
 			}
 		);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getGemeindenWithMahlzeitenverguenstigungForBenutzer() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Einstellung> root = query.from(Einstellung.class);
+		List<Predicate> predicatesToUse = new ArrayList<>();
+
+		// Wir suchen alle Einstellungen der Gemeinden, fuer die ich berechtigt bin
+		// und die die Mahlzeitenverguenstigungen eingeschaltet haben
+		// Die Gesuchsperiode ist egal: Auch fuer bereits vergangene Gesuchsperioden koennen
+		// noch Mahlzeitenverguenstigungen ausbezahlt werden!
+
+		Predicate predicateKey = cb.equal(root.get(Einstellung_.key), EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+		predicatesToUse.add(predicateKey);
+
+		Predicate predicateValue = cb.equal(root.get(Einstellung_.value), Boolean.TRUE.toString());
+		predicatesToUse.add(predicateValue);
+
+		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			// Berechtigte Gemeinden im Sinne von "zustaendig fuer"
+			Set<Gemeinde> gemeindenBerechtigt = principalBean.getBenutzer().extractGemeindenForUser();
+			// Die Gemeinde muss nur ueberprueft werden, wenn es kein Superadmin ist
+			Predicate predicateGemeinde = root.get(Einstellung_.gemeinde).in(gemeindenBerechtigt);
+			predicatesToUse.add(predicateGemeinde);
+		}
+
+		query.distinct(true); // Jede Gemeinde nur einmal, auch wenn in verschiedenen GPs Mahlzeitenverguenstigungen
+		query.select(root.get(Einstellung_.gemeinde));
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
+		return persistence.getCriteriaResults(query);
 	}
 }

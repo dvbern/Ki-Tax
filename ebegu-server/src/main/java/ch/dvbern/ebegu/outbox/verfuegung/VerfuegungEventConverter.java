@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -158,7 +159,11 @@ public class VerfuegungEventConverter {
 		List<VerfuegungZeitabschnitt> nochGueltigeZeitabschnitte = new ArrayList<>();
 
 		ignoredAbschnitte.forEach(z -> verfuegungService
-			.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(z, betreuung, nochGueltigeZeitabschnitte));
+			.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				z,
+				betreuung,
+				nochGueltigeZeitabschnitte));
 
 		return nochGueltigeZeitabschnitte;
 	}

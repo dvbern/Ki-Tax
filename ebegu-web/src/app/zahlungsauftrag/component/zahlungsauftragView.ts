@@ -22,6 +22,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
+import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -65,7 +66,9 @@ export class ZahlungsauftragViewController implements IController {
     public form: IFormController;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
     public zahlungsAuftraege: TSZahlungsauftrag[] = [];
+    public zahlungsAuftraegeFiltered: TSZahlungsauftrag[] = [];
 
+    public zahlungslaufTyp: TSZahlungslaufTyp;
     public beschrieb: string;
     public faelligkeitsdatum: moment.Moment;
     public datumGeneriert: moment.Moment;
@@ -73,9 +76,16 @@ export class ZahlungsauftragViewController implements IController {
     public testMode: boolean = false;
     public minDateForTestlauf: moment.Moment;
     public gemeinde: TSGemeinde;
+    // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
     public gemeindenList: Array<TSGemeinde> = [];
+    // Alle Gemeinden fuer die ich berechtigt bin fuer die normalen Auftraege
+    public berechtigteGemeindenList: Array<TSGemeinde> = [];
+    // Alle Gemeinden fuer die ich berechtigt bin fuer die Mahlzeitenverguenstigungen
+    public berechtigteGemeindenMitMahlzeitenList: Array<TSGemeinde> = [];
 
     private readonly unsubscribe$ = new Subject<void>();
+
+    private showMahlzeitenZahlungslaeufe: boolean = false;
 
     public constructor(
         private readonly zahlungRS: ZahlungRS,
@@ -91,10 +101,13 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public $onInit(): void {
+        // Wir starten immer auf der "normalen" Zahlungslauf Seite
+        this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
         // Testlauf darf auch nur in die Zukunft gemacht werden!
         this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
         this.updateZahlungsauftrag();
         this.updateGemeindenList();
+        this.updateShowMahlzeitenZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
@@ -119,6 +132,7 @@ export class ZahlungsauftragViewController implements IController {
             .subscribe(
                 zahlungsAuftraege => {
                     this.zahlungsAuftraege = zahlungsAuftraege;
+                    this.toggleAuszahlungslaufTyp();
                 },
                 err => LOG.error(err),
             );
@@ -141,12 +155,17 @@ export class ZahlungsauftragViewController implements IController {
             parentController: undefined,
             elementID: undefined,
         }).then(() => {   // User confirmed removal
-            this.zahlungRS.createZahlungsauftrag(this.gemeinde, this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
-                .then((response: TSZahlungsauftrag) => {
-                    this.zahlungsAuftraege.push(response);
-                    this.resetEditZahlungsauftrag();
-                    this.resetForm();
-                });
+            this.zahlungRS.createZahlungsauftrag(
+                this.zahlungslaufTyp,
+                this.gemeinde,
+                this.beschrieb,
+                this.faelligkeitsdatum,
+                this.datumGeneriert
+            ).then((response: TSZahlungsauftrag) => {
+                this.zahlungsAuftraege.push(response);
+                this.resetEditZahlungsauftrag();
+                this.resetForm();
+            });
         });
     }
 
@@ -185,6 +204,7 @@ export class ZahlungsauftragViewController implements IController {
                     this.zahlungsAuftraege[index] = response;
                 }
                 EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
+                this.toggleAuszahlungslaufTyp();
             });
         });
     }
@@ -252,6 +272,7 @@ export class ZahlungsauftragViewController implements IController {
         this.datumGeneriert = undefined;
         this.form.$setPristine();
         this.form.$setUntouched();
+        this.toggleAuszahlungslaufTyp();
     }
 
     public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag): any {
@@ -269,9 +290,53 @@ export class ZahlungsauftragViewController implements IController {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 gemeinden => {
-                    this.gemeindenList = gemeinden;
+                    this.berechtigteGemeindenList = gemeinden;
                 },
                 err => LOG.error(err),
             );
+    }
+
+    private updateShowMahlzeitenZahlungslaeufe(): void {
+        this.showMahlzeitenZahlungslaeufe = false;
+        // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+            this.showMahlzeitenZahlungslaeufe = false;
+            return;
+        }
+        // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
+        this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
+            if (value.length > 0) {
+                // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
+                // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
+                this.showMahlzeitenZahlungslaeufe = true;
+                this.berechtigteGemeindenMitMahlzeitenList = value;
+            }
+        });
+    }
+
+    public toggleAuszahlungslaufTyp(): void {
+        this.zahlungsAuftraegeFiltered =
+            this.zahlungsAuftraege
+                .filter(value => value.zahlungslaufTyp === this.zahlungslaufTyp);
+        this.gemeindenList
+            = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
+            ? Array.from(this.berechtigteGemeindenList)
+            : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
+    }
+
+    public showAuszahlungsTypToggle(): boolean {
+       return this.showMahlzeitenZahlungslaeufe;
+    }
+
+    public getLabelZahlungslaufErstellen(): string {
+        return this.$translate.instant('BUTTON_' + this.zahlungslaufTyp);
+    }
+
+    public getZahlungsauftraegeFiltered(): TSZahlungsauftrag[] {
+        return this.zahlungsAuftraegeFiltered;
+    }
+
+    public showInfotext(): boolean {
+        return this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
     }
 }

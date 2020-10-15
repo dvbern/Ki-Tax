@@ -39,14 +39,16 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public minimalerElternbeitrag: number;
     public minimalerElternbeitragGekuerzt: number;
     public minimalesEwpUnterschritten: boolean;
-    public sameAusbezahlteVerguenstigung: boolean;
-    public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
+    public sameAusbezahlteVerguenstigung: boolean; // Fuer Frage nach Ignorieren
+    public sameAusbezahlteMahlzeiten: boolean; // Fuer Frage nach Ignorieren bei Mahlzeiten
+    public sameVerfuegteVerfuegungsrelevanteDaten: boolean; // Fuer Anzeige "Identische Berechnung"
     public verfuegteAnzahlZeiteinheiten: number;
     public verguenstigung: number;
     public verguenstigungOhneBeruecksichtigungMinimalbeitrag: number;
     public verguenstigungOhneBeruecksichtigungVollkosten: number;
     public vollkosten: number;
     public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
+    public zahlungsstatusMahlzeitenverguenstigung: TSVerfuegungZeitabschnittZahlungsstatus;
     public zeiteinheit: TSPensumUnits;
     public zuSpaetEingereicht: boolean;
     public tsCalculationResultMitPaedagogischerBetreuung: TSTsCalculationResult;

@@ -77,6 +77,8 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
+	private Boolean mahlzeitenverguenstigungEnabled;
+
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
 
 
@@ -99,6 +101,7 @@ public final class BGRechnerParameterDTO {
 		this.setMaxTarifTagesschuleMitPaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMinTarifTagesschule(asBigDecimal(paramMap, MIN_TARIF, gesuchsperiode, gemeinde));
+		this.setMahlzeitenverguenstigungEnabled(asBoolean(paramMap, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gesuchsperiode, gemeinde));
 		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
 	}
 
@@ -119,6 +122,21 @@ public final class BGRechnerParameterDTO {
 			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
 		}
 		return param.getValueAsBigDecimal();
+	}
+
+	private Boolean asBoolean(
+		@Nonnull Map<EinstellungKey, Einstellung> paramMap,
+		@Nonnull EinstellungKey paramKey,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde) {
+
+		Einstellung param = paramMap.get(paramKey);
+		if (param == null) {
+			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
+				+ '\'' + gesuchsperiode + '\'';
+			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
+		}
+		return param.getValueAsBoolean();
 	}
 
 	public BigDecimal getMaxVerguenstigungVorschuleBabyProTg() {
@@ -263,6 +281,14 @@ public final class BGRechnerParameterDTO {
 
 	public void setMinTarifTagesschule(BigDecimal minTarifTagesschule) {
 		this.minTarifTagesschule = minTarifTagesschule;
+	}
+
+	public Boolean getMahlzeitenverguenstigungEnabled() {
+		return mahlzeitenverguenstigungEnabled;
+	}
+
+	public void setMahlzeitenverguenstigungEnabled(Boolean mahlzeitenverguenstigungEnabled) {
+		this.mahlzeitenverguenstigungEnabled = mahlzeitenverguenstigungEnabled;
 	}
 
 	public BGRechnerParameterGemeindeDTO getGemeindeParameter() {
