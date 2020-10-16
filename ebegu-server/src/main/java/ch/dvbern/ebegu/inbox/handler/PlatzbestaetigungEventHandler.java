@@ -459,6 +459,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
 					}
 				}
+				if(match){
+					break;
+				}
 			}
 			if (!match) {
 				return false;
