@@ -127,6 +127,7 @@ import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
+import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
@@ -2204,5 +2205,23 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS };
 
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
+	}
+
+	@Nonnull
+	private List<MahlzeitenverguenstigungDataRow> getReportDataMahlzeitenverguenstigung(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable Gesuchsperiode gesuchsperiode,
+		@Nonnull Locale locale
+	) {
+
+//		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
+//		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList, locale);
+//
+//		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
+//			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+//
+//		return dataRows;
+		return Collections.EMPTY_LIST;
 	}
 }
