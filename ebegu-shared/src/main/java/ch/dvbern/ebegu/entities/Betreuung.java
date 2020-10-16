@@ -154,6 +154,9 @@ public class Betreuung extends AbstractPlatz {
 	@SortNatural
 	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen = new TreeSet<>();
 
+	@Column(nullable = false)
+	private @NotNull boolean eventPublished = true;
+
 	public Betreuung() {
 	}
 
@@ -547,5 +550,13 @@ public class Betreuung extends AbstractPlatz {
 		@Nonnull Set<BetreuungspensumAbweichung> abweichungenFromDb) {
 		return abweichungenFromDb.stream()
 			.filter(a -> a.getGueltigkeit().getGueltigAb().equals(from)).findFirst();
+	}
+
+	public boolean isEventPublished() {
+		return eventPublished;
+	}
+
+	public void setEventPublished(boolean eventPublished) {
+		this.eventPublished = eventPublished;
 	}
 }
