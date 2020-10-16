@@ -99,33 +99,35 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
 		@Nonnull BetreuungEventDTO dto) {
+		String refnr = dto.getRefnr();
 		try {
-			Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false);
+			Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungByBGNummer(refnr, false);
 			if (!betreuungOpt.isPresent()) {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " existiert nicht!");
+				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} existiert nicht!", refnr);
 				return;
 			}
 			Betreuung betreuung = betreuungOpt.get();
 			if (betreuung.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
-				LOG.warn("Platzbestaetigung: die Gesuchsperiode fuer die Betreuung mit RefNr: " + dto.getRefnr()
-					+ " ist nicht aktiv!");
+				LOG.warn("Platzbestaetigung: die Gesuchsperiode fuer die Betreuung mit RefNr: {} ist nicht aktiv!", refnr);
 				return;
 			}
 			if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " war spaeter als dieser "
-					+ "Event im kiBon bearbeitet! Event ist ignoriert");
+				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} war spaeter als dieser "
+					+ "Event im kiBon bearbeitet! Event ist ignoriert", refnr);
 			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.WARTEN)) {
 				//Update the Betreuung and check if all data are available
 				if (setBetreuungDaten(new PlatzbestaetigungProcessingContext(betreuung, dto))) {
 					betreuungService.betreuungPlatzBestaetigen(betreuung);
+					LOG.info("Platzbestaetigung: Betreuung mit RefNr: {} automatisch bestätigt", refnr);
 				} else {
 					betreuungService.saveBetreuung(betreuung, false);
+					LOG.info("Platzbestaetigung: Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt", refnr);
 				}
 			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)
 				|| betreuung.getBetreuungsstatus().equals(Betreuungsstatus.BESTAETIGT)) {
 				if (isSame(dto, betreuung)) {
-					LOG.warn("Platzbestaetigung: die Betreuung  ist identisch wie der Event mit RefNr: " + dto.getRefnr() +
-						" - MutationMitteilung wird nicht erstellt!");
+					LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}" +
+						" - MutationMitteilung wird nicht erstellt!", refnr);
 					return;
 				}
 				//MutationMitteilungErstellen
@@ -136,13 +138,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 					// and then send the new Betreuungsmitteilung an die Gemeinde
 					this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
+					LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", refnr);
 				}
 			} else {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: " + dto.getRefnr() + " hat einen ungültigen "
-					+ "Status: " + betreuung.getBetreuungsstatus());
+				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} hat einen ungültigen Status: {}" , refnr, betreuung.getBetreuungsstatus());
 			}
 		} catch (Exception e) {
-			LOG.error("Error while processing the record: " + dto.getRefnr() + " error: " + e.getMessage());
+			LOG.error("Error while processing the record: {} error: {}", refnr, e.getMessage());
 		}
 	}
 
