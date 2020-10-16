@@ -78,8 +78,12 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		final boolean sozialhilfeempfaenger = inputData.isSozialhilfeempfaenger();
 
 		if (!mahlzeitenverguenstigungParams.isEnabled() ||
-			!validateInput(inputData) ||
-			!mahlzeitenverguenstigungParams.hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
+			!validateInput(inputData)) {
+			return;
+		}
+		// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
+		if (!mahlzeitenverguenstigungParams.hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
+			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getLocale());
 			return;
 		}
 
