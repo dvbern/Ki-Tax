@@ -220,7 +220,7 @@
                     </div>
                 </td>
                 <!-- status -->
-                <td class="ellipsis" title="{{vm.calculatetStatus(row)}}">
+                <td class="ellipsis" title="{{'ZAHLUNGSAUFTRAG_' + vm.getCalculatedStatus(row) | translate}}">
                     <span ng-bind="'ZAHLUNGSAUFTRAG_' + vm.getCalculatedStatus(row) | translate"></span>
                 </td>
                 <!-- edit / save button -->
