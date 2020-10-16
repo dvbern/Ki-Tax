@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -615,6 +616,11 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// Berechtigte Gemeinden im Sinne von "zustaendig fuer"
 			Set<Gemeinde> gemeindenBerechtigt = principalBean.getBenutzer().extractGemeindenForUser();
+			//wenn der Benutzer ist fuer keine Gemeinde Berechtigt gibt man eine Empty Liste zurueck
+			// in kann keine empty Collection als Parameter nehmen sonst => Exception
+			if(gemeindenBerechtigt.isEmpty()){
+				return Collections.emptySet();
+			}
 			// Die Gemeinde muss nur ueberprueft werden, wenn es kein Superadmin ist
 			Predicate predicateGemeinde = root.get(Einstellung_.gemeinde).in(gemeindenBerechtigt);
 			predicatesToUse.add(predicateGemeinde);
