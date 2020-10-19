@@ -31,6 +31,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -57,6 +58,9 @@ public class BetreuungAnfrageEventGenerator {
 	@Inject
 	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
 
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 	/**
 	 * This is a job starting every night, there must be no more need for this job after the first execution
 	 * but this could be a great help if we want to re-export something, then we just have to change the database
@@ -66,6 +70,8 @@ public class BetreuungAnfrageEventGenerator {
 		hour = "4",
 		persistent = true)
 	public void publishWartendeBetreuung() {
+		if(!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) return;
+
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 		Root<Betreuung> root = query.from(Betreuung.class);
