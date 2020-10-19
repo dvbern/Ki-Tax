@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -166,10 +167,6 @@ import static java.util.Objects.requireNonNull;
 @Stateless
 @Local(ReportService.class)
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
-
-	private static final String NO_USER_IS_LOGGED_IN = "No User is logged in";
-
-
 
 	@Inject
 	private BenutzerService benutzerService;
@@ -1132,30 +1129,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicatesToUse));
 		return persistence.getCriteriaResults(query);
-	}
-
-	@Nullable
-	private Predicate getPredicateForBenutzerRole(
-		@Nonnull CriteriaBuilder builder,
-		@Nonnull Root<VerfuegungZeitabschnitt> root) {
-		boolean isTSBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_TS, UserRole.ADMIN_TS);
-		boolean isBGBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_BG, UserRole.ADMIN_BG);
-
-		if (isTSBenutzer) {
-			Predicate predicateSchulamt = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung)
-				.get(Verfuegung_.betreuung)
-				.get(Betreuung_.institutionStammdaten)
-				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-			return predicateSchulamt;
-		}
-		if (isBGBenutzer) {
-			Predicate predicateNotSchulamt = builder.notEqual(root.get(VerfuegungZeitabschnitt_.verfuegung)
-				.get(Verfuegung_.betreuung)
-				.get(Betreuung_.institutionStammdaten)
-				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-			return predicateNotSchulamt;
-		}
-		return null;
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
@@ -2207,21 +2180,5 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
 	}
 
-	@Nonnull
-	private List<MahlzeitenverguenstigungDataRow> getReportDataMahlzeitenverguenstigung(
-		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis,
-		@Nullable Gesuchsperiode gesuchsperiode,
-		@Nonnull Locale locale
-	) {
 
-//		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
-//		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList, locale);
-//
-//		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
-//			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
-//
-//		return dataRows;
-		return Collections.EMPTY_LIST;
-	}
 }

@@ -23,7 +23,20 @@ import java.util.List;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
+import ch.dvbern.ebegu.entities.Verfuegung_;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
@@ -38,6 +51,9 @@ import static ch.dvbern.ebegu.util.MonitoringUtil.monitor;
 
 public abstract class AbstractReportServiceBean extends AbstractBaseService {
 
+	@Inject
+	private PrincipalBean principalBean;
+
 	protected static final String VALIDIERUNG_STICHTAG = "Das Argument 'stichtag' darf nicht leer sein";
 	protected static final String VALIDIERUNG_DATUM_VON = "Das Argument 'datumVon' darf nicht leer sein";
 	protected static final String VALIDIERUNG_DATUM_BIS = "Das Argument 'datumBis' darf nicht leer sein";
@@ -45,6 +61,7 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 	protected static final String NICHT_GEFUNDEN = "' nicht gefunden";
 	protected static final String VORLAGE = "Vorlage '";
 	protected static final String MIME_TYPE_EXCEL = "application/vnd.ms-excel";
+	protected static final String NO_USER_IS_LOGGED_IN = "No User is logged in";
 
 	protected void validateDateParams(Object datumVon, Object datumBis) {
 		Validate.notNull(datumVon, VALIDIERUNG_DATUM_VON);
@@ -82,5 +99,29 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		List<MergeField<?>> mergeFields = MergeFieldProvider.toMergeFields(mergeFieldProviders);
 		monitor(AbstractReportServiceBean.class, String.format("mergeData (sheet=%s)", sheet.getSheetName()),
 			() -> ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO));
+	}
+
+	@Nullable
+	protected Predicate getPredicateForBenutzerRole(
+		@Nonnull CriteriaBuilder builder,
+		@Nonnull Root<VerfuegungZeitabschnitt> root) {
+		boolean isTSBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_TS, UserRole.ADMIN_TS);
+		boolean isBGBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_BG, UserRole.ADMIN_BG);
+
+		if (isTSBenutzer) {
+			Predicate predicateSchulamt = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.anmeldungTagesschule)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+			return predicateSchulamt;
+		}
+		if (isBGBenutzer) {
+			Predicate predicateNotSchulamt = builder.notEqual(root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+			return predicateNotSchulamt;
+		}
+		return null;
 	}
 }

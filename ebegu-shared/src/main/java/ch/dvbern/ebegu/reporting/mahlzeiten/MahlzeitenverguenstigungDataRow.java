@@ -25,8 +25,9 @@ import javax.annotation.Nullable;
 public class MahlzeitenverguenstigungDataRow {
 
 	@Nullable private String bgNummer;
+	@Nullable private String betreuungsTyp;
 	@Nullable private String institution;
-	@Nullable private String periode;
+	@Nullable private String traegerschaft;
 
 	@Nullable private String gs1Name;
 	@Nullable private String gs1Vorname;
@@ -45,11 +46,169 @@ public class MahlzeitenverguenstigungDataRow {
 	@Nullable private BigDecimal anzahlNebenmahlzeiten;
 	@Nullable private BigDecimal kostenHauptmahlzeiten;
 	@Nullable private BigDecimal kostenNebenmahlzeiten;
-	@Nullable private BigDecimal verguenstigungProMahlzeit;
 	@Nullable private BigDecimal berechneteMahlzeitenverguenstigung;
 
 
 	public MahlzeitenverguenstigungDataRow() {
 	}
 
+	@Nullable
+	public String getBgNummer() {
+		return bgNummer;
+	}
+
+	public void setBgNummer(@Nullable String bgNummer) {
+		this.bgNummer = bgNummer;
+	}
+
+	@Nullable
+	public String getBetreuungsTyp() {
+		return betreuungsTyp;
+	}
+
+	public void setBetreuungsTyp(@Nullable String betreuungsTyp) {
+		this.betreuungsTyp = betreuungsTyp;
+	}
+
+	@Nullable
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(@Nullable String institution) {
+		this.institution = institution;
+	}
+
+	@Nullable
+	public String getTraegerschaft() {
+		return traegerschaft;
+	}
+
+	public void setTraegerschaft(@Nullable String traegerschaft) {
+		this.traegerschaft = traegerschaft;
+	}
+
+	@Nullable
+	public String getGs1Name() {
+		return gs1Name;
+	}
+
+	public void setGs1Name(@Nullable String gs1Name) {
+		this.gs1Name = gs1Name;
+	}
+
+	@Nullable
+	public String getGs1Vorname() {
+		return gs1Vorname;
+	}
+
+	public void setGs1Vorname(@Nullable String gs1Vorname) {
+		this.gs1Vorname = gs1Vorname;
+	}
+
+	@Nullable
+	public String getGs2Name() {
+		return gs2Name;
+	}
+
+	public void setGs2Name(@Nullable String gs2Name) {
+		this.gs2Name = gs2Name;
+	}
+
+	@Nullable
+	public String getGs2Vorname() {
+		return gs2Vorname;
+	}
+
+	public void setGs2Vorname(@Nullable String gs2Vorname) {
+		this.gs2Vorname = gs2Vorname;
+	}
+
+	@Nullable
+	public String getKindName() {
+		return kindName;
+	}
+
+	public void setKindName(@Nullable String kindName) {
+		this.kindName = kindName;
+	}
+
+	@Nullable
+	public String getKindVorname() {
+		return kindVorname;
+	}
+
+	public void setKindVorname(@Nullable String kindVorname) {
+		this.kindVorname = kindVorname;
+	}
+
+	@Nullable
+	public LocalDate getKindGeburtsdatum() {
+		return kindGeburtsdatum;
+	}
+
+	public void setKindGeburtsdatum(@Nullable LocalDate kindGeburtsdatum) {
+		this.kindGeburtsdatum = kindGeburtsdatum;
+	}
+
+	public LocalDate getZeitabschnittVon() {
+		return zeitabschnittVon;
+	}
+
+	public void setZeitabschnittVon(LocalDate zeitabschnittVon) {
+		this.zeitabschnittVon = zeitabschnittVon;
+	}
+
+	public LocalDate getZeitabschnittBis() {
+		return zeitabschnittBis;
+	}
+
+	public void setZeitabschnittBis(LocalDate zeitabschnittBis) {
+		this.zeitabschnittBis = zeitabschnittBis;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlHauptmahlzeiten() {
+		return anzahlHauptmahlzeiten;
+	}
+
+	public void setAnzahlHauptmahlzeiten(@Nullable BigDecimal anzahlHauptmahlzeiten) {
+		this.anzahlHauptmahlzeiten = anzahlHauptmahlzeiten;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlNebenmahlzeiten() {
+		return anzahlNebenmahlzeiten;
+	}
+
+	public void setAnzahlNebenmahlzeiten(@Nullable BigDecimal anzahlNebenmahlzeiten) {
+		this.anzahlNebenmahlzeiten = anzahlNebenmahlzeiten;
+	}
+
+	@Nullable
+	public BigDecimal getKostenHauptmahlzeiten() {
+		return kostenHauptmahlzeiten;
+	}
+
+	public void setKostenHauptmahlzeiten(@Nullable BigDecimal kostenHauptmahlzeiten) {
+		this.kostenHauptmahlzeiten = kostenHauptmahlzeiten;
+	}
+
+	@Nullable
+	public BigDecimal getKostenNebenmahlzeiten() {
+		return kostenNebenmahlzeiten;
+	}
+
+	public void setKostenNebenmahlzeiten(@Nullable BigDecimal kostenNebenmahlzeiten) {
+		this.kostenNebenmahlzeiten = kostenNebenmahlzeiten;
+	}
+
+	@Nullable
+	public BigDecimal getBerechneteMahlzeitenverguenstigung() {
+		return berechneteMahlzeitenverguenstigung;
+	}
+
+	public void setBerechneteMahlzeitenverguenstigung(@Nullable BigDecimal berechneteMahlzeitenverguenstigung) {
+		this.berechneteMahlzeitenverguenstigung = berechneteMahlzeitenverguenstigung;
+	}
 }
