@@ -70,7 +70,9 @@ public class BetreuungAnfrageEventGenerator {
 		hour = "4",
 		persistent = true)
 	public void publishWartendeBetreuung() {
-		if(!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) return;
+		if (!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
+			return;
+		}
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
