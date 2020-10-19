@@ -1044,6 +1044,7 @@
     "UMZUG_HINT": "Prévoyez-vous de déménager ?  Veuillez saisir l'adresse modifiée le cas échéant.",
     "ERWERBSPENSUM_HINT": "Veuillez saisir les éventuels changements relatifs à votre taux d'activité.",
     "ABWESENHEIT": "Absence",
+    "ABWESENHEIT_HINT": "Il convient de préciser ici les absences de plus de 30 jours d’affilée pendant une période tarifaire. Dans pareille situation, le droit à un bon de garde s’éteint à partir du 31e jour. Exception : si l’enfant est malade pour cause de maladie ou d’accident, ou s’il ne peut pas être pris en charge pour des raisons inhérentes à la structure, il ne faut rien indiquer (art. 34u OPIS).",
     "ABWESENHEIT_ENTFERNEN": "Supprimer l'absence",
     "ABWESENHEIT_ERFASSEN": "Saisir l'absence",
     "ABWESENHEIT_FUER_WELCHES_KIND": "Pour quel enfant l'absence est-elle valable ?",

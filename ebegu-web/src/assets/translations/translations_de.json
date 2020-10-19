@@ -1044,6 +1044,7 @@
     "UMZUG_HINT": "Planen Sie einen Umzug? Bitte geben Sie allfällige Adressänderungen ein.",
     "ERWERBSPENSUM_HINT": "Bitte geben Sie allfällige Änderungen Ihrer Beschäftigungspensen an.",
     "ABWESENHEIT": "Abwesenheit",
+    "ABWESENHEIT_HINT": "Hier müssen Sie erfassen, wenn ein Kind mehr als 30 Tage am Stück innerhalb einer Gutscheinperiode abwesend ist.  Wenn das Kind mehr als 30 Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem 31. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden (ASIV Art. 34u).",
     "ABWESENHEIT_ENTFERNEN": "Abwesenheit löschen",
     "ABWESENHEIT_ERFASSEN": "Abwesenheit erfassen",
     "ABWESENHEIT_FUER_WELCHES_KIND": "Für welches Kind gilt die Abwesenheit?",
