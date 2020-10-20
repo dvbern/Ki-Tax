@@ -153,7 +153,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         if (this.isTagesschuleVerfuegung()) {
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(), this.gesuchModelManager.getGesuchsperiode(), true);
-            this.tagesschuleZeitabschnitteMitBetreuung = this.getTagesschuleZeitabschnitteMitBetreuung();
+            this.tagesschuleZeitabschnitteMitBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteMitBetreuung());
             this.tagesschuleZeitabschnitteOhneBetreuung = this.getTagesschuleZeitabschnitteOhneBetreuung();
         }
 
@@ -627,5 +627,21 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showMahlzeitenverguenstigung(): boolean {
         return this.isMahlzeitenverguenstigungEnabled()
             && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole());
+    }
+
+    private onlyZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitte: Array<TSVerfuegungZeitabschnitt>): Array<TSVerfuegungZeitabschnitt> {
+        return tagesschuleZeitabschnitte.filter(this.fullZeitAbschnittBeforeEntryTagesschule.bind(this))
+            .map(this.mapPartialZeitabschnitteSinceEntryTagesschule.bind(this));
+    }
+
+    private fullZeitAbschnittBeforeEntryTagesschule(tagesschuleZeitabschnitt: TSVerfuegungZeitabschnitt): boolean {
+        return tagesschuleZeitabschnitt.gueltigkeit.gueltigBis.isSameOrAfter(this.getBetreuung().belegungTagesschule.eintrittsdatum);
+    }
+
+    private mapPartialZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitt: TSVerfuegungZeitabschnitt): TSVerfuegungZeitabschnitt {
+           if (tagesschuleZeitabschnitt.gueltigkeit.gueltigAb.isBefore(this.getBetreuung().belegungTagesschule.eintrittsdatum)) {
+               tagesschuleZeitabschnitt.gueltigkeit.gueltigAb = this.getBetreuung().belegungTagesschule.eintrittsdatum;
+           }
+           return tagesschuleZeitabschnitt;
     }
 }
