@@ -92,7 +92,7 @@ export class ZahlungsauftragViewController implements IController {
 
     public $onInit(): void {
         // Testlauf darf auch nur in die Zukunft gemacht werden!
-        this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
+        this.minDateForTestlauf = moment(moment.now());
         this.updateZahlungsauftrag();
         this.updateGemeindenList();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
