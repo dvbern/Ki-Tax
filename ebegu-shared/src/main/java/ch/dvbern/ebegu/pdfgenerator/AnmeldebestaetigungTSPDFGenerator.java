@@ -160,6 +160,17 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				.stream()
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung() != null)
+				.filter(verfuegungZeitabschnitt ->
+					verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
+						Objects.requireNonNull(Objects.requireNonNull(verfuegung.getAnmeldungTagesschule())
+							.getBelegungTagesschule()).getEintrittsdatum()) >= 0
+				)
+				.peek(verfuegungZeitabschnitt -> {
+					if(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
+						Objects.requireNonNull(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule()).getEintrittsdatum()) < 0) {
+						verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule().getEintrittsdatum());
+					}
+				})
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(abschnitteMitBetreuung)) {
 			document.add(createGebuehrTabelleTitle(true, false));
@@ -173,6 +184,17 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				.stream()
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
+				.filter(verfuegungZeitabschnitt ->
+					verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
+						Objects.requireNonNull(Objects.requireNonNull(verfuegung.getAnmeldungTagesschule())
+							.getBelegungTagesschule()).getEintrittsdatum()) >= 0
+				)
+				.peek(verfuegungZeitabschnitt -> {
+					if(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
+						Objects.requireNonNull(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule()).getEintrittsdatum()) < 0) {
+						verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule().getEintrittsdatum());
+					}
+				})
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
 			document.add(createGebuehrTabelleTitle(false, false));
