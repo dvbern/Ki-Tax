@@ -160,11 +160,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				.stream()
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung() != null)
+				// filter out time spans which end before the ts entry date
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
 						Objects.requireNonNull(Objects.requireNonNull(verfuegung.getAnmeldungTagesschule())
 							.getBelegungTagesschule()).getEintrittsdatum()) >= 0
 				)
+				// adjust the "Von" date if the entry date is not the first day of the time span
 				.peek(verfuegungZeitabschnitt -> {
 					if(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
 						Objects.requireNonNull(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule()).getEintrittsdatum()) < 0) {
@@ -184,11 +186,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				.stream()
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
+				// filter out time spans which end before the ts entry date
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
 						Objects.requireNonNull(Objects.requireNonNull(verfuegung.getAnmeldungTagesschule())
 							.getBelegungTagesschule()).getEintrittsdatum()) >= 0
 				)
+				// adjust the "Von" date if the entry date is not the first day of the time span
 				.peek(verfuegungZeitabschnitt -> {
 					if(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
 						Objects.requireNonNull(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule()).getEintrittsdatum()) < 0) {
