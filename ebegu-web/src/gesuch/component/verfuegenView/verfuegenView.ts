@@ -154,7 +154,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.isTagesschuleVerfuegung()) {
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(), this.gesuchModelManager.getGesuchsperiode(), true);
             this.tagesschuleZeitabschnitteMitBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteMitBetreuung());
-            this.tagesschuleZeitabschnitteOhneBetreuung = this.getTagesschuleZeitabschnitteOhneBetreuung();
+            this.tagesschuleZeitabschnitteOhneBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteOhneBetreuung());
         }
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
