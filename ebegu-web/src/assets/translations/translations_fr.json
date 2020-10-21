@@ -2156,5 +2156,13 @@
     "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "Activer le calcul OPIS pour la ville de Berne",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Attention: cette fonction va déclencher une mutation de masse pour toutes les demandes de la ville de Berne. Vous ne pourrez plus revenir en arrière. Voulez-vous continuer?",
     "ONBOARDING_ZULASSUNG_KANTON": "Admission garderie / organisation de parent de jour",
+    "GEMEINDE_INSTITUTION": "Versements aux institutions",
+    "GEMEINDE_ANTRAGSTELLER": "Versements de la réduction pour les repas",
+    "BUTTON_GEMEINDE_INSTITUTION": "Créer un versement",
+    "BUTTON_GEMEINDE_ANTRAGSTELLER": "Créer une réduction pour les repas",
+    "BENUTZER_RESET": "Réinitialiser l'utilisateur",
+    "BENUTZER_RESET_CONFIRMATION_TITLE": "Voulez-vous vraiment réinitialiser l'utilisateur?",
+    "BENUTZER_RESET_CONFIRMATION_TEXT": "La connection avec le compte BE-Login actuel sera effacée",
+    "BENUTZER_RESETTED_MESSAGE": "{{fullName}} a été réinitialisé(e)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
