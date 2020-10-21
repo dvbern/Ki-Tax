@@ -75,7 +75,6 @@ public enum MergeFieldMahlzeitenverguenstigung implements MergeFieldProvider {
 	anzahlNebenmahlzeiten(new SimpleMergeField<>("anzahlNebenmahlzeiten", BIGDECIMAL_CONVERTER)),
 	kostenHauptmahlzeiten(new SimpleMergeField<>("kostenHauptmahlzeiten", BIGDECIMAL_CONVERTER)),
 	kostenNebenmahlzeiten(new SimpleMergeField<>("kostenNebenmahlzeiten", BIGDECIMAL_CONVERTER)),
-	verguenstigungProMahlzeit(new SimpleMergeField<>("verguenstigungProMahlzeit", BIGDECIMAL_CONVERTER)),
 	berechneteMahlzeitenverguenstigung(new SimpleMergeField<>("berechneteMahlzeitenverguenstigung", BIGDECIMAL_CONVERTER));
 
 	@Nonnull

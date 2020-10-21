@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -67,6 +67,9 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonDataRow;
 import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonExcelConverter;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;

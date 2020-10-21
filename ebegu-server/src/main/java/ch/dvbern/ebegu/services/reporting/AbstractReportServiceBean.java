@@ -1,24 +1,29 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -30,14 +35,20 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -53,6 +64,9 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 
 	@Inject
 	private PrincipalBean principalBean;
+
+	@Inject
+	private GesuchService gesuchServiceBean;
 
 	protected static final String VALIDIERUNG_STICHTAG = "Das Argument 'stichtag' darf nicht leer sein";
 	protected static final String VALIDIERUNG_DATUM_VON = "Das Argument 'datumVon' darf nicht leer sein";
@@ -123,5 +137,60 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 			return predicateNotSchulamt;
 		}
 		return null;
+	}
+
+	protected Gesuch getGueltigesGesuch(Map<Long, Gesuch> neustesVerfuegtesGesuchCache, Gesuch gesuch) {
+		Gesuch gueltigeGesuch;
+		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(
+			gesuch.getFall().getFallNummer(),
+			gesuchServiceBean.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false)
+				.orElse(gesuch));
+		return gueltigeGesuch;
+	}
+
+	protected Betreuung getGueltigeBetreuung(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		Betreuung gueltigeBetreuung,
+		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
+
+		return gueltigeKind
+			.map(gk -> {
+				final Betreuung betr = zeitabschnitt.getVerfuegung().getBetreuung();
+				Objects.requireNonNull(betr);
+				return gk.getBetreuungen().stream().filter(betreuung -> betreuung
+					.getBetreuungNummer()
+					.equals(betr.getBetreuungNummer()))
+					.findFirst()
+					.orElse(betr);
+			})
+			.orElse(gueltigeBetreuung);
+	}
+
+	protected AnmeldungTagesschule getGueltigeAnmeldung(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		AnmeldungTagesschule gueltigeAnmeldung,
+		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
+
+		return gueltigeKind
+			.map(gk -> {
+				final AnmeldungTagesschule anmeld = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
+				Objects.requireNonNull(anmeld);
+				return gk.getAnmeldungenTagesschule().stream().filter(anmeldungTagesschule -> anmeldungTagesschule
+					.getBetreuungNummer()
+					.equals(anmeld.getBetreuungNummer()))
+					.findFirst()
+					.orElse(anmeld);
+			})
+			.orElse(gueltigeAnmeldung);
+	}
+
+	protected Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		Integer kindNummer = betreuung.getKind().getKindNummer();
+
+		return gueltigeGesuch.getKindContainers().stream()
+			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
+			.findFirst();
 	}
 }

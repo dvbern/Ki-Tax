@@ -1,19 +1,21 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -64,7 +66,6 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -128,11 +129,21 @@ import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
-import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.TraegerschaftService;
+import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
@@ -1723,43 +1734,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 
 		return row;
-	}
-
-	private Gesuch getGueltigesGesuch(Map<Long, Gesuch> neustesVerfuegtesGesuchCache, Gesuch gesuch) {
-		Gesuch gueltigeGesuch;
-		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(
-			gesuch.getFall().getFallNummer(),
-			gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false)
-				.orElse(gesuch));
-		return gueltigeGesuch;
-	}
-
-	private Betreuung getGueltigeBetreuung(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		Betreuung gueltigeBetreuung,
-		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
-
-		return gueltigeKind
-			.map(gk -> {
-				final Betreuung betr = zeitabschnitt.getVerfuegung().getBetreuung();
-				Objects.requireNonNull(betr);
-				return gk.getBetreuungen().stream().filter(betreuung -> betreuung
-					.getBetreuungNummer()
-					.equals(betr.getBetreuungNummer()))
-					.findFirst()
-					.orElse(betr);
-			})
-			.orElse(gueltigeBetreuung);
-	}
-
-	private Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
-		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-		Objects.requireNonNull(betreuung);
-		Integer kindNummer = betreuung.getKind().getKindNummer();
-
-		return gueltigeGesuch.getKindContainers().stream()
-			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
-			.findFirst();
 	}
 
 	@Nonnull

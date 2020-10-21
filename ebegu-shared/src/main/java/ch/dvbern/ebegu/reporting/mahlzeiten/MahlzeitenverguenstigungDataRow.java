@@ -22,10 +22,12 @@ import java.time.LocalDate;
 
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+
 public class MahlzeitenverguenstigungDataRow {
 
 	@Nullable private String bgNummer;
-	@Nullable private String betreuungsTyp;
+	@Nullable private BetreuungsangebotTyp betreuungsTyp;
 	@Nullable private String institution;
 	@Nullable private String traegerschaft;
 
@@ -62,11 +64,11 @@ public class MahlzeitenverguenstigungDataRow {
 	}
 
 	@Nullable
-	public String getBetreuungsTyp() {
+	public BetreuungsangebotTyp getBetreuungsTyp() {
 		return betreuungsTyp;
 	}
 
-	public void setBetreuungsTyp(@Nullable String betreuungsTyp) {
+	public void setBetreuungsTyp(@Nullable BetreuungsangebotTyp betreuungsTyp) {
 		this.betreuungsTyp = betreuungsTyp;
 	}
 
