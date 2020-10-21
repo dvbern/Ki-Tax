@@ -157,8 +157,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private GesuchService gesuchService;
 
-	@Inject
-	private MitteilungService mitteilungService;
 
 	@Nonnull
 	@Override
@@ -715,6 +713,35 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// Wir setzen den konfigurierten User als SUPER_ADMIN
 			setSuperAdminRole(foundUser);
 
+			return saveBenutzer(foundUser);
+		}
+
+		// Benutzer nicht ueber ExternalUUID gefunden. Es koennte aber sein, dass wir den Benutzer resettet wurde
+		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername());
+		if (benutzerByUsernameOptional.isPresent()) {
+			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
+			Benutzer foundUser = benutzerByUsernameOptional.get();
+			// Wir ueberpruefen, ob sich die Daten aus IAM geaendert haben (ausser der ExternalUUID,
+			// die wir uebernehmen wollen)
+			if (!foundUser.getNachname().equalsIgnoreCase(benutzer.getNachname())
+				|| !foundUser.getVorname().equalsIgnoreCase(benutzer.getVorname())
+			 	|| !foundUser.getEmail().equalsIgnoreCase(benutzer.getEmail())) {
+				String message = String.format("External User has new User-Data: Username %s, "
+						+ "Nachname bisher %s, neu %s; "
+						+ "Vorname bisher %s, neu %s}; "
+						+ "E-Mail bisher %s, neu %s. Updating and setting Bemerkung!",
+					benutzer.getUsername(),
+					foundUser.getNachname(), benutzer.getNachname(),
+					foundUser.getVorname(), benutzer.getVorname(),
+					foundUser.getEmail(), benutzer.getEmail());
+				LOG.warn(message);
+				foundUser.addBemerkung(message);
+				foundUser.setNachname(benutzer.getNachname());
+				foundUser.setVorname(benutzer.getVorname());
+				foundUser.setEmail(benutzer.getEmail());
+			}
+			// Wir uebernehmen nur die externalUUID
+			foundUser.setExternalUUID(benutzer.getExternalUUID());
 			return saveBenutzer(foundUser);
 		}
 
@@ -1371,9 +1398,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			Benutzer benutzer = benutzerOptional.get();
 			// Es gelten dieselben Regeln wie beim Loeschen
 			authorizer.checkWriteAuthorization(benutzer);
-			if (!isBenutzerDeleteable(benutzer)) {
-				return;
-			}
 			LOG.warn("ExternalUUID von Benutzer wird gelöscht: {}", benutzer);
 			benutzer.addBemerkung("ExternalUUID " + benutzer.getExternalUUID() + " gelöscht");
 			benutzer.setExternalUUID(null);
@@ -1391,33 +1415,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			+ "/einladung?typ=" + einladung.getEinladungTyp()
 			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
 			+ "&userid=" + eingeladener.getId();
-	}
-
-	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {
-		if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
-			// Gesuchsteller darf noch kein Dossier haben
-			Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
-			if (fallOptional.isPresent()) {
-				Fall fall = fallOptional.get();
-				if (!gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty()) {
-					return false;
-				}
-			}
-		} else {
-			// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
-			if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
-				return false;
-			}
-		}
-		// Es darf keine Mitteilungen von oder an diesen Benutzer geben
-		if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
-			return false;
-		}
-		// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
-		if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
-			return false;
-		}
-		return true;
 	}
 
 	private BenutzerStatus findLastNotGesperrtStatus(Benutzer benutzer) {
