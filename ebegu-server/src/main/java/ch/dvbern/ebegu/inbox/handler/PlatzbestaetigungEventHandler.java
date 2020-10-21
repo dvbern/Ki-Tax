@@ -431,8 +431,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
-		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
+		// TODO (hefr) Schnittstelle
+//		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
+//		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
 		neueBetreuung.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 		neueBetreuung.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		neueBetreuung.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
@@ -479,9 +480,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 								== 0))
 					&&
 					betreuungspensum.getMonatlicheHauptmahlzeiten()
-						== zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten() &&
+						== BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten()) && // TODO (hefr) Schnittstelle
 					betreuungspensum.getMonatlicheNebenmahlzeiten()
-						== zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()
+						== BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()) // TODO (hefr) Schnittstelle
 				) {
 					//check pensum:
 					if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {

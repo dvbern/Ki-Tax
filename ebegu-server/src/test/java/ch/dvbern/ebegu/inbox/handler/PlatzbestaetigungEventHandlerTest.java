@@ -83,12 +83,14 @@ public class PlatzbestaetigungEventHandlerTest {
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
 			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum()
 			, zeitabschnittDTO, betreuungs.get(0));
+		Assert.assertNotNull(betreuungsmitteilungPensum);
 		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten()) == 0);
 		Assert.assertTrue(betreuungsmitteilungPensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0);
-		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
+		// TODO (hefr) Schnittstelle
+		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
+			.compareTo(BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten())) == 0);
+		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
+			.compareTo(BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten())) == 0);
 		Assert.assertTrue(betreuungsmitteilungPensum.getTarifProHauptmahlzeit().compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()) == 0);
 		Assert.assertTrue(betreuungsmitteilungPensum.getTarifProNebenmahlzeit().compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()) == 0);
 		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
@@ -105,12 +107,14 @@ public class PlatzbestaetigungEventHandlerTest {
 		Betreuungspensum betreuungsPensum =
 			handler.mapZeitabschnitt(new Betreuungspensum()
 				, zeitabschnittDTO, betreuungs.get(0));
+		Assert.assertNotNull(betreuungsPensum);
 		Assert.assertTrue(betreuungsPensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten()) == 0);
 		Assert.assertTrue(betreuungsPensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0);
-		Assert.assertTrue(betreuungsPensum.getMonatlicheHauptmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-		Assert.assertTrue(betreuungsPensum.getMonatlicheNebenmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
+		// TODO (hefr) Schnittstelle
+		Assert.assertTrue(betreuungsPensum.getMonatlicheHauptmahlzeiten()
+			.compareTo(BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten())) == 0);
+		Assert.assertTrue(betreuungsPensum.getMonatlicheNebenmahlzeiten()
+			.compareTo(BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten())) == 0);
 		Assert.assertTrue(betreuungsPensum.getTarifProHauptmahlzeit().compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()) == 0);
 		Assert.assertTrue(betreuungsPensum.getTarifProNebenmahlzeit().compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()) == 0);
 		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
