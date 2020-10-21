@@ -161,17 +161,14 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung() != null)
 				// filter out time spans which end before the ts entry date
-				.filter(verfuegungZeitabschnitt ->
-					verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
-						Objects.requireNonNull(Objects.requireNonNull(verfuegung.getAnmeldungTagesschule())
-							.getBelegungTagesschule()).getEintrittsdatum()) >= 0
-				)
-				// adjust the "Von" date if the entry date is not the first day of the time span
-				.peek(verfuegungZeitabschnitt -> {
-					if(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
-						Objects.requireNonNull(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule()).getEintrittsdatum()) < 0) {
-						verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule().getEintrittsdatum());
+				.filter(verfuegungZeitabschnitt -> {
+					if (verfuegung.getAnmeldungTagesschule() != null &&
+						verfuegung.getAnmeldungTagesschule().getBelegungTagesschule() != null) {
+						return verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
+							(verfuegung.getAnmeldungTagesschule()
+								.getBelegungTagesschule()).getEintrittsdatum()) >= 0;
 					}
+					return false;
 				})
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(abschnitteMitBetreuung)) {
@@ -187,17 +184,14 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				.filter(verfuegungZeitabschnitt ->
 					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
 				// filter out time spans which end before the ts entry date
-				.filter(verfuegungZeitabschnitt ->
-					verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
-						Objects.requireNonNull(Objects.requireNonNull(verfuegung.getAnmeldungTagesschule())
-							.getBelegungTagesschule()).getEintrittsdatum()) >= 0
-				)
-				// adjust the "Von" date if the entry date is not the first day of the time span
-				.peek(verfuegungZeitabschnitt -> {
-					if(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
-						Objects.requireNonNull(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule()).getEintrittsdatum()) < 0) {
-						verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(verfuegung.getAnmeldungTagesschule().getBelegungTagesschule().getEintrittsdatum());
+				.filter(verfuegungZeitabschnitt ->{
+					if (verfuegung.getAnmeldungTagesschule() != null &&
+						verfuegung.getAnmeldungTagesschule().getBelegungTagesschule() != null) {
+						return verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(
+							(verfuegung.getAnmeldungTagesschule()
+								.getBelegungTagesschule()).getEintrittsdatum()) >= 0;
 					}
+					return false;
 				})
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
@@ -393,7 +387,14 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			Objects.requireNonNull(tsResult);
 
 			table.addCell(createCell(Element.ALIGN_RIGHT,
-				Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigAb()),
+				Constants.DATE_FORMATTER.format(
+					// if there is a ts betreuung and the entry date of the tagesschule entry is after the time span start date, display the entry date
+					(anmeldungTagesschule.getBelegungTagesschule() != null &&
+						anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(
+							anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum()
+						) <0)?
+					anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum():
+					anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigAb()),
 				null));
 			table.addCell(createCell(Element.ALIGN_RIGHT,
 				Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigBis()),
