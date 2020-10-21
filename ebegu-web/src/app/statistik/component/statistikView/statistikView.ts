@@ -292,6 +292,14 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
+            case TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG:
+                this.reportAsyncRS.getMahlzeitenverguenstigungReportExcel(
+                    this._statistikParameter.von.format(this.DATE_PARAM_FORMAT),
+                    this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }

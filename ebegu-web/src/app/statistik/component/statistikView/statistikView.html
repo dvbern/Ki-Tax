@@ -871,7 +871,51 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
-
+                <div dv-show-element
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'SUPER_ADMIN',
+                     'ADMIN_TS', 'SACHBEARBEITER_TS']">
+                    <dv-accordion-tab tabid="mahlzeitenverguenstigung">
+                        <tab-title>
+                            <span class="uppercase" data-translate="MAHLZEITENVERGUENSTIGUNG"></span>
+                        </tab-title>
+                        <tab-body>
+                            <form name="mahlzeitenverguenstigung"
+                                  ng-submit="vm.generateStatistik(mahlzeitenverguenstigung, vm.TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float" for="von_mahlzeitenverguenstigung" data-translate="VON"></label>
+                                            <dv-datepicker name="von_mahlzeitenverguenstigung" id="von_mahlzeitenverguenstigung"
+                                                           ng-model="vm.statistikParameter.von" ng-required="true"
+                                                           class="input-element">
+                                            </dv-datepicker>
+                                            <dv-error-messages for="mahlzeitenverguenstigung.von_mahlzeitenverguenstigung.$error"
+                                                               class="error"></dv-error-messages>
+                                        </dv-input-container>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float" for="bis_mahlzeitenverguenstigung" data-translate="BIS"></label>
+                                            <dv-datepicker name="bis_mahlzeitenverguenstigung" id="bis_mahlzeitenverguenstigung"
+                                                           ng-model="vm.statistikParameter.bis" ng-required="true"
+                                                           class="input-element">
+                                            </dv-datepicker>
+                                            <dv-error-messages for="mahlzeitenverguenstigung.bis_mahlzeitenverguenstigung.$error"
+                                                               class="error"></dv-error-messages>
+                                        </dv-input-container>
+                                    </div>
+                                    <div class="col-xs-3 statistik-button">
+                                        <dv-loading-button type="submit"
+                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
             </dv-accordion>
         </div>
     </div>

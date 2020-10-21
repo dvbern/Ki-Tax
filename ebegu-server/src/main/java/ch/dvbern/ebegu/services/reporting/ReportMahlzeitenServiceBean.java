@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -91,6 +94,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
+@Stateless
+@Local(ReportMahlzeitenService.class)
 public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean implements ReportMahlzeitenService {
 
 	private MahlzeitenverguenstigungExcelConverter mahlzeitenverguenstigungExcelConverter = new MahlzeitenverguenstigungExcelConverter();
@@ -135,7 +140,6 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
-
 
 	@Nonnull
 	private List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
@@ -362,6 +366,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
+		//TODO: Superadmin berucksichtigen + nur Gesuchen wo mahlzeiten beantragt sind
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
 		Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
 		Predicate predicateStart = builder.lessThanOrEqualTo(dateRangePath.get(DateRange_.gueltigAb), datumBis);
@@ -375,6 +380,9 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
 		Collection<Gemeinde> gemeindenForBenutzer = user.extractGemeindenForUser();
+		if(gemeindenForBenutzer.isEmpty()){
+			return Collections.emptyList();
+		}
 		Predicate inGemeindeForBetreuung = joinBetreuungGemeinde.in(gemeindenForBenutzer);
 		Predicate inGemeindeForTagesschule = joinAnmeldungGemeinde.in(gemeindenForBenutzer);
 		Predicate inGemeinde = builder.or(inGemeindeForBetreuung, inGemeindeForTagesschule);
