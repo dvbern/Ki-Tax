@@ -1047,6 +1047,7 @@
     "UMZUG_HINT": "Planen Sie einen Umzug? Bitte geben Sie allfällige Adressänderungen ein.",
     "ERWERBSPENSUM_HINT": "Bitte geben Sie allfällige Änderungen Ihrer Beschäftigungspensen an.",
     "ABWESENHEIT": "Abwesenheit",
+    "ABWESENHEIT_HINT": "Hier müssen Sie erfassen, wenn ein Kind mehr als 30 Tage am Stück innerhalb einer Gutscheinperiode abwesend ist.  Wenn das Kind mehr als 30 Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem 31. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden (ASIV Art. 34u).",
     "ABWESENHEIT_ENTFERNEN": "Abwesenheit löschen",
     "ABWESENHEIT_ERFASSEN": "Abwesenheit erfassen",
     "ABWESENHEIT_FUER_WELCHES_KIND": "Für welches Kind gilt die Abwesenheit?",
@@ -1277,8 +1278,8 @@
     "ZAHLUNGSAUFTRAG_AUSGELOEST": "Ausgelöst",
     "ZAHLUNG_ERSTELLEN_CONFIRM": "Sind Sie sicher, dass Sie diese Zahlung erstellen möchten?",
     "ZAHLUNG_ERSTELLEN_INFO": "Nachdem Sie die Zahlung erstellt haben, kann diese nicht mehr gelöscht werden",
-    "ZAHLUNG_AUSLOESEN_CONFIRM": "Sind Sie sicher, dass Sie diese Zahlung auslösen möchten?",
-    "ZAHLUNG_AUSLOESEN_INFO": "Dies kann nicht rückgängig gemacht werden",
+    "ZAHLUNG_AUSLOESEN_CONFIRM": "Sind Sie sicher, dass Sie diese Zahlung in kiBon auslösen möchten?",
+    "ZAHLUNG_AUSLOESEN_INFO": "Haben Sie die Zahlung bereits in der Bank hochgeladen und ausgelöst?<br/><b>Achtung</b>: Die Zahlungsdaten (Z.B. IBAN-Nummer) können nach dieser Aktion nicht mehr angepasst werden. Dieser Schritt kann <b>NICHT</b> rückgängig gemacht werden",
     "VERSION_INFO": "Version: Client {{frontendVersion}} / Server: {{backendVersion}}",
     "VERSION_INFO_SINGLE": "Version {{version}}",
     "SKIP_0": "Startseite",
@@ -2164,5 +2165,9 @@
     "GEMEINDE_ANTRAGSTELLER": "Zahlungen Mahlzeitenvergünstigung",
     "BUTTON_GEMEINDE_INSTITUTION": "Zahlungslauf erstellen",
     "BUTTON_GEMEINDE_ANTRAGSTELLER": "Mahlzeitenvergünstigung erstellen",
+    "BENUTZER_RESET": "Benutzer zurücksetzen",
+    "BENUTZER_RESET_CONFIRMATION_TITLE": "Wollen Sie den Benutzer wirklich zurücksetzen?",
+    "BENUTZER_RESET_CONFIRMATION_TEXT": "Damit wird die Verbindung zum aktuellen BE-Login Konto gelöscht",
+    "BENUTZER_RESETTED_MESSAGE": "{{fullName}} wurde zurückgesetzt",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

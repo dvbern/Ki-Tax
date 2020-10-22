@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,25 +109,33 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			Betreuung betreuung = betreuungOpt.get();
 			if (betreuung.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
-				LOG.warn("Platzbestaetigung: die Gesuchsperiode fuer die Betreuung mit RefNr: {} ist nicht aktiv!", refnr);
+				LOG.warn(
+					"Platzbestaetigung: die Gesuchsperiode fuer die Betreuung mit RefNr: {} ist nicht aktiv!",
+					refnr);
 				return;
 			}
 			if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
 				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} war spaeter als dieser "
 					+ "Event im kiBon bearbeitet! Event ist ignoriert", refnr);
-			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.WARTEN)) {
+			} else if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
 				//Update the Betreuung and check if all data are available
 				if (setBetreuungDaten(new PlatzbestaetigungProcessingContext(betreuung, dto))) {
+					//noinspection ResultOfMethodCallIgnored
 					betreuungService.betreuungPlatzBestaetigen(betreuung);
 					LOG.info("Platzbestaetigung: Betreuung mit RefNr: {} automatisch bestätigt", refnr);
 				} else {
+					//noinspection ResultOfMethodCallIgnored
 					betreuungService.saveBetreuung(betreuung, false);
-					LOG.info("Platzbestaetigung: Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt", refnr);
+					LOG.info(
+						"Platzbestaetigung: Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt",
+						refnr);
 				}
-			} else if (betreuung.getBetreuungsstatus().equals(Betreuungsstatus.VERFUEGT)
-				|| betreuung.getBetreuungsstatus().equals(Betreuungsstatus.BESTAETIGT)) {
+			} else if (betreuung.getBetreuungsstatus() == Betreuungsstatus.VERFUEGT
+				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.BESTAETIGT) {
 				if (isSame(dto, betreuung)) {
-					LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}" +
+					LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}"
+
+						+
 						" - MutationMitteilung wird nicht erstellt!", refnr);
 					return;
 				}
@@ -137,11 +146,15 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					// we first clear all the Mutationsmeldungen for the current Betreuung
 					mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 					// and then send the new Betreuungsmitteilung an die Gemeinde
+					//noinspection ResultOfMethodCallIgnored
 					this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 					LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", refnr);
 				}
 			} else {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} hat einen ungültigen Status: {}" , refnr, betreuung.getBetreuungsstatus());
+				LOG.warn(
+					"Platzbestaetigung: die Betreuung mit RefNr: {} hat einen ungültigen Status: {}",
+					refnr,
+					betreuung.getBetreuungsstatus());
 			}
 		} catch (Exception e) {
 			LOG.error("Error while processing the record: {} error: {}", refnr, e.getMessage());
@@ -296,7 +309,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
 		//we don't have any sender...
 		Benutzer benutzer =
-			benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID).orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, TECHNICAL_BENUTZER_ID));
+			benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					StringUtils.EMPTY,
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					TECHNICAL_BENUTZER_ID));
 		betreuungsmitteilung.setSender(benutzer);
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
@@ -315,10 +332,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		//Pensen mappen and create message
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
 		Einstellung mahlzeitVergunstigungEnabled =
-			einstellungService.findEinstellung(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			einstellungService.findEinstellung(
+				EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
 				gemeinde,
 				gesuchsperiode);
-		String message = "";
+		StringBuilder message = new StringBuilder();
 		int counter = 1;
 		boolean areZeitabschnittCorrupted = false;
 		for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
@@ -329,7 +347,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				continue;
 			}
 			betreuungsmitteilungPensum.setVollstaendig(!areZeitabschnittCorrupted);
-
+			if (message.length() > 0) {
+				message.append(StringUtils.LF);
+			}
 			if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
 				//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
 				if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
@@ -344,28 +364,39 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					//Die MutationsMitteilung soll in Status WARTEN eroeffnet werden
 					betreuungsmitteilungPensum.setVollstaendig(false);
 				}
-				message = message + translate(MESSAGE_MAHLZEIT_KEY, sprache, counter,
-					betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb(),
-					betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis(),
-					betreuungsmitteilungPensum.getPensum(),
-					betreuungsmitteilungPensum.getMonatlicheBetreuungskosten(),
-					betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten(),
-					betreuungsmitteilungPensum.getTarifProHauptmahlzeit(),
-					betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten(),
-					betreuungsmitteilungPensum.getTarifProNebenmahlzeit());
+				message.append(mahlzeitenMessage(sprache, counter, betreuungsmitteilungPensum));
 			} else {
-				message = message + translate(MESSAGE_KEY, sprache, counter,
-					betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb(),
-					betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis(),
-					betreuungsmitteilungPensum.getPensum(),
-					betreuungsmitteilungPensum.getMonatlicheBetreuungskosten());
+				message.append(defaultMessage(sprache, counter, betreuungsmitteilungPensum));
 			}
 			//set betreuungsmitteilungPensum in model
 			betreuungsmitteilungPensum.setBetreuungsmitteilung(betreuungsmitteilung);
 			betreuungsmitteilung.getBetreuungspensen().add(betreuungsmitteilungPensum);
+			counter++;
 		}
-		betreuungsmitteilung.setMessage(message);
+		betreuungsmitteilung.setMessage(message.toString());
 		return betreuungsmitteilung;
+	}
+
+	@Nonnull
+	private String mahlzeitenMessage(@Nonnull Locale lang, int counter, @Nonnull BetreuungsmitteilungPensum pensum) {
+		return translate(MESSAGE_MAHLZEIT_KEY, lang, counter,
+			pensum.getGueltigkeit().getGueltigAb(),
+			pensum.getGueltigkeit().getGueltigBis(),
+			pensum.getPensum(),
+			pensum.getMonatlicheBetreuungskosten(),
+			pensum.getMonatlicheHauptmahlzeiten(),
+			pensum.getTarifProHauptmahlzeit(),
+			pensum.getMonatlicheNebenmahlzeiten(),
+			pensum.getTarifProNebenmahlzeit());
+	}
+
+	@Nonnull
+	private String defaultMessage(@Nonnull Locale lang, int counter, @Nonnull BetreuungsmitteilungPensum pensum) {
+		return translate(MESSAGE_KEY, lang, counter,
+			pensum.getGueltigkeit().getGueltigAb(),
+			pensum.getGueltigkeit().getGueltigBis(),
+			pensum.getPensum(),
+			pensum.getMonatlicheBetreuungskosten());
 	}
 
 	@Nullable
@@ -384,7 +415,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			neueBetreuung.setUnitForDisplay(PensumUnits.DAYS);
 			BigDecimal pensumInPercent =
-				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+				MathUtil.EXACT.divide(
+					MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
 					MAX_TAGE_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		} else if (betreuung.isAngebotTagesfamilien()) {
@@ -394,7 +426,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			}
 			neueBetreuung.setUnitForDisplay(PensumUnits.HOURS);
 			BigDecimal pensumInPercent =
-				MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+				MathUtil.EXACT.divide(
+					MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
 					MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
@@ -431,33 +464,44 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnittDTOS) {
 				if (zeitabschnittDTO.getVon().isEqual(betreuungspensum.getGueltigkeit().getGueltigAb()) &&
 					zeitabschnittDTO.getBis().isEqual(betreuungspensum.getGueltigkeit().getGueltigBis()) &&
-					betreuungspensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten()) == 0 &&
+					betreuungspensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten())
+						== 0 &&
 					(zeitabschnittDTO.getTarifProHauptmahlzeiten() == null ||
-						(zeitabschnittDTO.getTarifProHauptmahlzeiten() != null && betreuungspensum.getTarifProHauptmahlzeit().compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten())
+						(zeitabschnittDTO.getTarifProHauptmahlzeiten() != null
+							&& betreuungspensum.getTarifProHauptmahlzeit()
+							.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten())
 							== 0))
 					&&
 					(zeitabschnittDTO.getTarifProNebenmahlzeiten() == null ||
 						(zeitabschnittDTO.getTarifProNebenmahlzeiten() != null &&
-							betreuungspensum.getTarifProNebenmahlzeit().compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten())
+							betreuungspensum.getTarifProNebenmahlzeit()
+								.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten())
 								== 0))
 					&&
-					betreuungspensum.getMonatlicheHauptmahlzeiten() == zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten() &&
-					betreuungspensum.getMonatlicheNebenmahlzeiten() == zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()
+					betreuungspensum.getMonatlicheHauptmahlzeiten()
+						== zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten() &&
+					betreuungspensum.getMonatlicheNebenmahlzeiten()
+						== zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()
 				) {
 					//check pensum:
 					if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
 						match = betreuungspensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0;
 					} else if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.DAYS.name())) {
 						BigDecimal pensumInPercent =
-							MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+							MathUtil.EXACT.divide(
+								MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
 								MAX_TAGE_PRO_MONAT);
 						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
 					} else if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())) {
 						BigDecimal pensumInPercent =
-							MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+							MathUtil.EXACT.divide(
+								MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
 								MAX_STUNDEN_PRO_MONAT);
 						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
 					}
+				}
+				if (match) {
+					break;
 				}
 			}
 			if (!match) {

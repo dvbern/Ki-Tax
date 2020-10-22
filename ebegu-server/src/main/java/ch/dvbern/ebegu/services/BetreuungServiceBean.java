@@ -163,9 +163,14 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// if isNew and Jugendamt -> generate Event for Kafka
 		if (exportBetreuung(isNew, mergedBetreuung)) {
-			BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent = betreuungAnfrageEventConverter.of(mergedBetreuung);
-
-			this.event.fire(betreuungAnfrageAddedEvent);
+			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
+				BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent =
+					betreuungAnfrageEventConverter.of(mergedBetreuung);
+				this.event.fire(betreuungAnfrageAddedEvent);
+			}
+			else {
+				mergedBetreuung.setEventPublished(false);
+			}
 		}
 
 		// we need to manually add this new Betreuung to the Kind
@@ -185,8 +190,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private boolean exportBetreuung(boolean isNew, @Nonnull Betreuung mergedBetreuung) {
 		return isNew
-			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()
-			&& ebeguConfiguration.isBetreuungAnfrageApiEnabled();
+			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt();
 	}
 
 	@Nonnull
@@ -208,7 +212,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(anmeldungTagesschule.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(
+				anmeldungTagesschule.getId(),
+				b.getId()))
 			.forEach(b -> {
 				b.copyAnmeldung(anmeldungTagesschule);
 				persistence.merge(b);
@@ -247,7 +253,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream()
-			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(anmeldungFerieninsel.getId(), b.getId()))
+			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(
+				anmeldungFerieninsel.getId(),
+				b.getId()))
 			.forEach(b -> {
 				b.copyAnmeldung(anmeldungFerieninsel);
 				persistence.merge(b);
@@ -296,7 +304,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 	}
 
-	private void updateVerantwortliche(@Nonnull Gesuch mergedGesuch, @Nonnull AbstractPlatz mergedBetreuung,
+	private void updateVerantwortliche(
+		@Nonnull Gesuch mergedGesuch, @Nonnull AbstractPlatz mergedBetreuung,
 		boolean isAnmeldungSchulamtAusgeloest, boolean isNew) {
 		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), isAnmeldungSchulamtAusgeloest, isNew)) {
 			Optional<GemeindeStammdaten> gemeindeStammdatenOptional =
@@ -344,7 +353,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Ablehnung einer Betreuung muss eine E-Mail geschickt werden
 			mailService.sendInfoBetreuungAbgelehnt(persistedBetreuung);
 		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
+			logExceptionAccordingToEnvironment(
+				e,
 				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
@@ -373,7 +383,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				mailService.sendInfoBetreuungenBestaetigt(gesuch);
 			}
 		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
+			logExceptionAccordingToEnvironment(
+				e,
 				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
@@ -391,18 +402,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (anmeldung.getBetreuungsangebotTyp().isTagesschule()) {
 			AnmeldungTagesschule anmeldungTagesschule =
 				findAnmeldungTagesschule(anmeldung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"anmeldungSchulamtModuleAkzeptieren",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"AnmeldungTagesschule: " + anmeldung.getId()));
+					"anmeldungSchulamtModuleAkzeptieren",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					"AnmeldungTagesschule: " + anmeldung.getId()));
 			try {
 				// Bei Akzeptieren einer Anmeldung muss eine E-Mail geschickt werden
 				GemeindeStammdaten gemeindeStammdaten =
-					gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
+					gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch()
+						.getDossier()
+						.getGemeinde()
+						.getId()).get();
 				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !anmeldungTagesschule.isTagesschuleTagi()) {
 					mailService.sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(persistedBetreuung);
 				}
 			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(e,
+				logExceptionAccordingToEnvironment(
+					e,
 					"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
 					anmeldung.getId());
 			}
@@ -452,12 +467,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		try {
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
 			GemeindeStammdaten gemeindeStammdaten =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
+				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch()
+					.getDossier()
+					.getGemeinde()
+					.getId()).get();
 			if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !tagis) {
 				mailService.sendInfoSchulamtAnmeldungAbgelehnt(persistedBetreuung);
 			}
 		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
+			logExceptionAccordingToEnvironment(
+				e,
 				"Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
 				anmeldung.getId());
 		}
@@ -554,7 +573,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Nonnull
-	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByBGNummer(@Nonnull Class<T> clazz,
+	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByBGNummer(
+		@Nonnull Class<T> clazz,
 		@Nonnull String bgNummer, boolean getOnlyAktuelle) {
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
@@ -597,7 +617,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (getOnlyAktuelle) {
 			Predicate predAktuelleBetreuung =
-				cb.equal(root.get(AbstractAnmeldung_.anmeldungMutationZustand),
+				cb.equal(
+					root.get(AbstractAnmeldung_.anmeldungMutationZustand),
 					AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 			Predicate predNormaleBetreuung = cb.isNull(root.get(AbstractAnmeldung_.anmeldungMutationZustand));
 			predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
@@ -646,26 +667,24 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicates.add(predKindNummer);
 		predicates.add(predBetreuungNummer);
 
-		if(onlyGueltig) {
+		if (onlyGueltig) {
 			Predicate predGueltig = cb.equal(root.get(Betreuung_.gueltig), Boolean.TRUE);
 			predicates.add(predGueltig);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		Betreuung resultOrNull = null;
-		if(onlyGueltig){
+		if (onlyGueltig) {
 			resultOrNull = persistence.getCriteriaSingleResult(query);
-		}
-		else{
+		} else {
 			//wir abholen alle moegliche Betreuung fuer dieser BG Nummer, wir muessen nur die letzte zuruckgeben:
 			List<Betreuung> betreuungs = persistence.getCriteriaResults(query);
-			for(Betreuung betreuung : betreuungs){
-				if(resultOrNull == null){
+			for (Betreuung betreuung : betreuungs) {
+				if (resultOrNull == null) {
 					resultOrNull = betreuung;
-				}
-				else if (betreuung.getTimestampErstellt() != null
+				} else if (betreuung.getTimestampErstellt() != null
 					&& resultOrNull.getTimestampErstellt() != null
-					&& betreuung.getTimestampErstellt().isAfter(resultOrNull.getTimestampErstellt())){
+					&& betreuung.getTimestampErstellt().isAfter(resultOrNull.getTimestampErstellt())) {
 					resultOrNull = betreuung;
 				}
 			}
@@ -705,7 +724,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		final String gesuchId = betreuungToRemove.extractGesuch().getId();
 		removeBetreuung(betreuungToRemove);
-		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
+		wizardStepService.updateSteps(
+			gesuchId,
+			null,
+			null,
+			WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
 
 		mailService.sendInfoBetreuungGeloescht(Collections.singletonList(betreuungToRemove));
 	}
@@ -720,13 +743,18 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		final String gesuchId = anmeldungToRemove.extractGesuch().getId();
 		removeAnmeldung(anmeldungToRemove);
-		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
+		wizardStepService.updateSteps(
+			gesuchId,
+			null,
+			null,
+			WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
 	}
 
 	/**
 	 * removes Betreuungsmitteilungen of this Betreuung and removes the relation of all depending Mitteilunges
 	 */
-	private void handleDependingMitteilungenWhenDeletingBetreuung(@Nonnull String betreuungId,
+	private void handleDependingMitteilungenWhenDeletingBetreuung(
+		@Nonnull String betreuungId,
 		@Nonnull Betreuung betreuungToRemove) {
 		Collection<Mitteilung> mitteilungenForBetreuung =
 			this.mitteilungService.findAllMitteilungenForBetreuung(betreuungToRemove);
@@ -754,7 +782,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION",
+		justification = "ErweiterteBetreuungContainer must be set to null")
 	public void removeBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung);
 		authorizer.checkWriteAuthorization(betreuung);
@@ -770,7 +799,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION",
+		justification = "ErweiterteBetreuungContainer must be set to null")
 	public void removeAnmeldung(@Nonnull AbstractAnmeldung anmeldung) {
 		Objects.requireNonNull(anmeldung);
 		final Gesuch gesuch = anmeldung.extractGesuch();
@@ -779,9 +809,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// the Anmeldung needs to be removed from the object as well
 		gesuch.getKindContainers()
-			.forEach(kind -> kind.getAnmeldungenTagesschule().removeIf(bet -> bet.getId().equalsIgnoreCase(anmeldung.getId())));
+			.forEach(kind -> kind.getAnmeldungenTagesschule()
+				.removeIf(bet -> bet.getId().equalsIgnoreCase(anmeldung.getId())));
 		gesuch.getKindContainers()
-			.forEach(kind -> kind.getAnmeldungenFerieninsel().removeIf(bet -> bet.getId().equalsIgnoreCase(anmeldung.getId())));
+			.forEach(kind -> kind.getAnmeldungenFerieninsel()
+				.removeIf(bet -> bet.getId().equalsIgnoreCase(anmeldung.getId())));
 
 		gesuchService.updateBetreuungenStatus(gesuch);
 	}
@@ -794,8 +826,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			institutionService.getInstitutionenEditableForCurrentBenutzer(true);
 		if (!instForCurrBenutzer.isEmpty()) {
 			pendenzen.addAll(getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
-			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
-			pendenzen.addAll(getPendenzenAnmeldungFerieninselForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
+			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution((Institution[]) instForCurrBenutzer.toArray(
+				INSTITUTIONS)));
+			pendenzen.addAll(getPendenzenAnmeldungFerieninselForInstitution((Institution[]) instForCurrBenutzer.toArray(
+				INSTITUTIONS)));
 			return pendenzen;
 		}
 		return Collections.emptyList();
@@ -900,7 +934,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Nonnull
-	private Collection<AnmeldungTagesschule> getPendenzenAnmeldungTagesschuleForInstitution(@Nonnull Institution... institutionen) {
+	private Collection<AnmeldungTagesschule> getPendenzenAnmeldungTagesschuleForInstitution(
+		@Nonnull Institution... institutionen) {
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
 
 		// parameter für "in" operation darf nie leer sein
@@ -926,7 +961,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// nur Aktuelle Anmeldungen
 		Predicate predAktuelleBetreuung =
-			cb.equal(root.get(AbstractAnmeldung_.anmeldungMutationZustand),
+			cb.equal(
+				root.get(AbstractAnmeldung_.anmeldungMutationZustand),
 				AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 		Predicate predNormaleBetreuung = cb.isNull(root.get(AbstractAnmeldung_.anmeldungMutationZustand));
 		predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
@@ -964,7 +1000,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Nonnull
-	private Collection<AnmeldungFerieninsel> getPendenzenAnmeldungFerieninselForInstitution(@Nonnull Institution... institutionen) {
+	private Collection<AnmeldungFerieninsel> getPendenzenAnmeldungFerieninselForInstitution(
+		@Nonnull Institution... institutionen) {
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
 
 		// parameter für "in" operation darf nie leer sein
@@ -990,7 +1027,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// nur Aktuelle Anmeldungen
 		Predicate predAktuelleBetreuung =
-			cb.equal(root.get(AbstractAnmeldung_.anmeldungMutationZustand),
+			cb.equal(
+				root.get(AbstractAnmeldung_.anmeldungMutationZustand),
 				AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 		Predicate predNormaleBetreuung = cb.isNull(root.get(AbstractAnmeldung_.anmeldungMutationZustand));
 		predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));

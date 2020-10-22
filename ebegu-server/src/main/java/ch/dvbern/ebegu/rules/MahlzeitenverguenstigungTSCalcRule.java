@@ -98,6 +98,9 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungOhneBetreuung);
 				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale());
 			}
+		} else {
+			// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
+			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_NEIN, getLocale());
 		}
 	}
 
