@@ -409,7 +409,7 @@
             <dependency>
                 <groupId>ch.dvbern.kibon</groupId>
                 <artifactId>kibon-exchange-api-commons</artifactId>
-                <version>1.2.5</version>
+                <version>1.2.6-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>

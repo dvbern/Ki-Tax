@@ -431,9 +431,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
-		// TODO (hefr) Schnittstelle
-//		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-//		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
+		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
+		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
 		neueBetreuung.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 		neueBetreuung.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		neueBetreuung.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
@@ -479,10 +478,17 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 								.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten())
 								== 0))
 					&&
-					betreuungspensum.getMonatlicheHauptmahlzeiten()
-						== BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten()) && // TODO (hefr) Schnittstelle
-					betreuungspensum.getMonatlicheNebenmahlzeiten()
-						== BigDecimal.valueOf(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()) // TODO (hefr) Schnittstelle
+					(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten() == null ||
+						(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten() != null &&
+							betreuungspensum.getMonatlicheHauptmahlzeiten()
+								.compareTo(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten())
+								== 0))
+					&&
+					(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten() == null ||
+						(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten() != null &&
+							betreuungspensum.getMonatlicheNebenmahlzeiten()
+								.compareTo(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten())
+								== 0))
 				) {
 					//check pensum:
 					if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
