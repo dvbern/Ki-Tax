@@ -436,7 +436,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             elementID: undefined,
         }).then(() => {
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(false, false, this.bemerkungen);
+            // Auch wenn wir nicht nach dem Ignorieren gefragt haben, muessen wir u.U. ignorieren:
+            // Dann naemlich, wenn fuer diese Verfuegung bereits frueher ignoriert wurde!
+            return this.gesuchModelManager.saveVerfuegung(
+                this.isAlreadyIgnored(),
+                this.isAlreadyIgnoredMahlzeiten(),
+                this.bemerkungen);
         });
     }
 
