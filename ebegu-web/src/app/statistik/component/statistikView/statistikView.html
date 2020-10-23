@@ -492,128 +492,128 @@
 
                 <!-- Kontaktdaten für Serienbriefe werden vorerst ausgeblendet -->
                 <!--<div dv-show-element-->
-                     <!--dv-show-allowed-roles="['SUPER_ADMIN','ADMIN_BG','ADMIN_TS','ADMIN_GEMEINDE']">-->
-                    <!--<dv-accordion-tab tabid="massenversand">-->
-                        <!--<tab-title>-->
-                            <!--<span class="uppercase" data-translate="MASSENVERSAND"></span>-->
-                            <!--<dv-tooltip input-id="massenversand_info"-->
-                                        <!--ng-click="$event.stopPropagation()"-->
-                                        <!--text="'STATISTIK_SERIENBRIEFE_HINT' | translate">-->
-                            <!--</dv-tooltip>-->
-                        <!--</tab-title>-->
-                        <!--<tab-body>-->
-                            <!--<form name="massenversand"-->
-                                  <!--ng-submit="vm.generateStatistik(massenversand, 'MASSENVERSAND')"-->
-                                  <!--novalidate>-->
+                <!--dv-show-allowed-roles="['SUPER_ADMIN','ADMIN_BG','ADMIN_TS','ADMIN_GEMEINDE']">-->
+                <!--<dv-accordion-tab tabid="massenversand">-->
+                <!--<tab-title>-->
+                <!--<span class="uppercase" data-translate="MASSENVERSAND"></span>-->
+                <!--<dv-tooltip input-id="massenversand_info"-->
+                <!--ng-click="$event.stopPropagation()"-->
+                <!--text="'STATISTIK_SERIENBRIEFE_HINT' | translate">-->
+                <!--</dv-tooltip>-->
+                <!--</tab-title>-->
+                <!--<tab-body>-->
+                <!--<form name="massenversand"-->
+                <!--ng-submit="vm.generateStatistik(massenversand, 'MASSENVERSAND')"-->
+                <!--novalidate>-->
 
-                                <!--&lt;!&ndash; Datum von/bis, Gesuchsperiode &ndash;&gt;-->
-                                <!--<div class="row">-->
-                                    <!--<div class="col-xs-3">-->
-                                        <!--<dv-input-container class="form-group">-->
-                                            <!--<label class="md-no-float" for="von_massenversand" data-translate="VON"></label>-->
-                                            <!--<dv-datepicker name="von_massenversand"-->
-                                                           <!--ng-model="vm.statistikParameter.von"-->
-                                                           <!--class="input-element"-->
-                                                           <!--no-future dv-min-date="vm.minDate" dv-max-date="vm.maxDate">-->
-                                            <!--</dv-datepicker>-->
-                                            <!--<dv-error-messages for="massenversand.von_massenversand.$error"-->
-                                                               <!--class="error"></dv-error-messages>-->
-                                        <!--</dv-input-container>-->
-                                    <!--</div>-->
-                                    <!--<div class="col-xs-3">-->
-                                        <!--<dv-input-container class="form-group">-->
-                                            <!--<label class="md-no-float" for="bis_massenversand" data-translate="BIS"></label>-->
-                                            <!--<dv-datepicker name="bis_massenversand" id="bis_massenversand"-->
-                                                           <!--ng-model="vm.statistikParameter.bis" ng-required="true"-->
-                                                           <!--class="input-element"-->
-                                                           <!--no-future dv-min-date="vm.minDate" dv-max-date="vm.maxDate">-->
-                                            <!--</dv-datepicker>-->
-                                            <!--<dv-error-messages for="massenversand.bis_massenversand.$error"-->
-                                                               <!--class="error"></dv-error-messages>-->
-                                        <!--</dv-input-container>-->
-                                    <!--</div>-->
-                                    <!--<div class="col-xs-3">-->
-                                        <!--<div class="form-group">-->
-                                            <!--<label class="md-no-float required" for="periode_massenversand"-->
-                                                   <!--data-translate="GESUCHSPERIODEN"></label>-->
-                                            <!--<div class="dv-select-style">-->
-                                                <!--<select name="periode_massenversand" id="periode_massenversand"-->
-                                                        <!--ng-model="vm.statistikParameter.gesuchsperiode"-->
-                                                        <!--ng-required="true"-->
-                                                        <!--ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"-->
-                                                        <!--class="form-control">-->
-                                                <!--</select>-->
-                                                <!--<dv-error-messages for="massenversand.periode_massenversand.$error"-->
-                                                                   <!--class="error"></dv-error-messages>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <!--<div class="col-xs-3 statistik-button">-->
-                                        <!--<dv-loading-button type="submit">-->
-                                            <!--<span class="uppercase" data-translate="GENERIEREN"></span>-->
-                                        <!--</dv-loading-button>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-								<!--&lt;!&ndash; Selektionskriterien &ndash;&gt;-->
-                                <!--<div class="row">-->
-                                    <!--<div class="col-xs-3">-->
-                                        <!--<dv-input-container class="form-group">-->
-                                            <!--<label class="md-no-float" data-translate="MASSENVERSAND_GESUCHE"></label>-->
-                                            <!--<md-checkbox name="bgGesuche"-->
-                                                         <!--ng-model="vm.statistikParameter.bgGesuche"-->
-                                                         <!--ng-change="vm.gesuchTypeClicked()"-->
-                                                         <!--aria-label="MASSENVERSAND_BG_GESUCHE"-->
-                                                         <!--class="input-element">-->
-                                                <!--<span data-translate="MASSENVERSAND_BG_GESUCHE"></span>-->
-                                            <!--</md-checkbox>-->
-                                            <!--<md-checkbox name="bgGesuche"-->
-                                                         <!--ng-model="vm.statistikParameter.mischGesuche"-->
-                                                         <!--ng-change="vm.gesuchTypeClicked()"-->
-                                                         <!--aria-label="MASSENVERSAND_MISCH_GESUCHE"-->
-                                                         <!--class="input-element">-->
-                                                <!--<span data-translate="MASSENVERSAND_MISCH_GESUCHE"></span>-->
-                                            <!--</md-checkbox>-->
-                                            <!--<md-checkbox name="bgGesuche"-->
-                                                         <!--ng-model="vm.statistikParameter.tsGesuche"-->
-                                                         <!--ng-change="vm.gesuchTypeClicked()"-->
-                                                         <!--aria-label="MASSENVERSAND_TS_GESUCHE"-->
-                                                         <!--class="input-element">-->
-                                                <!--<span data-translate="MASSENVERSAND_TS_GESUCHE"></span>-->
-                                            <!--</md-checkbox>-->
-                                        <!--</dv-input-container>-->
-                                        <!--<div class="dv-error-messages">-->
-                                            <!--<span data-translate="MASSENVERSAND_ERROR_NICHTS_AUSGEWAEHLT"-->
-                                                  <!--ng-show="vm.flagShowErrorNoGesuchSelected"></span>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <!--<div class="col-xs-3">-->
-                                        <!--<dv-input-container class="form-group">-->
-                                            <!--<label class="md-no-float" for="ohneFolgegesuche" data-translate="MASSENVERSAND_WEITERE_ANGABEN"></label>-->
-                                            <!--<md-checkbox id="ohneFolgegesuche" name="ohneFolgegesuche"-->
-                                                         <!--ng-model="vm.statistikParameter.ohneFolgegesuche"-->
-                                                         <!--aria-label="MASSENVERSAND_OHNE_FOLGEGESUCHE" class="input-element">-->
-                                                <!--<span data-translate="MASSENVERSAND_OHNE_FOLGEGESUCHE"></span>-->
-                                            <!--</md-checkbox>-->
-                                        <!--</dv-input-container>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-								<!--&lt;!&ndash; Text zum Speichern &ndash;&gt;-->
-                                <!--<div class="row">-->
-                                    <!--<div class="col-xs-9">-->
-                                        <!--<dv-input-container class="form-group">-->
-                                            <!--<label class="md-no-float" for="text_massenversand" data-translate="MASSENVERSAND_TEXT"></label>-->
-                                            <!--<input aria-describedby="text_massenversand-error"-->
-                                                   <!--id="text_massenversand" type="text" name="text_massenversand"-->
-                                                   <!--ng-model="vm.statistikParameter.text"-->
-                                                   <!--dv-max-length class="form-control">-->
-                                            <!--<dv-error-messages for="massenversand.text_massenversand.$error"-->
-                                                               <!--class="error"></dv-error-messages>-->
-                                        <!--</dv-input-container>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</form>-->
-                        <!--</tab-body>-->
-                    <!--</dv-accordion-tab>-->
+                <!--&lt;!&ndash; Datum von/bis, Gesuchsperiode &ndash;&gt;-->
+                <!--<div class="row">-->
+                <!--<div class="col-xs-3">-->
+                <!--<dv-input-container class="form-group">-->
+                <!--<label class="md-no-float" for="von_massenversand" data-translate="VON"></label>-->
+                <!--<dv-datepicker name="von_massenversand"-->
+                <!--ng-model="vm.statistikParameter.von"-->
+                <!--class="input-element"-->
+                <!--no-future dv-min-date="vm.minDate" dv-max-date="vm.maxDate">-->
+                <!--</dv-datepicker>-->
+                <!--<dv-error-messages for="massenversand.von_massenversand.$error"-->
+                <!--class="error"></dv-error-messages>-->
+                <!--</dv-input-container>-->
+                <!--</div>-->
+                <!--<div class="col-xs-3">-->
+                <!--<dv-input-container class="form-group">-->
+                <!--<label class="md-no-float" for="bis_massenversand" data-translate="BIS"></label>-->
+                <!--<dv-datepicker name="bis_massenversand" id="bis_massenversand"-->
+                <!--ng-model="vm.statistikParameter.bis" ng-required="true"-->
+                <!--class="input-element"-->
+                <!--no-future dv-min-date="vm.minDate" dv-max-date="vm.maxDate">-->
+                <!--</dv-datepicker>-->
+                <!--<dv-error-messages for="massenversand.bis_massenversand.$error"-->
+                <!--class="error"></dv-error-messages>-->
+                <!--</dv-input-container>-->
+                <!--</div>-->
+                <!--<div class="col-xs-3">-->
+                <!--<div class="form-group">-->
+                <!--<label class="md-no-float required" for="periode_massenversand"-->
+                <!--data-translate="GESUCHSPERIODEN"></label>-->
+                <!--<div class="dv-select-style">-->
+                <!--<select name="periode_massenversand" id="periode_massenversand"-->
+                <!--ng-model="vm.statistikParameter.gesuchsperiode"-->
+                <!--ng-required="true"-->
+                <!--ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"-->
+                <!--class="form-control">-->
+                <!--</select>-->
+                <!--<dv-error-messages for="massenversand.periode_massenversand.$error"-->
+                <!--class="error"></dv-error-messages>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-xs-3 statistik-button">-->
+                <!--<dv-loading-button type="submit">-->
+                <!--<span class="uppercase" data-translate="GENERIEREN"></span>-->
+                <!--</dv-loading-button>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--&lt;!&ndash; Selektionskriterien &ndash;&gt;-->
+                <!--<div class="row">-->
+                <!--<div class="col-xs-3">-->
+                <!--<dv-input-container class="form-group">-->
+                <!--<label class="md-no-float" data-translate="MASSENVERSAND_GESUCHE"></label>-->
+                <!--<md-checkbox name="bgGesuche"-->
+                <!--ng-model="vm.statistikParameter.bgGesuche"-->
+                <!--ng-change="vm.gesuchTypeClicked()"-->
+                <!--aria-label="MASSENVERSAND_BG_GESUCHE"-->
+                <!--class="input-element">-->
+                <!--<span data-translate="MASSENVERSAND_BG_GESUCHE"></span>-->
+                <!--</md-checkbox>-->
+                <!--<md-checkbox name="bgGesuche"-->
+                <!--ng-model="vm.statistikParameter.mischGesuche"-->
+                <!--ng-change="vm.gesuchTypeClicked()"-->
+                <!--aria-label="MASSENVERSAND_MISCH_GESUCHE"-->
+                <!--class="input-element">-->
+                <!--<span data-translate="MASSENVERSAND_MISCH_GESUCHE"></span>-->
+                <!--</md-checkbox>-->
+                <!--<md-checkbox name="bgGesuche"-->
+                <!--ng-model="vm.statistikParameter.tsGesuche"-->
+                <!--ng-change="vm.gesuchTypeClicked()"-->
+                <!--aria-label="MASSENVERSAND_TS_GESUCHE"-->
+                <!--class="input-element">-->
+                <!--<span data-translate="MASSENVERSAND_TS_GESUCHE"></span>-->
+                <!--</md-checkbox>-->
+                <!--</dv-input-container>-->
+                <!--<div class="dv-error-messages">-->
+                <!--<span data-translate="MASSENVERSAND_ERROR_NICHTS_AUSGEWAEHLT"-->
+                <!--ng-show="vm.flagShowErrorNoGesuchSelected"></span>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-xs-3">-->
+                <!--<dv-input-container class="form-group">-->
+                <!--<label class="md-no-float" for="ohneFolgegesuche" data-translate="MASSENVERSAND_WEITERE_ANGABEN"></label>-->
+                <!--<md-checkbox id="ohneFolgegesuche" name="ohneFolgegesuche"-->
+                <!--ng-model="vm.statistikParameter.ohneFolgegesuche"-->
+                <!--aria-label="MASSENVERSAND_OHNE_FOLGEGESUCHE" class="input-element">-->
+                <!--<span data-translate="MASSENVERSAND_OHNE_FOLGEGESUCHE"></span>-->
+                <!--</md-checkbox>-->
+                <!--</dv-input-container>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--&lt;!&ndash; Text zum Speichern &ndash;&gt;-->
+                <!--<div class="row">-->
+                <!--<div class="col-xs-9">-->
+                <!--<dv-input-container class="form-group">-->
+                <!--<label class="md-no-float" for="text_massenversand" data-translate="MASSENVERSAND_TEXT"></label>-->
+                <!--<input aria-describedby="text_massenversand-error"-->
+                <!--id="text_massenversand" type="text" name="text_massenversand"-->
+                <!--ng-model="vm.statistikParameter.text"-->
+                <!--dv-max-length class="form-control">-->
+                <!--<dv-error-messages for="massenversand.text_massenversand.$error"-->
+                <!--class="error"></dv-error-messages>-->
+                <!--</dv-input-container>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</form>-->
+                <!--</tab-body>-->
+                <!--</dv-accordion-tab>-->
                 <!--</div>-->
 
                 <div dv-show-element
@@ -675,7 +675,9 @@
                                     </div>
                                     <div class="col-xs-3 ">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="betragProKind" data-translate="VERRECHNUNG_KIBON_BETRAG_PRO_KIND"></label>
+                                            <label class="md-no-float"
+                                                   for="betragProKind"
+                                                   data-translate="VERRECHNUNG_KIBON_BETRAG_PRO_KIND"></label>
                                             <input aria-describedby="betragProKind-error"
                                                    id="betragProKind" type="text" name="betragProKind"
                                                    ng-required="true"
@@ -761,7 +763,8 @@
                                                 <label class="md-no-float" for="tagesschuleAnmeldungenSelect"
                                                        data-translate="TAGESSCHULE"></label>
                                                 <div class="dv-select-style">
-                                                    <select name="tagesschuleAnmeldungenSelect" id="tagesschuleAnmeldungenSelect"
+                                                    <select name="tagesschuleAnmeldungenSelect"
+                                                            id="tagesschuleAnmeldungenSelect"
                                                             ng-model="vm.statistikParameter.tagesschuleAnmeldungen"
                                                             class="form-control"
                                                             required>
@@ -778,7 +781,8 @@
                                                 <label class="md-no-float" for="tagesschuleAnmeldungenGesuchsperiode"
                                                        data-translate="GESUCHSPERIODEN"></label>
                                                 <div class="dv-select-style">
-                                                    <select name="tagesschuleAnmeldungenGesuchsperiode" id="tagesschuleAnmeldungenGesuchsperiode"
+                                                    <select name="tagesschuleAnmeldungenGesuchsperiode"
+                                                            id="tagesschuleAnmeldungenGesuchsperiode"
                                                             ng-model="vm.statistikParameter.gesuchsperiode"
                                                             class="form-control"
                                                             required>
@@ -871,50 +875,60 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
-                <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'SUPER_ADMIN',
+                <div ng-if="vm.showMahlzeitenverguenstigungStatistik()">
+                    <div dv-show-element
+                         dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'SUPER_ADMIN',
                      'ADMIN_TS', 'SACHBEARBEITER_TS']">
-                    <dv-accordion-tab tabid="mahlzeitenverguenstigung">
-                        <tab-title>
-                            <span class="uppercase" data-translate="MAHLZEITENVERGUENSTIGUNG"></span>
-                        </tab-title>
-                        <tab-body>
-                            <form name="mahlzeitenverguenstigung"
-                                  ng-submit="vm.generateStatistik(mahlzeitenverguenstigung, vm.TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG)"
-                                  novalidate>
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="von_mahlzeitenverguenstigung" data-translate="VON"></label>
-                                            <dv-datepicker name="von_mahlzeitenverguenstigung" id="von_mahlzeitenverguenstigung"
-                                                           ng-model="vm.statistikParameter.von" ng-required="true"
-                                                           class="input-element">
-                                            </dv-datepicker>
-                                            <dv-error-messages for="mahlzeitenverguenstigung.von_mahlzeitenverguenstigung.$error"
-                                                               class="error"></dv-error-messages>
-                                        </dv-input-container>
+                        <dv-accordion-tab tabid="mahlzeitenverguenstigung">
+                            <tab-title>
+                                <span class="uppercase" data-translate="MAHLZEITENVERGUENSTIGUNG"></span>
+                            </tab-title>
+                            <tab-body>
+                                <form name="mahlzeitenverguenstigung"
+                                      ng-submit="vm.generateStatistik(mahlzeitenverguenstigung, vm.TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG)"
+                                      novalidate>
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="von_mahlzeitenverguenstigung"
+                                                       data-translate="VON"></label>
+                                                <dv-datepicker name="von_mahlzeitenverguenstigung"
+                                                               id="von_mahlzeitenverguenstigung"
+                                                               ng-model="vm.statistikParameter.von"
+                                                               ng-required="true"
+                                                               class="input-element">
+                                                </dv-datepicker>
+                                                <dv-error-messages for="mahlzeitenverguenstigung.von_mahlzeitenverguenstigung.$error"
+                                                                   class="error"></dv-error-messages>
+                                            </dv-input-container>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="bis_mahlzeitenverguenstigung"
+                                                       data-translate="BIS"></label>
+                                                <dv-datepicker name="bis_mahlzeitenverguenstigung"
+                                                               id="bis_mahlzeitenverguenstigung"
+                                                               ng-model="vm.statistikParameter.bis"
+                                                               ng-required="true"
+                                                               class="input-element">
+                                                </dv-datepicker>
+                                                <dv-error-messages for="mahlzeitenverguenstigung.bis_mahlzeitenverguenstigung.$error"
+                                                                   class="error"></dv-error-messages>
+                                            </dv-input-container>
+                                        </div>
+                                        <div class="col-xs-3 statistik-button">
+                                            <dv-loading-button type="submit"
+                                                               style="margin-left:auto;margin-right:auto;width:13rem;">
+                                                <span class="uppercase" data-translate="GENERIEREN"></span>
+                                            </dv-loading-button>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-3">
-                                        <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="bis_mahlzeitenverguenstigung" data-translate="BIS"></label>
-                                            <dv-datepicker name="bis_mahlzeitenverguenstigung" id="bis_mahlzeitenverguenstigung"
-                                                           ng-model="vm.statistikParameter.bis" ng-required="true"
-                                                           class="input-element">
-                                            </dv-datepicker>
-                                            <dv-error-messages for="mahlzeitenverguenstigung.bis_mahlzeitenverguenstigung.$error"
-                                                               class="error"></dv-error-messages>
-                                        </dv-input-container>
-                                    </div>
-                                    <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button type="submit"
-                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" data-translate="GENERIEREN"></span>
-                                        </dv-loading-button>
-                                    </div>
-                                </div>
-                            </form>
-                        </tab-body>
-                    </dv-accordion-tab>
+                                </form>
+                            </tab-body>
+                        </dv-accordion-tab>
+                    </div>
                 </div>
             </dv-accordion>
         </div>

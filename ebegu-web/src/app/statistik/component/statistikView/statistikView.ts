@@ -15,7 +15,9 @@
 
 import {IComponentOptions, IController, IPromise} from 'angular';
 import * as moment from 'moment';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../../models/enums/TSStatistikParameterType';
 import {TSBatchJobInformation} from '../../../../models/TSBatchJobInformation';
@@ -67,6 +69,8 @@ export class StatistikViewController implements IController {
         '$translate',
         '$interval',
         'DvDialog',
+        'AuthServiceRS',
+        'GemeindeRS',
     ];
 
     public readonly TSStatistikParameterType = TSStatistikParameterType;
@@ -84,6 +88,7 @@ export class StatistikViewController implements IController {
     public allJobs: Array<TSBatchJobInformation>;
     public years: string[];
     public institutionStammdatenList: TSInstitutionStammdaten[];
+    private showMahlzeitenStatistik: boolean = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -96,6 +101,8 @@ export class StatistikViewController implements IController {
         private readonly $translate: ITranslateService,
         private readonly $interval: angular.IIntervalService,
         private readonly dvDialog: DvDialog,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -120,7 +127,7 @@ export class StatistikViewController implements IController {
             .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
                 this.institutionStammdatenList = StatistikViewController.sortInstitutions(institutionStammdatenList);
             });
-
+        this.updateShowMahlzeitenStatistik();
         this.refreshUserJobs();
         this.initBatchJobPolling();
     }
@@ -382,6 +389,26 @@ export class StatistikViewController implements IController {
             return d.gesuchsperiode;
         }).sort((a, b) => {
             return b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString);
+        });
+    }
+
+    public showMahlzeitenverguenstigungStatistik(): boolean {
+        return this.showMahlzeitenStatistik;
+    }
+
+    private updateShowMahlzeitenStatistik(): void {
+        this.showMahlzeitenStatistik = false;
+        // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+            return;
+        }
+        // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
+        this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
+            if (value.length > 0) {
+                // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
+                // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
+                this.showMahlzeitenStatistik = true;
+            }
         });
     }
 }

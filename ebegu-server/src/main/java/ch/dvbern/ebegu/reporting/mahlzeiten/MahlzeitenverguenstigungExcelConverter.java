@@ -25,7 +25,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.reporting.MergeFieldMahlzeitenverguenstigung;
-import ch.dvbern.ebegu.enums.reporting.MergeFieldMassenversand;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -64,7 +63,7 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 		@Nonnull Locale locale
 	) {
 		data.forEach(dataRow -> {
-			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldMassenversand.repeatRow);
+			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldMahlzeitenverguenstigung.repeatRow);
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.bgNummer, dataRow.getBgNummer());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(
