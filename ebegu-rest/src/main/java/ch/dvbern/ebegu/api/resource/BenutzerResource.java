@@ -481,4 +481,18 @@ public class BenutzerResource {
 		superAdminService.removeFallAndBenutzer(username, eingeloggterBenutzer);
 		return Response.ok().build();
 	}
+
+	@ApiOperation(value = "Setzt die externalUUID des Benutzers mit der uebergebenen id zurueck.", response = Response.class)
+	@PUT
+	@Path("/reset/{username}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed(SUPER_ADMIN)
+	public Response deleteExternalUuidForBenutzer(
+		@Nonnull @NotNull @PathParam("username") String username
+	) {
+		Benutzer benutzer = benutzerService.findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("deleteExternalUuidForBenutzer",	ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		benutzerService.deleteExternalUUIDInNewTransaction(benutzer.getId());
+		return Response.ok().build();
+	}
 }

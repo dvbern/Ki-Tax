@@ -175,4 +175,8 @@ export class BenutzerRS implements IEntityRS {
                 return response.data;
             });
     }
+
+    public deleteExternalUuidForBenutzer(user: TSBenutzer): IHttpPromise<any> {
+        return this.$http.put(`${this.serviceURL}/reset/${user.username}`, {});
+    }
 }
