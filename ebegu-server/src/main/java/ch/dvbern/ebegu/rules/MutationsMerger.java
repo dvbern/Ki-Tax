@@ -114,7 +114,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
-				if (resultGemeindeVorangehenderAbschnitt != null) {
+				if (vorangehenderAbschnitt.isHasGemeindeSpezifischeBerechnung() && resultGemeindeVorangehenderAbschnitt != null) {
 					if (finSitAbgelehnt) {
 						// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
 						handleAbgelehnteFinsit(inputGemeinde, resultGemeindeVorangehenderAbschnitt, timestampVerfuegtVorgaenger);

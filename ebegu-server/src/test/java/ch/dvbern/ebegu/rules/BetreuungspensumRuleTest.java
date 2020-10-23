@@ -154,7 +154,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
 		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
-		Assert.assertEquals(0, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 	}
 
 	@Test

@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -285,6 +286,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Nonnull
 	public BigDecimal getBgPensum() {
 		return getRelevantBgCalculationResult().getBgPensumProzent();
+	}
+
+	@Nullable
+	public BigDecimal getAnspruchspensumRest() {
+		return getRelevantBgCalculationResult().getAnspruchspensumRest();
 	}
 
 	@Nonnull
@@ -753,6 +759,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public static void initBGCalculationResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
 		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
+		if (input.getAnspruchspensumRest() > -1) {
+			result.setAnspruchspensumRest(MathUtil.DEFAULT.from(input.getAnspruchspensumRest()));
+		}
 		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
 		result.setMassgebendesEinkommenVorAbzugFamgr(input.getMassgebendesEinkommenVorAbzugFamgr());
 		result.setBesondereBeduerfnisseBestaetigt(input.isBesondereBeduerfnisseBestaetigt());
