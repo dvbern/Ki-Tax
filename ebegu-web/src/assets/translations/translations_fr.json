@@ -1436,6 +1436,7 @@
     "ReportType_tagesschuleAnmeldungen": "Inscriptions aux écoles à journée continue",
     "ReportType_tagesschuleRechnungsstellung": "Facturation pour les écoles à jounrée continue",
     "ReportType_notrecht": "Droit d'urgence",
+    "ReportType_mahlzeitenverguenstigung": "Réduction de repas",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
     "BatchJobStatus_FINISHED": "Prêt à télécharger",
@@ -2156,5 +2157,6 @@
     "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "Activer le calcul OPIS pour la ville de Berne",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Attention: cette fonction va déclencher une mutation de masse pour toutes les demandes de la ville de Berne. Vous ne pourrez plus revenir en arrière. Voulez-vous continuer?",
     "ONBOARDING_ZULASSUNG_KANTON": "Admission garderie / organisation de parent de jour",
+    "MAHLZEITENVERGUENSTIGUNG": "Réduction des repas",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
