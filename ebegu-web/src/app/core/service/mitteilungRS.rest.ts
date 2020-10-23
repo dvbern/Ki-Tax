@@ -16,18 +16,13 @@
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
-import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
-import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
-import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../constants/CONSTANTS';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class MitteilungRS {
@@ -107,8 +102,8 @@ export class MitteilungRS {
         });
     }
 
-    public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung, withMahlzeitenverguenstigung: boolean): IPromise<TSBetreuungsmitteilung> {
-        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, false, withMahlzeitenverguenstigung);
+    public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung);
         const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         return this.$http.put(`${this.serviceURL}/sendbetreuungsmitteilung`, restMitteilung).then((response: any) => {
             this.$log.debug('PARSING Betreuungsmitteilung REST object ', response.data);
@@ -144,173 +139,13 @@ export class MitteilungRS {
         });
     }
 
-    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung, fromAbweichung: boolean,
-                                       withMahlzeitenverguenstigung: boolean): TSBetreuungsmitteilung {
+    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): TSBetreuungsmitteilung {
         const mutationsmeldung = new TSBetreuungsmitteilung();
-        mutationsmeldung.dossier = dossier;
         mutationsmeldung.betreuung = betreuung;
-        mutationsmeldung.senderTyp = TSMitteilungTeilnehmerTyp.INSTITUTION;
-        mutationsmeldung.empfaengerTyp = TSMitteilungTeilnehmerTyp.JUGENDAMT;
-        mutationsmeldung.sender = this.authServiceRS.getPrincipal();
-        mutationsmeldung.empfaenger = dossier.fall.besitzer ? dossier.fall.besitzer : undefined;
-        mutationsmeldung.subject = this.$translate.instant('MUTATIONSMELDUNG_BETREFF');
-        mutationsmeldung.message = fromAbweichung
-            ? this.createNachrichtForMutationsmeldungFromAbweichung(betreuung, withMahlzeitenverguenstigung)
-            : this.createNachrichtForMutationsmeldung(betreuung, withMahlzeitenverguenstigung);
-        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.NEU;
         mutationsmeldung.betreuungspensen = this.extractPensenFromBetreuung(betreuung);
+        mutationsmeldung.dossier = dossier;
+        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.NEU;
         return mutationsmeldung;
-    }
-
-    /**
-     * Erzeugt eine Nachricht mit einem Text mit allen Betreuungspensen der Betreuung.
-     */
-    // tslint:disable-next-line:cognitive-complexity
-    private createNachrichtForMutationsmeldung(betreuung: TSBetreuung, withMahlzeitenverguenstigung: boolean): string {
-        let message = '';
-        let i = 1;
-        // to avoid changing something
-        const betreuungspensumContainers = angular.copy(betreuung.betreuungspensumContainers);
-        betreuungspensumContainers.sort((a, b) =>
-            DateUtil.compareDateTime(
-                a.betreuungspensumJA.gueltigkeit.gueltigAb,
-                b.betreuungspensumJA.gueltigkeit.gueltigAb,
-            ),
-        );
-
-        betreuungspensumContainers.forEach(betpenContainer => {
-            const pensumJA = betpenContainer.betreuungspensumJA;
-            if (pensumJA) {
-                // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
-                if (i > 1) {
-                    message += '\n';
-                }
-                const defaultDateFormat = 'DD.MM.YYYY';
-                const datumAb = DateUtil.momentToLocalDateFormat(pensumJA.gueltigkeit.gueltigAb, defaultDateFormat);
-                let datumBis = DateUtil.momentToLocalDateFormat(pensumJA.gueltigkeit.gueltigBis, defaultDateFormat);
-                // by default Ende der Periode
-                const maxDate = betreuung.gesuchsperiode.gueltigkeit.gueltigBis;
-                datumBis = datumBis ?
-                    datumBis :
-                    DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
-
-                if (withMahlzeitenverguenstigung) {
-                    const hauptmahlzeiten = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.monatlicheHauptmahlzeiten)
-                        ? betpenContainer.betreuungspensumJA.monatlicheHauptmahlzeiten
-                        : 0;
-
-                    const nebenmahlzeiten = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten)
-                        ? betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten
-                        : 0;
-
-                    const tarifHaupt = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.tarifProHauptmahlzeit)
-                        ? betpenContainer.betreuungspensumJA.tarifProHauptmahlzeit
-                        : 0;
-
-                    const tarifNeben = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.tarifProNebenmahlzeit)
-                        ? betpenContainer.betreuungspensumJA.tarifProNebenmahlzeit
-                        : 0;
-
-                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG_MIT_TARIF', {
-                        num: i,
-                        von: datumAb,
-                        bis: datumBis,
-                        pensum: pensumJA.pensum,
-                        kosten: pensumJA.monatlicheBetreuungskosten,
-                        hauptmahlzeiten,
-                        nebenmahlzeiten,
-                        tarifHaupt,
-                        tarifNeben
-                    });
-                } else {
-                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                        num: i,
-                        von: datumAb,
-                        bis: datumBis,
-                        pensum: pensumJA.pensum,
-                        kosten: pensumJA.monatlicheBetreuungskosten
-                    });
-                }
-
-            }
-            i++;
-        });
-        return message;
-    }
-
-    /**
-     * Erzeugt eine Nachricht mit einem Text mit allen Betreuungspensen inkl. BetreuungspensumAbweichungen der
-     * Betreuung.
-     */
-    // tslint:disable-next-line:cognitive-complexity
-    private createNachrichtForMutationsmeldungFromAbweichung(betreuung: TSBetreuung, withMahlzeitenverguenstigung: boolean): string {
-        let message = '';
-        let i = 1;
-
-        const abweichungen = betreuung.betreuungspensumAbweichungen.filter(a => {
-            return !a.isNew() || (a.vertraglichesPensum && a.vertraglicheKosten);
-        });
-
-        abweichungen.forEach(betreuungspensum => {
-            if (betreuungspensum) {
-                // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
-                if (i > 1) {
-                    message += '\n';
-                }
-                const multiplier = betreuungspensum.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
-
-                const pensumPercentage = betreuungspensum.pensum
-                    ? Number((betreuungspensum.pensum / multiplier).toFixed(2))
-                    : undefined;
-                const originalPensumPercentage = betreuungspensum.vertraglichesPensum
-                    ? Number((betreuungspensum.vertraglichesPensum / multiplier).toFixed(2))
-                    : undefined;
-                const defaultDateFormat = 'DD.MM.YYYY';
-                const datumAb = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigAb, defaultDateFormat);
-                let datumBis = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigBis, defaultDateFormat);
-                // by default Ende der Periode
-                const maxDate = betreuung.gesuchsperiode.gueltigkeit.gueltigBis;
-                datumBis = datumBis ?
-                    datumBis :
-                    DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
-
-                const pensum = pensumPercentage
-                    ? pensumPercentage
-                    : originalPensumPercentage;
-                const kosten = betreuungspensum.monatlicheBetreuungskosten
-                    ? betreuungspensum.monatlicheBetreuungskosten
-                    : betreuungspensum.vertraglicheKosten;
-
-                if (withMahlzeitenverguenstigung) {
-                    const hauptmahlzeiten =  EbeguUtil.isNotNullAndPositive(betreuungspensum.monatlicheHauptmahlzeiten)
-                        ? betreuungspensum.monatlicheHauptmahlzeiten
-                        : betreuungspensum.vertraglicheHauptmahlzeiten;
-                    const nebenmahlzeiten = EbeguUtil.isNotNullAndPositive(betreuungspensum.monatlicheNebenmahlzeiten)
-                        ? betreuungspensum.monatlicheNebenmahlzeiten
-                        : betreuungspensum.vertraglicheNebenmahlzeiten;
-
-                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG', {
-                        num: i,
-                        von: datumAb,
-                        bis: datumBis,
-                        pensum,
-                        kosten,
-                        hauptmahlzeiten,
-                        nebenmahlzeiten
-                    });
-                } else {
-                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                        num: i,
-                        von: datumAb,
-                        bis: datumBis,
-                        pensum,
-                        kosten
-                    });
-                }
-            }
-            i++;
-        });
-        return message;
     }
 
     /**
@@ -327,8 +162,8 @@ export class MitteilungRS {
         return pensen;
     }
 
-    public abweichungenFreigeben(betreuung: TSBetreuung, dossier: TSDossier, withMahlzeitenverguenstigung: boolean): IPromise<any> {
-        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, true, withMahlzeitenverguenstigung);
+    public abweichungenFreigeben(betreuung: TSBetreuung, dossier: TSDossier): IPromise<any> {
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung);
         const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         const url = `${this.serviceURL}/betreuung/abweichungenfreigeben/${encodeURIComponent(betreuung.id)}`;
         return this.$http.put(url, restMitteilung)

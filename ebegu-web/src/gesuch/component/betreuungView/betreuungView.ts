@@ -1009,8 +1009,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public mutationsmeldungSenden(): void {
         this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-            this.mutationsmeldungModel,
-            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
+            this.mutationsmeldungModel).then(() => {
 
             this.form.$setUntouched();
             this.form.$setPristine();
