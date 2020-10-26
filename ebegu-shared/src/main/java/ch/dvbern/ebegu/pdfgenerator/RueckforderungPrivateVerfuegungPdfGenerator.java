@@ -40,7 +40,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.lang3.StringUtils;
 
-public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
+public class RueckforderungPrivateVerfuegungPdfGenerator extends MandantPdfGenerator {
 
 	private static final String VERFUEGUNG_TITLE =
 		"PdfGeneration_VerfuegungNotrecht_Title";
@@ -121,7 +121,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	private BigDecimal entschaedigungStufe1; // C
 	private BigDecimal relevanterBetrag; // D
 
-	public RueckforderungVerfuegungPdfGenerator(
+	public RueckforderungPrivateVerfuegungPdfGenerator(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
 		@Nonnull String nameVerantwortlichePerson
 	) {
@@ -182,7 +182,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		};
 	}
 
-	public void createContent(
+	private void createContent(
 		@Nonnull final Document document,
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
 

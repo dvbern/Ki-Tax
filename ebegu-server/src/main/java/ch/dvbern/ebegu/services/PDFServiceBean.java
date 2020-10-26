@@ -56,7 +56,7 @@ import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivatDefinitivVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.RueckforderungVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
@@ -302,7 +302,7 @@ public class PDFServiceBean implements PDFService {
 			pdfGenerator = new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
 				rueckforderungFormular, nameVerantwortlichePerson);
 		} else {
-			pdfGenerator = new RueckforderungVerfuegungPdfGenerator(
+			pdfGenerator = new RueckforderungPrivateVerfuegungPdfGenerator(
 				rueckforderungFormular, nameVerantwortlichePerson);
 		}
 		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
