@@ -18,10 +18,12 @@
 package ch.dvbern.ebegu.reporting;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
@@ -33,4 +35,10 @@ public interface ReportMahlzeitenService {
 		@Nonnull LocalDate datumBis,
 		@Nonnull Locale locale
 	) throws ExcelMergeException;
+
+	@Nonnull
+	List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis
+	);
 }

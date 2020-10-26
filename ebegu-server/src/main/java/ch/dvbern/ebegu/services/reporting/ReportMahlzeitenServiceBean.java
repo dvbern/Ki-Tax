@@ -151,7 +151,8 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	}
 
 	@Nonnull
-	private List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
+	@Override
+	public List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis
 	) {
