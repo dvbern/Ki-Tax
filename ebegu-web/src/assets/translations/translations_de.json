@@ -1878,7 +1878,6 @@
     "MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen (CHF)",
     "MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MIN": "Massgebendes Einkommen in CHF (Min)",
     "MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MAX": "Massgebendes Einkommen in CHF (Max)",
-    "VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT": "Vergünstigung pro Hauptmahlzeit (CHF)",
     "VERGUENSTIGUNG_PRO_MAHLZEIT": "Vergünstigung pro Mahlzeit pro Tag (CHF)",
     "MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE": "Zusätzliche Mahlzeitenvergünstigung anbieten",
     "MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER": "Mahlzeitenvergünstigung wird auch an Sozialhilfebeziehende ausbezahlt",
@@ -2165,5 +2164,9 @@
     "GEMEINDE_ANTRAGSTELLER": "Zahlungen Mahlzeitenvergünstigung",
     "BUTTON_GEMEINDE_INSTITUTION": "Zahlungslauf erstellen",
     "BUTTON_GEMEINDE_ANTRAGSTELLER": "Mahlzeitenvergünstigung erstellen",
+    "BENUTZER_RESET": "Benutzer zurücksetzen",
+    "BENUTZER_RESET_CONFIRMATION_TITLE": "Wollen Sie den Benutzer wirklich zurücksetzen?",
+    "BENUTZER_RESET_CONFIRMATION_TEXT": "Damit wird die Verbindung zum aktuellen BE-Login Konto gelöscht",
+    "BENUTZER_RESETTED_MESSAGE": "{{fullName}} wurde zurückgesetzt",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
