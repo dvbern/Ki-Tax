@@ -88,9 +88,9 @@ public class PlatzbestaetigungEventHandlerTest {
 		Assert.assertEquals(0, betreuungsmitteilungPensum.getPensum()
 			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
 		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten()));
+			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
 		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()));
+			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
 		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProHauptmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
 		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
@@ -114,9 +114,9 @@ public class PlatzbestaetigungEventHandlerTest {
 		Assert.assertEquals(0, betreuungsPensum.getPensum()
 			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
 		Assert.assertEquals(0, betreuungsPensum.getMonatlicheHauptmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten()));
+			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
 		Assert.assertEquals(0, betreuungsPensum.getMonatlicheNebenmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()));
+			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
 		Assert.assertEquals(0, betreuungsPensum.getTarifProHauptmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
 		Assert.assertEquals(0, betreuungsPensum.getTarifProNebenmahlzeit()
@@ -152,8 +152,8 @@ public class PlatzbestaetigungEventHandlerTest {
 		ZeitabschnittDTO zeitabschnittDTO = ZeitabschnittDTO.newBuilder()
 			.setBetreuungskosten(new BigDecimal(2000.00).setScale(2))
 			.setBetreuungspensum(new BigDecimal(80))
-			.setAnzahlMonatlicheHauptmahlzeiten(BigDecimal.ZERO)
-			.setAnzahlMonatlicheNebenmahlzeiten(BigDecimal.ZERO)
+			.setAnzahlHauptmahlzeiten(BigDecimal.ZERO)
+			.setAnzahlNebenmahlzeiten(BigDecimal.ZERO)
 			.setPensumUnit(Zeiteinheit.PERCENTAGE)
 			.setVon(LocalDate.of(2017, 8, 01))
 			.setBis(LocalDate.of(2018, 1, 31))
