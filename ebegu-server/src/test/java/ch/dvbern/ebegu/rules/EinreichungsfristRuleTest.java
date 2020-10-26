@@ -88,7 +88,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Assert.assertEquals(0, abschnitt1.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnitt1.getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
-		Assert.assertEquals(0, nextRestanspruch.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(-1, nextRestanspruch.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertTrue(abschnitt1.isZuSpaetEingereicht());
 		Assert.assertFalse(abschnitt1.getBgCalculationInputAsiv().isBezahltVollkosten());
 
@@ -213,7 +213,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Assert.assertEquals(0, abschnitt0.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.ZERO, abschnitt0.getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
-		Assert.assertEquals(0, nextRestanspruch.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(-1, nextRestanspruch.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertTrue(abschnitt0.isZuSpaetEingereicht());
 		Assert.assertFalse(abschnitt0.getBgCalculationInputAsiv().isBezahltVollkosten());
 
@@ -314,7 +314,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Assert.assertEquals(0, abschnittVorKita.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.ZERO, abschnittVorKita.getBgPensum());
 		Assert.assertEquals(-1, abschnittVorKita.getBgCalculationInputAsiv().getAnspruchspensumRest());
-		Assert.assertEquals(0, nextRestanspruch.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(-1, nextRestanspruch.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertTrue(abschnittVorKita.isZuSpaetEingereicht());
 		Assert.assertFalse(abschnittVorKita.getBgCalculationInputAsiv().isBezahltVollkosten());
 
@@ -327,7 +327,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Assert.assertEquals(0, abschnittKitaZuSpaetEingereicht.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittKitaZuSpaetEingereicht.getBgPensum());
 		Assert.assertEquals(-1, abschnittKitaZuSpaetEingereicht.getBgCalculationInputAsiv().getAnspruchspensumRest());
-		Assert.assertEquals(0, nextRestanspruch.get(1).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(-1, nextRestanspruch.get(1).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		Assert.assertTrue(abschnittKitaZuSpaetEingereicht.isZuSpaetEingereicht());
 		Assert.assertFalse(abschnittKitaZuSpaetEingereicht.getBgCalculationInputAsiv().isBezahltVollkosten());
 

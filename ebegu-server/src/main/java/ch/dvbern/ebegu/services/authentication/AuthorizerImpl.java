@@ -346,6 +346,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkSuperadmin() {
+		if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
+			throw new EJBAccessException("Access Violation. Only accessible for SUPERADMIN");
+		}
+	}
+
+	@Override
 	public void checkWriteAuthorization(@Nullable Fall fall) {
 		if (fall != null) {
 			boolean allowed = isReadAuthorizedFall(fall);
@@ -492,7 +499,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case ADMIN_GEMEINDE:
 		case ADMIN_BG:
 		case ADMIN_TS: {
-			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.GEMEINDE) {
+			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.GEMEINDE
+			&& benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
 				throwViolation(benutzer);
 			}
 			return;
@@ -500,7 +508,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case ADMIN_TRAEGERSCHAFT:
 		case ADMIN_INSTITUTION: {
 			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.TRAEGERSCHAFT
-			|| benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
+				&& benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
 				throwViolation(benutzer);
 			}
 			return;

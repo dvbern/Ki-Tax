@@ -23,10 +23,13 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
 import ch.dvbern.ebegu.entities.ReceivedEvent_;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -35,9 +38,6 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Override
 	public boolean saveReceivedEvent(@Nonnull ReceivedEvent event) {
@@ -50,6 +50,11 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 	}
 
 	private Optional<ReceivedEvent> findByEventId(String eventId){
-		return criteriaQueryHelper.getEntityByUniqueAttribute(ReceivedEvent.class, eventId, ReceivedEvent_.eventId);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<ReceivedEvent> query = cb.createQuery(ReceivedEvent.class);
+		Root<ReceivedEvent> root = query.from(ReceivedEvent.class);
+		Predicate predicateEventId = cb.equal(root.get(ReceivedEvent_.eventId), eventId);
+		query.where(predicateEventId);
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 }

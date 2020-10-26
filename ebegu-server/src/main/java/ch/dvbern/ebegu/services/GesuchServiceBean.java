@@ -62,7 +62,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
@@ -74,6 +73,7 @@ import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -88,7 +88,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
@@ -111,7 +110,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -303,10 +301,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			return;
 		}
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
-		familiensituation.setIban(null);
-		familiensituation.setKontoinhaber(null);
+		familiensituation.setAuszahlungsdaten(null);
 		familiensituation.setAbweichendeZahlungsadresse(false);
-		familiensituation.setZahlungsadresse(null);
 	}
 
 	@Nonnull
@@ -530,33 +526,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return new ArrayList<>(criteriaQueryHelper.getAll(Gesuch.class));
 	}
 
-	@Nonnull
-	@Override
-	public Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername) {
-		Objects.requireNonNull(benutzername);
-		Benutzer benutzer = benutzerService.findBenutzer(benutzername)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getGesucheForBenutzerPendenzenBG",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				benutzername));
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-
-		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
-		Path<Dossier> dossierPath = root.get(Gesuch_.dossier);
-		Predicate predicateVerantwortlicher = cb.equal(dossierPath.get(Dossier_.verantwortlicherBG), benutzer);
-		// Gesuchsperiode darf nicht geschlossen sein
-		Predicate predicateGesuchsperiode = root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.status)
-			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
-
-		query.where(predicateStatus, predicateVerantwortlicher, predicateGesuchsperiode);
-		query.orderBy(cb.asc(dossierPath.get(Dossier_.fall).get(Fall_.fallNummer)));
-		return persistence.getCriteriaResults(query);
-	}
-
 	@Override
 	public void removeGesuch(@Nonnull String gesuchId, GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(gesuchId);
@@ -579,8 +548,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		fileSaverService.removeAllFromSubfolder(gesToRemove.getId());
 		antragStatusHistoryService.removeAllAntragStatusHistoryFromGesuch(gesToRemove);
 		zahlungService.deleteZahlungspositionenOfGesuch(gesToRemove);
+		// Wir loeschen hier alle Mitteilungn und Abweichungen.
+		// Im Fall einer Loeschung einer OnlineMutation sind die Mitteilungen und auch die Abweichungen
+		// zu diesem Zeitpunkt bereits auf das Vorgaenger Gesuch umgehaengt.
 		mitteilungService.removeAllBetreuungMitteilungenForGesuch(gesToRemove);
-
+		mitteilungService.removeAllBetreuungspensumAbweichungenForGesuch(gesToRemove);
 		resetMutierteAnmeldungen(gesToRemove);
 
 		// Jedes Loeschen eines Gesuchs muss protokolliert werden
@@ -609,6 +581,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
 				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
@@ -661,7 +634,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Fall
 		Predicate predicate = cb.equal(root.get(Gesuch_.dossier), dossier);
 		// Keine Papier-Antraege, die noch nicht verfuegt sind
-		Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER); // todo remove ???
+		Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER);
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
 		Predicate predicateUnverfuegtesPapiergesuch =
 			CriteriaQueryHelper.concatenateExpressions(cb, predicatePapier, predicateStatus);
@@ -747,9 +720,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
 			predicatesToUse.add(dossierPredicate);
 
-			// Alle AUSSER Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
+			// Alle AUSSER Superadmin, Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
 			// d.h. sie duerfen IN_BEARBEITUNG_GS und FREIGABEQUITTUNG NICHT sehen
 			if (!(principalBean.isCallerInAnyOfRole(
+				UserRole.SUPER_ADMIN,
 				UserRole.GESUCHSTELLER,
 				UserRole.ADMIN_TRAEGERSCHAFT,
 				UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
@@ -1355,10 +1329,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	public boolean isNeustesGesuch(@Nonnull Gesuch gesuch) {
-		final Optional<Gesuch> neustesGesuchFuerGesuch =
-			getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
-		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(
-			neustesGesuchFuerGesuch.get().getId(),
+		final Optional<String> idOfNeuestesGesuchOptional =
+			getIdOfNeuestesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier());
+		return idOfNeuestesGesuchOptional.isPresent() && Objects.equals(
+			idOfNeuestesGesuchOptional.get(),
 			gesuch.getId());
 	}
 
@@ -1366,10 +1340,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Dossier dossier) {
+		@Nonnull Dossier dossier
+	) {
 		// Da wir nur die ID zurueckgeben, koennen wir den AuthCheck weglassen
-		Optional<Gesuch> gesuchOptional = getNeustesGesuchForDossierAndGesuchsperiode(gesuchsperiode, dossier, false);
-		return gesuchOptional.map(AbstractEntity::getId);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+		Predicate predicateDossier = cb.equal(root.get(Gesuch_.dossier), dossier);
+
+		query.where(predicateGesuchsperiode, predicateDossier);
+		query.select(root.get(Gesuch_.id));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+
+		final List<String> criteriaResults = persistence.getCriteriaResults(query, 1);
+		if (criteriaResults.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(criteriaResults.get(0));
 	}
 
 	/**
@@ -1447,6 +1436,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@Nonnull
 	public Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Long fallnummer) {
 
@@ -1454,14 +1444,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		final Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier);
+		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 		Predicate predicateFallNummer = cb.equal(
 			root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer),
-			fallnummer); // TODO KIBON es sollte pro Dossier sein <- existiert schulamtInterface in Kibon? wie???
+			fallnummer);
 		// zuerst dies klaeren
 		Predicate predicateFinSit = root.get(Gesuch_.finSitStatus).isNotNull();
 
-		query.where(predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
+		query.where(predicateGemeinde, predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
 		query.select(root);
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
@@ -1699,7 +1691,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public void removeOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		logDeletingOfGesuchstellerAntrag(dossier, gesuchsperiode);
 		final Gesuch onlineMutation = findOnlineMutation(dossier, gesuchsperiode);
-		moveBetreuungmitteilungenToPreviousAntrag(onlineMutation);
+		moveBetreuungmitteilungenAndAbweichungenToPreviousAntrag(onlineMutation);
 		List<Betreuung> betreuungen = new ArrayList<>(onlineMutation.extractAllBetreuungen());
 		superAdminService.removeGesuch(onlineMutation.getId());
 
@@ -1720,11 +1712,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	/**
-	 * Takes all Betreuungsmitteilungen of the given Gesuch and links them to the previous corresponding Betreuung
+	 * Takes all Betreuungsmitteilungen and Abweichungen of the given Gesuch and links them to the previous corresponding Betreuung
 	 * (vorgaengerId),
 	 * so that the mitteilungen don't get lost.
 	 */
-	private void moveBetreuungmitteilungenToPreviousAntrag(@Nonnull Gesuch onlineMutation) {
+	private void moveBetreuungmitteilungenAndAbweichungenToPreviousAntrag(@Nonnull Gesuch onlineMutation) {
 		if (onlineMutation.hasVorgaenger()) {
 			for (Betreuung betreuung : onlineMutation.extractAllBetreuungen()) {
 				if (betreuung.hasVorgaenger()) {
@@ -1737,10 +1729,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 							betreuung.getVorgaengerId()));
 
+					// Diese Methode wird gebraucht, um eine OnlineMutation des GS zu loeschen. Fuer diese ist nie jemand
+					// regulaer berechtigt. Wir pruefen daher, ob wir fuer den Vorgaenger, auf die wir kopieren wollen,
+					// berechtigt sind.
+					authorizer.checkWriteAuthorization(vorgaengerBetreuung);
+
+					// Es muessen alle Mitteilungen umgehaengt werden
 					final Collection<Betreuungsmitteilung> mitteilungen =
 						mitteilungService.findAllBetreuungsmitteilungenForBetreuung(betreuung);
 					mitteilungen.forEach(mitteilung -> mitteilung.setBetreuung(vorgaengerBetreuung)); // should be
 					// saved automatically
+
+					// Es muessen alle Abweichungen umgehaengt werden
+					final Collection<BetreuungspensumAbweichung> abweichungen =
+						mitteilungService.findAllBetreuungspensumAbweichungenForBetreuung(betreuung);
+					abweichungen.forEach(abweichung -> abweichung.setBetreuung(vorgaengerBetreuung));
 				}
 			}
 		} else {
@@ -2374,6 +2377,34 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				"findGesucheByDossier",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 		return criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, dossier, Gesuch_.dossier);
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch) {
+		// Falls im "alten" Gesuch noch Tagesschule-Anmeldungen im status AUSGELOEST sind, müssen
+		// diese nun gespeichert (im gleichen Status, Verfügung erstellen) werden, damit künftig für
+		// die Berechnung die richtige FinSit verwendet wird!
+		zuMutierendeAnmeldungenAbschliessen(gesuch);
+
+		// Die Mutation erstellen
+		Gesuch mutation = gesuch.copyForMutation(new Gesuch(), Eingangsart.PAPIER);
+		mutation.setTyp(AntragTyp.MUTATION);
+		mutation.setEingangsdatum(LocalDate.now());
+		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
+		mutation.setEingangsart(Eingangsart.PAPIER);
+		mutation.setGesuchsperiode(gesuch.getGesuchsperiode());
+		mutation.setDossier(gesuch.getDossier());
+		Gesuch persistedGesuch = persistence.persist(mutation);
+		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
+		// Gesuch ohne WizardSteps gibt
+		wizardStepService.createWizardStepList(persistedGesuch);
+		antragStatusHistoryService.saveStatusChange(persistedGesuch, gesuch.getDossier().getVerantwortlicherBG());
+
+		// Die Betreuungen werden defaultmaessig mit BESTAETIGT uebernommen.
+		// Damit eine Ueberpruefung der Angaben erwzungen werden kann, wird
+		// hier eine neue Platzbestaetigung ausgeloest.
+		persistedGesuch.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
 	}
 }
 

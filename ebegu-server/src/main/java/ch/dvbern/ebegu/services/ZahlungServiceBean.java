@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,7 +54,6 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -74,11 +74,14 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -145,28 +148,43 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@Nonnull
-	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung) {
-		return zahlungsauftragErstellen(gemeindeId, datumFaelligkeit, beschreibung, LocalDateTime.now());
+	public Zahlungsauftrag zahlungsauftragErstellen(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull String gemeindeId,
+		@Nonnull LocalDate datumFaelligkeit,
+		@Nonnull String beschreibung
+	) {
+		return zahlungsauftragErstellen(
+			zahlungslaufTyp,
+			gemeindeId,
+			datumFaelligkeit,
+			beschreibung,
+			LocalDateTime.now());
 	}
 
 	@Override
 	@Nonnull
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung,
-		@Nonnull LocalDateTime datumGeneriert) {
-
+	public Zahlungsauftrag zahlungsauftragErstellen(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull String gemeindeId,
+		@Nonnull LocalDate datumFaelligkeit,
+		@Nonnull String beschreibung,
+		@Nonnull LocalDateTime datumGeneriert
+	) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungsauftragErstellen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		authorizer.checkWriteAuthorization(gemeinde);
 
 		// Es darf immer nur ein Zahlungsauftrag im Status ENTWURF sein
-		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
+		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
 		if (lastZahlungsauftrag.isPresent() && lastZahlungsauftrag.get().getStatus().isEntwurf()) {
 			throw new EbeguRuntimeException(KibonLogLevel.DEBUG, "zahlungsauftragErstellen", ErrorCodeEnum.ERROR_ZAHLUNG_ERSTELLEN);
 		}
 
 		LOGGER.info("Erstelle Zahlungsauftrag mit Faelligkeit: {}", Constants.DATE_FORMATTER.format(datumFaelligkeit));
 		Zahlungsauftrag zahlungsauftrag = new Zahlungsauftrag();
+		zahlungsauftrag.setZahlungslaufTyp(zahlungslaufTyp);
 		zahlungsauftrag.setStatus(ZahlungauftragStatus.ENTWURF);
 		zahlungsauftrag.setBeschrieb(beschreibung);
 		zahlungsauftrag.setDatumFaellig(datumFaelligkeit);
@@ -206,6 +224,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		zahlungsauftrag.setGueltigkeit(new DateRange(zeitabschnittVon, zeitabschnittBis));
 
 		Map<String, Zahlung> zahlungProInstitution = new HashMap<>();
+		ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
 
 		// "Normale" Zahlungen
 		if (!isRepetition) {
@@ -213,8 +232,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte = getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
 				zeitabschnittBis);
 			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
-				if (zeitabschnitt.getZahlungsstatus().isNeu()) {
-					createZahlungsposition(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isNeu()) {
+					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 				}
 			}
 		}
@@ -232,8 +251,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
-			if (zeitabschnitt.getZahlungsstatus().isZuBehandelnInZahlungslauf() || zeitabschnitt.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
-				createZahlungspositionenKorrekturUndNachzahlung(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt)
+				&& (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
+					|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt) == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT)) {
+				createZahlungspositionenKorrekturUndNachzahlung(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 			}
 		}
 
@@ -374,30 +395,47 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	/**
 	 * Erstellt eine Zahlungsposition fuer den uebergebenen Zeitabschnitt. Normalfall bei "Erstbuchung"
 	 */
-	@Nonnull
-	private Zahlungsposition createZahlungsposition(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, @Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Map<String, Zahlung> zahlungProInstitution) {
+	private void createZahlungsposition(
+		@Nonnull ZahlungslaufHelper helper,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Map<String, Zahlung> zahlungProInstitution
+	) {
 		Zahlungsposition zahlungsposition = new Zahlungsposition();
 		zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
-		zahlungsposition.setBetrag(zeitabschnitt.getVerguenstigung());
+		zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
 		zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
-		Zahlung zahlung = findZahlungForInstitution(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+		Zahlung zahlung = helper.findZahlungForEmpfaenger(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 		zahlungsposition.setZahlung(zahlung);
 		zahlung.getZahlungspositionen().add(zahlungsposition);
-		zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
-		return zahlungsposition;
+		helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
 	}
 
 	/**
 	 * Erstellt alle notwendigen Zahlungspositionen fuer die Korrektur des uebergebenen Zeitabschnitts.
 	 * Bisherige Positionen werden in Abzug gebracht und die neuen hinzugefuegt
 	 */
-	private void createZahlungspositionenKorrekturUndNachzahlung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu, @Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Map<String, Zahlung> zahlungProInstitution) {
+	private void createZahlungspositionenKorrekturUndNachzahlung(
+		@Nonnull ZahlungslaufHelper helper,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Map<String, Zahlung> zahlungProInstitution
+	) {
 		// Ermitteln, ob die Vollkosten geaendert haben, seit der letzten Verfuegung, die auch verrechnet wurde!
 		List<VerfuegungZeitabschnitt> zeitabschnittOnVorgaengerVerfuegung = new ArrayList<>();
-		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnittNeu, zeitabschnittNeu.getVerfuegung().getBetreuung(), zeitabschnittOnVorgaengerVerfuegung);
+		final Verfuegung verfuegung = zeitabschnittNeu.getVerfuegung();
+		Objects.requireNonNull(verfuegung);
+		Objects.requireNonNull(verfuegung.getBetreuung());
+
+		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+			helper.getZahlungslaufTyp(),
+			zeitabschnittNeu,
+			verfuegung.getBetreuung(),
+			zeitabschnittOnVorgaengerVerfuegung);
+
 		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) { // Korrekturen
-			Zahlung zahlung = findZahlungForInstitution(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
-			createZahlungspositionKorrekturNeuerWert(zeitabschnittNeu, zahlung); // Dies braucht man immer
+			Zahlung zahlung = helper.findZahlungForEmpfaenger(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
+			createZahlungspositionKorrekturNeuerWert(helper, zeitabschnittNeu, zahlung); // Dies braucht man immer
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
 				// Fuer die "alten" Verfuegungszeitabschnitte muessen Korrekturbuchungen erstellt werden
 				// Wenn die neuen Zeitabschnitte ignoriert sind, setzen wir die alten Zeitabschnitte auch als ignoriert
@@ -411,30 +449,34 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 					}
 				}
 				if(!alreadyCorrected) {
-					createZahlungspositionKorrekturAlterWert(vorgaengerZeitabschnitt, zahlung,
-						zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
+					createZahlungspositionKorrekturAlterWert(helper, vorgaengerZeitabschnitt, zahlung,
+						helper.getZahlungsstatus(zeitabschnittNeu).isIgnoriertIgnorierend());
 				}
 			}
 		} else { // Nachzahlungen bzw. Erstgesuche die rueckwirkend ausbezahlt werden muessen
-			createZahlungsposition(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
+			createZahlungsposition(helper, zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
 		}
 	}
 
 	/**
 	 * Erstellt eine Zahlungsposition fuer eine Korrekturzahlung mit dem *neu gueltigen* Wert
 	 */
-	private void createZahlungspositionKorrekturNeuerWert(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu, @Nonnull Zahlung zahlung) {
+	private void createZahlungspositionKorrekturNeuerWert(
+		@Nonnull ZahlungslaufHelper helper,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Zahlung zahlung
+	) {
 		Zahlungsposition zahlungsposition = new Zahlungsposition();
 		zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnittNeu);
-		zahlungsposition.setBetrag(zeitabschnittNeu.getVerguenstigung());
+		zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnittNeu));
 		zahlungsposition.setZahlung(zahlung);
-		zahlungsposition.setIgnoriert(zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
+		zahlungsposition.setIgnoriert(helper.getZahlungsstatus(zeitabschnittNeu).isIgnoriertIgnorierend());
 		ZahlungspositionStatus status = ZahlungspositionStatus.KORREKTUR;
 		zahlungsposition.setStatus(status);
-		if (zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend()) {
-			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
+		if (helper.getZahlungsstatus(zeitabschnittNeu).isIgnoriertIgnorierend()) {
+			helper.setZahlungsstatus(zeitabschnittNeu, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else {
-			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+			helper.setZahlungsstatus(zeitabschnittNeu, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 		zahlung.getZahlungspositionen().add(zahlungsposition);
 	}
@@ -442,64 +484,44 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	/**
 	 * Erstellt eine Zahlungsposition fuer eine Korrekturzahlung mit der Korrektur des *alten Wertes* (negiert)
 	 */
-	private void createZahlungspositionKorrekturAlterWert(@Nonnull VerfuegungZeitabschnitt vorgaengerZeitabschnitt, @Nonnull Zahlung zahlung,
-														  boolean ignoriert) {
+	private void createZahlungspositionKorrekturAlterWert(
+		@Nonnull ZahlungslaufHelper helper,
+		@Nonnull VerfuegungZeitabschnitt vorgaengerZeitabschnitt,
+		@Nonnull Zahlung zahlung,
+		boolean ignoriert
+	) {
 		Zahlungsposition korrekturPosition = new Zahlungsposition();
 		korrekturPosition.setVerfuegungZeitabschnitt(vorgaengerZeitabschnitt);
-		korrekturPosition.setBetrag(vorgaengerZeitabschnitt.getVerguenstigung().negate());
+		korrekturPosition.setBetrag(helper.getAuszahlungsbetrag(vorgaengerZeitabschnitt).negate());
 		korrekturPosition.setZahlung(zahlung);
 		korrekturPosition.setIgnoriert(ignoriert); // ignoriert kommt vom neuen Zeitabschnitt
 		ZahlungspositionStatus status = ZahlungspositionStatus.KORREKTUR;
 		korrekturPosition.setStatus(status);
 		zahlung.getZahlungspositionen().add(korrekturPosition);
-		if (vorgaengerZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend()) {
-			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
+		if (helper.getZahlungsstatus(vorgaengerZeitabschnitt).isIgnoriertIgnorierend()) {
+			helper.setZahlungsstatus(vorgaengerZeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else {
-			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+			helper.setZahlungsstatus(vorgaengerZeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 	}
 
 	/**
-	 * Ermittelt das Zahlungsobjekt fuer die Institution des uebergebenen Zeitabschnitts. Falls im uebergebenen Auftrag schon eine Zahlung
-	 * fuer diese Institution vorhanden ist, wird diese zurueckgegeben, ansonsten eine neue erstellt.
+	 * Ermittelt den zuletzt durchgefuehrten Zahlungsauftrag des entsprechenden Typs
 	 */
 	@Nonnull
-	private Zahlung findZahlungForInstitution(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, @Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Map<String, Zahlung> zahlungProInstitution) {
-		InstitutionStammdaten institution = zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten();
-		if (zahlungProInstitution.containsKey(institution.getId())) {
-			return zahlungProInstitution.get(institution.getId());
-		} else {
-			Zahlung zahlung = createZahlung(institution, zahlungsauftrag);
-			zahlungProInstitution.put(institution.getId(), zahlung);
-			return zahlung;
-		}
-	}
-
-	/**
-	 * Erstellt eine Zahlung fuer eine bestimmte Institution, welche zum uebergebenen Auftrag gehoert
-	 */
-	@Nonnull
-	private Zahlung createZahlung(@Nonnull InstitutionStammdaten institution, @Nonnull Zahlungsauftrag zahlungsauftrag) {
-		Zahlung zahlung = new Zahlung();
-		zahlung.setStatus(ZahlungStatus.ENTWURF);
-		zahlung.setInstitutionStammdaten(institution);
-		zahlung.setZahlungsauftrag(zahlungsauftrag);
-		zahlungsauftrag.getZahlungen().add(zahlung);
-		return zahlung;
-	}
-
-	/**
-	 * Ermittelt den zuletzt durchgefuehrten Zahlungsauftrag
-	 */
-	@Nonnull
-	private Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde) {
+	private Optional<Zahlungsauftrag> findLastZahlungsauftrag(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull Gemeinde gemeinde
+	) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
 
 		// Der Zahlungsauftrag muss der uebergebenen Gemeinde zugeordnet sein
 		Predicate predicateGemeinde = cb.equal(root.get(Zahlungsauftrag_.gemeinde), gemeinde);
-		query.where(predicateGemeinde);
+		// und den richtigen Typ haben
+		Predicate predicateTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), zahlungslaufTyp);
+		query.where(predicateGemeinde, predicateTyp);
 
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Zahlungsauftrag> criteriaResults = persistence.getCriteriaResults(query, 1);
@@ -575,32 +597,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	}
 
 	@Override
-	public void deleteAllZahlungsauftraege() {
-		// Es koennen nur ALLE Auftaege geloescht werden, da wir bei einem einzelnen Auftrag nicht wissen, wie der Status des Abschnitts vorher war
-		// (1) Alle  Zeitabschnitte wieder auf noch-nicht-verrechnet setzen, also entweder NEU oder IGNORIEREND
-			Collection<VerfuegungZeitabschnitt> allVerfuegungZeitabschnitt = criteriaQueryHelper.getAll(VerfuegungZeitabschnitt.class);
-			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : allVerfuegungZeitabschnitt) {
-					if (verfuegungZeitabschnitt.getZahlungsstatus().isVerrechnet()) {
-						verfuegungZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
-						persistence.merge(verfuegungZeitabschnitt);
-					}else if (verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriert()) {
-				verfuegungZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
-				persistence.merge(verfuegungZeitabschnitt);
-			}
-		}
-		// (2) Alle Pain-Files loeschen
-		criteriaQueryHelper.deleteAllBefore(Pain001Dokument.class, LocalDateTime.now());
-		// (3) Alle Zahlungspositionen löschen
-		criteriaQueryHelper.deleteAllBefore(Zahlungsposition.class, LocalDateTime.now());
-		// (4) Alle Zahlungen loeschen
-		criteriaQueryHelper.deleteAllBefore(Zahlung.class, LocalDateTime.now());
-		// (5) Alle Zahlungsauftraege loeschen
-		criteriaQueryHelper.deleteAllBefore(Zahlungsauftrag.class, LocalDateTime.now());
-
-		LOGGER.info("All Zahlungsauftraege and their Zahlungen removed");
-	}
-
-	@Override
 	@Nonnull
 	public Collection<Zahlungsauftrag> getAllZahlungsauftraege() {
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
@@ -637,8 +633,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		return persistedZahlung;
 	}
 
+	@Nonnull
 	@Override
-	public Collection<Zahlungsauftrag> getZahlungsauftraegeInPeriode(LocalDate von, @Nonnull LocalDate bis) {
+	public Collection<Zahlungsauftrag> getZahlungsauftraegeInPeriode(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
@@ -649,6 +646,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Zeitraum
 		Predicate predicateZeitraum = cb.between(root.get(Zahlungsauftrag_.datumGeneriert), cb.literal(von.atStartOfDay()), cb.literal(bis.atTime(LocalTime.MAX)));
 		predicatesToUse.add(predicateZeitraum);
+		// Dieser Report betrifft nur Institutionszahlungen
+		Predicate predicateAuftragTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
+		predicatesToUse.add(predicateAuftragTyp);
 
 		// Gemeinde
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
@@ -745,12 +745,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void zahlungenKontrollieren(@Nonnull String gemeindeId) {
+	public void zahlungenKontrollieren(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull String gemeindeId) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
-		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
+		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
 		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(
 			gemeinde,
+			zahlungslaufTyp,
 			zahlungsauftrag.getId(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getBeschrieb()));

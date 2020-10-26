@@ -154,7 +154,7 @@ public class VerfuegungResource {
 	@ApiOperation(value = "Generiert eine Verfuegung und speichert diese in der Datenbank", response = JaxVerfuegung.class)
 	@Nullable
 	@PUT
-	@Path("/verfuegen/{gesuchId}/{betreuungId}/{ignorieren}")
+	@Path("/verfuegen/{gesuchId}/{betreuungId}/{ignorieren}/{ignorierenMahlzeiten}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
@@ -162,12 +162,19 @@ public class VerfuegungResource {
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId,
 		@Nonnull @NotNull @PathParam("ignorieren") Boolean ignorieren,
+		@Nonnull @NotNull @PathParam("ignorierenMahlzeiten") Boolean ignorierenMahlzeiten,
 		@Nullable String verfuegungManuelleBemerkungen
 	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		String betreuungId = converter.toEntityId(betreuungJaxId);
 
-		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(gesuchId, betreuungId, verfuegungManuelleBemerkungen, ignorieren, true);
+		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(
+			gesuchId,
+			betreuungId,
+			verfuegungManuelleBemerkungen,
+			ignorieren,
+			ignorierenMahlzeiten,
+			true);
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 

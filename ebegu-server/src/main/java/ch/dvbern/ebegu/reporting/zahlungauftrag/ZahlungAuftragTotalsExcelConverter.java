@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -27,10 +29,10 @@ import javax.enterprise.context.Dependent;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
+import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -42,6 +44,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @Dependent
 public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
+
+	public static final String EMPTY_STRING = "";
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -61,7 +65,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
-		@Nonnull List<Zahlung> zahlungenBerechtigt,
+		@Nonnull List<ZahlungDataRow> zahlungenBerechtigt,
 		@Nonnull Locale locale,
 		@Nonnull String beschrieb,
 		@Nonnull LocalDateTime datumGeneriert,
@@ -72,7 +76,17 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		addHeaders(excelMerger, locale);
+		// ColRepeat: Falls das Feld darunter leer ist, wird die Spalte ausgeblendet
+		excelMerger.addValue(MergeFieldZahlungAuftrag.repeatAntragsteller, EMPTY_STRING);
+
+		// Fuer die Titel brauchen wir den ZahlungslaufTyp. Dieser muss ja fuer alle Zahlungen gleich sein,
+		// also nehmen wir einfach die erste Zahlung
+		ZahlungslaufTyp zahlungslaufTyp = ZahlungslaufTyp.GEMEINDE_INSTITUTION; // default
+		final Optional<ZahlungDataRow> firstZahlungsposition = zahlungenBerechtigt.stream().findFirst();
+		if (firstZahlungsposition.isPresent()) {
+			zahlungslaufTyp = firstZahlungsposition.get().getZahlung().getZahlungsauftrag().getZahlungslaufTyp();
+		}
+		addHeaders(excelMerger, zahlungslaufTyp, locale);
 
 		excelMerger.addValue(MergeFieldZahlungAuftrag.beschrieb, beschrieb);
 		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAm, datumGeneriert);
@@ -81,30 +95,34 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 		zahlungenBerechtigt.stream()
 			.sorted()
-			.forEach(zahlung -> {
+			.forEach(zahlungDataRow -> {
 				ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungTotalsRow);
-				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
-				Institution institution = institutionStammdaten.getInstitution();
-				final Traegerschaft traegerschaft = institution.getTraegerschaft();
-				final IBAN iban = institutionStammdaten.extractIban();
+				final String traegerschaft = zahlungDataRow.getZahlung().getTraegerschaftName();
 
+				final Zahlung zahlung = zahlungDataRow.getZahlung();
+				final IBAN iban = zahlung.getAuszahlungsdaten().getIban();
+				final Institution institution = zahlung.extractInstitution();
 
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institutionStammdaten.getInstitution().getName());
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institution.getName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institutionId, institution.getId());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
-					ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale));
+					ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 				if (traegerschaft != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.traegerschaft, traegerschaft.getName());
+					excelRowGroup.addValue(MergeFieldZahlungAuftrag.traegerschaft, traegerschaft);
+				}
+				if (zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+					excelRowGroup.addValue(MergeFieldZahlungAuftrag.antragsteller, zahlung.getEmpfaengerName());
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
-				if (iban != null) {
-					excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
-				}
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, institutionStammdaten.extractKontoinhaber());
-				Adresse adresse = institutionStammdaten.extractAdresseKontoinhaber();
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, zahlung.getAuszahlungsdaten().getKontoinhaber());
+				Adresse adresse = zahlung.getAuszahlungsdaten().getAdresseKontoinhaber();
 				if (adresse == null) {
-					adresse = institutionStammdaten.getAdresse();
+					adresse = zahlungDataRow.getAdresseKontoinhaber();
 				}
+				// Jetzt muss eine Adresse vorhanden sein (die aus den Auszahlungsdaten oder die Defaultadresse
+				Objects.requireNonNull(adresse);
+
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.organisation, adresse.getOrganisation());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.strasse, adresse.getStrasse());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.hausnummer, adresse.getHausnummer());
@@ -114,7 +132,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		return excelMerger;
 	}
 
-	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
+	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull Locale locale) {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAmTitle, ServerMessageUtil.getMessage("Reports_faelligAmTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
@@ -122,6 +140,9 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionIdTitle, ServerMessageUtil.getMessage("Reports_institutionIdTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTypTitle, ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
+		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+			excelMerger.addValue(MergeFieldZahlungAuftrag.antragstellerTitle, ServerMessageUtil.getMessage("Reports_antragstellerTitle", locale));
+		}
 		excelMerger.addValue(MergeFieldZahlungAuftrag.auszahlungTitle, ServerMessageUtil.getMessage("Reports_auszahlungTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.betragAusbezahltTitle, ServerMessageUtil.getMessage("Reports_betragAusbezahltTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.ibanTitle, ServerMessageUtil.getMessage("Reports_ibanTitle", locale));

@@ -60,7 +60,7 @@ public class Abwesenheit extends AbstractDateRangedEntity implements Comparable<
 
 	@Nonnull
 	public Abwesenheit copyAbwesenheit(@Nonnull Abwesenheit target, @Nonnull AntragCopyType copyType) {
-		return (Abwesenheit) super.copyAbstractEntity(target, copyType);
+		return (Abwesenheit) super.copyAbstractDateRangedEntity(target, copyType);
 	}
 
 	@Override

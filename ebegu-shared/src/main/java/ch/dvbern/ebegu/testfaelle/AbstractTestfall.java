@@ -204,6 +204,7 @@ public abstract class AbstractTestfall {
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 	}
 
 	protected Gesuch createAlleinerziehend() {

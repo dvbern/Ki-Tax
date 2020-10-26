@@ -213,7 +213,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     private loadEinstellungPropertiesForTagesschule(): void {
         const stammdatenTagesschule = this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule;
-        if (!stammdatenTagesschule) {
+        if (!stammdatenTagesschule || EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
             return;
         }
         const tsEinstellungenTagesschule =

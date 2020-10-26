@@ -450,7 +450,10 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	public boolean isZahlungsinformationValid() {
-		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(bic) && StringUtils.isNotEmpty(iban.getIban());
+		return StringUtils.isNotEmpty(kontoinhaber)
+			&& StringUtils.isNotEmpty(bic)
+			&& iban != null
+			&& StringUtils.isNotEmpty(iban.getIban());
 	}
 
 	/**

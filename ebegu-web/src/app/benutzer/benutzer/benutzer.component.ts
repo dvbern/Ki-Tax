@@ -308,6 +308,28 @@ export class BenutzerComponent implements OnInit {
             );
     }
 
+    public deleteExternalUuidForBenutzer(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'BENUTZER_RESET_CONFIRMATION_TITLE',
+            text: 'BENUTZER_RESET_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.benutzerRS.deleteExternalUuidForBenutzer(this.selectedUser).then(() => {
+                        this.gotoBenutzerlist('BENUTZER_RESETTED_MESSAGE');
+                    });
+                },
+                () => {
+                    this.log.error('error in observable. deleteExternalUuidForBenutzer');
+                }
+            );
+    }
+
     private gotoBenutzerlist(infoMessageKey: string): void {
         this.$state.go('admin.benutzerlist').then(() => {
             if (!EbeguUtil.isNotNullOrUndefined(infoMessageKey)) {

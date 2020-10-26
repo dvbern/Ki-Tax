@@ -385,4 +385,5 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.GeneratedNotrechtDokument"/>
 	<entity class="ch.dvbern.ebegu.entities.GeneratedGeneralDokument"/>
 	<entity class="ch.dvbern.ebegu.entities.ReceivedEvent"/>
+	<entity class="ch.dvbern.ebegu.entities.Auszahlungsdaten"/>
 </entity-mappings>

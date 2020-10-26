@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.kafka;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -37,16 +36,17 @@ public abstract class BaseEventHandler<T> {
 
 
 	public void onEvent(
-		@Nonnull String key,
 		@Nonnull String eventId,
+		@Nonnull String key,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
 		@Nonnull T dto) {
 
 		ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, dto.toString());
 
-		if (receivedEventService.saveReceivedEvent(receivedEvent)) {
-			LOG.info("Event with UUID '{}' of type '{}' was already retrieved, ignoring it", eventId, eventType);
+		if (!receivedEventService.saveReceivedEvent(receivedEvent)) {
+			LOG.info("Event with UUID '{}' and timestamp '{}' of type '{}' was already retrieved, ignoring it",
+				eventId, eventTime,	eventType);
 
 			return;
 		}
@@ -59,12 +59,9 @@ public abstract class BaseEventHandler<T> {
 		} catch (IllegalArgumentException e) {
 			LOG.warn("Unknown event type '{}'", eventType);
 		}
-
-		//consumedMessageService.processed(eventId);
 	}
 
 	protected abstract void processEvent(
-		//@Nonnull UUID eventId,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
 		@Nonnull T dto);

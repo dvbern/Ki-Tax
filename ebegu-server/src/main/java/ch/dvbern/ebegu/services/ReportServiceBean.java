@@ -92,6 +92,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
@@ -128,6 +130,9 @@ import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelCo
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -511,7 +516,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			BigDecimal pensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 			BigDecimal pensumGemeinde = BigDecimal.ZERO;
 			BigDecimal pensumTotal = pensumKanton;
-			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 				BigDecimal pensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
 				pensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(pensumTotalGemeinde, pensumKanton);
@@ -527,7 +532,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 			BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
 			BigDecimal verguenstigungTotal = verguenstigungKanton;
-			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 				BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
 				verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
@@ -827,8 +832,28 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				auftragId));
 
+		// Je nach Rolle duerfen im Excel nicht alle Institutionen aufgefuehrt werden
+		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
+		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
+		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			if (!EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+				allowedInst
+					.stream()
+					.anyMatch(institution -> institution.getId().equals(zahlung.getEmpfaengerId()))) {
+				Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+				ZahlungDataRow row = new ZahlungDataRow(
+					zahlung,
+					adresseKontoinhaber
+				);
+				zahlungDataRows.add(row);
+			}
+		}
+
 		return getUploadFileInfoZahlung(
-			zahlungsauftrag.getZahlungen(),
+			zahlungDataRows,
 			zahlungsauftrag.getFilename(),
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
@@ -846,7 +871,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
-		List<Zahlung> reportData = new ArrayList<>();
+		List<ZahlungDataRow> reportData = new ArrayList<>();
 
 		Zahlung zahlung = zahlungService.findZahlung(zahlungId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -854,13 +879,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		reportData.add(zahlung);
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlung.getZahlungsauftrag().getZahlungslaufTyp());
+		Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+		ZahlungDataRow dataRow = new ZahlungDataRow(
+			zahlung,
+			adresseKontoinhaber
+		);
+
+		reportData.add(dataRow);
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionStammdaten()
-			.getInstitution()
-			.getName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getEmpfaengerName();
 
 		return getUploadFileInfoZahlung(
 			reportData,
@@ -875,7 +905,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	private UploadFileInfo getUploadFileInfoZahlung(
-		@Nonnull List<Zahlung> reportData,
+		@Nonnull List<ZahlungDataRow> reportData,
 		@Nonnull String excelFileName,
 		@Nonnull String bezeichnung,
 		@Nonnull LocalDateTime datumGeneriert,
@@ -892,12 +922,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-		List<Zahlung> zahlungenBerechtigt = reportData.stream()
-			.filter(zahlung -> {
+		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
+			.filter(zahlungDataRow -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
 				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
 			}).collect(Collectors.toList());
 
 		// Blatt Details
@@ -1359,7 +1389,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
 		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal anspruchsPensumTotalGemeinde =
 				new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
@@ -1374,7 +1404,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 		BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal bgPensumTotal = bgPensumKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
 			bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
@@ -1395,7 +1425,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 		BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
 		BigDecimal verguenstigungTotal = verguenstigungKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
 			verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
@@ -1551,6 +1581,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Familiensituation familiensituation =
 				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
+			row.setSozialhilfeBezueger(isSozialhilfeBezueger(zeitabschnitt, familiensituationContainer, familiensituation));
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
@@ -1576,6 +1607,30 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Kind
 		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung);
 		return row;
+	}
+
+	private boolean isSozialhilfeBezueger(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull FamiliensituationContainer familiensituationContainer,
+		@Nonnull Familiensituation familiensituation
+	) {
+		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
+			return false;
+		}
+
+		// falls keine sozialhilfeContainer existieren, Sozialhilfe von Familiensituation nehmen
+		Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = familiensituationContainer.getSozialhilfeZeitraumContainers();
+		if (sozialhilfeZeitraumContainers.isEmpty()) {
+			return familiensituation.getSozialhilfeBezueger();
+		}
+
+		// falls sozialhilfeContainer existieren, überprüfen ob diese für den aktuellen Zeitabschnitt gelten
+		return sozialhilfeZeitraumContainers.stream().anyMatch(sozialhilfeZeitraumContainer -> {
+			SozialhilfeZeitraum sozialhilfeZeitraumJA = sozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA();
+			return sozialhilfeZeitraumJA != null &&
+				zeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(sozialhilfeZeitraumJA.getGueltigkeit().getGueltigAb()) >= 0 &&
+				zeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(sozialhilfeZeitraumJA.getGueltigkeit().getGueltigBis()) <= 0;
+		});
 	}
 
 	@SuppressWarnings("Duplicates")

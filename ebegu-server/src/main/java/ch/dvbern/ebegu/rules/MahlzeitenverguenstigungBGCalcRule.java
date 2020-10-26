@@ -45,6 +45,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
  */
 public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
+	private final static MathUtil MATH = MathUtil.DEFAULT;
 	private final MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
 
 	protected MahlzeitenverguenstigungBGCalcRule(
@@ -77,60 +78,33 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		final boolean sozialhilfeempfaenger = inputData.isSozialhilfeempfaenger();
 
 		if (!mahlzeitenverguenstigungParams.isEnabled() ||
-			!validateInput(inputData) ||
-			!mahlzeitenverguenstigungParams.hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
+			!validateInput(inputData)) {
+			return;
+		}
+		// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
+		if (!mahlzeitenverguenstigungParams.hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
+			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getLocale());
 			return;
 		}
 
-		BigDecimal verguenstigungProHauptmahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
-		BigDecimal verguenstigungProNebenmahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProNebenmahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
+		BigDecimal verguenstigungMahlzeit =
+			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
+		BigDecimal selbstbehaltProTag = mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit();
 
-		BigDecimal verguenstigungProHauptmahlzeitEffektiv = BigDecimal.ZERO;
-		BigDecimal verguenstigungProNebenmahlzeitEffektiv = BigDecimal.ZERO;
+		final BigDecimal verguenstigung = berechneMahlzeitenverguenstigung(
+			inputData.getAnzahlHauptmahlzeiten(),
+			inputData.getAnzahlNebenmahlzeiten(),
+			inputData.getTarifHauptmahlzeit(),
+			inputData.getTarifNebenmahlzeit(),
+			selbstbehaltProTag,
+			verguenstigungMahlzeit
+		);
 
-		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigungProHauptmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
-
-			// vergünstigung für Hauptmahlzeiten ist gegeben
-
-			// vergünstigung pro hauptmahlzeit berechnen
-			verguenstigungProHauptmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProHauptmahlzeit,
-				inputData.getTarifHauptmahlzeit(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
-
-			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlHauptmahlzeiten().multiply(verguenstigungProHauptmahlzeitEffektiv);
-
-			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
-				verguenstigungTotal;
-
-			inputData.getParent().setVerguenstigungHauptmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
-		}
-
-		// Wenn die Vergünstigung pro Nebenmahlzeit grösser 0 ist
-		if (verguenstigungProNebenmahlzeit.compareTo(BigDecimal.ZERO) > 0) {
-
-			// vergünstigung für Nebenmahlzeiten ist gegeben
-
-			// vergünstigung pro hauptmahlzeit berechnen
-			verguenstigungProNebenmahlzeitEffektiv = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungProNebenmahlzeit,
-				inputData.getTarifNebenmahlzeit(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragNebenmahlzeit());
-
-			// total vergünstigung berechnen
-			BigDecimal verguenstigungTotal = inputData.getAnzahlNebenmahlzeiten().multiply(verguenstigungProNebenmahlzeitEffektiv);
-			verguenstigungTotal = verguenstigungTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO :
-				verguenstigungTotal;
-
-			inputData.getParent().setVerguenstigungNebenmahlzeitenTotalForAsivAndGemeinde(verguenstigungTotal);
-		}
-
-		if (verguenstigungProHauptmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0 ||
-			verguenstigungProNebenmahlzeitEffektiv.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
 			addBemerkung(inputData);
 		}
+
+		inputData.getParent().setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(verguenstigung);
 	}
 
 	private void addBemerkung(@Nonnull BGCalculationInput inputData) {
@@ -147,5 +121,118 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
 		return einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean();
+	}
+
+	@Nonnull
+	private BigDecimal berechneMahlzeitenverguenstigung(
+		@Nonnull BigDecimal anzahlHauptmahlzeiten,
+		@Nonnull BigDecimal anzahlNebenmahlzeiten,
+		@Nonnull BigDecimal tarifProHauptmahlzeit,
+		@Nonnull BigDecimal tarifProNebenmahlzeit,
+		@Nonnull BigDecimal minElternbeitragProTag,
+		@Nonnull BigDecimal maxVerguenstigungProTag
+	) {
+		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
+		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
+
+		// Nicht in HMZ berechnete NMZ
+		BigDecimal nichtBerechneteNebenmahlzeiten = getNichtInHauptmahlzeitenBerechneteNebenmahlzeiten(
+			anzahlHauptmahlzeiten, anzahlNebenmahlzeiten, anzahlNebenmahlzeitenStandardTag);
+
+		// Tasächlicher Betrag MZV HMZ/ pro Tag
+		BigDecimal tatsaechlicherBetragProTag = getTatsaechlicherBetragProTag(
+			tarifProHauptmahlzeit, minElternbeitragProTag, maxVerguenstigungProTag);
+
+		//Minimaler Betrag MZV NMZ/ pro Tag
+		BigDecimal minBetragProTag = getMinimalerBetragProTag(
+			tarifProNebenmahlzeit, minElternbeitragProTag, maxVerguenstigungProTag);
+
+		// Vergünstigung HMZ:
+		BigDecimal verguenstigungHauptmahlzeiten = getVerguenstigungHauptmahlzeiten(anzahlHauptmahlzeiten, tatsaechlicherBetragProTag);
+
+		// Vergünstigung der in HMZ nicht enthaltene NMZ:
+		BigDecimal verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(anzahlNebenmahlzeitenStandardTag, nichtBerechneteNebenmahlzeiten, minBetragProTag);
+
+		// Vergünstigung:
+		// =Q2+R2
+		// =Q2+R2
+		BigDecimal verguenstigung = MATH.addNullSafe(verguenstigungHauptmahlzeiten, verguenstigungNebenmahlzeiten);
+		return verguenstigung;
+	}
+
+	@Nonnull
+	private BigDecimal getNichtInHauptmahlzeitenBerechneteNebenmahlzeiten(
+		@Nonnull BigDecimal anzahlHauptmahlzeiten,
+		@Nonnull BigDecimal anzahlNebenmahlzeiten,
+		@Nonnull BigDecimal anzahlNebenmahlzeitenStandardTag
+	) {
+		// =WENN((I2-G2*2)<0;0;I2-G2*2)
+		// =WENN((anzahlNebenmahlzeiten-anzahlHauptmahlzeiten*2)<0;0;anzahlNebenmahlzeiten-anzahlHauptmahlzeiten*2)
+		BigDecimal nichtBerechneteNebenmahlzeiten = MATH.subtract(
+			anzahlNebenmahlzeiten,
+			MATH.multiply(anzahlHauptmahlzeiten, anzahlNebenmahlzeitenStandardTag));
+		nichtBerechneteNebenmahlzeiten = MathUtil.minimum(nichtBerechneteNebenmahlzeiten, BigDecimal.ZERO);
+		return nichtBerechneteNebenmahlzeiten;
+	}
+
+	@Nonnull
+	private BigDecimal getTatsaechlicherBetragProTag(
+		@Nonnull BigDecimal tarifProHauptmahlzeit,
+		@Nonnull BigDecimal minElternbeitragProTag,
+		@Nonnull BigDecimal maxVerguenstigungProTag
+	) {
+		// =WENN(MIN(F2-L2;K2)<0;0;MIN(F2-L2;K2))
+		// =WENN(MIN(tarifProHauptmahlzeit-minElternbeitragProTag;maxVerguenstigungProTag)<0;0;MIN(tarifProHauptmahlzeit-minElternbeitragProTag;maxVerguenstigungProTag))
+		BigDecimal tatsaechlicherBetragProTag = MathUtil.maximum(MATH.subtract(tarifProHauptmahlzeit, minElternbeitragProTag), maxVerguenstigungProTag);
+		tatsaechlicherBetragProTag = MathUtil.minimum(tatsaechlicherBetragProTag, BigDecimal.ZERO);
+		return tatsaechlicherBetragProTag;
+	}
+
+	@Nonnull
+	private BigDecimal getMinimalerBetragProTag(
+		@Nonnull BigDecimal tarifProNebenmahlzeit,
+		@Nonnull BigDecimal minElternbeitragProTag,
+		@Nonnull BigDecimal maxVerguenstigungProTag
+	) {
+		// =WENN(MIN(H2-L2;K2)<0;0;MIN(H2-L2;K2))
+		// =WENN(MIN(tarifProNebenmahlzeit-minElternbeitragProTag;maxVerguenstigungProTag)<0;0;MIN(tarifProNebenmahlzeit-minElternbeitragProTag;maxVerguenstigungProTag))
+		BigDecimal minBetragProTag = MathUtil.maximum(MATH.subtract(tarifProNebenmahlzeit, minElternbeitragProTag), maxVerguenstigungProTag);
+		minBetragProTag = MathUtil.minimum(minBetragProTag, BigDecimal.ZERO);
+		return minBetragProTag;
+	}
+
+	@Nonnull
+	private BigDecimal getVerguenstigungHauptmahlzeiten(
+		@Nonnull BigDecimal anzahlHauptmahlzeiten,
+		@Nonnull BigDecimal tatsaechlicherBetragProTag
+	) {
+		// =RUNDEN(M2*G2;2)
+		// =RUNDEN(tatsaechlicherBetragProTag*anzahlHauptmahlzeiten;2)
+		BigDecimal verguenstigungHauptmahlzeiten = MATH.multiply(tatsaechlicherBetragProTag, anzahlHauptmahlzeiten);
+		return verguenstigungHauptmahlzeiten;
+	}
+
+	@Nonnull
+	private BigDecimal getVerguenstigungNebenmahlzeiten(
+		@Nonnull BigDecimal anzahlNebenmahlzeitenStandardTag,
+		@Nonnull BigDecimal nichtBerechneteNebenmahlzeiten,
+		@Nonnull BigDecimal minBetragProTag
+	) {
+		// =WENN(ISTGERADE(J2);O2*J2/2;(O2*(J2-1)/2)+N2)
+		// =WENN(ISTGERADE(nichtBerechneteNebenmahlzeiten);O2*nichtBerechneteNebenmahlzeiten/2;(O2*(nichtBerechneteNebenmahlzeiten-1)/2)+minBetragProTag)
+		BigDecimal verguenstigungNebenmahlzeiten = null;
+		if (MathUtil.isEven(nichtBerechneteNebenmahlzeiten.intValue())) {
+			verguenstigungNebenmahlzeiten = MATH.divide(
+				MATH.multiply(anzahlNebenmahlzeitenStandardTag, nichtBerechneteNebenmahlzeiten),
+				anzahlNebenmahlzeitenStandardTag);
+		} else {
+			BigDecimal zuberuecksichtigendeAnzahlNebenmahlzeiten = MATH.subtract(nichtBerechneteNebenmahlzeiten, BigDecimal.ONE);
+			verguenstigungNebenmahlzeiten = MATH.add(
+				MATH.divide(
+					MATH.multiply(anzahlNebenmahlzeitenStandardTag, zuberuecksichtigendeAnzahlNebenmahlzeiten),
+					anzahlNebenmahlzeitenStandardTag),
+				minBetragProTag);
+		}
+		return verguenstigungNebenmahlzeiten;
 	}
 }

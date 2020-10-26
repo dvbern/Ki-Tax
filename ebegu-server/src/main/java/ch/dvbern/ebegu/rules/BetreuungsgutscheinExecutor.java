@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
@@ -97,13 +98,18 @@ public class BetreuungsgutscheinExecutor {
 			AbstractRechner rechnerToUse = null;
 			if (possibleKitaxRechner) {
 				if (zeitabschnitt.getGueltigkeit().endsBefore(kitaxParameter.getStadtBernAsivStartDate())) {
-					String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
-					KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = null;
-					if (platz.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
-						// Die Oeffnungszeiten sind nur fuer Kitas relevant
-						oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
+					if (zeitabschnitt.getBgCalculationInputGemeinde().isBetreuungInGemeinde()) {
+						String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
+						KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = null;
+						if (platz.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+							// Die Oeffnungszeiten sind nur fuer Kitas relevant
+							oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
+						}
+						rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
+					} else {
+						// Betreuung findet nicht in Gemeinde statt
+						rechnerToUse = new EmptyKitaxRechner(locale, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
 					}
-					rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
 				} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 					// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
 					// koennen wir den normalen ASIV Rechner verwenden.
@@ -111,7 +117,7 @@ public class BetreuungsgutscheinExecutor {
 				} else {
 					// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
 					// NullRechner? Wegen Bemerkungen?
-					rechnerToUse = new EmptyKitaxRechner(locale);
+					rechnerToUse = new EmptyKitaxRechner(locale, MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD);
 				}
 			} else {
 				// Alle anderen rechnen normal mit dem Asiv-Rechner

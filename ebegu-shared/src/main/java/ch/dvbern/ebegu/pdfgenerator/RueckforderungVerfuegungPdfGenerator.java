@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,18 +36,11 @@ import com.google.common.collect.Lists;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfContentByte;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
-
-	private static final Logger LOG = LoggerFactory.getLogger(RueckforderungVerfuegungPdfGenerator.class);
 
 	private static final String VERFUEGUNG_TITLE =
 		"PdfGeneration_VerfuegungNotrecht_Title";
@@ -125,7 +116,6 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 	private static final int superTextSize = 6;
 	private static final int superTextRise = 4;
 	private final String nameVerantwortlichePerson;
-	private final String pathToUnterschrift;
 	private BigDecimal voraussichtlicheAusfallentschaedigung; // A
 	private BigDecimal gewaehrteAusfallentschaedigung; // B
 	private BigDecimal entschaedigungStufe1; // C
@@ -133,14 +123,12 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 
 	public RueckforderungVerfuegungPdfGenerator(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
-		@Nonnull String nameVerantwortlichePerson,
-		@Nonnull String pathToUnterschrift
+		@Nonnull String nameVerantwortlichePerson
 	) {
 		super(rueckforderungFormular.getKorrespondenzSprache());
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		this.rueckforderungFormular = rueckforderungFormular;
 		this.nameVerantwortlichePerson = nameVerantwortlichePerson;
-		this.pathToUnterschrift = pathToUnterschrift;
 
 		// sollten nicht null sein, es handelt sich aber einer gewissen stufe um pflichtfelder
 		Objects.requireNonNull(rueckforderungFormular.getStufe2VoraussichtlicheBetrag());
@@ -211,7 +199,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		} else {
 			createZweiteSeite(document);
 		}
-		createEndBegruessung(document, generator.getDirectContent());
+		createSignatur(document);
 
 		document.newPage();
 
@@ -220,33 +208,28 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		createFusszeileDritteSeite(generator.getDirectContent());
 	}
 
-	private void createEndBegruessung(Document document, PdfContentByte directContent) {
-		int startOfEndbegruessung = 150;
+	private void createSignatur(Document document) {
+
 		if (sprache.equals(Locale.GERMAN)) {
-			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), startOfEndbegruessung, 122,
-				getPageConfiguration().getFont(),
-				10f);
+			Paragraph empty = PdfUtil.createParagraph("", 2);
+			Paragraph begruessungEnde = PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE));
+			Paragraph begruessungAmt = PdfUtil.createParagraph(translate(BEGRUESSUNG_AMT), 4);
+
+			document.add(empty);
+			document.add(begruessungEnde);
+			document.add(begruessungAmt);
 		} else {
-			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
+			Paragraph begruessungEnde = PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE), 3);
+			Paragraph begruessungAmt = PdfUtil.createParagraph(
+				translate(BEGRUESSUNG_AMT),
+				4
+			);
+			document.add(begruessungEnde);
+			document.add(begruessungAmt);
 		}
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), startOfEndbegruessung - 25, 122, getPageConfiguration().getFont(), 10f);
-		try {
-			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
-			Image image = Image.getInstance(signature);
-			float percent = 100.0F * Utilities.millimetersToPoints(50) / image.getWidth();
-			image.scalePercent(percent);
-			image.setAbsolutePosition(330, startOfEndbegruessung - 100);
-			document.add(image);
-		} catch (IOException e) {
-			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
-		}
-		createContentWhereIWant(directContent, nameVerantwortlichePerson, startOfEndbegruessung - 145, 122,
-			getPageConfiguration().getFont(),
-			10f);
-		createContentWhereIWant(directContent, translate(VORSTEHERIN), startOfEndbegruessung - 160, 122,
-			getPageConfiguration().getFont(),
-			10f);
+		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + "\n" + translate(VORSTEHERIN));
+		document.add(signaturEnde);
 	}
 
 	private void createHeaderSecondPage(PdfContentByte directContent) {
@@ -365,7 +348,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_1), translate(FUSSZEILE_2), translate(FUSSZEILE_3),
 				translate(FUSSZEILE_4), translate(FUSSZEILE_5), translate(FUSSZEILE_6)),
-			0
+			0, 0
 		);
 	}
 
@@ -373,7 +356,7 @@ public class RueckforderungVerfuegungPdfGenerator extends MandantPdfGenerator {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_7)),
-			6
+			0, 6
 		);
 	}
 }

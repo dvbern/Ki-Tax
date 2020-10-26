@@ -204,8 +204,10 @@ public class FinanzielleSituationResource {
 
 			if (storedFamSitContOptional.isPresent()) {
 				Familiensituation storedFamSit = storedFamSitContOptional.get().getFamiliensituationJA();
-				if (storedFamSit != null && storedFamSit.getZahlungsadresse() != null) {
-					storedAdresse = storedFamSit.getZahlungsadresse();
+				if (storedFamSit != null
+						&& storedFamSit.getAuszahlungsdaten() != null
+						&& storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
+					storedAdresse = storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber();
 				}
 			}
 		}

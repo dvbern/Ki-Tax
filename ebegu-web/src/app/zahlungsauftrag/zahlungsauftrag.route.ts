@@ -23,6 +23,10 @@ export function zahlungsauftragRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States);
 }
 
+export class IBooleanStateParams {
+    public isMahlzeitenzahlungen: boolean;
+}
+
 const ng1States: Ng1StateDeclaration[] = [
     {
         parent: 'app',
@@ -36,5 +40,8 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'zahlungsauftrag.view',
         template: '<zahlungsauftrag-view flex="auto" class="overflow-scroll">',
         url: '/zahlungsauftrag',
+        params: {
+            isMahlzeitenzahlungen: IBooleanStateParams,
+        },
     },
 ];

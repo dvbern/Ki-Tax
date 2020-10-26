@@ -269,7 +269,7 @@
                     <!--Show Fachstelle?-->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class=" checkbox" ng-show="vm.getModel().familienErgaenzendeBetreuung">
+                            <div class="checkbox checkbox-with-margin" ng-show="vm.getModel().familienErgaenzendeBetreuung">
                                 <md-checkbox ng-model="vm.showFachstelle" name="showFachstelle" id="showFachstelle"
                                              aria-label="{{'INVOLVIERTE_FACHSTELLE'|translate}}"
                                              ng-disabled="vm.isGesuchReadonly()"
@@ -421,7 +421,7 @@
                     <!--Asylwesen?-->
                     <div class="row" ng-if="vm.showAusAsylwesen()">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class=" checkbox">
+                            <div class="checkbox checkbox-with-margin">
                                 <md-checkbox ng-model="vm.getModel().ausAsylwesen" name="showAsylwesen" id="showAsylwesen"
                                              aria-label="{{'KIND_AUS_ASYLWESEN'|translate}}"
                                              ng-disabled="vm.isGesuchReadonly()">
@@ -461,7 +461,7 @@
                     <!-- Ausserordentlicher Anpruch? -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox" ng-show="vm.showAusserordentlicherAnspruchCheckbox()">
+                            <div class="checkbox checkbox-with-margin" ng-show="vm.showAusserordentlicherAnspruchCheckbox()">
                                 <md-checkbox ng-model="vm.showAusserordentlicherAnspruch"
                                              name="showAusserordentlicherAnspruch" id="showAusserordentlicherAnspruch"
                                              aria-label="{{'AUSSERORDENTLICHER_ANSPRUCH'|translate}}"

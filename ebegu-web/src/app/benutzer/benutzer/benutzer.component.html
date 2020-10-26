@@ -274,6 +274,12 @@
                     [textContent]="'BENUTZER_DELETE' | translate">
             </button>
 
+            <button type="button" class="dv-btn cancel-button"
+                    *dvNgShowElement="true;roles: TSRoleUtil.getSuperAdminRoles()"
+                    (click)="deleteExternalUuidForBenutzer()"
+                    [textContent]="'BENUTZER_RESET' | translate">
+            </button>
+
         </div>
 
     </form>
