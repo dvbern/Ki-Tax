@@ -53,7 +53,7 @@ public class ZahlungAuftragPeriodeExcelConverter implements ExcelConverter {
 			.sorted()
 			.forEach(zahlung -> {
 				ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftragPeriode.repeatZahlungAuftragRow);
-				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.institution, zahlung.getInstitutionName());
+				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.institution, zahlung.getEmpfaengerName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.betreuungsangebotTyp,
 					ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.gemeinde, zahlung.getZahlungsauftrag().getGemeinde().getName());

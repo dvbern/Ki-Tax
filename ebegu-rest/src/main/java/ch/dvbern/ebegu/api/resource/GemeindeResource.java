@@ -875,4 +875,20 @@ public class GemeindeResource {
 
 		return Response.ok(jaxExternalClientAssignment).build();
 	}
+
+	@ApiOperation(value = "Gibt alle Gemeinden zurueck, die Mahlzeitenverguenstigungen auszahlen und fuer die"
+		+ "der eingeloggte Benutzer zustaendig ist",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/mahlzeitenverguenstigung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
+	public List<JaxGemeinde> getGemeindenWithMahlzeitenverguenstigungForBenutzer() {
+		return gemeindeService.getGemeindenWithMahlzeitenverguenstigungForBenutzer().stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+	}
 }

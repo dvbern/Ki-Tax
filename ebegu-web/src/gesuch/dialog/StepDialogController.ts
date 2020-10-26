@@ -18,6 +18,7 @@
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 import {IPromise} from 'angular';
+import {TSZahlungslaufTyp} from '../../models/enums/TSZahlungslaufTyp';
 
 export class StepDialogController {
 
@@ -26,6 +27,7 @@ export class StepDialogController {
         '$translate',
         'institutionName',
         'institutionPhone',
+        'zahlungslaufTyp',
     ];
 
     public title: string;
@@ -56,13 +58,27 @@ export class StepDialogController {
         $translate: ITranslateService,
         institutionName: string,
         institutionPhone: string,
+        zahlungslaufTyp: TSZahlungslaufTyp,
     ) {
-        this.title = $translate.instant('CONFIRM_SAVE_MUTIERTE_VERFUEGUNG');
+        const isInstitutionszahlung = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === zahlungslaufTyp;
+
+        // "Mutaton fuehrt zu Korrekturen von bereits ausbezahlten.."
+        const titleKey = isInstitutionszahlung
+            ? 'CONFIRM_SAVE_MUTIERTE_VERFUEGUNG'
+            : 'CONFIRM_SAVE_MUTIERTE_VERFUEGUNG_MAHLZEITEN';
+        this.title = $translate.instant(titleKey);
+
         this.questionText = $translate.instant('KORREKTURZAHLUNG_DIALOG_FRAGE');
         this.cancelText = $translate.instant('LABEL_NEIN');
         this.firstOkText = $translate.instant('WEITER_ONLY');
         this.radioYes = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_JA');
-        this.radioYesHint = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION');
+
+        // In diesem Fall erfolgt der Abgleich automatisch und wie bis anhin über kiBon direkt an ...
+        const radioYesHintKey = isInstitutionszahlung
+            ? 'KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION'
+            : 'KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION_MAHLZEITEN';
+        this.radioYesHint = $translate.instant(radioYesHintKey);
+
         this.radioNo = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN');
         this.radioNoHint = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION');
         this.checkboxLabel = $translate.instant('KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL');
@@ -71,20 +87,24 @@ export class StepDialogController {
         this.backText = $translate.instant('KORREKTURZAHLUNG_DIALOG_BACK');
         this.nextText = $translate.instant('WEITER_ONLY');
         this.finishText = $translate.instant('KORREKTURZAHLUNG_DIALOG_FINISH');
-        this.radioYesCasesInfo = $translate.instant('KORREKTURZAHLUNG_YES_CASE_INFO');
-        this.radioYesCases = [$translate.instant('KORREKTURZAHLUNG_YES_CASE_1')];
-        this.radioNoCasesInfo = $translate.instant('KORREKTURZAHLUNG_NO_CASE_INFO');
-        this.radioNoCases = [$translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
-            $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
-            $translate.instant('KORREKTURZAHLUNG_NO_CASE_3')];
-        this.institutionHint = $translate.instant('KORREKTURZAHLUNG_INSTITUTION_HINT');
 
-        if (institutionName) {
-            this.institutionHint += ` ${institutionName}`;
-        }
-
-        if (institutionPhone) {
-            this.institutionHint += ` (${$translate.instant('TELEFON')} ${institutionPhone})`;
+        // Erklaerungen, nur fuer Institutiosnzahlungen relevant
+        // tslint:disable-next-line:early-exit
+        if (isInstitutionszahlung) {
+            this.radioYesCasesInfo = $translate.instant('KORREKTURZAHLUNG_YES_CASE_INFO');
+            this.radioYesCases = [$translate.instant('KORREKTURZAHLUNG_YES_CASE_1')];
+            this.radioNoCasesInfo = $translate.instant('KORREKTURZAHLUNG_NO_CASE_INFO');
+            this.radioNoCases = [
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_3')];
+            this.institutionHint = $translate.instant('KORREKTURZAHLUNG_INSTITUTION_HINT');
+            if (institutionName) {
+                this.institutionHint += ` ${institutionName}`;
+            }
+            if (institutionPhone) {
+                this.institutionHint += ` (${$translate.instant('TELEFON')} ${institutionPhone})`;
+            }
         }
     }
 

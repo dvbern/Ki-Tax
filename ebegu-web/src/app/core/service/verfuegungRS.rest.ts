@@ -52,10 +52,11 @@ export class VerfuegungRS {
         gesuchId: string,
         betreuungId: string,
         ignorieren: boolean,
+        ignorierenMahlzeiten: boolean
     ): IPromise<TSVerfuegung> {
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const betreuungIdEnc = encodeURIComponent(betreuungId);
-        const url = `${this.serviceURL}/verfuegen/${gesuchIdEnc}/${betreuungIdEnc}/${ignorieren}`;
+        const url = `${this.serviceURL}/verfuegen/${gesuchIdEnc}/${betreuungIdEnc}/${ignorieren}/${ignorierenMahlzeiten}`;
 
         return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {

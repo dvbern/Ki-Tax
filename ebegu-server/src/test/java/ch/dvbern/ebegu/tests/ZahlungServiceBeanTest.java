@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AntragStatusHistoryService;
@@ -124,9 +125,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test(expected = EbeguRuntimeException.class)
 	public void zahlungsauftragErstellenZweiEntwuerfe() {
-		zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Entwurf 1");
+		zahlungService.zahlungsauftragErstellen(ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Entwurf 1");
 		// Es darf kein zweiter Auftrag erstellt werden, solange der erste nicht freigegeben ist
-		zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Entwurf 2");
+		zahlungService.zahlungsauftragErstellen(ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Entwurf 2");
 	}
 
 	/**
@@ -141,6 +142,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mutation);
 
 		Zahlungsauftrag zahlungsauftragMutation = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_SEPTEMBER.plusDays(1),
 			"Testauftrag",
@@ -168,6 +170,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen
 		// in der Zahlung
 		Zahlungsauftrag zahlungsauftragMutation = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_FAELLIG.plusDays(1),
 			"Testauftrag",
@@ -213,6 +216,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen
 		// in der Zahlung
 		Zahlungsauftrag zahlungsauftragMutation = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_FAELLIG.plusDays(1),
 			"Testauftrag",
@@ -261,6 +265,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen
 		// in der Zahlung
 		Zahlungsauftrag zahlungsauftragMutation = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_FAELLIG.plusDays(1),
 			"Testauftrag",
@@ -291,6 +296,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Die erste Zahlung ueberhaupt wird normal durchgefuehrt
 		Zahlungsauftrag zahlungsauftrag1 = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_FAELLIG,
 			"Normaler Auftrag", DATUM_GENERIERT);
@@ -301,6 +307,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createGesuch(true, DATUM_SEPTEMBER.minusDays(1), null);
 		// Zahlung ausloesen
 		Zahlungsauftrag zahlungsauftrag2 = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_FAELLIG,
 			"nachtraeglicher Auftrag", DATUM_GENERIERT);
@@ -315,7 +322,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Zahlung August ausloesen:
 		// Erwartet:    1 NORMALE Zahlung August
 		Zahlungsauftrag auftragAugust =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_AUGUST, "Zahlung August", DATUM_AUGUST.atStartOfDay());
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				gemeindeId,
+				DATUM_AUGUST,
+				"Zahlung August",
+				DATUM_AUGUST.atStartOfDay());
 		Assert.assertEquals(1, auftragAugust.getZahlungen().size());
 		Assert.assertEquals(1, auftragAugust.getZahlungen().get(0).getZahlungspositionen().size());
 		Assert.assertEquals(
@@ -334,6 +346,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Erwartet:    1 NORMALE Zahlung September
 		//              2 KORREKTUREN August (Minus und Plus)
 		Zahlungsauftrag auftragSeptember = zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			gemeindeId,
 			DATUM_SEPTEMBER,
 			"Zahlung September",
@@ -363,7 +376,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		//              2 KORREKTUREN September (Minus und Plus)
 		//              2 KORREKTUREN August (Minus und Plus)
 		Zahlungsauftrag auftragOktober =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_OKTOBER, "Zahlung Oktober", DATUM_OKTOBER.atStartOfDay());
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				gemeindeId,
+				DATUM_OKTOBER,
+				"Zahlung Oktober",
+				DATUM_OKTOBER.atStartOfDay());
 		Assert.assertEquals(1, auftragOktober.getZahlungen().size());
 		Assert.assertEquals(5, auftragOktober.getZahlungen().get(0).getZahlungspositionen().size());
 		Assert.assertEquals(
@@ -392,7 +410,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Zahlung August ausloesen
 		// Erwartet:    1 NORMALE Zahlung August
 		Zahlungsauftrag auftragAugust =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_AUGUST, "Zahlung August", DATUM_AUGUST.atStartOfDay());
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				gemeindeId,
+				DATUM_AUGUST,
+				"Zahlung August",
+				DATUM_AUGUST.atStartOfDay());
 		Assert.assertEquals(1, auftragAugust.getZahlungen().size());
 		Assert.assertEquals(1, auftragAugust.getZahlungen().get(0).getZahlungspositionen().size());
 		Assert.assertEquals(
@@ -414,7 +437,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		//              1 NORMALE Zahlung September
 		//              2 KORREKTUREN August (Minus und Plus)
 		Zahlungsauftrag auftragOktober =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_OKTOBER, "Zahlung Oktober", DATUM_OKTOBER.atStartOfDay());
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				gemeindeId,
+				DATUM_OKTOBER,
+				"Zahlung Oktober",
+				DATUM_OKTOBER.atStartOfDay());
 		Assert.assertEquals(1, auftragOktober.getZahlungen().size());
 		Assert.assertEquals(4, auftragOktober.getZahlungen().get(0).getZahlungspositionen().size());
 		Assert.assertEquals(
@@ -469,7 +497,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragAusloesen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
 		Optional<Zahlungsauftrag> zahlungsauftrag1 = zahlungService.findZahlungsauftrag(zahlungsauftrag.getId());
 		Assert.assertTrue(zahlungsauftrag1.isPresent());
@@ -484,7 +513,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void findZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
 		Assert.assertTrue(zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).isPresent());
 		String inexsistentUUID = "6dac3a36-518d-436a-9095-ee425f9db9fd";
@@ -492,22 +522,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void deleteZahlungsauftrag() {
-		createGesuch(true);
-		Zahlungsauftrag zahlungsauftrag =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
-
-		Assert.assertTrue(zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).isPresent());
-		zahlungService.deleteAllZahlungsauftraege();
-		Assert.assertFalse(zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).isPresent());
-	}
-
-	@Test
 	public void getAllZahlungsauftraege() {
 		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
 
 		createGesuch(true);
-		zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
+		zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 		Assert.assertFalse(zahlungService.getAllZahlungsauftraege().isEmpty());
 	}
 
@@ -515,7 +535,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungBestaetigen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
-			zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
+			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
 		Assert.assertNotNull(zahlungsauftrag);
 		// Anzahl Zahlungen: Anzahl Monate seit Periodenbeginn, inkl. dem aktuellen
@@ -634,7 +655,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testDeleteZahlungspositionenOfGesuch() {
 		Gesuch gesuch = createGesuch(true);
 		Assert.assertNotNull(gesuch);
-		zahlungService.zahlungsauftragErstellen(gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
+		zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 		Assert.assertFalse(zahlungService.getAllZahlungsauftraege().isEmpty());
 
 		zahlungService.deleteZahlungspositionenOfGesuch(gesuch);
@@ -647,6 +669,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(gesuch);
 		Zahlungsauftrag zahlungsauftrag =
 			zahlungService.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 				gemeindeId,
 				datumGeneriert.toLocalDate().plusDays(3),
 				"Zahlung September",

@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export enum TSCacheTyp {
-    EBEGU_DOCUMENT = 'ebeguDocument',
-    EBEGU_EINSTELLUNGEN = 'einstellung',
-    EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE = 'ebeguInstitutionsStammdatenGemeinde',
-    EBEGU_GEMEINDEN = 'ebeguGemeinden',
-    EBEGU_GEMEINDEN_ACTIVE = 'ebeguGemeindenAktiv',
-    EBEGU_GEMEINDEN_WITH_MAHLZEITENVERGUENSTIGUNG = 'ebeguGemeindenMitMahlzeitenverguenstigung',
-    EBEGU_PUBLIC_APP_CONFIG = 'publicAppConfig',
-    EBEGU_GESUCHSPERIODEN_ACTIVE = 'ebeguGesuchsperiodenAktiv',
+export enum TSZahlungslaufTyp {
+    GEMEINDE_INSTITUTION = 'GEMEINDE_INSTITUTION',
+    GEMEINDE_ANTRAGSTELLER = 'GEMEINDE_ANTRAGSTELLER',
+}
+
+export function getTSZahlungslaufTypValues(): Array<TSZahlungslaufTyp> {
+    return [
+        TSZahlungslaufTyp.GEMEINDE_INSTITUTION,
+        TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER,
+    ];
 }

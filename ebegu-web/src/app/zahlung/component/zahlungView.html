@@ -41,7 +41,7 @@
                        class="table fixedtable table-striped ebegu-table">
                     <thead>
                     <tr>
-                        <th st-sort="institutionsName" class="sortable row-institutionsName uppercase"
+                        <th st-sort="empfaengerName" class="sortable row-empfaengerName uppercase"
                             data-translate="ZAHLUNG_INSTITUTION" st-sort-default="true"></th>
                         <th st-sort="betreuungsangebotTyp" class="sortable row-betreuungsangebotTyp uppercase"
                             data-translate="ZAHLUNG_BETREUUNGSANGEBOTTYP" st-sort-default="true"></th>
@@ -54,8 +54,8 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="row in displayedCollection">
-                        <td class="ellipsis" title="{{row.institutionsName}}"
-                            ng-bind="row.institutionsName"></td>
+                        <td class="ellipsis" title="{{row.empfaengerName}}"
+                            ng-bind="row.empfaengerName"></td>
                         <td class="ellipsis" title="{{row.betreuungsangebotTyp | translate}}"
                             ng-bind="row.betreuungsangebotTyp | translate"></td>
                         <td class="symbol">
