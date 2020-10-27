@@ -64,11 +64,11 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 
 	@Transient
 	@Nullable
-	private Integer vertraglicheHauptmahlzeiten = null;
+	private BigDecimal vertraglicheHauptmahlzeiten = null;
 
 	@Transient
 	@Nullable
-	private Integer vertraglicheNebenmahlzeiten = null;
+	private BigDecimal vertraglicheNebenmahlzeiten = null;
 
 	@Transient
 	@Nullable
@@ -106,11 +106,11 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	}
 
 	@Nullable
-	public Integer getVertraglicheHauptmahlzeiten() {
+	public BigDecimal getVertraglicheHauptmahlzeiten() {
 		return vertraglicheHauptmahlzeiten;
 	}
 
-	public void setVertraglicheHauptmahlzeiten(@Nullable Integer vertraglicheHauptmahlzeiten) {
+	public void setVertraglicheHauptmahlzeiten(@Nullable BigDecimal vertraglicheHauptmahlzeiten) {
 		this.vertraglicheHauptmahlzeiten = vertraglicheHauptmahlzeiten;
 	}
 
@@ -133,11 +133,11 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	}
 
 	@Nullable
-	public Integer getVertraglicheNebenmahlzeiten() {
+	public BigDecimal getVertraglicheNebenmahlzeiten() {
 		return vertraglicheNebenmahlzeiten;
 	}
 
-	public void setVertraglicheNebenmahlzeiten(@Nullable Integer vertraglicheNebenmahlzeiten) {
+	public void setVertraglicheNebenmahlzeiten(@Nullable BigDecimal vertraglicheNebenmahlzeiten) {
 		this.vertraglicheNebenmahlzeiten = vertraglicheNebenmahlzeiten;
 	}
 
@@ -150,18 +150,12 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			vertraglicheKosten);
 	}
 
-	public void addHauptmahlzeiten(Integer amount) {
-		if (vertraglicheHauptmahlzeiten == null) {
-			vertraglicheHauptmahlzeiten = 0;
-		}
-		vertraglicheHauptmahlzeiten += amount;
+	public void addHauptmahlzeiten(@Nonnull BigDecimal amount) {
+		vertraglicheHauptmahlzeiten = MathUtil.DEFAULT.addNullSafe(amount, vertraglicheHauptmahlzeiten);
 	}
 
-	public void addNebenmahlzeiten(Integer amount) {
-		if (vertraglicheNebenmahlzeiten == null) {
-			vertraglicheNebenmahlzeiten = 0;
-		}
-		vertraglicheNebenmahlzeiten += amount;
+	public void addNebenmahlzeiten(@Nonnull BigDecimal amount) {
+		vertraglicheNebenmahlzeiten = MathUtil.DEFAULT.addNullSafe(amount, vertraglicheNebenmahlzeiten);
 	}
 
 	public void addTarifHaupt(BigDecimal tarif) {
@@ -219,10 +213,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		BigDecimal kosten = getStatus() == BetreuungspensumAbweichungStatus.NONE
 			? getVertraglicheKosten() : getMonatlicheBetreuungskosten();
 
-		Integer hauptmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
+		BigDecimal hauptmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
 			? getVertraglicheHauptmahlzeiten() : getMonatlicheHauptmahlzeiten();
 
-		Integer nebenmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
+		BigDecimal nebenmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
 			? getVertraglicheNebenmahlzeiten() : getMonatlicheNebenmahlzeiten();
 
 		Objects.requireNonNull(pensum);

@@ -81,16 +81,20 @@ public class PlatzbestaetigungEventHandlerTest {
 		zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
 		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
-			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum()
-			, zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten()) == 0);
-		Assert.assertTrue(betreuungsmitteilungPensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0);
-		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-		Assert.assertTrue(betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
-		Assert.assertTrue(betreuungsmitteilungPensum.getTarifProHauptmahlzeit().compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()) == 0);
-		Assert.assertTrue(betreuungsmitteilungPensum.getTarifProNebenmahlzeit().compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()) == 0);
+			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum(), zeitabschnittDTO, betreuungs.get(0));
+		Assert.assertNotNull(betreuungsmitteilungPensum);
+		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheBetreuungskosten()
+			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
+		Assert.assertEquals(0, betreuungsmitteilungPensum.getPensum()
+			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
+		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
+			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
+		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
+			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
+		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProHauptmahlzeit()
+			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
+		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
+			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
 		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
 		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
 	}
@@ -103,16 +107,20 @@ public class PlatzbestaetigungEventHandlerTest {
 		zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
 		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
 		Betreuungspensum betreuungsPensum =
-			handler.mapZeitabschnitt(new Betreuungspensum()
-				, zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertTrue(betreuungsPensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten()) == 0);
-		Assert.assertTrue(betreuungsPensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0);
-		Assert.assertTrue(betreuungsPensum.getMonatlicheHauptmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-		Assert.assertTrue(betreuungsPensum.getMonatlicheNebenmahlzeiten() ==
-			zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
-		Assert.assertTrue(betreuungsPensum.getTarifProHauptmahlzeit().compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()) == 0);
-		Assert.assertTrue(betreuungsPensum.getTarifProNebenmahlzeit().compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()) == 0);
+			handler.mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuungs.get(0));
+		Assert.assertNotNull(betreuungsPensum);
+		Assert.assertEquals(0, betreuungsPensum.getMonatlicheBetreuungskosten()
+			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
+		Assert.assertEquals(0, betreuungsPensum.getPensum()
+			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
+		Assert.assertEquals(0, betreuungsPensum.getMonatlicheHauptmahlzeiten()
+			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
+		Assert.assertEquals(0, betreuungsPensum.getMonatlicheNebenmahlzeiten()
+			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
+		Assert.assertEquals(0, betreuungsPensum.getTarifProHauptmahlzeit()
+			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
+		Assert.assertEquals(0, betreuungsPensum.getTarifProNebenmahlzeit()
+			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
 		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
 		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
 	}
@@ -144,8 +152,8 @@ public class PlatzbestaetigungEventHandlerTest {
 		ZeitabschnittDTO zeitabschnittDTO = ZeitabschnittDTO.newBuilder()
 			.setBetreuungskosten(new BigDecimal(2000.00).setScale(2))
 			.setBetreuungspensum(new BigDecimal(80))
-			.setAnzahlMonatlicheHauptmahlzeiten(0)
-			.setAnzahlMonatlicheNebenmahlzeiten(0)
+			.setAnzahlHauptmahlzeiten(BigDecimal.ZERO)
+			.setAnzahlNebenmahlzeiten(BigDecimal.ZERO)
 			.setPensumUnit(Zeiteinheit.PERCENTAGE)
 			.setVon(LocalDate.of(2017, 8, 01))
 			.setBis(LocalDate.of(2018, 1, 31))
