@@ -109,7 +109,7 @@ export class ZahlungsauftragViewController implements IController {
             this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
 
         // Testlauf darf auch nur in die Zukunft gemacht werden!
-        this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
+        this.minDateForTestlauf = moment(moment.now());
         this.updateZahlungsauftrag();
         this.updateGemeindenList();
         this.updateShowMahlzeitenZahlungslaeufe();
