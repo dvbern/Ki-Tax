@@ -85,7 +85,7 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 	private static final String VERFUEGT =
 		"PdfGeneration_Verfuegung_Verfuegt";
 	private static final String GRUND_1 =
-		"PdfGeneration_Verfuegung_Grund_1";
+		"PdfGeneration_Verfuegung_Grund_1_Public";
 	private static final String GRUND_2_POSITIV =
 		"PdfGeneration_Verfuegung_Grund_Positiv";
 	private static final String GRUND_2_NEGATIV =
