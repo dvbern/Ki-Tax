@@ -35,10 +35,10 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 	private static final long serialVersionUID = -3035958327660443564L;
 
 	@Nonnull
-	private Integer monatlicheHauptmahlzeiten;
+	private BigDecimal monatlicheHauptmahlzeiten;
 
 	@Nonnull
-	private Integer monatlicheNebenmahlzeiten;
+	private BigDecimal monatlicheNebenmahlzeiten;
 
 	@Nonnull
 	private BigDecimal tarifProHauptmahlzeit;
@@ -47,20 +47,20 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 	private BigDecimal tarifProNebenmahlzeit;
 
 	@Nonnull
-	public Integer getMonatlicheHauptmahlzeiten() {
+	public BigDecimal getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
 	}
 
-	public void setMonatlicheHauptmahlzeiten(@Nonnull Integer monatlicheHauptmahlzeiten) {
+	public void setMonatlicheHauptmahlzeiten(@Nonnull BigDecimal monatlicheHauptmahlzeiten) {
 		this.monatlicheHauptmahlzeiten = monatlicheHauptmahlzeiten;
 	}
 
 	@Nonnull
-	public Integer getMonatlicheNebenmahlzeiten() {
+	public BigDecimal getMonatlicheNebenmahlzeiten() {
 		return monatlicheNebenmahlzeiten;
 	}
 
-	public void setMonatlicheNebenmahlzeiten(@Nonnull Integer monatlicheNebenmahlzeiten) {
+	public void setMonatlicheNebenmahlzeiten(@Nonnull BigDecimal monatlicheNebenmahlzeiten) {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
