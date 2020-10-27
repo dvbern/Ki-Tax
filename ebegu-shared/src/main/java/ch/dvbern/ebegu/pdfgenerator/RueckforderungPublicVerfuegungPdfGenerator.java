@@ -61,19 +61,25 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 	private static final String INHALT_2D_NEGATIV =
 		"PdfGeneration_Verfuegung_Inhalt_2D_Negativ_Public";
 	private static final String FUSSZEILE_1 =
-		"PdfGeneration_Verfuegung_Fusszeile_1";
+		"PdfGeneration_Verfuegung_Fusszeile_1_Public";
 	private static final String FUSSZEILE_2 =
-		"PdfGeneration_Verfuegung_Fusszeile_2";
+		"PdfGeneration_Verfuegung_Fusszeile_2_Public";
 	private static final String FUSSZEILE_3 =
-		"PdfGeneration_Verfuegung_Fusszeile_3";
+		"PdfGeneration_Verfuegung_Fusszeile_3_Public";
 	private static final String FUSSZEILE_4 =
-		"PdfGeneration_Verfuegung_Fusszeile_4";
+		"PdfGeneration_Verfuegung_Fusszeile_4_Public";
 	private static final String FUSSZEILE_5 =
-		"PdfGeneration_Verfuegung_Fusszeile_5";
+		"PdfGeneration_Verfuegung_Fusszeile_5_Public";
 	private static final String FUSSZEILE_6 =
-		"PdfGeneration_Verfuegung_Fusszeile_6";
+		"PdfGeneration_Verfuegung_Fusszeile_6_Public";
 	private static final String FUSSZEILE_7 =
-		"PdfGeneration_Verfuegung_Fusszeile_7";
+		"PdfGeneration_Verfuegung_Fusszeile_7_Public";
+	private static final String FUSSZEILE_8 =
+		"PdfGeneration_Verfuegung_Fusszeile_8_Public";
+	private static final String FUSSZEILE_9 =
+		"PdfGeneration_Verfuegung_Fusszeile_9_Public";
+	private static final String FUSSZEILE_10 =
+		"PdfGeneration_Verfuegung_Fusszeile_10_Public";
 	private static final String GRUNDEN =
 		"PdfGeneration_Verfuegung_Grunden";
 	private static final String VERFUEGT =
@@ -189,6 +195,7 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 			createZweiteSeite(document);
 		}
 		createSignatur(document);
+		createFusszeileZweiteSeite(generator.getDirectContent());
 
 		document.newPage();
 
@@ -291,6 +298,10 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 		paragraph3.add(PdfUtil.createSuperTextInText("8", superTextSize, superTextRise));
 		document.add(paragraph3);
 
+		Paragraph paragraph4 = PdfUtil.createParagraph(translate(INHALT_2E));
+		paragraph4.add(PdfUtil.createSuperTextInText("9", superTextSize, superTextRise));
+		document.add(paragraph4);
+
 		document.add(PdfUtil.createParagraph(translate(GRUNDEN), 0));
 		document.add(PdfUtil.createParagraph(translate(VERFUEGT), 1, PdfUtil.DEFAULT_FONT_BOLD));
 
@@ -343,7 +354,7 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 	private void createDritteSeite(Document document) {
 		Paragraph title = PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE),0);
 		Paragraph belehrung = PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG), 2);
-		belehrung.add(PdfUtil.createSuperTextInText("7", superTextSize, superTextRise));
+		belehrung.add(PdfUtil.createSuperTextInText("10", superTextSize, superTextRise));
 		document.add(title);
 		document.add(belehrung);
 	}
@@ -357,11 +368,19 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 		);
 	}
 
+	private void createFusszeileZweiteSeite(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		createFusszeile(
+			dirPdfContentByte,
+			Lists.newArrayList(translate(FUSSZEILE_7), translate(FUSSZEILE_8), translate(FUSSZEILE_9)),
+			0, 6
+		);
+	}
+
 	private void createFusszeileDritteSeite(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(translate(FUSSZEILE_7)),
-			0, 6
+			Lists.newArrayList(translate(FUSSZEILE_10)),
+			0, 9
 		);
 	}
 }
