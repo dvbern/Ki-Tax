@@ -431,8 +431,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
-		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten());
-		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten());
+		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
+		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlNebenmahlzeiten());
 		neueBetreuung.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 		neueBetreuung.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		neueBetreuung.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
@@ -478,10 +478,17 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 								.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten())
 								== 0))
 					&&
-					betreuungspensum.getMonatlicheHauptmahlzeiten()
-						== zeitabschnittDTO.getAnzahlMonatlicheHauptmahlzeiten() &&
-					betreuungspensum.getMonatlicheNebenmahlzeiten()
-						== zeitabschnittDTO.getAnzahlMonatlicheNebenmahlzeiten()
+					(zeitabschnittDTO.getAnzahlHauptmahlzeiten() == null ||
+						(zeitabschnittDTO.getAnzahlHauptmahlzeiten() != null &&
+							betreuungspensum.getMonatlicheHauptmahlzeiten()
+								.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten())
+								== 0))
+					&&
+					(zeitabschnittDTO.getAnzahlNebenmahlzeiten() == null ||
+						(zeitabschnittDTO.getAnzahlNebenmahlzeiten() != null &&
+							betreuungspensum.getMonatlicheNebenmahlzeiten()
+								.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten())
+								== 0))
 				) {
 					//check pensum:
 					if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
