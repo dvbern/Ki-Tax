@@ -241,12 +241,16 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			benutzerService.findBenutzerByExternalUUID(externalBenutzer.getExternalUUID());
 		if (existingBenutzerWithExternalUuidOptional.isPresent()) {
 			Benutzer duplicatedBenutzer = existingBenutzerWithExternalUuidOptional.get();
-			benutzerService.deleteExternalUUIDInNewTransaction(duplicatedBenutzer.getId());
-			String bemerkung =
-				"ExternalUUID uebernommen von Benutzer: username=" + duplicatedBenutzer.getUsername()
-					+ " externalUUID= " + duplicatedBenutzer.getExternalUUID() + ". Bei diesem wurde die externalUUID gelöscht" ;
-			LOG.info(bemerkung);
-			existingBenutzer.addBemerkung(bemerkung);
+			// Wir muessen die externalUUID nur dann loeschen, wenn es sich beim gefundenen Benutzer um
+			// einen *anderen* Benutzer handelt als demjenigen, den wir neu speichern wollen
+			if (!existingBenutzer.getId().equals(duplicatedBenutzer.getId())) {
+				benutzerService.deleteExternalUUIDInNewTransaction(duplicatedBenutzer.getId());
+				String bemerkung =
+					"ExternalUUID uebernommen von Benutzer: username=" + duplicatedBenutzer.getUsername()
+						+ " externalUUID= " + duplicatedBenutzer.getExternalUUID() + ". Bei diesem wurde die externalUUID gelöscht";
+				LOG.info(bemerkung);
+				existingBenutzer.addBemerkung(bemerkung);
+			}
 		}
 
 		//external uuid setzen

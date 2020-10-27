@@ -19,8 +19,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -49,6 +52,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -104,7 +108,7 @@ public class Betreuung extends AbstractPlatz {
 	 */
 	@Transient
 	@Nullable
-	private Verfuegung vorgaengerAusbezahlteVerfuegung;
+	private Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungProAuszahlungstyp = new HashMap<>();
 
 	/**
 	 * Contains a calculatedVerfuegung that we do not want to store in the database yet
@@ -345,11 +349,11 @@ public class Betreuung extends AbstractPlatz {
 	 */
 	@Override
 	@Nullable
-	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
+	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
 		}
-		return getVorgaengerAusbezahlteVerfuegung();
+		return getVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp);
 	}
 
 	/**
@@ -364,18 +368,25 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	@Nullable
-	public Verfuegung getVorgaengerAusbezahlteVerfuegung() {
+	public Verfuegung getVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
 		checkVorgaengerInitialized();
-		return vorgaengerAusbezahlteVerfuegung;
+		Objects.requireNonNull(vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
+		return vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(zahlungslaufTyp);
+	}
+
+	@Nullable
+	public Map<ZahlungslaufTyp, Verfuegung> getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp() {
+		checkVorgaengerInitialized();
+		return vorgaengerAusbezahlteVerfuegungProAuszahlungstyp;
 	}
 
 	@Override
 	public void initVorgaengerVerfuegungen(
 		@Nullable Verfuegung vorgaenger,
-		@Nullable  Verfuegung vorgaengerAusbezahlt
+		@Nullable  Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlt
 	) {
 		super.initVorgaengerVerfuegungen(vorgaenger, vorgaengerAusbezahlt);
-		this.vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlt;
+		this.vorgaengerAusbezahlteVerfuegungProAuszahlungstyp = vorgaengerAusbezahlt;
 	}
 
 	@Nonnull
@@ -493,8 +504,8 @@ public class Betreuung extends AbstractPlatz {
 				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 				abweichung.addPensum(pensum.getPensum().multiply(anteil));
 				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
-				abweichung.addHauptmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheHauptmahlzeiten()).multiply(anteil).intValue());
-				abweichung.addNebenmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheNebenmahlzeiten()).multiply(anteil).intValue());
+				abweichung.addHauptmahlzeiten(pensum.getMonatlicheHauptmahlzeiten().multiply(anteil));
+				abweichung.addNebenmahlzeiten(pensum.getMonatlicheNebenmahlzeiten().multiply(anteil));
 				abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
 				abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
 			}

@@ -1176,14 +1176,15 @@ export class GesuchModelManager {
 
     }
 
-    public saveVerfuegung(ignorieren: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
+    public saveVerfuegung(ignorieren: boolean, ignorierenMahlzeiten: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
         const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
             manuelleBemerkungen,
             this.gesuch.id,
             this.getBetreuungToWorkWith().id,
-            ignorieren)
-            .then((response: TSVerfuegung) => {
+            ignorieren,
+            ignorierenMahlzeiten
+        ).then((response: TSVerfuegung) => {
                 this.setVerfuegenToWorkWith(response);
                 this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
                 this.calculateGesuchStatusVerfuegt();
