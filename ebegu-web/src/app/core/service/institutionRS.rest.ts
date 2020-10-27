@@ -16,7 +16,6 @@
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionExternalClientAssignment} from '../../../models/TSInstitutionExternalClientAssignment';
 import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';

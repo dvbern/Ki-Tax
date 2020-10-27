@@ -307,21 +307,24 @@ public class InstitutionResource {
 			stammdaten.getInstitution(),
 			institution);
 
-		// set the updated institution
-		stammdaten.setInstitution(institution);
-
-		boolean institutionUpdated = converter.institutionToEntity(update, institution, stammdaten);
-
-		if (institutionUpdated) {
-			institutionService.updateInstitution(institution);
-		}
 
 		if (update.getInstitutionExternalClients() != null) {
 			List<InstitutionExternalClient> institutionExternalClients =
-				converter.institutionExternalClientListToEntity(update.getInstitutionExternalClients());
+				converter.institutionExternalClientListToEntity(update.getInstitutionExternalClients(), institution);
 			institutionService.saveInstitutionExternalClients(institution, institutionExternalClients);
 		}
 
+		boolean institutionUpdated = converter.institutionToEntity(update, institution, stammdaten);
+
+		if (institutionUpdated || update.getInstitutionExternalClients() != null) {
+			institutionService.updateInstitution(institution);
+		}
+
+		// set the updated institution
+		stammdaten.setInstitution(institution);
+		//TODO Problem bei update a collection with cascade was no longer referenced...
+		//maybe we have to save the externalClient separatly but then why it doesnt work like with kindContainer
+		//to analyze...
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
 

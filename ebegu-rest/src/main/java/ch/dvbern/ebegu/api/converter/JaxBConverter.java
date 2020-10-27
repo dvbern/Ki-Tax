@@ -273,6 +273,7 @@ import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.InstitutionExternalClientId;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -5583,7 +5584,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public JaxInstitutionExternalClient insitutionExternalClientToJAX(@Nonnull final InstitutionExternalClient persistedInstitutionExternalClient) {
 		JaxInstitutionExternalClient jaxInstitutionExternalClient = new JaxInstitutionExternalClient();
-		jaxInstitutionExternalClient.setJaxExternalClient(externalClientToJAX(persistedInstitutionExternalClient.getExternalClient()));
+		jaxInstitutionExternalClient.setExternalClient(externalClientToJAX(persistedInstitutionExternalClient.getExternalClient()));
 		jaxInstitutionExternalClient.setGueltigAb(persistedInstitutionExternalClient.getGueltigkeit().getGueltigAb());
 		if (Constants.END_OF_TIME.equals(persistedInstitutionExternalClient.getGueltigkeit().getGueltigBis())) {
 			jaxInstitutionExternalClient.setGueltigBis(null); // end of time gueltigkeit wird nicht an client geschickt
@@ -5593,19 +5594,21 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstitutionExternalClient;
 	}
 
-	public List<InstitutionExternalClient> institutionExternalClientListToEntity(@Nonnull Collection<JaxInstitutionExternalClient> jaxInstitutionExternalClients){
+	public List<InstitutionExternalClient> institutionExternalClientListToEntity(@Nonnull Collection<JaxInstitutionExternalClient> jaxInstitutionExternalClients, Institution institution){
 		return jaxInstitutionExternalClients.stream()
-			.map(this::insitutionExternalClientToEntity)
+			.map(jaxInstitutionExternalClient -> insitutionExternalClientToEntity(jaxInstitutionExternalClient, institution))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	public InstitutionExternalClient insitutionExternalClientToEntity(@Nonnull final JaxInstitutionExternalClient jaxInstitutionExternalClient) {
+	public InstitutionExternalClient insitutionExternalClientToEntity(@Nonnull final JaxInstitutionExternalClient jaxInstitutionExternalClient, Institution institution) {
 		InstitutionExternalClient institutionExternalClient = new InstitutionExternalClient();
 		ExternalClient selectedClient =
-			externalClientService.findExternalClient(jaxInstitutionExternalClient.getJaxExternalClient().getId()).orElseThrow(() -> new EbeguEntityNotFoundException("",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxInstitutionExternalClient.getJaxExternalClient().getId()));
+			externalClientService.findExternalClient(jaxInstitutionExternalClient.getExternalClient().getId()).orElseThrow(() -> new EbeguEntityNotFoundException("",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxInstitutionExternalClient.getExternalClient().getId()));
 		institutionExternalClient.setExternalClient(selectedClient);
+		institutionExternalClient.setInstitution(institution);
+		institutionExternalClient.setId(new InstitutionExternalClientId(institution.getId(), selectedClient.getId()));
 
 		final LocalDate dateAb =
 			jaxInstitutionExternalClient.getGueltigAb() == null ? LocalDate.now() : jaxInstitutionExternalClient.getGueltigAb();

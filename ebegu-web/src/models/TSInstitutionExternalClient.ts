@@ -20,11 +20,11 @@ import {TSDateRange} from './types/TSDateRange';
 
 export class TSInstitutionExternalClient {
 
-    public constructor(externalClient: TSExternalClient) {
+    public externalClient: TSExternalClient;
+    public gueltigkeit: TSDateRange;
+
+    public constructor(externalClient?: TSExternalClient) {
         this.externalClient = externalClient;
         this.gueltigkeit = new TSDateRange(undefined, undefined);
     }
-
-    public externalClient: TSExternalClient;
-    public gueltigkeit: TSDateRange;
 }

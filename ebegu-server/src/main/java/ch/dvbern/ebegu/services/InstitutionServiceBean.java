@@ -46,7 +46,6 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
-import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -371,8 +370,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients) {
 
 		String id = institution.getId();
-		Set<InstitutionExternalClient> existingExternalClients = institution.getInstitutionExternalClients();
 
+		Set<InstitutionExternalClient> existingExternalClients = institution.getInstitutionExternalClients();
 		// find out which are removed
 		HashSet<InstitutionExternalClient> removed = new HashSet<>(existingExternalClients);
 		removed.removeAll(institutionExternalClients);
@@ -390,7 +389,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		added.stream()
 			.map(client -> institutionClientEventConverter.clientAddedEventOf(id, client))
 			.forEach(event -> exportedEvent.fire(event));
-
+		institution.getInstitutionExternalClients().clear();
 		institution.setInstitutionExternalClients(new HashSet<>(institutionExternalClients));
 	}
 

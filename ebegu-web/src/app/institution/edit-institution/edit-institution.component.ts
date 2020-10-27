@@ -36,7 +36,6 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSExternalClient} from '../../../models/TSExternalClient';
-import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionExternalClient} from '../../../models/TSInstitutionExternalClient';
 import {TSInstitutionExternalClientAssignment} from '../../../models/TSInstitutionExternalClientAssignment';
@@ -260,28 +259,29 @@ export class EditInstitutionComponent implements OnInit {
         const updateModel = new TSInstitutionUpdate();
         updateModel.name = this.stammdaten.institution.name;
         updateModel.traegerschaftId = this.getTraegerschaftsUpdate();
-        updateModel.externalClients = this.getExternalClientsUpdate();
+        updateModel.institutionExternalClients = this.getExternalClientsUpdate();
         updateModel.stammdaten = this.stammdaten;
 
         this.updateInstitution(updateModel);
     }
 
     private updateInstitution(updateModel: TSInstitutionUpdate): void {
-        if (!EbeguUtil.isSame(this.externalClients.assignedClients, this.initiallyAssignedClients) && this.externalClients.assignedClients.length > 0) {
+        if (!EbeguUtil.isSame(this.externalClients.assignedClients,
+            this.initiallyAssignedClients) && this.externalClients.assignedClients.length > 0) {
             let drittanwendungen = '';
             this.externalClients.assignedClients.filter(assignedClient =>
-                this.initiallyAssignedClients.indexOf(assignedClient) < 0
+                this.initiallyAssignedClients.indexOf(assignedClient) < 0,
             ).forEach(assignedClient =>
                 drittanwendungen.length > 0 ?
                     drittanwendungen += ', ' + assignedClient.externalClient.clientName
-                    : drittanwendungen = assignedClient.externalClient.clientName
+                    : drittanwendungen = assignedClient.externalClient.clientName,
             );
             // show warning popup
             const dialogConfig = new MatDialogConfig();
             dialogConfig.data = {
                 frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
                     NAME_DRITTANWENDUNGEN: drittanwendungen,
-                })
+                }),
             };
             this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
                 .subscribe(answer => {
@@ -299,15 +299,15 @@ export class EditInstitutionComponent implements OnInit {
         }
     }
 
-    private getExternalClientsUpdate(): string[] | null {
+    private getExternalClientsUpdate(): TSInstitutionExternalClient[] | null {
         const assignedClients = this.externalClients.assignedClients;
 
         if (EbeguUtil.isSame(assignedClients, this.initiallyAssignedClients)) {
             // no backed update necessary
             return null;
         }
-//TODO change we need to return the list of client with gueltigkeit
-        return assignedClients.map(client => client.externalClient.id);
+
+        return assignedClients;
     }
 
     private getTraegerschaftsUpdate(): string | null {
@@ -398,17 +398,17 @@ export class EditInstitutionComponent implements OnInit {
         return new Date(0);
     }
 
-    public assignAvailableClient(availableClient: TSExternalClient) {
+    public assignAvailableClient(availableClient: TSExternalClient): void {
         const index = this.externalClients.availableClients.indexOf(availableClient);
-        if(index > -1){
+        if (index > -1) {
             this.externalClients.availableClients.splice(index, 1);
         }
         this.externalClients.assignedClients.push(new TSInstitutionExternalClient(availableClient));
     }
 
-    public unassignClient(assignedClient: TSInstitutionExternalClient) {
+    public unassignClient(assignedClient: TSInstitutionExternalClient): void {
         const index = this.externalClients.assignedClients.indexOf(assignedClient);
-        if(index > -1){
+        if (index > -1) {
             this.externalClients.assignedClients.splice(index, 1);
         }
         this.externalClients.availableClients.push(assignedClient.externalClient);

@@ -26,15 +26,6 @@
             {{item.clientName}}
         </mat-option>
     </mat-select>
-    <mat-select *ngIf="institutionExternalClients" class="form-control"
-                [(ngModel)]="institutionExternalClients.assignedClients"
-                [name]="inputId"
-                [id]="inputId"
-                [multiple]="true">
-        <mat-option *ngFor="let item of options" [value]="item">
-            {{item.clientName}}
-        </mat-option>
-    </mat-select>
     <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[inputId]?.errors">
     </dv-error-messages>
 </div>

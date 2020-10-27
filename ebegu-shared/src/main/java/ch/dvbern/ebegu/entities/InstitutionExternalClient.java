@@ -84,5 +84,11 @@ public class InstitutionExternalClient {
 		this.externalClient = externalClient;
 	}
 
+	public InstitutionExternalClientId getId() {
+		return id;
+	}
 
+	public void setId(InstitutionExternalClientId id) {
+		this.id = id;
+	}
 }

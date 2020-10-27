@@ -29,14 +29,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
-@XmlRootElement(name = "externalClient")
+@XmlRootElement(name = "institutionExternalClient")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxInstitutionExternalClient {
 
 	private static final long serialVersionUID = 4045567623627216321L;
 
 	@Nonnull
-	private @NotNull JaxExternalClient jaxExternalClient;
+	private @NotNull JaxExternalClient externalClient;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -65,11 +65,11 @@ public class JaxInstitutionExternalClient {
 	}
 
 	@Nonnull
-	public JaxExternalClient getJaxExternalClient() {
-		return jaxExternalClient;
+	public JaxExternalClient getExternalClient() {
+		return externalClient;
 	}
 
-	public void setJaxExternalClient(@Nonnull JaxExternalClient jaxExternalClient) {
-		this.jaxExternalClient = jaxExternalClient;
+	public void setExternalClient(@Nonnull JaxExternalClient externalClient) {
+		this.externalClient = externalClient;
 	}
 }
