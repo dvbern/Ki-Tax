@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
@@ -56,7 +57,8 @@ import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivatDefinitivVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.RueckforderungVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungPublicVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
@@ -298,11 +300,18 @@ public class PDFServiceBean implements PDFService {
 
 		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
 		MandantPdfGenerator pdfGenerator = null;
-		if (rueckforderungFormular.isHasBeenProvisorisch()) {
-			pdfGenerator = new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
-				rueckforderungFormular, nameVerantwortlichePerson);
+		if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.PRIVAT) {
+			// is institution private
+			if (rueckforderungFormular.isHasBeenProvisorisch()) {
+				pdfGenerator = new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
+					rueckforderungFormular, nameVerantwortlichePerson);
+			} else {
+				pdfGenerator = new RueckforderungPrivateVerfuegungPdfGenerator(
+					rueckforderungFormular, nameVerantwortlichePerson);
+			}
 		} else {
-			pdfGenerator = new RueckforderungVerfuegungPdfGenerator(
+			// is instition public
+			pdfGenerator = new RueckforderungPublicVerfuegungPdfGenerator(
 				rueckforderungFormular, nameVerantwortlichePerson);
 		}
 		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
