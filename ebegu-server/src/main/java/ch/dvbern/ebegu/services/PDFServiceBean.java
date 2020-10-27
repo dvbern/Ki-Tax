@@ -300,14 +300,18 @@ public class PDFServiceBean implements PDFService {
 
 		String nameVerantwortlichePerson = ebeguConfiguration.getNotverordnungUnterschriftName();
 		MandantPdfGenerator pdfGenerator = null;
-		if (rueckforderungFormular.isHasBeenProvisorisch()) {
-			pdfGenerator = new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
-				rueckforderungFormular, nameVerantwortlichePerson);
-		} else if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.OEFFENTLICH) {
-			pdfGenerator = new RueckforderungPublicVerfuegungPdfGenerator(
-				rueckforderungFormular, nameVerantwortlichePerson);
+		if (rueckforderungFormular.getInstitutionTyp() == RueckforderungInstitutionTyp.PRIVAT) {
+			// is institution private
+			if (rueckforderungFormular.isHasBeenProvisorisch()) {
+				pdfGenerator = new RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
+					rueckforderungFormular, nameVerantwortlichePerson);
+			} else {
+				pdfGenerator = new RueckforderungPrivateVerfuegungPdfGenerator(
+					rueckforderungFormular, nameVerantwortlichePerson);
+			}
 		} else {
-			pdfGenerator = new RueckforderungPrivateVerfuegungPdfGenerator(
+			// is instition public
+			pdfGenerator = new RueckforderungPublicVerfuegungPdfGenerator(
 				rueckforderungFormular, nameVerantwortlichePerson);
 		}
 		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
