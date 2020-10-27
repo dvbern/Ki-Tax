@@ -30,10 +30,8 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.enums.PensumUnits;
 
 public final class MitteilungUtil {
 
@@ -118,58 +116,6 @@ public final class MitteilungUtil {
 				datumBis,
 				pensumMitteilung.getPensum(),
 				pensumMitteilung.getMonatlicheBetreuungskosten());
-		}
-	}
-
-	@Nonnull
-	public static String createNachrichtForMutationsmeldungFromAbweichung(
-		@Nonnull Betreuung betreuung,
-		boolean mahlzeitenverguenstigungEnabled,
-		@Nonnull Locale locale
-	) {
-		final StringBuilder message = new StringBuilder();
-		final int[] index = { 1 }; // Array, weil es final sein muss, damit es in LambdaExpression verwendet werden darf...
-		final List<BetreuungspensumAbweichung> abweichungen = betreuung.getBetreuungspensumAbweichungen().stream().filter(
-			betreuungspensumAbweichung ->
-				(!betreuungspensumAbweichung.isNew()
-					|| (betreuungspensumAbweichung.getVertraglichesPensum() != null && betreuungspensumAbweichung.getVertraglicheKosten() != null))
-		).collect(Collectors.toList());
-
-		abweichungen.forEach(abweichung -> {
-			if (index[0] > 1) {
-				message.append('\n');
-			}
-			message.append(createNachrichtForMutationsmeldungFromAbweichung(abweichung, mahlzeitenverguenstigungEnabled, index[0], locale));
-			index[0]++;
-		});
-		return message.toString();
-	}
-
-	@Nonnull
-	private static String createNachrichtForMutationsmeldungFromAbweichung(
-		@Nonnull BetreuungspensumAbweichung abweichung,
-		boolean mahlzeitenverguenstigungEnabled,
-		int index,
-		@Nonnull Locale locale
-	) {
-		BigDecimal multiplier = abweichung.getUnitForDisplay() == PensumUnits.DAYS
-			? Constants.MULTIPLIER_KITA
-			: Constants.MULTIPLIER_TAGESFAMILIEN;
-		BigDecimal pensumPercentage = MathUtil.DEFAULT.divide(abweichung.getPensum(), multiplier);
-		String datumAb = Constants.DATE_FORMATTER.format(abweichung.getGueltigkeit().getGueltigAb());
-		String datumBis = Constants.DATE_FORMATTER.format(abweichung.getGueltigkeit().getGueltigBis());
-		BigDecimal kosten = abweichung.getMonatlicheBetreuungskosten();
-
-		if (mahlzeitenverguenstigungEnabled) {
-			BigDecimal hauptmahlzeiten = BigDecimal.valueOf(abweichung.getMonatlicheHauptmahlzeiten());
-			BigDecimal nebenmahlzeiten = BigDecimal.valueOf(abweichung.getMonatlicheNebenmahlzeiten());
-			return ServerMessageUtil.getMessage(
-				"mutationsmeldung_message_mahlzeitverguenstigung",	locale, index,
-				datumAb, datumBis, pensumPercentage, kosten, hauptmahlzeiten, nebenmahlzeiten);
-		} else {
-			return ServerMessageUtil.getMessage(
-				"mutationsmeldung_message", locale, index,
-				datumAb, datumBis, pensumPercentage, kosten);
 		}
 	}
 }

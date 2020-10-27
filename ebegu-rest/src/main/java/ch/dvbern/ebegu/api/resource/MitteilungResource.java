@@ -552,20 +552,6 @@ public class MitteilungResource {
 		Betreuungsmitteilung mitteilung =
 			converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
 
-		final Locale locale = LocaleThreadLocal.get();
-
-		final Einstellung einstellung = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
-
-		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-
-		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldungFromAbweichung(betreuung, mahlzeitenverguenstigungEnabled, locale));
-
 		mitteilungService.createMutationsmeldungAbweichungen(mitteilung, betreuung);
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
