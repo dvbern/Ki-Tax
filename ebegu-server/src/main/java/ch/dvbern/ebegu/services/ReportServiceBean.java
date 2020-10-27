@@ -131,6 +131,8 @@ import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConver
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -834,16 +836,21 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 
-		List<ZahlungDataRow> zahlungDataRows = zahlungsauftrag.getZahlungen()
-			.stream()
-			.filter(zahlung -> !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-								allowedInst
-									.stream()
-									.anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId())))
-			.map(zahlung -> new ZahlungDataRow(
-				zahlung,
-				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
-		)).collect(Collectors.toList());
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
+		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			if (!EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+				allowedInst
+					.stream()
+					.anyMatch(institution -> institution.getId().equals(zahlung.getEmpfaengerId()))) {
+				Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+				ZahlungDataRow row = new ZahlungDataRow(
+					zahlung,
+					adresseKontoinhaber
+				);
+				zahlungDataRows.add(row);
+			}
+		}
 
 		return getUploadFileInfoZahlung(
 			zahlungDataRows,
@@ -872,15 +879,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
-			.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true);
-		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, institutionStammdaten);
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlung.getZahlungsauftrag().getZahlungslaufTyp());
+		Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+		ZahlungDataRow dataRow = new ZahlungDataRow(
+			zahlung,
+			adresseKontoinhaber
+		);
 
 		reportData.add(dataRow);
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getEmpfaengerName();
 
 		return getUploadFileInfoZahlung(
 			reportData,
@@ -913,11 +923,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
-			.filter(zahlung -> {
+			.filter(zahlungDataRow -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
 				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
 			}).collect(Collectors.toList());
 
 		// Blatt Details

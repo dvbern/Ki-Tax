@@ -634,7 +634,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Fall
 		Predicate predicate = cb.equal(root.get(Gesuch_.dossier), dossier);
 		// Keine Papier-Antraege, die noch nicht verfuegt sind
-		Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER); // todo remove ???
+		Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER);
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
 		Predicate predicateUnverfuegtesPapiergesuch =
 			CriteriaQueryHelper.concatenateExpressions(cb, predicatePapier, predicateStatus);
