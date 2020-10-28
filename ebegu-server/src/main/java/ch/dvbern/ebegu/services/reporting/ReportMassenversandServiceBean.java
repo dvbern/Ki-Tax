@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -51,6 +51,10 @@ import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandDataRow;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandExcelConverter;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandRepeatKindDataCol;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -82,7 +86,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	private GesuchService gesuchService;
 
 	@Inject
-	private KindService  kindService;
+	private KindService kindService;
 
 
 	@Nonnull

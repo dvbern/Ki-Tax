@@ -1436,6 +1436,7 @@
     "ReportType_tagesschuleAnmeldungen": "Inscriptions aux écoles à journée continue",
     "ReportType_tagesschuleRechnungsstellung": "Facturation pour les écoles à jounrée continue",
     "ReportType_notrecht": "Droit d'urgence",
+    "ReportType_mahlzeitenverguenstigung": "Réduction de repas",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
     "BatchJobStatus_FINISHED": "Prêt à télécharger",
@@ -2164,5 +2165,6 @@
     "BENUTZER_RESET_CONFIRMATION_TITLE": "Voulez-vous vraiment réinitialiser l'utilisateur?",
     "BENUTZER_RESET_CONFIRMATION_TEXT": "La connection avec le compte BE-Login actuel sera effacée",
     "BENUTZER_RESETTED_MESSAGE": "{{fullName}} a été réinitialisé(e)",
+    "MAHLZEITENVERGUENSTIGUNG": "Réduction des repas",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

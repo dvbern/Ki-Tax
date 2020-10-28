@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.util.Collection;
@@ -44,6 +44,8 @@ import ch.dvbern.ebegu.reporting.ReportLastenausgleichBerechnungService;
 import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichBerechnungCSVConverter;
 import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichBerechnungDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichBerechnungExcelConverter;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.LastenausgleichService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;

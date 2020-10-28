@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.tests.reporting;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;

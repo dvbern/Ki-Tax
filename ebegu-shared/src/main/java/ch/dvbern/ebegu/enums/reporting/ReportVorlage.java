@@ -149,6 +149,12 @@ public enum ReportVorlage {
 		ReportFileName.NOTRECHT,
 		Constants.DATA,
 		MergeFieldNotrecht.class
+	),
+	VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG(
+		"/reporting/Mahlzeitenverguenstigung.xlsx",
+		ReportFileName.MAHLZEITENVERGUENSTIGUNG,
+		Constants.DATA,
+		MergeFieldMahlzeitenverguenstigung.class
 	);
 
 	@Nonnull
