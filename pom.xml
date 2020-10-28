@@ -427,6 +427,11 @@
                 <artifactId>avro</artifactId>
                 <version>1.10.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.20</version>
+            </dependency>
             <!-- endregion -->
 
             <!-- region Submodules -->
@@ -581,12 +586,6 @@
                 <scope>test</scope>
             </dependency>
             <!-- endregion -->
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-compress</artifactId>
-                <version>1.20</version>
-            </dependency>
 
         </dependencies>
 
