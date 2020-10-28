@@ -41,8 +41,8 @@ public class MahlzeitenverguenstigungDataRow {
 	@Nullable private String kindVorname;
 	@Nullable private LocalDate kindGeburtsdatum;
 
-	private LocalDate zeitabschnittVon;
-	private LocalDate zeitabschnittBis;
+	@Nullable private LocalDate zeitabschnittVon;
+	@Nullable private LocalDate zeitabschnittBis;
 
 	@Nullable private BigDecimal anzahlHauptmahlzeiten;
 	@Nullable private BigDecimal anzahlNebenmahlzeiten;
@@ -153,19 +153,21 @@ public class MahlzeitenverguenstigungDataRow {
 		this.kindGeburtsdatum = kindGeburtsdatum;
 	}
 
+	@Nullable
 	public LocalDate getZeitabschnittVon() {
 		return zeitabschnittVon;
 	}
 
-	public void setZeitabschnittVon(LocalDate zeitabschnittVon) {
+	public void setZeitabschnittVon(@Nullable LocalDate zeitabschnittVon) {
 		this.zeitabschnittVon = zeitabschnittVon;
 	}
 
+	@Nullable
 	public LocalDate getZeitabschnittBis() {
 		return zeitabschnittBis;
 	}
 
-	public void setZeitabschnittBis(LocalDate zeitabschnittBis) {
+	public void setZeitabschnittBis(@Nullable LocalDate zeitabschnittBis) {
 		this.zeitabschnittBis = zeitabschnittBis;
 	}
 

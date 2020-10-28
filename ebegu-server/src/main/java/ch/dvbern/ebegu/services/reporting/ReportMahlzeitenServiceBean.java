@@ -170,8 +170,9 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		return dataRows;
 	}
 
+	@Nonnull
 	private List<MahlzeitenverguenstigungDataRow> convertToMahlzeitDataRow(
-		List<VerfuegungZeitabschnitt> zeitabschnittList
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnittList
 	) {
 
 		List<MahlzeitenverguenstigungDataRow> dataRowList = new ArrayList<>();
@@ -187,9 +188,10 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		return dataRowList;
 	}
 
+	@Nonnull
 	private MahlzeitenverguenstigungDataRow createRowForKinderReport(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
 
 		AbstractPlatz gueltigePlatz = zeitabschnitt.getVerfuegung().getBetreuung();
 		//und Anmeldungen auch betrachten

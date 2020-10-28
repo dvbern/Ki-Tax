@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
- *
+ * Ki-Tax: System for the management of external childcare subsidies
+ * Copyright (C) 2017 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
- *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services.reporting;
@@ -139,7 +137,11 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		return null;
 	}
 
-	protected Gesuch getGueltigesGesuch(Map<Long, Gesuch> neustesVerfuegtesGesuchCache, Gesuch gesuch) {
+	@Nonnull
+	protected Gesuch getGueltigesGesuch(
+		@Nonnull Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
+		@Nonnull Gesuch gesuch
+	) {
 		Gesuch gueltigeGesuch;
 		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(
 			gesuch.getFall().getFallNummer(),
@@ -148,10 +150,11 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		return gueltigeGesuch;
 	}
 
+	@Nonnull
 	protected Betreuung getGueltigeBetreuung(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		Betreuung gueltigeBetreuung,
-		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Betreuung gueltigeBetreuung,
+		@Nonnull @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
 
 		return gueltigeKind
 			.map(gk -> {
@@ -166,10 +169,11 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 			.orElse(gueltigeBetreuung);
 	}
 
+	@Nonnull
 	protected AnmeldungTagesschule getGueltigeAnmeldung(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		AnmeldungTagesschule gueltigeAnmeldung,
-		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull AnmeldungTagesschule gueltigeAnmeldung,
+		@Nonnull @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
 
 		return gueltigeKind
 			.map(gk -> {
@@ -184,7 +188,8 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 			.orElse(gueltigeAnmeldung);
 	}
 
-	protected Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
+	@Nonnull
+	protected Optional<KindContainer> getGueltigesKind(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, @Nonnull Gesuch gueltigeGesuch) {
 		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 		Objects.requireNonNull(betreuung);
 		Integer kindNummer = betreuung.getKind().getKindNummer();
