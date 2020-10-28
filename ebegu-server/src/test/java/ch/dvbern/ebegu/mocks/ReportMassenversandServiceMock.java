@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandDataRow;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandRepeatKindDataCol;
-import ch.dvbern.ebegu.services.ReportMassenversandServiceBean;
+import ch.dvbern.ebegu.services.reporting.ReportMassenversandServiceBean;
 
 public class ReportMassenversandServiceMock extends ReportMassenversandServiceBean {
 

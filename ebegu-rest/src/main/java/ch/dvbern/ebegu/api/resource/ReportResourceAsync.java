@@ -722,6 +722,51 @@ public class ReportResourceAsync {
 		return Response.ok(workJob.getId()).build();
 	}
 
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Mahlzeitenverguenstigung'",
+		response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/mahlzeitenverguenstigung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS})
+	public Response getMahlzeitenverguenstigungReportExcel(
+		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
+		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo)
+		throws EbeguRuntimeException {
+
+		String ip = downloadResource.getIP(request);
+
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
+		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
+		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
+
+		if (!dateTo.isAfter(dateFrom)) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"getMahlzeitenverguenstigungReportExcel",
+				"Fehler beim erstellen Report Mahlzeitenverguenstigung",
+				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
+		}
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG,
+			dateFrom,
+			dateTo,
+			null,
+			LocaleThreadLocal.get()
+		);
+
+		return Response.ok(workJob.getId()).build();
+	}
+
 	/**
 	 * Überprüft, ob für eine bestimmte Gesuchsperiode die Anzahl Module über dem maximalen Wert liegt.
 	 * Dieser maximale Wert ist durch das Exceltemplate gegeben
