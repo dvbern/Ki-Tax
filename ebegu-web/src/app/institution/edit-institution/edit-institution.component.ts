@@ -134,7 +134,8 @@ export class EditInstitutionComponent implements OnInit {
     private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
-        this.initiallyAssignedClients = [...externalClients.assignedClients];
+        this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
+        //this.initiallyAssignedClients = [...externalClients.assignedClients];
         this.changeDetectorRef.markForCheck();
     }
 
@@ -302,12 +303,36 @@ export class EditInstitutionComponent implements OnInit {
     private getExternalClientsUpdate(): TSInstitutionExternalClient[] | null {
         const assignedClients = this.externalClients.assignedClients;
 
-        if (EbeguUtil.isSame(assignedClients, this.initiallyAssignedClients)) {
+        if (this.isSameInstitutionClient(assignedClients, this.initiallyAssignedClients)) {
             // no backed update necessary
             return null;
         }
 
         return assignedClients;
+    }
+
+    /**
+     * Compares two InstitutionExternalClient array and returns TRUE when both arrays contain the same objects and
+     * values
+     */
+    private isSameInstitutionClient(a: TSInstitutionExternalClient[], b: TSInstitutionExternalClient[]): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const aSorted = a.concat().sort();
+        const bSorted = b.concat().sort();
+
+        return aSorted.every((value, index) => this.isEquivalent(bSorted[index], value));
+    }
+
+    /**
+     * In order to compare two Institution External Client, we check if the Client id's are the same and if the
+     * Gueltigkeit is the same
+     */
+    private isEquivalent(a: TSInstitutionExternalClient, b: TSInstitutionExternalClient): boolean {
+        return a.externalClient.id === b.externalClient.id && a.gueltigkeit.gueltigAb === b.gueltigkeit.gueltigAb
+            && a.gueltigkeit.gueltigBis === b.gueltigkeit.gueltigBis;
     }
 
     private getTraegerschaftsUpdate(): string | null {

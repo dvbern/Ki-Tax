@@ -23,13 +23,17 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.hibernate.annotations.Type;
+
 @Embeddable
 public class InstitutionExternalClientId implements Serializable {
 
 	@Column(name = "institution_id")
+	@Type( type = "string-uuid-binary" )
 	private String institutionId;
 
 	@Column(name = "external_client_id")
+	@Type( type = "string-uuid-binary" )
 	private String externalClientId;
 
 	private InstitutionExternalClientId() {}

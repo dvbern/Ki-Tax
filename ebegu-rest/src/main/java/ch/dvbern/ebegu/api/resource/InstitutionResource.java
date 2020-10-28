@@ -307,7 +307,6 @@ public class InstitutionResource {
 			stammdaten.getInstitution(),
 			institution);
 
-
 		if (update.getInstitutionExternalClients() != null) {
 			List<InstitutionExternalClient> institutionExternalClients =
 				converter.institutionExternalClientListToEntity(update.getInstitutionExternalClients(), institution);
@@ -322,9 +321,7 @@ public class InstitutionResource {
 
 		// set the updated institution
 		stammdaten.setInstitution(institution);
-		//TODO Problem bei update a collection with cascade was no longer referenced...
-		//maybe we have to save the externalClient separatly but then why it doesnt work like with kindContainer
-		//to analyze...
+
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
 
@@ -405,7 +402,9 @@ public class InstitutionResource {
 		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap =
 			institutionService.getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(true);
 
-		return institutionInstitutionStammdatenMap.entrySet().stream().map(map -> converter.institutionListDTOToJAX(map))
+		return institutionInstitutionStammdatenMap.entrySet()
+			.stream()
+			.map(map -> converter.institutionListDTOToJAX(map))
 			.collect(Collectors.toList());
 	}
 
@@ -459,16 +458,21 @@ public class InstitutionResource {
 
 		Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
 
-		List<ExternalClient> existingExternalClient = institution.getInstitutionExternalClients().stream()
+		Collection<InstitutionExternalClient> institutionExternalClients =
+			externalClientService.getInstitutionExternalClientForInstitution(institution);
+
+		List<ExternalClient> existingExternalClient = institutionExternalClients.stream()
 			.map(InstitutionExternalClient::getExternalClient).collect(Collectors.toList());
 
 		availableClients.removeAll(existingExternalClient);
 
 		JaxInstitutionExternalClientAssignment jaxInstitutionExternalClientAssignment =
 			new JaxInstitutionExternalClientAssignment();
-		jaxInstitutionExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
+		jaxInstitutionExternalClientAssignment.getAvailableClients()
+			.addAll(converter.externalClientsToJAX(availableClients));
 
-		jaxInstitutionExternalClientAssignment.getAssignedClients().addAll(converter.institutionExternalClientsToJAX(institution.getInstitutionExternalClients()));
+		jaxInstitutionExternalClientAssignment.getAssignedClients()
+			.addAll(converter.institutionExternalClientsToJAX(institutionExternalClients));
 
 		return Response.ok(jaxInstitutionExternalClientAssignment).build();
 	}

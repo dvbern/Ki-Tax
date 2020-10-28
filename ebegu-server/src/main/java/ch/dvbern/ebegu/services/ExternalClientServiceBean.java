@@ -38,6 +38,9 @@ import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.ExternalClient_;
 import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -76,19 +79,10 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 		return Optional.ofNullable(externalClient);
 	}
 
-	/*@Override
-	public Optional<ExternalClient> findExternalClient(String clientName, ExternalClientType type) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<ExternalClient> query = cb.createQuery(ExternalClient.class);
-		Root<ExternalClient> root = query.from(ExternalClient.class);
-		List<Predicate> predicates = new ArrayList<>();
-		Predicate predicateClientName = cb.equal(root.get(ExternalClient_.CLIENT_NAME),
-			clientName);
-		Predicate predicateType = cb.equal(root.get(ExternalClient_.TYPE), type);
-		predicates.add(predicateClientName);
-		predicates.add(predicateType);
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-		ExternalClient externalClient = persistence.getCriteriaSingleResult(query);
-		return Optional.ofNullable(externalClient);
-	}*/
+	@Nonnull
+	@Override
+	public Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(Institution institution) {
+		return criteriaQueryHelper.getEntitiesByAttribute(
+			InstitutionExternalClient.class, institution, InstitutionExternalClient_.institution);
+	}
 }

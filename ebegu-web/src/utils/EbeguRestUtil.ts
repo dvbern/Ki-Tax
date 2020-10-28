@@ -1277,7 +1277,7 @@ export class EbeguRestUtil {
             name: update.name || null,
             traegerschaftId: update.traegerschaftId || null,
             stammdaten: this.institutionStammdatenToRestObject({}, update.stammdaten) || null,
-            institutionExternalClients: this.institutionExternalClientListToRestObject(update.institutionExternalClients) || null,
+            institutionExternalClients: this.institutionExternalClientListToRestObject(update.institutionExternalClients),
         };
     }
 
@@ -4251,7 +4251,7 @@ export class EbeguRestUtil {
 
     public institutionExternalClientListToRestObject(institutionExternalClientList: TSInstitutionExternalClient[]): Array<any> {
         return institutionExternalClientList ? institutionExternalClientList.map(
-            item => this.institutionExternalClientToRestObject({}, item)) : [];
+            item => this.institutionExternalClientToRestObject({}, item)) : undefined;
     }
 
     public  institutionExternalClientToRestObject(

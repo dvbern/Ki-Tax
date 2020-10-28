@@ -390,7 +390,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			.map(client -> institutionClientEventConverter.clientAddedEventOf(id, client))
 			.forEach(event -> exportedEvent.fire(event));
 		institution.getInstitutionExternalClients().clear();
-		institution.setInstitutionExternalClients(new HashSet<>(institutionExternalClients));
+		institution.getInstitutionExternalClients().addAll(new HashSet<>(institutionExternalClients));
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {

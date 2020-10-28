@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 
 /**
@@ -38,4 +40,6 @@ public interface ExternalClientService {
 	Collection<ExternalClient> getAllForInstitution();
 
 	Optional<ExternalClient> findExternalClient(@Nullable String id);
+
+	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(Institution institution);
 }
