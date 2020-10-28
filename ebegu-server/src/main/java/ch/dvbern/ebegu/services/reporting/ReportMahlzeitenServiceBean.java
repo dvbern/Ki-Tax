@@ -211,6 +211,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			Optional<KindContainer> gueltigeKind = getGueltigesKind(zeitabschnitt, gueltigeGesuch);
 
 			if (gueltigePlatz.getBetreuungsangebotTyp().isTagesschule()) {
+				Objects.requireNonNull(zeitabschnitt.getVerfuegung().getAnmeldungTagesschule());
 				gueltigePlatz = getGueltigeAnmeldung(
 					zeitabschnitt,
 					zeitabschnitt.getVerfuegung().getAnmeldungTagesschule(),
@@ -317,14 +318,14 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 				) {
 					Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
 					if (betreuungspensum.getGueltigkeit().contains(zeitabschnitt.getGueltigkeit())) {
-						row.setAnzahlHauptmahlzeiten(BigDecimal.valueOf(betreuungspensum.getMonatlicheHauptmahlzeiten()));
+						row.setAnzahlHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
 						row.setKostenHauptmahlzeiten(MathUtil.DEFAULT.multiplyNullSafe(
 							betreuungspensum.getTarifProHauptmahlzeit(),
-							BigDecimal.valueOf(betreuungspensum.getMonatlicheHauptmahlzeiten())));
+							betreuungspensum.getMonatlicheHauptmahlzeiten()));
 						row.setKostenNebenmahlzeiten(MathUtil.DEFAULT.multiplyNullSafe(
 							betreuungspensum.getTarifProNebenmahlzeit(),
-							BigDecimal.valueOf(betreuungspensum.getMonatlicheNebenmahlzeiten())));
-						row.setAnzahlNebenmahlzeiten(BigDecimal.valueOf(betreuungspensum.getMonatlicheNebenmahlzeiten()));
+							betreuungspensum.getMonatlicheNebenmahlzeiten()));
+						row.setAnzahlNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 						break;
 					}
 				}
