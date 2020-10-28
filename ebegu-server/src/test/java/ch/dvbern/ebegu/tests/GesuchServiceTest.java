@@ -72,6 +72,7 @@ import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AntragStatusHistoryService;
@@ -211,7 +212,11 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final DokumentGrund dokumentGrund = TestDataUtil.createDefaultDokumentGrund();
 		dokumentGrund.setGesuch(gesuch);
 		persistence.persist(dokumentGrund);
-		zahlungService.zahlungsauftragErstellen(bern.getId(), LocalDate.now(), "Testauftrag",
+		zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+			bern.getId(),
+			LocalDate.now(),
+			"Testauftrag",
 			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0));
 
 		//check all objects exist
@@ -342,7 +347,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testAntragEinreichenAndFreigeben() {
 		LocalDate now = LocalDate.now();
 		loginAsGesuchsteller("gesuchst");
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService, gesuchsperiode);
+		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
+			gesuchService, gesuchsperiode);
 
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
@@ -363,7 +369,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testExceptionOnInvalidFreigabe() {
 		LocalDate now = LocalDate.now();
 		loginAsGesuchsteller("gesuchst");
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService, gesuchsperiode);
+		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
+			gesuchService, gesuchsperiode);
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
@@ -468,7 +475,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		loginAsGesuchsteller("gesuchst");
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence, gesuchService, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence,
+			gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, gesuch.getStatus());
 		Assert.assertEquals(Eingangsart.ONLINE, gesuch.getEingangsart());
@@ -767,7 +775,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testChangeFinSitStatusAbgelehnt() {
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertNull(gesuch.getFinSitStatus());
-		Assert.assertNull(gesuch.getFinSitStatus());
 
 		gesuchService.changeFinSitStatus(gesuch.getId(), FinSitStatus.ABGELEHNT);
 		final Optional<Gesuch> updatedGesuch = gesuchService.findGesuch(gesuch.getId());
@@ -784,7 +791,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		betreuungService.saveAnmeldungTagesschule(betreuung, false);
+		betreuungService.saveAnmeldungTagesschule(betreuung);
 
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Assert.assertNotNull(mutation);

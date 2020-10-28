@@ -15,30 +15,48 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewChecked,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
+import * as moment from 'moment';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
-import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
+import {
+    isBereitZumVerfuegenOderVerfuegt,
+    isAnyOfVerfuegtOrPruefungKantonStufe2,
+    isNeuOrEingeladenStatus,
+    isStatusRelevantForFrist,
+    TSRueckforderungStatus
+} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
+import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {UploadRS} from '../../core/service/uploadRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
+import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verlaengerung-dialog/rueckforderung-verlaengerung-dialog.component';
 
 @Component({
     selector: 'dv-rueckforderung-formular',
@@ -46,26 +64,49 @@ import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
     styleUrls: ['./rueckforderung-formular.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RueckforderungFormularComponent implements OnInit {
+export class RueckforderungFormularComponent implements OnInit, AfterViewChecked {
+
     public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
         return this._rueckforderungZahlungenList;
     }
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
+    private einreicheFristPrivatDefault: moment.Moment;
+    private einreicheFristOeffentlich: moment.Moment;
+
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
-    // Checkbox for Institution:
+    public readOnly: boolean;
+    public readOnlyDocument: boolean;
+
+    // Checkbox for Institution Stufe 1:
     public betreuungKorrektAusgewiesen: boolean;
     public gutscheinPlaetzenReduziert: boolean;
     public erstattungGemaessKanton: boolean;
     public mahlzeitenBGSubventionenGebuehrensystem: boolean;
     public belegeEinreichenBetrageKantonZurueckfordern: boolean;
+    // Checkbox for Institution Stufe 2:
+    public elternbeitraegeNichtInRechnung: boolean;
+    public verpflegungskostenKorrektAbgezogen: boolean;
+    public notwendigenInformationenLiefern: boolean;
+
+    public showMessageFehlendeDokumenteAngaben: boolean = false;
+    public showMessageFehlendeDokumenteKommunikation: boolean = false;
+    public showMessageFehlendeDokumenteEinsatzplaene: boolean = false;
+    public showMessageFehlendeDokumenteKurzarbeit: boolean = false;
+    public showMessageFehlendeDokumenteErwerbsersatz: boolean = false;
+    public showMessageFehlendeVerfuegungBetrag: boolean = false;
+    public showMessageFehlendeBemerkungen: boolean = false;
+
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
-    private _stufe1ProvBetrag: number;
-    private _stufe2ProvBetrag: number;
+    private _provisorischerBetrag: number;
 
     public rueckforderungAngabenDokumente?: TSRueckforderungDokument[];
+    public rueckforderungKommunikationDokumente?: TSRueckforderungDokument[];
+    public rueckforderungEinsatzplaeneDokumente?: TSRueckforderungDokument[];
+    public rueckforderungKurzarbeitDokumente?: TSRueckforderungDokument[];
+    public rueckforderungErwerbsersatzDokumente?: TSRueckforderungDokument[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -78,11 +119,34 @@ export class RueckforderungFormularComponent implements OnInit {
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly uploadRS: UploadRS,
         private readonly cdr: ChangeDetectorRef,
+        private readonly applicationPropertyService: ApplicationPropertyRS
     ) {
     }
 
+    public ngAfterViewChecked(): void {
+
+        const anchor: string = this.$transition$.params().anchor;
+
+        if (EbeguUtil.isNullOrUndefined(anchor)) {
+            return;
+        }
+
+        const el = document.getElementById(anchor);
+        if (el) {
+            el.scrollIntoView();
+            el.setAttribute('id', 'scrolled');
+        }
+    }
+
     public ngOnInit(): void {
+
         const rueckforederungFormId: string = this.$transition$.params().rueckforderungId;
+        this.applicationPropertyService.getNotverordnungDefaultEinreichefristPrivat().then(res => {
+            this.einreicheFristPrivatDefault = DateUtil.localDateToMoment(res).endOf('day');
+        });
+        this.applicationPropertyService.getNotverordnungDefaultEinreichefristOeffentlich().then(res => {
+            this.einreicheFristOeffentlich = DateUtil.localDateToMoment(res).endOf('day');
+        });
 
         if (!rueckforederungFormId) {
             return;
@@ -90,25 +154,47 @@ export class RueckforderungFormularComponent implements OnInit {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
+                    this.readOnly = this.initReadOnly(response);
+                    this.readOnlyDocument = this.initReadOnlyDocument(response);
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
-                    if (this.isPruefungKantonStufe1(response)) {
-                        this.calculateKantonProvBetrag(response, true);
-                    }
-                    if (this.isInstitutionStufe2(response)) {
-                        this.calculateInstiProvBetrag(response, false);
-                    }
+                    this.calculateProvBetrag(response);
                     return response;
                 }));
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.showMessageFehlendeDokumenteAngaben = false;
+        this.showMessageFehlendeDokumenteKommunikation = false;
+        this.showMessageFehlendeDokumenteEinsatzplaene = false;
+        this.showMessageFehlendeDokumenteKurzarbeit = false;
+        this.showMessageFehlendeDokumenteErwerbsersatz = false;
+        this.showMessageFehlendeVerfuegungBetrag = false;
+        this.showMessageFehlendeBemerkungen = false;
         if (!this.form.valid) {
             EbeguUtil.selectFirstInvalid();
             return;
         }
         if (isNeuOrEingeladenStatus(rueckforderungFormular.status)) {
             return;
+        }
+        if (this.isInstitutionStufe2(rueckforderungFormular) && !this.validateDokumente(rueckforderungFormular)) {
+            return;
+        }
+        if (rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+        ) {
+            if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.stufe2VerfuegungBetrag)) {
+                this.showMessageFehlendeVerfuegungBetrag = true;
+                document.getElementById('gewaehrte_ausfallentschaedigung_stufe2_id').focus();
+                return;
+            }
+            if (rueckforderungFormular.stufe2VerfuegungBetrag !== this.provisorischerBetrag &&
+                EbeguUtil.isNullOrUndefined(rueckforderungFormular.bemerkungFuerVerfuegung)) {
+                this.showMessageFehlendeBemerkungen = true;
+                document.getElementById('bemerkungZurVerfuegung_id').focus();
+                return;
+            }
         }
 
         const dialogConfig = new MatDialogConfig();
@@ -121,49 +207,20 @@ export class RueckforderungFormularComponent implements OnInit {
                     if (answer !== true) {
                         return;
                     }
-                    this.doSave(rueckforderungFormular);
+                    this.doSave(rueckforderungFormular, true);
                     this.changeDetectorRef.markForCheck();
                 },
                 () => {
                 });
     }
 
-    private doSave(rueckforderungFormular: TSRueckforderungFormular): void {
-        // Status wechseln:
-        switch (rueckforderungFormular.status) {
-            case TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1: {
-                if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    break;
-                }
-                rueckforderungFormular.status = TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1;
-                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden = rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden;
-                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage = rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
-                rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung = rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
-                break;
-            }
-            case TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1: {
-                if (this.authServiceRS.isOneOfRoles(
-                    [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
-                    rueckforderungFormular.status = TSRueckforderungStatus.GEPRUEFT_STUFE_1;
-                }
-                break;
-            }
-            case TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2: {
-                if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    break;
-                }
-                rueckforderungFormular.status = TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
-                rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden = rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
-                rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage = rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
-                rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung = rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
-                break;
-            }
-            default:
-                break;
-        }
-
-        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular)
+    private doSave(rueckforderungFormular: TSRueckforderungFormular, doSaveStatusChange: boolean): void {
+        // Den Status sollte sicherheitshalber im Backend geprueft und gesetzt werden
+        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(
+            rueckforderungFormular, doSaveStatusChange)
             .then((response: TSRueckforderungFormular) => {
+                this.readOnly = this.initReadOnly(response);
+                this.readOnlyDocument = this.initReadOnlyDocument(response);
                 this.initRueckforderungZahlungen(response);
                 return response;
             }));
@@ -190,7 +247,7 @@ export class RueckforderungFormularComponent implements OnInit {
                         this.changeDetectorRef.markForCheck();
                         return;
                     }
-                    this.doSave(rueckforderungFormular);
+                    this.doSave(rueckforderungFormular, true);
                 },
                 () => {
                 });
@@ -207,7 +264,7 @@ export class RueckforderungFormularComponent implements OnInit {
                 EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeAusbezahltAm);
             this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe1);
         }
-        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungBetrag)) {
+        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungDatum)) {
             return;
         }
         const rueckforderungZahlungStufe2 = new TSRueckforderungZahlung();
@@ -220,12 +277,19 @@ export class RueckforderungFormularComponent implements OnInit {
 
     }
 
-    public enableRueckforderungAbschliessen(): boolean {
-        return this.betreuungKorrektAusgewiesen
-            && this.gutscheinPlaetzenReduziert
-            && this.erstattungGemaessKanton
-            && this.mahlzeitenBGSubventionenGebuehrensystem
-            && this.belegeEinreichenBetrageKantonZurueckfordern;
+    public enableRueckforderungAbsenden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (this.isInstitutionStufe1(rueckforderungFormular)) {
+            return this.betreuungKorrektAusgewiesen
+                && this.gutscheinPlaetzenReduziert
+                && this.erstattungGemaessKanton
+                && this.mahlzeitenBGSubventionenGebuehrensystem
+                && this.belegeEinreichenBetrageKantonZurueckfordern;
+        }
+        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat()) {
+            return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern
+                && this.verpflegungskostenKorrektAbgezogen;
+        }
+        return this.elternbeitraegeNichtInRechnung && this.notwendigenInformationenLiefern;
     }
 
     public isInstitutionStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
@@ -262,6 +326,20 @@ export class RueckforderungFormularComponent implements OnInit {
         return false;
     }
 
+    public isProvVerfuegenPossible(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.isPruefungKantonStufe2(rueckforderungFormular) &&
+            rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public isProvisorischVerfuegtStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
     public isGeprueftKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
             && this.authServiceRS.isOneOfRoles(
@@ -271,12 +349,22 @@ export class RueckforderungFormularComponent implements OnInit {
         return false;
     }
 
-    public showAbsendenText(rueckforderungFormular: TSRueckforderungFormular): boolean {
-        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            return true;
+    public isKantonBenutzer(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public getTextConfirmationAfterInBearbeitungInstitutionStufe2(rueckforderungFormular: TSRueckforderungFormular): string {
+        switch (rueckforderungFormular.institutionTyp) {
+            case TSRueckforderungInstitutionTyp.OEFFENTLICH:
+                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
+            case TSRueckforderungInstitutionTyp.PRIVAT:
+                if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
+                    return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
+                }
+                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG');
+            default:
+                return '';
         }
-        return false;
     }
 
     public translateStatus(status: string): string {
@@ -287,94 +375,48 @@ export class RueckforderungFormularComponent implements OnInit {
         return rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
     }
 
-    public calculateInstiProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
-        this.stufe1ProvBetrag = undefined;
-        this.stufe2ProvBetrag = undefined;
-        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
-            return;
-        }
-        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage;
-
-        if (this.isKitaAngebot(rueckforderungFormular)
-            && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
-            if (isStufe1) {
-                this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-                return;
-            }
-            this.stufe2ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-            return;
-        }
-        const kostenuebernahmeAnzahlStunden = isStufe1 ? rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden
-            : rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
-            return;
-        }
-        if (isStufe1) {
-            this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-            return;
-        }
-        this.stufe2ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-        return;
+    public get provisorischerBetrag(): number {
+        return this._provisorischerBetrag;
     }
 
-    public calculateKantonProvBetrag(rueckforderungFormular: TSRueckforderungFormular, isStufe1: boolean): void {
-        this.stufe1ProvBetrag = undefined;
-        this.stufe2ProvBetrag = undefined;
-        const kostenuebernahmeBetreuung = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung
-            : rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeBetreuung)) {
-            return;
-        }
-        const kostenuebernahmeAnzahlTage = isStufe1 ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage
-            : rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage;
-
-        if (this.isKitaAngebot(rueckforderungFormular)
-            && EbeguUtil.isNotNullOrUndefined(kostenuebernahmeAnzahlTage)) {
-            if (isStufe1) {
-                this.stufe1ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-                return;
-            }
-            this.stufe2ProvBetrag = kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
-            return;
-        }
-        const kostenuebernahmeAnzahlStunden = isStufe1
-            ? rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden
-            : rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden;
-        if (EbeguUtil.isNullOrUndefined(kostenuebernahmeAnzahlStunden)) {
-            return;
-        }
-        if (isStufe1) {
-            this.stufe1ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-            return;
-        }
-        this.stufe2ProvBetrag = kostenuebernahmeAnzahlStunden + kostenuebernahmeBetreuung;
-        return;
+    public set provisorischerBetrag(value: number) {
+        this._provisorischerBetrag = value;
     }
 
-    public get stufe1ProvBetrag(): number {
-        return this._stufe1ProvBetrag;
+    public calculateProvBetrag(rueckforderungFormular: TSRueckforderungFormular): void {
+        this._provisorischerBetrag = rueckforderungFormular.calculateProvisorischerBetrag();
     }
 
-    public set stufe1ProvBetrag(stufe1ProvBetrag: number) {
-        this._stufe1ProvBetrag = stufe1ProvBetrag;
+    public showVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Wenn noch nicht ausgefuellt, werden beide angezeigt
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH;
     }
 
-    public get stufe2ProvBetrag(): number {
-        return this._stufe2ProvBetrag;
-    }
-
-    public set stufe2ProvBetrag(stufe2ProvBetrag: number) {
-        this._stufe2ProvBetrag = stufe2ProvBetrag;
-    }
-
-    public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
+    public downloadVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): void {
         const win = this.downloadRS.prepareDownloadWindow();
         const language = this.i18nServiceRS.currentLanguage();
         const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
-        this.downloadRS.getAccessTokenNotrechtvorlage(language, angebotTyp)
+        this.downloadRS.getAccessTokenNotrechtvorlageOeffentlicheInstitutionen(language, angebotTyp)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public showVorlagePrivateInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Wenn noch nicht ausgefuellt, werden beide angezeigt
+        return EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            || rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public downloadVorlagePrivateInstitutionen(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        const language = this.i18nServiceRS.currentLanguage();
+        const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
+        this.downloadRS.getAccessTokenNotrechtvorlagePrivateInstitutionen(language, angebotTyp)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
@@ -425,7 +467,33 @@ export class RueckforderungFormularComponent implements OnInit {
                         this.cdr.markForCheck();
                         break;
                     case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungKommunikationDokumente.push(dokument));
+                        this.rueckforderungKommunikationDokumente =
+                            [].concat(this.rueckforderungKommunikationDokumente);
+                        this.cdr.markForCheck();
+                        break;
                     case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungEinsatzplaeneDokumente.push(dokument));
+                        this.rueckforderungEinsatzplaeneDokumente =
+                            [].concat(this.rueckforderungEinsatzplaeneDokumente);
+                        this.cdr.markForCheck();
+                        break;
+                    case TSRueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungKurzarbeitDokumente.push(dokument));
+                        this.rueckforderungKurzarbeitDokumente =
+                            [].concat(this.rueckforderungKurzarbeitDokumente);
+                        this.cdr.markForCheck();
+                        break;
+                    case TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungErwerbsersatzDokumente.push(dokument));
+                        this.rueckforderungErwerbsersatzDokumente =
+                            [].concat(this.rueckforderungErwerbsersatzDokumente);
+                        this.cdr.markForCheck();
+                        break;
                     default:
                         return;
                 }
@@ -447,8 +515,29 @@ export class RueckforderungFormularComponent implements OnInit {
             rueckforderungFormular.id)
             .then(rueckforderungDokumente => {
                 this.rueckforderungAngabenDokumente = rueckforderungDokumente.filter(
-                    dokument => dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ANGABEN_DOKUMENTE);
                 this.rueckforderungAngabenDokumente = [].concat(this.rueckforderungAngabenDokumente);
+
+                this.rueckforderungKommunikationDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE);
+                this.rueckforderungKommunikationDokumente = [].concat(this.rueckforderungKommunikationDokumente);
+
+                this.rueckforderungEinsatzplaeneDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE);
+                this.rueckforderungEinsatzplaeneDokumente = [].concat(this.rueckforderungEinsatzplaeneDokumente);
+
+                this.rueckforderungKurzarbeitDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE);
+                this.rueckforderungKurzarbeitDokumente = [].concat(this.rueckforderungKurzarbeitDokumente);
+
+                this.rueckforderungErwerbsersatzDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE);
+                this.rueckforderungErwerbsersatzDokumente = [].concat(this.rueckforderungErwerbsersatzDokumente);
                 this.cdr.markForCheck();
             });
     }
@@ -474,7 +563,29 @@ export class RueckforderungFormularComponent implements OnInit {
                                 this.cdr.markForCheck();
                                 break;
                             case TSRueckforderungDokumentTyp.KOMMUNIKATION_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungKommunikationDokumente);
+                                this.rueckforderungKommunikationDokumente =
+                                    [].concat(this.rueckforderungKommunikationDokumente);
+                                this.cdr.markForCheck();
+                                break;
                             case TSRueckforderungDokumentTyp.EINSATZPLAENE_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungEinsatzplaeneDokumente);
+                                this.rueckforderungEinsatzplaeneDokumente =
+                                    [].concat(this.rueckforderungEinsatzplaeneDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.KURZARBEIT_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungKurzarbeitDokumente);
+                                this.rueckforderungKurzarbeitDokumente =
+                                    [].concat(this.rueckforderungKurzarbeitDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungErwerbsersatzDokumente);
+                                this.rueckforderungErwerbsersatzDokumente =
+                                    [].concat(this.rueckforderungErwerbsersatzDokumente);
+                                this.cdr.markForCheck();
+                                break;
                             default:
                                 return;
                         }
@@ -505,7 +616,361 @@ export class RueckforderungFormularComponent implements OnInit {
             });
     }
 
-    public showDokumentenUpload(): boolean {
+    public isStufe2(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Dokumente sollen erst ab Stufe zwei hochgeladen werden
+        return (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2)
+            || (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2)
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT;
+    }
+
+    public getRueckforderungInstitutionTypOffentlich(): TSRueckforderungInstitutionTyp {
+        return TSRueckforderungInstitutionTyp.OEFFENTLICH;
+    }
+
+    public getRueckforderungInstitutionTypPrivat(): TSRueckforderungInstitutionTyp {
+        return TSRueckforderungInstitutionTyp.PRIVAT;
+    }
+
+    public showFristAbgelaufen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (isStatusRelevantForFrist(rueckforderungFormular.status)) {
+            return this.fristSchonErreicht(rueckforderungFormular);
+        }
         return false;
+    }
+
+    public fristSchonErreicht(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        const currentDate = moment();
+        let fristabgelaufen = false;
+        const frist = this.getRueckforderungInstitutionTypPrivat() === rueckforderungFormular.institutionTyp ?
+            this.einreicheFristPrivatDefault : this.einreicheFristOeffentlich;
+        if (rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypPrivat() ||
+            (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2 &&
+                rueckforderungFormular.institutionTyp === this.getRueckforderungInstitutionTypOffentlich())) {
+            fristabgelaufen = (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist)) ?
+                !currentDate.isBefore(rueckforderungFormular.extendedEinreichefrist.endOf('day'))
+                : !currentDate.isBefore(frist);
+        } else {
+            fristabgelaufen = !currentDate.isBefore(this.einreicheFristOeffentlich);
+        }
+        return fristabgelaufen;
+    }
+
+    public fristVerlaengern(rueckforderungFormular: TSRueckforderungFormular): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {rueckforderungFormular};
+        this.rueckforderungFormular$ = from(this.dialog.open(RueckforderungVerlaengerungDialogComponent, dialogConfig)
+            .afterClosed().toPromise().then((result: TSRueckforderungFormular) => {
+                if (EbeguUtil.isNotNullOrUndefined(result)) {
+                    return result;
+                }
+                return rueckforderungFormular;
+            }));
+    }
+
+    public getFristBis(rueckforderungFormular: TSRueckforderungFormular): string {
+        const fristVerlaengert = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.extendedEinreichefrist);
+        const relevantFristPrivat = fristVerlaengert
+            ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristPrivatDefault;
+        const relevanteFristOeffentlich = fristVerlaengert &&
+            rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristOeffentlich;
+        const privatRelevantText = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
+        const oeffentlichText = DateUtil.momentToLocalDateFormat(relevanteFristOeffentlich, 'DD.MM.YYYY');
+        if (EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)) {
+            // Wir wissen noch nicht, ob privat oder oeffentlich
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE', {
+                oeffentlich: oeffentlichText,
+                private: privatRelevantText,
+            });
+        }
+        const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+        const relevantText = isPrivat ? privatRelevantText : oeffentlichText;
+        if (fristVerlaengert) {
+            return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
+                frist: relevantText,
+            });
+        }
+        return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD', {
+            frist: relevantText,
+        });
+    }
+
+    private validateDokumente(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        let valid = true;
+        if (this.rueckforderungAngabenDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteAngaben = true;
+            valid = false;
+        }
+        if (this.rueckforderungEinsatzplaeneDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteEinsatzplaene = true;
+            valid = false;
+        }
+        if (this.rueckforderungKommunikationDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteKommunikation = true;
+            valid = false;
+        }
+        if (rueckforderungFormular.institutionTyp !== this.getRueckforderungInstitutionTypOffentlich()) {
+            if (rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt && this.rueckforderungErwerbsersatzDokumente.length === 0) {
+                this.showMessageFehlendeDokumenteErwerbsersatz = true;
+                valid = false;
+            }
+            if (rueckforderungFormular.kurzarbeitDefinitivVerfuegt && this.rueckforderungKurzarbeitDokumente.length === 0) {
+                this.showMessageFehlendeDokumenteKurzarbeit = true;
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+    public getDokumenteKommunikationTitle(rueckforderungFormular: TSRueckforderungFormular): string {
+        if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+            return 'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_PRIVAT';
+        }
+        return 'RUECKOFORDERUNG_DOKUMENTE_KOMMUNIKATION_OEFFENTLICH';
+    }
+
+    // ist nicht identisch => return von anderem string
+    // tslint:disable-next-line:no-identical-functions
+    public getDokumenteEinsatzplaeneTitle(rueckforderungFormular: TSRueckforderungFormular): string {
+        if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+            return 'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_PRIVAT';
+        }
+        return 'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_OEFFENTLICH';
+    }
+
+    // ist nicht identisch => return von anderem string
+    // tslint:disable-next-line:no-identical-functions
+    public getDokumenteAngabenTitle(rueckforderungFormular: TSRueckforderungFormular): string {
+        if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
+            return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT';
+        }
+        return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_OEFFENTLICH';
+    }
+
+    private initReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        switch (rueckforderungFormular.status) {
+            case TSRueckforderungStatus.GEPRUEFT_STUFE_1:
+            case TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2:
+            case TSRueckforderungStatus.VERFUEGT_PROVISORISCH:
+            case TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN:
+            case TSRueckforderungStatus.VERFUEGT:
+                return true;
+            case  TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1:
+            case TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2:
+                return this.authServiceRS.isOneOfRoles(
+                    [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT]);
+            case TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1:
+                return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+            default:
+                return false;
+        }
+    }
+
+    private initReadOnlyDocument(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        // Alles ausser BEREIT_ZUM_VERRUEGEN und VERFUEGT
+        if (isBereitZumVerfuegenOderVerfuegt(rueckforderungFormular.status)) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe1ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT)
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public isInstitutionStufe2ForKantonReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            && EbeguUtil.isNullOrUndefined(rueckforderungFormular.institutionTyp)
+            && this.isKantonBenutzer()) {
+            return true;
+        }
+        return false;
+    }
+
+    public isKantonStufe2ReadOnly(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (((rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT)
+            && EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp))
+            && this.isKantonBenutzer()) {
+            return true;
+        }
+        return false;
+    }
+
+    public resetStatus(rueckforderungFormular: TSRueckforderungFormular): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.rueckforderungFormular$ = from(this.notrechtRS.resetStatus(rueckforderungFormular)
+                        .then((response: TSRueckforderungFormular) => {
+                            this.changeDetectorRef.markForCheck();
+                            this.readOnly = this.initReadOnly(response);
+                            this.readOnlyDocument = this.initReadOnlyDocument(response);
+                            return response;
+                        }));
+                },
+                () => {
+                });
+    }
+
+    public formularZurueckholen(rueckforderungFormular: TSRueckforderungFormular): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TITLE',
+            text: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    this.rueckforderungFormular$ = from(this.notrechtRS.formularZurueckholen(rueckforderungFormular)
+                        .then((response: TSRueckforderungFormular) => {
+                            this.readOnly = this.initReadOnly(response);
+                            this.readOnlyDocument = this.initReadOnlyDocument(response);
+                            this.changeDetectorRef.markForCheck();
+                            return response;
+                        }));
+                },
+                () => {
+                });
+    }
+
+    public showButtonZurueckholen(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        const fristAbgelaufen = this.fristSchonErreicht(rueckforderungFormular);
+        const roleMandant = this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+        const statusInstitution2 = rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
+        const datenErfasst = EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.institutionTyp);
+        return fristAbgelaufen && roleMandant && statusInstitution2 && datenErfasst;
+    }
+
+    public getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): string {
+        // Wir zeigen dies grundsaetzlich nur bei Institutionszustaenden an
+        if (this.isInstitutionStufe1(rueckforderungFormular)) {
+            // (1) Die Frist ist abgelaufen
+            if (this.fristSchonErreicht(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_FRIST_ABGELAUFEN';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        if (this.isInstitutionStufe2(rueckforderungFormular)) {
+            // (1) Die Frist ist abgelaufen
+            if (this.fristSchonErreicht(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_FRIST_ABGELAUFEN';
+            }
+            // (2) Die Checkboxen wurden nicht bestaetigt
+            if (!this.enableRueckforderungAbsenden(rueckforderungFormular)) {
+                return 'FREIGABE_DISABLED_CHECKBOXEN_BESTAETIGEN';
+            }
+        }
+        return null;
+    }
+
+    public showWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return !EbeguUtil.isEmptyStringNullOrUndefined(
+            this.getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular));
+    }
+
+    public showKantonStufe2Felder(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT
+            || rueckforderungFormular.status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN)
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
+    public canEditKantonStufe2Felder(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if ((rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+            || rueckforderungFormular.status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH)
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        return false;
+    }
+
+    public provisorischVerfugen(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (!this.isPruefungKantonStufe2(rueckforderungFormular)) {
+            return;
+        }
+        this.rueckforderungFormular$ = from(this.notrechtRS.verfuegtProvisorischRueckforderungFormular(
+            rueckforderungFormular)
+            .then((response: TSRueckforderungFormular) => {
+                this.initRueckforderungZahlungen(response);
+                this.readOnly = this.initReadOnly(response);
+                this.readOnlyDocument = this.initReadOnlyDocument(response);
+                return response;
+            }));
+    }
+
+    public openProvisorischeVerfuegung(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenProvisoricheVerfuegungDokument(rueckforderungFormular.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public openDefinitiveVerfuegung(rueckforderungFormular: TSRueckforderungFormular): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenDefinitiveVerfuegungDokument(rueckforderungFormular.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(() => {
+                win.close();
+            });
+    }
+
+    public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)
+        );
+    }
+
+    public setDokumenteGeprueft(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id)
+        );
+    }
+
+    public canDeleteDocuments(formular: TSRueckforderungFormular): boolean {
+        return !isAnyOfVerfuegtOrPruefungKantonStufe2(formular.status);
     }
 }

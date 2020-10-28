@@ -43,5 +43,8 @@ public enum MailTemplate {
 	InfoSchulamtAnmeldungTagesschuleAkzeptiert,
 	InfoGemeindeAngebotAktiviert,
 	NotrechtGenerischeMitteilung,
-	NotrechtBestaetigungPruefungStufe1
+	NotrechtBestaetigungPruefungStufe1,
+	NotrechtProvisorischeVerfuegung,
+	InfoSchulamtAnmeldungAkzeptiert,
+	InfoGesuchVerfuegtVerantwortlicherTS
 }

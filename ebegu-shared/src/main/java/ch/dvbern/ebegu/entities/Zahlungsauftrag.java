@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
@@ -50,6 +52,11 @@ import org.hibernate.envers.Audited;
 public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = 5758088668232796741L;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private ZahlungslaufTyp zahlungslaufTyp;
 
 	@NotNull
 	@Column(nullable = false)
@@ -69,6 +76,11 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String beschrieb;
 
+	@Nullable
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String result;
+
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_zahlungsauftrag_gemeinde_id"))
@@ -84,6 +96,16 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	@Nonnull
 	private Boolean hasNegativeZahlungen = false;
+
+
+	@Nonnull
+	public ZahlungslaufTyp getZahlungslaufTyp() {
+		return zahlungslaufTyp;
+	}
+
+	public void setZahlungslaufTyp(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
+		this.zahlungslaufTyp = zahlungslaufTyp;
+	}
 
 	public LocalDate getDatumFaellig() {
 		return datumFaellig;
@@ -115,6 +137,15 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	public void setBeschrieb(String beschrieb) {
 		this.beschrieb = beschrieb;
+	}
+
+	@Nullable
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(@Nullable String result) {
+		this.result = result;
 	}
 
 	@Nonnull
@@ -154,7 +185,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	}
 
 	public String getFilename() {
-		return "Zahlungslauf_" + getGemeinde().getName() + "_" + Constants.SQL_DATE_FORMAT.format(getDatumGeneriert());
+		return "Zahlungen_" + getGemeinde().getName() + '_' + Constants.SQL_DATE_FORMAT.format(getDatumGeneriert());
 	}
 
 	@Override

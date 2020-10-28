@@ -66,6 +66,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_ENDPOINT = "ebegu.personensuche.sts.renewal.assertion.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_GERES_ENDPOINT = "ebegu.personensuche.geres.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_GERES_WSDL = "ebegu.personensuche.geres.wsdl";
+	public static final String EBEGU_GEOADMIN_SEARCHSERVER_URL = "ebegu.geoadmin.searchserver.url";
+	public static final String EBEGU_GEOADMIN_MAPSERVER_URL = "ebegu.geoadmin.mapserver.url";
 
 
 	public static final String EBEGU_KITAX_HOST = "ebegu.kitax.host";
@@ -88,6 +90,18 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
+	private static final String KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED = "kibon.exchange.betreuunganfrage.enabled";
+	private static final String KIBON_KAFKA_PLATZBESTAETIGUNG_GROUP_ID = "kibon.kafka.platzbestaetigung.group.id";
+
+	private static final String CLAMAV_HOST = "ebegu.clamav.host";
+	private static final String CLAMAV_PORT = "ebegu.clamav.port";
+	private static final String CLAMAV_DISABLED = "ebegu.clamav.disabled";
+
+	private static final String NOTVERORDNUNG_UNTERSCHRIFT_PATH = "ebegu.notverordnung.unterschrift.path";
+	private static final String NOTVERORDNUNG_UNTERSCHRIFT_NAME = "ebegu.notverordnung.unterschrift.name";
+	private static final String NOTVERORDNUNG_EMPFAENGER_MAIL = "ebegu.notverordnung.empfaenger.mail";
+
+	private static final String MASSENMUTATION_EMPFAENGER_MAIL = "ebegu.massenmutation.empfaenger.mail";
 
 
 	@Inject
@@ -282,6 +296,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
+	public boolean isBetreuungAnfrageApiEnabled() {
+		return getBoolean(KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED, false);
+	}
+
+	@Override
 	public String getEbeguPersonensucheSTSKeystorePath() {
 
 		String jbossHome =  System.getProperty("jboss.home.dir");
@@ -347,6 +366,16 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
+	public String getEbeguGeoadminSearchServerUrl() {
+		return getString(EBEGU_GEOADMIN_SEARCHSERVER_URL, "https://api3.geo.admin.ch/rest/services/api/SearchServer");
+	}
+
+	@Override
+	public String getEbeguGeoadminMapServerUrl() {
+		return getString(EBEGU_GEOADMIN_MAPSERVER_URL, "https://api3.geo.admin.ch/rest/services/api/MapServer");
+	}
+
+	@Override
 	public String getKitaxHost() {
 		return getString(EBEGU_KITAX_HOST, "https://ebegu.dvbern.ch");
 	}
@@ -354,5 +383,45 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getKitaxEndpoint() {
 		return getString(EBEGU_KITAX_ENDPOINT, "/ebegu/api/v1/kibon/lookup");
+	}
+
+	@Override
+	public String getClamavHost() {
+		return getString(CLAMAV_HOST, "localhost");
+	}
+
+	@Override
+	public int getClamavPort() {
+		return getInt(CLAMAV_PORT, 3310);
+	}
+
+	@Override
+	public boolean isClamavDisabled() {
+		return getBoolean(CLAMAV_DISABLED, true);
+	}
+
+	@Override
+	public String getNotverordnungUnterschriftName() {
+		return getString(NOTVERORDNUNG_UNTERSCHRIFT_NAME);
+	}
+
+	@Override
+	public String getNotverordnungUnterschriftPath() {
+		return getString(NOTVERORDNUNG_UNTERSCHRIFT_PATH);
+	}
+
+	@Override
+	public String getNotverordnungEmpfaengerMail() {
+		return getString(NOTVERORDNUNG_EMPFAENGER_MAIL);
+	}
+
+	@Override
+	public String getMassenmutationEmpfaengerMail() {
+		return getString(MASSENMUTATION_EMPFAENGER_MAIL);
+	}
+
+	@Override
+	public String getKafkaPlatzbestaetigungGroupId() {
+		return getString(KIBON_KAFKA_PLATZBESTAETIGUNG_GROUP_ID, "dev");
 	}
 }

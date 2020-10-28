@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
@@ -42,13 +43,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
-	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Tagesfamilien STUNDEN
-	// 100% = 220 hours => 1% = 2.2 hours
-	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.DEFAULT.fromNullSafe(2.44);
-
 	public TageselternKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
-		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale
 	) {
 		super(kitaxParameter, oeffnungszeiten, locale);
@@ -60,14 +57,17 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
-		if (!input.isBetreuungInGemeinde()) {
+		if (!input.isBetreuungInGemeinde() && input.getBetreuungspensumProzent().doubleValue() > 0) {
+			// Wenn die Betreuung zu diesem Zeitpunkt schon beendet ist, kommt hier FALSE (es gibt ja
+			// keine Betreuung in der Gemeinde zu diesem Zeitpunkt). In diesem Fall darf aber der Anspruch
+			// nicht 0 gesetzt werden, da sonst der Restanspruch falsch berechnet wird!
+			// Daher nur 0 setzen, wenn tatsaechlich noch eine Betreuung vorhanden ist (die nicht in der
+			// Gemeinde ist)
 			input.setAnspruchspensumProzent(0);
 			// Die Bemerkung wollen wir nur setzen, wenn es ueberhaupt eine Betreuung gibt zu diesem Zeitpunkt
 			// Das Flag betreuungInBern ist logischerweise auf der Betreuung, und in Zeitabschnitten ohne Betreuung
 			// defaultmaessig false!
-			if (input.getBetreuungspensumProzent().doubleValue() > 0) {
-				input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
-			}
+			input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
 		}
 
 		// Benoetigte Daten
@@ -132,9 +132,9 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in STUNDEN berechnen
 		result.setZeiteinheit(PensumUnits.HOURS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierPensum, betreuungsstundenProMonat100Prozent));
-		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierAnspruch, betreuungsstundenProMonat100Prozent));
-		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierBgPensum, betreuungsstundenProMonat100Prozent));
+		result.setBetreuungspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierPensum, betreuungsstundenProMonat100Prozent, anteilMonat));
+		result.setAnspruchspensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierAnspruch, betreuungsstundenProMonat100Prozent, anteilMonat));
+		result.setBgPensumZeiteinheit(MathUtil.EXACT.multiplyNullSafe(multiplierBgPensum, betreuungsstundenProMonat100Prozent, anteilMonat));
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
 		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte

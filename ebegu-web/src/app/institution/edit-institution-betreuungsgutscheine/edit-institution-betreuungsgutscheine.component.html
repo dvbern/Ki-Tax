@@ -17,198 +17,358 @@
 
 <fieldset *ngIf="editMode">
 
-<div class="title">
-    <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
-</div>
-<div class="form-group">
+    <!--    Öffnungszeiten-->
     <div class="row">
-        <!-- IBAN-Nummer -->
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label class="required" translate for="iban_nr_id">IBAN_NUMMER</label>
-                <input id="iban_nr_id" type="text" name="iban_nr_id" #iban="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.iban"
-                       [maxlength]="26" class="form-control" required ngxIban
-                       placeholder="CHXX XXXX XXXX XXXX XXXX X">
-                <dv-error-messages [errorObject]="iban.errors" inputId="iban_nr_id"></dv-error-messages>
-            </div>
-        </div>
-        <!-- Kontoinhaber -->
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label class="required" translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
-                <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #kontoinhaber="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber"
-                       [maxlength]="255" class="form-control" required>
-                <dv-error-messages [errorObject]="kontoinhaber.errors" inputId="kontoinhaber_id"></dv-error-messages>
-            </div>
-        </div>
-        <!-- Anschrift -->
-        <div class="col-sm-6">
-            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
-                <label class="required" translate for="za_anschrift_id">ADRESSE_ANSCHRIFT</label>
-                <input id="za_anschrift_id" type="text" name="za_anschrift_id" #anschrift="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.organisation"
-                       [maxlength]="255" class="form-control" required>
-                <dv-error-messages [errorObject]="anschrift.errors" inputId="za_anschrift_id"></dv-error-messages>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <!-- Checkbox Abweichende Zahlungsadresse -->
-        <div class="col-sm-6">
-            <div class="form-group">
-                <mat-checkbox id="abweichende_za_id" name="abweichende_za_id"
-                              [(ngModel)]="abweichendeZahlungsAdresse"
-                              (click)="onAbweichendeZahlungsAdresseClick()">
-                    {{'INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE'|translate}}
-                </mat-checkbox>
-            </div>
-        </div>
-        <!-- Strasse -->
-        <div class="col-sm-5">
-            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
-                <label class="required" translate for="za_strasse_id">ADRESSE_STRASSE</label>
-                <input id="za_strasse_id" type="text" name="za_strasse_id" #strasse="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse"
-                       [maxlength]="255" class="form-control" required>
-                <dv-error-messages [errorObject]="strasse.errors" inputId="za_strasse_id"></dv-error-messages>
-            </div>
-        </div>
-        <!-- Hausnummer -->
-        <div class="col-sm-1">
-            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
-                <label translate for="za_hausnummer_id">ADRESSE_NUMMER</label>
-                <input id="za_hausnummer_id" type="text" name="za_hausnummer_id" #hausnr="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer"
-                       [maxlength]="255" class="form-control">
-                <dv-error-messages [errorObject]="hausnr.errors" inputId="za_hausnummer_id"></dv-error-messages>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">
-        </div>
-        <!-- PLZ -->
-        <div class="col-sm-1">
-            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
-                <label class="required" translate for="za_plz_id">ADRESSE_PLZ</label>
-                <input id="za_plz_id" type="text" name="za_plz_id" #plz="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz"
-                       [maxlength]="255" class="form-control" required>
-                <dv-error-messages [errorObject]="plz.errors" inputId="za_plz_id"></dv-error-messages>
-            </div>
-        </div>
-        <!-- Ort -->
-        <div class="col-sm-5">
-            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
-                <label class="required" translate for="za_ort_id">ADRESSE_ORT</label>
-                <input id="za_ort_id" type="text" name="za_ort_id" #ort="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort"
-                       [maxlength]="255" class="form-control" required>
-                <dv-error-messages [errorObject]="ort.errors" inputId="za_ort_id"></dv-error-messages>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <!-- Alterskategorie -->
-        <div class="col-sm-6">
-            <div class="form-group">
-                <h3 translate for="alterskategorie_id">INSTITUTION_ALTERSKATEGORIE</h3>
-                <div class="form-group" id="alterskategorie_id">
-                    <mat-checkbox id="alterskategorieBaby_id" name="alterskategorieBaby_id"
-                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby">
-                        {{'INSTITUTION_ALTERSKATEGORIE_BABY'|translate}}
-                    </mat-checkbox>
-                    <mat-checkbox id="alterskategorieVorschule_id" name="alterskategorieVorschule_id"
-                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule">
-                        {{'INSTITUTION_ALTERSKATEGORIE_VORSCHULE'|translate}}
-                    </mat-checkbox>
-                    <mat-checkbox id="alterskategorieKindergarten_id" name="alterskategorieKindergarten_id"
-                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten">
-                        {{'INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'|translate}}
-                    </mat-checkbox>
-                    <mat-checkbox id="alterskategorieSchule_id" name="alterskategorieSchule_id"
-                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule">
-                        {{'INSTITUTION_ALTERSKATEGORIE_SCHULE'|translate}}
-                    </mat-checkbox>
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="title">
+                        <h3 translate>OEFFNUNGSZEITEN</h3>
+                    </div>
                 </div>
             </div>
-
-        </div>
-        <!-- Subventionierte Plätze -->
-        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
-            <h3 translate>INSTITUTION_PLAETZE</h3>
-        </div>
-        <!-- Anzahl Plätze -->
-        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
-            <div class="form-group">
-                <label class="required" translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
-                <input id="anzahlPlaetze_id" type="number" name="anzahlPlaetze_id" #anzahlPlaetze="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze"
-                       class="form-control"
-                       customMinMax [minValue]="0.1"
-                       placeholder="{{getPlaceholderForPlaetze()}}" required>
-                <dv-error-messages [errorObject]="anzahlPlaetze.errors" inputId="anzahlPlaetze_id"></dv-error-messages>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group" id="oeffnungstag_id">
+                        <mat-checkbox id="oeffnungstag_mo_id" name="oeffnungstag_mo_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.monday">
+                            {{'Monday'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="oeffnungstag_di_id" name="oeffnungstag_di_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.tuesday">
+                            {{'Tuesday'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="oeffnungstag_mi_id" name="oeffnungstag_mi_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.wednesday">
+                            {{'Wednesday'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="oeffnungstag_do_id" name="oeffnungstag_do_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.thursday">
+                            {{'Thursday'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="oeffnungstag_FR_id" name="oeffnungstag_fr_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.friday">
+                            {{'Friday'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="oeffnungstag_sa_id" name="oeffnungstag_sa_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.saturday">
+                            {{'Saturday'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="oeffnungstag_so_id" name="oeffnungstag_so_name"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.sunday">
+                            {{'Sunday'|translate}}
+                        </mat-checkbox>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <!--                    Offen von-->
+                        <label translate for="zeitVon_id" class="required">OFFEN_VON</label>
+                        <input id="zeitVon_id" type="text" name="zeitVon"
+                               #zeitVon="ngModel"
+                               [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon"
+                               class="form-control"
+                               required
+                               placeholder="HH:mm"
+                               pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$">
+                        <dv-error-messages [errorObject]="zeitVon.control.errors"
+                                           inputId="zeitVon"></dv-error-messages>
+                    </div>
+                    <div class="form-group">
+                        <label translate for="zeitBis" class="required">OFFEN_BIS</label>
+                        <!--                    Offen bis-->
+                        <input id="zeitBis" type="text" name="zeitBis"
+                               #zeitBis="ngModel"
+                               [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis"
+                               class="form-control"
+                               required
+                               placeholder="HH:mm" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$">
+                        <dv-error-messages [errorObject]="zeitBis.control.errors"
+                                           inputId="zeitBis"></dv-error-messages>
+                    </div>
+                </div>
+                <div class="col-sm-6" *ngIf="incompleteOeffnungszeiten && stammdaten.oeffnungszeiten">
+                    <p translate [translateParams]="{value: stammdaten.oeffnungszeiten}">OEFFNUNGSZEITEN_OBSOLETE</p>
+                </div>
+                <!--                    Abweichungen-->
             </div>
-        </div>
-        <!-- Anzahl Plätze Firmen -->
-        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
-            <div class="form-group">
-                <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
-                <input id="anzahlPlaetzeFirmen_id" type="number" name="anzahlPlaetzeFirmen_id"
-                       #anzahlPlaetzeFirmen="ngModel"
-                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
-                       class="form-control"
-                       customMinMax [minValue]="0"
-                       placeholder="{{getPlaceholderForPlaetze()}}">
-                <dv-error-messages [errorObject]="anzahlPlaetzeFirmen.errors"
-                                   inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
-            </div>
-        </div>
-        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
-            <div class="form-group">
-                <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
-                              [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze">
-                    {{'INSTITUTION_SUBVENTIONIERTE_PLAETZE'|translate}}
-                </mat-checkbox>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label translate for="oeffnungsAbweichungen_id">OEFFNUNGSZEITEN_ABWEICHUNGEN</label>
+                        <textarea name="oeffnungsAbweichungen_name"
+                                  class="form-control " rows="3"
+                                  #oeffnungsAbweichungen="ngModel"
+                                  id="oeffnungsAbweichungen_id"
+                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen"
+                                  maxlength="4000">
+                        </textarea>
+                        <dv-error-messages [errorObject]="oeffnungsAbweichungen.errors"
+                                           inputId="oeffnungszeigen_abweichungen_id"></dv-error-messages>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!--    betreuungsstandorte-->
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
+            <div class="title">
+                <h3>
+                    <span translate>INSTITUTION_ZWEITER_BETREUUNGSSTANDORT</span>
+                    <dv-tooltip id="benachrichtigungBgEmailAuto-tooltip"
+                                [text]="'INSTITUTION_ZWEITER_BETREUUNGSSTANDORT_INFO'|translate"></dv-tooltip>
+                </h3>
+            </div>
             <div class="form-group">
-                <h3 translate>TARIFE_MAHLZEITEN</h3>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <dv-edit-betreuungsstandort [stammdaten]="stammdaten"></dv-edit-betreuungsstandort>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="title">
+        <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <!-- IBAN-Nummer -->
+            <div class="col-sm-3">
                 <div class="form-group">
-                    <label translate for="tarifProHauptmahlzeit">TARIF_PRO_HAUPTMAHLZEIT</label>
-                    <input id="tarifProHauptmahlzeit" type="number" name="tarifProHauptmahlzeit"
-                           #tarifProHauptmahlzeit="ngModel"
-                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit"
-                           class="form-control"
-                           customMinMax [minValue]="0">
-                    <dv-error-messages [errorObject]="tarifProHauptmahlzeit.errors"
-                                       inputId="tarifProHauptmahlzeit"></dv-error-messages>
+                    <label class="required" translate for="iban_nr_id">IBAN_NUMMER</label>
+                    <input id="iban_nr_id" type="text" name="iban_nr_id" #iban="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.iban"
+                           [maxlength]="26" class="form-control" required ngxIban
+                           placeholder="CHXX XXXX XXXX XXXX XXXX X">
+                    <dv-error-messages [errorObject]="iban.errors" inputId="iban_nr_id"></dv-error-messages>
                 </div>
+            </div>
+            <!-- Kontoinhaber -->
+            <div class="col-sm-3">
                 <div class="form-group">
-                    <label translate for="tarifProNebenmahlzeit">TARIF_PRO_NEBENMAHLZEIT</label>
-                    <input id="tarifProNebenmahlzeit" type="number" name="tarifProNebenmahlzeit"
-                           #tarifProNebenmahlzeit="ngModel"
-                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit"
-                           class="form-control"
-                           customMinMax [minValue]="0">
-                    <dv-error-messages [errorObject]="tarifProNebenmahlzeit.errors"
-                                       inputId="tarifProNebenmahlzeit"></dv-error-messages>
+                    <label class="required" translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
+                    <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #kontoinhaber="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber"
+                           [maxlength]="70" class="form-control" required>
+                    <dv-error-messages [errorObject]="kontoinhaber.errors"
+                                       inputId="kontoinhaber_id"></dv-error-messages>
+                </div>
+            </div>
+            <!-- Anschrift -->
+            <div class="col-sm-6">
+                <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                    <label class="required" translate for="za_anschrift_id">ADRESSE_ANSCHRIFT</label>
+                    <input id="za_anschrift_id" type="text" name="za_anschrift_id" #anschrift="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.organisation"
+                           [maxlength]="255" class="form-control" required>
+                    <dv-error-messages [errorObject]="anschrift.errors" inputId="za_anschrift_id"></dv-error-messages>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row">
+            <!-- Checkbox Abweichende Zahlungsadresse -->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <mat-checkbox id="abweichende_za_id" name="abweichende_za_id"
+                                  [(ngModel)]="abweichendeZahlungsAdresse"
+                                  (click)="onAbweichendeZahlungsAdresseClick()">
+                        {{'INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE'|translate}}
+                    </mat-checkbox>
+                </div>
+            </div>
+            <!-- Strasse -->
+            <div class="col-sm-5">
+                <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                    <label class="required" translate for="za_strasse_id">ADRESSE_STRASSE</label>
+                    <input id="za_strasse_id" type="text" name="za_strasse_id" #strasse="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse"
+                           [maxlength]="255" class="form-control" required>
+                    <dv-error-messages [errorObject]="strasse.errors" inputId="za_strasse_id"></dv-error-messages>
+                </div>
+            </div>
+            <!-- Hausnummer -->
+            <div class="col-sm-1">
+                <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                    <label translate for="za_hausnummer_id">ADRESSE_NUMMER</label>
+                    <input id="za_hausnummer_id" type="text" name="za_hausnummer_id" #hausnr="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer"
+                           [maxlength]="255" class="form-control">
+                    <dv-error-messages [errorObject]="hausnr.errors" inputId="za_hausnummer_id"></dv-error-messages>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+            </div>
+            <!-- PLZ -->
+            <div class="col-sm-1">
+                <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                    <label class="required" translate for="za_plz_id">ADRESSE_PLZ</label>
+                    <input id="za_plz_id" type="text" name="za_plz_id" #plz="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz"
+                           [maxlength]="255" class="form-control" required>
+                    <dv-error-messages [errorObject]="plz.errors" inputId="za_plz_id"></dv-error-messages>
+                </div>
+            </div>
+            <!-- Ort -->
+            <div class="col-sm-5">
+                <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                    <label class="required" translate for="za_ort_id">ADRESSE_ORT</label>
+                    <input id="za_ort_id" type="text" name="za_ort_id" #ort="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort"
+                           [maxlength]="255" class="form-control" required>
+                    <dv-error-messages [errorObject]="ort.errors" inputId="za_ort_id"></dv-error-messages>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Alterskategorie -->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h3 translate for="alterskategorie_id">INSTITUTION_ALTERSKATEGORIE</h3>
+                    <div class="form-group" id="alterskategorie_id">
+                        <mat-checkbox id="alterskategorieBaby_id" name="alterskategorieBaby_id"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby">
+                            {{'INSTITUTION_ALTERSKATEGORIE_BABY'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="alterskategorieVorschule_id" name="alterskategorieVorschule_id"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule">
+                            {{'INSTITUTION_ALTERSKATEGORIE_VORSCHULE'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="alterskategorieKindergarten_id" name="alterskategorieKindergarten_id"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten">
+                            {{'INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'|translate}}
+                        </mat-checkbox>
+                        <mat-checkbox id="alterskategorieSchule_id" name="alterskategorieSchule_id"
+                                      [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule">
+                            {{'INSTITUTION_ALTERSKATEGORIE_SCHULE'|translate}}
+                        </mat-checkbox>
+                    </div>
+                </div>
 
-</div>
+            </div>
+            <!-- Subventionierte Plätze -->
+            <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
+                <h3 translate>INSTITUTION_PLAETZE</h3>
+            </div>
+            <!-- Anzahl Plätze -->
+            <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
+                <div class="form-group">
+                    <label class="required" translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
+                    <input id="anzahlPlaetze_id" type="number" name="anzahlPlaetze_id" #anzahlPlaetze="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze"
+                           class="form-control"
+                           customMinMax [minValue]="0.1"
+                           placeholder="{{getPlaceholderForPlaetze()}}" required>
+                    <dv-error-messages [errorObject]="anzahlPlaetze.errors"
+                                       inputId="anzahlPlaetze_id"></dv-error-messages>
+                </div>
+            </div>
+            <!-- Anzahl Plätze Firmen -->
+            <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
+                <div class="form-group">
+                    <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
+                    <input id="anzahlPlaetzeFirmen_id" type="number" name="anzahlPlaetzeFirmen_id"
+                           #anzahlPlaetzeFirmen="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
+                           class="form-control"
+                           customMinMax [minValue]="0"
+                           placeholder="{{getPlaceholderForPlaetze()}}">
+                    <dv-error-messages [errorObject]="anzahlPlaetzeFirmen.errors"
+                                       inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
+                </div>
+            </div>
+            <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
+                <div class="form-group">
+                    <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
+                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze">
+                        {{'INSTITUTION_SUBVENTIONIERTE_PLAETZE'|translate}}
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h3 translate>TARIFE_MAHLZEITEN</h3>
+                    <div class="form-group">
+                        <label translate for="tarifProHauptmahlzeit">TARIF_PRO_HAUPTMAHLZEIT</label>
+                        <input id="tarifProHauptmahlzeit" type="number" name="tarifProHauptmahlzeit"
+                               #tarifProHauptmahlzeit="ngModel"
+                               [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit"
+                               class="form-control"
+                               customMinMax [minValue]="0">
+                        <dv-error-messages [errorObject]="tarifProHauptmahlzeit.errors"
+                                           inputId="tarifProHauptmahlzeit"></dv-error-messages>
+                    </div>
+                    <div class="form-group">
+                        <label translate for="tarifProNebenmahlzeit">TARIF_PRO_NEBENMAHLZEIT</label>
+                        <input id="tarifProNebenmahlzeit" type="number" name="tarifProNebenmahlzeit"
+                               #tarifProNebenmahlzeit="ngModel"
+                               [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit"
+                               class="form-control"
+                               customMinMax [minValue]="0">
+                        <dv-error-messages [errorObject]="tarifProNebenmahlzeit.errors"
+                                           inputId="tarifProNebenmahlzeit"></dv-error-messages>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </fieldset>
 
 
 <fieldset *ngIf="!editMode">
+
+    <div class="row">
+        <!--        Öffnungszeiten-->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate>OEFFNUNGSZEITEN</h3>
+                <p>{{getOeffnungsTageAbkuerzungListe()}}</p>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
+                    {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
+                <p class="nl2br">{{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen}}</p>
+            </div>
+        </div>
+
+        <div class="col-sm-6"
+             *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length > 0">
+            <h3 translate>INSTITUTION_ZWEITER_BETREUUNGSSTANDORT</h3>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group"
+                         *ngFor="let standort of stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>{{standort.adresse.organisation}}</p>
+                                <p>{{standort.adresse.strasse}} {{standort.adresse.hausnummer}}</p>
+                                <p>{{standort.adresse.plz}} {{standort.adresse.ort}}</p>
+                                <p *ngIf="standort.adresse.gemeinde">
+                                    <span translate>GEMEINDE</span>
+                                    {{standort.adresse.gemeinde}} (
+                                    <span translate>GEMEINDE_BFS_NR</span>
+                                    {{standort.adresse.bfsNummer}})
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p>{{standort.mail}}</p>
+                                <p>{{standort.webseite}}</p>
+                                <p>{{standort.telefon}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <!-- Zahlungsangaben -->
         <div class="col-sm-6">

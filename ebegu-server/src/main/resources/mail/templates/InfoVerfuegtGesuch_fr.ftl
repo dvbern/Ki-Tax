@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: ${gesuchsteller.fullName} <${empfaengerMail}>
+To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Votre demande a été traitée</@base64Header>
 Content-Type: text/html;charset=utf-8
 

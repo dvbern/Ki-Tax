@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.util.UploadFileInfo;
 
 /**
  * Service zum Versenden von E-Mails
@@ -49,6 +50,17 @@ public interface MailService {
 	 */
 	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress)
 		throws MailException;
+
+	/**
+	 * Sendet die Email mit gegebenem MessageBody an die gegebene Adresse. Dadurch kann eine beliebige Message gemailt
+	 * werden. Das uebergebene UploadFileInfo wird als Attachment mitgeschickt.
+	 */
+	void sendMessageWithAttachment(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress,
+		@Nonnull UploadFileInfo uploadFileInfo
+	) throws MailException;
 
 	/**
 	 * Sendet eine Supportanfrage an die definierte Support-Email
@@ -169,6 +181,10 @@ public interface MailService {
 	 * Sendet eine Email mit der Information, dass ein Angebot für eine Gemeinde aktiviert wurde
 	 */
 	void sendInfoGemeineAngebotAktiviert(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeAngebotTyp angebot);
+	/**
+	 * schickt eine email an den Verantwortlichen Tagesschule und informiert, dass das Gesuch verfuegt wurde
+	 */
+	void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS) throws MailException;
 
 	void sendNotrechtGenerischeMitteilung(
 		@Nonnull RueckforderungMitteilung mitteilung,
@@ -179,5 +195,7 @@ public interface MailService {
 	 * Sendet eine Email mit der Informatiom, dass ein Ruckforderungformular bei der Kanton geprueft wurde
 	 */
 	@Nullable
-	String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
+	String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular);
+
+	void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
 }

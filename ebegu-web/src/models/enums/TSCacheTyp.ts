@@ -19,6 +19,7 @@ export enum TSCacheTyp {
     EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE = 'ebeguInstitutionsStammdatenGemeinde',
     EBEGU_GEMEINDEN = 'ebeguGemeinden',
     EBEGU_GEMEINDEN_ACTIVE = 'ebeguGemeindenAktiv',
+    EBEGU_GEMEINDEN_WITH_MAHLZEITENVERGUENSTIGUNG = 'ebeguGemeindenMitMahlzeitenverguenstigung',
     EBEGU_PUBLIC_APP_CONFIG = 'publicAppConfig',
     EBEGU_GESUCHSPERIODEN_ACTIVE = 'ebeguGesuchsperiodenAktiv',
 }

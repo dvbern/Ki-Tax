@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Massenversand;
@@ -125,15 +126,6 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	Collection<Gesuch> getAllGesuche();
-
-	/**
-	 * Gibt alle existierenden Gesuche zurueck, deren Status nicht VERFUEGT ist
-	 * und die dem übergebenen Benutzer als "Verantwortliche Person" zugeteilt sind.
-	 *
-	 * @return Liste aller Gesuche aus der DB
-	 */
-	@Nonnull
-	Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername);
 
 	/**
 	 * entfernt ein Gesuch aus der Database. Es wird ein LogEintrag erstellt mit dem Grund des Löschens-
@@ -292,6 +284,7 @@ public interface GesuchService {
 	 * muss nicht NULL sein, sonst gilt es als nicht geprueft.
 	 */
 	Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Long fallnummer);
 
@@ -423,13 +416,6 @@ public interface GesuchService {
 	Gesuch updateBetreuungenStatus(@NotNull Gesuch gesuch);
 
 	/**
-	 * In dieser Methode wird das Gesuch verfuegt. Nur Gesuche bei denen alle Betreuungen bereits verfuegt sind und
-	 * der WizardStep Verfuegen
-	 * (faelslicherweise) auf OK gesetzt wurde, werden durch diese Methode wieder verfuegt.
-	 */
-	void gesuchVerfuegen(@NotNull Gesuch gesuch);
-
-	/**
 	 * Setzt den uebergebene FinSitStatus im gegebenen Gesuch
 	 *
 	 * @return 1 wenn alles ok
@@ -477,4 +463,9 @@ public interface GesuchService {
 	 * It will check all Gesuche independently if the user is allowed to access them or not though.
 	 */
 	boolean hasFolgegesuchForAmt(@Nonnull String gesuchId);
+
+	/**
+	 * Erstellt eine Mutation und verlangt alle Platzbestaetigungen neu.
+	 */
+	void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch);
 }

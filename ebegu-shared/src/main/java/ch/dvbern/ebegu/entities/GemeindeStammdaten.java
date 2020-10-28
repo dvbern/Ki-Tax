@@ -150,7 +150,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String kontoinhaber;
+	private String kontoinhaber; // TODO (team) evt. spaeter limitieren auf 70
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -205,6 +205,11 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Nullable
 	@Column(nullable = true)
 	private String standardDokUnterschriftName2;
+
+	@Nonnull
+	@NotNull
+	@Column(nullable = false)
+	private Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen = false;
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -445,7 +450,10 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	public boolean isZahlungsinformationValid() {
-		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(bic) && StringUtils.isNotEmpty(iban.getIban());
+		return StringUtils.isNotEmpty(kontoinhaber)
+			&& StringUtils.isNotEmpty(bic)
+			&& iban != null
+			&& StringUtils.isNotEmpty(iban.getIban());
 	}
 
 	/**
@@ -616,6 +624,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setStandardDokSignature(@Nonnull Boolean standardDokSignature) {
 		this.standardDokSignature = standardDokSignature;
+	}
+
+	@Nonnull
+	public Boolean getTsVerantwortlicherNachVerfuegungBenachrichtigen() {
+		return tsVerantwortlicherNachVerfuegungBenachrichtigen;
+	}
+
+	public void setTsVerantwortlicherNachVerfuegungBenachrichtigen(@Nonnull Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen) {
+		this.tsVerantwortlicherNachVerfuegungBenachrichtigen = tsVerantwortlicherNachVerfuegungBenachrichtigen;
 	}
 
 	@Nullable

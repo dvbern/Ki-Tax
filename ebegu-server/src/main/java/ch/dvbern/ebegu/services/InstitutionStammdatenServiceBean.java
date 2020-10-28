@@ -19,14 +19,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -62,23 +61,13 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer InstitutionStammdaten
  */
 @Stateless
 @Local(InstitutionStammdatenService.class)
-@PermitAll
 public class InstitutionStammdatenServiceBean extends AbstractBaseService implements InstitutionStammdatenService {
 
 	private static final String GP_START = "gpStart";
@@ -109,13 +98,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private AdresseService adresseService;
+
 	@SuppressWarnings("PMD.PreserveStackTrace")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
-		Objects.requireNonNull(institutionStammdaten);
+		requireNonNull(institutionStammdaten);
 		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
@@ -129,30 +119,25 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		} catch (PersistenceException e) {
 			String sqlError = e.getCause().getCause().getMessage();
 			//if the FK_belegung_ts_modul_modul_ts constraint is raised then we need to inform the user
-			if(sqlError.contains("FK_belegung_ts_modul_modul_ts")) {
+			if (sqlError.contains("FK_belegung_ts_modul_modul_ts")) {
 				throw new EntityExistsException(KibonLogLevel.ERROR, InstitutionStammdaten.class, "Anmeldungen",
 					institutionStammdaten.getId(),
 					ErrorCodeEnum.ERROR_ANMELDUNGEN_EXISTS);
 			}
-			else{
-				//otherwise its an unexpected exception
-				throw e;
-			}
+			//otherwise its an unexpected exception
+			throw e;
 		}
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten) {
 		event.fire(institutionEventConverter.of(updatedStammdaten));
 	}
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<InstitutionStammdaten> findInstitutionStammdaten(@Nonnull final String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		requireNonNull(id, "id muss gesetzt sein");
 		InstitutionStammdaten institutionStammdaten = persistence.find(InstitutionStammdaten.class, id);
 		authorizer.checkReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 		return Optional.ofNullable(institutionStammdaten);
@@ -160,13 +145,12 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<InstitutionStammdaten> getAllInstitutionStammdaten() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
-			JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitution =
+			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
@@ -193,13 +177,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	@Nonnull
-	@PermitAll
-	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(@Nonnull Traegerschaft trageschaft) {
+	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenForTraegerschaft(
+		@Nonnull Traegerschaft trageschaft) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
-			JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitution =
+			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
@@ -220,7 +204,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	@Nonnull
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<InstitutionStammdaten> getAllInstitonStammdatenForBatchjobs() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
@@ -230,13 +213,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
-		Objects.requireNonNull(institutionId);
-		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId,
+		requireNonNull(institutionId);
+		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(
+			institutionId,
 			true);
 		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
+			event.fire(institutionEventConverter.deleteEvent(institutionStammdatenToRemove));
 			persistence.remove(institutionStammdatenToRemove);
 		}
 	}
@@ -261,8 +245,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		@Nonnull Collection<Gemeinde> gemeinden
 	) {
 
-		Objects.requireNonNull(gesuchsperiodeId);
-		Objects.requireNonNull(gemeinden);
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(gemeinden);
 
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
 
@@ -294,7 +278,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nullable
 	@Override
-	@PermitAll
 	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId, boolean doAuthCheck) {
 		Institution institution = institutionService.findInstitution(institutionId, doAuthCheck)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -312,7 +295,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@PermitAll
 	public Collection<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer() {
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 		if (role.isRoleGemeindeOrTS()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
@@ -357,10 +339,42 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution)
 			.in(institutionenForCurrentBenutzer);
-		Predicate predicateTypTagesschule = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+		Predicate predicateTypTagesschule =
+			cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
 
 		query.where(institutionPredicate, predicateTypTagesschule);
 		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
 		return q.getResultList();
+	}
+
+	@Nonnull
+	@Override
+	public Set<InstitutionStammdaten> updateGemeindeForBGInstitutionen() {
+		Set<InstitutionStammdaten> changed = new HashSet<>();
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		Predicate hasBgStammdaten =
+			cb.isNotNull(root.get(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine));
+
+		query.where(hasBgStammdaten);
+
+		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
+		q.getResultList().forEach(instStammdaten -> {
+			// update Adressen aller BG-Insitutionen
+			if (adresseService.updateGemeindeAndBFS(instStammdaten.getAdresse())) {
+				changed.add(instStammdaten);
+			}
+
+			if (requireNonNull(instStammdaten.getInstitutionStammdatenBetreuungsgutscheine()).getBetreuungsstandorte()
+				.stream()
+				// update Adressen aller Betreuungsstandorte
+				.anyMatch(b -> adresseService.updateGemeindeAndBFS(b.getAdresse()))) {
+				changed.add(instStammdaten);
+			}
+		});
+
+		return changed;
 	}
 }

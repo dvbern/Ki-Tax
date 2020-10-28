@@ -24,6 +24,24 @@
             <hr class="header">
         </div>
 
+        <div class="form-group" *ngIf="isMandantOrSuperuser()" id="filters">
+            <mat-checkbox id="showOnlyOffenePendenzen_id" name="showOnlyOffenePendenzen_id"
+                          [(ngModel)]="showOnlyOffenePendenzen"
+                          (change)="filterRueckforderungFormulare()">
+                {{ 'CORONA_LISTE_NUR_OFFENE_PENDENZEN' | translate }}
+            </mat-checkbox>
+            <mat-checkbox id="showOnlyMirZugewieseneAntraege_id" name="showOnlyMirZugewieseneAntraege_name"
+                          [(ngModel)]="showOnlyMirZugewieseneAntraege"
+                          (change)="filterRueckforderungFormulare()">
+                {{ 'CORONA_LISTE_NUR_MIR_ZUGEWIESENE' | translate }}
+            </mat-checkbox>
+            <mat-checkbox id="showOnlyAntraegeWithDokumenten_id" name="showOnlyAntraegeWithDokumenten_name"
+                          [(ngModel)]="showOnlyAntraegeWithDokumenten"
+                          (change)="filterRueckforderungFormulare()">
+                {{ 'CORONA_LISTE_NUR_DOKUMENTE' | translate }}
+            </mat-checkbox>
+        </div>
+
         <div class="filter">
             <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)"
                    placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
@@ -37,7 +55,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header="institutionStammdaten.institution.name">
                         {{'INSTITUTION' | translate}}
                     </mat-header-cell>
-                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
                         {{formular.institutionStammdaten.institution.name}}
@@ -49,7 +67,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header="institutionStammdaten.betreuungsangebotTyp">
                         {{'TYP' | translate}}
                     </mat-header-cell>
-                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular" translate>
                         {{formular.institutionStammdaten.betreuungsangebotTyp}}
@@ -61,7 +79,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'STATUS' | translate}}
                     </mat-header-cell>
-                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
                         {{translateRueckforderungStatus(formular.status)}}
@@ -73,7 +91,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'ZAHLUNG_STUFE_1_AUSGELOEST' | translate}}
                     </mat-header-cell>
-                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
                         {{getZahlungAusgeloest(formular.stufe1FreigabeAusbezahltAm)}}
@@ -85,28 +103,52 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header="zahlungStufe2">
                         {{'ZAHLUNG_STUFE_2_AUSGELOEST' | translate}}
                     </mat-header-cell>
-                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
                         {{getZahlungAusgeloest(formular.stufe2VerfuegungAusbezahltAm)}}
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="verantwortlich">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'VERANTWORTLICH' | translate}}
+                    </mat-header-cell>
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
+                              [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
+                              *matCellDef="let formular">
+                        {{formular.verantwortlicherName}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="dokumente">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <i class="fa fa-lg fa-file-o"></i>
+                    </mat-header-cell>
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
+                              [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
+                              *matCellDef="let formular">
+                        <i *ngIf="formular.uncheckedDocuments === true" class="fa fa-lg fa-file-o"></i>
+                    </mat-cell>
+                </ng-container>
+
                 <!-- clickable hint -->
                 <ng-container matColumnDef="is-clickable">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                    <mat-cell (click)="openRueckforderungFormular(formular, $event)"
                               [ngClass]="{'mat-cell-clickable': openFormularAllowed(formular)}"
                               *matCellDef="let formular">
-                        <dv-loading-button buttonClass="dv-btn-sm" *ngIf="openFormularAllowed(formular)">
+                        <dv-loading-button
+                            (buttonClick)="openRueckforderungFormular(formular, $event)"
+                            buttonClass="dv-btn-sm" *ngIf="openFormularAllowed(formular)">
                             <i class="fa fa-eye"></i>
                         </dv-loading-button>
                     </mat-cell>
                 </ng-container>
 
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <mat-header-row *matHeaderRowDef="getDisplayColumns()"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: getDisplayColumns();"></mat-row>
             </mat-table>
             <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
         </div>
@@ -125,6 +167,10 @@
 
             <button class="dv-btn" (click)="initializePhase2()" *ngIf="isSuperAdmin()" translate>
                 NOTVERORDNUNG_INITIALISIEREN_PHASE2
+            </button>
+
+            <button class="dv-btn" (click)="verfuegenUndAusdrucken()" *ngIf="isMandantOrSuperuser()" translate>
+                NOTVERORDNUNG_VERFUEGUNGEN_AUSDRUCKEN
             </button>
         </div>
     </div>

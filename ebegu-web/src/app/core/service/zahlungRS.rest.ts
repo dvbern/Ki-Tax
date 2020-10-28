@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import {from, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
@@ -84,6 +85,7 @@ export class ZahlungRS {
     }
 
     public createZahlungsauftrag(
+        zahlungslaufTyp: TSZahlungslaufTyp,
         gemeinde: TSGemeinde,
         beschrieb: string,
         faelligkeitsdatum: moment.Moment,
@@ -92,6 +94,7 @@ export class ZahlungRS {
         return this.http.get(`${this.serviceURL}/create`,
             {
                 params: {
+                    zahlungslaufTyp: zahlungslaufTyp.toString(),
                     gemeindeId: gemeinde.id,
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
                     beschrieb,

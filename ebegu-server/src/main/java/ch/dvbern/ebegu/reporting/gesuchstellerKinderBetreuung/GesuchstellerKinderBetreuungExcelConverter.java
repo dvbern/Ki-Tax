@@ -137,6 +137,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpRav, MathUtil.GANZZAHL.from(dataRow.getGs1EwpRav()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs1EwpGesundhtl()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpIntegration, MathUtil.GANZZAHL.from(dataRow.getGs1EwpIntegration()));
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpFreiwillig, MathUtil.GANZZAHL.from(dataRow.getGs1EwpFreiwillig()));
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2Name, dataRow.getGs2Name());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2Vorname, dataRow.getGs2Vorname());
@@ -152,6 +153,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpRav, MathUtil.GANZZAHL.from(dataRow.getGs2EwpRav()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs2EwpGesundhtl()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpIntegration, MathUtil.GANZZAHL.from(dataRow.getGs2EwpIntegration()));
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpFreiwillig, MathUtil.GANZZAHL.from(dataRow.getGs2EwpFreiwillig()));
 
 			String familiensituation = dataRow.getFamiliensituation() != null
 				? ServerMessageUtil.translateEnumValue(dataRow.getFamiliensituation(), locale)
@@ -166,6 +168,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ekvVorhanden, dataRow.getEkvVorhanden());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.stvGeprueft, dataRow.getStvGeprueft());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.veranlagt, dataRow.getVeranlagt());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezueger, dataRow.isSozialhilfeBezueger());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindName, dataRow.getKindName());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindVorname, dataRow.getKindVorname());
@@ -299,6 +302,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesIndikationTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesIndikationTitle, ServerMessageUtil.getMessage("Reports_gesIndikationTitle", locale));
 
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.freiwilligenarbeitTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.freiwilligenarbeitTitle, ServerMessageUtil.getMessage("Reports_freiwilligenarbeitTitle", locale));
+
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.familieTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.familieTitle, ServerMessageUtil.getMessage("Reports_familieTitle", locale));
 
@@ -325,6 +331,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungTitle, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezuegerTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezuegerTitle, ServerMessageUtil.getMessage("Reports_sozialhilfebezuegerTitle", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.geprueftSTVTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.geprueftSTVTitle, ServerMessageUtil.getMessage("Reports_geprueftSTVTitle", locale));

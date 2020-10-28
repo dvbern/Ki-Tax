@@ -16,20 +16,18 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -41,45 +39,20 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import org.apache.commons.lang3.StringUtils;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer FinanzielleSituation
  */
 @Stateless
 @Local(FinanzielleSituationService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
-	SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class FinanzielleSituationServiceBean extends AbstractBaseService implements FinanzielleSituationService {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Inject
 	private FinanzielleSituationRechner finSitRechner;
@@ -98,7 +71,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Gesuch saveFinanzielleSituationStart(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull Boolean sozialhilfebezueger,
@@ -111,12 +83,22 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId
 	) {
+		authorizer.checkWriteAuthorization(finanzielleSituation);
+
 		// Die eigentliche FinSit speichern
+		final boolean isNew = finanzielleSituation.isNew();
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
+		if (isNew) {
+			// Die FinSit war neu und muss noch mit dem GS 1 verknuepft werden
+			Objects.requireNonNull(gesuch.getGesuchsteller1());
+			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(finanzielleSituationPersisted);
+			gesuch = persistence.merge(gesuch);
+		}
 
 		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
 		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
-		Gesuch gesuch = saveFinanzielleSituationFelderAufGesuch(
+		gesuch = saveFinanzielleSituationFelderAufGesuch(
 			sozialhilfebezueger,
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
@@ -125,7 +107,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			kontoinhaber,
 			abweichendeZahlungsadresse,
 			zahlungsadresse,
-			gesuchId
+			gesuch
 		);
 
 		wizardStepService.updateSteps(
@@ -147,9 +129,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nullable String kontoinhaber,
 		boolean abweichendeZahlungsadresse,
 		@Nullable Adresse zahlungsadresse,
-		@Nonnull String gesuchId
+		@Nonnull Gesuch gesuch
 	) {
-		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
 		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
 		Objects.requireNonNull(familiensituationContainer);
 		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
@@ -177,21 +158,22 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
 		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
-			if (StringUtils.isNoneEmpty(iban)) {
-				familiensituation.setIban(new IBAN(iban));
-			} else {
-				familiensituation.setIban(null);
+			if (!keineMahlzeitenverguenstigungGewuenscht && iban != null && kontoinhaber != null) {
+				//Hier aufpassen, per Default sind die Mahlzeitverguenstigung Gewunscht
+				//aber wenn die Gemeinde keine Mahlzeitverguenstigung anbietet kann der Gesuchsteller oder Gemeinde
+				//gar keinen Iban oder Kontoinhaber eingeben, deswegen waren diese Feldern nullable before!
+				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+				auszahlungsdaten.setIban(new IBAN(iban));
+				auszahlungsdaten.setKontoinhaber(kontoinhaber);
+				auszahlungsdaten.setAdresseKontoinhaber(zahlungsadresse);
+				familiensituation.setAuszahlungsdaten(auszahlungsdaten);
 			}
-			familiensituation.setKontoinhaber(kontoinhaber);
 			familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
-			familiensituation.setZahlungsadresse(zahlungsadresse);
 		} else {
 			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
-			familiensituation.setIban(null);
-			familiensituation.setKontoinhaber(null);
+			familiensituation.setAuszahlungsdaten(null);
 			familiensituation.setAbweichendeZahlungsadresse(false);
-			familiensituation.setZahlungsadresse(null);
 		}
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
@@ -202,11 +184,12 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public FinanzielleSituationContainer saveFinanzielleSituation(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull String gesuchId
 	) {
+		authorizer.checkWriteAuthorization(finanzielleSituation);
+
 		// Die eigentliche FinSit speichern
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
 		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
@@ -250,8 +233,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<FinanzielleSituationContainer> findFinanzielleSituation(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		FinanzielleSituationContainer finanzielleSituation = persistence.find(FinanzielleSituationContainer.class, id);
@@ -259,29 +240,15 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		return Optional.ofNullable(finanzielleSituation);
 	}
 
-	@Nonnull
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
-		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Collection<FinanzielleSituationContainer> getAllFinanzielleSituationen() {
-		Collection<FinanzielleSituationContainer> finanzielleSituationen = criteriaQueryHelper.getAll(FinanzielleSituationContainer.class);
-		authorizer.checkReadAuthorization(finanzielleSituationen);
-		return new ArrayList<>(finanzielleSituationen);
-	}
-
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch) {
+		// Die Berechnung der FinSit Resultate beruht auf einem "Pseudo-Gesuch", dieses hat
+		// keinen Status und kann/muss nicht geprueft werden!
 		return finSitRechner.calculateResultateFinanzielleSituation(gesuch, true);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch) {
 		final BigDecimal minimumEKV = calculateGrenzwertEKV(gesuch);
 		finSitRechner.calculateFinanzDaten(gesuch, minimumEKV);

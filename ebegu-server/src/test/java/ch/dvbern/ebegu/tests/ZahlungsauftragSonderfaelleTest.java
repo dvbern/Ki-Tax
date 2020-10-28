@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -89,7 +90,12 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Gemeinde gemeinde = erstgesuch.extractGemeinde();
 
 		lastZahlungsauftrag = zahlungService
-			.zahlungsauftragErstellen(gemeinde.getId(), LocalDate.now().plusDays(3), "Zahlung Normal August", datumGeneriertErsterZahlungsauftrag);
+			.zahlungsauftragErstellen(
+				ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+				gemeinde.getId(),
+				LocalDate.now().plusDays(3),
+				"Zahlung Normal August",
+				datumGeneriertErsterZahlungsauftrag);
 		lastZahlungsauftrag = zahlungService.zahlungsauftragAusloesen(lastZahlungsauftrag.getId());
 
 		erstgesuch = gesuchService.findGesuch(erstgesuch.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("findGesuch",
@@ -169,7 +175,11 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Gemeinde gemeinde = mutation.extractGemeinde();
 
 		// Zahlung im gleichen Monat
-		zahlungService.zahlungsauftragErstellen(gemeinde.getId(), LocalDate.now().plusDays(3), "Zahlung Repetition August",
+		zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+			gemeinde.getId(),
+			LocalDate.now().plusDays(3),
+			"Zahlung Repetition August",
 			lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
 
 		Assert.assertNotNull(mutation);
@@ -193,7 +203,11 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Gemeinde gemeinde = mutation.extractGemeinde();
 
 		// Zahlung im gleichen Monat
-		zahlungService.zahlungsauftragErstellen(gemeinde.getId(), LocalDate.now().plusDays(3), "Zahlung Normal September",
+		zahlungService.zahlungsauftragErstellen(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+			gemeinde.getId(),
+			LocalDate.now().plusDays(3),
+			"Zahlung Normal September",
 			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1));
 
 		Assert.assertNotNull(mutation);

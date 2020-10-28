@@ -58,12 +58,20 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe1FreigabeAusbezahltAm(new SimpleMergeField<>("stufe1FreigabeAusbezahltAm", DATETIME_CONVERTER)),
 	stufe1ZahlungJetztAusgeloest(new SimpleMergeField<>("stufe1ZahlungJetztAusgeloest", STRING_CONVERTER)),
 
+	institutionTyp(new SimpleMergeField<>("institutionTyp", STRING_CONVERTER)),
+
 	stufe2InstitutionKostenuebernahmeAnzahlTage(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlTage", BIGDECIMAL_CONVERTER)),
 	stufe2InstitutionKostenuebernahmeAnzahlStunden(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlStunden", BIGDECIMAL_CONVERTER)),
 	stufe2InstitutionKostenuebernahmeBetreuung(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeBetreuung", BIGDECIMAL_CONVERTER)),
 	stufe2KantonKostenuebernahmeAnzahlTage(new SimpleMergeField<>("stufe2KantonKostenuebernahmeAnzahlTage", BIGDECIMAL_CONVERTER)),
 	stufe2KantonKostenuebernahmeAnzahlStunden(new SimpleMergeField<>("stufe2KantonKostenuebernahmeAnzahlStunden", BIGDECIMAL_CONVERTER)),
 	stufe2KantonKostenuebernahmeBetreuung(new SimpleMergeField<>("stufe2KantonKostenuebernahmeBetreuung", BIGDECIMAL_CONVERTER)),
+
+	betragEntgangeneElternbeitraege(new SimpleMergeField<>("betragEntgangeneElternbeitraege", BIGDECIMAL_CONVERTER)),
+	betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(new SimpleMergeField<>("betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten", BIGDECIMAL_CONVERTER)),
+	rueckerstattungNichtAngeboteneBetreuungstage(new SimpleMergeField<>("rueckerstattungNichtAngeboteneBetreuungstage", BIGDECIMAL_CONVERTER)),
+	kurzarbeitBetrag(new SimpleMergeField<>("kurzarbeitBetrag", BIGDECIMAL_CONVERTER)),
+	coronaErwerbsersatzBetrag(new SimpleMergeField<>("coronaErwerbsersatzBetrag", BIGDECIMAL_CONVERTER)),
 
 	stufe2VerfuegungBetrag(new SimpleMergeField<>("stufe2VerfuegungBetrag", BIGDECIMAL_CONVERTER)),
 	stufe2VerfuegungDatum(new SimpleMergeField<>("stufe2VerfuegungDatum", DATETIME_CONVERTER)),

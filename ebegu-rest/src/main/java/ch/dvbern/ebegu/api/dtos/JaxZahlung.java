@@ -36,10 +36,10 @@ public class JaxZahlung extends JaxAbstractDTO {
 	private static final long serialVersionUID = 1661454343875422672L;
 
 	@NotNull
-	private String institutionsName;
+	private String empfaengerName;
 
 	@NotNull
-	private String institutionsId;
+	private String empfaengerId;
 
 	@NotNull
 	private BetreuungsangebotTyp betreuungsangebotTyp;
@@ -52,12 +52,12 @@ public class JaxZahlung extends JaxAbstractDTO {
 
 
 	@Nonnull
-	public String getInstitutionsName() {
-		return institutionsName;
+	public String getEmpfaengerName() {
+		return empfaengerName;
 	}
 
-	public void setInstitutionsName(@Nonnull String institutionsName) {
-		this.institutionsName = institutionsName;
+	public void setEmpfaengerName(@Nonnull String empfaengerName) {
+		this.empfaengerName = empfaengerName;
 	}
 
 	@Nonnull
@@ -79,12 +79,12 @@ public class JaxZahlung extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public String getInstitutionsId() {
-		return institutionsId;
+	public String getEmpfaengerId() {
+		return empfaengerId;
 	}
 
-	public void setInstitutionsId(@Nonnull String institutionsId) {
-		this.institutionsId = institutionsId;
+	public void setEmpfaengerId(@Nonnull String empfaengerId) {
+		this.empfaengerId = empfaengerId;
 	}
 
 	@Nonnull

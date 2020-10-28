@@ -18,15 +18,26 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -38,7 +49,7 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entitaet zum Speichern von InstitutionStammdatenTagesschule in der Datenbank.
@@ -46,25 +57,16 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_bg_adressekontoinhaber_id"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id", name = "UK_institution_stammdaten_bg_auszahlungsdaten_id"))
 public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity implements Comparable<InstitutionStammdatenBetreuungsgutscheine> {
 
 	private static final long serialVersionUID = -5937387773922925929L;
 
-	@Column(nullable = true)
-	@Embedded
+	@Nullable
 	@Valid
-	private IBAN iban;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String kontoinhaber;
-
-	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_adressekontoinhaber_id"), nullable = true)
-	private Adresse adresseKontoinhaber;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_auszahlungsdaten_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdaten;
 
 	@NotNull
 	@Column(nullable = false)
@@ -102,34 +104,66 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	private BigDecimal tarifProNebenmahlzeit;
 
+	@ElementCollection(targetClass = DayOfWeek.class, fetch = FetchType.EAGER)
+	@CollectionTable(
+		name = "institutionStammdatenBetreuungsgutscheineOeffnungstag",
+		joinColumns = @JoinColumn(name = "insitutionStammdatenBetreuungsgutscheine")
+	)
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	@Nonnull
+	private Set<DayOfWeek> oeffnungstage = EnumSet.noneOf(DayOfWeek.class);
+
+	@Column(nullable = true)
+	@Nullable
+	private LocalTime offenVon;
+
+	@Column(nullable = true)
+	@Nullable
+	private LocalTime offenBis;
+
+	@Column(nullable = true)
+	@Nullable
+	private @Size(max = DB_TEXTAREA_LENGTH) String oeffnungsAbweichungen;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.EAGER)
+	@Nonnull
+	private Set<Betreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
 
-	public IBAN getIban() {
-		return iban;
+	@Nullable
+	public Auszahlungsdaten getAuszahlungsdaten() {
+		return auszahlungsdaten;
 	}
 
-	public void setIban(IBAN iban) {
-		this.iban = iban;
+	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdaten = auszahlungsdaten;
 	}
 
 	@Nullable
-	public String getKontoinhaber() {
-		return kontoinhaber;
-	}
-
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
+	public IBAN extractIban() {
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getIban();
+		}
+		return null;
 	}
 
 	@Nullable
-	public Adresse getAdresseKontoinhaber() {
-		return adresseKontoinhaber;
+	public String extractKontoinhaber() {
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getKontoinhaber();
+		}
+		return null;
 	}
 
-	public void setAdresseKontoinhaber(@Nullable Adresse adresseKontoinhaber) {
-		this.adresseKontoinhaber = adresseKontoinhaber;
+	@Nullable
+	public Adresse extractAdresseKontoinhaber() {
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getAdresseKontoinhaber();
+		}
+		return null;
 	}
 
 	public boolean getAlterskategorieBaby() {
@@ -208,6 +242,51 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 
+	@Nonnull
+	public Set<DayOfWeek> getOeffnungsTage() {
+		return oeffnungstage;
+	}
+
+	public void setOeffnungsTage(@Nonnull Set<DayOfWeek> oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
+	}
+
+	@Nullable
+	public String getOeffnungsAbweichungen() {
+		return oeffnungsAbweichungen;
+	}
+
+	public void setOeffnungsAbweichungen(@Nullable String oeffnungsAbweichungen) {
+		this.oeffnungsAbweichungen = oeffnungsAbweichungen;
+	}
+
+	@Nullable
+	public LocalTime getOffenVon() {
+		return offenVon;
+	}
+
+	public void setOffenVon(@Nullable LocalTime offenVon) {
+		this.offenVon = offenVon;
+	}
+
+	@Nullable
+	public LocalTime getOffenBis() {
+		return offenBis;
+	}
+
+	public void setOffenBis(@Nullable LocalTime offenBis) {
+		this.offenBis = offenBis;
+	}
+
+	@Nonnull
+	public Set<Betreuungsstandort> getBetreuungsstandorte() {
+		return betreuungsstandorte;
+	}
+
+	public void setBetreuungsstandorte(@Nonnull Set<Betreuungsstandort> betreuungsstandorte) {
+		this.betreuungsstandorte = betreuungsstandorte;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -221,7 +300,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 			return false;
 		}
 		final InstitutionStammdatenBetreuungsgutscheine otherInstStammdaten = (InstitutionStammdatenBetreuungsgutscheine) other;
-		return Objects.equals(getIban(), otherInstStammdaten.getIban());
+		return Objects.equals(getAuszahlungsdaten(), otherInstStammdaten.getAuszahlungsdaten());
 	}
 
 	@Override

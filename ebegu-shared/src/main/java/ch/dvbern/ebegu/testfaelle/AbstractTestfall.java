@@ -204,6 +204,7 @@ public abstract class AbstractTestfall {
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 	}
 
 	protected Gesuch createAlleinerziehend() {
@@ -461,7 +462,7 @@ public abstract class AbstractTestfall {
 		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
 		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
 		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
-
+		finanzielleSituation.setNettolohn(BigDecimal.ZERO);
 		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
 		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}

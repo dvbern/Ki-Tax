@@ -20,18 +20,17 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -70,10 +69,21 @@ public interface MitteilungService {
 	Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key);
 
 	/**
+	 * Löscht alle offenen Mutationsmeldung für eine Betreuung
+	 */
+	void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung);
+
+	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
 	 */
 	@Nonnull
 	Collection<Betreuungsmitteilung> findAllBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung);
+
+	/**
+	 * Returns all BetreuungspensumAbweichung that are linked with the given Betreuung.
+	 */
+	@Nonnull
+	Collection<BetreuungspensumAbweichung> findAllBetreuungspensumAbweichungenForBetreuung(@Nonnull Betreuung betreuung);
 
 	/**
 	 * Gibt alle (Betreuungs-) Mitteilungen fuer die uebergebene Betreuung zurueck
@@ -109,6 +119,11 @@ public interface MitteilungService {
 	 * Loescht alle Betreuungsmitteilungen des uebergebenen Gesuchs.
 	 */
 	void removeAllBetreuungMitteilungenForGesuch(@Nonnull Gesuch gesuch);
+
+	/**
+	 * Loescht alle BetreuungspensumAbweichungen des uebergebenen Gesuchs.
+	 */
+	void removeAllBetreuungspensumAbweichungenForGesuch(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Sucht alle Mitteilungen des uebergebenen Dossiers und fuer jede, die im Status NEU ist, wechselt

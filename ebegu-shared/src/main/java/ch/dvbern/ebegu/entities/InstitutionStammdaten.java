@@ -57,7 +57,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
-public class InstitutionStammdaten extends AbstractDateRangedEntity {
+public class InstitutionStammdaten extends AbstractDateRangedEntity implements KontaktAngaben {
 
 	private static final long serialVersionUID = -8403411439882700618L;
 
@@ -85,6 +85,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String webseite;
 
+	// Wird nur noch read-only verwendet, um die Daten-Migration durch die Institutions-Admins zu vereinfachen
 	@Column(nullable = true)
 	@Nullable
 	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungszeiten;
@@ -137,6 +138,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.institution = institution;
 	}
 
+	@Override
 	@Nonnull
 	public Adresse getAdresse() {
 		return adresse;
@@ -176,6 +178,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
+	@Override
 	@Nonnull
 	public String getMail() {
 		return mail;
@@ -185,6 +188,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.mail = mail;
 	}
 
+	@Override
 	@Nullable
 	public String getTelefon() {
 		return telefon;
@@ -194,6 +198,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.telefon = telefon;
 	}
 
+	@Override
 	@Nullable
 	public String getWebseite() {
 		return webseite;
@@ -206,10 +211,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	public String getOeffnungszeiten() {
 		return oeffnungszeiten;
-	}
-
-	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
-		this.oeffnungszeiten = oeffnungszeiten;
 	}
 
 	public boolean getSendMailWennOffenePendenzen() {
@@ -271,7 +272,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	public String extractKontoinhaber() {
 		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			return getInstitutionStammdatenBetreuungsgutscheine().getKontoinhaber();
+			return getInstitutionStammdatenBetreuungsgutscheine().extractKontoinhaber();
 		}
 		return null;
 	}
@@ -279,7 +280,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	public Adresse extractAdresseKontoinhaber() {
 		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			return getInstitutionStammdatenBetreuungsgutscheine().getAdresseKontoinhaber();
+			return getInstitutionStammdatenBetreuungsgutscheine().extractAdresseKontoinhaber();
 		}
 		return null;
 	}
@@ -287,7 +288,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Nullable
 	public IBAN extractIban() {
 		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			return getInstitutionStammdatenBetreuungsgutscheine().getIban();
+			return getInstitutionStammdatenBetreuungsgutscheine().extractIban();
 		}
 		return null;
 	}

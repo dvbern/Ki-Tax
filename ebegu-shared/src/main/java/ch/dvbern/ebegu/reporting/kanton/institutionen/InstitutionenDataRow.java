@@ -20,6 +20,8 @@ package ch.dvbern.ebegu.reporting.kanton.institutionen;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import javax.annotation.Nullable;
+
 public class InstitutionenDataRow {
 	private String typ = null;
 	private String traegerschaft = null;
@@ -31,7 +33,9 @@ public class InstitutionenDataRow {
 	private String telefon = null;
 	private String email = null;
 	private String url = null;
+	private String oeffnungstage = null;
 	private String oeffnungszeiten = null;
+	private @Nullable String oeffnungsAbweichungen = null;
 	private Boolean baby = null;
 	private Boolean vorschulkind = null;
 	private Boolean kindergarten = null;
@@ -105,12 +109,28 @@ public class InstitutionenDataRow {
 		this.url = url;
 	}
 
+	public String getOeffnungstage() {
+		return oeffnungstage;
+	}
+
+	public void setOeffnungstage(String oeffnungstage) {
+		this.oeffnungstage = oeffnungstage;
+	}
+
 	public String getOeffnungszeiten() {
 		return oeffnungszeiten;
 	}
 
 	public void setOeffnungszeiten(String oeffnungszeiten) {
 		this.oeffnungszeiten = oeffnungszeiten;
+	}
+
+	public @Nullable String getOeffnungsAbweichungen() {
+		return oeffnungsAbweichungen;
+	}
+
+	public void setOeffnungsAbweichungen(@Nullable String oeffnungsAbweichungen) {
+		this.oeffnungsAbweichungen = oeffnungsAbweichungen;
 	}
 
 	public Boolean getBaby() {

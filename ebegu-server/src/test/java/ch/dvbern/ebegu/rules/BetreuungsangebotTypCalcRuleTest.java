@@ -47,8 +47,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
+		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
 		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -59,8 +60,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
+		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
 		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -86,8 +88,8 @@ public class BetreuungsangebotTypCalcRuleTest {
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(80));
-		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(0);
-		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(0);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(BigDecimal.ZERO);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(BigDecimal.ZERO);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		if (betreuungsangebotTyp.isTagesschule()) {
 			AnmeldungTagesschule anmeldung = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(),

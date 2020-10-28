@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.api.resource.FachstelleResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
+import ch.dvbern.ebegu.api.resource.GesuchstellerResource;
 import ch.dvbern.ebegu.api.resource.KindResource;
 import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
@@ -50,8 +51,8 @@ import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -60,9 +61,11 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -103,6 +106,10 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	private JaxBConverter converter;
 	@Inject
 	private Persistence persistence;
+	@Inject
+	private GesuchstellerResource gesuchstellerResource;
+	@Inject
+	private GesuchService gesuchService;
 
 	@Test
 	public void createBetreuung() {
@@ -202,7 +209,6 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	// HELP
-
 	private KindContainer persistKindAndDependingObjects() {
 		final Gesuchsperiode gesuchsperiode1718 = persistence.merge(TestDataUtil.createGesuchsperiode1718());
 		final Gemeinde gemeindeParis = TestDataUtil.getGemeindeParis(persistence);
@@ -212,20 +218,21 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		);
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeParis(persistence));
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(gemeindeParis);
 		Mandant persistedMandant =
 			persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
-		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		jaxGesuch.getDossier()
 			.getVerantwortlicherBG()
-			.getBerechtigungen()
-			.iterator()
-			.next()
-			.getGemeindeList()
-			.add(persistedGemeinde);
-		benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(
-			jaxGesuch.getDossier().getVerantwortlicherBG(),
-			new Benutzer()));
+			.getGemeindeIds()
+			.add(persistedGemeinde.getId());
+		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
+		benutzer.setUsername(jaxGesuch.getDossier().getVerantwortlicherBG().getUsername());
+		benutzer.setVorname(jaxGesuch.getDossier().getVerantwortlicherBG().getVorname());
+		benutzer.setNachname(jaxGesuch.getDossier().getVerantwortlicherBG().getNachname());
+		benutzer.setMandant(persistedMandant);
+		benutzer.getCurrentBerechtigung().setRole(UserRole.ADMIN_BG);
+		benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeindeParis);
+		benutzerService.saveBenutzer(benutzer);
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
 		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);
@@ -236,22 +243,30 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		JaxGesuch returnedGesuch =
 			(JaxGesuch) gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 
+		returnedGesuch.setGesuchsteller1(gesuchstellerResource.saveGesuchsteller(converter.toJaxId(returnedGesuch), 1, false,
+			TestJaxDataUtil.createTestJaxGesuchsteller(),
+			DUMMY_URIINFO, DUMMY_RESPONSE));
+
+		returnedGesuch = gesuchResource.update(returnedGesuch, DUMMY_URIINFO, DUMMY_RESPONSE);
+
+
 		KindContainer returnedKind = TestDataUtil.createDefaultKindContainer();
 		returnedKind.setKindNummer(1);
-		returnedKind.setGesuch(converter.gesuchToEntity(returnedGesuch, new Gesuch()));
 		JaxKindContainer jaxKind = converter.kindContainerToJAX(returnedKind);
 		JaxPensumFachstelle jaxPensumFachstelle = jaxKind.getKindGS().getPensumFachstelle();
 		Assert.assertNotNull(jaxPensumFachstelle);
-		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(
-			jaxPensumFachstelle.getFachstelle(),
-			DUMMY_URIINFO,
-			DUMMY_RESPONSE));
+		persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
+		jaxPensumFachstelle.setFachstelle(jaxPensumFachstelle.getFachstelle());
 		PensumFachstelle returnedPensumFachstelle = persistence.merge(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
 		jaxKind.getKindGS().setPensumFachstelle(convertedPensumFachstelle);
 		jaxKind.getKindJA().setPensumFachstelle(convertedPensumFachstelle);
+
+		assert returnedGesuch != null;
 		kindResource.saveKind(converter.toJaxId(returnedGesuch), jaxKind, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assert returnedGesuch.getId() != null;
+		returnedKind.setGesuch(gesuchService.findGesuch(returnedGesuch.getId()).get());
 		return returnedKind;
 	}
 
@@ -372,18 +387,19 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertFalse(BetreuungUtil.hasDuplicateAnmeldungFerieninsel(jaxNewBetreuung, betreuungen));
 	}
 
-
 	@Test
 	public void testStoreAbwesenheit() {
 
 		Betreuung initialBetr = this.storeInitialBetreung();
 
 		final Set<AbwesenheitContainer> abwenseheitContList = new HashSet<>();
-		final AbwesenheitContainer abwesenheit1 = TestDataUtil.createShortAbwesenheitContainer(initialBetr.extractGesuchsperiode());
+		final AbwesenheitContainer abwesenheit1 =
+			TestDataUtil.createShortAbwesenheitContainer(initialBetr.extractGesuchsperiode());
 		abwenseheitContList.add(abwesenheit1);
 
 		//neue lange Abwesenheit die 3 Monate spaeter stattfindet
-		final AbwesenheitContainer lateAbwesenheit = TestDataUtil.createLongAbwesenheitContainer(initialBetr.extractGesuchsperiode());
+		final AbwesenheitContainer lateAbwesenheit =
+			TestDataUtil.createLongAbwesenheitContainer(initialBetr.extractGesuchsperiode());
 		lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().setGueltigAb(
 			lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().getGueltigAb().plusMonths(3));
 		lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().setGueltigBis(
@@ -394,16 +410,16 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		initialBetr.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		List<JaxBetreuung> abwesenheitsbetr = new ArrayList<>();
 		abwesenheitsbetr.add(jaxNewBetreuung);
-		final List<JaxBetreuung> storedBetr = betreuungResource.saveAbwesenheiten(abwesenheitsbetr, Boolean.TRUE, DUMMY_URIINFO, DUMMY_RESPONSE);
+		final List<JaxBetreuung> storedBetr = betreuungResource.saveAbwesenheiten(abwesenheitsbetr, Boolean.TRUE,
+			DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		Assert.assertEquals(1,storedBetr.size());
+		Assert.assertEquals(1, storedBetr.size());
 		final JaxBetreuung jaxBetreuung = storedBetr.get(0);
-		Assert.assertEquals(2,jaxBetreuung.getAbwesenheitContainers().size());
+		Assert.assertEquals(2, jaxBetreuung.getAbwesenheitContainers().size());
 		Comparator<JaxAbwesenheit> comp = Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb);
 		Optional<JaxAbwesenheit> firstAbwOpt =
 			jaxBetreuung.getAbwesenheitContainers().stream()
 				.map(JaxAbwesenheitContainer::getAbwesenheitJA).min(comp);
-
 
 		Assert.assertTrue(firstAbwOpt.isPresent());
 		final JaxAbwesenheit firstAbw = firstAbwOpt.get();

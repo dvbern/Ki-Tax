@@ -76,37 +76,19 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		}
 
 		BigDecimal verguenstigungGemaessEinkommen =
-			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
+			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
 		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0) {
 
-			Map<BigDecimal, Integer> kostenUndAnzMahlzeitenMitBetreuung =
-				inputData.getTsInputMitBetreuung().getVerpflegungskostenUndMahlzeiten();
-			Map<BigDecimal, Integer> kostenUndAnzMahlzeitenOhneBetreuung =
-				inputData.getTsInputOhneBetreuung().getVerpflegungskostenUndMahlzeiten();
-
-			BigDecimal verguenstigungMitBetreuung = BigDecimal.ZERO;
-			BigDecimal verguenstigungOhneBetreuung = BigDecimal.ZERO;
-
-			for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeitenMitBetreuung.entrySet()) {
-				BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
-					entry.getKey(),
-					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
-
-				verguenstigungMitBetreuung = MathUtil.DEFAULT.addNullSafe(verguenstigungMitBetreuung,
-					verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
-			}
-
-			for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeitenOhneBetreuung.entrySet()) {
-				BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
-					entry.getKey(),
-					mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
-
-				verguenstigungOhneBetreuung = MathUtil.DEFAULT.addNullSafe(verguenstigungOhneBetreuung,
-					verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
-			}
-
+			BigDecimal verguenstigungMitBetreuung = getVerguenstigung(
+				verguenstigungGemaessEinkommen,
+				inputData.getTsInputMitBetreuung().getVerpflegungskostenUndMahlzeiten(),
+				inputData.getTsInputMitBetreuung().getVerpflegungskostenUndMahlzeitenZweiWochen());
+			BigDecimal verguenstigungOhneBetreuung = getVerguenstigung(
+				verguenstigungGemaessEinkommen,
+				inputData.getTsInputOhneBetreuung().getVerpflegungskostenUndMahlzeiten(),
+				inputData.getTsInputOhneBetreuung().getVerpflegungskostenUndMahlzeitenZweiWochen());
 
 			if (verguenstigungMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
 				inputData.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigungMitBetreuung);
@@ -116,7 +98,39 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungOhneBetreuung);
 				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale());
 			}
+		} else {
+			// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
+			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_NEIN, getLocale());
 		}
+	}
+
+	@Nonnull
+	private BigDecimal getVerguenstigung(
+		@Nonnull BigDecimal verguenstigungGemaessEinkommen,
+		@Nonnull Map<BigDecimal, Integer> kostenUndAnzMahlzeiten,
+		@Nonnull Map<BigDecimal, Integer> kostenUndAnzMahlzeitenZweiWochen
+	) {
+		BigDecimal verguenstigung = BigDecimal.ZERO;
+		for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeiten.entrySet()) {
+			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+				entry.getKey(),
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
+
+			verguenstigung = MathUtil.DEFAULT.addNullSafe(verguenstigung,
+				verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
+		}
+
+		for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeitenZweiWochen.entrySet()) {
+			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
+				entry.getKey(),
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
+
+			verguenstigungEffektivMitBetreuung = MathUtil.DEFAULT.multiply(verguenstigungEffektivMitBetreuung, BigDecimal.valueOf(0.5));
+
+			verguenstigung = MathUtil.DEFAULT.addNullSafe(verguenstigung,
+				verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
+		}
+		return verguenstigung;
 	}
 
 	@Override

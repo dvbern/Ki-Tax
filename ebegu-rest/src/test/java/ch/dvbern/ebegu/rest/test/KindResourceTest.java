@@ -26,17 +26,18 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.resource.DossierResource;
-import ch.dvbern.ebegu.api.resource.FachstelleResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
 import ch.dvbern.ebegu.api.resource.KindResource;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -62,10 +63,6 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private FallResource fallResource;
 	@Inject
-	private FachstelleResource fachstelleResource;
-	@Inject
-	private PensumFachstelleService pensumFachstelleService;
-	@Inject
 	private BenutzerService benutzerService;
 	@Inject
 	private DossierResource dossierResource;
@@ -82,11 +79,18 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeParis(persistence));
+		final Gemeinde gemeindeParis = TestDataUtil.getGemeindeParis(persistence);
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(gemeindeParis);
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
-		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
-		jaxGesuch.getDossier().getVerantwortlicherBG().getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
-		benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
+		jaxGesuch.getDossier().getVerantwortlicherBG().getGemeindeIds().add(persistedGemeinde.getId());
+		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
+		benutzer.setUsername(jaxGesuch.getDossier().getVerantwortlicherBG().getUsername());
+		benutzer.setVorname(jaxGesuch.getDossier().getVerantwortlicherBG().getVorname());
+		benutzer.setNachname(jaxGesuch.getDossier().getVerantwortlicherBG().getNachname());
+		benutzer.setMandant(persistedMandant);
+		benutzer.getCurrentBerechtigung().setRole(UserRole.ADMIN_BG);
+		benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeindeParis);
+		benutzerService.saveBenutzer(benutzer);
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
 		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);
@@ -102,7 +106,8 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 		JaxKindContainer testJaxKindContainer = TestJaxDataUtil.createTestJaxKindContainer();
 		JaxPensumFachstelle jaxPensumFachstelle = testJaxKindContainer.getKindGS().getPensumFachstelle();
 		Assert.assertNotNull(jaxPensumFachstelle);
-		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(jaxPensumFachstelle.getFachstelle(), DUMMY_URIINFO, DUMMY_RESPONSE));
+		final Fachstelle fachstelle = persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
+		jaxPensumFachstelle.setFachstelle(converter.fachstelleToJAX(fachstelle));
 		PensumFachstelle returnedPensumFachstelle = persistence.merge(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);

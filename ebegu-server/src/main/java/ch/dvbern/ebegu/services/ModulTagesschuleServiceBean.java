@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,10 +32,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer Modul
@@ -53,7 +48,6 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, ADMIN_GEMEINDE })
 	public ModulTagesschule saveModul(@Nonnull ModulTagesschule modulTagesschule) {
 		Objects.requireNonNull(modulTagesschule);
 		return persistence.merge(modulTagesschule);
@@ -61,7 +55,6 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, ADMIN_GEMEINDE })
 	public Optional<ModulTagesschule> findModul(@Nonnull String modulTagesschuleId) {
 		Objects.requireNonNull(modulTagesschuleId, "id muss gesetzt sein");
 		ModulTagesschule modul = persistence.find(ModulTagesschule.class, modulTagesschuleId);
@@ -69,7 +62,6 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, ADMIN_GEMEINDE })
 	public void removeModul(@Nonnull String modulTagesschuleId) {
 		Objects.requireNonNull(modulTagesschuleId);
 		Optional<ModulTagesschule> modulOptional = findModul(modulTagesschuleId);
@@ -79,7 +71,6 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<EinstellungenTagesschule> findEinstellungenTagesschuleByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		return
 			criteriaQueryHelper.getEntitiesByAttribute(
@@ -87,7 +78,6 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void copyModuleTagesschuleToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode

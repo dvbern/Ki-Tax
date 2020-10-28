@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -65,13 +63,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 
 /**
@@ -79,7 +70,6 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterFor
  */
 @Stateless
 @Local(SearchService.class)
-@PermitAll
 public class SearchServiceBean extends AbstractBaseService implements SearchService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SearchServiceBean.class.getSimpleName());
@@ -92,13 +82,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Pair<Long, List<Gesuch>> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, true);
 	}
 
 	@Override
-	@PermitAll
 	public Pair<Long, List<Gesuch>> searchAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, false);
 	}
@@ -174,6 +162,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
+		// Predicates derived from PredicateDTO (Filter coming from client)
+		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDto.getSearch().getPredicateObject();
+
 		// Special role based predicates
 		switch (role) {
 		case SUPER_ADMIN:
@@ -195,23 +186,58 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			predicates.add(
-				cb.or(
-					cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
-					cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
-					cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
-				));
+			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
+				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+				case KITA:
+				case TAGESFAMILIEN:
+					predicates.add(cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					break;
+				case TAGESSCHULE:
+					predicates.add(cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					break;
+				case FERIENINSEL:
+					predicates.add(cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					break;
+				default:
+					throw new EbeguRuntimeException("searchAntraege", "BetreuungsangebotTyp nicht gefunden: " + BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+				}
+			}
+			else{
+				predicates.add(
+					cb.or(
+						cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
+						cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
+						cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
+					));
+			}
 			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			break;
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des eingeloggten benutzers
-			predicates.add(
-				cb.or(
-					cb.equal(joinInstitutionBetreuungen, user.getInstitution()),
-					cb.equal(joinInstitutionFerieninsel, user.getInstitution()),
-					cb.equal(joinInstitutionTagesschule, user.getInstitution())
-				));
+			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
+				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+				case KITA:
+				case TAGESFAMILIEN:
+					predicates.add(cb.equal(joinInstitutionBetreuungen, user.getInstitution()));
+					break;
+				case TAGESSCHULE:
+					predicates.add(cb.equal(joinInstitutionTagesschule, user.getInstitution()));
+					break;
+				case FERIENINSEL:
+					predicates.add(cb.equal(joinInstitutionFerieninsel, user.getInstitution()));
+					break;
+				default:
+					throw new EbeguRuntimeException("searchAntraege", "BetreuungsangebotTyp nicht gefunden: " + BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+				}
+			} else {
+				predicates.add(
+					cb.or(
+						cb.equal(joinInstitutionBetreuungen, user.getInstitution()),
+						cb.equal(joinInstitutionFerieninsel, user.getInstitution()),
+						cb.equal(joinInstitutionTagesschule, user.getInstitution())
+					));
+			}
 			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			break;
 		case SACHBEARBEITER_TS:
@@ -226,8 +252,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		}
 
-		// Predicates derived from PredicateDTO (Filter coming from client)
-		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDto.getSearch().getPredicateObject();
 		if (predicateObjectDto != null) {
 			if (predicateObjectDto.getFallNummer() != null) {
 				// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114" kommen
@@ -253,7 +277,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getAntragTyp() != null) {
 				List<AntragTyp> values = AntragTyp.getValuesForFilter(predicateObjectDto.getAntragTyp());
 
-				if (values != null && !values.isEmpty()) {
+				if (!values.isEmpty()) {
 					predicates.add(root.get(Gesuch_.typ).in(values));
 				}
 			}

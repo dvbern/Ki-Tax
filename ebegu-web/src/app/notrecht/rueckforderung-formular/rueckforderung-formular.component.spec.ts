@@ -19,8 +19,10 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {UploadRS} from '../../core/service/uploadRS.rest';
@@ -40,8 +42,14 @@ describe('RueckforderungFormularComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
     const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
     const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadRueckforderungsDokumente']);
+    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getNotverordnungDefaultEinreichefristPrivat', 'getNotverordnungDefaultEinreichefristOeffentlich']);
 
     beforeEach(async(() => {
+        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristPrivat.and
+            .returnValue(of('2020-08-01').toPromise());
+        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristOeffentlich.and
+            .returnValue(of('2020-08-01').toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
@@ -58,6 +66,7 @@ describe('RueckforderungFormularComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: UploadRS, useValue: uploadRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,

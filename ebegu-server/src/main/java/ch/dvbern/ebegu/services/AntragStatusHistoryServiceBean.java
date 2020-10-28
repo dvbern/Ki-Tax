@@ -24,8 +24,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -50,31 +48,16 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.AntragStatusHistoryUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer AntragStatusHistory
  */
 @Stateless
 @Local(AntragStatusHistoryService.class)
-@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-	GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 public class AntragStatusHistoryServiceBean extends AbstractBaseService implements AntragStatusHistoryService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AntragStatusHistoryServiceBean.class.getSimpleName());
@@ -126,7 +109,6 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	@PermitAll
 	public AntragStatusHistory findLastStatusChange(@Nonnull String gesuchId) {
 		Objects.requireNonNull(gesuchId);
 		try {
@@ -142,10 +124,10 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeAllAntragStatusHistoryFromGesuch(@Nonnull Gesuch gesuch) {
 		Collection<AntragStatusHistory> antragStatusHistoryFromGesuch = findAllAntragStatusHistoryByGesuch(gesuch);
 		for (AntragStatusHistory antragStatusHistory : antragStatusHistoryFromGesuch) {
+			authorizer.checkWriteAuthorization(antragStatusHistory);
 			persistence.remove(AntragStatusHistory.class, antragStatusHistory.getId());
 		}
 	}
@@ -153,9 +135,11 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	@Override
 	@Nonnull
 	public Collection<AntragStatusHistory> findAllAntragStatusHistoryByGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorization(gesuch);
 		Objects.requireNonNull(gesuch);
-		return criteriaQueryHelper.getEntitiesByAttribute(AntragStatusHistory.class, gesuch, AntragStatusHistory_.gesuch);
+		final Collection<AntragStatusHistory> antragStatusHistories =
+			criteriaQueryHelper.getEntitiesByAttribute(AntragStatusHistory.class, gesuch, AntragStatusHistory_.gesuch);
+		antragStatusHistories.forEach(antragStatusHistory -> authorizer.checkReadAuthorization(antragStatusHistory));
+		return antragStatusHistories;
 	}
 
 	@Override
@@ -188,10 +172,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch.getId());
 
 		final List<AntragStatusHistory> lastTwoChanges = persistence.getEntityManager().createQuery(query).setMaxResults(2).getResultList();
-		if (lastTwoChanges.size() < 2 || AntragStatus.BESCHWERDE_HAENGIG != lastTwoChanges.get(0).getStatus()) {
-			throw new EbeguRuntimeException("findLastStatusChangeBeforeBeschwerde", ErrorCodeEnum.ERROR_NOT_FROM_STATUS_BESCHWERDE, gesuch.getId());
-		}
-		return lastTwoChanges.get(1); // returns the previous status before Beschwerde_Haengig
+		return AntragStatusHistoryUtil.findLastStatusChangeBeforeBeschwerde(lastTwoChanges, gesuch.getId());
 	}
 
 	@Nonnull
@@ -207,16 +188,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch.getId());
 
 		final List<AntragStatusHistory> allStatusChanges = persistence.getEntityManager().createQuery(query).getResultList();
-		boolean changeToPruefungSTVFound = false;
-		for (final AntragStatusHistory statusChange : allStatusChanges) { //they come DESC ordered from the DB
-			if (changeToPruefungSTVFound) {
-				return statusChange; // return the previous one
-			}
-			if (statusChange.getStatus() == AntragStatus.PRUEFUNG_STV) {
-				changeToPruefungSTVFound = true;
-			}
-		}
-		throw new EbeguRuntimeException("findLastStatusChangeBeforePruefungSTV", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuch.getId());
+		return AntragStatusHistoryUtil.findLastStatusChangeBeforePruefungSTV(allStatusChanges, gesuch.getId());
 	}
 
 	/**

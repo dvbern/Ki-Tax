@@ -190,8 +190,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.aktuellGueltig = false;
             return;
         }
+        // tslint:disable-next-line:early-exit
         if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-            this.showNochNichtFreigegeben = true;
+            // Die Warnung wollen wir dem GS nicht anzeigen!
+            if (!this.isGesuchsteller()) {
+                this.showNochNichtFreigegeben = true;
+            }
             this.aktuellGueltig = false;
         }
     }
@@ -209,7 +213,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     private loadEinstellungPropertiesForTagesschule(): void {
         const stammdatenTagesschule = this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule;
-        if (!stammdatenTagesschule) {
+        if (!stammdatenTagesschule || EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
             return;
         }
         const tsEinstellungenTagesschule =
@@ -295,15 +299,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return undefined;
     }
 
-    private isThereAnyAnmeldung(): boolean {
-        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
-        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
-            return moduleTagessule
-                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
-        }
-        return false;
-    }
-
     public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
         if (group.bezeichnung.textDeutsch && group.bezeichnung.textFranzoesisch) {
             if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
@@ -372,14 +367,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        if (!this.form.$valid || !this.isThereAnyAnmeldung()) {
-            this.showErrorMessageNoModule = true;
+        this.isThereAnyAnmeldung() ? this.showErrorMessageNoModule = false : this.showErrorMessageNoModule = true;
+        if (!this.form.$valid) {
             return undefined;
         }
-        this.showErrorMessageNoModule = false;
         this.preSave();
         this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
-
     }
 
     public saveAnmeldungSchulamtAblehnen(): void {
@@ -439,16 +432,33 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private toggleWarnungModule(): void {
-        // Wir koennen hier nicht "isThereAnyAnmeldung()" verwenden, da dieses das nach preSave()
-        // abgefuellte Modell beachtet!
+        this.showErrorMessageNoModule = !this.isThereAnyAnmeldung();
+    }
+
+    private isThereAnyAnmeldung(): boolean {
+        // Das Modell, welches mit dem GUI verknuepft ist, ist nicht dasselbe, das dann (nach preSave())
+        // gespeichert wird, wir muessen beide abfragen!
+        return this.isThereAnyAnmeldungSaveModel() || this.isThereAnyAnmeldungInputModel();
+    }
+
+    private isThereAnyAnmeldungInputModel(): boolean {
+        // Ermittelt, ob im InputModel, also noch bevor preSave() aufgerufen wird, eine Anmeldung vorhanden ist
         for (const group of this.modulGroups) {
             for (const belegungModul of group.module) {
                 if (belegungModul.modulTagesschule.angemeldet) {
-                    this.showErrorMessageNoModule = false;
-                    return;
+                    return true;
                 }
             }
         }
-        this.showErrorMessageNoModule = true;
+        return false;
+    }
+
+    private isThereAnyAnmeldungSaveModel(): boolean {
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
+        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
+            return moduleTagessule
+                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
+        }
+        return false;
     }
 }

@@ -34,9 +34,11 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 public class EmptyKitaxRechner extends AbstractRechner {
 
 	private Locale locale;
+	private MsgKey bemerkung;
 
-	public EmptyKitaxRechner(@Nonnull Locale locale) {
+	public EmptyKitaxRechner(@Nonnull Locale locale, MsgKey bemerkung) {
 		this.locale = locale;
+		this.bemerkung = bemerkung;
 	}
 
 	@Nonnull
@@ -52,14 +54,12 @@ public class EmptyKitaxRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
-//		result.setBetreuungspensumProzent(BigDecimal.ZERO);
 		result.setAnspruchspensumProzent(0);
-		result.setVerguenstigungHauptmahlzeitenTotal(BigDecimal.ZERO);
-		result.setVerguenstigungNebenmahlzeitenTotal(BigDecimal.ZERO);
+		result.setVerguenstigungMahlzeitenTotal(BigDecimal.ZERO);
 		// Wir loeschen alle Bemerkungen, die den Zeitraum nach dem Stichtag betreffen
 		input.getParent().getBemerkungenList().clear();
-		// Bemerkung, dass der Gutschein noch nicht berechnet werden kann
-		input.addBemerkung(MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD, locale);
+		// Bemerkung
+		input.addBemerkung(bemerkung, locale);
 		return result;
 	}
 }

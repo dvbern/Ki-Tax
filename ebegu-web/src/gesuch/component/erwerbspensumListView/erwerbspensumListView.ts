@@ -24,6 +24,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GemeindeRS} from '../../service/gemeindeRS.rest';
@@ -63,7 +64,8 @@ export class ErwerbspensumListViewController
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
     public erwerbspensenGS2: Array<TSErwerbspensumContainer>;
-    public erwerbspensumRequired: boolean;
+    public erwerbspensumRequired: boolean;      // ich muss es ausfuellen
+    public erwerbspensumNotAllowed: boolean;    // ich darf es nicht ausfuellen
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
@@ -91,18 +93,21 @@ export class ErwerbspensumListViewController
     }
 
     private initViewModel(): void {
-        this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
-            this.erwerbspensumRequired = response;
-            if (this.isSaveDisabled()) {
-                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.ERWERBSPENSUM,
-                    TSWizardStepStatus.IN_BEARBEITUNG);
-            } else {
-                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.ERWERBSPENSUM,
-                    TSWizardStepStatus.OK);
-            }
-        });
+        this.erwerbspensumNotAllowed = !(this.getGesuch() && this.getGesuch().hasAnyJugendamtAngebot());
+        if (EbeguUtil.isNotNullOrUndefined(this.getGesuchId())) {
+            this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
+                this.erwerbspensumRequired = response;
+                if (this.isSaveDisabled()) {
+                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                        TSWizardStepName.ERWERBSPENSUM,
+                        TSWizardStepStatus.IN_BEARBEITUNG);
+                } else {
+                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                        TSWizardStepName.ERWERBSPENSUM,
+                        TSWizardStepStatus.OK);
+                }
+            });
+        }
         this.setShowInfoAusserordentlichenAnspruchIfPossible();
         this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id).then(gemeindeDaten => {
             this.gemeindeTelefon = gemeindeDaten.telefon;

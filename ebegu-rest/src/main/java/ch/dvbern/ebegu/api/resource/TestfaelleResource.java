@@ -18,6 +18,8 @@ package ch.dvbern.ebegu.api.resource;
 import java.time.LocalDate;
 
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -40,6 +42,10 @@ import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource zur Erstellung von (vordefinierten) Testfaellen.
  * Alle Testfaelle erstellen:
@@ -48,6 +54,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("testfaelle")
 @Stateless
 @Api(description = "Resource zur Erstellung von (vordefinierten) Testfaellen")
+@RolesAllowed(SUPER_ADMIN)
 public class TestfaelleResource {
 
 	private static final String FALL = "Fall ";
@@ -162,6 +169,7 @@ public class TestfaelleResource {
 	@Path("/schulung/reset")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response resetSchulungsdaten() {
 		assertTestfaelleAccessAllowed();
 		schulungService.resetSchulungsdaten();
@@ -173,6 +181,7 @@ public class TestfaelleResource {
 	@Path("/schulung/delete")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response deleteSchulungsdaten() {
 		assertTestfaelleAccessAllowed();
 		schulungService.deleteSchulungsdaten();
@@ -184,6 +193,7 @@ public class TestfaelleResource {
 	@Path("/schulung/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response createSchulungsdaten() {
 		assertTestfaelleAccessAllowed();
 		schulungService.createSchulungsdaten();
@@ -195,6 +205,7 @@ public class TestfaelleResource {
 	@Path("/schulung/tutorial/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response createTutorialdaten() {
 		assertTestfaelleAccessAllowed();
 		schulungService.createTutorialdaten();
@@ -207,6 +218,7 @@ public class TestfaelleResource {
 	@Path("/schulung/public/user")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.WILDCARD)
+	@PermitAll
 	public Response getSchulungBenutzer() {
 		assertTestfaelleAccessAllowed();
 		String[] schulungBenutzer = schulungService.getSchulungBenutzer();

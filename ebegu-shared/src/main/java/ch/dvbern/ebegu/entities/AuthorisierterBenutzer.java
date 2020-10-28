@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -142,7 +143,7 @@ public class AuthorisierterBenutzer extends AbstractMutableEntity {
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.username = EbeguUtil.preProcessString(username);
 	}
 
 	public UserRole getRole() {

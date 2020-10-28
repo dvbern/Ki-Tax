@@ -155,14 +155,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
         // Die Einstellung bezueglich Kontingentierung lesen
-        this.einstellungRS.findEinstellung(
-            TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-            this.gesuchModelManager.getDossier().gemeinde.id,
-            this.gesuchModelManager.getGesuchsperiode().id,
-        )
-            .then(response => {
-                this.kontingentierungEnabled = JSON.parse(response.value);
-            });
+        // tslint:disable-next-line:early-exit
+        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id,
+            )
+                .then(response => {
+                    this.kontingentierungEnabled = JSON.parse(response.value);
+                });
+        }
     }
 
     private refreshKinderListe(): IPromise<any> {
@@ -704,9 +707,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined,
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                this.refreshKinderListe();
-                return this.gesuchModelManager.getGesuch();
+                return this.reloadView(gesuch);
             });
         });
     }
@@ -747,10 +748,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined,
         }).then(() => {
             return this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                return this.gesuchModelManager.getGesuch();
+                return this.reloadView(gesuch);
             });
         });
+    }
+
+    private reloadView(gesuchFromServer: TSGesuch): TSGesuch {
+        this.gesuchModelManager.setGesuch(gesuchFromServer);
+        this.refreshKinderListe();
+        return this.gesuchModelManager.getGesuch();
     }
 
     public changeFinSitStatus(): void {

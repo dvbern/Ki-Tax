@@ -27,14 +27,15 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 /**
  * DTO fuer die TagesschuleStatistik
  */
-public class TagesschuleDataRow {
+public class TagesschuleAnmeldungenDataRow {
 
 	private String nachnameKind;
 	private String vornameKind;
 	private LocalDate geburtsdatum;
 	private String referenznummer;
-	private LocalDate ab;
+	private LocalDate eintrittsdatum;
 	private @NotNull Betreuungsstatus status;
+	private boolean isZweiwoechentlich;
 	private AnmeldungTagesschule anmeldungTagesschule;
 
 	public String getNachnameKind() {
@@ -69,12 +70,12 @@ public class TagesschuleDataRow {
 		this.referenznummer = referenznummer;
 	}
 
-	public LocalDate getAb() {
-		return ab;
+	public LocalDate getEintrittsdatum() {
+		return eintrittsdatum;
 	}
 
-	public void setAb(LocalDate ab) {
-		this.ab = ab;
+	public void setEintrittsdatum(LocalDate eintrittsdatum) {
+		this.eintrittsdatum = eintrittsdatum;
 	}
 
 	public @NotNull Betreuungsstatus getStatus() {
@@ -87,6 +88,14 @@ public class TagesschuleDataRow {
 
 	public AnmeldungTagesschule getAnmeldungTagesschule() {
 		return anmeldungTagesschule;
+	}
+
+	public boolean isZweiwoechentlich() {
+		return isZweiwoechentlich;
+	}
+
+	public void setZweiwoechentlich(boolean zweiwoechentlich) {
+		isZweiwoechentlich = zweiwoechentlich;
 	}
 
 	public void setAnmeldungTagesschule(AnmeldungTagesschule anmeldungTagesschule) {

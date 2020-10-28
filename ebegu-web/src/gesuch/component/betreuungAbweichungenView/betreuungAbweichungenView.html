@@ -108,7 +108,7 @@
                                    ng-model="vm.getAbweichung($index).monatlicheHauptmahlzeiten"
                                    dv-max-length class="form-control dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   step="1"
+                                   step="0.01"
                                    ng-required="vm.isRowRequired($index)"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheHauptmahlzeiten}}">
                         </td>
@@ -120,7 +120,7 @@
                                    ng-model="vm.getAbweichung($index).monatlicheNebenmahlzeiten"
                                    dv-max-length class="form-control dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   step="1"
+                                   step="0.01"
                                    ng-required="vm.isRowRequired($index)"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheNebenmahlzeiten}}">
                         </td>
@@ -139,7 +139,7 @@
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
               dv-show-expression="vm.isFreigabeAllowed()">
-            <dv-loading-button button-click="vm.freigeben()" type="submit">
+            <dv-loading-button button-click="vm.preFreigeben()" type="submit">
                 <span class="uppercase" data-translate="FREIGEBEN"></span>
             </dv-loading-button>
         </span>

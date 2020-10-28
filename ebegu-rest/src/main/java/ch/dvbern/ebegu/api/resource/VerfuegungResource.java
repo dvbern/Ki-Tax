@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -66,10 +68,17 @@ import ch.dvbern.ebegu.services.VerfuegungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * REST Resource fuer Verfügungen
@@ -77,7 +86,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 @Path("verfuegung")
 @Stateless
 @Api(description = "Resource für Verfügungen, inkl. Berechnung der Vergünstigung")
-@PermitAll
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class VerfuegungResource {
 
 	@Inject
@@ -110,6 +119,7 @@ public class VerfuegungResource {
 	@Path("/calculate/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public Response calculateVerfuegung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchstellerId,
 		@Context UriInfo uriInfo,
@@ -144,19 +154,27 @@ public class VerfuegungResource {
 	@ApiOperation(value = "Generiert eine Verfuegung und speichert diese in der Datenbank", response = JaxVerfuegung.class)
 	@Nullable
 	@PUT
-	@Path("/verfuegen/{gesuchId}/{betreuungId}/{ignorieren}")
+	@Path("/verfuegen/{gesuchId}/{betreuungId}/{ignorieren}/{ignorierenMahlzeiten}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
 	public JaxVerfuegung saveVerfuegung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId,
 		@Nonnull @NotNull @PathParam("ignorieren") Boolean ignorieren,
+		@Nonnull @NotNull @PathParam("ignorierenMahlzeiten") Boolean ignorierenMahlzeiten,
 		@Nullable String verfuegungManuelleBemerkungen
 	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		String betreuungId = converter.toEntityId(betreuungJaxId);
 
-		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(gesuchId, betreuungId, verfuegungManuelleBemerkungen, ignorieren, true);
+		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(
+			gesuchId,
+			betreuungId,
+			verfuegungManuelleBemerkungen,
+			ignorieren,
+			ignorierenMahlzeiten,
+			true);
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
@@ -166,6 +184,7 @@ public class VerfuegungResource {
 	@Path("/schliessenOhneVerfuegen/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
 	public Response verfuegungSchliessenOhneVerfuegen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId) {
 
@@ -187,6 +206,7 @@ public class VerfuegungResource {
 	@Path("/nichtEintreten/{gesuchId}/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
 	public JaxVerfuegung schliessenNichtEintreten(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId
@@ -205,6 +225,8 @@ public class VerfuegungResource {
 	@Path("/anmeldung/uebernehmen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungUebernehmen(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,

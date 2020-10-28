@@ -34,8 +34,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,6 +46,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -94,10 +93,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
  */
@@ -105,7 +100,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 	"SpringAutowiredFieldsWarningInspection" })
 @Stateless
 @Local(SchulungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 public class SchulungServiceBean extends AbstractBaseService implements SchulungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchulungServiceBean.class);
@@ -362,7 +356,6 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	@Override
-	@PermitAll
 	@Nonnull
 	public String[] getSchulungBenutzer() {
 		//noinspection SuspiciousArrayCast
@@ -416,9 +409,11 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setMail(email);
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
-		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
-		institutionStammdatenBetreuungsgutscheine.setKontoinhaber("DvBern");
 		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+		auszahlungsdaten.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		auszahlungsdaten.setKontoinhaber("DvBern");
+		institutionStammdatenBetreuungsgutscheine.setAuszahlungsdaten(auszahlungsdaten);
 		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return institutionStammdatenService.saveInstitutionStammdaten(instStammdaten);
 	}

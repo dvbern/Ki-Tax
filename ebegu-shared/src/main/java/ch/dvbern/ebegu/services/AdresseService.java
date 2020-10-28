@@ -56,4 +56,10 @@ public interface AdresseService {
 	@Nonnull
 	Collection<Adresse> getAllAdressen();
 
+	/**
+	 * Aktuealisiert mit Hilfe der GeoAdmin API die Gemeinde und BFS Nummer der Adresse
+	 *
+	 * @return TRUE when Gemeinde or BFS changed.
+	 */
+	boolean updateGemeindeAndBFS(@Nonnull Adresse adresse);
 }

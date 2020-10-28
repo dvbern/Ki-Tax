@@ -60,8 +60,11 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 
-	private static final String DEFAULT_BEMERKUNG = "01.08.2017 - 31.07.2018: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des "
+	private static final String DEFAULT_BEMERKUNG_1 = "01.08.2017 - 31.07.2018: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des "
 		+ "Beschäftigungspensums (Angestellt - Art. 34d ASIV).";
+	private static final String DEFAULT_BEMERKUNG_2 = "01.08.2017 - 31.07.2018: Die Berechnung des Gutscheins (V) erfolgt gemäss Art. 34k ASIV sowie der "
+		+ "Formel, welche im Anhang 1a der ASIV zu finden ist. Dabei wird auf das massgebende Einkommen gemäss Beilage 1 und das vergünstigte "
+		+ "Betreuungspensum (III) abgestellt.";
 
 	@Before
 	public void setUp() {
@@ -78,10 +81,17 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 		String manuelleBemerkung = "manuelleBemerkung";
 
-		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, manuelleBemerkung);
+		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(
+			new JaxId(gesuch.getId()),
+			new JaxId(betreuung.getId()),
+			false,
+			false,
+			manuelleBemerkung);
 
 		assert persistedVerfuegung != null;
-		Assert.assertEquals(DEFAULT_BEMERKUNG, persistedVerfuegung.getGeneratedBemerkungen());
+		Assert.assertNotNull(persistedVerfuegung.getGeneratedBemerkungen());
+		Assert.assertTrue(persistedVerfuegung.getGeneratedBemerkungen().contains(DEFAULT_BEMERKUNG_1));
+		Assert.assertTrue(persistedVerfuegung.getGeneratedBemerkungen().contains(DEFAULT_BEMERKUNG_2));
 		Assert.assertEquals(manuelleBemerkung, persistedVerfuegung.getManuelleBemerkungen());
 
 	}
@@ -106,12 +116,13 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void testCalculateVerfuegung() {
+	public void calculateVerfuegung() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		//noinspection ConstantConditions
 		Response response = verfuegungResource.calculateVerfuegung(new JaxId(gesuch.getId()), null, null);
+		Assert.assertNotNull(response);
 
 		// Sicherstellen, dass nach dem Berechnen die Vefügung nciht gespeichert wurde
 		Set<JaxKindContainer> kinderList = (Set<JaxKindContainer>) response.getEntity();

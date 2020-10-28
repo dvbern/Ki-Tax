@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.api.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,6 +30,9 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +62,7 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -85,6 +88,20 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * REST Resource zum Upload von Dokumenten
  */
@@ -92,6 +109,7 @@ import org.slf4j.LoggerFactory;
 @Path("upload")
 @Stateless
 @Api(description = "Resource zum Upload von Dokumenten")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class UploadResource {
 
 	@Inject
@@ -131,6 +149,7 @@ public class UploadResource {
 	@ApiOperation(value = "Speichert ein oder mehrere Dokumente in der Datenbank", response = JaxDokumentGrund.class)
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@PermitAll
 	public Response uploadFiles(@Context HttpServletRequest request, @Context UriInfo uriInfo, MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
@@ -166,7 +185,7 @@ public class UploadResource {
 		try (InputStream dokGrund = input.getFormDataPart(PART_DOKUMENT_GRUND, InputStream.class, null)) {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
-			jaxDokumentGrund = mapper.readValue(IOUtils.toString(dokGrund, "UTF-8"), JaxDokumentGrund.class);
+			jaxDokumentGrund = mapper.readValue(IOUtils.toString(dokGrund, StandardCharsets.UTF_8), JaxDokumentGrund.class);
 		} catch (IOException e) {
 			final String problemString = "Can't parse DokumentGrund from Jax to object";
 			LOG.error(problemString, e);
@@ -209,7 +228,7 @@ public class UploadResource {
 		final JaxDokumentGrund jaxDokumentGrundToReturn = converter.dokumentGrundToJax(persistedDokumentGrund);
 
 		URI uri = uriInfo.getBaseUriBuilder()
-			.path(EinkommensverschlechterungInfoResource.class)
+			.path(UploadResource.class)
 			.path('/' + persistedDokumentGrund.getId())
 			.build();
 
@@ -222,6 +241,8 @@ public class UploadResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Response uploadRueckforderungsFiles(
 		@Nonnull @NotNull @PathParam("rueckforderungFormularId") JaxId rueckforderungFormularJAXPId,
 		@Nonnull @NotNull @PathParam("rueckforderungDokumentTyp") RueckforderungDokumentTyp rueckforderungDokumentTyp,
@@ -267,6 +288,7 @@ public class UploadResource {
 	@Path("/gesuchsperiodeDokument/{sprache}/{periodeId}/{dokumentTyp}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
 	public Response saveGesuchsperiodeDokument(
 		@Nonnull @NotNull @PathParam("sprache") Sprache sprache,
 		@Nonnull @NotNull @PathParam("periodeId") String periodeId,
@@ -287,6 +309,8 @@ public class UploadResource {
 	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
+		SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response uploadGemeindeGesuchsperiodeDokument(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
@@ -335,7 +359,7 @@ public class UploadResource {
 			// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
 			if (encodedFilenames[filecounter] != null) {
 				String decodedFilenamesJson =
-					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), Charset.forName("UTF-8"));
+					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), StandardCharsets.UTF_8);
 				fileInfo.setFilename(decodedFilenamesJson);
 			}
 
@@ -396,9 +420,16 @@ public class UploadResource {
 			rueckforderungDokument.setFilename(fileInfo.getFilename());
 			rueckforderungDokument.setFilesize(fileInfo.getSizeString());
 
-			rueckforderungDokumentService.saveDokumentGrund(rueckforderungDokument);
+			// when uploading a new document we check the flag so we know that something has been uploaded
+			if (rueckforderungFormular.getStatus() == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
+				rueckforderungFormular.getStatus() == RueckforderungStatus.VERFUEGT_PROVISORISCH ) {
+				rueckforderungFormular.setUncheckedDocuments(true);
+			}
 
-			rueckforderungJaxDokuments.add(converter.rueckforderungDokumentToJax(rueckforderungDokument));
+			RueckforderungDokument documentFromDB =
+				rueckforderungDokumentService.saveDokumentGrund(rueckforderungDokument);
+
+			rueckforderungJaxDokuments.add(converter.rueckforderungDokumentToJax(documentFromDB));
 
 			filecounter++;
 			partrileName = PART_FILE + '[' + filecounter + ']';

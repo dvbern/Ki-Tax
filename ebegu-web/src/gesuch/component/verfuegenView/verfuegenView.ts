@@ -1,3 +1,4 @@
+/* tslint:disable:early-exit */
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland
@@ -14,7 +15,7 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {IComponentOptions, ILogService, IPromise, IScope, IWindowService} from 'angular';
+import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -27,6 +28,7 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -75,6 +77,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$timeout',
         'AuthServiceRS',
         'I18nServiceRSRest',
+        '$q'
     ];
 
     // this is the model...
@@ -83,6 +86,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showSchemas: boolean;
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
     public fragenObIgnorieren: boolean;
+    public fragenObIgnorierenMahlzeiten: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
     public showPercent: boolean;
@@ -110,6 +114,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         $timeout: ITimeoutService,
         private readonly authServiceRs: AuthServiceRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
+        private readonly $q: IQService,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -153,8 +158,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         if (this.isTagesschuleVerfuegung()) {
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(), this.gesuchModelManager.getGesuchsperiode(), true);
-            this.tagesschuleZeitabschnitteMitBetreuung = this.getTagesschuleZeitabschnitteMitBetreuung();
-            this.tagesschuleZeitabschnitteOhneBetreuung = this.getTagesschuleZeitabschnitteOhneBetreuung();
+            this.tagesschuleZeitabschnitteMitBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteMitBetreuung());
+            this.tagesschuleZeitabschnitteOhneBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteOhneBetreuung());
         }
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
@@ -206,18 +211,23 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      */
     private setFragenObIgnorieren(): void {
         this.fragenObIgnorieren = false; // by default
+        this.fragenObIgnorierenMahlzeiten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
             this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
+            this.fragenObIgnorierenMahlzeiten = this.getVerfuegenToWorkWith().fragenObIgnorierenMahlzeiten();
         }
-    }
-
-    private isFragenObIgnorieren(): boolean {
-        return this.fragenObIgnorieren;
     }
 
     private isAlreadyIgnored(): boolean {
         if (this.getVerfuegenToWorkWith()) {
             return this.getVerfuegenToWorkWith().isAlreadyIgnored();
+        }
+        return false; // by default
+    }
+
+    private isAlreadyIgnoredMahlzeiten(): boolean {
+        if (this.getVerfuegenToWorkWith()) {
+            return this.getVerfuegenToWorkWith().isAlreadyIgnoredMahlzeiten();
         }
         return false; // by default
     }
@@ -228,30 +238,77 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return;
         }
 
-        const direktVerfuegen = !this.isFragenObIgnorieren() || !this.isMutation()
-            || this.isAlreadyIgnored();
+        // Wir muessen die Frage nach dem Verfuegen fuer die Verguenstigung und die Mahlzeiten separat stellen!
+        const direktVerfuegenVerguenstigung = !this.fragenObIgnorieren || !this.isMutation() || this.isAlreadyIgnored();
+        const direktVerfuegenMahlzeiten = !this.fragenObIgnorierenMahlzeiten || !this.isMutation() || this.isAlreadyIgnoredMahlzeiten();
+
+        // Zuerst zeigen wir aber eine Warnung an, falls schon ignoriert war (wiederum separat fuer Verguenstigung
+        // und Mahlzeiten)
+        // Normal
+        this.warnIfAlreadyIgnored(
+            this.isAlreadyIgnored(),
+            'CONFIRM_ALREADY_IGNORED',
+            'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED')
+        .then(() => {
+            // Mahlzeiten
+            this.warnIfAlreadyIgnored(
+                this.isAlreadyIgnoredMahlzeiten(),
+                'CONFIRM_ALREADY_IGNORED_MAHLZEITEN',
+                'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN')
+             .then(() => {
+                // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
+                this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung, direktVerfuegenMahlzeiten).then(() => {
+                    this.goToVerfuegen();
+                });
+            });
+        });
+    }
+
+    private warnIfAlreadyIgnored(alreadyIgnored: boolean, warningTitle: string, warningText: string): IPromise<void> {
         // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
-        if (this.isAlreadyIgnored()) {
-            this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-                title: 'CONFIRM_ALREADY_IGNORED',
-                deleteText: 'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED',
+        if (alreadyIgnored) {
+            return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+                title: warningTitle,
+                deleteText: warningText,
                 parentController: undefined,
                 elementID: undefined,
             }).then(() => {
-                const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
-                promise.then(() => this.goToVerfuegen());
+                return this.createDeferPromise<void>();
             });
-        } else {
-            const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
-            promise.then(() => this.goToVerfuegen());
         }
+        return this.createDeferPromise<void>();
     }
 
-    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean): IPromise<TSVerfuegung> {
-        return direktVerfuegen
-            ? this.saveVerfuegung()
-            // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-            : this.saveMutierteVerfuegung();
+    private createDeferPromise<T>(): IPromise<T> {
+        const defer = this.$q.defer<T>();
+        defer.resolve();
+        return defer.promise;
+    }
+
+    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean, direktVerfuegenMahlzeiten: boolean): IPromise<TSVerfuegung> {
+        // Falls sowohl die Verfuegung wie die Mahlzeiten "direkt" verfuegt werden duerfen, kann direkt weitergefahren werden
+        if (direktVerfuegen && direktVerfuegenMahlzeiten) {
+            return this.saveVerfuegung();
+        }
+        return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_INSTITUTION, direktVerfuegen)
+            .then(ignoreVerguenstigung => {
+            return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, direktVerfuegenMahlzeiten)
+                .then(ignoreMahlzeiten => {
+                return this.saveMutierteVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten);
+            });
+        });
+    }
+
+    private askForIgnoringIfNecessary(
+        zahlungslaufTyp: TSZahlungslaufTyp, isDirektVerfuegen: boolean
+    ): IPromise<boolean> {
+        if (isDirektVerfuegen) {
+            return this.createDeferPromise<boolean>();
+        }
+        return this.askIfIgnorieren(zahlungslaufTyp)
+            .then(ignoreVerguenstigung => {
+                return ignoreVerguenstigung;
+            });
     }
 
     private isVerfuegenValid(): boolean {
@@ -379,17 +436,27 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             elementID: undefined,
         }).then(() => {
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(false, this.bemerkungen);
+            // Auch wenn wir nicht nach dem Ignorieren gefragt haben, muessen wir u.U. ignorieren:
+            // Dann naemlich, wenn fuer diese Verfuegung bereits frueher ignoriert wurde!
+            return this.gesuchModelManager.saveVerfuegung(
+                this.isAlreadyIgnored(),
+                this.isAlreadyIgnoredMahlzeiten(),
+                this.bemerkungen);
         });
     }
 
-    public saveMutierteVerfuegung(): IPromise<TSVerfuegung> {
+    public saveMutierteVerfuegung(ignoreVerguenstigung: boolean, ignoreMahlzeiten: boolean): IPromise<TSVerfuegung> {
+        return this.gesuchModelManager.saveVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten, this.bemerkungen);
+    }
+
+    private askIfIgnorieren(myZahlungslaufTyp: TSZahlungslaufTyp): IPromise<boolean> {
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             institutionName: this.getInstitutionName(),
             institutionPhone: this.getInstitutionPhone(),
+            zahlungslaufTyp: myZahlungslaufTyp
         }).then(response => {
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(response === 2, this.bemerkungen);
+            return response === 2;
         });
     }
 
@@ -622,5 +689,26 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
+    }
+
+    public showMahlzeitenverguenstigung(): boolean {
+        return this.isMahlzeitenverguenstigungEnabled()
+            && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole());
+    }
+
+    private onlyZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitte: Array<TSVerfuegungZeitabschnitt>): Array<TSVerfuegungZeitabschnitt> {
+        return tagesschuleZeitabschnitte.filter(this.fullZeitAbschnittBeforeEntryTagesschule.bind(this))
+            .map(this.mapPartialZeitabschnitteSinceEntryTagesschule.bind(this));
+    }
+
+    private fullZeitAbschnittBeforeEntryTagesschule(tagesschuleZeitabschnitt: TSVerfuegungZeitabschnitt): boolean {
+        return tagesschuleZeitabschnitt.gueltigkeit.gueltigBis.isSameOrAfter(this.getBetreuung().belegungTagesschule.eintrittsdatum);
+    }
+
+    private mapPartialZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitt: TSVerfuegungZeitabschnitt): TSVerfuegungZeitabschnitt {
+           if (tagesschuleZeitabschnitt.gueltigkeit.gueltigAb.isBefore(this.getBetreuung().belegungTagesschule.eintrittsdatum)) {
+               tagesschuleZeitabschnitt.gueltigkeit.gueltigAb = this.getBetreuung().belegungTagesschule.eintrittsdatum;
+           }
+           return tagesschuleZeitabschnitt;
     }
 }

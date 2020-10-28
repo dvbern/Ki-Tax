@@ -209,8 +209,7 @@
                     <!--Institutionen-->
                     <div ng-if="vm.getBetreuungModel().vertrag">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
-                        <div class="row"
-                             ng-if="vm.showInstitutionenList()">
+                        <div class="row hide-sm hide-xs" id="institution_search" ng-if="vm.showInstitutionenList()">
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="INSTITUTION" for="institution">
                                 </label>
@@ -231,7 +230,7 @@
                                                  md-require-match="true"
                                                  md-items="item in vm.querySearch(vm.searchQuery)"
                                                  md-item-text="item.institution.name"
-                                                 ng-required="true">
+                                                 ng-required="!vm.isInstitutionMobileSelection()">
                                     <md-item-template>
                                         <span md-highlight-text="vm.searchQuery">
                                             {{item.getAutocompleteText()}}
@@ -240,6 +239,28 @@
                                 </md-autocomplete>
                                 <span ng-if="vm.form.institution.$touched">
                                     <dv-error-messages input-id="institution"
+                                                       for="vm.form.institution.$error"></dv-error-messages>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row hide-gt-sm"
+                             ng-if="vm.showInstitutionenList()">
+                            <div class="col-sm-12 dv-input-container-medium form-group">
+                                <label class="md-no-float required" data-translate="INSTITUTION" for="institution_mobile">
+                                </label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="institution-error" name="institution"
+                                            id="institution_mobile"
+                                            ng-model="vm.instStamm"
+                                            class="form-control"
+                                            ng-options="institutionSD as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
+                                            ng-required="vm.isInstitutionMobileSelection()"
+                                            ng-change="vm.setSelectedInstitutionStammdaten()"
+                                            ng-disabled="!(vm.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
+                                    </select>
+                                </div>
+                                <span ng-if="vm.form.institution.$touched">
+                                    <dv-error-messages input-id="institution_mobile"
                                                        for="vm.form.institution.$error"></dv-error-messages>
                                 </span>
                             </div>
@@ -364,9 +385,6 @@
                                              dv-enable-expression="vm.isBetreuungsstatusWarten()">
                                     <span>{{vm.getBetreuungInGemeindeLabel()}}</span>
                                 </md-checkbox>
-                                <dv-bisher gs="vm.getErweiterteBetreuungGS().betreuungInGemeinde"
-                                           ja="vm.getErweiterteBetreuungJA().betreuungInGemeinde"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -397,7 +415,8 @@
                                       dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                       dv-enable-expression="vm.isPensumEditable()">
 
-                                <p class="inlineHint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"></p>
+                                <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
+                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
@@ -450,12 +469,12 @@
                                                         <div class="dv-input-container-small" style="padding-right:32px;">
                                                             <input aria-describedby="monatlicheHauptmahlzeiten-{{$index}}-error"
                                                                    id="monatlicheHauptmahlzeiten-{{$index}}"
-                                                                   type="number" min="0" step="1"
+                                                                   type="number" min="0" step="0.01"
                                                                    name="monatlicheHauptmahlzeiten-{{$index}}"
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}"
+                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}" step="0.01"
                                                                                for="vm.form['monatlicheHauptmahlzeiten-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -475,12 +494,12 @@
                                                         <div class="dv-input-container-small" style="padding-right:32px;">
                                                             <input aria-describedby="monatlicheNebenmahlzeiten-{{$index}}-error"
                                                                    id="monatlicheNebenmahlzeiten-{{$index}}"
-                                                                   type="number" min="0" step="1"
+                                                                   type="number" min="0" step="0.01"
                                                                    name="monatlicheNebenmahlzeiten-{{$index}}"
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheNebenmahlzeiten"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}"
+                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}" step="0.01"
                                                                                for="vm.form['monatlicheNebenmahlzeiten-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -507,7 +526,7 @@
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProHauptmahlzeit"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}"
+                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}" step="0.05"
                                                                                for="vm.form['tarifProHauptmahlzeit-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -532,7 +551,7 @@
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProNebenmahlzeit"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}"
+                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}" step="0.05"
                                                                                for="vm.form['tarifProNebenmahlzeit-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -665,6 +684,7 @@
                                         <ul>
                                             <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
                                             <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
+                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_4' | translate}}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -795,7 +815,7 @@
                                            aria-label="{{MUTATIONSMELDUNG_ERSTELLEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_ERSTELLEN"></span>
                         </dv-loading-button>
-                        <dv-loading-button button-click="vm.mutationsmeldungSenden()"
+                        <dv-loading-button button-click="vm.preMutationsmeldungSenden()"
                                            ng-if="vm.isMutationsmeldungStatus"
                                            aria-label="{{MUTATIONSMELDUNG_SENDEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_SENDEN"></span>

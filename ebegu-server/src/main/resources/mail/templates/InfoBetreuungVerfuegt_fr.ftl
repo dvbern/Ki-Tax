@@ -8,7 +8,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
-To: ${institution.name} <${empfaengerMail}>
+To: <@base64Header>${institution.name}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>${institution.name}: kiBon <#if configuration.isDevmode>Système de test</#if> – Décision de prise en charge rendue</@base64Header>
 Content-Type: text/html;charset=utf-8
 

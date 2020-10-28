@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,6 +37,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungDokument_;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -45,6 +47,9 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 	@Inject
 	private Persistence persistence;
 
+	@Inject
+	private Authorizer authorizer;
+
 	@Override
 	@Nonnull
 	public Optional<RueckforderungDokument> findDokument(@Nonnull String key) {
@@ -53,12 +58,19 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 		if (doc == null) {
 			return Optional.empty();
 		}
+		authorizer.checkReadAuthorization(doc.getRueckforderungFormular());
 		return Optional.of(doc);
 	}
 
 	@Nonnull
 	@Override
 	public List<RueckforderungDokument> findDokumente(@Nonnull String rueckforderungFormularId) {
+		final RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, rueckforderungFormularId);
+		if (rueckforderungFormular == null) {
+			return Collections.emptyList();
+		}
+		authorizer.checkReadAuthorization(rueckforderungFormular);
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<RueckforderungDokument> query = cb.createQuery(RueckforderungDokument.class);
 		Root<RueckforderungDokument> root = query.from(RueckforderungDokument.class);
@@ -76,6 +88,7 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 
 	@Override
 	public void removeDokument(@Nonnull RueckforderungDokument dokument) {
+		authorizer.checkWriteAuthorization(dokument.getRueckforderungFormular());
 		persistence.remove(dokument);
 	}
 
@@ -83,6 +96,7 @@ public class RueckforderungDokumentServiceBean extends AbstractBaseService imple
 	@Override
 	public RueckforderungDokument saveDokumentGrund(@Nonnull RueckforderungDokument rueckforderungDokument) {
 		Objects.requireNonNull(rueckforderungDokument);
+		authorizer.checkWriteAuthorizationDocument(rueckforderungDokument.getRueckforderungFormular());
 
 		rueckforderungDokument.setTimestampUpload(LocalDateTime.now());
 

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -44,6 +45,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -89,6 +91,7 @@ import static java.util.Objects.requireNonNull;
 @Path("benutzer")
 @Stateless
 @Api(description = "Resource für die Verwaltung der Benutzer (User)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class BenutzerResource {
 
 	@Inject
@@ -138,7 +141,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/BgOrGemeinde/all")
@@ -146,16 +149,16 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getAllBenutzerBgOrGemeinde() {
+	public List<JaxBenutzerNoDetails> getAllBenutzerBgOrGemeinde() {
 		return benutzerService.getAllBenutzerBgOrGemeinde().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/BgOrGemeinde/{gemeindeId}")
@@ -163,7 +166,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+	public List<JaxBenutzerNoDetails> getBenutzerBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		Objects.requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -171,7 +174,7 @@ public class BenutzerResource {
 			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return benutzerService.getBenutzerBgOrGemeinde(gemeinde).stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -201,7 +204,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/BgTsOrGemeinde/all")
@@ -209,9 +212,9 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getAllBenutzerBgTsOrGemeinde() {
+	public List<JaxBenutzerNoDetails> getAllBenutzerBgTsOrGemeinde() {
 		return benutzerService.getAllBenutzerBgTsOrGemeinde().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -219,7 +222,7 @@ public class BenutzerResource {
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/TsOrGemeinde/all")
@@ -227,16 +230,16 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getAllBenutzerTsOrGemeinde() {
+	public List<JaxBenutzerNoDetails> getAllBenutzerTsOrGemeinde() {
 		return benutzerService.getAllBenutzerTsOrGemeinde().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/TsOrGemeinde/{gemeindeId}")
@@ -244,7 +247,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerTsOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+	public List<JaxBenutzerNoDetails> getBenutzerTsOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		Objects.requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -252,22 +255,22 @@ public class BenutzerResource {
 			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return benutzerService.getBenutzerTsOrGemeinde(gemeinde).stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle Gesuchsteller zurueck",
 		responseContainer = "List",
-		response = JaxBenutzer.class)
+		response = JaxBenutzerNoDetails.class)
 	@Nonnull
 	@GET
 	@Path("/gesuchsteller")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBenutzer> getGesuchsteller() {
+	public List<JaxBenutzerNoDetails> getGesuchsteller() {
 		return benutzerService.getGesuchsteller().stream()
-			.map(converter::benutzerToJaxBenutzer)
+			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
 
@@ -310,26 +313,6 @@ public class BenutzerResource {
 		resultDTO.setPaginationDTO(pagination);
 
 		return resultDTO;
-	}
-
-	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen  E-Mail in der Datenbank.",
-		response = JaxBenutzer.class)
-	@Nullable
-	@GET
-	@Path("/email/{email}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
-	public JaxBenutzer findBenutzerByEmail(
-		@Nonnull @NotNull @PathParam("email") String email) {
-
-		requireNonNull(email);
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerByEmail(email);
-		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
-
-		return benutzerOptional
-			.map(benutzer -> converter.benutzerToJaxBenutzer(benutzer))
-			.orElse(null);
 	}
 
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
@@ -496,6 +479,20 @@ public class BenutzerResource {
 				"deleteBenutzer", "No User is logged in"));
 
 		superAdminService.removeFallAndBenutzer(username, eingeloggterBenutzer);
+		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Setzt die externalUUID des Benutzers mit der uebergebenen id zurueck.", response = Response.class)
+	@PUT
+	@Path("/reset/{username}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed(SUPER_ADMIN)
+	public Response deleteExternalUuidForBenutzer(
+		@Nonnull @NotNull @PathParam("username") String username
+	) {
+		Benutzer benutzer = benutzerService.findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("deleteExternalUuidForBenutzer",	ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		benutzerService.deleteExternalUUIDInNewTransaction(benutzer.getId());
 		return Response.ok().build();
 	}
 }

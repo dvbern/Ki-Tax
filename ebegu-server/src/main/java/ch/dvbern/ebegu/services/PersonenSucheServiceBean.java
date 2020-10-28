@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Any;
@@ -37,6 +36,7 @@ import ch.dvbern.ebegu.cdi.Dummy;
 import ch.dvbern.ebegu.cdi.Geres;
 import ch.dvbern.ebegu.cdi.Prod;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -53,25 +53,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer die Personensuche
  */
 @Stateless
 @Local(PersonenSucheService.class)
 
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class PersonenSucheServiceBean extends AbstractBaseService implements PersonenSucheService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PersonenSucheServiceBean.class);
@@ -87,7 +74,7 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	private EbeguConfiguration config;
 
 
-	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "IfStatementWithIdenticalBranches" })
+	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "serial" })
 	@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 	@PostConstruct
 	private void resolveService() {
@@ -111,7 +98,12 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 		EWKResultat resultat = new EWKResultat();
 		EWKPerson  personMitWohnsitzInGemeindeUndPeriode = suchePersonMitWohnsitzInGemeindeUndPeriode(gesuch.getGesuchsteller1(), gesuch);
 		if (personMitWohnsitzInGemeindeUndPeriode != null) {
-			resultat.getPersonen().addAll(ewkService.suchePersonenInHaushalt(personMitWohnsitzInGemeindeUndPeriode.getAdresse().getWohnungsId(), personMitWohnsitzInGemeindeUndPeriode.getAdresse().getGebaeudeId()).getPersonen());
+			final EWKAdresse adresseOfPersonMitWohnsitzInGemeindeUndPeriode = personMitWohnsitzInGemeindeUndPeriode.getAdresse();
+			if (adresseOfPersonMitWohnsitzInGemeindeUndPeriode != null) {
+				resultat.getPersonen().addAll(ewkService.suchePersonenInHaushalt(
+					adresseOfPersonMitWohnsitzInGemeindeUndPeriode.getWohnungsId(),
+					adresseOfPersonMitWohnsitzInGemeindeUndPeriode.getGebaeudeId()).getPersonen());
+			}
 			resultat.getPersonen().forEach(person -> person.setHaushalt(true));
 		}
 		sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuch.getGesuchsteller1());
@@ -132,7 +124,8 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	 * @param gesuchsperiode
 	 * @return neue Liste ohne die Personeneintragen deren Aufenthaltsperiode sich nicht mit der Gesuchsperiode schneidet
 	 */
-	private List<EWKPerson> entferneNichtAktuelleDaten(List<EWKPerson> personen, Gesuchsperiode gesuchsperiode) {
+	@Nonnull
+	private List<EWKPerson> entferneNichtAktuelleDaten(@Nonnull List<EWKPerson> personen, @Nonnull Gesuchsperiode gesuchsperiode) {
 		return personen
 			.stream()
 			.filter(person ->
@@ -199,21 +192,31 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	}
 
 
-	private void sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(@Nonnull EWKResultat resultat, GesuchstellerContainer gesuchstellerContainer) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	private void sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(
+		@Nonnull EWKResultat resultat,
+		@Nullable GesuchstellerContainer gesuchstellerContainer
+	) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		if (gesuchstellerContainer != null && gesuchstellerContainer.getGesuchstellerJA() != null) {
 			Gesuchsteller gesuchsteller = gesuchstellerContainer.getGesuchstellerJA();
 			suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuchsteller.getNachname(), gesuchsteller.getVorname(), gesuchsteller.getGeburtsdatum(), gesuchsteller.getGeschlecht(), true, false);
 		}
 	}
 
-	private void sucheKindInHaushaltOderSonstOhneBfsEinschraenkung(@Nonnull EWKResultat resultat, Kind kind) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	private void sucheKindInHaushaltOderSonstOhneBfsEinschraenkung(
+		@Nonnull EWKResultat resultat,
+		@Nullable Kind kind
+	) throws PersonenSucheServiceException,
+		PersonenSucheServiceBusinessException {
 		if (kind != null) {
 			suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(resultat, kind.getNachname(), kind.getVorname(), kind.getGeburtsdatum(), kind.getGeschlecht(), false, true);
 		}
 	}
 
 	@Nullable
-	private EWKPerson suchePersonMitWohnsitzInGemeindeUndPeriode(GesuchstellerContainer gesuchstellerContainer, @Nonnull Gesuch gesuch) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	private EWKPerson suchePersonMitWohnsitzInGemeindeUndPeriode(
+		@Nullable GesuchstellerContainer gesuchstellerContainer,
+		@Nonnull Gesuch gesuch
+	) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		if (gesuchstellerContainer == null || gesuchstellerContainer.getGesuchstellerJA() == null) {
 			return null;
 		}

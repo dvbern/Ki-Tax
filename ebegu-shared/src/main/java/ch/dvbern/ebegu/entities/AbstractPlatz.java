@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import com.google.common.base.Preconditions;
@@ -171,7 +173,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	public void initVorgaengerVerfuegungen(
 		@Nullable Verfuegung vorgaenger,
-		@Nullable  Verfuegung vorgaengerAusbezahlt
+		@Nullable Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlt
 	) {
 		this.vorgaengerVerfuegung = vorgaenger;
 		this.vorgaengerInitialized = true;
@@ -181,7 +183,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
 	 */
 	@Nullable
-	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
+	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
 		}
@@ -243,13 +245,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			} else {
 				target.setBetreuungsstatus(this.getBetreuungsstatus());
 			}
-			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen() && target instanceof AnmeldungTagesschule){
-				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
-			}
 			target.setKind(targetKindContainer);
 			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			target.setBetreuungNummer(this.getBetreuungNummer());
-			target.setGueltig(false);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

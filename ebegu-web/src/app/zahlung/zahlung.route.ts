@@ -15,8 +15,8 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
-import {TSZahlungsauftrag} from '../../models/TSZahlungsauftrag';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {IBooleanStateParams} from '../zahlungsauftrag/zahlungsauftrag.route';
 
 zahlungRun.$inject = ['RouterHelper'];
 
@@ -37,10 +37,8 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'zahlung.view',
         template: '<zahlung-view flex="auto" class="overflow-scroll">',
         url: '/zahlung/:zahlungsauftragId',
+        params: {
+            isMahlzeitenzahlungen: IBooleanStateParams,
+        },
     },
 ];
-
-export class IZahlungsauftragStateParams {
-    public zahlungsauftrag: TSZahlungsauftrag;
-    public zahlungsauftragId: string;
-}

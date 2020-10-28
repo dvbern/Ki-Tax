@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -30,8 +31,10 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,15 +97,31 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
-				handleVerminderungEinkommen(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+				boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
+				LocalDateTime timestampVerfuegtVorgaenger = null;
+				if (finSitAbgelehnt) {
+					// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
+					timestampVerfuegtVorgaenger = vorgaengerVerfuegung.getPlatz().extractGesuch().getTimestampVerfuegt();
+					Objects.requireNonNull(timestampVerfuegtVorgaenger);
+					handleAbgelehnteFinsit(inputAsiv, resultAsivVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
+				} else {
+					// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
+					handleVerminderungEinkommen(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+				}
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
-				if (resultGemeindeVorangehenderAbschnitt != null) {
-					handleVerminderungEinkommen(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+				if (vorangehenderAbschnitt.isHasGemeindeSpezifischeBerechnung() && resultGemeindeVorangehenderAbschnitt != null) {
+					if (finSitAbgelehnt) {
+						// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
+						handleAbgelehnteFinsit(inputGemeinde, resultGemeindeVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
+					} else {
+						// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
+						handleVerminderungEinkommen(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+					}
 					handleAnpassungErweiterteBeduerfnisse(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
 					handleAnpassungAnspruch(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
 				}
@@ -149,6 +168,27 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
 			}
+		}
+	}
+
+	private void handleAbgelehnteFinsit(
+		@Nonnull BGCalculationInput inputData,
+		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
+		@Nonnull LocalDateTime timestampVerfuegtVorgaenger
+	) {
+		// Falls die FinSit in der Mutation abgelehnt wurde, muss grundsaetzlich das Einkommen der Vorverfuegung genommen werden,
+		// unabhaengig davon, ob das Einkommen steigt oder sinkt und ob es rechtzeitig gemeldet wurde
+		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
+		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
+
+		inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
+		inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
+		inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
+		inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
+		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0) {
+			// Die Bemerkung immer dann setzen, wenn das Einkommen (egal in welche Richtung) geaendert haette
+			String datumLetzteVerfuegung = Constants.DATE_FORMATTER.format(timestampVerfuegtVorgaenger);
+			inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, locale, datumLetzteVerfuegung);
 		}
 	}
 

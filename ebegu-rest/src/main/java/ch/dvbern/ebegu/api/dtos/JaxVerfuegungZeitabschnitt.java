@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -111,8 +112,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private String bemerkungen;
 
-	@NotNull
+	@NotNull @Nonnull
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+
+	@NotNull @Nonnull
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	private boolean kategorieMaxEinkommen = false;
 
@@ -121,6 +125,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	private boolean sameAusbezahlteVerguenstigung;
+	private boolean sameAusbezahlteMahlzeiten;
 
 	@Nullable
 	private JaxTsCalculationResult tsCalculationResultMitPaedagogischerBetreuung;
@@ -128,10 +133,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private JaxTsCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
 
-	private BigDecimal verguenstigungHauptmahlzeitTotal;
-
-	private BigDecimal verguenstigungNebenmahlzeitTotal;
-
+	private BigDecimal verguenstigungMahlzeitTotal;
 
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
@@ -330,12 +332,22 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.bemerkungen = bemerkungen;
 	}
 
+	@Nonnull
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
 		return zahlungsstatus;
 	}
 
-	public void setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+	public void setZahlungsstatus(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
 		this.zahlungsstatus = zahlungsstatus;
+	}
+
+	@Nonnull
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusMahlzeitenverguenstigung() {
+		return zahlungsstatusMahlzeitenverguenstigung;
+	}
+
+	public void setZahlungsstatusMahlzeitenverguenstigung(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
+		this.zahlungsstatusMahlzeitenverguenstigung = zahlungsstatusMahlzeitenverguenstigung;
 	}
 
 	public boolean isKategorieMaxEinkommen() {
@@ -370,6 +382,14 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
 	}
 
+	public boolean isSameAusbezahlteMahlzeiten() {
+		return sameAusbezahlteMahlzeiten;
+	}
+
+	public void setSameAusbezahlteMahlzeiten(boolean sameAusbezahlteMahlzeiten) {
+		this.sameAusbezahlteMahlzeiten = sameAusbezahlteMahlzeiten;
+	}
+
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
 		return minimalerElternbeitragGekuerzt;
 	}
@@ -396,19 +416,12 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
-	public BigDecimal getVerguenstigungHauptmahlzeitTotal() {
-		return verguenstigungHauptmahlzeitTotal;
+	public BigDecimal getVerguenstigungMahlzeitTotal() {
+		return verguenstigungMahlzeitTotal;
 	}
 
-	public void setVerguenstigungHauptmahlzeitTotal(BigDecimal verguenstigungHauptmahlzeitTotal) {
-		this.verguenstigungHauptmahlzeitTotal = verguenstigungHauptmahlzeitTotal;
+	public void setVerguenstigungMahlzeitTotal(BigDecimal verguenstigungMahlzeitTotal) {
+		this.verguenstigungMahlzeitTotal = verguenstigungMahlzeitTotal;
 	}
 
-	public BigDecimal getVerguenstigungNebenmahlzeitTotal() {
-		return verguenstigungNebenmahlzeitTotal;
-	}
-
-	public void setVerguenstigungNebenmahlzeitTotal(BigDecimal verguenstigungNebenmahlzeitTotal) {
-		this.verguenstigungNebenmahlzeitTotal = verguenstigungNebenmahlzeitTotal;
-	}
 }

@@ -81,7 +81,7 @@ public interface WorkjobService {
 	@Nonnull
 	Workjob createNewReporting(
 		@Nonnull Workjob workJob,
-		@Nonnull ReportVorlage vorlageReportTagesschuleOhneFinsit,
+		@Nonnull ReportVorlage vorlage,
 		@Nonnull String stammdatenId,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Locale locale

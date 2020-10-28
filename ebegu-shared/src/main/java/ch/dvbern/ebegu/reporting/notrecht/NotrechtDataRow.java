@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 /**
@@ -52,12 +53,18 @@ public class NotrechtDataRow {
 	private @Nullable LocalDateTime stufe1FreigabeDatum;
 	private @Nullable LocalDateTime stufe1FreigabeAusbezahltAm;
 	private @Nullable String stufe1ZahlungJetztAusgeloest;
+	private @Nullable RueckforderungInstitutionTyp institutionTyp;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 	private @Nullable BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
 	private @Nullable BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 	private @Nullable BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 	private @Nullable BigDecimal stufe2KantonKostenuebernahmeBetreuung;
+	private @Nullable BigDecimal betragEntgangeneElternbeitraege;
+	private @Nullable BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	private @Nullable BigDecimal rueckerstattungNichtAngeboteneBetreuungstage;
+	private @Nullable BigDecimal kurzarbeitBetrag;
+	private @Nullable BigDecimal coronaErwerbsersatzBetrag;
 	private @Nullable BigDecimal stufe2VerfuegungBetrag;
 	private @Nullable LocalDateTime stufe2VerfuegungDatum;
 	private @Nullable LocalDateTime stufe2VerfuegungAusbezahltAm;
@@ -278,6 +285,51 @@ public class NotrechtDataRow {
 		this.stufe2KantonKostenuebernahmeBetreuung = stufe2KantonKostenuebernahmeBetreuung;
 	}
 
+	@Nullable
+	public BigDecimal getBetragEntgangeneElternbeitraege() {
+		return betragEntgangeneElternbeitraege;
+	}
+
+	public void setBetragEntgangeneElternbeitraege(@Nullable BigDecimal betragEntgangeneElternbeitraege) {
+		this.betragEntgangeneElternbeitraege = betragEntgangeneElternbeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten() {
+		return betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	public void setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(@Nullable BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten) {
+		this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten = betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	@Nullable
+	public BigDecimal getRueckerstattungNichtAngeboteneBetreuungstage() {
+		return rueckerstattungNichtAngeboteneBetreuungstage;
+	}
+
+	public void setRueckerstattungNichtAngeboteneBetreuungstage(@Nullable BigDecimal rueckerstattungNichtAngeboteneBetreuungstage) {
+		this.rueckerstattungNichtAngeboteneBetreuungstage = rueckerstattungNichtAngeboteneBetreuungstage;
+	}
+
+	@Nullable
+	public BigDecimal getKurzarbeitBetrag() {
+		return kurzarbeitBetrag;
+	}
+
+	public void setKurzarbeitBetrag(@Nullable BigDecimal kurzarbeitBetrag) {
+		this.kurzarbeitBetrag = kurzarbeitBetrag;
+	}
+
+	@Nullable
+	public BigDecimal getCoronaErwerbsersatzBetrag() {
+		return coronaErwerbsersatzBetrag;
+	}
+
+	public void setCoronaErwerbsersatzBetrag(@Nullable BigDecimal coronaErwerbsersatzBetrag) {
+		this.coronaErwerbsersatzBetrag = coronaErwerbsersatzBetrag;
+	}
+
 	public @Nullable BigDecimal getStufe2VerfuegungBetrag() {
 		return stufe2VerfuegungBetrag;
 	}
@@ -365,6 +417,15 @@ public class NotrechtDataRow {
 
 	public void setStufe1ZahlungJetztAusgeloest(@Nullable String stufe1ZahlungJetztAusgeloest) {
 		this.stufe1ZahlungJetztAusgeloest = stufe1ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public RueckforderungInstitutionTyp getInstitutionTyp() {
+		return institutionTyp;
+	}
+
+	public void setInstitutionTyp(@Nullable RueckforderungInstitutionTyp institutionTyp) {
+		this.institutionTyp = institutionTyp;
 	}
 
 	@Nullable

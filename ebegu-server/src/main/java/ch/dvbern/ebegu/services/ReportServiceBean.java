@@ -21,16 +21,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -64,11 +64,8 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
-import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -77,7 +74,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
-import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -85,7 +82,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -96,6 +92,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
@@ -105,6 +103,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -128,13 +127,16 @@ import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
-import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleDataRow;
-import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleExcelConverter;
-import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -154,21 +156,8 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static java.util.Objects.requireNonNull;
 
@@ -178,9 +167,8 @@ import static java.util.Objects.requireNonNull;
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
 
 	private static final String NO_USER_IS_LOGGED_IN = "No User is logged in";
-	private static final String NO_STAMMDATEN_FOUND = "Keine Stammdaten gefunden";
-	private static final String ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION = "Ein Kind kann nur eine Anmeldung für eine "
-		+ "bestimmte Tagesschule haben";
+
+
 
 	@Inject
 	private BenutzerService benutzerService;
@@ -209,16 +197,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private InstitutionenExcelConverter institutionenExcelConverter;
 
 	@Inject
-	private ZahlungAuftragExcelConverter zahlungAuftragExcelConverter;
+	private ZahlungAuftragDetailsExcelConverter zahlungAuftragDetailsExcelConverter;
+
+	@Inject
+	private ZahlungAuftragTotalsExcelConverter zahlungAuftragTotalsExcelConverter;
 
 	@Inject
 	private ZahlungAuftragPeriodeExcelConverter zahlungAuftragPeriodeExcelConverter;
 
 	@Inject
 	private GesuchstellerKinderBetreuungExcelConverter gesuchstellerKinderBetreuungExcelConverter;
-
-	@Inject
-	private TagesschuleExcelConverter tagesschuleExcelConverter;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -253,12 +241,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Inject
 	private GesuchService gesuchService;
 
+	@Inject
+	private EinstellungService einstellungService;
+
 	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
-		SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<GesuchStichtagDataRow> getReportDataGesuchStichtag(
 		@Nonnull LocalDate date,
 		@Nullable String gesuchPeriodeID) {
@@ -311,10 +299,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@SuppressWarnings("Duplicates")
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -354,9 +338,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
-		SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
@@ -401,10 +382,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@SuppressWarnings("Duplicates")
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -446,10 +423,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	@SuppressWarnings("PMD.NcssMethodCount, PMD.AvoidDuplicateLiterals")
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<KantonDataRow> getReportDataKanton(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
@@ -524,6 +497,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			KantonDataRow row = new KantonDataRow();
 			Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+			Objects.requireNonNull(betreuung);
 			final Gesuch gesuch = betreuung.extractGesuch();
 
 			row.setGemeinde(gesuch.extractGemeinde().getName());
@@ -542,7 +516,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			BigDecimal pensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 			BigDecimal pensumGemeinde = BigDecimal.ZERO;
 			BigDecimal pensumTotal = pensumKanton;
-			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 				BigDecimal pensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
 				pensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(pensumTotalGemeinde, pensumKanton);
@@ -558,7 +532,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 			BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
 			BigDecimal verguenstigungTotal = verguenstigungKanton;
-			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 				BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
 				verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
@@ -576,10 +550,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -618,8 +588,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	// MitarbeterInnen
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<MitarbeiterinnenDataRow> getReportMitarbeiterinnen(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis) {
@@ -809,8 +777,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -852,9 +818,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -869,8 +832,28 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				auftragId));
 
+		// Je nach Rolle duerfen im Excel nicht alle Institutionen aufgefuehrt werden
+		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
+		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
+		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			if (!EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+				allowedInst
+					.stream()
+					.anyMatch(institution -> institution.getId().equals(zahlung.getEmpfaengerId()))) {
+				Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+				ZahlungDataRow row = new ZahlungDataRow(
+					zahlung,
+					adresseKontoinhaber
+				);
+				zahlungDataRows.add(row);
+			}
+		}
+
 		return getUploadFileInfoZahlung(
-			zahlungsauftrag.getZahlungen(),
+			zahlungDataRows,
 			zahlungsauftrag.getFilename(),
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
@@ -880,9 +863,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -891,7 +871,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
-		List<Zahlung> reportData = new ArrayList<>();
+		List<ZahlungDataRow> reportData = new ArrayList<>();
 
 		Zahlung zahlung = zahlungService.findZahlung(zahlungId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -899,13 +879,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		reportData.add(zahlung);
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlung.getZahlungsauftrag().getZahlungslaufTyp());
+		Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+		ZahlungDataRow dataRow = new ZahlungDataRow(
+			zahlung,
+			adresseKontoinhaber
+		);
+
+		reportData.add(dataRow);
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionStammdaten()
-			.getInstitution()
-			.getName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getEmpfaengerName();
 
 		return getUploadFileInfoZahlung(
 			reportData,
@@ -920,7 +905,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	private UploadFileInfo getUploadFileInfoZahlung(
-		@Nonnull List<Zahlung> reportData,
+		@Nonnull List<ZahlungDataRow> reportData,
 		@Nonnull String excelFileName,
 		@Nonnull String bezeichnung,
 		@Nonnull LocalDateTime datumGeneriert,
@@ -935,23 +920,41 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
 
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
-
+		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
+			.filter(zahlungDataRow -> {
+				// Filtere nur die erlaubten Instituionsdaten
+				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
+				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
+			}).collect(Collectors.toList());
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(
-			reportData,
+		// Blatt Details
+		Sheet sheetDetails = workbook.getSheet(reportVorlage.getDataSheetName());
+		ExcelMergerDTO excelMergerDTO = zahlungAuftragDetailsExcelConverter.toExcelMergerDTO(
+			zahlungenBerechtigt,
 			locale,
-			principalBean.discoverMostPrivilegedRole(),
-			allowedInst,
 			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
 			datumGeneriert,
 			datumFaellig,
 			gemeinde
 		);
+		mergeData(sheetDetails, excelMergerDTO, reportVorlage.getMergeFields());
+		zahlungAuftragDetailsExcelConverter.applyAutoSize(sheetDetails);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		zahlungAuftragExcelConverter.applyAutoSize(sheet);
+		// Blatt Totals
+		Sheet sheetTotals = workbook.getSheet("Totals");
+		ExcelMergerDTO excelMergerTotalsDTO = zahlungAuftragTotalsExcelConverter.toExcelMergerDTO(
+			zahlungenBerechtigt,
+			locale,
+			ServerMessageUtil.getMessage("Reports_totalZahlungenTitle", locale, bezeichnung),
+			datumGeneriert,
+			datumFaellig,
+			gemeinde
+		);
+		mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
+		zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
 
 		byte[] bytes = createWorkbook(workbook);
 
@@ -963,9 +966,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1222,13 +1222,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Locale locale
 	) {
 
-		row.setInstitution(zeitabschnitt.getVerfuegung()
-			.getBetreuung()
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		row.setInstitution(betreuung
 			.getInstitutionStammdaten()
 			.getInstitution()
 			.getName());
 
-		row.setBetreuungsTyp(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungsangebotTyp());
+		row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
 		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale));
@@ -1240,12 +1241,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		row.setFallId(Integer.parseInt(String.valueOf(gesuch.getFall().getFallNummer())));
 		row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
-		row.setBgNummer(zeitabschnitt.getVerfuegung().getBetreuung().getBGNummer());
+		row.setBgNummer(betreuung.getBGNummer());
 	}
 
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
-		GesuchstellerKinderBetreuungDataRow row,
-		@Nullable GesuchstellerContainer containerGS1
+		@Nonnull GesuchstellerKinderBetreuungDataRow row,
+		@Nullable GesuchstellerContainer containerGS1,
+		@Nonnull Integer freiwilligenArbeitMax
 	) {
 		if (containerGS1 == null) {
 			return;
@@ -1286,12 +1288,20 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpIntegration(row.getGs1EwpIntegration() + erwerbspensumJA.getPensum());
 			}
+			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs1EwpFreiwillig(Math.min(
+					row.getGs1EwpFreiwillig() + erwerbspensumJA.getPensum(),
+					freiwilligenArbeitMax
+				));
+			}
 		}
 	}
 
 	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(
-		GesuchstellerKinderBetreuungDataRow row,
-		GesuchstellerContainer containerGS2) {
+		@Nonnull GesuchstellerKinderBetreuungDataRow row,
+		@Nonnull GesuchstellerContainer containerGS2,
+		@Nonnull Integer freiwilligenArbeitMax
+	) {
 
 		Gesuchsteller gs2 = containerGS2.getGesuchstellerJA();
 		row.setGs2Name(gs2.getNachname());
@@ -1326,6 +1336,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpIntegration(row.getGs2EwpIntegration() + erwerbspensumJA.getPensum());
+			}
+			if (Taetigkeit.FREIWILLIGENARBEIT == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs2EwpFreiwillig(Math.min(
+					row.getGs2EwpFreiwillig() + erwerbspensumJA.getPensum(),
+					freiwilligenArbeitMax
+				));
 			}
 		}
 	}
@@ -1373,7 +1389,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
 		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal anspruchsPensumTotalGemeinde =
 				new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
@@ -1388,7 +1404,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 		BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal bgPensumTotal = bgPensumKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
 			bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
@@ -1409,7 +1425,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 		BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
 		BigDecimal verguenstigungTotal = verguenstigungKanton;
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung() && zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
 			BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
 			verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
@@ -1423,8 +1439,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportGesuchstellerKinderBetreuung(
@@ -1478,25 +1492,47 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache = new HashMap<>();
+		Map<String, Integer> maxFreiwilligenarbeitCache = new HashMap<>();
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			GesuchstellerKinderBetreuungDataRow row =
-				createRowForGesuchstellerKinderBetreuungReport(zeitabschnitt, neustesVerfuegtesGesuchCache, locale);
+				createRowForGesuchstellerKinderBetreuungReport(
+					zeitabschnitt, neustesVerfuegtesGesuchCache, maxFreiwilligenarbeitCache, locale);
 			dataRowList.add(row);
 		}
 
 		return dataRowList;
 	}
 
+	@Nonnull
+	private String getMaxFreiwilligenarbeitCacheKey(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		return gemeinde.getId() + "_" + gesuchsperiode.getId();
+	}
+
 	@SuppressWarnings({ "Duplicates", "PMD.NcssMethodCount" })
 	private GesuchstellerKinderBetreuungDataRow createRowForGesuchstellerKinderBetreuungReport(
 		VerfuegungZeitabschnitt zeitabschnitt,
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
+		Map<String, Integer> maxFreiwilligenarbeitCache,
 		@Nonnull Locale locale
 	) {
-		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
-		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(gueltigeBetreuung);
+		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
+		Gesuch gueltigeGesuch = null;
+
+		final String maxFreiwilligenarbeitCacheKey = getMaxFreiwilligenarbeitCacheKey(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		Integer maxFreiwilligenarbeit = null;
+		if (maxFreiwilligenarbeitCache.containsKey(maxFreiwilligenarbeitCacheKey)) {
+			maxFreiwilligenarbeit = maxFreiwilligenarbeitCache.get(maxFreiwilligenarbeitCacheKey);
+		} else {
+			Einstellung maxFreiwilligenarbeitEinstellung = einstellungService.findEinstellung(
+				EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+				gesuch.getDossier().getGemeinde(),
+				gesuch.getGesuchsperiode());
+			maxFreiwilligenarbeit = maxFreiwilligenarbeitEinstellung.getValueAsInteger();
+			maxFreiwilligenarbeitCache.put(maxFreiwilligenarbeitCacheKey, maxFreiwilligenarbeit);
+		}
 
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
@@ -1523,9 +1559,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpRav(0);
 		row.setGs1EwpGesundhtl(0);
 		row.setGs1EwpIntegration(0);
+		row.setGs1EwpFreiwillig(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
-			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
+			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container, maxFreiwilligenarbeit);
 		}
 		// Gesuchsteller 2: Prozent-Felder initialisieren, damit im Excel das Total sicher berechnet werden kann
 		row.setGs2EwpAngestellt(0);
@@ -1534,8 +1571,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpRav(0);
 		row.setGs2EwpGesundhtl(0);
 		row.setGs2EwpIntegration(0);
+		row.setGs2EwpFreiwillig(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
-			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
+			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2(), maxFreiwilligenarbeit);
 		}
 		// Familiensituation / Einkommen
 		FamiliensituationContainer familiensituationContainer = gueltigeGesuch.getFamiliensituationContainer();
@@ -1543,6 +1581,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Familiensituation familiensituation =
 				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
+			row.setSozialhilfeBezueger(isSozialhilfeBezueger(zeitabschnitt, familiensituationContainer, familiensituation));
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
@@ -1570,13 +1609,33 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return row;
 	}
 
+	private boolean isSozialhilfeBezueger(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull FamiliensituationContainer familiensituationContainer,
+		@Nonnull Familiensituation familiensituation
+	) {
+		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
+			return false;
+		}
+
+		// falls keine sozialhilfeContainer existieren, Sozialhilfe von Familiensituation nehmen
+		Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = familiensituationContainer.getSozialhilfeZeitraumContainers();
+		if (sozialhilfeZeitraumContainers.isEmpty()) {
+			return familiensituation.getSozialhilfeBezueger();
+		}
+
+		// falls sozialhilfeContainer existieren, überprüfen ob diese für den aktuellen Zeitabschnitt gelten
+		return sozialhilfeZeitraumContainers.stream().anyMatch(sozialhilfeZeitraumContainer -> {
+			SozialhilfeZeitraum sozialhilfeZeitraumJA = sozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA();
+			return sozialhilfeZeitraumJA != null &&
+				zeitabschnitt.getGueltigkeit().getGueltigAb().compareTo(sozialhilfeZeitraumJA.getGueltigkeit().getGueltigAb()) >= 0 &&
+				zeitabschnitt.getGueltigkeit().getGueltigBis().compareTo(sozialhilfeZeitraumJA.getGueltigkeit().getGueltigBis()) <= 0;
+		});
+	}
+
 	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportKinder(
@@ -1646,9 +1705,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
 		@Nonnull Locale locale
 	) {
-		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
-		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(gueltigeBetreuung);
+		Gesuch gesuch = gueltigeBetreuung.extractGesuch();
+		Gesuch gueltigeGesuch = null;
+
 
 		//prüfen ob Gesuch ist gültig, und via GesuchService oder Cache holen, inkl. Kind & Betreuung
 		if (!gesuch.isGueltig()) {
@@ -1705,16 +1766,22 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
 
 		return gueltigeKind
-			.map(gk -> gk.getBetreuungen().stream().filter(betreuung -> betreuung
-				.getBetreuungNummer()
-				.equals(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungNummer()))
-				.findFirst()
-				.orElse(zeitabschnitt.getVerfuegung().getBetreuung()))
+			.map(gk -> {
+				final Betreuung betr = zeitabschnitt.getVerfuegung().getBetreuung();
+				Objects.requireNonNull(betr);
+				return gk.getBetreuungen().stream().filter(betreuung -> betreuung
+					.getBetreuungNummer()
+					.equals(betr.getBetreuungNummer()))
+					.findFirst()
+					.orElse(betr);
+			})
 			.orElse(gueltigeBetreuung);
 	}
 
 	private Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
-		Integer kindNummer = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindNummer();
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		Integer kindNummer = betreuung.getKind().getKindNummer();
 
 		return gueltigeGesuch.getKindContainers().stream()
 			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
@@ -1723,9 +1790,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale)
@@ -1862,8 +1926,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1893,8 +1955,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, REVISOR })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -2009,8 +2069,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -2098,15 +2156,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (institutionStammdaten.getWebseite() != null) {
 			row.setUrl(institutionStammdaten.getWebseite());
 		}
-		if (institutionStammdaten.getOeffnungszeiten() != null) {
-			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
-		}
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		if (institutionStammdatenBG != null) {
+			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null) {
+				row.setOeffnungszeiten(
+					institutionStammdatenBG.getOffenVon().toString()
+						+ " - "
+						+ institutionStammdatenBG.getOffenBis().toString()
+				);
+			}
+			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
+				.sorted()
+				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
+				.collect(Collectors.joining(", ")));
+			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
+		}
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
 		row.setKindergarten(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieKindergarten());
@@ -2135,145 +2204,5 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS };
 
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
-	}
-
-	@Nonnull
-	@Override
-	public List<TagesschuleDataRow> getReportDataTagesschuleOhneFinSit(
-		@Nonnull String stammdatenID,
-		@Nonnull String gesuchsperiodeID) {
-
-		requireNonNull(stammdatenID, "Das Argument 'stammdatenID' darf nicht leer sein");
-
-		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
-		final CriteriaQuery<KindContainer> query = builder.createQuery(KindContainer.class);
-
-		Root<KindContainer> root = query.from(KindContainer.class);
-		Join<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule =
-			root.join(KindContainer_.anmeldungenTagesschule);
-
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(builder.equal(root.get(KindContainer_.gesuch).get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.id),
-			gesuchsperiodeID));
-		predicates.add(builder.equal(
-			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.institutionStammdaten).get(InstitutionStammdaten_.id),
-			stammdatenID));
-
-		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
-		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
-		requireNonNull(kindContainerList);
-
-		return convertToTagesschuleDataRows(kindContainerList, stammdatenID);
-	}
-
-	@Nonnull
-	private EinstellungenTagesschule findEinstellungenTagesschuleByPeriode(@Nonnull InstitutionStammdaten stammdaten,
-		@Nonnull String gesuchsperiodeId) {
-
-		requireNonNull(stammdaten, "Das Argument 'stammdatenID' darf nicht leer sein");
-		requireNonNull(gesuchsperiodeId, "Das Argument 'gesuchsperiodeId' darf nicht leer sein");
-
-		if (stammdaten.getInstitutionStammdatenTagesschule() != null) {
-			for (EinstellungenTagesschule e :
-				stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule()) {
-				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
-					return e;
-				}
-			}
-		}
-		throw new EbeguEntityNotFoundException("findEinstellungenTagesschuleByPeriode",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-	}
-
-	@Nonnull
-	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList, String stammdatenID) {
-		ReportServiceBean self = this;
-		return kindContainerList.stream()
-			.map(kindContainer -> self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID))
-			.collect(Collectors.toList());
-	}
-
-	@Nonnull
-	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer, String stammdatenID) {
-
-		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
-			kindContainer.getAnmeldungenTagesschule()
-				.stream()
-				.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getId().equals(stammdatenID))
-				.iterator();
-		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
-
-		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
-		if (anmeldungTagesschule == null || anmeldungTagesschuleIterator.hasNext()) {
-			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow",
-				ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
-		}
-
-		TagesschuleDataRow tdr = new TagesschuleDataRow();
-		tdr.setVornameKind(kindContainer.getKindJA().getVorname());
-		tdr.setNachnameKind(kindContainer.getKindJA().getNachname());
-		tdr.setGeburtsdatum(kindContainer.getKindJA().getGeburtsdatum());
-		tdr.setStatus(anmeldungTagesschule.getBetreuungsstatus());
-		tdr.setReferenznummer(anmeldungTagesschule.getBGNummer());
-		tdr.setAnmeldungTagesschule(anmeldungTagesschule);
-
-		BelegungTagesschule belegung = anmeldungTagesschule.getBelegungTagesschule();
-		if (belegung != null) {
-			tdr.setAb(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
-		}
-
-		return tdr;
-	}
-
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION })
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Nonnull
-	public UploadFileInfo generateExcelReportTagesschuleOhneFinSit(
-		@Nonnull String stammdatenID,
-		@Nonnull String gesuchsperiodeID,
-		@Nonnull Locale locale) throws ExcelMergeException {
-
-		requireNonNull(stammdatenID, "stammdatenID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
-		requireNonNull(gesuchsperiodeID, "gesuchsperiodeID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
-
-		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT;
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
-
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
-
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportTagesschuleOhneFinSit",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeID));
-
-		InstitutionStammdaten institutionStammdaten =
-			institutionStammdatenService.findInstitutionStammdaten(stammdatenID).orElseThrow(() -> new EbeguRuntimeException(
-				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
-
-		EinstellungenTagesschule einstellungenTagesschule =
-			findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
-		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
-
-		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);
-
-		ExcelMergerDTO excelMergerDTO = tagesschuleExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode,
-			einstellungenTagesschule, institutionStammdaten.getInstitution().getName());
-
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		institutionenExcelConverter.applyAutoSize(sheet);
-
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
 	}
 }

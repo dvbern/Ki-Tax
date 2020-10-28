@@ -18,9 +18,10 @@ package ch.dvbern.ebegu.services;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import javax.annotation.security.PermitAll;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Local;
@@ -29,6 +30,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +46,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
  * be found, this implies a rollback of the Transaction and everything gets undone. Executing the service within a
  * transaction flushes the queries before the method finishes and the context still exists.
  */
-@PermitAll
 @Stateless
 @Local(DailyBatch.class)
 public class DailyBatchBean implements DailyBatch {
@@ -80,6 +82,8 @@ public class DailyBatchBean implements DailyBatch {
 	@Inject
 	private InstitutionService institutionService;
 
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 
 	@Override
 	@Asynchronous
@@ -230,6 +234,28 @@ public class DailyBatchBean implements DailyBatch {
 			LOGGER.info("... Job InstitutionCheckRequired finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job InstitutionCheckRequired konnte nicht durchgefuehrt werden!", e);
+		}
+	}
+
+	@Override
+	@Asynchronous
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.HOURS, value = 1)
+	public Future<Integer> runBatchUpdateGemeindeForBGInstitutionen() {
+		try {
+			LOGGER.info("Starting Job UpdateGemeindeForBGInstitutionen...");
+			Set<InstitutionStammdaten> changed = institutionStammdatenService.updateGemeindeForBGInstitutionen();
+			LOGGER.info("... Job UpdateGemeindeForBGInstitutionen finished");
+
+			if (!changed.isEmpty()) {
+				LOGGER.info("Starting InstitutionChangedEvent export...");
+				changed.forEach(s -> institutionStammdatenService.fireStammdatenChangedEvent(s));
+			}
+
+			return new AsyncResult<>(changed.size());
+		} catch (RuntimeException e) {
+			LOGGER.error("Batch-Job UpdateGemeindeForBGInstitutionen konnte nicht durchgefuehrt werden!", e);
+			return new AsyncResult<>(-1);
 		}
 	}
 }

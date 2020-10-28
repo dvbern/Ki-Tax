@@ -202,6 +202,12 @@ public interface EbeguConfiguration {
 	String getSchemaRegistryURL();
 
 	/**
+	 * @return TRUE, falls neue Betreuungen an den Exchange Service exportiert werden sollen.
+	 */
+	boolean isBetreuungAnfrageApiEnabled();
+
+
+	/**
 	 * @return Filepath zum Keystore in dem der Private Key fuer den Secure-Token-Service Webservice liegt,
 	 * sollte in einer Form sein die den Pfad vom  resource root her aufloest ist zb "/prod/sts-webservice.jks"
 	 * The Idea is to read the keystore from a specific place in the file System
@@ -282,7 +288,37 @@ public interface EbeguConfiguration {
 	 */
 	String getEbeguPersonensucheGERESWsdl();
 
+	/**
+	 * @return GEOADMIN Webservice Endpoint für den SearchServer
+	 * Beispiel: https://api3.geo.admin.ch/rest/services/api/SearchServer
+	 * Siehe GeoAdmin Dokumentation: https://api3.geo.admin.ch/services/sdiservices.html
+	 */
+	String getEbeguGeoadminSearchServerUrl();
+
+	/**
+	 * @return GeoAdmin Webservice Endpoint für den MapServer
+	 * Beispiel: "https://api3.geo.admin.ch/rest/services/api/MapServer"
+	 * Siehe GeoAdmin Dokumentation: https://api3.geo.admin.ch/services/sdiservices.html
+	 */
+	String getEbeguGeoadminMapServerUrl();
+
 	String getKitaxHost();
 
 	String getKitaxEndpoint();
+
+	String getClamavHost();
+
+	int getClamavPort();
+
+	boolean isClamavDisabled();
+
+	String getNotverordnungUnterschriftName();
+
+	String getNotverordnungUnterschriftPath();
+
+	String getNotverordnungEmpfaengerMail();
+
+	String getKafkaPlatzbestaetigungGroupId();
+
+	String getMassenmutationEmpfaengerMail();
 }

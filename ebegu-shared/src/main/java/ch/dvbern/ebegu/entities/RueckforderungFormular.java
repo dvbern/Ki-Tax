@@ -18,8 +18,10 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -35,11 +37,19 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static ch.dvbern.ebegu.enums.RueckforderungsConstants.einreichungsfristOeffentlichStufe2;
+import static ch.dvbern.ebegu.enums.RueckforderungsConstants.einreichungsfristPrivatStufe2;
 
 @Entity
 @Audited
@@ -66,7 +76,6 @@ public class RueckforderungFormular extends AbstractEntity {
 				"rueckforderung_mitteilung_id"),
 		}
 	)
-
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@NotNull
 	private Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
@@ -76,6 +85,20 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	private RueckforderungStatus status = RueckforderungStatus.NEU;
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rueckforderung_verantwortlicher_id"), nullable = true)
+	private Benutzer verantwortlicher;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean hasBeenProvisorisch = false; // Wird zur Anzeige der korrekten Confirmationmessage benoetigt
+
+	@Nullable
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	private RueckforderungInstitutionTyp institutionTyp = null;
 
 	@Column(name = "stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
@@ -137,8 +160,14 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
+	@Column(name = "stufe_2_voraussichtliche_betrag", nullable = true)
+	@Nullable
+	@Min(0)
+	private BigDecimal stufe2VoraussichtlicheBetrag;
+
 	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
+	@Min(0)
 	private BigDecimal stufe2VerfuegungBetrag;
 
 	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
@@ -148,6 +177,83 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(name = "stufe_2_verfuegung_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
+
+	@Column(name = "stufe_2_provisorisch_verfuegt_datum", nullable = true)
+	@Nullable
+	private LocalDateTime stufe2ProvisorischVerfuegtDatum;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDate extendedEinreichefrist = null; // Wenn null gilt die Default-Einreichefrist
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal betragEntgangeneElternbeitraege;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten; // Kita in TAGE, TFO in STUNDEN
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal anzahlNichtAngeboteneEinheiten; // Neu: Rueckerstattung fuer nicht angebotene Einheiten
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean kurzarbeitBeantragt;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal kurzarbeitBetrag;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean kurzarbeitDefinitivVerfuegt;
+
+	@Nullable
+	@Size(min = 1, max = 2000)
+	@Column(nullable = true)
+	private String kurzarbeitKeinAntragBegruendung;
+
+	@Nullable
+	@Size(min = 1, max = 2000)
+	@Column(nullable = true)
+	private String kurzarbeitSonstiges;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean coronaErwerbsersatzBeantragt;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal coronaErwerbsersatzBetrag;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean coronaErwerbsersatzDefinitivVerfuegt;
+
+	@Nullable
+	@Size(min = 1, max = 2000)
+	@Column(nullable = true)
+	private String coronaErwerbsersatzKeinAntragBegruendung;
+
+	@Nullable
+	@Size(min = 1, max = 2000)
+	@Column(nullable = true)
+	private String coronaErwerbsersatzSonstiges;
+
+	@Nonnull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Sprache korrespondenzSprache = Sprache.DEUTSCH;
+
+	@Nullable
+	@Size(min=1, max=2000)
+	@Column(nullable = true)
+	private String bemerkungFuerVerfuegung;
+
+	@Column
+	private boolean uncheckedDocuments;
 
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
@@ -178,12 +284,38 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.status = status;
 	}
 
+	public boolean isHasBeenProvisorisch() {
+		return hasBeenProvisorisch;
+	}
+
+	public void setHasBeenProvisorisch(boolean hasBeenProvisorisch) {
+		this.hasBeenProvisorisch = hasBeenProvisorisch;
+	}
+
+	@Nullable
+	public RueckforderungInstitutionTyp getInstitutionTyp() {
+		return institutionTyp;
+	}
+
+	public void setInstitutionTyp(@Nullable RueckforderungInstitutionTyp institutionTyp) {
+		this.institutionTyp = institutionTyp;
+	}
+
 	public InstitutionStammdaten getInstitutionStammdaten() {
 		return institutionStammdaten;
 	}
 
 	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nullable
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	@Nullable
@@ -348,6 +480,137 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
 	}
 
+	@Nullable
+	public LocalDateTime getStufe2ProvisorischVerfuegtDatum() {
+		return stufe2ProvisorischVerfuegtDatum;
+	}
+
+	public void setStufe2ProvisorischVerfuegtDatum(@Nullable LocalDateTime stufe2ProvisorischVerfuegtDatum) {
+		this.stufe2ProvisorischVerfuegtDatum = stufe2ProvisorischVerfuegtDatum;
+	}
+
+	@Nullable
+	public LocalDate getExtendedEinreichefrist() {
+		return extendedEinreichefrist;
+	}
+
+	public void setExtendedEinreichefrist(@Nullable LocalDate extendedEinreichefrist) {
+		this.extendedEinreichefrist = extendedEinreichefrist;
+	}
+
+	public @Nullable BigDecimal getBetragEntgangeneElternbeitraege() {
+		return betragEntgangeneElternbeitraege;
+	}
+
+	public void setBetragEntgangeneElternbeitraege(@Nullable BigDecimal betragEntgangeneElternbeitraege) {
+		this.betragEntgangeneElternbeitraege = betragEntgangeneElternbeitraege;
+	}
+
+	public @Nullable BigDecimal getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten() {
+		return betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	public void setBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(@Nullable BigDecimal betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten) {
+		this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten = betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
+	}
+
+	public @Nullable BigDecimal getAnzahlNichtAngeboteneEinheiten() {
+		return anzahlNichtAngeboteneEinheiten;
+	}
+
+	public void setAnzahlNichtAngeboteneEinheiten(@Nullable BigDecimal anzahlNichtAngeboteneEinheiten) {
+		this.anzahlNichtAngeboteneEinheiten = anzahlNichtAngeboteneEinheiten;
+	}
+
+	public @Nullable Boolean getKurzarbeitBeantragt() {
+		return kurzarbeitBeantragt;
+	}
+
+	public void setKurzarbeitBeantragt(@Nullable Boolean kurzarbeitBeantragt) {
+		this.kurzarbeitBeantragt = kurzarbeitBeantragt;
+	}
+
+	public @Nullable BigDecimal getKurzarbeitBetrag() {
+		return kurzarbeitBetrag;
+	}
+
+	public void setKurzarbeitBetrag(@Nullable BigDecimal kurzarbeitBetrag) {
+		this.kurzarbeitBetrag = kurzarbeitBetrag;
+	}
+
+	public @Nullable Boolean getKurzarbeitDefinitivVerfuegt() {
+		return kurzarbeitDefinitivVerfuegt;
+	}
+
+	public void setKurzarbeitDefinitivVerfuegt(@Nullable Boolean kurzarbeitDefinitivVerfuegt) {
+		this.kurzarbeitDefinitivVerfuegt = kurzarbeitDefinitivVerfuegt;
+	}
+
+	public @Nullable String getKurzarbeitKeinAntragBegruendung() {
+		return kurzarbeitKeinAntragBegruendung;
+	}
+
+	public void setKurzarbeitKeinAntragBegruendung(@Nullable String kurzarbeitKeinAntragBegruendung) {
+		this.kurzarbeitKeinAntragBegruendung = kurzarbeitKeinAntragBegruendung;
+	}
+
+	public @Nullable String getKurzarbeitSonstiges() {
+		return kurzarbeitSonstiges;
+	}
+
+	public void setKurzarbeitSonstiges(@Nullable String kurzarbeitSonstiges) {
+		this.kurzarbeitSonstiges = kurzarbeitSonstiges;
+	}
+
+	public @Nullable Boolean getCoronaErwerbsersatzBeantragt() {
+		return coronaErwerbsersatzBeantragt;
+	}
+
+	public void setCoronaErwerbsersatzBeantragt(@Nullable Boolean coronaErwerbsersatzBeantragt) {
+		this.coronaErwerbsersatzBeantragt = coronaErwerbsersatzBeantragt;
+	}
+
+	public @Nullable BigDecimal getCoronaErwerbsersatzBetrag() {
+		return coronaErwerbsersatzBetrag;
+	}
+
+	public void setCoronaErwerbsersatzBetrag(@Nullable BigDecimal coronaErwerbsersatzBetrag) {
+		this.coronaErwerbsersatzBetrag = coronaErwerbsersatzBetrag;
+	}
+
+	public @Nullable Boolean getCoronaErwerbsersatzDefinitivVerfuegt() {
+		return coronaErwerbsersatzDefinitivVerfuegt;
+	}
+
+	public void setCoronaErwerbsersatzDefinitivVerfuegt(@Nullable Boolean coronaErwerbsersatzDefinitivVerfuegt) {
+		this.coronaErwerbsersatzDefinitivVerfuegt = coronaErwerbsersatzDefinitivVerfuegt;
+	}
+
+	public @Nullable String getCoronaErwerbsersatzKeinAntragBegruendung() {
+		return coronaErwerbsersatzKeinAntragBegruendung;
+	}
+
+	public void setCoronaErwerbsersatzKeinAntragBegruendung(@Nullable String coronaErwerbsersatzKeinAntragBegruendung) {
+		this.coronaErwerbsersatzKeinAntragBegruendung = coronaErwerbsersatzKeinAntragBegruendung;
+	}
+
+	public @Nullable String getCoronaErwerbsersatzSonstiges() {
+		return coronaErwerbsersatzSonstiges;
+	}
+
+	public void setCoronaErwerbsersatzSonstiges(@Nullable String coronaErwerbsersatzSonstiges) {
+		this.coronaErwerbsersatzSonstiges = coronaErwerbsersatzSonstiges;
+	}
+
+	@Nullable
+	public String getBemerkungFuerVerfuegung() {
+		return bemerkungFuerVerfuegung;
+	}
+
+	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
+		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
+	}
+
 	public boolean isStufe1ZahlungJetztAusgeloest() {
 		return stufe1ZahlungJetztAusgeloest;
 	}
@@ -364,6 +627,33 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
 	}
 
+	@Nullable
+	public BigDecimal getStufe2VoraussichtlicheBetrag() {
+		return stufe2VoraussichtlicheBetrag;
+	}
+
+	public void setStufe2VoraussichtlicheBetrag(@Nullable BigDecimal stufe2VoraussichtlicheBetrag) {
+		this.stufe2VoraussichtlicheBetrag = stufe2VoraussichtlicheBetrag;
+	}
+
+	@Nonnull
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	@Nonnull
+	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	public boolean hasUncheckedDocuments() {
+		return uncheckedDocuments;
+	}
+
+	public void setUncheckedDocuments(boolean uncheckedDocuments) {
+		this.uncheckedDocuments = uncheckedDocuments;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -377,13 +667,13 @@ public class RueckforderungFormular extends AbstractEntity {
 			return false;
 		}
 		final RueckforderungFormular otherRueckforderungFormular = (RueckforderungFormular) other;
-		return this.status.equals(otherRueckforderungFormular.getStatus()) &&
+		return this.status == otherRueckforderungFormular.getStatus() &&
 			this.getInstitutionStammdaten().getId().equals(otherRueckforderungFormular.getInstitutionStammdaten().getId());
 	}
 
 	private boolean isAuszuzahlenStufe1() {
 		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null
-			&& !status.equals(RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH);
+			&& status != RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH;
 	}
 
 	private boolean isAuszuzahlenStufe2() {
@@ -399,5 +689,116 @@ public class RueckforderungFormular extends AbstractEntity {
 			this.stufe2VerfuegungAusbezahltAm = LocalDateTime.now();
 			this.stufe2ZahlungJetztAusgeloest = true;
 		}
+	}
+
+	private boolean isPrivateInstitution() {
+		return RueckforderungInstitutionTyp.PRIVAT == getInstitutionTyp();
+	}
+
+	/**
+	 * Berechnet den Betrag fuer die Freigabe Stufe 1
+	 */
+	@Nonnull
+	public BigDecimal calculateFreigabeBetragStufe1() {
+		BigDecimal freigabeBetrag;
+		if (getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+			Objects.requireNonNull(getStufe1KantonKostenuebernahmeAnzahlTage());
+			freigabeBetrag = getStufe1KantonKostenuebernahmeAnzahlTage();
+		} else {
+			Objects.requireNonNull(getStufe1KantonKostenuebernahmeAnzahlStunden());
+			freigabeBetrag = getStufe1KantonKostenuebernahmeAnzahlStunden();
+		}
+		Objects.requireNonNull(getStufe1KantonKostenuebernahmeBetreuung());
+		return MathUtil.DEFAULT.add(freigabeBetrag, getStufe1KantonKostenuebernahmeBetreuung());
+	}
+
+	/**
+	 * Berechnet den Betrag fuer die Freigabe Stufe 2, je nachdem ob es eine
+	 * private oder eine oeffentliche Institution ist.
+	 */
+	@Nonnull
+	public BigDecimal calculateFreigabeBetragStufe2() {
+		Objects.requireNonNull(getInstitutionTyp());
+
+		// (1) Oeffentlich
+		if (!isPrivateInstitution()) {
+			BigDecimal freigabeBetrag;
+			if (getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+				Objects.requireNonNull(getStufe2KantonKostenuebernahmeAnzahlTage());
+				freigabeBetrag = getStufe2KantonKostenuebernahmeAnzahlTage();
+			} else {
+				Objects.requireNonNull(getStufe2KantonKostenuebernahmeAnzahlStunden());
+				freigabeBetrag = getStufe2KantonKostenuebernahmeAnzahlStunden();
+			}
+			Objects.requireNonNull(getStufe2KantonKostenuebernahmeBetreuung());
+			BigDecimal result = MathUtil.DEFAULT.add(freigabeBetrag, getStufe2KantonKostenuebernahmeBetreuung());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
+			return MathUtil.roundToFrankenRappen(result);
+		}
+
+		// (2) Privat
+		Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
+		Objects.requireNonNull(getKurzarbeitBeantragt());
+
+		// (2.1) Privat mit Kurzarbeit
+		if (getKurzarbeitBeantragt()) {
+			// EntgangeBeitraege - bereits erhaltene Kurzarbeit - evtl. bereits erhaltene Corona Erwerbsersatz
+			Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
+			Objects.requireNonNull(getKurzarbeitBetrag());
+			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
+				getBetragEntgangeneElternbeitraege(),
+				getKurzarbeitBetrag(),
+				getCoronaErwerbsersatzBetrag());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
+			return MathUtil.roundToFrankenRappen(result);
+		}
+
+		// (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
+		if (getAnzahlNichtAngeboteneEinheiten() == null || !MathUtil.isPositive(getAnzahlNichtAngeboteneEinheiten())) {
+			// Keine nicht-angebotenen Tage
+			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
+				getBetragEntgangeneElternbeitraege(),
+				getCoronaErwerbsersatzBetrag());
+			result = MathUtil.minimum(result, BigDecimal.ZERO);
+			return MathUtil.roundToFrankenRappen(result);
+		}
+		// (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
+		BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
+			getBetragEntgangeneElternbeitraege(),
+			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
+			getCoronaErwerbsersatzBetrag())
+			.add(getAnzahlNichtAngeboteneEinheiten());
+		result = MathUtil.minimum(result, BigDecimal.ZERO);
+		return MathUtil.roundToFrankenRappen(result);
+	}
+
+	/**
+	 * Gibt das Frist-Datum zuruck, das tatsaechlich verwendet werden soll, also entweder das
+	 * ueberschrieben oder den Default
+	 */
+	@Nonnull
+	public LocalDate getRelevantEinreichungsfrist() {
+		if (isPrivateInstitution() && getExtendedEinreichefrist() != null) {
+			return getExtendedEinreichefrist();
+		}
+		return isPrivateInstitution() ? einreichungsfristPrivatStufe2 : einreichungsfristOeffentlichStufe2;
+	}
+
+	/**
+	 * Der Prozess ist beendet, wenn entweder gar keine Kurzarbeit beantragt wurde, oder diese bereits definitiv verfuegt ist.
+	 */
+	public boolean isKurzarbeitProzessBeendet() {
+		return getKurzarbeitBeantragt() == null
+			|| !getKurzarbeitBeantragt()
+			|| (getKurzarbeitBeantragt() && getKurzarbeitDefinitivVerfuegt() != null && getKurzarbeitDefinitivVerfuegt());
+	}
+
+	/**
+	 * Der Prozess ist beendet, wenn entweder gar kein CoronaErwerbsersatz beantragt wurde, oder dieser bereits definitiv verfuegt ist.
+	 */
+	public boolean isCoronaErwerbsersatzProzessBeendet() {
+		return getCoronaErwerbsersatzBeantragt() == null
+			|| !getCoronaErwerbsersatzBeantragt()
+			|| (getCoronaErwerbsersatzBeantragt() && getCoronaErwerbsersatzDefinitivVerfuegt() != null && getCoronaErwerbsersatzDefinitivVerfuegt());
 	}
 }

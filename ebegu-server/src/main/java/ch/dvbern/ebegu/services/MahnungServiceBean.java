@@ -28,8 +28,6 @@ import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -62,21 +60,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer Mahnungen
  */
 @SuppressWarnings("OverlyBroadCatchBlock")
 @Stateless
 @Local(MahnungService.class)
-@PermitAll
 public class MahnungServiceBean extends AbstractBaseService implements MahnungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MahnungServiceBean.class.getSimpleName());
@@ -107,7 +96,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Mahnung createMahnung(@Nonnull Mahnung mahnung) {
 		Objects.requireNonNull(mahnung);
 		// Sicherstellen, dass keine offene Mahnung desselben Typs schon existiert
@@ -142,7 +130,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<Mahnung> findMahnung(@Nonnull String mahnungId) {
 		Objects.requireNonNull(mahnungId, "mahnungId muss gesetzt sein");
 		Mahnung mahnung = persistence.find(Mahnung.class, mahnungId);
@@ -154,9 +141,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Collection<Mahnung> findMahnungenForGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorization(gesuch);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mahnung> query = cb.createQuery(Mahnung.class);
 		Root<Mahnung> root = query.from(Mahnung.class);
@@ -164,12 +149,13 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 		Predicate prediateGesuch = cb.equal(root.get(Mahnung_.gesuch), gesuch);
 		query.where(prediateGesuch);
 		query.orderBy(cb.asc(root.get(AbstractEntity_.timestampErstellt)));
-		return persistence.getCriteriaResults(query);
+		final List<Mahnung> mahnungen = persistence.getCriteriaResults(query);
+		mahnungen.forEach(mahnung -> authorizer.checkReadAuthorization(mahnung));
+		return mahnungen;
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Gesuch mahnlaufBeenden(@Nonnull Gesuch gesuch) {
 		gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		gesuch.setDokumenteHochgeladen(Boolean.FALSE);
@@ -185,7 +171,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public String getInitialeBemerkungen(
 		@Nonnull Gesuch gesuch
 	) {
@@ -215,7 +200,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void fristAblaufTimer() {
 		// Es muessen alle ueberprueft werden, die noch aktiv sind und deren Ablaufdatum < NOW liegt
@@ -270,7 +254,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@PermitAll
 	public Optional<Mahnung> findAktiveErstMahnung(Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
 		final CriteriaQuery<Mahnung> query = createQueryNotAbgeschlosseneMahnung(gesuch, MahnungTyp.ERSTE_MAHNUNG);
@@ -280,10 +263,10 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeAllMahnungenFromGesuch(Gesuch gesuch) {
 		Collection<Mahnung> mahnungenFromGesuch = findMahnungenForGesuch(gesuch);
 		for (Mahnung mahnung : mahnungenFromGesuch) {
+			authorizer.checkWriteAuthorization(mahnung);
 			persistence.remove(Mahnung.class, mahnung.getId());
 		}
 	}

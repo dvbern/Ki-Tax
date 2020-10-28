@@ -44,10 +44,6 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
-	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Kita TAGE
-	// 100% = 20 days => 1% = 0.2 days
-	public static final BigDecimal MULTIPLIER_KITA = MathUtil.DEFAULT.fromNullSafe(0.2);
-
 	public KitaKitaxRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
@@ -61,16 +57,20 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 
+		Objects.requireNonNull(oeffnungszeiten);
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
-		if (!input.isBetreuungInGemeinde()) {
+		if (!input.isBetreuungInGemeinde() && input.getBetreuungspensumProzent().doubleValue() > 0) {
+			// Wenn die Betreuung zu diesem Zeitpunkt schon beendet ist, kommt hier FALSE (es gibt ja
+			// keine Betreuung in der Gemeinde zu diesem Zeitpunkt). In diesem Fall darf aber der Anspruch
+			// nicht 0 gesetzt werden, da sonst der Restanspruch falsch berechnet wird!
+			// Daher nur 0 setzen, wenn tatsaechlich noch eine Betreuung vorhanden ist (die nicht in der
+			// Gemeinde ist)
 			input.setAnspruchspensumProzent(0);
 			// Die Bemerkung wollen wir nur setzen, wenn es ueberhaupt eine Betreuung gibt zu diesem Zeitpunkt
 			// Das Flag betreuungInBern ist logischerweise auf der Betreuung, und in Zeitabschnitten ohne Betreuung
 			// defaultmaessig false!
-			if (input.getBetreuungspensumProzent().doubleValue() > 0) {
-				input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
-			}
+			input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
 		}
 
 		// Benoetigte Daten
@@ -136,7 +136,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal verguenstigungIntervall = vollkostenIntervall.subtract(elternbeitragIntervall);
 
 		// Resultat erstellen
-		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
+		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall, anteilMonat);
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
 		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
@@ -158,8 +158,10 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		@Nonnull BGCalculationInput input,
 		@Nonnull BigDecimal vollkostenIntervall,
 		@Nonnull BigDecimal verguenstigungIntervall,
-		@Nonnull BigDecimal elternbeitragIntervall
+		@Nonnull BigDecimal elternbeitragIntervall,
+		@Nonnull BigDecimal anteilMonat
 	) {
+		Objects.requireNonNull(oeffnungszeiten);
 		// Resultat erstellen und benoetigte Daten aus Input kopieren
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
@@ -185,9 +187,9 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BigDecimal multiplierAnspruch =	EXACT.divide(EXACT.from(result.getAnspruchspensumProzent()), BigDecimal.valueOf(100));
 		BigDecimal multiplierBgPensum = EXACT.divide(result.getBgPensumProzent(), BigDecimal.valueOf(100));
 
-		result.setBetreuungspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierPensum));
-		result.setAnspruchspensumZeiteinheit(EXACT.multiply(tageProMonat, multiplierAnspruch));
-		result.setBgPensumZeiteinheit(EXACT.multiply(tageProMonat, multiplierBgPensum));
+		result.setBetreuungspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierPensum, anteilMonat));
+		result.setAnspruchspensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierAnspruch, anteilMonat));
+		result.setBgPensumZeiteinheit(EXACT.multiplyNullSafe(tageProMonat, multiplierBgPensum, anteilMonat));
 
 		return result;
 	}

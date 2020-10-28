@@ -19,13 +19,13 @@ package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -39,6 +39,8 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.BfsGemeinde_;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Einstellung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
@@ -48,27 +50,19 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -76,7 +70,6 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(GemeindeService.class)
-@PermitAll
 public class GemeindeServiceBean extends AbstractBaseService implements GemeindeService {
 
 	@Inject
@@ -102,7 +95,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde) {
 		requireNonNull(gemeinde);
 		authorizer.checkWriteAuthorization(gemeinde);
@@ -115,7 +107,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
 		Optional<Gemeinde> gemeindeOpt =
 			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, gemeinde.getName(), Gemeinde_.name);
@@ -221,7 +212,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId) {
 		requireNonNull(gemeindeId, "Gemeinde id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -238,9 +228,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		authorizer.checkWriteAuthorization(stammdaten.getGemeinde());
@@ -356,7 +343,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void updateAngebotBG(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotBG(value);
 		persistence.merge(gemeinde);
@@ -367,7 +353,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotTS(value);
 		persistence.merge(gemeinde);
@@ -378,7 +363,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotFI(value);
 		persistence.merge(gemeinde);
@@ -440,9 +424,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdatenGesuchsperiode uploadGemeindeGesuchsperiodeDokument(
 		@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId,
@@ -476,9 +457,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER })
 	public byte[] downloadGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache,
 		@Nonnull DokumentTyp dokumentTyp) {
@@ -513,7 +491,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
 	public Collection<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		return
 			criteriaQueryHelper.getEntitiesByAttribute(GemeindeStammdatenGesuchsperiode.class, gesuchsperiode,
@@ -558,9 +535,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
-		SACHBEARBEITER_GEMEINDE,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdatenGesuchsperiode removeGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
@@ -590,7 +564,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@PermitAll
 	public boolean existGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
@@ -619,5 +592,44 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 				persistence.merge(newGemeindeStammdatenGesuchsperiode);
 			}
 		);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getGemeindenWithMahlzeitenverguenstigungForBenutzer() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Einstellung> root = query.from(Einstellung.class);
+		List<Predicate> predicatesToUse = new ArrayList<>();
+
+		// Wir suchen alle Einstellungen der Gemeinden, fuer die ich berechtigt bin
+		// und die die Mahlzeitenverguenstigungen eingeschaltet haben
+		// Die Gesuchsperiode ist egal: Auch fuer bereits vergangene Gesuchsperioden koennen
+		// noch Mahlzeitenverguenstigungen ausbezahlt werden!
+
+		Predicate predicateKey = cb.equal(root.get(Einstellung_.key), EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+		predicatesToUse.add(predicateKey);
+
+		Predicate predicateValue = cb.equal(root.get(Einstellung_.value), Boolean.TRUE.toString());
+		predicatesToUse.add(predicateValue);
+
+		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			// Berechtigte Gemeinden im Sinne von "zustaendig fuer"
+			Set<Gemeinde> gemeindenBerechtigt = principalBean.getBenutzer().extractGemeindenForUser();
+			//wenn der Benutzer ist fuer keine Gemeinde Berechtigt gibt man eine Empty Liste zurueck
+			// in kann keine empty Collection als Parameter nehmen sonst => Exception
+			if(gemeindenBerechtigt.isEmpty()){
+				return Collections.emptySet();
+			}
+			// Die Gemeinde muss nur ueberprueft werden, wenn es kein Superadmin ist
+			Predicate predicateGemeinde = root.get(Einstellung_.gemeinde).in(gemeindenBerechtigt);
+			predicatesToUse.add(predicateGemeinde);
+		}
+
+		query.distinct(true); // Jede Gemeinde nur einmal, auch wenn in verschiedenen GPs Mahlzeitenverguenstigungen
+		query.select(root.get(Einstellung_.gemeinde));
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
+		return persistence.getCriteriaResults(query);
 	}
 }

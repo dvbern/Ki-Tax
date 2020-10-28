@@ -15,6 +15,7 @@
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
 import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -38,16 +39,16 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/${encodeURIComponent(gemeindeId)}`);
+    public getBenutzerBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/BgOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
     /**
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerTsOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/${encodeURIComponent(gemeindeId)}`);
+    public getBenutzerTsOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/TsOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
     /**
@@ -62,35 +63,41 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getAllBenutzerBgOrGemeinde(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/all`);
+    public getAllBenutzerBgOrGemeinde(): IPromise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/BgOrGemeinde/all`);
     }
 
     /**
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getAllBenutzerTsOrGemeinde(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/all`);
+    public getAllBenutzerTsOrGemeinde(): IPromise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/TsOrGemeinde/all`);
     }
 
     /**
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG, Admin_BG, Sachbearbeiter_TS, Admin_TS
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getAllBenutzerBgTsOrGemeinde(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/BgTsOrGemeinde/all`);
+    public getAllBenutzerBgTsOrGemeinde(): IPromise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/BgTsOrGemeinde/all`);
     }
 
-    public getAllGesuchsteller(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/gesuchsteller`);
+    public getAllGesuchsteller(): IPromise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/gesuchsteller`);
+    }
+
+    private getBenutzerNoDetail(url: string): IPromise<TSBenutzerNoDetails[]> {
+        return this.$http.get(url).then((response: any) => {
+            return this.ebeguRestUtil.parseUserNoDetailsList(response.data);
+        });
     }
 
     private getBenutzer(url: string): IPromise<TSBenutzer[]> {
-        return this.$http.get(url).then((response: any) => {
-            this.$log.debug('PARSING benutzer REST array object', response.data);
-            return this.ebeguRestUtil.parseUserList(response.data);
-        });
+            return this.$http.get(url).then((response: any) => {
+                this.$log.debug('PARSING benutzer REST array object', response.data);
+                return this.ebeguRestUtil.parseUserList(response.data);
+            });
     }
 
     private getSingleBenutzer(url: string): IPromise<TSBenutzer> {
@@ -112,10 +119,6 @@ export class BenutzerRS implements IEntityRS {
 
     public findBenutzer(username: string): IPromise<TSBenutzer> {
         return this.getSingleBenutzer(`${this.serviceURL}/username/${encodeURIComponent(username)}`);
-    }
-
-    public findBenutzerByEmail(email: string): IPromise<TSBenutzer | undefined> {
-        return this.getSingleBenutzer(`${this.serviceURL}/email/${encodeURIComponent(email)}`);
     }
 
     public inactivateBenutzer(user: TSBenutzer): IPromise<TSBenutzer> {
@@ -171,5 +174,9 @@ export class BenutzerRS implements IEntityRS {
             .then((response: any) => {
                 return response.data;
             });
+    }
+
+    public deleteExternalUuidForBenutzer(user: TSBenutzer): IHttpPromise<any> {
+        return this.$http.put(`${this.serviceURL}/reset/${user.username}`, {});
     }
 }

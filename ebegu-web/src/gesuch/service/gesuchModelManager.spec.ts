@@ -31,7 +31,7 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAntragStatusHistory} from '../../models/TSAntragStatusHistory';
-import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../models/TSBenutzerNoDetails';
 import {TSBetreuung} from '../../models/TSBetreuung';
 import {TSDossier} from '../../models/TSDossier';
 import {TSGesuch} from '../../models/TSGesuch';
@@ -173,7 +173,7 @@ describe('gesuchModelManager', () => {
                     spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
                     spyOn(dossierRS, 'setVerantwortlicherBG')
                         .and.returnValue($q.resolve(gesuch.dossier) as any);
-                    const user = new TSBenutzer('Emilianito', 'Camacho');
+                    const user = new TSBenutzerNoDetails('Emilianito', 'Camacho');
                     gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
                     scope.$apply();
                     expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
@@ -258,7 +258,7 @@ describe('gesuchModelManager', () => {
                     const verfuegung = new TSVerfuegung();
                     spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
 
-                    gesuchModelManager.saveVerfuegung(false, 'bemerkungen');
+                    gesuchModelManager.saveVerfuegung(false, false, 'bemerkungen');
                     scope.$apply();
 
                     expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);

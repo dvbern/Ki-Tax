@@ -52,7 +52,7 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
 import {TSAdresseContainer} from '../../models/TSAdresseContainer';
-import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBenutzerNoDetails} from '../../models/TSBenutzerNoDetails';
 import {TSBetreuung} from '../../models/TSBetreuung';
 import {TSDossier} from '../../models/TSDossier';
 import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
@@ -1099,7 +1099,7 @@ export class GesuchModelManager {
     /**
      * Sets the current user as VerantwortlicherTS and saves it in the DB
      */
-    public setUserAsFallVerantwortlicherTS(user: TSBenutzer): void {
+    public setUserAsFallVerantwortlicherTS(user: TSBenutzerNoDetails): void {
         if (!(this.gesuch && this.gesuch.dossier)) {
             return;
         }
@@ -1113,7 +1113,7 @@ export class GesuchModelManager {
     /**
      * Sets the current user as VerantwortlicherBG and saves it in the DB
      */
-    public setUserAsFallVerantwortlicherBG(user: TSBenutzer): void {
+    public setUserAsFallVerantwortlicherBG(user: TSBenutzerNoDetails): void {
         if (!this.gesuch || !this.gesuch.dossier || !this.gesuch.dossier.id) {
             return;
         }
@@ -1123,11 +1123,11 @@ export class GesuchModelManager {
             });
     }
 
-    public getFallVerantwortlicherBG(): TSBenutzer {
+    public getFallVerantwortlicherBG(): TSBenutzerNoDetails {
         return this.gesuch && this.gesuch.dossier ? this.gesuch.dossier.getHauptverantwortlicher() : undefined;
     }
 
-    public getFallVerantwortlicherTS(): TSBenutzer {
+    public getFallVerantwortlicherTS(): TSBenutzerNoDetails {
         return this.gesuch && this.gesuch.dossier ? this.gesuch.dossier.verantwortlicherTS : undefined;
     }
 
@@ -1176,14 +1176,15 @@ export class GesuchModelManager {
 
     }
 
-    public saveVerfuegung(ignorieren: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
+    public saveVerfuegung(ignorieren: boolean, ignorierenMahlzeiten: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
         const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
             manuelleBemerkungen,
             this.gesuch.id,
             this.getBetreuungToWorkWith().id,
-            ignorieren)
-            .then((response: TSVerfuegung) => {
+            ignorieren,
+            ignorierenMahlzeiten
+        ).then((response: TSVerfuegung) => {
                 this.setVerfuegenToWorkWith(response);
                 this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
                 this.calculateGesuchStatusVerfuegt();
@@ -1266,8 +1267,7 @@ export class GesuchModelManager {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT
-                    && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+                if (betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT

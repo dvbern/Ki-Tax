@@ -49,14 +49,14 @@ public interface BetreuungService {
 	 * Bean validation wird eingeschaltet
 	 */
 	@Nonnull
-	AnmeldungTagesschule saveAnmeldungTagesschule(@Valid @Nonnull AnmeldungTagesschule anmeldungTagesschule, @Nonnull Boolean isAbwesenheit);
+	AnmeldungTagesschule saveAnmeldungTagesschule(@Valid @Nonnull AnmeldungTagesschule anmeldungTagesschule);
 
 	/**
 	 * Speichert die AnmeldungFerieninsel neu in der DB falls der Key noch nicht existiert. Sonst wird die existierende AnmeldungFerieninsel aktualisiert
 	 * Bean validation wird eingeschaltet
 	 */
 	@Nonnull
-	AnmeldungFerieninsel saveAnmeldungFerieninsel(@Valid @Nonnull AnmeldungFerieninsel anmeldungFerieninsel, @Nonnull Boolean isAbwesenheit);
+	AnmeldungFerieninsel saveAnmeldungFerieninsel(@Valid @Nonnull AnmeldungFerieninsel anmeldungFerieninsel);
 
 	/**
 	 * Setzt die Betreuungsplatzanfrage auf ABGEWIESEN und sendet dem Gesuchsteller eine E-Mail
@@ -135,10 +135,13 @@ public interface BetreuungService {
 	List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
 
 	/**
+	 * Wenn onlyGueltig = true:
 	 * Gibt die aktuell gültige Betreuung für die übergebene BG Nummer zurück (z.B. 18.000116.1.2)
 	 * Achtung: Diese kann sich auf einem noch nicht verfügten Gesuch befinden! (VERFUEGEN)
+	 * Wenn onlyGueltig = false:
+	 * return auch die Betreuung in andere Status (Warten Z.B.)
 	 */
-	Optional<Betreuung> findGueltigeBetreuungByBGNummer(@Nonnull String bgNummer);
+	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, @Nonnull boolean onlyGueltig);
 
 	/**
 	 * @param key PK (id) der Betreuung

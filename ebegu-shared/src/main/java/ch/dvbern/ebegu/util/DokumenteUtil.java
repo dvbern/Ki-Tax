@@ -129,6 +129,12 @@ public final class DokumenteUtil {
 		case ANMELDEBESTAETIGUNGOHNETARIF:
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, locale,
 				identificationNumber);
+		case NOTRECHT_PROVISORISCHE_VERFUEGUNG:
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
+				locale, identificationNumber);
+		case NOTRECHT_DEFINITIVE_VERFUEGUNG:
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
+				locale, identificationNumber);
 		default:
 			return "file.pdf";
 		}

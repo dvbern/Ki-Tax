@@ -78,6 +78,10 @@
     label.long-label {
         white-space: nowrap;
     }
+
+    label.bold-label {
+        font-weight: bold;
+    }
 }
 
 
@@ -87,5 +91,25 @@
     font-weight: initial;
     position: absolute;
     right: 15px;
+}
+
+.flexbreak {
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    button {
+        margin-bottom: 0.75em;
+        width: auto;
+    }
+}
+
+.btn-link.link-underline > span {
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.1rem;
+    line-height: 2rem;
 }
 

@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
 import javax.ejb.EJBAccessException;
@@ -67,20 +66,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.BETRAG_PRO_KIND;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_FROM_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_TO_PARAM;
@@ -98,7 +83,6 @@ import static ch.dvbern.ebegu.enums.WorkJobConstants.TEXT;
  */
 @Stateless
 @Local(WorkjobService.class)
-@RolesAllowed(UserRoleName.SUPER_ADMIN)
 public class WorkjobServiceBean extends AbstractBaseService implements WorkjobService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkjobServiceBean.class.getSimpleName());
@@ -134,8 +118,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Workjob findWorkjobByExecutionId(@Nonnull final Long executionId) {
 
 		final Collection<Workjob> entitiesByAttribute = criteriaQueryHelper.getEntitiesByAttribute(Workjob.class, executionId, Workjob_.executionId);
@@ -148,8 +130,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Workjob createNewReporting(
 		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,
@@ -181,8 +161,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	private Workjob createNewReporting(
 		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,
@@ -246,9 +224,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		SACHBEARBEITER_BG, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE, REVISOR })
 	public Workjob createNewReporting(
 		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,
@@ -273,8 +248,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlage, boolean doSave, @Nonnull BigDecimal betragProKind,
 		@Nonnull Locale locale) {
 		return createNewReporting(
@@ -296,8 +269,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Workjob createNewReporting(
 		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,
@@ -357,8 +328,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<Workjob> findWorkjobs(@Nonnull String startingUserName, @Nonnull Set<BatchJobStatus> statesToSearch) {
 		Objects.requireNonNull(startingUserName, "username to search must be set");
 		Objects.requireNonNull(statesToSearch, "statesToSearch  must be set");
@@ -384,7 +353,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public List<Workjob> findUnfinishedWorkjobs() {
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -410,8 +378,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void changeStateOfWorkjob(long executionId, @Nonnull BatchJobStatus status) {
 		persistence.getEntityManager().createNamedQuery(Workjob.Q_WORK_JOB_STATE_UPDATE)
 			.setParameter("exId", executionId)
@@ -420,8 +386,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void addResultToWorkjob(@Nonnull String workjobID, @Nonnull String resultData) {
 		Objects.requireNonNull(resultData);
 
@@ -435,7 +399,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeWorkjob(Workjob workjob) {
 		this.persistence.remove(workjob);
 

@@ -150,7 +150,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	 */
 	private void checkReadAuthorizationGesuchNotAllowed(Gesuch gesuch, String message) {
 		try {
-			authorizer.checkReadAuthorizationGesuchId(gesuch.getId());
+			authorizer.checkReadAuthorization(gesuch);
 			Assert.fail(message);
 		} catch (EJBAccessException e) {
 			// nop
@@ -164,7 +164,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	 */
 	private void checkReadAuthorizationGesuchAllowed(Gesuch gesuch, String message) {
 		try {
-			authorizer.checkReadAuthorizationGesuchId(gesuch.getId());
+			authorizer.checkReadAuthorization(gesuch);
 
 		} catch(Exception e) {
 			Assert.fail(message);
@@ -204,7 +204,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	 */
 	private void checkReadAuthorizationFallAllowed(Gesuch gesuch, @Nonnull String message) {
 		try {
-			authorizer.checkReadAuthorizationFall(gesuch.getFall().getId());
+			authorizer.checkReadAuthorizationFall(gesuch.getFall());
 
 		} catch(Exception e) {
 			Assert.fail(message);
@@ -216,7 +216,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	 */
 	private void checkReadAuthorizationFallNotAllowed(Gesuch gesuch, @Nonnull String message) {
 		try {
-			authorizer.checkReadAuthorizationFall(gesuch.getFall().getId());
+			authorizer.checkReadAuthorizationFall(gesuch.getFall());
 			Assert.fail(message);
 
 		} catch(EJBAccessException | EJBTransactionRolledbackException e) {

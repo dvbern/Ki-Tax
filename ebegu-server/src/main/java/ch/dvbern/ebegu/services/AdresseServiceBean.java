@@ -17,28 +17,21 @@ package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer Adresse
@@ -53,9 +46,13 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private GeoadminSearchService geoadminSearchService;
+
+	private static final int WAIT_MILLISECONDS_BEFORE_REQUEST = 200;
+
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Adresse createAdresse(@Nonnull Adresse adresse) {
 		Objects.requireNonNull(adresse);
 		return persistence.persist(adresse);
@@ -63,7 +60,6 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Adresse updateAdresse(@Nonnull Adresse adresse) {
 		Objects.requireNonNull(adresse);
 		return persistence.merge(adresse);
@@ -71,7 +67,6 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Nonnull
 	@Override
-	@PermitAll
 	public Optional<Adresse> findAdresse(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Adresse a = persistence.find(Adresse.class, id);
@@ -80,8 +75,37 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Collection<Adresse> getAllAdressen() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Adresse.class));
+	}
+
+	@Override
+	public boolean updateGemeindeAndBFS(@Nonnull Adresse adresse) {
+		// für ein paar Millisekunden warten, um die GeoAdmin Api nicht mit Requests zu überladen
+		try {
+			TimeUnit.MILLISECONDS.sleep(WAIT_MILLISECONDS_BEFORE_REQUEST);
+		} catch (InterruptedException e) {
+			throw new EbeguRuntimeException("updateGemeindeAndBFS", "Program Interrupted", e);
+		}
+		List<JaxWohnadresse> wohnadresseList = geoadminSearchService.findWohnadressenByStrasseAndPlz(
+			adresse.getStrasse(),
+			adresse.getHausnummer(),
+			adresse.getPlz());
+
+		String originalGemeinde = adresse.getGemeinde();
+		Long originalBfs = adresse.getBfsNummer();
+
+		String newGemeinde = null;
+		Long newBfs = null;
+		if (!wohnadresseList.isEmpty()) {
+			// Gemeinde und BFS Nummer vom besten Resultat übernehmen (absteigend sortiert)
+			newGemeinde = wohnadresseList.get(0).getGemeinde();
+			newBfs = wohnadresseList.get(0).getGemeindeBfsNr();
+		}
+
+		adresse.setGemeinde(newGemeinde);
+		adresse.setBfsNummer(newBfs);
+
+		return !Objects.equals(originalGemeinde, newGemeinde) || !Objects.equals(originalBfs, newBfs);
 	}
 }

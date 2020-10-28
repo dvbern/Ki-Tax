@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -95,7 +96,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
 		Assert.assertNull(betreuung.getVerfuegungOrVerfuegungPreview());
-		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(
+			betreuung.extractGesuch().getId(),
+			betreuung.getId(),
+			null,
+			false,
+			false,
+			true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegungOrVerfuegungPreview(), persistedVerfuegung);
@@ -121,7 +128,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			null,
 			gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		Assert.assertEquals(65, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
+		Assert.assertEquals(61, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);
@@ -214,9 +221,11 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void findVerrechnetenVorgaengerNoVorgaenger() {
 		VerfuegungZeitabschnitt zeitabschnitt = createGesuchWithVerfuegungZeitabschnitt();
+		Assert.assertNotNull(zeitabschnitt.getVerfuegung().getBetreuung());
 
 		List<VerfuegungZeitabschnitt> zeitabschnittListe = new ArrayList<>();
 		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			zeitabschnitt,
 			zeitabschnitt.getVerfuegung().getBetreuung(),
 			zeitabschnittListe);
@@ -251,7 +260,14 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Nonnull
 	private Betreuung createAndPersistVerfuegteVerfuegung(@Nonnull Betreuung betreuung) {
 		final Verfuegung createdVerf =
-		verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
+		verfuegungService.verfuegen(
+			betreuung.extractGesuch().getId(),
+			betreuung.getId(),
+			null,
+			false,
+			false,
+			true);
+		Assert.assertNotNull(createdVerf.getBetreuung());
 		return createdVerf.getBetreuung();
 	}
 

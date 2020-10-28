@@ -24,22 +24,12 @@ import java.math.BigDecimal;
  */
 public final class RechnerRuleParameterDTO {
 
-	private boolean hasGemeindeRules = false;
 	private BigDecimal zusaetzlicherGutscheinGemeindeBetrag = BigDecimal.ZERO;
-
+	private BigDecimal zusaetzlicherBabyGutscheinBetrag = BigDecimal.ZERO;
 
 	public void reset() {
-		this.hasGemeindeRules = false;
 		this.zusaetzlicherGutscheinGemeindeBetrag = BigDecimal.ZERO;
-	}
-
-
-	public boolean isHasGemeindeRules() {
-		return hasGemeindeRules;
-	}
-
-	public void setHasGemeindeRules(boolean hasGemeindeRules) {
-		this.hasGemeindeRules = hasGemeindeRules;
+		this.zusaetzlicherBabyGutscheinBetrag = BigDecimal.ZERO;
 	}
 
 	public BigDecimal getZusaetzlicherGutscheinGemeindeBetrag() {
@@ -48,5 +38,13 @@ public final class RechnerRuleParameterDTO {
 
 	public void setZusaetzlicherGutscheinGemeindeBetrag(BigDecimal zusaetzlicherGutscheinGemeindeBetrag) {
 		this.zusaetzlicherGutscheinGemeindeBetrag = zusaetzlicherGutscheinGemeindeBetrag;
+	}
+
+	public BigDecimal getZusaetzlicherBabyGutscheinBetrag() {
+		return zusaetzlicherBabyGutscheinBetrag;
+	}
+
+	public void setZusaetzlicherBabyGutscheinBetrag(BigDecimal zusaetzlicherBabyGutscheinBetrag) {
+		this.zusaetzlicherBabyGutscheinBetrag = zusaetzlicherBabyGutscheinBetrag;
 	}
 }

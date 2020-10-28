@@ -230,6 +230,10 @@ export class EbeguUtil {
         return !data;
     }
 
+    public static roundToFiveRappen(betrag: number): number {
+        return Number((Math.ceil(betrag * 20 - 0.5) / 20).toFixed(2));
+    }
+
     private static getYear(gueltigkeit: TSDateRange): string {
         return gueltigkeit.gueltigAb.year().toString().substring(2);
     }

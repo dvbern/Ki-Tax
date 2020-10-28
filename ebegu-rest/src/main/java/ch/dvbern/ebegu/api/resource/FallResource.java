@@ -20,6 +20,9 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,12 +46,22 @@ import ch.dvbern.ebegu.services.FallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * Resource fuer Fall
  */
 @Path("falle")
 @Stateless
 @Api(description = "Resource zum Verwalten von Fällen (Familien)")
+@DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FallResource {
 
 	@Inject
@@ -63,6 +76,7 @@ public class FallResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxFall saveFall(
 		@Nonnull @NotNull @Valid JaxFall fallJAXP,
 		@Context UriInfo uriInfo,
@@ -85,6 +99,7 @@ public class FallResource {
 	@Path("/id/{fallId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxFall findFall(
 		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
 		Objects.requireNonNull(fallJAXPId.getId());
