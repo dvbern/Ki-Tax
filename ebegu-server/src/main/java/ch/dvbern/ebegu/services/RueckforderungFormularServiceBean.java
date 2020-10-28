@@ -317,17 +317,14 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		Root<RueckforderungFormular> root = query.from(RueckforderungFormular.class);
 
 		ParameterExpression<RueckforderungStatus> statusParam = cb.parameter(RueckforderungStatus.class, "status");
-		ParameterExpression<RueckforderungInstitutionTyp> institutionTypParam = cb.parameter(RueckforderungInstitutionTyp.class, "institutionTyp");
 
-		// Alle im Status BEREIT_ZUM_VERFUEGEN, die Typ PRIVAT sind und nie eine Provisorische Verfuegung hatten
+		// Alle im Status BEREIT_ZUM_VERFUEGEN, die nie eine Provisorische Verfuegung hatten
 		Predicate statusPredicate = cb.equal(root.get(RueckforderungFormular_.status), statusParam);
-		Predicate privatPredicate = cb.equal(root.get(RueckforderungFormular_.institutionTyp), institutionTypParam);
 
-		query.where(statusPredicate, privatPredicate);
+		query.where(statusPredicate);
 
 		TypedQuery<RueckforderungFormular> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(statusParam, RueckforderungStatus.BEREIT_ZUM_VERFUEGEN);
-		q.setParameter(institutionTypParam, RueckforderungInstitutionTyp.PRIVAT);
 		return q.getResultList();
 	}
 

@@ -35,11 +35,11 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 
 	@NotNull
 	@Column(nullable = false)
-	private Integer monatlicheHauptmahlzeiten = 0;
+	private BigDecimal monatlicheHauptmahlzeiten = BigDecimal.ZERO;
 
 	@NotNull
 	@Column(nullable = false)
-	private Integer monatlicheNebenmahlzeiten = 0;
+	private BigDecimal monatlicheNebenmahlzeiten = BigDecimal.ZERO;
 
 	@NotNull
 	@Column(nullable = false)
@@ -50,20 +50,20 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 	private BigDecimal tarifProNebenmahlzeit = BigDecimal.ZERO;
 
 	@Nonnull
-	public Integer getMonatlicheHauptmahlzeiten() {
+	public BigDecimal getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
 	}
 
-	public void setMonatlicheHauptmahlzeiten(@Nonnull Integer monatlicheHauptmahlzeiten) {
+	public void setMonatlicheHauptmahlzeiten(@Nonnull BigDecimal monatlicheHauptmahlzeiten) {
 		this.monatlicheHauptmahlzeiten = monatlicheHauptmahlzeiten;
 	}
 
 	@Nonnull
-	public Integer getMonatlicheNebenmahlzeiten() {
+	public BigDecimal getMonatlicheNebenmahlzeiten() {
 		return monatlicheNebenmahlzeiten;
 	}
 
-	public void setMonatlicheNebenmahlzeiten(@Nonnull Integer monatlicheNebenmahlzeiten) {
+	public void setMonatlicheNebenmahlzeiten(@Nonnull BigDecimal monatlicheNebenmahlzeiten) {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
