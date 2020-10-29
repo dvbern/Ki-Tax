@@ -62,6 +62,15 @@ public class InstitutionClientEventConverterTest {
 		verifyPayload(event);
 	}
 
+	@Test
+	public void testModifiedEvent() {
+		InstitutionClientModifiedEvent event = converter.clientModifiedEventOf(INSTITUTION_ID, createInstitutionExternalClient());
+
+		assertThat(event, exportedEventMatcher("ClientModified"));
+
+		verifyPayload(event);
+	}
+
 	@Nonnull
 	private Matcher<ExportedEvent> exportedEventMatcher(@Nonnull String expectedType) {
 		return is(pojo(ExportedEvent.class)

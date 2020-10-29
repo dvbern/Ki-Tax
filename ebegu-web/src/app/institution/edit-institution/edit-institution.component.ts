@@ -134,8 +134,7 @@ export class EditInstitutionComponent implements OnInit {
     private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
-        this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
-        //this.initiallyAssignedClients = [...externalClients.assignedClients];
+        this.initiallyAssignedClients = [...externalClients.assignedClients];
         this.changeDetectorRef.markForCheck();
     }
 
@@ -438,5 +437,24 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.externalClients.availableClients.push(assignedClient.externalClient);
 
+    }
+
+    public getGueltigAbDate(date: moment.Moment): string {
+        if (!date || !date.isValid()) {
+            return '';
+        }
+        const formatedDate = DateUtil.momentToLocalDateFormat(date, CONSTANTS.DATE_FORMAT);
+        return `${this.translate.instant('AB')} ${formatedDate}`;
+    }
+
+    public getGueltigBisDate(date: moment.Moment): string {
+        if (!date || !date.isValid()) {
+            return '';
+        }
+        const formatedDate = DateUtil.momentToLocalDateFormat(date, CONSTANTS.DATE_FORMAT);
+        if (formatedDate !== CONSTANTS.END_OF_TIME_STRING) {
+            return `${this.translate.instant('BIS')} ${formatedDate}`;
+        }
+        return '';
     }
 }

@@ -360,8 +360,16 @@
 
                         <div class="col-sm-6">
                             <div class="form-group" *ngIf="!isTagesschule()">
-                                <dv-external-client-assignment [externalClients]="externalClients">
-                                </dv-external-client-assignment>
+                                <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
+                                <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {{assignedClient.externalClient.clientName}}
+                                            {{getGueltigAbDate(assignedClient.gueltigkeit.gueltigAb)}}
+                                            {{getGueltigBisDate(assignedClient.gueltigkeit.gueltigBis)}}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

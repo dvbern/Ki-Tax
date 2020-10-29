@@ -51,6 +51,17 @@ public class InstitutionClientEventConverter {
 	}
 
 	@Nonnull
+	public InstitutionClientModifiedEvent clientModifiedEventOf(
+		@Nonnull String institutionId,
+		@Nonnull InstitutionExternalClient client) {
+
+		InstitutionClientEventDTO dto = toInstitutionClientEventDTO(institutionId, client);
+		byte[] payload = AvroConverter.toAvroBinary(dto);
+
+		return new InstitutionClientModifiedEvent(institutionId, payload, dto.getSchema());
+	}
+
+	@Nonnull
 	private InstitutionClientEventDTO toInstitutionClientEventDTO(
 		@Nonnull String institutionId,
 		@Nonnull InstitutionExternalClient client) {
@@ -59,6 +70,8 @@ public class InstitutionClientEventConverter {
 			.setInstitutionId(institutionId)
 			.setClientName(client.getExternalClient().getClientName())
 			.setClientType(client.getExternalClient().getType().name())
+			.setGueltigAb(client.getGueltigkeit().getGueltigAb())
+			.setGueltigBis(client.getGueltigkeit().getGueltigBis())
 			.build();
 	}
 }
