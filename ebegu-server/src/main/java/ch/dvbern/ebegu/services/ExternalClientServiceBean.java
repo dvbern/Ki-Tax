@@ -61,8 +61,7 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 	}
 
 	@Override
-	public Optional<ExternalClient> findExternalClient(@Nullable String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+	public Optional<ExternalClient> findExternalClient(@Nonnull String id) {
 		ExternalClient externalClient = persistence.find(ExternalClient.class, id);
 		return Optional.ofNullable(externalClient);
 	}

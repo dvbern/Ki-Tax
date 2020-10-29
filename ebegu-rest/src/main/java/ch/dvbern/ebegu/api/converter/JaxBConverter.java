@@ -5603,8 +5603,10 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public InstitutionExternalClient insitutionExternalClientToEntity(@Nonnull final JaxInstitutionExternalClient jaxInstitutionExternalClient, Institution institution) {
 		InstitutionExternalClient institutionExternalClient = new InstitutionExternalClient();
+		String externalClientID = jaxInstitutionExternalClient.getExternalClient().getId();
+		requireNonNull(externalClientID, "Die ExternalClient Daten muessen gesetzt sein");
 		ExternalClient selectedClient =
-			externalClientService.findExternalClient(jaxInstitutionExternalClient.getExternalClient().getId()).orElseThrow(() -> new EbeguEntityNotFoundException("",
+			externalClientService.findExternalClient(externalClientID).orElseThrow(() -> new EbeguEntityNotFoundException("",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxInstitutionExternalClient.getExternalClient().getId()));
 		institutionExternalClient.setExternalClient(selectedClient);
 		institutionExternalClient.setInstitution(institution);
