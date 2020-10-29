@@ -20,10 +20,12 @@ package ch.dvbern.ebegu.dto.geoadmin;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.apache.commons.lang3.ArrayUtils;
 
 @XmlRootElement(name = "geoadminFeatureAttributes")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -48,8 +50,10 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	private long ggdenr;
 	@Nonnull
 	private String dplz4 = "";
+
+	@XmlElement(name = "plz_plz6")
 	@Nonnull
-	private String plz_plz6 = "";
+	private String plzPlz6 = "";
 	@Nonnull
 	private String dplzname = "";
 	@Nonnull
@@ -66,11 +70,11 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 
 	@Nonnull
 	public String[] getStrname() {
-		return strname;
+		return ArrayUtils.clone(strname);
 	}
 
 	public void setStrname(@Nonnull String[] strname) {
-		this.strname = strname;
+		this.strname = ArrayUtils.clone(strname);
 	}
 
 	public long getGstat() {
@@ -142,12 +146,12 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	}
 
 	@Nonnull
-	public String getPlz_plz6() {
-		return plz_plz6;
+	public String getPlzPlz6() {
+		return plzPlz6;
 	}
 
-	public void setPlz_plz6(@Nonnull String plz_plz6) {
-		this.plz_plz6 = plz_plz6;
+	public void setPlzPlz6(@Nonnull String plzPlz6) {
+		this.plzPlz6 = plzPlz6;
 	}
 
 	@Nonnull
