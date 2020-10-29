@@ -42,10 +42,10 @@
         </dependency>
 
         <dependency>
-         <groupId>com.sun.xml.ws</groupId>
-         <artifactId>jaxws-ri</artifactId>
-         <type>pom</type>
-       </dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-ri</artifactId>
+            <type>pom</type>
+        </dependency>
 
     </dependencies>
 
@@ -53,7 +53,7 @@
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                      <artifactId>jaxws-maven-plugin</artifactId>
+                <artifactId>jaxws-maven-plugin</artifactId>
                 <version>2.6</version>
                 <executions>
                     <execution>
@@ -91,8 +91,8 @@
                             <verbose>true</verbose>
                             <!-- use converter that uses UTC for its date representation instead of the local time zone-->
                             <bindingFiles>
-                               <bindingFile>${basedir}/src/main/resources/wsdl/sts/jaxb-bindings-zonedTime.xjb</bindingFile>
-                           </bindingFiles>
+                                <bindingFile>${basedir}/src/main/resources/wsdl/sts/jaxb-bindings-zonedTime.xjb</bindingFile>
+                            </bindingFiles>
                         </configuration>
                     </execution>
                 </executions>
