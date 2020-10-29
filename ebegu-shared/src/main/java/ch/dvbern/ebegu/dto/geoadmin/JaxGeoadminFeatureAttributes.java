@@ -34,7 +34,7 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	private static final long serialVersionUID = 207402652291559292L;
 
 	@Nonnull
-	private String gdename = "";
+	private String ggdename = "";
 	@Nonnull
 	private String strname1 = "";
 	private long gstat;
@@ -46,7 +46,7 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	private String ggbkr = "";
 	private long egid;
 	private long dstrid;
-	private long gdenr;
+	private long ggdenr;
 	// Datum im Format "DD.MM.YYYY"
 	@Nonnull
 	@XmlElement(name = "bgdi_created")
@@ -62,12 +62,12 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	private String deinr = "";
 
 	@Nonnull
-	public String getGdename() {
-		return gdename;
+	public String getGgdename() {
+		return ggdename;
 	}
 
-	public void setGdename(@Nonnull String gdename) {
-		this.gdename = gdename;
+	public void setGgdename(@Nonnull String ggdename) {
+		this.ggdename = ggdename;
 	}
 
 	@Nonnull
@@ -130,12 +130,12 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 		this.dstrid = dstrid;
 	}
 
-	public long getGdenr() {
-		return gdenr;
+	public long getGgdenr() {
+		return ggdenr;
 	}
 
-	public void setGdenr(long gdenr) {
-		this.gdenr = gdenr;
+	public void setGgdenr(long ggdenr) {
+		this.ggdenr = ggdenr;
 	}
 
 	@Nonnull

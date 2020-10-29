@@ -230,7 +230,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	private Optional<JaxWohnadresse> fromFeature(@Nonnull JaxGeoadminFeature feature, boolean fuzzy) {
 		JaxGeoadminFeatureAttributes attributes = feature.getAttributes();
 
-		if (StringUtils.isEmpty(attributes.getGdename())) {
+		if (StringUtils.isEmpty(attributes.getGgdename())) {
 			return Optional.empty();
 		}
 
@@ -241,8 +241,8 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 			attributes.getDeinr(),
 			attributes.getPlz4(),
 			attributes.getPlzname(),
-			attributes.getGdenr(),
-			attributes.getGdename());
+			attributes.getGgdenr(),
+			attributes.getGgdename());
 
 		return Optional.of(adresse);
 	}
