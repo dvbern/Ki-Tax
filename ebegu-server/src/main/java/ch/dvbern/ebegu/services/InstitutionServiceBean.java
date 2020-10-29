@@ -380,38 +380,36 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		String id = institution.getId();
 
 		Set<InstitutionExternalClient> existingExternalClients = institution.getInstitutionExternalClients();
-		// find out which are removed
-		HashSet<InstitutionExternalClient> removed = new HashSet<>(existingExternalClients);
-		removed.removeAll(institutionExternalClients);
-
-		removed.stream()
-			.map(client -> institutionClientEventConverter.clientRemovedEventOf(id, client))
-			.forEach(event -> exportedEvent.fire(event));
 
 		Collection<InstitutionExternalClient> newInstitutionExternalClients = new HashSet<>();
 
 		// find out which are modified and update the Gueltigkeit inside
-		if (!existingExternalClients.isEmpty() && !institutionExternalClients.isEmpty()) {
+		if (!existingExternalClients.isEmpty()) {
 			for (InstitutionExternalClient institutionExternalClient : existingExternalClients) {
-				InstitutionExternalClient modifiedInstitutionExternalClient = institutionExternalClients.stream()
+				InstitutionExternalClient existingInstitutionExternalClient = institutionExternalClients.stream()
 					.filter(institutionExternalClient1 -> institutionExternalClient1.getExternalClient()
 						.getClientName()
 						.equals(institutionExternalClient.getExternalClient().getClientName()))
 					.findAny().orElse(null);
-				if (modifiedInstitutionExternalClient != null) {
-					//set parameters inside the existing one
-					institutionExternalClient.setGueltigkeit(modifiedInstitutionExternalClient.getGueltigkeit());
-					//then add to a new collection
+				if (existingInstitutionExternalClient != null) {
+					//set parameters inside the existing one if modified and fire event
+					if (existingInstitutionExternalClient.getGueltigkeit()
+						.compareTo(institutionExternalClient.getGueltigkeit()) != 0) {
+						institutionExternalClient.setGueltigkeit(existingInstitutionExternalClient.getGueltigkeit());
+						exportedEvent.fire(institutionClientEventConverter.clientModifiedEventOf(
+							id,
+							institutionExternalClient));
+						//and delete it otherwise it will be seen as a new element later
+						institutionExternalClients.remove(existingInstitutionExternalClient);
+					}
+					//then add to the new collection
 					newInstitutionExternalClients.add(institutionExternalClient);
-					//and delete it otherwise it will be seen as a new element later
-					institutionExternalClients.remove(modifiedInstitutionExternalClient);
+				}
+				else { //it means this client was removed
+					exportedEvent.fire(institutionClientEventConverter.clientRemovedEventOf(id, institutionExternalClient));
 				}
 			}
 		}
-		//fire event for every modified clients
-		newInstitutionExternalClients.stream()
-			.map(client -> institutionClientEventConverter.clientModifiedEventOf(id, client))
-			.forEach(event -> exportedEvent.fire(event));
 
 		// find out which are added
 		HashSet<InstitutionExternalClient> added = new HashSet<>(institutionExternalClients);
