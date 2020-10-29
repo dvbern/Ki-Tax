@@ -89,8 +89,8 @@ public final class MitteilungUtil {
 		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
 
 		if (mahlzeitenverguenstigungEnabled) {
-			BigDecimal hauptmahlzeiten = BigDecimal.valueOf(pensumMitteilung.getMonatlicheHauptmahlzeiten());
-			BigDecimal nebemahlzeiten = BigDecimal.valueOf(pensumMitteilung.getMonatlicheNebenmahlzeiten());
+			BigDecimal hauptmahlzeiten = pensumMitteilung.getMonatlicheHauptmahlzeiten();
+			BigDecimal nebemahlzeiten = pensumMitteilung.getMonatlicheNebenmahlzeiten();
 
 			BigDecimal tarifHaupt = BigDecimal.ZERO;
 			if (pensumMitteilung.getTarifProHauptmahlzeit() != null) {
