@@ -1435,6 +1435,7 @@
     "ReportType_tagesschuleAnmeldungen": "Tagesschule Anmeldungen",
     "ReportType_tagesschuleRechnungsstellung": "Tagesschule Rechnungsstellung",
     "ReportType_notrecht": "Notrecht",
+    "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -2164,5 +2165,6 @@
     "BENUTZER_RESET_CONFIRMATION_TITLE": "Wollen Sie den Benutzer wirklich zurücksetzen?",
     "BENUTZER_RESET_CONFIRMATION_TEXT": "Damit wird die Verbindung zum aktuellen BE-Login Konto gelöscht",
     "BENUTZER_RESETTED_MESSAGE": "{{fullName}} wurde zurückgesetzt",
+    "MAHLZEITENVERGUENSTIGUNG": "Mahlzeitenvergünstigung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

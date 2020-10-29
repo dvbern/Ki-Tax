@@ -183,7 +183,8 @@ export class ReportAsyncRS {
 
     public getMassenversandReportExcel(auswertungVon: string, auswertungBis: string, gesuchPeriodeID: string,
                                        inklBgGesuche: boolean, inklMischGesuche: boolean, inklTsGesuche: boolean,
-                                       ohneErneuerungsgesuch: boolean, text: string): IPromise<string> {
+                                       ohneErneuerungsgesuch: boolean, text: string,
+    ): IPromise<string> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
@@ -192,7 +193,7 @@ export class ReportAsyncRS {
             inklMischGesuche,
             inklTsGesuche,
             ohneErneuerungsgesuch,
-            text
+            text,
         });
         return this.http.get(`${this.serviceURL}/excel/massenversand?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {
@@ -232,7 +233,7 @@ export class ReportAsyncRS {
     public getTagesschuleAnmeldungenReportExcel(stammdatenId: string, gesuchsperiodeId: string): IPromise<string> {
         const reportParams = this.httpParamSerializer({
             stammdatenId,
-            gesuchsperiodeId
+            gesuchsperiodeId,
         });
         return this.http
             .get(`${this.serviceURL}/excel/tagesschuleAnmeldungen?${reportParams}`, {timeout: this.reportingTimeout})
@@ -254,6 +255,20 @@ export class ReportAsyncRS {
             zahlungenAusloesen,
         });
         return this.http.get(`${this.serviceURL}/excel/notrecht?${reportParams}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public getMahlzeitenverguenstigungReportExcel(
+        auswertungVon: string,
+        auswertungBis: string
+    ): IPromise<string> {
+        const reportParams = this.httpParamSerializer({
+            auswertungVon,
+            auswertungBis,
+        });
+        return this.http.get(`${this.serviceURL}/excel/mahlzeitenverguenstigung?${reportParams}`)
             .then((response: any) => {
                 return response.data;
             });

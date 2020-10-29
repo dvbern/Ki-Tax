@@ -361,7 +361,7 @@ public final class EbeguRuleTestsHelper {
 		int pensum,
 		BigDecimal monatlicheBetreuungskosten
 	) {
-		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, 0, 0);
+		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, BigDecimal.ZERO, BigDecimal.ZERO);
 	}
 
 	public static Betreuung createBetreuungWithPensum(
@@ -369,8 +369,8 @@ public final class EbeguRuleTestsHelper {
 		BetreuungsangebotTyp angebot,
 		int pensum,
 		BigDecimal monatlicheBetreuungskosten,
-		Integer monatlicheHauptmahlzeiten,
-		Integer monatlicheNebenmahlzeiten
+		BigDecimal monatlicheHauptmahlzeiten,
+		BigDecimal monatlicheNebenmahlzeiten
 	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();

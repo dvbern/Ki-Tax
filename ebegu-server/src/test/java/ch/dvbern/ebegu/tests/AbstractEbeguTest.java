@@ -109,6 +109,7 @@ public abstract class AbstractEbeguTest {
 			.addPackages(true, "ch/dvbern/ebegu/rechner")
 			.addPackages(true, "ch/dvbern/ebegu/rules")
 			.addPackages(true, "ch/dvbern/ebegu/services")
+			.addPackages(true, "ch/dvbern/ebegu/services/reporting")
 			.addPackages(true, "ch/dvbern/ebegu/validation")
 			.addPackages(true, "ch/dvbern/ebegu/vorlagen")
 			.addPackages(true, "ch/dvbern/ebegu/tests")

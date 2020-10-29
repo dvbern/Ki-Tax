@@ -33,6 +33,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -91,6 +92,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(stammdatenByInstitution);
 	}
 
+	@Ignore
 	@Test
 	public void updateBGInsitutionenGemeinden() {
 		Assert.assertNotNull(institutionStammdatenService);
