@@ -17,7 +17,7 @@
 
 <dv-full-height-inner-padding-container>
     <form role="form"
-		  #form="ngForm"
+          #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="stammdaten"
           (ngSubmit)="onSubmit()"
@@ -225,18 +225,22 @@
                         <div *ngFor="let availableClient of externalClients.availableClients">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <mat-checkbox (change)="assignAvailableClient(availableClient)">
-                                        {{availableClient.clientName}}
-                                    </mat-checkbox>
+                                    <div class="form-group">
+                                        <mat-checkbox (change)="assignAvailableClient(availableClient)">
+                                            {{availableClient.clientName}}
+                                        </mat-checkbox>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <mat-checkbox checked="true" (change)="unassignClient(assignedClient)">
-                                        {{assignedClient.externalClient.clientName}}
-                                    </mat-checkbox>
+                                    <div class="form-group">
+                                        <mat-checkbox checked="true" (change)="unassignClient(assignedClient)">
+                                            {{assignedClient.externalClient.clientName}}
+                                        </mat-checkbox>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <input class="dv-mat-datepicker"

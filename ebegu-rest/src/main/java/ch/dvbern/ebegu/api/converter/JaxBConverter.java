@@ -5611,7 +5611,7 @@ public class JaxBConverter extends AbstractConverter {
 		institutionExternalClient.setId(new InstitutionExternalClientId(institution.getId(), selectedClient.getId()));
 
 		final LocalDate dateAb =
-			jaxInstitutionExternalClient.getGueltigAb() == null ? LocalDate.now() : jaxInstitutionExternalClient.getGueltigAb();
+			jaxInstitutionExternalClient.getGueltigAb() == null ? LocalDate.of(2000, 1, 1) : jaxInstitutionExternalClient.getGueltigAb();
 		final LocalDate dateBis =
 			jaxInstitutionExternalClient.getGueltigBis() == null ? Constants.END_OF_TIME : jaxInstitutionExternalClient.getGueltigBis();
 		institutionExternalClient.setGueltigkeit(new DateRange(dateAb, dateBis));

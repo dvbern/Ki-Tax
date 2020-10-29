@@ -134,7 +134,7 @@ export class EditInstitutionComponent implements OnInit {
     private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
-        this.initiallyAssignedClients = [...externalClients.assignedClients];
+        this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
         this.changeDetectorRef.markForCheck();
     }
 
@@ -266,8 +266,8 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private updateInstitution(updateModel: TSInstitutionUpdate): void {
-        if (!EbeguUtil.isSame(this.externalClients.assignedClients,
-            this.initiallyAssignedClients) && this.externalClients.assignedClients.length > 0) {
+        if (!this.isSameInstitutionClient(this.externalClients.assignedClients,
+            this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
             let drittanwendungen = '';
             this.externalClients.assignedClients.filter(assignedClient =>
                 this.initiallyAssignedClients.indexOf(assignedClient) < 0,
@@ -276,23 +276,28 @@ export class EditInstitutionComponent implements OnInit {
                     drittanwendungen += ', ' + assignedClient.externalClient.clientName
                     : drittanwendungen = assignedClient.externalClient.clientName,
             );
-            // show warning popup
-            const dialogConfig = new MatDialogConfig();
-            dialogConfig.data = {
-                frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
-                    NAME_DRITTANWENDUNGEN: drittanwendungen,
-                }),
-            };
-            this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
-                .subscribe(answer => {
-                        if (answer !== true) {
-                            return;
-                        }
-                        this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                            .then(stammdaten => this.setValuesAfterSave(stammdaten));
-                    },
-                    () => {
-                    });
+            // show warning popup only when added client
+            if (drittanwendungen.length > 0) {
+                const dialogConfig = new MatDialogConfig();
+                dialogConfig.data = {
+                    frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
+                        NAME_DRITTANWENDUNGEN: drittanwendungen,
+                    }),
+                };
+                this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
+                    .subscribe(answer => {
+                            if (answer !== true) {
+                                return;
+                            }
+                            this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+                                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                        },
+                        () => {
+                        });
+            } else {
+                this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+                    .then(stammdaten => this.setValuesAfterSave(stammdaten));
+            }
         } else {
             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
                 .then(stammdaten => this.setValuesAfterSave(stammdaten));
@@ -302,7 +307,7 @@ export class EditInstitutionComponent implements OnInit {
     private getExternalClientsUpdate(): TSInstitutionExternalClient[] | null {
         const assignedClients = this.externalClients.assignedClients;
 
-        if (this.isSameInstitutionClient(assignedClients, this.initiallyAssignedClients)) {
+        if (this.isSameInstitutionClient(assignedClients, this.initiallyAssignedClients, true)) {
             // no backed update necessary
             return null;
         }
@@ -314,15 +319,21 @@ export class EditInstitutionComponent implements OnInit {
      * Compares two InstitutionExternalClient array and returns TRUE when both arrays contain the same objects and
      * values
      */
-    private isSameInstitutionClient(a: TSInstitutionExternalClient[], b: TSInstitutionExternalClient[]): boolean {
+    private isSameInstitutionClient(
+        a: TSInstitutionExternalClient[],
+        b: TSInstitutionExternalClient[],
+        checkGueltigkeit: boolean,
+    ): boolean {
         if (a.length !== b.length) {
             return false;
         }
 
         const aSorted = a.concat().sort();
         const bSorted = b.concat().sort();
-
-        return aSorted.every((value, index) => this.isEquivalent(bSorted[index], value));
+        if (checkGueltigkeit) {
+            return aSorted.every((value, index) => this.isEquivalent(bSorted[index], value));
+        }
+        return aSorted.every((value, index) => bSorted[index].externalClient.id === value.externalClient.id);
     }
 
     /**
