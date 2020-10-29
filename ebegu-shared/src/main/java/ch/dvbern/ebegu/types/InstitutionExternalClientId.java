@@ -28,6 +28,8 @@ import org.hibernate.annotations.Type;
 @Embeddable
 public class InstitutionExternalClientId implements Serializable {
 
+	private static final long serialVersionUID = 3704996447646323706L;
+
 	@Column(name = "institution_id")
 	@Type(type = "string-uuid-binary")
 	private String institutionId;
@@ -36,8 +38,6 @@ public class InstitutionExternalClientId implements Serializable {
 	@Type(type = "string-uuid-binary")
 	private String externalClientId;
 
-	private InstitutionExternalClientId() {
-	}
 
 	public InstitutionExternalClientId(
 		String institutionId,
