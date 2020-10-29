@@ -234,6 +234,9 @@ export class EditGemeindeComponent implements OnInit {
                         this.loadStammdaten();
                     }
                     this.updateExternalClients();
+                }).catch(() => {
+                    // TODO (reviewer): EditMode offen lassen funktioniert irgendwie nicht
+                    this.setEditMode();
                 });
             }
 
@@ -310,7 +313,10 @@ export class EditGemeindeComponent implements OnInit {
         if (!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr) {
             errorIndex = 0;
         }
-
+        const hasAngebot = stammdaten.gemeinde.isAtLeastOneAngebotSelected();
+        if (!hasAngebot) {
+            errorIndex = 0;
+        }
         this.forms.forEach((form, index) => {
             // do not override the index of the first error found!
             if (!form.disabled && !form.valid && errorIndex === undefined) {
