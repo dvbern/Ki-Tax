@@ -29,14 +29,15 @@ import org.hibernate.annotations.Type;
 public class InstitutionExternalClientId implements Serializable {
 
 	@Column(name = "institution_id")
-	@Type( type = "string-uuid-binary" )
+	@Type(type = "string-uuid-binary")
 	private String institutionId;
 
 	@Column(name = "external_client_id")
-	@Type( type = "string-uuid-binary" )
+	@Type(type = "string-uuid-binary")
 	private String externalClientId;
 
-	private InstitutionExternalClientId() {}
+	private InstitutionExternalClientId() {
+	}
 
 	public InstitutionExternalClientId(
 		String institutionId,
@@ -45,13 +46,15 @@ public class InstitutionExternalClientId implements Serializable {
 		this.externalClientId = externalClientId;
 	}
 
-
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
+		if (this == o) {
+			return true;
+		}
 
-		if (o == null || getClass() != o.getClass())
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		InstitutionExternalClientId that = (InstitutionExternalClientId) o;
 		return Objects.equals(institutionId, that.institutionId) &&

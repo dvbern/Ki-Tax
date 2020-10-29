@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.outbox.institutionclient;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 
-import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;

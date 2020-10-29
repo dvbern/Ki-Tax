@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.enums.ExternalClientType;
 
 /**
  * Service to get information about external (3rd-party) clients
