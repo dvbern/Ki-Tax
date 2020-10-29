@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.dto.geoadmin;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,28 +35,23 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	@Nonnull
 	private String ggdename = "";
 	@Nonnull
-	private String strname1 = "";
+	private String[] strname = new String[0];
 	private long gstat;
 	@Nonnull
 	private String gdekt = "";
 	@Nonnull
 	private String label = "";
 	@Nonnull
-	private String ggbkr = "";
+	private String lgbkr = "";
 	private long egid;
 	private long dstrid;
 	private long ggdenr;
-	// Datum im Format "DD.MM.YYYY"
 	@Nonnull
-	@XmlElement(name = "bgdi_created")
-	private String bgdiCreated = "";
-	private long gkplaus;
+	private String dplz4 = "";
 	@Nonnull
-	private String plz4 = "";
+	private String plz_plz6 = "";
 	@Nonnull
-	private String plz6 = "";
-	@Nonnull
-	private String plzname = "";
+	private String dplzname = "";
 	@Nonnull
 	private String deinr = "";
 
@@ -71,12 +65,12 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	}
 
 	@Nonnull
-	public String getStrname1() {
-		return strname1;
+	public String[] getStrname() {
+		return strname;
 	}
 
-	public void setStrname1(@Nonnull String strname1) {
-		this.strname1 = strname1;
+	public void setStrname(@Nonnull String[] strname) {
+		this.strname = strname;
 	}
 
 	public long getGstat() {
@@ -106,12 +100,12 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	}
 
 	@Nonnull
-	public String getGgbkr() {
-		return ggbkr;
+	public String getLgbkr() {
+		return lgbkr;
 	}
 
-	public void setGgbkr(@Nonnull String ggbkr) {
-		this.ggbkr = ggbkr;
+	public void setLgbkr(@Nonnull String lgbkr) {
+		this.lgbkr = lgbkr;
 	}
 
 	public long getEgid() {
@@ -139,47 +133,30 @@ public class JaxGeoadminFeatureAttributes implements Serializable {
 	}
 
 	@Nonnull
-	public String getBgdiCreated() {
-		return bgdiCreated;
+	public String getDplz4() {
+		return dplz4;
 	}
 
-	public void setBgdiCreated(@Nonnull String bgdiCreated) {
-		this.bgdiCreated = bgdiCreated;
-	}
-
-	public long getGkplaus() {
-		return gkplaus;
-	}
-
-	public void setGkplaus(long gkplaus) {
-		this.gkplaus = gkplaus;
+	public void setDplz4(@Nonnull String dplz4) {
+		this.dplz4 = dplz4;
 	}
 
 	@Nonnull
-	public String getPlz4() {
-		return plz4;
+	public String getPlz_plz6() {
+		return plz_plz6;
 	}
 
-	public void setPlz4(@Nonnull String plz4) {
-		this.plz4 = plz4;
-	}
-
-	@Nonnull
-	public String getPlz6() {
-		return plz6;
-	}
-
-	public void setPlz6(@Nonnull String plz6) {
-		this.plz6 = plz6;
+	public void setPlz_plz6(@Nonnull String plz_plz6) {
+		this.plz_plz6 = plz_plz6;
 	}
 
 	@Nonnull
-	public String getPlzname() {
-		return plzname;
+	public String getDplzname() {
+		return dplzname;
 	}
 
-	public void setPlzname(@Nonnull String plzname) {
-		this.plzname = plzname;
+	public void setDplzname(@Nonnull String dplzname) {
+		this.dplzname = dplzname;
 	}
 
 	@Nonnull

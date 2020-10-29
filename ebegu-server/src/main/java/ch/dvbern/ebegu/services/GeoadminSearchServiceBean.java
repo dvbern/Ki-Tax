@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.dto.geoadmin.JaxGeoadminSearchResult;
 import ch.dvbern.ebegu.dto.geoadmin.JaxGeoadminSearchResultEntry;
 import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,14 +234,17 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 		if (StringUtils.isEmpty(attributes.getGgdename())) {
 			return Optional.empty();
 		}
+		if (ArrayUtils.isEmpty(attributes.getStrname())) {
+			return Optional.empty();
+		}
 
 		JaxWohnadresse adresse = new JaxWohnadresse(
 			fuzzy,
 			feature.getLayerBodId() + ':' + feature.getFeatureId(),
-			attributes.getStrname1(),
+			attributes.getStrname()[0],
 			attributes.getDeinr(),
-			attributes.getPlz4(),
-			attributes.getPlzname(),
+			attributes.getDplz4(),
+			attributes.getDplzname(),
 			attributes.getGgdenr(),
 			attributes.getGgdename());
 
