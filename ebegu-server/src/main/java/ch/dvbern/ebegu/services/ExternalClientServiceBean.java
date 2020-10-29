@@ -18,11 +18,9 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
