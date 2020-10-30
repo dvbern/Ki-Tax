@@ -71,7 +71,7 @@ describe('MitteilungRS', () => {
             $httpBackend.expectPUT(mitteilungRS.serviceURL + '/sendbetreuungsmitteilung',
                 restMitteilung).respond($q.when(restMitteilung));
 
-            const result = mitteilungRS.sendbetreuungsmitteilung(dossier, betreuung, false);
+            const result = mitteilungRS.sendbetreuungsmitteilung(dossier, betreuung);
             $httpBackend.flush();
             $rootScope.$apply();
 
