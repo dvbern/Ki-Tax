@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -282,9 +281,7 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 
 	@Nonnull
 	public Set<Gemeinde> extractGemeindenForUser() {
-		return this.currentBerechtigung == null ?
-			Collections.emptySet() :
-			this.currentBerechtigung.getGemeindeList();
+		return this.getCurrentBerechtigung().getGemeindeList();
 	}
 
 	@Nonnull
