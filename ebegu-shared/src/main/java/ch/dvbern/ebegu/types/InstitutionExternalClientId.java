@@ -38,6 +38,8 @@ public class InstitutionExternalClientId implements Serializable {
 	@Type(type = "string-uuid-binary")
 	private String externalClientId;
 
+	private InstitutionExternalClientId() {
+	}
 
 	public InstitutionExternalClientId(
 		String institutionId,

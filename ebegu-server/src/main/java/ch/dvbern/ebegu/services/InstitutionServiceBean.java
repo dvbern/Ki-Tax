@@ -399,11 +399,11 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 						exportedEvent.fire(institutionClientEventConverter.clientModifiedEventOf(
 							id,
 							institutionExternalClient));
-						//and delete it otherwise it will be seen as a new element later
-						institutionExternalClients.remove(existingInstitutionExternalClient);
 					}
 					//then add to the new collection
 					newInstitutionExternalClients.add(institutionExternalClient);
+					//and delete it otherwise it will be seen as a new element later
+					institutionExternalClients.remove(existingInstitutionExternalClient);
 				}
 				else { //it means this client was removed
 					exportedEvent.fire(institutionClientEventConverter.clientRemovedEventOf(id, institutionExternalClient));
@@ -413,7 +413,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		// find out which are added
 		HashSet<InstitutionExternalClient> added = new HashSet<>(institutionExternalClients);
-		added.removeAll(existingExternalClients);
 
 		added.stream()
 			.map(client -> institutionClientEventConverter.clientAddedEventOf(id, client))

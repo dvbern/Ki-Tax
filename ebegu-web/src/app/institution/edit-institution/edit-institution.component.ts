@@ -341,8 +341,10 @@ export class EditInstitutionComponent implements OnInit {
      * Gueltigkeit is the same
      */
     private isEquivalent(a: TSInstitutionExternalClient, b: TSInstitutionExternalClient): boolean {
-        return a.externalClient.id === b.externalClient.id && a.gueltigkeit.gueltigAb === b.gueltigkeit.gueltigAb
-            && a.gueltigkeit.gueltigBis === b.gueltigkeit.gueltigBis;
+        return a.externalClient.id === b.externalClient.id && a.gueltigkeit.gueltigAb.isSame(b.gueltigkeit.gueltigAb)
+            && (EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigBis) && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigBis)
+                && a.gueltigkeit.gueltigBis.isSame(b.gueltigkeit.gueltigBis))
+            || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigBis) && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigBis));
     }
 
     private getTraegerschaftsUpdate(): string | null {

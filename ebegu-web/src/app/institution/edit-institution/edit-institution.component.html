@@ -222,6 +222,7 @@
                     </div>
 
                     <div *ngIf="externalClients && !isTagesschule()" class="col-sm-6">
+                        <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
                         <div *ngFor="let availableClient of externalClients.availableClients">
                             <div class="row">
                                 <div class="col-sm-6">
