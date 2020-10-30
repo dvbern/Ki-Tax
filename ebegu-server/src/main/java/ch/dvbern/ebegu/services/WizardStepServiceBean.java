@@ -548,8 +548,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				final Gesuch gesuch = wizardStep.getGesuch();
 				if (WizardStepName.FINANZIELLE_SITUATION == wizardStep.getWizardStepName()) {
 					if (gesuch.isMutation()) {
-						setWizardStepOkOrMutiert(wizardStep);
-
+						// Problem: Es kann in der Mutation sowohl eine Aenderung (Status MUTIERT) als auch ein Fehler (Status NOK)
+						// gleichzeitig auftreten! Wir zeigen zuerst den Status NOK an
+						setStatusDueToFinSitRequired(wizardStep, gesuch);
+						if (WizardStepStatus.OK == wizardStep.getWizardStepStatus()) {
+							// Wenn es okay war, koennen wir gegebenenfalls das MUTIERT setzen
+							setWizardStepOkOrMutiert(wizardStep);
+						}
 					} else if (Objects.equals(1, substep)) { //only for substep 1 (finanziellesituationstart)
 						setStatusDueToFinSitRequired(wizardStep, gesuch);
 					}
