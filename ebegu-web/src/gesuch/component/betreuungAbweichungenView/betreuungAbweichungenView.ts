@@ -254,8 +254,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public freigeben(): void {
-        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier(),
-            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled)
+        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier())
             .then(result => {
                 this.model.betreuungspensumAbweichungen = result;
             });

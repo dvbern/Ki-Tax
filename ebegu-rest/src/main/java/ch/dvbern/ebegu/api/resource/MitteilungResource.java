@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,16 +56,23 @@ import ch.dvbern.ebegu.api.dtos.JaxMitteilungSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilungen;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -110,6 +118,13 @@ public class MitteilungResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Inject
+	private EinstellungService einstellungService;
+
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
 	@Nullable
@@ -157,7 +172,25 @@ public class MitteilungResource {
 		// we first clear all the Mutationsmeldungen for the current Betreuung
 		mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 
-		Betreuungsmitteilung betreuungsmitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
+		Betreuungsmitteilung betreuungsmitteilung =
+			converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
+
+		final Locale locale = LocaleThreadLocal.get();
+
+		final Einstellung einstellung = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode());
+		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
+
+		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
+		betreuungsmitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
+			betreuungsmitteilung.getBetreuungspensen(),
+			mahlzeitenverguenstigungEnabled, locale));
+
 		Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 		return converter.betreuungsmitteilungToJAX(persistedMitteilung);
 	}
@@ -516,11 +549,10 @@ public class MitteilungResource {
 		if (betreuung.getBetreuungspensumAbweichungen() == null) {
 			return null;
 		}
-		Betreuungsmitteilung mitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP,
-			new Betreuungsmitteilung());
+		Betreuungsmitteilung mitteilung =
+			converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
 
 		mitteilungService.createMutationsmeldungAbweichungen(mitteilung, betreuung);
-
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 }
