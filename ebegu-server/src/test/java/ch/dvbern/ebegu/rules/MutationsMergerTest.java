@@ -43,8 +43,9 @@ import org.junit.Test;
  */
 public class MutationsMergerTest {
 
-	private MonatsRule monatsRule = new MonatsRule();
-	private MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN);
+	private static final boolean IS_DEBUG = false;
+	private MonatsRule monatsRule = new MonatsRule(IS_DEBUG);
+	private MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN, IS_DEBUG);
 
 	@Test
 	public void test_Reduktion_Rechtzeitig_aenderungUndEingangsdatumGleich() {

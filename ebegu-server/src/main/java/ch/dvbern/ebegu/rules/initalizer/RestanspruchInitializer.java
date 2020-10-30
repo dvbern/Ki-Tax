@@ -60,7 +60,8 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RestanspruchInitializer.class);
 
-	public RestanspruchInitializer() {
+	public RestanspruchInitializer(boolean isDebug) {
+		super(isDebug);
 	}
 
 	@Override

@@ -136,12 +136,13 @@ public final class EbeguRuleTestsHelper {
 		return gesuchsperiodeOfAllTimes;
 	}
 
-	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
-	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true);
-	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false);
-	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN);
-	private static final MonatsRule monatsRule = new MonatsRule();
-	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+	private static final boolean isDebug = false;
+	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
+	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true, isDebug);
+	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false, isDebug);
+	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN, isDebug);
+	private static final MonatsRule monatsRule = new MonatsRule(isDebug);
+	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
 
 	private EbeguRuleTestsHelper() {
 	}
