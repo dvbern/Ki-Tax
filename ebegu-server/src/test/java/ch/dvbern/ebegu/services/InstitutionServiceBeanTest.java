@@ -224,6 +224,7 @@ public class InstitutionServiceBeanTest {
 		EasyMock.expectLastCall().once();
 	}
 
+	@Nonnull
 	private InstitutionExternalClient createInstitutionExternalClient(
 		Institution institution,
 		ExternalClient externalClient) {

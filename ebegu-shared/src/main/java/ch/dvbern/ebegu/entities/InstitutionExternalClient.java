@@ -53,6 +53,7 @@ public class InstitutionExternalClient implements Serializable {
 	private DateRange gueltigkeit = new DateRange();
 
 	@NotNull
+	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_external_clients_institution_id"), insertable = false, updatable = false)
 	private Institution institution;
@@ -71,11 +72,12 @@ public class InstitutionExternalClient implements Serializable {
 		this.gueltigkeit = gueltigkeit;
 	}
 
+	@Nonnull
 	public Institution getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(Institution institution) {
+	public void setInstitution(@Nonnull Institution institution) {
 		this.institution = institution;
 	}
 

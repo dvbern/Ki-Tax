@@ -41,7 +41,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.persistence.EntityNotFoundException;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
@@ -5575,14 +5574,18 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public List<JaxInstitutionExternalClient> institutionExternalClientsToJAX(@Nonnull Collection<InstitutionExternalClient> institutionExternalClients) {
+	public List<JaxInstitutionExternalClient> institutionExternalClientsToJAX(
+		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients
+	) {
 		return institutionExternalClients.stream()
 			.map(this::insitutionExternalClientToJAX)
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	public JaxInstitutionExternalClient insitutionExternalClientToJAX(@Nonnull final InstitutionExternalClient persistedInstitutionExternalClient) {
+	public JaxInstitutionExternalClient insitutionExternalClientToJAX(
+		@Nonnull final InstitutionExternalClient persistedInstitutionExternalClient
+	) {
 		JaxInstitutionExternalClient jaxInstitutionExternalClient = new JaxInstitutionExternalClient();
 		jaxInstitutionExternalClient.setExternalClient(externalClientToJAX(persistedInstitutionExternalClient.getExternalClient()));
 		jaxInstitutionExternalClient.setGueltigAb(persistedInstitutionExternalClient.getGueltigkeit().getGueltigAb());
@@ -5594,19 +5597,26 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstitutionExternalClient;
 	}
 
-	public List<InstitutionExternalClient> institutionExternalClientListToEntity(@Nonnull Collection<JaxInstitutionExternalClient> jaxInstitutionExternalClients, Institution institution){
+	@Nonnull
+	public List<InstitutionExternalClient> institutionExternalClientListToEntity(
+		@Nonnull Collection<JaxInstitutionExternalClient> jaxInstitutionExternalClients,
+		@Nonnull Institution institution
+	) {
 		return jaxInstitutionExternalClients.stream()
 			.map(jaxInstitutionExternalClient -> insitutionExternalClientToEntity(jaxInstitutionExternalClient, institution))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	public InstitutionExternalClient insitutionExternalClientToEntity(@Nonnull final JaxInstitutionExternalClient jaxInstitutionExternalClient, Institution institution) {
+	public InstitutionExternalClient insitutionExternalClientToEntity(
+		@Nonnull final JaxInstitutionExternalClient jaxInstitutionExternalClient,
+		@Nonnull Institution institution
+	) {
 		InstitutionExternalClient institutionExternalClient = new InstitutionExternalClient();
 		String externalClientID = jaxInstitutionExternalClient.getExternalClient().getId();
 		requireNonNull(externalClientID, "Die ExternalClient Daten muessen gesetzt sein");
 		ExternalClient selectedClient =
-			externalClientService.findExternalClient(externalClientID).orElseThrow(() -> new EbeguEntityNotFoundException("",
+			externalClientService.findExternalClient(externalClientID).orElseThrow(() -> new EbeguEntityNotFoundException("insitutionExternalClientToEntity",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxInstitutionExternalClient.getExternalClient().getId()));
 		institutionExternalClient.setExternalClient(selectedClient);
 		institutionExternalClient.setInstitution(institution);

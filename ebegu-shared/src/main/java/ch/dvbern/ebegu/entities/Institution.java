@@ -79,6 +79,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	private @NotNull boolean eventPublished = true;
 
 	@Valid
+	@Nonnull
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institution")
 	private Set<InstitutionExternalClient> institutionExternalClients = new HashSet<>();
 
@@ -141,6 +142,18 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		return this.name.equals(Constants.UNKNOWN_INSTITUTION_NAME);
 	}
 
+	/**
+	 * The data of this institution can be accessed by any ExternalClient in this set. E.g. via the exchange service
+	 */
+	@Nonnull
+	public Set<InstitutionExternalClient> getInstitutionExternalClients() {
+		return institutionExternalClients;
+	}
+
+	public void setInstitutionExternalClients(@Nonnull Set<InstitutionExternalClient> institutionExternalClients) {
+		this.institutionExternalClients = institutionExternalClients;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -162,16 +175,5 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	public String getMessageForAccessException() {
 		return "bgNummer: " + this.getName()
 			+ ", status: " + this.getStatus();
-	}
-
-	/**
-	 * The data of this institution can be accessed by any ExternalClient in this set. E.g. via the exchange service
-	 */
-	public Set<InstitutionExternalClient> getInstitutionExternalClients() {
-		return institutionExternalClients;
-	}
-
-	public void setInstitutionExternalClients(Set<InstitutionExternalClient> institutionExternalClients) {
-		this.institutionExternalClients = institutionExternalClients;
 	}
 }

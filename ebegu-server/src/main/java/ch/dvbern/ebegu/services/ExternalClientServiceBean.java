@@ -58,6 +58,7 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 			ExternalClient.class, ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClient_.type);
 	}
 
+	@Nonnull
 	@Override
 	public Optional<ExternalClient> findExternalClient(@Nonnull String id) {
 		ExternalClient externalClient = persistence.find(ExternalClient.class, id);
@@ -66,7 +67,7 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 
 	@Nonnull
 	@Override
-	public Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(Institution institution) {
+	public Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution) {
 		return criteriaQueryHelper.getEntitiesByAttribute(
 			InstitutionExternalClient.class, institution, InstitutionExternalClient_.institution);
 	}

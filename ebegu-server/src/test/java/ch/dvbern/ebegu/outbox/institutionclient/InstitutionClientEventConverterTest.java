@@ -90,7 +90,8 @@ public class InstitutionClientEventConverterTest {
 		));
 	}
 
-	private  InstitutionExternalClient createInstitutionExternalClient() {
+	@Nonnull
+	private InstitutionExternalClient createInstitutionExternalClient() {
 		InstitutionExternalClient institutionExternalClient = new InstitutionExternalClient();
 		institutionExternalClient.setExternalClient(CLIENT);
 		Institution institution = new Institution();
@@ -103,6 +104,4 @@ public class InstitutionClientEventConverterTest {
 
 		return institutionExternalClient;
 	}
-
-
 }

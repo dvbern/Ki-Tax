@@ -37,7 +37,9 @@ public interface ExternalClientService {
 	@Nonnull
 	Collection<ExternalClient> getAllForInstitution();
 
+	@Nonnull
 	Optional<ExternalClient> findExternalClient(@Nonnull String id);
 
-	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(Institution institution);
+	@Nonnull
+	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution);
 }

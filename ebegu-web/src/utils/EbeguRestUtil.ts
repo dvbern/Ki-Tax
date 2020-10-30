@@ -4243,8 +4243,7 @@ export class EbeguRestUtil {
     public parseInstitutionExternalClient(data: any): TSInstitutionExternalClient {
         const tsInstitutionExternalClient = new TSInstitutionExternalClient(this.parseExternalClient(data.externalClient));
         const ab = DateUtil.localDateToMoment(data.gueltigAb);
-        const bis =
-            DateUtil.localDateToMoment(data.gueltigBis);
+        const bis = DateUtil.localDateToMoment(data.gueltigBis);
         tsInstitutionExternalClient.gueltigkeit = new TSDateRange(ab, bis);
         return tsInstitutionExternalClient;
     }
@@ -4254,7 +4253,7 @@ export class EbeguRestUtil {
             item => this.institutionExternalClientToRestObject({}, item)) : undefined;
     }
 
-    public  institutionExternalClientToRestObject(
+    public institutionExternalClientToRestObject(
         institutionExternalClientRest: any,
         institutionExternalClientTS: TSInstitutionExternalClient,
     ): any {

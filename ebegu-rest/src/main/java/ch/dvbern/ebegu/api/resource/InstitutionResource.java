@@ -461,8 +461,10 @@ public class InstitutionResource {
 		Collection<InstitutionExternalClient> institutionExternalClients =
 			externalClientService.getInstitutionExternalClientForInstitution(institution);
 
-		List<ExternalClient> existingExternalClient = institutionExternalClients.stream()
-			.map(InstitutionExternalClient::getExternalClient).collect(Collectors.toList());
+		List<ExternalClient> existingExternalClient = institutionExternalClients
+			.stream()
+			.map(InstitutionExternalClient::getExternalClient)
+			.collect(Collectors.toList());
 
 		availableClients.removeAll(existingExternalClient);
 
