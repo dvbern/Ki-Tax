@@ -250,6 +250,7 @@
                                            id="client_start_id_{{i}}"
                                            [matDatepicker]="client_start_id"
                                            [min]="getMinStartDate()"
+                                           required
                                            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                            [(ngModel)]="assignedClient.gueltigkeit.gueltigAb">
                                     <mat-datepicker-toggle matSuffix
