@@ -38,7 +38,6 @@ public class InstitutionExternalClientId implements Serializable {
 	@Type(type = "string-uuid-binary")
 	private String externalClientId;
 
-	// TODO (nefr) wieso private? siehe Warnung oben... (class 'InstitutionExternalClientId' should have [public, protected] no-arg constructor)
 	private InstitutionExternalClientId() {
 	}
 
