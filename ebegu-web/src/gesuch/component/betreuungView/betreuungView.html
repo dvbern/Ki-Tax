@@ -469,12 +469,12 @@
                                                         <div class="dv-input-container-small" style="padding-right:32px;">
                                                             <input aria-describedby="monatlicheHauptmahlzeiten-{{$index}}-error"
                                                                    id="monatlicheHauptmahlzeiten-{{$index}}"
-                                                                   type="number" min="0" step="1"
+                                                                   type="number" min="0" step="0.01"
                                                                    name="monatlicheHauptmahlzeiten-{{$index}}"
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}"
+                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}" step="0.01"
                                                                                for="vm.form['monatlicheHauptmahlzeiten-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -494,12 +494,12 @@
                                                         <div class="dv-input-container-small" style="padding-right:32px;">
                                                             <input aria-describedby="monatlicheNebenmahlzeiten-{{$index}}-error"
                                                                    id="monatlicheNebenmahlzeiten-{{$index}}"
-                                                                   type="number" min="0" step="1"
+                                                                   type="number" min="0" step="0.01"
                                                                    name="monatlicheNebenmahlzeiten-{{$index}}"
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheNebenmahlzeiten"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}"
+                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}" step="0.01"
                                                                                for="vm.form['monatlicheNebenmahlzeiten-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -526,7 +526,7 @@
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProHauptmahlzeit"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}"
+                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}" step="0.05"
                                                                                for="vm.form['tarifProHauptmahlzeit-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -551,7 +551,7 @@
                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.tarifProNebenmahlzeit"
                                                                    class="form-control"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}"
+                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}" step="0.05"
                                                                                for="vm.form['tarifProNebenmahlzeit-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>

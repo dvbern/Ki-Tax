@@ -385,8 +385,7 @@
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th class="result" data-translate="VERGUENSTIGUNG"></th>
-                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_HAUPTMAHLZEITEN"></th>
-                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_NEBENMAHLZEITEN"></th>
+                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
@@ -432,11 +431,7 @@
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungHauptmahlzeitTotal | currency : '' : 2"></td>
-                                <!-- Mahlzeitenverguenstigung Nebenmahlzeiten -->
-                                <td class="result"
-                                    ng-if="vm.showMahlzeitenverguenstigung()"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungNebenmahlzeitTotal | currency : '' : 2"></td>
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">

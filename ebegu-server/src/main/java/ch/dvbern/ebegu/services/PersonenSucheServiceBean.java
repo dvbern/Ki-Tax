@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.cdi.Dummy;
 import ch.dvbern.ebegu.cdi.Geres;
 import ch.dvbern.ebegu.cdi.Prod;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -73,7 +74,7 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	private EbeguConfiguration config;
 
 
-	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "IfStatementWithIdenticalBranches" })
+	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "serial" })
 	@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 	@PostConstruct
 	private void resolveService() {
@@ -97,7 +98,12 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 		EWKResultat resultat = new EWKResultat();
 		EWKPerson  personMitWohnsitzInGemeindeUndPeriode = suchePersonMitWohnsitzInGemeindeUndPeriode(gesuch.getGesuchsteller1(), gesuch);
 		if (personMitWohnsitzInGemeindeUndPeriode != null) {
-			resultat.getPersonen().addAll(ewkService.suchePersonenInHaushalt(personMitWohnsitzInGemeindeUndPeriode.getAdresse().getWohnungsId(), personMitWohnsitzInGemeindeUndPeriode.getAdresse().getGebaeudeId()).getPersonen());
+			final EWKAdresse adresseOfPersonMitWohnsitzInGemeindeUndPeriode = personMitWohnsitzInGemeindeUndPeriode.getAdresse();
+			if (adresseOfPersonMitWohnsitzInGemeindeUndPeriode != null) {
+				resultat.getPersonen().addAll(ewkService.suchePersonenInHaushalt(
+					adresseOfPersonMitWohnsitzInGemeindeUndPeriode.getWohnungsId(),
+					adresseOfPersonMitWohnsitzInGemeindeUndPeriode.getGebaeudeId()).getPersonen());
+			}
 			resultat.getPersonen().forEach(person -> person.setHaushalt(true));
 		}
 		sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuch.getGesuchsteller1());
@@ -118,7 +124,8 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	 * @param gesuchsperiode
 	 * @return neue Liste ohne die Personeneintragen deren Aufenthaltsperiode sich nicht mit der Gesuchsperiode schneidet
 	 */
-	private List<EWKPerson> entferneNichtAktuelleDaten(List<EWKPerson> personen, Gesuchsperiode gesuchsperiode) {
+	@Nonnull
+	private List<EWKPerson> entferneNichtAktuelleDaten(@Nonnull List<EWKPerson> personen, @Nonnull Gesuchsperiode gesuchsperiode) {
 		return personen
 			.stream()
 			.filter(person ->
@@ -185,21 +192,31 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	}
 
 
-	private void sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(@Nonnull EWKResultat resultat, GesuchstellerContainer gesuchstellerContainer) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	private void sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(
+		@Nonnull EWKResultat resultat,
+		@Nullable GesuchstellerContainer gesuchstellerContainer
+	) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		if (gesuchstellerContainer != null && gesuchstellerContainer.getGesuchstellerJA() != null) {
 			Gesuchsteller gesuchsteller = gesuchstellerContainer.getGesuchstellerJA();
 			suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuchsteller.getNachname(), gesuchsteller.getVorname(), gesuchsteller.getGeburtsdatum(), gesuchsteller.getGeschlecht(), true, false);
 		}
 	}
 
-	private void sucheKindInHaushaltOderSonstOhneBfsEinschraenkung(@Nonnull EWKResultat resultat, Kind kind) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	private void sucheKindInHaushaltOderSonstOhneBfsEinschraenkung(
+		@Nonnull EWKResultat resultat,
+		@Nullable Kind kind
+	) throws PersonenSucheServiceException,
+		PersonenSucheServiceBusinessException {
 		if (kind != null) {
 			suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(resultat, kind.getNachname(), kind.getVorname(), kind.getGeburtsdatum(), kind.getGeschlecht(), false, true);
 		}
 	}
 
 	@Nullable
-	private EWKPerson suchePersonMitWohnsitzInGemeindeUndPeriode(GesuchstellerContainer gesuchstellerContainer, @Nonnull Gesuch gesuch) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	private EWKPerson suchePersonMitWohnsitzInGemeindeUndPeriode(
+		@Nullable GesuchstellerContainer gesuchstellerContainer,
+		@Nonnull Gesuch gesuch
+	) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		if (gesuchstellerContainer == null || gesuchstellerContainer.getGesuchstellerJA() == null) {
 			return null;
 		}

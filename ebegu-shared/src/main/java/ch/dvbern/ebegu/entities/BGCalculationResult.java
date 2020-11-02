@@ -100,9 +100,12 @@ public class BGCalculationResult extends AbstractEntity {
 	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
 
 	@Max(100) @Min(0)
-	@Nonnull
 	@Column(nullable = false)
 	private int anspruchspensumProzent;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal anspruchspensumRest;
 
 	@NotNull @Nonnull
 	@Min(0)
@@ -143,11 +146,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal verguenstigungHauptmahlzeitenTotal;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal verguenstigungNebenmahlzeitenTotal;
+	private BigDecimal verguenstigungMahlzeitenTotal;
 
 	@Valid
 	@Nullable
@@ -182,6 +181,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
 		this.betreuungspensumZeiteinheit = toCopy.betreuungspensumZeiteinheit;
 		this.anspruchspensumProzent = toCopy.anspruchspensumProzent;
+		this.anspruchspensumRest = toCopy.anspruchspensumRest;
 		this.anspruchspensumZeiteinheit = toCopy.anspruchspensumZeiteinheit;
 		this.bgPensumZeiteinheit = toCopy.bgPensumZeiteinheit;
 
@@ -194,8 +194,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 
-		this.verguenstigungHauptmahlzeitenTotal = toCopy.verguenstigungHauptmahlzeitenTotal;
-		this.verguenstigungNebenmahlzeitenTotal = toCopy.verguenstigungNebenmahlzeitenTotal;
+		this.verguenstigungMahlzeitenTotal = toCopy.verguenstigungMahlzeitenTotal;
 
 		if (toCopy.tsCalculationResultMitPaedagogischerBetreuung != null) {
 			this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
@@ -250,8 +249,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
-		this.verguenstigungHauptmahlzeitenTotal = roundToFrankenRappen(verguenstigungHauptmahlzeitenTotal);
-		this.verguenstigungNebenmahlzeitenTotal = roundToFrankenRappen(verguenstigungNebenmahlzeitenTotal);
+		this.verguenstigungMahlzeitenTotal = roundToFrankenRappen(verguenstigungMahlzeitenTotal);
 		return this;
 	}
 
@@ -271,6 +269,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("betreuungspensumProzent", betreuungspensumProzent)
 			.add("anspruchsberechtigteAnzahlZeiteinheiten", anspruchspensumZeiteinheit)
 			.add("anspruchberechtigtesPensum", anspruchspensumProzent)
+			.add("anspruchspensumRest", anspruchspensumRest)
 			.add("getBgPensumProzent", getBgPensumProzent())
 			.add("bgPensumZeiteinheit", bgPensumZeiteinheit)
 
@@ -296,6 +295,7 @@ public class BGCalculationResult extends AbstractEntity {
 		return isSameZeiteinheiten(this, otherResult) &&
 			MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == otherResult.anspruchspensumProzent &&
+			MathUtil.isSame(anspruchspensumRest, otherResult.anspruchspensumRest) &&
 			MathUtil.isSame(abzugFamGroesse, otherResult.abzugFamGroesse) &&
 			MathUtil.isSame(famGroesse, otherResult.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, otherResult.massgebendesEinkommenVorAbzugFamgr) &&
@@ -316,8 +316,7 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.abzugFamGroesse, otherEntity.abzugFamGroesse) &&
 				MathUtil.isSame(thisEntity.famGroesse, otherEntity.famGroesse) &&
 				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
-				MathUtil.isSame(thisEntity.verguenstigungHauptmahlzeitenTotal, otherEntity.verguenstigungHauptmahlzeitenTotal) &&
-				MathUtil.isSame(thisEntity.verguenstigungNebenmahlzeitenTotal, otherEntity.verguenstigungNebenmahlzeitenTotal) &&
+				MathUtil.isSame(thisEntity.verguenstigungMahlzeitenTotal, otherEntity.verguenstigungMahlzeitenTotal) &&
 				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
 				(thisEntity.besondereBeduerfnisseBestaetigt == otherEntity.besondereBeduerfnisseBestaetigt) &&
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
@@ -359,6 +358,7 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.elternbeitrag, otherEntity.elternbeitrag) &&
 				MathUtil.isSame(thisEntity.betreuungspensumProzent, otherEntity.betreuungspensumProzent) &&
 				thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
+				MathUtil.isSame(thisEntity.anspruchspensumRest, otherEntity.anspruchspensumRest) &&
 				MathUtil.isSame(thisEntity.abzugFamGroesse, otherEntity.abzugFamGroesse) &&
 				MathUtil.isSame(thisEntity.famGroesse, otherEntity.famGroesse) &&
 				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
@@ -545,6 +545,15 @@ public class BGCalculationResult extends AbstractEntity {
 		this.anspruchspensumProzent = anspruchspensumProzent;
 	}
 
+	@Nullable
+	public BigDecimal getAnspruchspensumRest() {
+		return anspruchspensumRest;
+	}
+
+	public void setAnspruchspensumRest(@Nullable BigDecimal anspruchspensumRest) {
+		this.anspruchspensumRest = anspruchspensumRest;
+	}
+
 	@Nonnull
 	public Integer getEinkommensjahr() {
 		return einkommensjahr;
@@ -623,19 +632,12 @@ public class BGCalculationResult extends AbstractEntity {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
-	public @Nullable BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
-		return verguenstigungHauptmahlzeitenTotal;
+	public @Nullable BigDecimal getVerguenstigungMahlzeitenTotal() {
+		return verguenstigungMahlzeitenTotal;
 	}
 
-	public void setVerguenstigungHauptmahlzeitenTotal(@Nullable BigDecimal verguenstigungHauptmahlzeitenTotal) {
-		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
+	public void setVerguenstigungMahlzeitenTotal(@Nullable BigDecimal verguenstigungMahlzeitenTotal) {
+		this.verguenstigungMahlzeitenTotal = verguenstigungMahlzeitenTotal;
 	}
 
-	public @Nullable BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
-		return verguenstigungNebenmahlzeitenTotal;
-	}
-
-	public void setVerguenstigungNebenmahlzeitenTotal(@Nullable BigDecimal verguenstigungNebenmahlzeitenTotal) {
-		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
-	}
 }

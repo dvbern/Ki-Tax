@@ -26,7 +26,6 @@ import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
 import {ZahlungRS} from '../../core/service/zahlungRS.rest';
-import {IZahlungsauftragStateParams} from '../zahlung.route';
 
 const LOG = LogFactory.createLog('ZahlungViewController');
 
@@ -41,7 +40,6 @@ export class ZahlungViewController implements IController {
 
     public static $inject: string[] = [
         'ZahlungRS',
-        '$stateParams',
         '$state',
         'DownloadRS',
         'ReportRS',
@@ -49,12 +47,12 @@ export class ZahlungViewController implements IController {
     ];
 
     private zahlungen: TSZahlung[] = [];
+    private isMahlzeitenzahlungen: boolean = false;
 
     public itemsByPage: number = 20;
 
     public constructor(
         private readonly zahlungRS: ZahlungRS,
-        private readonly $stateParams: IZahlungsauftragStateParams,
         private readonly $state: StateService,
         private readonly downloadRS: DownloadRS,
         private readonly reportRS: ReportRS,
@@ -63,16 +61,19 @@ export class ZahlungViewController implements IController {
     }
 
     public $onInit(): void {
-        if (!this.$stateParams.zahlungsauftragId) {
+        if (!this.$state.params.zahlungsauftragId) {
             return;
+        }
+        if (this.$state.params.isMahlzeitenzahlungen) {
+            this.isMahlzeitenzahlungen = true;
         }
 
         this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
                     if (principal) {
-                        const zahlungsauftragId = this.$stateParams.zahlungsauftragId;
-                        if (this.$stateParams.zahlungsauftragId) {
+                        const zahlungsauftragId = this.$state.params.zahlungsauftragId;
+                        if (this.$state.params.zahlungsauftragId) {
                             return this.zahlungRS.getZahlungsauftragForRole$(
                                 principal.getCurrentRole(), zahlungsauftragId);
                         }
@@ -91,7 +92,9 @@ export class ZahlungViewController implements IController {
     }
 
     public gotToUebersicht(): void {
-        this.$state.go('zahlungsauftrag.view');
+        this.$state.go('zahlungsauftrag.view', {
+            isMahlzeitenzahlungen: this.isMahlzeitenzahlungen,
+        });
     }
 
     public downloadDetails(zahlung: TSZahlung): void {

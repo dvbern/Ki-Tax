@@ -29,6 +29,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -47,13 +48,13 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = 1991251126987562205L;
 
-	@Nonnull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Embedded
 	@Valid
 	private IBAN iban;
 
-	@Nonnull
+	@NotNull @Nonnull
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	private String kontoinhaber;

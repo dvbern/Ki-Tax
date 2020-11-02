@@ -28,8 +28,8 @@ import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../models/TSBfsGemeinde';
 import {TSExternalClientAssignment} from '../../models/TSExternalClientAssignment';
 import {TSGemeinde} from '../../models/TSGemeinde';
-import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
 import {TSGemeindeRegistrierung} from '../../models/TSGemeindeRegistrierung';
+import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -144,6 +144,7 @@ export class GemeindeRS implements IEntityRS {
     private resetGemeindeCache(): void {
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE).removeAll();
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_WITH_MAHLZEITENVERGUENSTIGUNG).removeAll();
         // Nur beim SuperAdmin und Mandant-User werden die Gemeinden aus dem Service gelesen,
         // bei allen Gemeinde-Benutzern aus dem User! Dieser ist aber u.U. nicht mehr aktuell
         this.authServiceRS.reloadCurrentUser();
@@ -277,5 +278,10 @@ export class GemeindeRS implements IEntityRS {
     public getExternalClients(gemeindeId: string): IPromise<TSExternalClientAssignment> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gemeindeId)}/externalclients`)
             .then(response => this.ebeguRestUtil.parseExternalClientAssignment(response.data));
+    }
+
+    public getGemeindenWithMahlzeitenverguenstigungForBenutzer(): IPromise<TSGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/mahlzeitenverguenstigung`)
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 }

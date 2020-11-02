@@ -76,7 +76,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		}
 
 		BigDecimal verguenstigungGemaessEinkommen =
-			mahlzeitenverguenstigungParams.getVerguenstigungProHauptmahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
+			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(inputData.getMassgebendesEinkommen(), inputData.isSozialhilfeempfaenger());
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
 		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0) {
@@ -98,6 +98,9 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 				inputData.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungOhneBetreuung);
 				inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, getLocale());
 			}
+		} else {
+			// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
+			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_NEIN, getLocale());
 		}
 	}
 
@@ -111,7 +114,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeiten.entrySet()) {
 			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
 				entry.getKey(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
 
 			verguenstigung = MathUtil.DEFAULT.addNullSafe(verguenstigung,
 				verguenstigungEffektivMitBetreuung.multiply(BigDecimal.valueOf(entry.getValue())));
@@ -120,7 +123,7 @@ public final class MahlzeitenverguenstigungTSCalcRule extends AbstractCalcRule {
 		for (Map.Entry<BigDecimal, Integer> entry : kostenUndAnzMahlzeitenZweiWochen.entrySet()) {
 			BigDecimal verguenstigungEffektivMitBetreuung = mahlzeitenverguenstigungParams.getVerguenstigungEffektiv(verguenstigungGemaessEinkommen,
 				entry.getKey(),
-				mahlzeitenverguenstigungParams.getMinimalerElternbeitragHauptmahlzeit());
+				mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit());
 
 			verguenstigungEffektivMitBetreuung = MathUtil.DEFAULT.multiply(verguenstigungEffektivMitBetreuung, BigDecimal.valueOf(0.5));
 

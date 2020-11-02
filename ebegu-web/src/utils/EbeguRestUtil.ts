@@ -2929,6 +2929,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.minimalerElternbeitragGekuerzt = zeitabschnittFromServer.minimalerElternbeitragGekuerzt;
             verfuegungZeitabschnittTS.minimalesEwpUnterschritten = zeitabschnittFromServer.minimalesEwpUnterschritten;
             verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung = zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
+            verfuegungZeitabschnittTS.sameAusbezahlteMahlzeiten = zeitabschnittFromServer.sameAusbezahlteMahlzeiten;
             verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten = zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
@@ -2936,14 +2937,14 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
+            verfuegungZeitabschnittTS.zahlungsstatusMahlzeitenverguenstigung = zeitabschnittFromServer.zahlungsstatusMahlzeitenverguenstigung;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
             verfuegungZeitabschnittTS.tsCalculationResultMitPaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultMitPaedagogischerBetreuung);
             verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
-            verfuegungZeitabschnittTS.verguenstigungHauptmahlzeitTotal = zeitabschnittFromServer.verguenstigungHauptmahlzeitTotal;
-            verfuegungZeitabschnittTS.verguenstigungNebenmahlzeitTotal = zeitabschnittFromServer.verguenstigungNebenmahlzeitTotal;
+            verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
             return verfuegungZeitabschnittTS;
         }
         return undefined;
@@ -3347,6 +3348,7 @@ export class EbeguRestUtil {
         if (zahlungsauftragFromServer) {
             this.parseDateRangeEntity(tsZahlungsauftrag, zahlungsauftragFromServer);
 
+            tsZahlungsauftrag.zahlungslaufTyp = zahlungsauftragFromServer.zahlungslaufTyp;
             tsZahlungsauftrag.status = zahlungsauftragFromServer.status;
             tsZahlungsauftrag.beschrieb = zahlungsauftragFromServer.beschrieb;
             tsZahlungsauftrag.datumFaellig = DateUtil.localDateToMoment(zahlungsauftragFromServer.datumFaellig);
@@ -3375,7 +3377,7 @@ export class EbeguRestUtil {
             this.parseAbstractMutableEntity(tsZahlung, zahlungFromServer);
 
             tsZahlung.betragTotalZahlung = zahlungFromServer.betragTotalZahlung;
-            tsZahlung.institutionsName = zahlungFromServer.institutionsName;
+            tsZahlung.empfaengerName = zahlungFromServer.empfaengerName;
             tsZahlung.betreuungsangebotTyp = zahlungFromServer.betreuungsangebotTyp;
             tsZahlung.status = zahlungFromServer.status;
 

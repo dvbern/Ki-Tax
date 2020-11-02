@@ -41,3 +41,5 @@ ebegu-ws/src/test/
 /logstash/input/prod2/server.log**
 /.run/**
 .run/**
+/ebegu-dbschema/src/main/resources/_nachher.sql
+/ebegu-dbschema/src/main/resources/_vorher.sql
