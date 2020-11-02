@@ -383,11 +383,14 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
+		// special fall, es kann sein das Mahlzeitverguenstigung beantragt sind aber die Gemeinde es nicht anbietet
+		Predicate predicateZeitabschnittMitGemeindeResultOnly = builder.equal(root.get(VerfuegungZeitabschnitt_.hasGemeindeSpezifischeBerechnung), Boolean.TRUE);
+		predicatesToUse.add(predicateZeitabschnittMitGemeindeResultOnly);
+
 		// nur Gesuchen wo mahlzeiten beantragt sind
 		Predicate predicateBetreuungMahlzeitbeantragt = builder.equal(
 			joinBetreuungFamSitCtnFamSit.get(Familiensituation_.keineMahlzeitenverguenstigungBeantragt),
 			Boolean.FALSE);
-		//predicatesToUse.add(predicateBetreuungMahlzeitbeantragt);
 		predicatesToUse.add(predicateBetreuungMahlzeitbeantragt);
 
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
@@ -448,6 +451,10 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 				FamiliensituationContainer_.familiensituationJA, JoinType.LEFT);
 
 		List<Predicate> predicatesToUse = new ArrayList<>();
+
+		// special fall, es kann sein das Mahlzeitverguenstigung beantragt sind aber die Gemeinde es nicht anbietet
+		Predicate predicateZeitabschnittMitGemeindeResultOnly = builder.equal(root.get(VerfuegungZeitabschnitt_.hasGemeindeSpezifischeBerechnung), Boolean.TRUE);
+		predicatesToUse.add(predicateZeitabschnittMitGemeindeResultOnly);
 
 		// nur Gesuchen wo mahlzeiten beantragt sind
 		Predicate predicateAnmeldungMahlzeitbeantragt = builder.equal(
