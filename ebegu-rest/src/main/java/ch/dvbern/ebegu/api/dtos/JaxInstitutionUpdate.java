@@ -37,7 +37,7 @@ public class JaxInstitutionUpdate {
 	private @Valid @NotNull JaxInstitutionStammdaten stammdaten = new JaxInstitutionStammdaten();
 
 	@Nullable
-	private @Valid List<String> externalClients = null;
+	private @Valid List<JaxInstitutionExternalClient> institutionExternalClients = null;
 
 	@Nonnull
 	public Optional<String> getName() {
@@ -67,11 +67,11 @@ public class JaxInstitutionUpdate {
 	}
 
 	@Nullable
-	public List<String> getExternalClients() {
-		return externalClients;
+	public List<JaxInstitutionExternalClient> getInstitutionExternalClients() {
+		return institutionExternalClients;
 	}
 
-	public void setExternalClients(@Nullable List<String> externalClients) {
-		this.externalClients = externalClients;
+	public void setInstitutionExternalClients(@Nullable List<JaxInstitutionExternalClient> institutionExternalClients) {
+		this.institutionExternalClients = institutionExternalClients;
 	}
 }

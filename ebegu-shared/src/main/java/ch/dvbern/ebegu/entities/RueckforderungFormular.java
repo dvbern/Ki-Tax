@@ -739,8 +739,13 @@ public class RueckforderungFormular extends AbstractEntity {
 		// (2) Privat
 		Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
 		Objects.requireNonNull(getKurzarbeitBeantragt());
+		Objects.requireNonNull(getCoronaErwerbsersatzBeantragt());
 
 		// (2.1) Privat mit Kurzarbeit
+		final BigDecimal coronaErwerbsersatzBetragToConsider
+			= getCoronaErwerbsersatzBeantragt()
+			? getCoronaErwerbsersatzBetrag()
+			: BigDecimal.ZERO;
 		if (getKurzarbeitBeantragt()) {
 			// EntgangeBeitraege - bereits erhaltene Kurzarbeit - evtl. bereits erhaltene Corona Erwerbsersatz
 			Objects.requireNonNull(getBetragEntgangeneElternbeitraege());
@@ -748,7 +753,7 @@ public class RueckforderungFormular extends AbstractEntity {
 			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
 				getKurzarbeitBetrag(),
-				getCoronaErwerbsersatzBetrag());
+				coronaErwerbsersatzBetragToConsider);
 			result = MathUtil.minimum(result, BigDecimal.ZERO);
 			return MathUtil.roundToFrankenRappen(result);
 		}
@@ -758,7 +763,7 @@ public class RueckforderungFormular extends AbstractEntity {
 			// Keine nicht-angebotenen Tage
 			BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 				getBetragEntgangeneElternbeitraege(),
-				getCoronaErwerbsersatzBetrag());
+				coronaErwerbsersatzBetragToConsider);
 			result = MathUtil.minimum(result, BigDecimal.ZERO);
 			return MathUtil.roundToFrankenRappen(result);
 		}
@@ -766,7 +771,7 @@ public class RueckforderungFormular extends AbstractEntity {
 		BigDecimal result = MathUtil.DEFAULT.subtractMultiple(
 			getBetragEntgangeneElternbeitraege(),
 			getBetragEntgangeneElternbeitraegeNichtAngeboteneEinheiten(),
-			getCoronaErwerbsersatzBetrag())
+			coronaErwerbsersatzBetragToConsider)
 			.add(getAnzahlNichtAngeboteneEinheiten());
 		result = MathUtil.minimum(result, BigDecimal.ZERO);
 		return MathUtil.roundToFrankenRappen(result);

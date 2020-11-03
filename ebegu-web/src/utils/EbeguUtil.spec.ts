@@ -131,26 +131,6 @@ describe('EbeguUtil', () => {
         });
     });
 
-    describe('isSame', () => {
-
-        it('should not allow duplicates', () => {
-            expect(EbeguUtil.isSame([1, 1], [1])).toBe(false);
-        });
-
-        it('should allow identity', () => {
-            const a = [1, 1];
-            expect(EbeguUtil.isSame(a, a)).toBe(true);
-        });
-
-        it('should allow similar arrays', () => {
-            expect(EbeguUtil.isSame([1, 2], [1, 2])).toBe(true);
-        });
-
-        it('should allow similar arrays - regardless of order', () => {
-            expect(EbeguUtil.isSame([1, 2], [2, 1])).toBe(true);
-        });
-    });
-
     describe('isSameById', () => {
         class Entity extends TSAbstractEntity {
             public constructor(id: string) {

@@ -20,7 +20,7 @@ package ch.dvbern.ebegu.outbox.institutionclient;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 
-import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
@@ -30,7 +30,7 @@ public class InstitutionClientEventConverter {
 	@Nonnull
 	public InstitutionClientAddedEvent clientAddedEventOf(
 		@Nonnull String institutionId,
-		@Nonnull ExternalClient client) {
+		@Nonnull InstitutionExternalClient client) {
 
 		InstitutionClientEventDTO dto = toInstitutionClientEventDTO(institutionId, client);
 		byte[] payload = AvroConverter.toAvroBinary(dto);
@@ -41,7 +41,7 @@ public class InstitutionClientEventConverter {
 	@Nonnull
 	public InstitutionClientRemovedEvent clientRemovedEventOf(
 		@Nonnull String institutionId,
-		@Nonnull ExternalClient client) {
+		@Nonnull InstitutionExternalClient client) {
 
 		InstitutionClientEventDTO dto = toInstitutionClientEventDTO(institutionId, client);
 		byte[] payload = AvroConverter.toAvroBinary(dto);
@@ -50,14 +50,27 @@ public class InstitutionClientEventConverter {
 	}
 
 	@Nonnull
+	public InstitutionClientModifiedEvent clientModifiedEventOf(
+		@Nonnull String institutionId,
+		@Nonnull InstitutionExternalClient client) {
+
+		InstitutionClientEventDTO dto = toInstitutionClientEventDTO(institutionId, client);
+		byte[] payload = AvroConverter.toAvroBinary(dto);
+
+		return new InstitutionClientModifiedEvent(institutionId, payload, dto.getSchema());
+	}
+
+	@Nonnull
 	private InstitutionClientEventDTO toInstitutionClientEventDTO(
 		@Nonnull String institutionId,
-		@Nonnull ExternalClient client) {
+		@Nonnull InstitutionExternalClient client) {
 
 		return InstitutionClientEventDTO.newBuilder()
 			.setInstitutionId(institutionId)
-			.setClientName(client.getClientName())
-			.setClientType(client.getType().name())
+			.setClientName(client.getExternalClient().getClientName())
+			.setClientType(client.getExternalClient().getType().name())
+			.setGueltigAb(client.getGueltigkeit().getGueltigAb())
+			.setGueltigBis(client.getGueltigkeit().getGueltigBis())
 			.build();
 	}
 }
