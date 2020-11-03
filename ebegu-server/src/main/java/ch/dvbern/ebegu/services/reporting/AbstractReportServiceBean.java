@@ -33,6 +33,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -199,15 +200,9 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 	protected Optional<KindContainer> getGueltigesKind(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Gesuch gueltigeGesuch) {
-		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-		Integer kindNummer;
-		if (betreuung != null) {
-			kindNummer = betreuung.getKind().getKindNummer();
-		} else {
-			final AnmeldungTagesschule anmeldungTagesschule = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
-			Objects.requireNonNull(anmeldungTagesschule);
-			kindNummer = anmeldungTagesschule.getKind().getKindNummer();
-		}
+		final AbstractPlatz platz = zeitabschnitt.getVerfuegung().getPlatz();
+		Objects.requireNonNull(platz);
+		Integer kindNummer = platz.getKind().getKindNummer();
 
 		return gueltigeGesuch.getKindContainers().stream()
 			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
