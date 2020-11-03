@@ -164,6 +164,11 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
 				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
 				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
+				if (resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal() != null) {
+					inputData.setVerguenstigungMahlzeitenTotal(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal());
+				} else {
+					inputData.setVerguenstigungMahlzeitenTotal(BigDecimal.ZERO);
+				}
 				if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
 					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
