@@ -651,10 +651,15 @@ public class BGCalculationInput {
 
 	@Override
 	public String toString() {
-		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
-			+ " EP GS2: " + getErwerbspensumGS2() + '\t'
-			+ " Restanspruch: " + getAnspruchspensumRest();
-		return sb;
+		final StringBuilder sb = new StringBuilder("BGCalculationInput{");
+		sb.append("ruleValidity=").append(ruleValidity);
+		sb.append(", anspruchspensumProzent=").append(anspruchspensumProzent);
+		sb.append(", betreuungspensumProzent=").append(betreuungspensumProzent);
+		sb.append(", fachstellenpensum=").append(fachstellenpensum);
+		sb.append(", anspruchspensumRest=").append(anspruchspensumRest);
+		sb.append(", zuSpaetEingereicht=").append(zuSpaetEingereicht);
+		sb.append('}');
+		return sb.toString();
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
