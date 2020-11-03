@@ -102,9 +102,9 @@ public class BetreuungsgutscheinEvaluator {
 
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
-			MonatsRule monatsRule = new MonatsRule();
-			MutationsMerger mutationsMerger = new MutationsMerger(locale);
-			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true);
+			MonatsRule monatsRule = new MonatsRule(isDebug);
+			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true, isDebug);
 
 			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
@@ -195,12 +195,12 @@ public class BetreuungsgutscheinEvaluator {
 
 				// Die Abschluss-Rules ebenfalls ausführen
 
-				AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
-				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
-				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false);
-				MonatsRule monatsRule = new MonatsRule();
-				MutationsMerger mutationsMerger = new MutationsMerger(locale);
-				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule());
+				AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
+				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
+				MonatsRule monatsRule = new MonatsRule(isDebug);
+				MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
 
 				// Innerhalb eines Monats darf der Anspruch nie sinken
 				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
@@ -312,7 +312,7 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
-		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
 		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 

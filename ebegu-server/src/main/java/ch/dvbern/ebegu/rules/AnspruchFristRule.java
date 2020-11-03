@@ -40,7 +40,8 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public final class AnspruchFristRule extends AbstractAbschlussRule {
 
-	public AnspruchFristRule() {
+	public AnspruchFristRule(boolean isDebug) {
+		super(isDebug);
 	}
 
 	@Override

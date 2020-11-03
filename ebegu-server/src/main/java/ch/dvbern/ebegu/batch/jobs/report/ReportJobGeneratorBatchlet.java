@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
+import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
@@ -76,6 +77,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportNotrechtService reportNotrechtService;
+
+	@Inject
+	private ReportMahlzeitenService reportMahlzeitenService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -186,6 +190,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		}
 		case VORLAGE_REPORT_NOTRECHT: {
 			return generateReportNotrecht();
+		}
+		case VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG: {
+			return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale);
 		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

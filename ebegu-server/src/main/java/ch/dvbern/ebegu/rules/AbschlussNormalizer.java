@@ -37,7 +37,8 @@ public final class AbschlussNormalizer extends AbstractAbschlussRule {
 
 	private boolean keepMonate;
 
-	public AbschlussNormalizer(boolean keepMonate) {
+	public AbschlussNormalizer(boolean keepMonate, boolean isDebug) {
+		super(isDebug);
 		this.keepMonate = keepMonate;
 	}
 

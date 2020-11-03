@@ -23,26 +23,23 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import org.hibernate.envers.Audited;
 
-import static ch.dvbern.ebegu.enums.ExternalClientType.EXCHANGE_SERVICE_USER;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
@@ -81,23 +78,10 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
 
-	/**
-	 * The data of this institution can be accessed by any ExternalClient in this set. E.g. via the exchange service
-	 */
+	@Valid
 	@Nonnull
-	@ManyToMany
-	@JoinTable(
-		joinColumns = @JoinColumn(name = "institution_id", nullable = false),
-		inverseJoinColumns = @JoinColumn(name = "external_client_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_institution_external_clients_institution_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_institution_external_clients_external_client_id"),
-		indexes = {
-			@Index(name = "IX_institution_external_clients_institution_id", columnList = "institution_id"),
-			@Index(name = "IX_institution_external_clients_external_client_id", columnList = "external_client_id"),
-		}
-	)
-	private @Valid @NotNull
-	Set<@ExternalClientOfType(type = EXCHANGE_SERVICE_USER) ExternalClient> externalClients = new HashSet<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institution")
+	private Set<InstitutionExternalClient> institutionExternalClients = new HashSet<>();
 
 	public Institution() {
 	}
@@ -154,17 +138,20 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		this.eventPublished = eventPublished;
 	}
 
-	@Nonnull
-	public Set<ExternalClient> getExternalClients() {
-		return externalClients;
-	}
-
-	public void setExternalClients(@Nonnull Set<ExternalClient> externalClients) {
-		this.externalClients = externalClients;
-	}
-
 	public boolean isUnknownInstitution() {
 		return this.name.equals(Constants.UNKNOWN_INSTITUTION_NAME);
+	}
+
+	/**
+	 * The data of this institution can be accessed by any ExternalClient in this set. E.g. via the exchange service
+	 */
+	@Nonnull
+	public Set<InstitutionExternalClient> getInstitutionExternalClients() {
+		return institutionExternalClients;
+	}
+
+	public void setInstitutionExternalClients(@Nonnull Set<InstitutionExternalClient> institutionExternalClients) {
+		this.institutionExternalClients = institutionExternalClients;
 	}
 
 	@Override
@@ -189,5 +176,4 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		return "bgNummer: " + this.getName()
 			+ ", status: " + this.getStatus();
 	}
-
 }

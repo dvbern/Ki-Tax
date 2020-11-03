@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.tests.reporting;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandDataRow;
+import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.util.Constants;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;

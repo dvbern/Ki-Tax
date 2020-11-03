@@ -92,6 +92,7 @@ export class EbeguUtil {
 
     /**
      * Compares two array and returns TRUE when both arrays contain the same objects
+     * but not necessary the same values!
      */
     public static isSame<T>(a: T[], b: T[]): boolean {
         if (a.length !== b.length) {
@@ -102,6 +103,15 @@ export class EbeguUtil {
         const bSorted = b.concat().sort();
 
         return aSorted.every((value, index) => bSorted[index] === value);
+    }
+
+    public static copyArrayWithoutReference<T>(a: T[]): T[] {
+        const newArray = [];
+        for (let i = 0; i < a.length; i++) {
+            newArray[i] = angular.copy(a[i]);
+            i++;
+        }
+        return newArray;
     }
 
     /**

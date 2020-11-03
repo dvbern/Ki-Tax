@@ -99,6 +99,8 @@ import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
 import {TSInstitution} from '../models/TSInstitution';
+import {TSInstitutionExternalClient} from '../models/TSInstitutionExternalClient';
+import {TSInstitutionExternalClientAssignment} from '../models/TSInstitutionExternalClientAssignment';
 import {TSInstitutionListDTO} from '../models/TSInstitutionListDTO';
 import {TSInstitutionStammdaten} from '../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenBetreuungsgutscheine} from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
@@ -716,8 +718,10 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any,
-                                           sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
+    public sozialhilfeZeitraumToRestObject(
+        restSozialhilfeZeitraum: any,
+        sozialhilfeZeitraum: TSSozialhilfeZeitraum,
+    ): any {
         if (sozialhilfeZeitraum) {
             this.abstractDateRangeEntityToRestObject(restSozialhilfeZeitraum, sozialhilfeZeitraum);
             return restSozialhilfeZeitraum;
@@ -751,8 +755,10 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum,
-                                    sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
+    public parseSozialhilfeZeitraum(
+        sozialhilfeZeitraum: TSSozialhilfeZeitraum,
+        sozialhilfeZeitraumFromServer: any,
+    ): TSSozialhilfeZeitraum {
         if (sozialhilfeZeitraumFromServer) {
             this.parseDateRangeEntity(sozialhilfeZeitraum, sozialhilfeZeitraumFromServer);
             return sozialhilfeZeitraum;
@@ -1271,7 +1277,7 @@ export class EbeguRestUtil {
             name: update.name || null,
             traegerschaftId: update.traegerschaftId || null,
             stammdaten: this.institutionStammdatenToRestObject({}, update.stammdaten) || null,
-            externalClients: update.externalClients || null
+            institutionExternalClients: this.institutionExternalClientListToRestObject(update.institutionExternalClients),
         };
     }
 
@@ -1500,7 +1506,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
             institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
             institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
-            institutionStammdatenTS.betreuungsstandorte = this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
+            institutionStammdatenTS.betreuungsstandorte =
+                this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
             return institutionStammdatenTS;
         }
         return undefined;
@@ -1536,7 +1543,8 @@ export class EbeguRestUtil {
                 this.gemeindeToRestObject({}, institutionStammdatenFerieninsel.gemeinde);
 
             restInstitutionStammdatenFerieninsel.einstellungenFerieninsel
-                = this.einstellungenFerieninselArrayToRestObject(institutionStammdatenFerieninsel.einstellungenFerieninsel);
+                =
+                this.einstellungenFerieninselArrayToRestObject(institutionStammdatenFerieninsel.einstellungenFerieninsel);
 
             return restInstitutionStammdatenFerieninsel;
         }
@@ -1553,7 +1561,7 @@ export class EbeguRestUtil {
     }
 
     private einstellungenFerieninselToRestObject(
-        restEinstellung: any, einstellungFerieninselTS: TSEinstellungenFerieninsel
+        restEinstellung: any, einstellungFerieninselTS: TSEinstellungenFerieninsel,
     ): any {
         if (einstellungFerieninselTS) {
             this.abstractEntityToRestObject(restEinstellung, einstellungFerieninselTS);
@@ -1602,7 +1610,7 @@ export class EbeguRestUtil {
     }
 
     private parseEinstellungenFerieninsel(
-        einstellungenFerieninselTS: TSEinstellungenFerieninsel, einstellungFromServer: any
+        einstellungenFerieninselTS: TSEinstellungenFerieninsel, einstellungFromServer: any,
     ): TSEinstellungenFerieninsel {
         if (einstellungFromServer) {
             this.parseAbstractEntity(einstellungenFerieninselTS, einstellungFromServer);
@@ -2161,10 +2169,22 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
-            restBetreuungspensum.monatlicheHauptmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ? 0 : betreuungspensum.monatlicheHauptmahlzeiten;
-            restBetreuungspensum.monatlicheNebenmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ? 0 : betreuungspensum.monatlicheNebenmahlzeiten;
-            restBetreuungspensum.tarifProHauptmahlzeit = EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProHauptmahlzeit) ? 0 : betreuungspensum.tarifProHauptmahlzeit;
-            restBetreuungspensum.tarifProNebenmahlzeit = EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProNebenmahlzeit) ? 0 : betreuungspensum.tarifProNebenmahlzeit;
+            restBetreuungspensum.monatlicheHauptmahlzeiten =
+                EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ?
+                    0 :
+                    betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten =
+                EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ?
+                    0 :
+                    betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.tarifProHauptmahlzeit =
+                EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProHauptmahlzeit) ?
+                    0 :
+                    betreuungspensum.tarifProHauptmahlzeit;
+            restBetreuungspensum.tarifProNebenmahlzeit =
+                EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProNebenmahlzeit) ?
+                    0 :
+                    betreuungspensum.tarifProNebenmahlzeit;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -2235,7 +2255,8 @@ export class EbeguRestUtil {
             betreuungTS.bgNummer = betreuungFromServer.bgNummer;
             betreuungTS.betreuungspensumAbweichungen =
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
-            betreuungTS.anmeldungTagesschuleZeitabschnitts = this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
+            betreuungTS.anmeldungTagesschuleZeitabschnitts =
+                this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             return betreuungTS;
         }
         return undefined;
@@ -2910,7 +2931,8 @@ export class EbeguRestUtil {
             this.parseDateRangeEntity(verfuegungZeitabschnittTS, zeitabschnittFromServer);
             verfuegungZeitabschnittTS.abzugFamGroesse = zeitabschnittFromServer.abzugFamGroesse;
             verfuegungZeitabschnittTS.anspruchberechtigtesPensum = zeitabschnittFromServer.anspruchberechtigtesPensum;
-            verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten = zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
+            verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten =
+                zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
             verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
             verfuegungZeitabschnittTS.betreuungspensumProzent = zeitabschnittFromServer.betreuungspensumProzent;
@@ -2924,20 +2946,28 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.famGroesse = zeitabschnittFromServer.famGroesse;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
-            verfuegungZeitabschnittTS.massgebendesEinkommenVorAbzugFamgr = zeitabschnittFromServer.massgebendesEinkommenVorAbzugFamgr;
+            verfuegungZeitabschnittTS.massgebendesEinkommenVorAbzugFamgr =
+                zeitabschnittFromServer.massgebendesEinkommenVorAbzugFamgr;
             verfuegungZeitabschnittTS.minimalerElternbeitrag = zeitabschnittFromServer.minimalerElternbeitrag;
-            verfuegungZeitabschnittTS.minimalerElternbeitragGekuerzt = zeitabschnittFromServer.minimalerElternbeitragGekuerzt;
+            verfuegungZeitabschnittTS.minimalerElternbeitragGekuerzt =
+                zeitabschnittFromServer.minimalerElternbeitragGekuerzt;
             verfuegungZeitabschnittTS.minimalesEwpUnterschritten = zeitabschnittFromServer.minimalesEwpUnterschritten;
-            verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung = zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
+            verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung =
+                zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             verfuegungZeitabschnittTS.sameAusbezahlteMahlzeiten = zeitabschnittFromServer.sameAusbezahlteMahlzeiten;
-            verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
-            verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten = zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
+            verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten =
+                zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
+            verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
+                zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
-            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
-            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
+                zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten =
+                zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
-            verfuegungZeitabschnittTS.zahlungsstatusMahlzeitenverguenstigung = zeitabschnittFromServer.zahlungsstatusMahlzeitenverguenstigung;
+            verfuegungZeitabschnittTS.zahlungsstatusMahlzeitenverguenstigung =
+                zeitabschnittFromServer.zahlungsstatusMahlzeitenverguenstigung;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
             verfuegungZeitabschnittTS.tsCalculationResultMitPaedagogischerBetreuung =
@@ -3490,7 +3520,7 @@ export class EbeguRestUtil {
     }
 
     private parseEinstellungenTagesschule(
-        einstellungenTagesschuleTS: TSEinstellungenTagesschule, einstellungFromServer: any
+        einstellungenTagesschuleTS: TSEinstellungenTagesschule, einstellungFromServer: any,
     ): TSEinstellungenTagesschule {
         if (einstellungFromServer) {
             this.parseAbstractEntity(einstellungenTagesschuleTS, einstellungFromServer);
@@ -3516,7 +3546,7 @@ export class EbeguRestUtil {
     }
 
     private einstellungenTagesschuleToRestObject(
-        restEinstellung: any, einstellungTagesschuleTS: TSEinstellungenTagesschule
+        restEinstellung: any, einstellungTagesschuleTS: TSEinstellungenTagesschule,
     ): any {
         if (einstellungTagesschuleTS) {
             this.abstractEntityToRestObject(restEinstellung, einstellungTagesschuleTS);
@@ -3541,7 +3571,7 @@ export class EbeguRestUtil {
             : [this.parseModulTagesschuleGroup(new TSModulTagesschuleGroup(), data)];
     }
 
-    private parseModulTagesschuleGroup(modulTagesschuleGroupTS: TSModulTagesschuleGroup, modulGroupFromServer: any
+    private parseModulTagesschuleGroup(modulTagesschuleGroupTS: TSModulTagesschuleGroup, modulGroupFromServer: any,
     ): TSModulTagesschuleGroup {
         if (modulGroupFromServer) {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
@@ -3575,7 +3605,7 @@ export class EbeguRestUtil {
             : [];
     }
 
-    private modulTagesschuleGroupToRestObject(restModulGroup: any, modulTagesschuleGroupTS: TSModulTagesschuleGroup
+    private modulTagesschuleGroupToRestObject(restModulGroup: any, modulTagesschuleGroupTS: TSModulTagesschuleGroup,
     ): any {
         if (modulTagesschuleGroupTS) {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
@@ -3679,8 +3709,10 @@ export class EbeguRestUtil {
             : [];
     }
 
-    private belegungTagesschuleModulToRestObject(restBelegungModul: any,
-                                                 belegungModulTS: TSBelegungTagesschuleModul): any {
+    private belegungTagesschuleModulToRestObject(
+        restBelegungModul: any,
+        belegungModulTS: TSBelegungTagesschuleModul,
+    ): any {
         if (belegungModulTS) {
             this.abstractEntityToRestObject(restBelegungModul, belegungModulTS);
             restBelegungModul.intervall = belegungModulTS.intervall;
@@ -3889,8 +3921,10 @@ export class EbeguRestUtil {
             : [this.parseGemeindeRegistrierung(new TSGemeindeRegistrierung(), data)];
     }
 
-    private parseGemeindeRegistrierung(gemeindeRegistrierungTS: TSGemeindeRegistrierung,
-                                       gemeindeRegistrierung: any): TSGemeindeRegistrierung {
+    private parseGemeindeRegistrierung(
+        gemeindeRegistrierungTS: TSGemeindeRegistrierung,
+        gemeindeRegistrierung: any,
+    ): TSGemeindeRegistrierung {
         if (gemeindeRegistrierung) {
             gemeindeRegistrierungTS.id = gemeindeRegistrierung.id;
             gemeindeRegistrierungTS.name = gemeindeRegistrierung.name;
@@ -3936,13 +3970,20 @@ export class EbeguRestUtil {
     ): TSAnmeldungTagesschuleZeitabschnitt {
         if (anmeldungTagesschuleZeitabschnittFromServer) {
             this.parseDateRangeEntity(anmeldungTagesschuleZeitabschnittTS, anmeldungTagesschuleZeitabschnittFromServer);
-            anmeldungTagesschuleZeitabschnittTS.betreuungsminutenProWoche = anmeldungTagesschuleZeitabschnittFromServer.betreuungsminutenProWoche;
-            anmeldungTagesschuleZeitabschnittTS.betreuungsstundenProWoche = anmeldungTagesschuleZeitabschnittFromServer.betreuungsstundenProWoche;
-            anmeldungTagesschuleZeitabschnittTS.gebuehrProStunde = anmeldungTagesschuleZeitabschnittFromServer.gebuehrProStunde;
-            anmeldungTagesschuleZeitabschnittTS.massgebendesEinkommenInklAbzugFamgr = anmeldungTagesschuleZeitabschnittFromServer.massgebendesEinkommenInklAbzugFamgr;
-            anmeldungTagesschuleZeitabschnittTS.pedagogischBetreut = anmeldungTagesschuleZeitabschnittFromServer.pedagogischBetreut;
-            anmeldungTagesschuleZeitabschnittTS.totalKostenProWoche = anmeldungTagesschuleZeitabschnittFromServer.totalKostenProWoche;
-            anmeldungTagesschuleZeitabschnittTS.verpflegungskosten = anmeldungTagesschuleZeitabschnittFromServer.verpflegungskosten;
+            anmeldungTagesschuleZeitabschnittTS.betreuungsminutenProWoche =
+                anmeldungTagesschuleZeitabschnittFromServer.betreuungsminutenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.betreuungsstundenProWoche =
+                anmeldungTagesschuleZeitabschnittFromServer.betreuungsstundenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.gebuehrProStunde =
+                anmeldungTagesschuleZeitabschnittFromServer.gebuehrProStunde;
+            anmeldungTagesschuleZeitabschnittTS.massgebendesEinkommenInklAbzugFamgr =
+                anmeldungTagesschuleZeitabschnittFromServer.massgebendesEinkommenInklAbzugFamgr;
+            anmeldungTagesschuleZeitabschnittTS.pedagogischBetreut =
+                anmeldungTagesschuleZeitabschnittFromServer.pedagogischBetreut;
+            anmeldungTagesschuleZeitabschnittTS.totalKostenProWoche =
+                anmeldungTagesschuleZeitabschnittFromServer.totalKostenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.verpflegungskosten =
+                anmeldungTagesschuleZeitabschnittFromServer.verpflegungskosten;
             return anmeldungTagesschuleZeitabschnittTS;
         }
         return undefined;
@@ -3968,36 +4009,45 @@ export class EbeguRestUtil {
             : [this.parseRueckforderungFormular(new TSRueckforderungFormular(), data)];
     }
 
-    public parseRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular,
-                                       rueckforderungFormularFromServer: any): TSRueckforderungFormular {
+    public parseRueckforderungFormular(
+        rueckforderungFormular: TSRueckforderungFormular,
+        rueckforderungFormularFromServer: any,
+    ): TSRueckforderungFormular {
 
         this.parseAbstractEntity(rueckforderungFormular, rueckforderungFormularFromServer);
 
-        rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
-        rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
+        rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
+            rueckforderungFormularFromServer.institutionStammdaten);
+        rueckforderungFormular.rueckforderungMitteilungen =
+            this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
         rueckforderungFormular.verantwortlicherName = rueckforderungFormularFromServer.verantwortlicherName;
         rueckforderungFormular.uncheckedDocuments = rueckforderungFormularFromServer.uncheckedDocuments;
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
         rueckforderungFormular.hasBeenProvisorisch = rueckforderungFormularFromServer.hasBeenProvisorisch;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlStunden;
-        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
         rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeAnzahlStunden;
-        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlStunden;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage =
             rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlTage;
-        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage =
+            rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlTage;
         rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage =
             rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeAnzahlTage;
-        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage =
+            rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlTage;
         rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung =
             rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeBetreuung;
         rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung =
             rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeBetreuung;
         rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung =
             rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeBetreuung;
-        rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeBetreuung;
         rueckforderungFormular.stufe1FreigabeBetrag = rueckforderungFormularFromServer.stufe1FreigabeBetrag;
         rueckforderungFormular.stufe1FreigabeDatum =
             DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
@@ -4013,19 +4063,24 @@ export class EbeguRestUtil {
             DateUtil.localDateToMoment(rueckforderungFormularFromServer.extendedEinreichefrist);
         rueckforderungFormular.relevantEinreichungsfrist =
             DateUtil.localDateToMoment(rueckforderungFormularFromServer.relevantEinreichungsfrist);
-        rueckforderungFormular.betragEntgangeneElternbeitraege = rueckforderungFormularFromServer.betragEntgangeneElternbeitraege;
+        rueckforderungFormular.betragEntgangeneElternbeitraege =
+            rueckforderungFormularFromServer.betragEntgangeneElternbeitraege;
         rueckforderungFormular.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
             rueckforderungFormularFromServer.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
-        rueckforderungFormular.anzahlNichtAngeboteneEinheiten = rueckforderungFormularFromServer.anzahlNichtAngeboteneEinheiten;
+        rueckforderungFormular.anzahlNichtAngeboteneEinheiten =
+            rueckforderungFormularFromServer.anzahlNichtAngeboteneEinheiten;
         rueckforderungFormular.kurzarbeitBeantragt = rueckforderungFormularFromServer.kurzarbeitBeantragt;
         rueckforderungFormular.kurzarbeitBetrag = rueckforderungFormularFromServer.kurzarbeitBetrag;
-        rueckforderungFormular.kurzarbeitDefinitivVerfuegt = rueckforderungFormularFromServer.kurzarbeitDefinitivVerfuegt;
-        rueckforderungFormular.kurzarbeitKeinAntragBegruendung = rueckforderungFormularFromServer.kurzarbeitKeinAntragBegruendung;
+        rueckforderungFormular.kurzarbeitDefinitivVerfuegt =
+            rueckforderungFormularFromServer.kurzarbeitDefinitivVerfuegt;
+        rueckforderungFormular.kurzarbeitKeinAntragBegruendung =
+            rueckforderungFormularFromServer.kurzarbeitKeinAntragBegruendung;
         rueckforderungFormular.kurzarbeitSonstiges = rueckforderungFormularFromServer.kurzarbeitSonstiges;
         rueckforderungFormular.coronaErwerbsersatzBeantragt =
             rueckforderungFormularFromServer.coronaErwerbsersatzBeantragt;
         rueckforderungFormular.coronaErwerbsersatzBetrag = rueckforderungFormularFromServer.coronaErwerbsersatzBetrag;
-        rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt = rueckforderungFormularFromServer.coronaErwerbsersatzDefinitivVerfuegt;
+        rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt =
+            rueckforderungFormularFromServer.coronaErwerbsersatzDefinitivVerfuegt;
         rueckforderungFormular.coronaErwerbsersatzKeinAntragBegruendung =
             rueckforderungFormularFromServer.coronaErwerbsersatzKeinAntragBegruendung;
         rueckforderungFormular.coronaErwerbsersatzSonstiges =
@@ -4045,41 +4100,53 @@ export class EbeguRestUtil {
             : [this.parseRueckforderungMitteilung(new TSRueckforderungMitteilung(), data)];
     }
 
-    public parseRueckforderungMitteilung(rueckforderungMitteilung: TSRueckforderungMitteilung,
-                                         rueckforderungMitteilungFromServer: any): TSRueckforderungMitteilung {
+    public parseRueckforderungMitteilung(
+        rueckforderungMitteilung: TSRueckforderungMitteilung,
+        rueckforderungMitteilungFromServer: any,
+    ): TSRueckforderungMitteilung {
         this.parseAbstractEntity(rueckforderungMitteilung, rueckforderungMitteilungFromServer);
         rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
         rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
-        rueckforderungMitteilung.sendeDatum = DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
+        rueckforderungMitteilung.sendeDatum =
+            DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
         return rueckforderungMitteilung;
     }
 
-    public rueckforderungFormularToRestObject(rueckforderungFormularRest: any,
-                                              rueckforderungFormularTS: TSRueckforderungFormular): any {
+    public rueckforderungFormularToRestObject(
+        rueckforderungFormularRest: any,
+        rueckforderungFormularTS: TSRueckforderungFormular,
+    ): any {
         this.abstractEntityToRestObject(rueckforderungFormularRest, rueckforderungFormularTS);
-        rueckforderungFormularRest.institutionStammdaten = this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
-        rueckforderungFormularRest.rueckforderungMitteilungen = this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
+        rueckforderungFormularRest.institutionStammdaten =
+            this.institutionStammdatenToRestObject({}, rueckforderungFormularTS.institutionStammdaten);
+        rueckforderungFormularRest.rueckforderungMitteilungen =
+            this.rueckforderungMitteilungListToRestObject(rueckforderungFormularTS.rueckforderungMitteilungen);
         rueckforderungFormularRest.status = rueckforderungFormularTS.status;
         rueckforderungFormularRest.hasBeenProvisorisch = rueckforderungFormularTS.hasBeenProvisorisch;
         rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlStunden;
-        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlStunden;
         rueckforderungFormularRest.stufe2KantonKostenuebernahmeAnzahlStunden =
             rueckforderungFormularTS.stufe2KantonKostenuebernahmeAnzahlStunden;
-        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlStunden;
         rueckforderungFormularRest.stufe1KantonKostenuebernahmeAnzahlTage =
             rueckforderungFormularTS.stufe1KantonKostenuebernahmeAnzahlTage;
-        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeAnzahlTage =
+            rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeAnzahlTage;
         rueckforderungFormularRest.stufe2KantonKostenuebernahmeAnzahlTage =
             rueckforderungFormularTS.stufe2KantonKostenuebernahmeAnzahlTage;
-        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeAnzahlTage =
+            rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeAnzahlTage;
         rueckforderungFormularRest.stufe1KantonKostenuebernahmeBetreuung =
             rueckforderungFormularTS.stufe1KantonKostenuebernahmeBetreuung;
         rueckforderungFormularRest.stufe1InstitutionKostenuebernahmeBetreuung =
             rueckforderungFormularTS.stufe1InstitutionKostenuebernahmeBetreuung;
         rueckforderungFormularRest.stufe2KantonKostenuebernahmeBetreuung =
             rueckforderungFormularTS.stufe2KantonKostenuebernahmeBetreuung;
-        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormularRest.stufe2InstitutionKostenuebernahmeBetreuung =
+            rueckforderungFormularTS.stufe2InstitutionKostenuebernahmeBetreuung;
         rueckforderungFormularRest.stufe1FreigabeBetrag = rueckforderungFormularTS.stufe1FreigabeBetrag;
         rueckforderungFormularRest.stufe1FreigabeDatum =
             DateUtil.momentToLocalDateTime(rueckforderungFormularTS.stufe1FreigabeDatum);
@@ -4093,19 +4160,23 @@ export class EbeguRestUtil {
             DateUtil.momentToLocalDate(rueckforderungFormularTS.extendedEinreichefrist);
         rueckforderungFormularRest.relevantEinreichungsfrist =
             DateUtil.momentToLocalDate(rueckforderungFormularTS.relevantEinreichungsfrist);
-        rueckforderungFormularRest.betragEntgangeneElternbeitraege = rueckforderungFormularTS.betragEntgangeneElternbeitraege;
+        rueckforderungFormularRest.betragEntgangeneElternbeitraege =
+            rueckforderungFormularTS.betragEntgangeneElternbeitraege;
         rueckforderungFormularRest.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten =
             rueckforderungFormularTS.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten;
-        rueckforderungFormularRest.anzahlNichtAngeboteneEinheiten = rueckforderungFormularTS.anzahlNichtAngeboteneEinheiten;
+        rueckforderungFormularRest.anzahlNichtAngeboteneEinheiten =
+            rueckforderungFormularTS.anzahlNichtAngeboteneEinheiten;
         rueckforderungFormularRest.kurzarbeitBeantragt = rueckforderungFormularTS.kurzarbeitBeantragt;
         rueckforderungFormularRest.kurzarbeitBetrag = rueckforderungFormularTS.kurzarbeitBetrag;
         rueckforderungFormularRest.kurzarbeitDefinitivVerfuegt = rueckforderungFormularTS.kurzarbeitDefinitivVerfuegt;
-        rueckforderungFormularRest.kurzarbeitKeinAntragBegruendung = rueckforderungFormularTS.kurzarbeitKeinAntragBegruendung;
+        rueckforderungFormularRest.kurzarbeitKeinAntragBegruendung =
+            rueckforderungFormularTS.kurzarbeitKeinAntragBegruendung;
         rueckforderungFormularRest.kurzarbeitSonstiges = rueckforderungFormularTS.kurzarbeitSonstiges;
         rueckforderungFormularRest.coronaErwerbsersatzBeantragt =
             rueckforderungFormularTS.coronaErwerbsersatzBeantragt;
         rueckforderungFormularRest.coronaErwerbsersatzBetrag = rueckforderungFormularTS.coronaErwerbsersatzBetrag;
-        rueckforderungFormularRest.coronaErwerbsersatzDefinitivVerfuegt = rueckforderungFormularTS.coronaErwerbsersatzDefinitivVerfuegt;
+        rueckforderungFormularRest.coronaErwerbsersatzDefinitivVerfuegt =
+            rueckforderungFormularTS.coronaErwerbsersatzDefinitivVerfuegt;
         rueckforderungFormularRest.coronaErwerbsersatzKeinAntragBegruendung =
             rueckforderungFormularTS.coronaErwerbsersatzKeinAntragBegruendung;
         rueckforderungFormularRest.coronaErwerbsersatzSonstiges =
@@ -4121,8 +4192,10 @@ export class EbeguRestUtil {
             item => this.rueckforderungMitteilungToRestObject({}, item)) : [];
     }
 
-    public rueckforderungMitteilungToRestObject(rueckforderungMitteilungRest: any,
-                                                rueckforderungMitteilungTS: TSRueckforderungMitteilung): any {
+    public rueckforderungMitteilungToRestObject(
+        rueckforderungMitteilungRest: any,
+        rueckforderungMitteilungTS: TSRueckforderungMitteilung,
+    ): any {
         this.abstractEntityToRestObject(rueckforderungMitteilungRest, rueckforderungMitteilungTS);
         rueckforderungMitteilungRest.betreff = rueckforderungMitteilungTS.betreff;
         rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
@@ -4139,8 +4212,10 @@ export class EbeguRestUtil {
             : [this.parseRueckforderungDokument(new TSRueckforderungDokument(), data)];
     }
 
-    public parseRueckforderungDokument(dokument: TSRueckforderungDokument,
-                                       dokumentFromServer: any): TSRueckforderungDokument {
+    public parseRueckforderungDokument(
+        dokument: TSRueckforderungDokument,
+        dokumentFromServer: any,
+    ): TSRueckforderungDokument {
         if (dokumentFromServer) {
             this.parseAbstractMutableEntity(dokument, dokumentFromServer);
             dokument.filename = dokumentFromServer.filename;
@@ -4151,5 +4226,52 @@ export class EbeguRestUtil {
             return dokument;
         }
         return undefined;
+    }
+
+    public parseInstitutionExternalClientAssignment(data: any): TSInstitutionExternalClientAssignment {
+        const tsInstitutionExternalClients = new TSInstitutionExternalClientAssignment();
+
+        tsInstitutionExternalClients.availableClients = data.availableClients
+            .map((client: any) => this.parseExternalClient(client));
+
+        tsInstitutionExternalClients.assignedClients = data.assignedClients
+            .map((client: any) => this.parseInstitutionExternalClient(client));
+
+        return tsInstitutionExternalClients;
+    }
+
+    public parseInstitutionExternalClient(data: any): TSInstitutionExternalClient {
+        const tsInstitutionExternalClient = new TSInstitutionExternalClient(this.parseExternalClient(data.externalClient));
+        const ab = DateUtil.localDateToMoment(data.gueltigAb);
+        const bis = DateUtil.localDateToMoment(data.gueltigBis);
+        tsInstitutionExternalClient.gueltigkeit = new TSDateRange(ab, bis);
+        return tsInstitutionExternalClient;
+    }
+
+    public institutionExternalClientListToRestObject(institutionExternalClientList: TSInstitutionExternalClient[]): Array<any> {
+        return institutionExternalClientList ? institutionExternalClientList.map(
+            item => this.institutionExternalClientToRestObject({}, item)) : undefined;
+    }
+
+    public institutionExternalClientToRestObject(
+        institutionExternalClientRest: any,
+        institutionExternalClientTS: TSInstitutionExternalClient,
+    ): any {
+        institutionExternalClientRest.externalClient = this.externalClientToRestObject({}, institutionExternalClientTS.externalClient);
+        if (institutionExternalClientTS.gueltigkeit) {
+            institutionExternalClientRest.gueltigAb = DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigAb);
+            institutionExternalClientRest.gueltigBis = DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigBis);
+        }
+        return institutionExternalClientRest;
+    }
+
+    public externalClientToRestObject(
+        externalClientRest: any,
+        externalClientTS: TSExternalClient,
+    ): any {
+        this.abstractEntityToRestObject(externalClientRest, externalClientTS);
+        externalClientRest.clientName = externalClientTS.clientName;
+        externalClientRest.type = externalClientTS.type;
+        return externalClientRest;
     }
 }

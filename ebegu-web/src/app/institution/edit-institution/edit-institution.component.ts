@@ -36,8 +36,9 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSExternalClient} from '../../../models/TSExternalClient';
-import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionExternalClient} from '../../../models/TSInstitutionExternalClient';
+import {TSInstitutionExternalClientAssignment} from '../../../models/TSInstitutionExternalClientAssignment';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {TSMandant} from '../../../models/TSMandant';
@@ -71,7 +72,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
-    public externalClients?: TSExternalClientAssignment;
+    public externalClients?: TSInstitutionExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
 
@@ -82,7 +83,7 @@ export class EditInstitutionComponent implements OnInit {
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     private isRegisteringInstitution: boolean = false;
-    private initiallyAssignedClients: TSExternalClient[];
+    private initiallyAssignedClients: TSInstitutionExternalClient[];
     public ebeguUtil = EbeguUtil;
 
     public constructor(
@@ -130,10 +131,10 @@ export class EditInstitutionComponent implements OnInit {
             .then(externalClients => this.initExternalClients(externalClients));
     }
 
-    private initExternalClients(externalClients: TSExternalClientAssignment): void {
+    private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
-        this.initiallyAssignedClients = [...externalClients.assignedClients];
+        this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
         this.changeDetectorRef.markForCheck();
     }
 
@@ -258,54 +259,95 @@ export class EditInstitutionComponent implements OnInit {
         const updateModel = new TSInstitutionUpdate();
         updateModel.name = this.stammdaten.institution.name;
         updateModel.traegerschaftId = this.getTraegerschaftsUpdate();
-        updateModel.externalClients = this.getExternalClientsUpdate();
+        updateModel.institutionExternalClients = this.getExternalClientsUpdate();
         updateModel.stammdaten = this.stammdaten;
 
         this.updateInstitution(updateModel);
     }
 
     private updateInstitution(updateModel: TSInstitutionUpdate): void {
-        if (!EbeguUtil.isSame(this.externalClients.assignedClients, this.initiallyAssignedClients) && this.externalClients.assignedClients.length > 0) {
+        if (!this.isSameInstitutionClient(this.externalClients.assignedClients,
+            this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
             let drittanwendungen = '';
             this.externalClients.assignedClients.filter(assignedClient =>
-                this.initiallyAssignedClients.indexOf(assignedClient) < 0
+                this.initiallyAssignedClients.indexOf(assignedClient) < 0,
             ).forEach(assignedClient =>
                 drittanwendungen.length > 0 ?
-                    drittanwendungen += ', ' + assignedClient.clientName
-                    : drittanwendungen = assignedClient.clientName
+                    drittanwendungen += ', ' + assignedClient.externalClient.clientName
+                    : drittanwendungen = assignedClient.externalClient.clientName,
             );
-            // show warning popup
-            const dialogConfig = new MatDialogConfig();
-            dialogConfig.data = {
-                frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
-                    NAME_DRITTANWENDUNGEN: drittanwendungen,
-                })
-            };
-            this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
-                .subscribe(answer => {
-                        if (answer !== true) {
-                            return;
-                        }
-                        this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                            .then(stammdaten => this.setValuesAfterSave(stammdaten));
-                    },
-                    () => {
-                    });
+            // show warning popup only when added client
+            if (drittanwendungen.length > 0) {
+                const dialogConfig = new MatDialogConfig();
+                dialogConfig.data = {
+                    frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
+                        NAME_DRITTANWENDUNGEN: drittanwendungen,
+                    }),
+                };
+                this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
+                    .subscribe(answer => {
+                            if (answer !== true) {
+                                return;
+                            }
+                            this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+                                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                        },
+                        () => {
+                        });
+            } else {
+                this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+                    .then(stammdaten => this.setValuesAfterSave(stammdaten));
+            }
         } else {
             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
                 .then(stammdaten => this.setValuesAfterSave(stammdaten));
         }
     }
 
-    private getExternalClientsUpdate(): string[] | null {
+    private getExternalClientsUpdate(): TSInstitutionExternalClient[] | null {
         const assignedClients = this.externalClients.assignedClients;
 
-        if (EbeguUtil.isSame(assignedClients, this.initiallyAssignedClients)) {
+        if (this.isSameInstitutionClient(assignedClients, this.initiallyAssignedClients, true)) {
             // no backed update necessary
             return null;
         }
 
-        return assignedClients.map(client => client.id);
+        return assignedClients;
+    }
+
+    /**
+     * Compares two InstitutionExternalClient array and returns TRUE when both arrays contain the same objects and
+     * values
+     */
+    private isSameInstitutionClient(
+        a: TSInstitutionExternalClient[],
+        b: TSInstitutionExternalClient[],
+        checkGueltigkeit: boolean,
+    ): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const aSorted = a.concat().sort();
+        const bSorted = b.concat().sort();
+        if (checkGueltigkeit) {
+            return aSorted.every((value, index) => this.isEquivalent(bSorted[index], value));
+        }
+        return aSorted.every((value, index) => bSorted[index].externalClient.id === value.externalClient.id);
+    }
+
+    /**
+     * In order to compare two Institution External Client, we check if the Client id's are the same and if the
+     * Gueltigkeit is the same
+     */
+    private isEquivalent(a: TSInstitutionExternalClient, b: TSInstitutionExternalClient): boolean {
+        return a.externalClient.id === b.externalClient.id
+            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigAb) && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigAb)
+                && a.gueltigkeit.gueltigAb.isSame(b.gueltigkeit.gueltigAb))
+                || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigAb) && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigAb)))
+            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigBis) && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigBis)
+                && a.gueltigkeit.gueltigBis.isSame(b.gueltigkeit.gueltigBis))
+                || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigBis) && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigBis)));
     }
 
     private getTraegerschaftsUpdate(): string | null {
@@ -394,5 +436,41 @@ export class EditInstitutionComponent implements OnInit {
             return TSMandant.earliestDateOfTSAnmeldung.toDate();
         }
         return new Date(0);
+    }
+
+    public assignAvailableClient(availableClient: TSExternalClient): void {
+        const index = this.externalClients.availableClients.indexOf(availableClient);
+        if (index > -1) {
+            this.externalClients.availableClients.splice(index, 1);
+        }
+        this.externalClients.assignedClients.push(new TSInstitutionExternalClient(availableClient));
+    }
+
+    public unassignClient(assignedClient: TSInstitutionExternalClient): void {
+        const index = this.externalClients.assignedClients.indexOf(assignedClient);
+        if (index > -1) {
+            this.externalClients.assignedClients.splice(index, 1);
+        }
+        this.externalClients.availableClients.push(assignedClient.externalClient);
+
+    }
+
+    public getGueltigAbDate(date: moment.Moment): string {
+        if (!date || !date.isValid()) {
+            return '';
+        }
+        const formatedDate = DateUtil.momentToLocalDateFormat(date, CONSTANTS.DATE_FORMAT);
+        return `${this.translate.instant('AB')} ${formatedDate}`;
+    }
+
+    public getGueltigBisDate(date: moment.Moment): string {
+        if (!date || !date.isValid()) {
+            return '';
+        }
+        const formatedDate = DateUtil.momentToLocalDateFormat(date, CONSTANTS.DATE_FORMAT);
+        if (formatedDate !== CONSTANTS.END_OF_TIME_STRING) {
+            return `${this.translate.instant('BIS')} ${formatedDate}`;
+        }
+        return '';
     }
 }

@@ -36,7 +36,8 @@ import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
  */
 public class BetreuungspensumRuleTest {
 
-	private RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+	private static final boolean IS_DEBUG = false;
+	private RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(IS_DEBUG);
 
 	@Test
 	public void testKitaNormalfall() {

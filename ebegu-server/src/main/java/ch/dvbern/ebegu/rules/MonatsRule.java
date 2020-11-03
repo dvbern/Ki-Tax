@@ -37,7 +37,8 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
  */
 public final class MonatsRule extends AbstractAbschlussRule {
 
-	public MonatsRule() {
+	public MonatsRule(boolean isDebug) {
+		super(isDebug);
 	}
 
 	@Override

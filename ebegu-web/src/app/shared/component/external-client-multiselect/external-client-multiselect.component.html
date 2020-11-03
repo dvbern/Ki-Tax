@@ -17,7 +17,7 @@
 
 <div class="form-group">
     <label [for]="inputId" translate>PERMITTED_EXTERNAL_CLIENTS</label>
-    <mat-select class="form-control"
+    <mat-select *ngIf="externalClients" class="form-control"
                 [(ngModel)]="externalClients.assignedClients"
                 [name]="inputId"
                 [id]="inputId"
