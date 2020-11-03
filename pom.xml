@@ -60,6 +60,8 @@
         <version.jackson>2.9.10.20200103</version.jackson>
         <version.hamcrest>2.2</version.hamcrest>
         <version.poi>3.17</version.poi>
+        <version.jaxb-api>2.3.1</version.jaxb-api>
+        <version.jaxb-runtime>2.3.2</version.jaxb-runtime>
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
@@ -237,19 +239,16 @@
                 <artifactId>jaxws-api</artifactId>
                 <version>2.3.1</version>
             </dependency>
-
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
                 <version>2.3.2</version>
             </dependency>
-
             <dependency>
                 <groupId>org.jvnet.staxex</groupId>
                 <artifactId>stax-ex</artifactId>
                 <version>1.7.8</version>
             </dependency>
-
             <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
@@ -266,12 +265,12 @@
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
-                <version>2.3.1</version>
+                <version>${version.jaxb-api}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>
-                <version>2.3.2</version>
+                <version>${version.jaxb-runtime}</version>
             </dependency>
 
             <dependency>
@@ -279,6 +278,11 @@
                 <artifactId>jaxws-ri</artifactId>
                 <version>2.3.2</version>
                 <type>pom</type>
+            </dependency>
+            <dependency><!-- wegen Versionskonflikten -->
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>1.3.5</version>
             </dependency>
             <!-- endregion -->
 
