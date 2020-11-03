@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.converter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionExternalClient;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
@@ -198,6 +200,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
@@ -249,6 +252,7 @@ import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
+import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.FachstelleService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
@@ -267,6 +271,8 @@ import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.InstitutionExternalClientId;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -357,6 +363,8 @@ public class JaxBConverter extends AbstractConverter {
 	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
+	@Inject
+	private ExternalClientService externalClientService;
 
 	public JaxBConverter() {
 		//nop
@@ -5563,5 +5571,63 @@ public class JaxBConverter extends AbstractConverter {
 		jaxRueckforderungDokument.setTimestampUpload(rueckforderungDokument.getTimestampUpload());
 
 		return jaxRueckforderungDokument;
+	}
+
+	@Nonnull
+	public List<JaxInstitutionExternalClient> institutionExternalClientsToJAX(
+		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients
+	) {
+		return institutionExternalClients.stream()
+			.map(this::insitutionExternalClientToJAX)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxInstitutionExternalClient insitutionExternalClientToJAX(
+		@Nonnull final InstitutionExternalClient persistedInstitutionExternalClient
+	) {
+		JaxInstitutionExternalClient jaxInstitutionExternalClient = new JaxInstitutionExternalClient();
+		jaxInstitutionExternalClient.setExternalClient(externalClientToJAX(persistedInstitutionExternalClient.getExternalClient()));
+		jaxInstitutionExternalClient.setGueltigAb(persistedInstitutionExternalClient.getGueltigkeit().getGueltigAb());
+		if (Constants.END_OF_TIME.equals(persistedInstitutionExternalClient.getGueltigkeit().getGueltigBis())) {
+			jaxInstitutionExternalClient.setGueltigBis(null); // end of time gueltigkeit wird nicht an client geschickt
+		} else {
+			jaxInstitutionExternalClient.setGueltigBis(persistedInstitutionExternalClient.getGueltigkeit().getGueltigBis());
+		}
+		return jaxInstitutionExternalClient;
+	}
+
+	@Nonnull
+	public List<InstitutionExternalClient> institutionExternalClientListToEntity(
+		@Nonnull Collection<JaxInstitutionExternalClient> jaxInstitutionExternalClients,
+		@Nonnull Institution institution
+	) {
+		return jaxInstitutionExternalClients.stream()
+			.map(jaxInstitutionExternalClient -> insitutionExternalClientToEntity(jaxInstitutionExternalClient, institution))
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public InstitutionExternalClient insitutionExternalClientToEntity(
+		@Nonnull final JaxInstitutionExternalClient jaxInstitutionExternalClient,
+		@Nonnull Institution institution
+	) {
+		InstitutionExternalClient institutionExternalClient = new InstitutionExternalClient();
+		String externalClientID = jaxInstitutionExternalClient.getExternalClient().getId();
+		requireNonNull(externalClientID, "Die ExternalClient Daten muessen gesetzt sein");
+		ExternalClient selectedClient =
+			externalClientService.findExternalClient(externalClientID).orElseThrow(() -> new EbeguEntityNotFoundException("insitutionExternalClientToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxInstitutionExternalClient.getExternalClient().getId()));
+		institutionExternalClient.setExternalClient(selectedClient);
+		institutionExternalClient.setInstitution(institution);
+		institutionExternalClient.setId(new InstitutionExternalClientId(institution.getId(), selectedClient.getId()));
+
+		final LocalDate dateAb =
+			jaxInstitutionExternalClient.getGueltigAb();
+		requireNonNull(dateAb, "Die GueltigAb Datum muss gesetzt sein");
+		final LocalDate dateBis =
+			jaxInstitutionExternalClient.getGueltigBis() == null ? Constants.END_OF_TIME : jaxInstitutionExternalClient.getGueltigBis();
+		institutionExternalClient.setGueltigkeit(new DateRange(dateAb, dateBis));
+		return institutionExternalClient;
 	}
 }

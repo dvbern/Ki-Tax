@@ -300,6 +300,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.Sequence"/>
 	<entity class="ch.dvbern.ebegu.entities.Traegerschaft"/>
 	<entity class="ch.dvbern.ebegu.entities.Institution"/>
+	<entity class="ch.dvbern.ebegu.entities.InstitutionExternalClient"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdaten"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel"/>

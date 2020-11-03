@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,31 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.api.dtos;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-
-/**
- * Service to get information about external (3rd-party) clients
- */
-public interface ExternalClientService {
+public class JaxInstitutionExternalClientAssignment {
 
 	@Nonnull
-	Collection<ExternalClient> getAllForGemeinde();
+	private final @Valid List<JaxExternalClient> availableClients = new ArrayList<>();
 
 	@Nonnull
-	Collection<ExternalClient> getAllForInstitution();
+	private final @Valid List<JaxInstitutionExternalClient> assignedClients = new ArrayList<>();
 
 	@Nonnull
-	Optional<ExternalClient> findExternalClient(@Nonnull String id);
+	public List<JaxExternalClient> getAvailableClients() {
+		return availableClients;
+	}
 
 	@Nonnull
-	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution);
+	public List<JaxInstitutionExternalClient> getAssignedClients() {
+		return assignedClients;
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,31 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
-import java.util.Collection;
-import java.util.Optional;
+package ch.dvbern.ebegu.outbox.institutionclient;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import org.apache.avro.Schema;
 
-/**
- * Service to get information about external (3rd-party) clients
- */
-public interface ExternalClientService {
+public class InstitutionClientModifiedEvent extends AbstractInstitutionClientEvent {
 
-	@Nonnull
-	Collection<ExternalClient> getAllForGemeinde();
-
-	@Nonnull
-	Collection<ExternalClient> getAllForInstitution();
+	public InstitutionClientModifiedEvent(
+		@Nonnull String institutionId,
+		@Nonnull byte[] institutionClient,
+		@Nonnull Schema schema) {
+		super(institutionId, institutionClient, schema);
+	}
 
 	@Nonnull
-	Optional<ExternalClient> findExternalClient(@Nonnull String id);
-
-	@Nonnull
-	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution);
+	@Override
+	public String getType() {
+		return "ClientModified";
+	}
 }
