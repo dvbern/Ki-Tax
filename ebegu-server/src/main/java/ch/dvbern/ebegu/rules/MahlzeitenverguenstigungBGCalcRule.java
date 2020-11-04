@@ -45,8 +45,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
  */
 public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
-	private final static MathUtil MATH = MathUtil.DEFAULT;
+	private static final MathUtil MATH = MathUtil.DEFAULT;
+	private static final BigDecimal MAX_TAGE_MAHLZEITENVERGUENSTIGUNG = MATH.fromNullSafe(20);
 	private final MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
+
 
 	protected MahlzeitenverguenstigungBGCalcRule(
 		@Nonnull DateRange validityPeriod,
@@ -125,19 +127,29 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 	@Nonnull
 	private BigDecimal berechneMahlzeitenverguenstigung(
-		@Nonnull BigDecimal anzahlHauptmahlzeiten,
-		@Nonnull BigDecimal anzahlNebenmahlzeiten,
+		@Nonnull BigDecimal anzahlHauptmahlzeitenUngekuerzt,
+		@Nonnull BigDecimal anzahlNebenmahlzeitenUngekuerzt,
 		@Nonnull BigDecimal tarifProHauptmahlzeit,
 		@Nonnull BigDecimal tarifProNebenmahlzeit,
 		@Nonnull BigDecimal minElternbeitragProTag,
 		@Nonnull BigDecimal maxVerguenstigungProTag
 	) {
+		// Es duerfen insgesamt max. 20 Tage beruecksichtigt werden. Wir limitieren zuerst die Anzahl Hauptmahlzeiten
+		BigDecimal anzahlHauptmahlzeiten = MathUtil
+			.maximum(anzahlHauptmahlzeitenUngekuerzt, MAX_TAGE_MAHLZEITENVERGUENSTIGUNG);
+		// Berechnen, wieviele Tage fuer eventuelle nicht beruecksichtigte Nebenmahlzeiten uebrigbleiben (min 0)
+		BigDecimal maxZusaetzlicheTageFuerNebenmahlzeiten =
+			MathUtil.minimum(
+				MATH.subtract(MAX_TAGE_MAHLZEITENVERGUENSTIGUNG, anzahlHauptmahlzeiten),
+				BigDecimal.ZERO);
 		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
 		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
 
 		// Nicht in HMZ berechnete NMZ
-		BigDecimal nichtBerechneteNebenmahlzeiten = getNichtInHauptmahlzeitenBerechneteNebenmahlzeiten(
-			anzahlHauptmahlzeiten, anzahlNebenmahlzeiten, anzahlNebenmahlzeitenStandardTag);
+		BigDecimal nichtBerechneteNebenmahlzeitenUngekuerzt = getNichtInHauptmahlzeitenBerechneteNebenmahlzeiten(
+			anzahlHauptmahlzeiten, anzahlNebenmahlzeitenUngekuerzt, anzahlNebenmahlzeitenStandardTag);
+		BigDecimal nichtBerechneteNebenmahlzeiten = MathUtil.maximum(nichtBerechneteNebenmahlzeitenUngekuerzt,
+			MATH.multiply(maxZusaetzlicheTageFuerNebenmahlzeiten, anzahlNebenmahlzeitenStandardTag));
 
 		// Tasächlicher Betrag MZV HMZ/ pro Tag
 		BigDecimal tatsaechlicherBetragProTag = getTatsaechlicherBetragProTag(
@@ -153,11 +165,14 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			tatsaechlicherBetragProTag);
 
 		// Vergünstigung der in HMZ nicht enthaltene NMZ:
-		BigDecimal verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(
+		BigDecimal verguenstigungNebenmahlzeiten = BigDecimal.ZERO;
+		if (nichtBerechneteNebenmahlzeiten.compareTo(BigDecimal.ZERO ) > 0) {
+			verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(
 			anzahlNebenmahlzeitenStandardTag,
 			nichtBerechneteNebenmahlzeiten,
 			maxVerguenstigungProTag,
 			minBetragProTag);
+		}
 
 		// Vergünstigung:
 		// =Q2+R2

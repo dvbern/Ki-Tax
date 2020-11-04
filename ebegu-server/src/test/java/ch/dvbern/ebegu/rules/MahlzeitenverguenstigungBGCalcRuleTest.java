@@ -124,6 +124,23 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		);
 	}
 
+	@Test
+	public void maximalAnzahlTageUeberschritten() {
+		// Bei 100% Pensum duerfen max. 20 Tage beruecksichtigt werden
+		assertResults(
+			createInputData(einkommenStufe2, 30, 60, 10, 6),
+			60
+		);
+		assertResults(
+			createInputData(einkommenStufe2, 30, 90, 10, 6),
+			60
+		);
+		assertResults(
+			createInputData(einkommenStufe2, 10, 90, 10, 6),
+			60
+		);
+	}
+
 	private void assertResults(@Nonnull BGCalculationInput inputData, int expectedVerguenstigungMahlzeitenTotal) {
 		rule.executeRule(platz, inputData);
 		final BigDecimal verguenstigungMahlzeitenTotal = inputData.getVerguenstigungMahlzeitenTotal();
