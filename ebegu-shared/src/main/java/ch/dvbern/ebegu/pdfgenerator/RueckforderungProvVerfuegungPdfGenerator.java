@@ -36,6 +36,7 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Utilities;
@@ -100,8 +101,8 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
-	private static final int superTextSize = 6;
-	private static final int superTextRise = 4;
+	private static final int SUPER_TEXT_SIZE = 6;
+	private static final int SUPER_TEXT_RISE = 4;
 	private final String nameVerantwortlichePerson;
 	private final String pathToUnterschrift;
 
@@ -171,15 +172,16 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 	}
 
 	private void createEndBegruessung(Document document, PdfContentByte directContent) {
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
 		if (sprache.equals(Locale.GERMAN)) {
 			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), 520, 122,
-				getPageConfiguration().getFont(),
-				10f);
+				defaultFont,10f);
 		} else {
 			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
 		}
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122, getPageConfiguration().getFont(), 10f);
+		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122,
+			defaultFont, 10f);
 		try {
 			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
 			Image image = Image.getInstance(signature);
@@ -191,25 +193,23 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 			LOG.error("{} konnte nicht geladen werden: {}", this.pathToUnterschrift, e.getMessage());
 		}
 		createContentWhereIWant(directContent, nameVerantwortlichePerson, 375, 122,
-			getPageConfiguration().getFont(),
-			10f);
+			defaultFont, 10f);
 		createContentWhereIWant(directContent, translate(VORSTEHERIN), 360, 122,
-			getPageConfiguration().getFont(),
-			10f);
+			defaultFont, 10f);
 	}
 
 	private void createHeaderSecondPage(PdfContentByte directContent) {
 		createContentWhereIWant(directContent, "Kanton Bern", 775, 20,
-			getPageConfiguration().getFontBold()
+			getPageConfiguration().getFonts().getFontBold()
 			, 10);
 		createContentWhereIWant(directContent, "Canton de Berne", 765, 20,
-			getPageConfiguration().getFontBold()
+			getPageConfiguration().getFonts().getFontBold()
 			, 10);
 		createContentWhereIWant(directContent, translate(PROVISORISCHE_VERFUEGUNG_TITLE), 775, 122,
-			getPageConfiguration().getFont(),
+			getPageConfiguration().getFonts().getFont(),
 			6.5f);
-		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 760, 122, getPageConfiguration().getFont(),
-			6.5f);
+		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 760, 122,
+			getPageConfiguration().getFonts().getFont(), 6.5f);
 	}
 
 	private void createErsteSeite(Document document) {
@@ -222,15 +222,15 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG)));
 		// Absatz 1 mit Fusszeilen erstellen
 		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A), 1);
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraphWithSupertext.add(new Chunk(translate(INHALT_1B)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2", superTextSize, superTextRise));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraphWithSupertext.add(new Chunk(translate(INHALT_1C)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("3", superTextSize, superTextRise));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("3", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraphWithSupertext.add(new Chunk(translate(INHALT_1D)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("4", superTextSize, superTextRise));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("4", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraphWithSupertext.add(new Chunk(translate(INHALT_1E)));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("5", superTextSize, superTextRise));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("5", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraphWithSupertext.add(new Chunk(translate(INHALT_1F)));
 		document.add(paragraphWithSupertext);
 

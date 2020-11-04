@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -47,7 +46,15 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGState;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +76,9 @@ public final class PdfUtil {
 	public static final String FONT_FACE_OPEN_SANS = "OpenSans-Light";
 	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Bold";
 	public static final String FONT_FACE_FONT_AWESOME = "fontAwesome";
+	public static final String FONT_FACE_PROXIMA_NOVA_BOLD = "Proxima Nova Semibold";
 
+	public static final float DEFAULT_FONT_SIZE = 10.0f;
 	public static final float FONT_SIZE = 10.0f;
 	public static final float FONT_SIZE_H1 = 14.0f;
 	public static final float FONT_SIZE_H2 = 12.0f;
@@ -107,7 +116,7 @@ public final class PdfUtil {
 		Paragraph paragraph = new Paragraph(title, FONT_TITLE);
 		paragraph.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.add(NEWLINE);
-		paragraph.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * 2 * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		paragraph.setSpacingAfter(DEFAULT_FONT_SIZE * 2 * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return paragraph;
 	}
 
@@ -115,8 +124,8 @@ public final class PdfUtil {
 	public static Paragraph createSubTitle(@Nonnull String string) {
 		Paragraph paragraph = new Paragraph(string, DEFAULT_FONT_BOLD);
 		paragraph.setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		paragraph.setSpacingBefore(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		paragraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		paragraph.setSpacingBefore(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		paragraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return paragraph;
 	}
 
@@ -133,7 +142,7 @@ public final class PdfUtil {
 		table.getDefaultCell().setPadding(0);
 		table.getDefaultCell()
 			.setPaddingBottom(emptyLinesBetween
-				* PdfUtilities.DEFAULT_FONT_SIZE
+				* DEFAULT_FONT_SIZE
 				* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		elements.forEach(element -> {
 			if (element instanceof List) {
@@ -150,7 +159,7 @@ public final class PdfUtil {
 			}
 		});
 		table.setSpacingAfter(emptyLinesAfter
-			* PdfUtilities.DEFAULT_FONT_SIZE
+			* DEFAULT_FONT_SIZE
 			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return table;
 	}
@@ -170,7 +179,7 @@ public final class PdfUtil {
 		Paragraph paragraph = new Paragraph(string, font);
 		paragraph.setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.setSpacingAfter(emptyLinesAfter
-			* PdfUtilities.DEFAULT_FONT_SIZE
+			* DEFAULT_FONT_SIZE
 			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return paragraph;
 	}
@@ -207,7 +216,7 @@ public final class PdfUtil {
 		Paragraph paragraph = new Paragraph();
 		final List itextList = createList(list);
 		paragraph.setSpacingAfter(emptyLinesAfter
-			* PdfUtilities.DEFAULT_FONT_SIZE
+			* DEFAULT_FONT_SIZE
 			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.add(itextList);
 		return paragraph;
@@ -379,7 +388,7 @@ public final class PdfUtil {
 		// text watermark
 		Phrase watermarkPhrase = new Phrase(
 			ServerMessageUtil.getMessage(WATERMARK, locale),
-			FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK)
+			FontFactory.getFont(FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK)
 		);
 
 		// Auf jeder Seite setzen
@@ -411,8 +420,22 @@ public final class PdfUtil {
 	}
 
 	public static Chunk createSuperTextInText(final  String supertext, int fontSize, int textRise) {
-		final Chunk chunk = new Chunk(supertext, PdfUtilities.createFontWithSize(DEFAULT_FONT, fontSize));
+		final Chunk chunk = new Chunk(supertext, createFontWithSize(DEFAULT_FONT, fontSize));
 		chunk.setTextRise(textRise);
 		return chunk;
+	}
+
+	@Nonnull
+	public static Font createFontWithSize(@Nonnull Font originatingFont, float size) {
+		Font newFont = new Font(originatingFont);
+		newFont.setSize(size);
+		return newFont;
+	}
+
+	@Nonnull
+	public static Font createFontWithColor(@Nonnull Font originatingFont, @Nonnull Color color) {
+		Font newFont = new Font(originatingFont);
+		newFont.setColor(color);
+		return newFont;
 	}
 }
