@@ -82,9 +82,9 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 			createInputData(einkommenStufe2, 10, 16, 10, 3),
 			30
 		);
-		assertResults( // vorher 24
+		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 2),
-			28
+			30
 		);
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 2),
@@ -94,7 +94,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 			createInputData(einkommenStufe2, 8, 20, 6, 3),
 			30
 		);
-		assertResults( // vorher 48
+		assertResults(
 			createInputData(einkommenStufe1, 8, 0, 6, 3),
 			32
 		);
@@ -108,11 +108,27 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		);
 	}
 
+	@Test
+	public void ungeradeAnzahlNebenmahlzeiten() {
+		assertResults(
+			createInputData(einkommenStufe2, 10, 25, 10, 5),
+			39
+		);
+		assertResults(
+			createInputData(einkommenStufe2, 10, 24, 10, 5),
+			36
+		);
+		assertResults(
+			createInputData(einkommenStufe2, 10, 26, 10, 5),
+			39
+		);
+	}
+
 	private void assertResults(@Nonnull BGCalculationInput inputData, int expectedVerguenstigungMahlzeitenTotal) {
 		rule.executeRule(platz, inputData);
 		final BigDecimal verguenstigungMahlzeitenTotal = inputData.getVerguenstigungMahlzeitenTotal();
 		Assert.assertNotNull(verguenstigungMahlzeitenTotal);
-//		Assert.assertEquals(expectedVerguenstigungMahlzeitenTotal, verguenstigungMahlzeitenTotal.intValue());
+		Assert.assertEquals(expectedVerguenstigungMahlzeitenTotal, verguenstigungMahlzeitenTotal.intValue());
 	}
 
 	@Nonnull

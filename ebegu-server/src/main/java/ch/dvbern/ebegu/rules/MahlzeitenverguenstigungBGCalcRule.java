@@ -148,10 +148,16 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			tarifProNebenmahlzeit, minElternbeitragProTag, maxVerguenstigungProTag);
 
 		// Vergünstigung HMZ:
-		BigDecimal verguenstigungHauptmahlzeiten = getVerguenstigungHauptmahlzeiten(anzahlHauptmahlzeiten, tatsaechlicherBetragProTag);
+		BigDecimal verguenstigungHauptmahlzeiten = getVerguenstigungHauptmahlzeiten(
+			anzahlHauptmahlzeiten,
+			tatsaechlicherBetragProTag);
 
 		// Vergünstigung der in HMZ nicht enthaltene NMZ:
-		BigDecimal verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(anzahlNebenmahlzeitenStandardTag, nichtBerechneteNebenmahlzeiten, minBetragProTag);
+		BigDecimal verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(
+			anzahlNebenmahlzeitenStandardTag,
+			nichtBerechneteNebenmahlzeiten,
+			maxVerguenstigungProTag,
+			minBetragProTag);
 
 		// Vergünstigung:
 		// =Q2+R2
@@ -216,22 +222,24 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	private BigDecimal getVerguenstigungNebenmahlzeiten(
 		@Nonnull BigDecimal anzahlNebenmahlzeitenStandardTag,
 		@Nonnull BigDecimal nichtBerechneteNebenmahlzeiten,
+		@Nonnull BigDecimal maxBetragProTag,
 		@Nonnull BigDecimal minBetragProTag
 	) {
 		// =WENN(ISTGERADE(J2);O2*J2/2;(O2*(J2-1)/2)+N2)
-		// =WENN(ISTGERADE(nichtBerechneteNebenmahlzeiten);O2*nichtBerechneteNebenmahlzeiten/2;(O2*(nichtBerechneteNebenmahlzeiten-1)/2)+minBetragProTag)
-		BigDecimal verguenstigungNebenmahlzeiten = null;
-		if (MathUtil.isEven(nichtBerechneteNebenmahlzeiten.intValue())) {
-			verguenstigungNebenmahlzeiten = MATH.divide(
-				MATH.multiply(anzahlNebenmahlzeitenStandardTag, nichtBerechneteNebenmahlzeiten),
-				anzahlNebenmahlzeitenStandardTag);
-		} else {
-			BigDecimal zuberuecksichtigendeAnzahlNebenmahlzeiten = MATH.subtract(nichtBerechneteNebenmahlzeiten, BigDecimal.ONE);
-			verguenstigungNebenmahlzeiten = MATH.add(
-				MATH.divide(
-					MATH.multiply(anzahlNebenmahlzeitenStandardTag, zuberuecksichtigendeAnzahlNebenmahlzeiten),
-					anzahlNebenmahlzeitenStandardTag),
-				minBetragProTag);
+		// =WENN(ISTGERADE(nichtBerechneteNebenmahlzeiten);maxBetragProTag*nichtBerechneteNebenmahlzeiten/2;(maxBetragProTag*(nichtBerechneteNebenmahlzeiten-1)/2)+N2)
+		boolean isEven = MathUtil.isEven(nichtBerechneteNebenmahlzeiten.intValue());
+
+		BigDecimal zuberuecksichtigendeAnzahlNebenmahlzeiten = nichtBerechneteNebenmahlzeiten;
+		if (!isEven) {
+			zuberuecksichtigendeAnzahlNebenmahlzeiten = MATH.subtract(zuberuecksichtigendeAnzahlNebenmahlzeiten, BigDecimal.ONE);
+		}
+		BigDecimal verguenstigungNebenmahlzeiten = MATH.divide(
+			MATH.multiply(
+				zuberuecksichtigendeAnzahlNebenmahlzeiten,
+				maxBetragProTag),
+			anzahlNebenmahlzeitenStandardTag);
+		if (!isEven) {
+			verguenstigungNebenmahlzeiten = MATH.add(verguenstigungNebenmahlzeiten, minBetragProTag);
 		}
 		return verguenstigungNebenmahlzeiten;
 	}
