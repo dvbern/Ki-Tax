@@ -393,7 +393,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			splitZeitabschnitteAroundGoLive(dto.getZeitabschnitte())
 		);
 		List<Betreuungspensum> currentPensen = betreuung.getBetreuungspensumContainers().stream()
-			.map(c -> c.getBetreuungspensumGS() != null? c.getBetreuungspensumGS(): c.getBetreuungspensumJA())
+			.map(BetreuungspensumContainer::getBetreuungspensumJA)
 			.collect(Collectors.toList());
 
 		List<Betreuungspensum> currentPensenStartingBeforeGoLive = currentPensen.stream()
