@@ -236,7 +236,6 @@ export class EditGemeindeComponent implements OnInit {
                     this.updateExternalClients();
                     this.setViewMode();
                 }).catch(() => {
-                    // TODO (reviewer): EditMode offen lassen funktioniert irgendwie nicht
                     this.setEditMode();
                 }).finally(() => {
                     this.changeDetectorRef.detectChanges();
