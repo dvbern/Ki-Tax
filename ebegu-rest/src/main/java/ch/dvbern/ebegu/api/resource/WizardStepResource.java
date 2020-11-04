@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.WizardStepService;
 import io.swagger.annotations.Api;
@@ -63,6 +64,8 @@ public class WizardStepResource {
 	private WizardStepService wizardStepService;
 	@Inject
 	private JaxBConverter converter;
+	@Inject
+	private Authorizer authorizer;
 
 	@ApiOperation(value = "Gibt alle Wizardsteps des Gesuchs mit der uebergebenen id zurueck",
 		responseContainer = "Collection", response = JaxWizardStep.class)
@@ -122,6 +125,10 @@ public class WizardStepResource {
 			}
 			WizardStep convertedWizardStep = converter.wizardStepToEntity(wizardStepJAXP, wizardStepToMerge);
 			convertedWizardStep.setGesuch(gesuch.get());
+			// Der AuthCheck muss hier gemacht werden. Im wizardStepService#saveWizardStep koennen wir nicht, da diese
+			// Methode auch nach dem Verfuegen verwendet werden koennen muss (naemlich um beim Verfuegen den Step
+			// gruen zu machen)
+			authorizer.checkWriteAuthorization(convertedWizardStep);
 			WizardStep persistedWizardStep = this.wizardStepService.saveWizardStep(convertedWizardStep);
 			return converter.wizardStepToJAX(persistedWizardStep);
 		}
