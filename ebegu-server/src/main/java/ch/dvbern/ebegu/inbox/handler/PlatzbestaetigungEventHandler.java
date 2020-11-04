@@ -347,26 +347,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		int counter = 1;
 		boolean areZeitabschnittCorrupted = false;
 
-		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitteBeforeGoLive(
-			splitZeitabschnitteAroundGoLive(dto.getZeitabschnitte())
-		);
-
-		List<Betreuungspensum> currentPensen = betreuung.getBetreuungspensumContainers().stream()
-			.map(c -> c.getBetreuungspensumGS() != null? c.getBetreuungspensumGS(): c.getBetreuungspensumJA())
-			.collect(Collectors.toList());
-
-		List<Betreuungspensum> currentPensenStartingBeforeGoLive = currentPensen.stream()
-			.filter(pensum -> pensum.getGueltigkeit().getGueltigAb().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY)))
-			.collect(Collectors.toList());
-
-		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
-		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the zeitabschnitt,
-		// end the first zeitabschnitt on the go live date and ignore the zeitabschnitt after
-		List<ZeitabschnittDTO> zeitabschnitteFromCurrentPensenToKeep = currentPensenStartingBeforeGoLive.stream()
-			.map(this::getZeitabschnittBeforeGoLiveFromPensum)
-			.collect(Collectors.toList());
-
-		zeitabschnitteToImport.addAll(zeitabschnitteFromCurrentPensenToKeep);
+		List<ZeitabschnittDTO> zeitabschnitteToImport = mapZeitabschnitteToImport(dto, betreuung);
 
 		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitteToImport) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
@@ -404,6 +385,31 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 		betreuungsmitteilung.setMessage(message.toString());
 		return betreuungsmitteilung;
+	}
+
+	protected List<ZeitabschnittDTO> mapZeitabschnitteToImport(BetreuungEventDTO dto, Betreuung betreuung) {
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitteBeforeGoLive(
+			splitZeitabschnitteAroundGoLive(dto.getZeitabschnitte())
+		);
+		List<Betreuungspensum> currentPensen = betreuung.getBetreuungspensumContainers().stream()
+			.map(c -> c.getBetreuungspensumGS() != null? c.getBetreuungspensumGS(): c.getBetreuungspensumJA())
+			.collect(Collectors.toList());
+
+		List<Betreuungspensum> currentPensenStartingBeforeGoLive = currentPensen.stream()
+			.filter(pensum -> pensum.getGueltigkeit().getGueltigAb().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY)))
+			.collect(Collectors.toList());
+
+		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
+		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the zeitabschnitt,
+		// end the first zeitabschnitt on the go live date and ignore the zeitabschnitt after
+		List<ZeitabschnittDTO> zeitabschnitteFromCurrentPensenToKeep = currentPensenStartingBeforeGoLive.stream()
+			.map(this::getZeitabschnittBeforeGoLiveFromPensum)
+			.collect(Collectors.toList());
+
+		zeitabschnitteToImport.addAll(0, zeitabschnitteFromCurrentPensenToKeep);
+
+		return zeitabschnitteToImport;
 	}
 
 	private List<ZeitabschnittDTO> splitZeitabschnitteAroundGoLive(List<ZeitabschnittDTO> zeitabschnittDTOS) {
