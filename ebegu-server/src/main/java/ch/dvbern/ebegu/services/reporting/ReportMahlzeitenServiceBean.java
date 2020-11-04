@@ -262,20 +262,10 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	) {
 		row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 		row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
-			if (platz.getBetreuungsangebotTyp().isTagesschule()) {
-				handleMahlzeitenTagesschule(row, zeitabschnitt);
-			} else {
-				handleMahlzeitenBetreuung(row, zeitabschnitt);
-			}
+		if (platz.getBetreuungsangebotTyp().isTagesschule()) {
+			handleMahlzeitenTagesschule(row, zeitabschnitt);
 		} else {
-			// Es kann (insbesondere im Testbetrieb) zu Faellen kommen, wo zwar die Mahlzeitenverguenstigung beantragt
-			// wurde, aber kein Gemeinde-Resultat vorhanden ist. Wir schreiben dort ueberall 0.
-			row.setBerechneteMahlzeitenverguenstigung(BigDecimal.ZERO);
-			row.setAnzahlHauptmahlzeiten(BigDecimal.ZERO);
-			row.setAnzahlNebenmahlzeiten(BigDecimal.ZERO);
-			row.setKostenHauptmahlzeiten(BigDecimal.ZERO);
-			row.setKostenNebenmahlzeiten(BigDecimal.ZERO);
+			handleMahlzeitenBetreuung(row, zeitabschnitt);
 		}
 	}
 
@@ -283,9 +273,13 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		@Nonnull MahlzeitenverguenstigungDataRow row,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
 	) {
-		Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
-
-		row.setBerechneteMahlzeitenverguenstigung(zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal());
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			row.setBerechneteMahlzeitenverguenstigung(zeitabschnitt.getBgCalculationResultGemeinde()
+				.getVerguenstigungMahlzeitenTotal());
+		}
+		else {
+			row.setBerechneteMahlzeitenverguenstigung(BigDecimal.ZERO);
+		}
 		if (zeitabschnitt.getVerfuegung().getBetreuung() != null) {
 			for (BetreuungspensumContainer betreuungspensumContainer : zeitabschnitt.getVerfuegung()
 				.getBetreuung()
@@ -312,15 +306,20 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
 	) {
 		Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
-
-		TSCalculationResult tsCalculationResultMit =
-			zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultMitPaedagogischerBetreuung();
+		TSCalculationResult tsCalculationResultMit = null;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			tsCalculationResultMit =
+				zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultMitPaedagogischerBetreuung();
+		}
 		BigDecimal berechneteMahlzeitenverguenstigung = BigDecimal.ZERO;
 		if (tsCalculationResultMit != null) {
 			berechneteMahlzeitenverguenstigung = tsCalculationResultMit.getVerpflegungskostenVerguenstigt();
 		}
-		TSCalculationResult tsCalculationResultOhne =
-			zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultOhnePaedagogischerBetreuung();
+		TSCalculationResult tsCalculationResultOhne = null;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			tsCalculationResultOhne =
+				zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultOhnePaedagogischerBetreuung();
+		}
 		if (tsCalculationResultOhne != null) {
 			berechneteMahlzeitenverguenstigung =
 				berechneteMahlzeitenverguenstigung.add(tsCalculationResultOhne.getVerpflegungskostenVerguenstigt());
