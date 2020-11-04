@@ -33,6 +33,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -89,7 +90,8 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		try {
 			return new MimeType(MIME_TYPE_EXCEL);
 		} catch (MimeTypeParseException e) {
-			throw new EbeguRuntimeException("getContentTypeForExport", "could not parse mime type", e, MIME_TYPE_EXCEL);
+			throw new EbeguRuntimeException("getContentTypeForExport", "could not parse mime type", e,
+				MIME_TYPE_EXCEL);
 		}
 	}
 
@@ -107,7 +109,10 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		return bytes;
 	}
 
-	protected void mergeData(@Nonnull Sheet sheet, @Nonnull ExcelMergerDTO excelMergerDTO, @Nonnull MergeFieldProvider[] mergeFieldProviders) throws ExcelMergeException {
+	protected void mergeData(
+		@Nonnull Sheet sheet,
+		@Nonnull ExcelMergerDTO excelMergerDTO,
+		@Nonnull MergeFieldProvider[] mergeFieldProviders) throws ExcelMergeException {
 		List<MergeField<?>> mergeFields = MergeFieldProvider.toMergeFields(mergeFieldProviders);
 		monitor(AbstractReportServiceBean.class, String.format("mergeData (sheet=%s)", sheet.getSheetName()),
 			() -> ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO));
@@ -145,7 +150,10 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		Gesuch gueltigeGesuch;
 		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(
 			gesuch.getFall().getFallNummer(),
-			gesuchServiceBean.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false)
+			gesuchServiceBean.getNeustesVerfuegtesGesuchFuerGesuch(
+				gesuch.getGesuchsperiode(),
+				gesuch.getDossier(),
+				false)
 				.orElse(gesuch));
 		return gueltigeGesuch;
 	}
@@ -189,10 +197,12 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 	}
 
 	@Nonnull
-	protected Optional<KindContainer> getGueltigesKind(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, @Nonnull Gesuch gueltigeGesuch) {
-		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-		Objects.requireNonNull(betreuung);
-		Integer kindNummer = betreuung.getKind().getKindNummer();
+	protected Optional<KindContainer> getGueltigesKind(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Gesuch gueltigeGesuch) {
+		final AbstractPlatz platz = zeitabschnitt.getVerfuegung().getPlatz();
+		Objects.requireNonNull(platz);
+		Integer kindNummer = platz.getKind().getKindNummer();
 
 		return gueltigeGesuch.getKindContainers().stream()
 			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))

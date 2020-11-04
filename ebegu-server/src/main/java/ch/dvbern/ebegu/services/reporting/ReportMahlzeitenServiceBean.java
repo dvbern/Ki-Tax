@@ -262,75 +262,100 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	) {
 		row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 		row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-		Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
-		if (platz.getBetreuungsangebotTyp().isTagesschule()) {
-			TSCalculationResult tsCalculationResultMit =
-				zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultMitPaedagogischerBetreuung();
-			BigDecimal berechneteMahlzeitenverguenstigung = BigDecimal.ZERO;
-			if (tsCalculationResultMit != null) {
-				berechneteMahlzeitenverguenstigung = tsCalculationResultMit.getVerpflegungskostenVerguenstigt();
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			if (platz.getBetreuungsangebotTyp().isTagesschule()) {
+				handleMahlzeitenTagesschule(row, zeitabschnitt);
+			} else {
+				handleMahlzeitenBetreuung(row, zeitabschnitt);
 			}
-			TSCalculationResult tsCalculationResultOhne =
-				zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultOhnePaedagogischerBetreuung();
-			if (tsCalculationResultOhne != null) {
-				berechneteMahlzeitenverguenstigung =
-					berechneteMahlzeitenverguenstigung.add(tsCalculationResultOhne.getVerpflegungskostenVerguenstigt());
-			}
-			row.setBerechneteMahlzeitenverguenstigung(berechneteMahlzeitenverguenstigung);
-			//immer 0
-			row.setAnzahlNebenmahlzeiten(BigDecimal.ZERO);
-			row.setKostenNebenmahlzeiten(BigDecimal.ZERO);
-			//berechnen der anzahl von Hauptmahlzeiten und die Kosten
-			BigDecimal totalHauptMahlzeiten = BigDecimal.ZERO;
-			BigDecimal totalKostenHauptMahlzeiten = BigDecimal.ZERO;
-			double scale = 1.0;
-			if (zeitabschnitt.getVerfuegung().getAnmeldungTagesschule() != null
-				&& zeitabschnitt.getVerfuegung().getAnmeldungTagesschule().getBelegungTagesschule() != null) {
-				for (BelegungTagesschuleModul belegungTagesschuleModul : zeitabschnitt.getVerfuegung()
-					.getAnmeldungTagesschule()
-					.getBelegungTagesschule()
-					.getBelegungTagesschuleModule()) {
-					scale =
-						belegungTagesschuleModul.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN ?
-							0.5 : 1.0;
-					BigDecimal verpflegungskosten =
-						belegungTagesschuleModul.getModulTagesschule()
-							.getModulTagesschuleGroup()
-							.getVerpflegungskosten();
-					if (verpflegungskosten != null && verpflegungskosten.compareTo(BigDecimal.ZERO) > 0) {
-						totalKostenHauptMahlzeiten = MathUtil.DEFAULT.add(
-							totalKostenHauptMahlzeiten,
-							MathUtil.DEFAULT.multiply(verpflegungskosten, BigDecimal.valueOf(scale)));
-						totalHauptMahlzeiten = MathUtil.DEFAULT.add(totalHauptMahlzeiten, BigDecimal.valueOf(scale));
-					}
-				}
-			}
-			row.setKostenHauptmahlzeiten(totalKostenHauptMahlzeiten);
-			row.setAnzahlHauptmahlzeiten(totalHauptMahlzeiten);
-
 		} else {
-			row.setBerechneteMahlzeitenverguenstigung(zeitabschnitt.getBgCalculationResultGemeinde()
-				.getVerguenstigungMahlzeitenTotal());
-			if (zeitabschnitt.getVerfuegung().getBetreuung() != null) {
-				for (BetreuungspensumContainer betreuungspensumContainer : zeitabschnitt.getVerfuegung()
-					.getBetreuung()
-					.getBetreuungspensumContainers()
-				) {
-					Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-					if (betreuungspensum.getGueltigkeit().contains(zeitabschnitt.getGueltigkeit())) {
-						row.setAnzahlHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
-						row.setKostenHauptmahlzeiten(MathUtil.DEFAULT.multiplyNullSafe(
-							betreuungspensum.getTarifProHauptmahlzeit(),
-							betreuungspensum.getMonatlicheHauptmahlzeiten()));
-						row.setKostenNebenmahlzeiten(MathUtil.DEFAULT.multiplyNullSafe(
-							betreuungspensum.getTarifProNebenmahlzeit(),
-							betreuungspensum.getMonatlicheNebenmahlzeiten()));
-						row.setAnzahlNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
-						break;
-					}
+			// Es kann (insbesondere im Testbetrieb) zu Faellen kommen, wo zwar die Mahlzeitenverguenstigung beantragt
+			// wurde, aber kein Gemeinde-Resultat vorhanden ist. Wir schreiben dort ueberall 0.
+			row.setBerechneteMahlzeitenverguenstigung(BigDecimal.ZERO);
+			row.setAnzahlHauptmahlzeiten(BigDecimal.ZERO);
+			row.setAnzahlNebenmahlzeiten(BigDecimal.ZERO);
+			row.setKostenHauptmahlzeiten(BigDecimal.ZERO);
+			row.setKostenNebenmahlzeiten(BigDecimal.ZERO);
+		}
+	}
+
+	private void handleMahlzeitenBetreuung(
+		@Nonnull MahlzeitenverguenstigungDataRow row,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
+	) {
+		Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
+
+		row.setBerechneteMahlzeitenverguenstigung(zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal());
+		if (zeitabschnitt.getVerfuegung().getBetreuung() != null) {
+			for (BetreuungspensumContainer betreuungspensumContainer : zeitabschnitt.getVerfuegung()
+				.getBetreuung()
+				.getBetreuungspensumContainers()
+			) {
+				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
+				if (betreuungspensum.getGueltigkeit().contains(zeitabschnitt.getGueltigkeit())) {
+					row.setAnzahlHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
+					row.setKostenHauptmahlzeiten(MathUtil.DEFAULT.multiplyNullSafe(
+						betreuungspensum.getTarifProHauptmahlzeit(),
+						betreuungspensum.getMonatlicheHauptmahlzeiten()));
+					row.setKostenNebenmahlzeiten(MathUtil.DEFAULT.multiplyNullSafe(
+						betreuungspensum.getTarifProNebenmahlzeit(),
+						betreuungspensum.getMonatlicheNebenmahlzeiten()));
+					row.setAnzahlNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
+					break;
 				}
 			}
 		}
+	}
+
+	private void handleMahlzeitenTagesschule(
+		@Nonnull MahlzeitenverguenstigungDataRow row,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
+	) {
+		Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
+
+		TSCalculationResult tsCalculationResultMit =
+			zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultMitPaedagogischerBetreuung();
+		BigDecimal berechneteMahlzeitenverguenstigung = BigDecimal.ZERO;
+		if (tsCalculationResultMit != null) {
+			berechneteMahlzeitenverguenstigung = tsCalculationResultMit.getVerpflegungskostenVerguenstigt();
+		}
+		TSCalculationResult tsCalculationResultOhne =
+			zeitabschnitt.getBgCalculationResultGemeinde().getTsCalculationResultOhnePaedagogischerBetreuung();
+		if (tsCalculationResultOhne != null) {
+			berechneteMahlzeitenverguenstigung =
+				berechneteMahlzeitenverguenstigung.add(tsCalculationResultOhne.getVerpflegungskostenVerguenstigt());
+		}
+		row.setBerechneteMahlzeitenverguenstigung(berechneteMahlzeitenverguenstigung);
+		//immer 0
+		row.setAnzahlNebenmahlzeiten(BigDecimal.ZERO);
+		row.setKostenNebenmahlzeiten(BigDecimal.ZERO);
+		//berechnen der anzahl von Hauptmahlzeiten und die Kosten
+		BigDecimal totalHauptMahlzeiten = BigDecimal.ZERO;
+		BigDecimal totalKostenHauptMahlzeiten = BigDecimal.ZERO;
+		double scale = 1.0;
+		if (zeitabschnitt.getVerfuegung().getAnmeldungTagesschule() != null
+			&& zeitabschnitt.getVerfuegung().getAnmeldungTagesschule().getBelegungTagesschule() != null) {
+			for (BelegungTagesschuleModul belegungTagesschuleModul : zeitabschnitt.getVerfuegung()
+				.getAnmeldungTagesschule()
+				.getBelegungTagesschule()
+				.getBelegungTagesschuleModule()) {
+				scale =
+					belegungTagesschuleModul.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN ?
+						0.5 : 1.0;
+				BigDecimal verpflegungskosten =
+					belegungTagesschuleModul.getModulTagesschule()
+						.getModulTagesschuleGroup()
+						.getVerpflegungskosten();
+				if (verpflegungskosten != null && verpflegungskosten.compareTo(BigDecimal.ZERO) > 0) {
+					totalKostenHauptMahlzeiten = MathUtil.DEFAULT.add(
+						totalKostenHauptMahlzeiten,
+						MathUtil.DEFAULT.multiply(verpflegungskosten, BigDecimal.valueOf(scale)));
+					totalHauptMahlzeiten = MathUtil.DEFAULT.add(totalHauptMahlzeiten, BigDecimal.valueOf(scale));
+				}
+			}
+		}
+		row.setKostenHauptmahlzeiten(totalKostenHauptMahlzeiten);
+		row.setAnzahlHauptmahlzeiten(totalHauptMahlzeiten);
 	}
 
 	private void addStammdaten(
@@ -387,7 +412,6 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		Predicate predicateBetreuungMahlzeitbeantragt = builder.equal(
 			joinBetreuungFamSitCtnFamSit.get(Familiensituation_.keineMahlzeitenverguenstigungBeantragt),
 			Boolean.FALSE);
-		//predicatesToUse.add(predicateBetreuungMahlzeitbeantragt);
 		predicatesToUse.add(predicateBetreuungMahlzeitbeantragt);
 
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
