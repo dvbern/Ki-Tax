@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
@@ -85,6 +85,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
+        private readonly changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -211,7 +212,6 @@ export class EditGemeindeComponent implements OnInit {
                 this.showSaveWarningDialog();
                 return;
             }
-            this.setViewMode();
 
             this.errorService.clearAll();
             this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
@@ -234,9 +234,12 @@ export class EditGemeindeComponent implements OnInit {
                         this.loadStammdaten();
                     }
                     this.updateExternalClients();
+                    this.setViewMode();
                 }).catch(() => {
                     // TODO (reviewer): EditMode offen lassen funktioniert irgendwie nicht
                     this.setEditMode();
+                }).finally(() => {
+                    this.changeDetectorRef.detectChanges();
                 });
             }
 
