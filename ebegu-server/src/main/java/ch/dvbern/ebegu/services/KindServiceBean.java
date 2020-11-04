@@ -162,7 +162,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	@Nonnull
 	public Set<KindDubletteDTO> getKindDubletten(@Nonnull String gesuchId) {
 		Benutzer user = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+			.orElseThrow(() -> new EbeguRuntimeException("getKindDubletten", "No User is logged in"));
 		Set<Gemeinde> gemeinden = user.extractGemeindenForUser();
 
 		Set<KindDubletteDTO> dublettenOfAllKinder = new HashSet<>();
@@ -213,6 +213,11 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		// Eingeloggter Benutzer muss Berechtigung für die Gemeinde haben
 		// Superadmin und Mandant können alle Gemeinden sehen
 		if (!user.getRole().isRoleMandant() && !user.getRole().isSuperadmin()) {
+			// falls der Benutzer nicht Superadmin oder Mandant ist, muss zwingend mindestens eine Gemeinde gefunden werden
+			if (gemeinden.isEmpty()) {
+				throw new EbeguRuntimeException("getKindDubletten", "Keine Gemeinden für aktiven Benutzer gefunden");
+			}
+
 			Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.INNER);
 			predicates.add(joinDossier.get(Dossier_.gemeinde).in(gemeinden));
 		}
