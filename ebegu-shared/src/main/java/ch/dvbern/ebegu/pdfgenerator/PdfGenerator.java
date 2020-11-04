@@ -26,23 +26,13 @@ import javax.annotation.Nullable;
 import ch.dvbern.lib.invoicegenerator.BaseGenerator;
 import ch.dvbern.lib.invoicegenerator.OnPageHandler;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
-import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.component.ComponentConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.component.ComponentRenderer;
 import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Utilities;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfContentByte;
-
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
@@ -55,11 +45,11 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 			.forEach(componenConfiguratoin -> componenConfiguratoin.setOnPage(OnPage.FIRST));
 		layoutConfiguration.getEmpfaengerAdresse().setOnPage(OnPage.FIRST);
 		// Die Default-Schriften aus der Library ueberschreiben
-		layoutConfiguration.setFont(PdfUtil.DEFAULT_FONT);
-		layoutConfiguration.setFontBold(PdfUtil.DEFAULT_FONT_BOLD);
-		layoutConfiguration.setFontTitle(PdfUtil.FONT_TITLE);
-		layoutConfiguration.setFontH1(PdfUtil.FONT_H1);
-		layoutConfiguration.setFontH2(PdfUtil.FONT_H2);
+		layoutConfiguration.getFonts().setFont(PdfUtil.DEFAULT_FONT);
+		layoutConfiguration.getFonts().setFontBold(PdfUtil.DEFAULT_FONT_BOLD);
+		layoutConfiguration.getFonts().setFontTitle(PdfUtil.FONT_TITLE);
+		layoutConfiguration.getFonts().setFontH1(PdfUtil.FONT_H1);
+		layoutConfiguration.getFonts().setFontH2(PdfUtil.FONT_H2);
 		return new PdfGenerator(layoutConfiguration);
 	}
 

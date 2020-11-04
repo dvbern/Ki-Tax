@@ -68,7 +68,8 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	private Locale locale;
 
-	public MutationsMerger(@Nonnull Locale locale) {
+	public MutationsMerger(@Nonnull Locale locale, boolean isDebug) {
+		super(isDebug);
 		this.locale = locale;
 	}
 

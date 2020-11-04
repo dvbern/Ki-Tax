@@ -110,9 +110,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
 
-	private final Font fontTabelle = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8.0f);
-	private final Font fontTabelleBold = PdfUtilities.createFontWithSize(getPageConfiguration().getFontBold(), 8.0f);
-	private final Font fontRed = PdfUtilities.createFontWithColor(getPageConfiguration().getFont(), Color.RED);
+	private final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
+	private final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
+	private final Font fontRed = PdfUtil.createFontWithColor(getPageConfiguration().getFonts().getFont(), Color.RED);
 
 	public enum Art {
 		NORMAL,

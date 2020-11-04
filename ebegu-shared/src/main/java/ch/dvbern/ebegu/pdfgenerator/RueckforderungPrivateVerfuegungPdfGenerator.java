@@ -113,12 +113,12 @@ public class RueckforderungPrivateVerfuegungPdfGenerator extends MandantPdfGener
 
 	private final RueckforderungFormular rueckforderungFormular;
 	private final InstitutionStammdaten institutionStammdaten;
-	private static final int superTextSize = 6;
-	private static final int superTextRise = 4;
+	private static final int SUPER_TEXT_SIZE = 6;
+	private static final int SUPER_TEXT_RISE = 4;
 	private final String nameVerantwortlichePerson;
-	private BigDecimal voraussichtlicheAusfallentschaedigung; // A
-	private BigDecimal gewaehrteAusfallentschaedigung; // B
-	private BigDecimal entschaedigungStufe1; // C
+	private final BigDecimal voraussichtlicheAusfallentschaedigung; // A
+	private final BigDecimal gewaehrteAusfallentschaedigung; // B
+	private final BigDecimal entschaedigungStufe1; // C
 	private BigDecimal relevanterBetrag; // D
 
 	public RueckforderungPrivateVerfuegungPdfGenerator(
@@ -228,22 +228,19 @@ public class RueckforderungPrivateVerfuegungPdfGenerator extends MandantPdfGener
 			document.add(begruessungAmt);
 		}
 
-		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + "\n" + translate(VORSTEHERIN));
+		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + '\n' + translate(VORSTEHERIN));
 		document.add(signaturEnde);
 	}
 
 	private void createHeaderSecondPage(PdfContentByte directContent) {
 		createContentWhereIWant(directContent, "Kanton Bern", 765, 20,
-			getPageConfiguration().getFontBold()
-			, 10);
+			getPageConfiguration().getFonts().getFontBold(), 10);
 		createContentWhereIWant(directContent, "Canton de Berne", 755, 20,
-			getPageConfiguration().getFontBold()
-			, 10);
+			getPageConfiguration().getFonts().getFontBold(), 10);
 		createContentWhereIWant(directContent, translate(VERFUEGUNG_TITLE), 765, 122,
-			getPageConfiguration().getFont(),
-			6.5f);
-		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 750, 122, getPageConfiguration().getFont(),
-			6.5f);
+			getPageConfiguration().getFonts().getFont(), 6.5f);
+		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 750, 122,
+			getPageConfiguration().getFonts().getFont(), 6.5f);
 	}
 
 	private void createErsteSeite(Document document) {
@@ -256,24 +253,24 @@ public class RueckforderungPrivateVerfuegungPdfGenerator extends MandantPdfGener
 		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG)));
 		// Absatz 1 mit Fusszeilen erstellen
 		Paragraph paragraph1 = PdfUtil.createParagraph(translate(INHALT_1A), 1);
-		paragraph1.add(PdfUtil.createSuperTextInText("1", superTextSize, superTextRise));
+		paragraph1.add(PdfUtil.createSuperTextInText("1", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraph1.add(new Chunk(translate(INHALT_1B)));
-		paragraph1.add(PdfUtil.createSuperTextInText("2", superTextSize, superTextRise));
+		paragraph1.add(PdfUtil.createSuperTextInText("2", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		document.add(paragraph1);
 
 		Paragraph paragraph2 = PdfUtil.createParagraph(translate(INHALT_1C), 1);
-		paragraph2.add(PdfUtil.createSuperTextInText("3", superTextSize, superTextRise));
+		paragraph2.add(PdfUtil.createSuperTextInText("3", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		document.add(paragraph2);
 
 		Paragraph paragraph3 = PdfUtil.createParagraph(translate(INHALT_1D), 1);
-		paragraph3.add(PdfUtil.createSuperTextInText("4", superTextSize, superTextRise));
+		paragraph3.add(PdfUtil.createSuperTextInText("4", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraph3.add(new Chunk(translate(INHALT_1E)));
-		paragraph3.add(PdfUtil.createSuperTextInText("5", superTextSize, superTextRise));
+		paragraph3.add(PdfUtil.createSuperTextInText("5", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		paragraph3.add(new Chunk(translate(INHALT_1F)));
 		document.add(paragraph3);
 
 		Paragraph paragraph4 = PdfUtil.createParagraph(translate(INHALT_1G), 1);
-		paragraph4.add(PdfUtil.createSuperTextInText("6", superTextSize, superTextRise));
+		paragraph4.add(PdfUtil.createSuperTextInText("6", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		document.add(paragraph4);
 	}
 
@@ -338,7 +335,7 @@ public class RueckforderungPrivateVerfuegungPdfGenerator extends MandantPdfGener
 	private void createDritteSeite(Document document) {
 		Paragraph title = PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE),0);
 		Paragraph belehrung = PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG), 2);
-		belehrung.add(PdfUtil.createSuperTextInText("7", superTextSize, superTextRise));
+		belehrung.add(PdfUtil.createSuperTextInText("7", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
 		document.add(title);
 		document.add(belehrung);
 	}
