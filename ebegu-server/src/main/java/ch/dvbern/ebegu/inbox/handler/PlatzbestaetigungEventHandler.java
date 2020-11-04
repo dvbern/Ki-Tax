@@ -406,44 +406,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		return betreuungsmitteilung;
 	}
 
-	private ZeitabschnittDTO getZeitabschnittBeforeGoLiveFromPensum(Betreuungspensum pensum) {
-
-		Zeiteinheit pensumUnit;
-
-		switch (pensum.getUnitForDisplay()) {
-		case DAYS:
-			pensumUnit = Zeiteinheit.DAYS;
-			break;
-		case HOURS:
-			pensumUnit = Zeiteinheit.HOURS;
-			break;
-		case PERCENTAGE:
-			pensumUnit = Zeiteinheit.PERCENTAGE;
-			break;
-		default:
-			pensumUnit = null;
-		}
-
-		return new ZeitabschnittDTO(
-			pensum.getMonatlicheBetreuungskosten(),
-			pensum.getPensum(),
-			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis().isAfter(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1))?
-				LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1): pensum.getGueltigkeit().getGueltigBis(),
-			pensumUnit,
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getMonatlicheNebenmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit(),
-			pensum.getTarifProNebenmahlzeit()
-		);
-	}
-
-	private List<ZeitabschnittDTO> filterZeitabschnitteBeforeGoLive(List<ZeitabschnittDTO> zeitabschnitte) {
-		return zeitabschnitte.stream()
-			.filter(abschnitt -> abschnitt.getBis().isAfter(LocalDate.of(2020, 12, 31)))
-			.collect(Collectors.toList());
-	}
-
 	private List<ZeitabschnittDTO> splitZeitabschnitteAroundGoLive(List<ZeitabschnittDTO> zeitabschnittDTOS) {
 		List<ZeitabschnittDTO> newList = new ArrayList<>();
 
@@ -475,6 +437,44 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			original.getAnzahlNebenmahlzeiten(),
 			original.getTarifProHauptmahlzeiten(),
 			original.getTarifProNebenmahlzeiten()
+		);
+	}
+
+	private List<ZeitabschnittDTO> filterZeitabschnitteBeforeGoLive(List<ZeitabschnittDTO> zeitabschnitte) {
+		return zeitabschnitte.stream()
+			.filter(abschnitt -> abschnitt.getBis().isAfter(LocalDate.of(2020, 12, 31)))
+			.collect(Collectors.toList());
+	}
+
+	private ZeitabschnittDTO getZeitabschnittBeforeGoLiveFromPensum(Betreuungspensum pensum) {
+
+		Zeiteinheit pensumUnit;
+
+		switch (pensum.getUnitForDisplay()) {
+		case DAYS:
+			pensumUnit = Zeiteinheit.DAYS;
+			break;
+		case HOURS:
+			pensumUnit = Zeiteinheit.HOURS;
+			break;
+		case PERCENTAGE:
+			pensumUnit = Zeiteinheit.PERCENTAGE;
+			break;
+		default:
+			pensumUnit = null;
+		}
+
+		return new ZeitabschnittDTO(
+			pensum.getMonatlicheBetreuungskosten(),
+			pensum.getPensum(),
+			pensum.getGueltigkeit().getGueltigAb(),
+			pensum.getGueltigkeit().getGueltigBis().isAfter(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1))?
+				LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1): pensum.getGueltigkeit().getGueltigBis(),
+			pensumUnit,
+			pensum.getMonatlicheHauptmahlzeiten(),
+			pensum.getMonatlicheNebenmahlzeiten(),
+			pensum.getTarifProHauptmahlzeit(),
+			pensum.getTarifProNebenmahlzeit()
 		);
 	}
 
