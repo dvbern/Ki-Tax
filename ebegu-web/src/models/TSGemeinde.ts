@@ -31,4 +31,10 @@ export class TSGemeinde extends TSAbstractEntity {
     public angebotTS: boolean;
     public angebotFI: boolean;
     public key: string;
+
+    public isAtLeastOneAngebotSelected(): boolean {
+        const hasAngebot =
+            this.angebotBG || this.angebotTS || this.angebotFI;
+        return hasAngebot;
+    }
 }

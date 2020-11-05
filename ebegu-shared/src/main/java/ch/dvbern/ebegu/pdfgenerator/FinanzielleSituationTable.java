@@ -95,7 +95,7 @@ public class FinanzielleSituationTable {
 			boolean isHeader = i < numberOfTitleRows;
 			boolean isFooter = lastLineBold && i == rows.size() - 1;
 			Color bgColor = isHeader ? Color.LIGHT_GRAY : Color.WHITE;
-			Font font = isFooter ? pageConfiguration.getFontBold() : pageConfiguration.getFont();
+			Font font = isFooter ? pageConfiguration.getFonts().getFontBold() : pageConfiguration.getFonts().getFont();
 
 			FinanzielleSituationRow row = rows.get(i);
 			addRow(table, row, font, bgColor);
@@ -117,7 +117,7 @@ public class FinanzielleSituationTable {
 			phrase.add(PdfUtil.createSuperTextInText(supertext));
 		}
 		if (originalValue != null && isKorrekturmodusGemeinde) {
-			Font fontWithSize = PdfUtilities.createFontWithSize(pageConfiguration.getFont(), 6);
+			Font fontWithSize = PdfUtil.createFontWithSize(pageConfiguration.getFonts().getFont(), 6);
 			fontWithSize.setColor(Color.GRAY);
 			phrase.add(
 				new Chunk(
