@@ -72,18 +72,16 @@ public abstract class AbstractRechner {
 
 	/**
 	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
-	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch. Ausserdem muss darf die Verguenstigung nur
-	 * fuer den Anteil des verguenstigten Pensums am Betreuungspensum gewaehrt werden
-	 * Beispiel: Anpruch 20%, Betreuungspensum 80%, Betreuung ueber einen halben Monat:
-	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.25 * 0.5
+	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
+	 * Beispiel: Betreuung ueber einen halben Monat:
+	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
 	 */
 	protected void handleAnteileMahlzeitenverguenstigung(
-		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilVerguenstigesPensumAmBetreuungspensum
+		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat
 	) {
 		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
-		// derselben mit dem Anteil des Monats sowie dem Anteil des verguenstigten Pensums am
-		// Betreuungspensum korrigiert werden
+		// derselben mit dem Anteil des Monats korrigiert werden
 		final BigDecimal mahlzeitenTotal = result.getVerguenstigungMahlzeitenTotal();
-		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum));
+		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat));
 	}
 }
