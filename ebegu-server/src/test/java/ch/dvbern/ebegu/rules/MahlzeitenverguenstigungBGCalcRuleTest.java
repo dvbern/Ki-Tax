@@ -153,6 +153,32 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 			createInputData(einkommenStufe2, 10, 90, 10, 6),
 			60
 		);
+
+
+	}
+
+	@Test
+	public void teilPensum() {
+		// Beispiel 13 aus Excel
+		assertResults(
+			createInputData(einkommenStufe2, 30, 60, 10, 3, 60),
+			36
+		);
+		// Beispiel 14 aus Excel
+		assertResults(
+			createInputData(einkommenStufe2, 8, 20, 10, 3, 60),
+			30
+		);
+		// Beispiel 15 aus Excel
+		assertResults(
+			createInputData(einkommenStufe2, 8, 19, 10, 3, 60),
+			28
+		);
+		// Beispiel 16 aus Excel
+		assertResults(
+			createInputData(einkommenStufe2, 8, 0, 10, 3, 60),
+			24
+		);
 	}
 
 	private void assertResults(@Nonnull BGCalculationInput inputData, int expectedVerguenstigungMahlzeitenTotal) {
@@ -170,6 +196,18 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		int kostenProHauptmahlzeit,
 		int kostenProNebenmahlzeit
 	) {
+		return createInputData(einkommen, anzahlHauptmahlzeiten, anzahlNebenmahlzeiten, kostenProHauptmahlzeit, kostenProNebenmahlzeit, 100);
+	}
+
+	@Nonnull
+	private BGCalculationInput createInputData(
+		BigDecimal einkommen,
+		int anzahlHauptmahlzeiten,
+		int anzahlNebenmahlzeiten,
+		int kostenProHauptmahlzeit,
+		int kostenProNebenmahlzeit,
+		int anspruchsPensum
+	) {
 		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt();
 		BGCalculationInput input = abschnitt.getBgCalculationInputAsiv();
 		input.setMassgebendesEinkommenVorAbzugFamgr(einkommen);
@@ -178,6 +216,8 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		input.setAnzahlNebenmahlzeiten(MathUtil.DEFAULT.from(anzahlNebenmahlzeiten));
 		input.setTarifHauptmahlzeit(MathUtil.DEFAULT.from(kostenProHauptmahlzeit));
 		input.setTarifNebenmahlzeit(MathUtil.DEFAULT.from(kostenProNebenmahlzeit));
+		input.setAnspruchspensumProzent(anspruchsPensum);
+		input.setBetreuungspensumProzent(MathUtil.DEFAULT.from(anspruchsPensum));
 		return input;
 	}
 }

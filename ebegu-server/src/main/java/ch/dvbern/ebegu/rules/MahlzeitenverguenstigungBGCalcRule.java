@@ -93,13 +93,17 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
 		BigDecimal selbstbehaltProTag = mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit();
 
+
+
 		final BigDecimal verguenstigung = berechneMahlzeitenverguenstigung(
 			inputData.getAnzahlHauptmahlzeiten(),
 			inputData.getAnzahlNebenmahlzeiten(),
 			inputData.getTarifHauptmahlzeit(),
 			inputData.getTarifNebenmahlzeit(),
 			selbstbehaltProTag,
-			verguenstigungMahlzeit
+			verguenstigungMahlzeit,
+			inputData.getBetreuungspensumProzent(),
+			inputData.getBgPensumProzent()
 		);
 
 		if (verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
@@ -132,8 +136,19 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		@Nonnull BigDecimal tarifProHauptmahlzeit,
 		@Nonnull BigDecimal tarifProNebenmahlzeit,
 		@Nonnull BigDecimal minElternbeitragProTag,
-		@Nonnull BigDecimal verguenstigungMahlzeit
+		@Nonnull BigDecimal verguenstigungMahlzeit,
+		@Nonnull BigDecimal betreuungspensumProzent,
+		@Nonnull BigDecimal bgPensumProzent
 	) {
+		// Das Maximum der Tage fuer einen 100% Platz muss aufgrund des effektiven Betreuungspensums umgerechnet werden:
+		final BigDecimal maxTageForBetreuungspensum = MATH.multiply(MAX_TAGE_MAHLZEITENVERGUENSTIGUNG, MATH.pctToFraction(betreuungspensumProzent));
+		// Die eingegebenen Anzahl Tage bezieht sich auf das effektive Betreuungspensum und muss auf den Anteil des verguenstigten Pensums
+		// am Betreuungspensum umgerechnet werden:
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
+		if (betreuungspensumProzent.compareTo(BigDecimal.ZERO) > 0) {
+			anteilVerguenstigesPensumAmBetreuungspensum = MathUtil.EXACT.divide(bgPensumProzent, betreuungspensumProzent);
+		}
+
 		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
 		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
 
@@ -145,11 +160,11 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 
 		// Es duerfen insgesamt max. 20 Tage beruecksichtigt werden. Wir limitieren zuerst die Anzahl Hauptmahlzeiten
 		BigDecimal anzahlHauptmahlzeiten = MathUtil
-			.maximum(anzahlHauptmahlzeitenUngekuerzt, MAX_TAGE_MAHLZEITENVERGUENSTIGUNG);
+			.maximum(anzahlHauptmahlzeitenUngekuerzt, maxTageForBetreuungspensum);
 		// Berechnen, wieviele Tage fuer eventuelle nicht beruecksichtigte Nebenmahlzeiten uebrigbleiben (min 0)
 		BigDecimal maxZusaetzlicheTageFuerNebenmahlzeiten =
 			MathUtil.minimum(
-				MATH.subtract(MAX_TAGE_MAHLZEITENVERGUENSTIGUNG, anzahlHauptmahlzeiten),
+				MATH.subtract(maxTageForBetreuungspensum, anzahlHauptmahlzeiten),
 				BigDecimal.ZERO);
 
 		// Nicht in HMZ berechnete NMZ
@@ -185,7 +200,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		// =Q2+R2
 		// =Q2+R2
 		BigDecimal verguenstigung = MATH.addNullSafe(verguenstigungHauptmahlzeiten, verguenstigungNebenmahlzeiten);
-		return verguenstigung;
+		return MATH.multiply(verguenstigung, anteilVerguenstigesPensumAmBetreuungspensum);
 	}
 
 	@Nonnull
