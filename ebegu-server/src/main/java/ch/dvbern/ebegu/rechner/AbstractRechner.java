@@ -74,7 +74,7 @@ public abstract class AbstractRechner {
 	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
 	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch. Ausserdem muss darf die Verguenstigung nur
 	 * fuer den Anteil des verguenstigten Pensums am Betreuungspensum gewaehrt werden
-	 * Beispiel: Anpruch 20%, Betreuungspensum 80%, Betreuung ueber einen halben Monat:
+	 * Beispiel: Anpruch 25%, Betreuungspensum 80%, Betreuung ueber einen halben Monat:
 	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.25 * 0.5
 	 */
 	protected void handleAnteileMahlzeitenverguenstigung(

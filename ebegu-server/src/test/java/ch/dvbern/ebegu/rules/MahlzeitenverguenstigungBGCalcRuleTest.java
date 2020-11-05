@@ -127,14 +127,17 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 	@Test
 	public void maximalAnzahlTageUeberschritten() {
 		// Bei 100% Pensum duerfen max. 20 Tage beruecksichtigt werden
+		// Beispiel 10 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 30, 60, 10, 6),
 			60
 		);
+		// Beispiel 11 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 30, 90, 10, 6),
 			60
 		);
+		// Beispiel 12 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 10, 90, 10, 6),
 			60
