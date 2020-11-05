@@ -35,6 +35,7 @@ import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
@@ -47,7 +48,7 @@ import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
 public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
@@ -96,7 +97,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			document.add(createBetreuungsangeboteTable());
 			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
 			Paragraph dokumenteParagraph = new Paragraph();
-			dokumenteParagraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			dokumenteParagraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
 			document.add(dokumenteParagraph);
 			List<Element> seite2Paragraphs = Lists.newArrayList();
@@ -120,15 +121,16 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		// Row: Referenznummer
-		table.addCell(new Phrase(translate(REFERENZNUMMER), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), getPageConfiguration().getFont()));
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
+		table.addCell(new Phrase(translate(REFERENZNUMMER), defaultFont));
+		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), defaultFont));
 		table.addCell(new Phrase());
 		// Row: Gesuchersteller-Adressen
-		table.addCell(new Phrase(translate(GESUCHSTELLER), getPageConfiguration().getFont()));
+		table.addCell(new Phrase(translate(GESUCHSTELLER), defaultFont));
 		String gs1 = KibonPrintUtil.getGesuchstellerWithAddressAsString(getGesuch().getGesuchsteller1());
 		String gs2 = KibonPrintUtil.getGesuchstellerWithAddressAsString(getGesuch().getGesuchsteller2());
-		table.addCell(new Phrase(gs1, getPageConfiguration().getFont()));
-		table.addCell(new Phrase(gs2, getPageConfiguration().getFont()));
+		table.addCell(new Phrase(gs1, defaultFont));
+		table.addCell(new Phrase(gs2, defaultFont));
 		return table;
 	}
 
@@ -162,10 +164,10 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		table.addCell(PdfUtil.createTitleCell(translate(REFERENZNUMMER)));
 
 		getGesuch().extractAllPlaetze().forEach(platz -> {
-			table.addCell(new Phrase(platz.getKind().getKindJA().getFullName(), getPageConfiguration().getFont()));
-			table.addCell(new Phrase(platz.getInstitutionAndBetreuungsangebottyp(sprache),
-				getPageConfiguration().getFont()));
-			table.addCell(new Phrase(platz.getBGNummer(), getPageConfiguration().getFont()));
+			final Font defaultFont = getPageConfiguration().getFonts().getFont();
+			table.addCell(new Phrase(platz.getKind().getKindJA().getFullName(), defaultFont));
+			table.addCell(new Phrase(platz.getInstitutionAndBetreuungsangebottyp(sprache), defaultFont));
+			table.addCell(new Phrase(platz.getBGNummer(), defaultFont));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;
@@ -175,7 +177,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	public PdfPTable createUnterschriftenTable() {
 		PdfPTable table = new PdfPTable(2);
 		PdfUtil.setTableDefaultStyles(table);
-		table.getDefaultCell().setPaddingTop(3 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		table.getDefaultCell().setPaddingTop(3 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		GesuchstellerContainer gesuchsteller1 = getGesuch().getGesuchsteller1();
 		GesuchstellerContainer gesuchsteller2 = getGesuch().getGesuchsteller2();
 		if (gesuchsteller1 != null) {
@@ -184,14 +186,15 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		if (gesuchsteller2 != null) {
 			addGesuchstellerToUnterschriften(table, gesuchsteller2);
 		}
-		table.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		table.setSpacingAfter(2 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return table;
 	}
 
 	private void addGesuchstellerToUnterschriften(@Nonnull PdfPTable table,
 		@Nonnull GesuchstellerContainer gesuchsteller) {
-		table.addCell(new Phrase(translate(UNTERSCHRIFTEN_ORT_DATUM), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(gesuchsteller.extractFullName(), getPageConfiguration().getFont()));
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
+		table.addCell(new Phrase(translate(UNTERSCHRIFTEN_ORT_DATUM), defaultFont));
+		table.addCell(new Phrase(gesuchsteller.extractFullName(), defaultFont));
 
 		table.addCell(new Phrase());
 		table.addCell(new Phrase());

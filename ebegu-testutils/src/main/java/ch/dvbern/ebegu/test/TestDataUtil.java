@@ -403,6 +403,7 @@ public final class TestDataUtil {
 			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
+			gemeinde.setAngebotBG(true);
 			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 			gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 			gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
@@ -442,6 +443,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setBfsNummer(99998L);
 		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setAngebotBG(true);
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
@@ -459,6 +461,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setBfsNummer(99999L);
 		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setAngebotBG(true);
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));

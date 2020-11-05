@@ -18,12 +18,15 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,6 +68,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
+import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +83,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff";
 	private static final String MESSAGE_KEY = "mutationsmeldung_message";
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
+	private static final Integer GO_LIVE_YEAR = 2021;
+	private static final Integer GO_LIVE_MONTH = 1;
+	private static final Integer GO_LIVE_DAY = 1;
 
 	@Inject
 	private BetreuungService betreuungService;
@@ -339,7 +346,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		StringBuilder message = new StringBuilder();
 		int counter = 1;
 		boolean areZeitabschnittCorrupted = false;
-		for (ZeitabschnittDTO zeitabschnittDTO : dto.getZeitabschnitte()) {
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = mapZeitabschnitteToImport(dto, betreuung);
+
+		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitteToImport) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
 				, zeitabschnittDTO, betreuung);
 			if (betreuungsmitteilungPensum == null) {
@@ -375,6 +385,103 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 		betreuungsmitteilung.setMessage(message.toString());
 		return betreuungsmitteilung;
+	}
+
+	protected List<ZeitabschnittDTO> mapZeitabschnitteToImport(BetreuungEventDTO dto, Betreuung betreuung) {
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitteBeforeGoLive(
+			splitZeitabschnitteAroundGoLive(dto.getZeitabschnitte())
+		);
+		List<Betreuungspensum> currentPensen = betreuung.getBetreuungspensumContainers().stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumJA)
+			.collect(Collectors.toList());
+
+		List<Betreuungspensum> currentPensenStartingBeforeGoLive = currentPensen.stream()
+			.filter(pensum -> pensum.getGueltigkeit().getGueltigAb().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY)))
+			.collect(Collectors.toList());
+
+		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
+		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the zeitabschnitt,
+		// end the first zeitabschnitt on the go live date and ignore the zeitabschnitt after
+		List<ZeitabschnittDTO> zeitabschnitteFromCurrentPensenToKeep = currentPensenStartingBeforeGoLive.stream()
+			.map(this::getZeitabschnittBeforeGoLiveFromPensum)
+			.collect(Collectors.toList());
+
+		zeitabschnitteToImport.addAll(0, zeitabschnitteFromCurrentPensenToKeep);
+
+		return zeitabschnitteToImport;
+	}
+
+	private List<ZeitabschnittDTO> splitZeitabschnitteAroundGoLive(List<ZeitabschnittDTO> zeitabschnittDTOS) {
+		List<ZeitabschnittDTO> newList = new ArrayList<>();
+
+		for (ZeitabschnittDTO zeitabschnittDTO: zeitabschnittDTOS) {
+			if(zeitabschnittDTO.getVon().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY))) {
+				ZeitabschnittDTO beforeGoLive = cloneZeitabschnittDto(zeitabschnittDTO);
+				beforeGoLive.setBis(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1));
+
+				ZeitabschnittDTO afterGoLive = cloneZeitabschnittDto(zeitabschnittDTO);
+				afterGoLive.setVon(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY));
+
+				newList.add(beforeGoLive);
+				newList.add(afterGoLive);
+			} else {
+				newList.add(zeitabschnittDTO);
+			}
+		}
+		return newList;
+	}
+
+	private ZeitabschnittDTO cloneZeitabschnittDto(ZeitabschnittDTO original) {
+		return new ZeitabschnittDTO(
+			original.getBetreuungskosten(),
+			original.getBetreuungspensum(),
+			original.getVon(),
+			original.getBis(),
+			original.getPensumUnit(),
+			original.getAnzahlHauptmahlzeiten(),
+			original.getAnzahlNebenmahlzeiten(),
+			original.getTarifProHauptmahlzeiten(),
+			original.getTarifProNebenmahlzeiten()
+		);
+	}
+
+	private List<ZeitabschnittDTO> filterZeitabschnitteBeforeGoLive(List<ZeitabschnittDTO> zeitabschnitte) {
+		return zeitabschnitte.stream()
+			.filter(abschnitt -> abschnitt.getBis().isAfter(LocalDate.of(2020, 12, 31)))
+			.collect(Collectors.toList());
+	}
+
+	private ZeitabschnittDTO getZeitabschnittBeforeGoLiveFromPensum(Betreuungspensum pensum) {
+
+		Zeiteinheit pensumUnit;
+
+		switch (pensum.getUnitForDisplay()) {
+		case DAYS:
+			pensumUnit = Zeiteinheit.DAYS;
+			break;
+		case HOURS:
+			pensumUnit = Zeiteinheit.HOURS;
+			break;
+		case PERCENTAGE:
+			pensumUnit = Zeiteinheit.PERCENTAGE;
+			break;
+		default:
+			pensumUnit = null;
+		}
+
+		return new ZeitabschnittDTO(
+			pensum.getMonatlicheBetreuungskosten(),
+			pensum.getPensum(),
+			pensum.getGueltigkeit().getGueltigAb(),
+			pensum.getGueltigkeit().getGueltigBis().isAfter(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1))?
+				LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1): pensum.getGueltigkeit().getGueltigBis(),
+			pensumUnit,
+			pensum.getMonatlicheHauptmahlzeiten(),
+			pensum.getMonatlicheNebenmahlzeiten(),
+			pensum.getTarifProHauptmahlzeit(),
+			pensum.getTarifProNebenmahlzeit()
+		);
 	}
 
 	@Nonnull
