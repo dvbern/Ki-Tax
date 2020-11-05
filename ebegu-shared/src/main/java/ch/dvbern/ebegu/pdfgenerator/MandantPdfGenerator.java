@@ -171,9 +171,9 @@ public abstract class MandantPdfGenerator {
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4.0f);
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
-		Font fontWithSize = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6.5f);
+		Font fontWithSize = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 6.5f);
 		for (int i = start; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + anzeigeNummerStart + 1) + " ", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(),
+			Chunk chunk = new Chunk((i + anzeigeNummerStart + 1) + " ", PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(),
 				5));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
@@ -201,7 +201,7 @@ public abstract class MandantPdfGenerator {
 		final float loverLeftY = y;
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
-		Font fontWithSize = PdfUtilities.createFontWithSize(font, size);
+		Font fontWithSize = PdfUtil.createFontWithSize(font, size);
 		fz.addText(new Phrase(content + '\n', fontWithSize));
 		fz.go();
 	}

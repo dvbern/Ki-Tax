@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
@@ -118,7 +119,8 @@ public interface InstitutionService {
 	 */
 	void removeInstitution(@Nonnull String institutionId);
 
-	void saveExternalClients(@Nonnull Institution institution, @Nonnull Collection<ExternalClient> externalClients);
+	void saveInstitutionExternalClients(@Nonnull Institution institution,
+		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients);
 
 	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH);
 }

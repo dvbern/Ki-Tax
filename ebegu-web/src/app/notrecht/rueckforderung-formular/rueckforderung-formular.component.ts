@@ -384,7 +384,19 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     public calculateProvBetrag(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.cleanInputData(rueckforderungFormular);
         this._provisorischerBetrag = rueckforderungFormular.calculateProvisorischerBetrag();
+    }
+
+    private cleanInputData(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (EbeguUtil.isNullOrFalse(rueckforderungFormular.kurzarbeitBeantragt)) {
+            rueckforderungFormular.kurzarbeitBetrag = null;
+            rueckforderungFormular.kurzarbeitDefinitivVerfuegt = null;
+        }
+        if (EbeguUtil.isNullOrFalse(rueckforderungFormular.coronaErwerbsersatzBeantragt)) {
+            rueckforderungFormular.coronaErwerbsersatzBetrag = null;
+            rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt = null;
+        }
     }
 
     public showVorlageOeffentlicheInstitutionen(rueckforderungFormular: TSRueckforderungFormular): boolean {

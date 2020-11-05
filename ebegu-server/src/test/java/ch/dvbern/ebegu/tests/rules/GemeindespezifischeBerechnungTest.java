@@ -50,6 +50,7 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	private KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	private List<VerfuegungZeitabschnitt> initialerRestanspruch = new ArrayList<>();
+	private static final boolean IS_DEBUG = false;
 	private static final Locale GERMAN = Locale.GERMAN;
 
 	@Before
@@ -237,7 +238,7 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialerRestanspruch);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
-		MonatsRule monatsRule = new MonatsRule();
+		MonatsRule monatsRule = new MonatsRule(IS_DEBUG);
 		result = monatsRule.executeIfApplicable(platz, result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());

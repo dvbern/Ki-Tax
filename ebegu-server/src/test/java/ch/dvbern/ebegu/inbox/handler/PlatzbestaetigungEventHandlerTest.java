@@ -23,6 +23,8 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -46,21 +48,21 @@ public class PlatzbestaetigungEventHandlerTest {
 	private Gesuch gesuch_1GS;
 
 	@Before
-	public void setUp(){
+	public void setUp() {
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
 		Gemeinde bern = TestDataUtil.createGemeindeParis();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(gesuchsperiode1718, institutionStammdatenList);
+		Testfall01_WaeltiDagmar testfall_1GS =
+			new Testfall01_WaeltiDagmar(gesuchsperiode1718, institutionStammdatenList);
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
 	}
 
-
 	@Test
-	public void testIsSame(){
+	public void testIsSame() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
 		//first with tarif = null
@@ -74,7 +76,7 @@ public class PlatzbestaetigungEventHandlerTest {
 	}
 
 	@Test
-	public void testMapZeitabschnittBetreuungMitteilungPensum(){
+	public void testMapZeitabschnittBetreuungMitteilungPensum() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
 		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
@@ -95,12 +97,16 @@ public class PlatzbestaetigungEventHandlerTest {
 			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
 		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
-		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
+		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
+			.getGueltigAb()
+			.isEqual(zeitabschnittDTO.getVon()));
+		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
+			.getGueltigBis()
+			.isEqual(zeitabschnittDTO.getBis()));
 	}
 
 	@Test
-	public void testMapZeitabschnittBetreuungPensum(){
+	public void testMapZeitabschnittBetreuungPensum() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
 		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
@@ -126,7 +132,7 @@ public class PlatzbestaetigungEventHandlerTest {
 	}
 
 	@Test
-	public void testMapWrongZeitabschnitt(){
+	public void testMapWrongZeitabschnitt() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
 		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
@@ -137,10 +143,36 @@ public class PlatzbestaetigungEventHandlerTest {
 		Assert.assertNull(betreuungsmitteilungPensum);
 	}
 
+	@Test
+	public void testMapZeitAbschnitteToImport() {
+		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
+		ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
+		zeitabschnittDTO.setVon(LocalDate.of(2020, 11, 1));
+		zeitabschnittDTO.setBis(LocalDate.of(2021, 6, 30));
+		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
+		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
+			betreuung
+				.getBetreuungspensumContainers()
+				.stream()
+				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
+				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 5, 31)))
+				.collect(Collectors.toSet()));
+
+		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
+			betreuungEventDTO,
+			Objects.requireNonNull(betreuung));
+
+		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+
+		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
+		Assert.assertEquals(LocalDate.of(2021, 6, 30), zeitabschnitteToImport.get(1).getBis());
+	}
+
 	/**
 	 * Eine BetreuungEventDTO mit genau eine Zeitabschnitt
-	 *
-	 * @return
 	 */
 	private BetreuungEventDTO createBetreuungEventDTO() {
 		BetreuungEventDTO betreuungEventDTO = new BetreuungEventDTO();
@@ -149,7 +181,13 @@ public class PlatzbestaetigungEventHandlerTest {
 		betreuungEventDTO.setGemeindeName("Testgemeinde");
 		betreuungEventDTO.setInstitutionId("1234-5678-9101-1121");
 		betreuungEventDTO.setAusserordentlicherBetreuungsaufwand(false);
-		ZeitabschnittDTO zeitabschnittDTO = ZeitabschnittDTO.newBuilder()
+		ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
+		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
+		return betreuungEventDTO;
+	}
+
+	private ZeitabschnittDTO createZeitabschnittDTO() {
+		return ZeitabschnittDTO.newBuilder()
 			.setBetreuungskosten(new BigDecimal(2000.00).setScale(2))
 			.setBetreuungspensum(new BigDecimal(80))
 			.setAnzahlHauptmahlzeiten(BigDecimal.ZERO)
@@ -158,7 +196,5 @@ public class PlatzbestaetigungEventHandlerTest {
 			.setVon(LocalDate.of(2017, 8, 01))
 			.setBis(LocalDate.of(2018, 1, 31))
 			.build();
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
-		return betreuungEventDTO;
 	}
 }

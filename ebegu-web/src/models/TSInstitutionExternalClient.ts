@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,13 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSInstitutionExternalClient} from './TSInstitutionExternalClient';
-import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
+import {TSExternalClient} from './TSExternalClient';
+import {TSDateRange} from './types/TSDateRange';
 
-export class TSInstitutionUpdate {
+export class TSInstitutionExternalClient {
 
-    public name: string;
-    public traegerschaftId: string;
-    public stammdaten: TSInstitutionStammdaten;
-    public institutionExternalClients: TSInstitutionExternalClient[];
+    public externalClient: TSExternalClient;
+    public gueltigkeit: TSDateRange;
+
+    public constructor(externalClient?: TSExternalClient) {
+        this.externalClient = externalClient;
+        this.gueltigkeit = new TSDateRange(undefined, undefined);
+    }
 }

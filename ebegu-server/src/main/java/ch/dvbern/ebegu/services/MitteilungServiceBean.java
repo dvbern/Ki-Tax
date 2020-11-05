@@ -76,6 +76,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung_;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -90,6 +91,7 @@ import ch.dvbern.ebegu.entities.Mitteilung_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -107,6 +109,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -153,6 +156,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	@Nonnull
@@ -636,6 +642,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
+		Objects.requireNonNull(mitteilung);
+		Objects.requireNonNull(mitteilung.getBetreuung());
+
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		// neustes Gesuch lesen
@@ -757,16 +766,28 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
 		List<BetreuungspensumAbweichung> initialAbweichungen = betreuung.fillAbweichungen();
-		// (2) Die leere Abschnitte (weder Vertrag noch Abweichung eingegeben) werden entfernt
-		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
+		// (2) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
 			.stream()
-			.filter(abweichung -> (abweichung.getStatus() != BetreuungspensumAbweichungStatus.NONE
-				|| abweichung.getVertraglichesPensum() != null))
+			.filter(abweichung -> (abweichung.getVertraglichesPensum() != null))
 			.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
 			.collect(Collectors.toSet());
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
+
+		final Locale locale = LocaleThreadLocal.get();
+
+		final Einstellung einstellung = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode());
+		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
+
+		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
+		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(pensenFromAbweichungen, mahlzeitenverguenstigungEnabled, locale));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -1088,9 +1109,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return Collections.emptyList();
 	}
 
-	private void applyBetreuungsmitteilungToMutation(Gesuch gesuch, Betreuungsmitteilung mitteilung) {
+	private void applyBetreuungsmitteilungToMutation(@Nonnull Gesuch gesuch, @Nonnull Betreuungsmitteilung mitteilung
+	) {
+		Objects.requireNonNull(gesuch);
+		Objects.requireNonNull(mitteilung);
+		Objects.requireNonNull(mitteilung.getBetreuung());
+
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+
 		final Optional<Betreuung> betreuungToChangeOpt = gesuch.extractBetreuungsFromBetreuungNummer(
 			mitteilung.getBetreuung().getKind().getKindNummer(),
 			mitteilung.getBetreuung().getBetreuungNummer());

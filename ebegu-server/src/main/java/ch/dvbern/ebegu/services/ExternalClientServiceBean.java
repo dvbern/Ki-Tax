@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -26,8 +27,12 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.ExternalClient_;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient_;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
 @Local(ExternalClientService.class)
@@ -35,6 +40,9 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private Persistence persistence;
 
 	@Nonnull
 	@Override
@@ -48,5 +56,19 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 	public Collection<ExternalClient> getAllForInstitution() {
 		return criteriaQueryHelper.getEntitiesByAttribute(
 			ExternalClient.class, ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClient_.type);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<ExternalClient> findExternalClient(@Nonnull String id) {
+		ExternalClient externalClient = persistence.find(ExternalClient.class, id);
+		return Optional.ofNullable(externalClient);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution) {
+		return criteriaQueryHelper.getEntitiesByAttribute(
+			InstitutionExternalClient.class, institution, InstitutionExternalClient_.institution);
 	}
 }
