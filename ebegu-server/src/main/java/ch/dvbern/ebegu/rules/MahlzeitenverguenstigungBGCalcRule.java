@@ -132,8 +132,17 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		@Nonnull BigDecimal tarifProHauptmahlzeit,
 		@Nonnull BigDecimal tarifProNebenmahlzeit,
 		@Nonnull BigDecimal minElternbeitragProTag,
-		@Nonnull BigDecimal maxVerguenstigungProTag
+		@Nonnull BigDecimal verguenstigungMahlzeit
 	) {
+		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
+		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
+
+		BigDecimal maxVerguenstigungProTagNebenmahlzeiten = getMaxVerguenstigungProTagNebenmahlzeiten(
+			tarifProNebenmahlzeit,
+			minElternbeitragProTag,
+			verguenstigungMahlzeit,
+			anzahlNebenmahlzeitenStandardTag);
+
 		// Es duerfen insgesamt max. 20 Tage beruecksichtigt werden. Wir limitieren zuerst die Anzahl Hauptmahlzeiten
 		BigDecimal anzahlHauptmahlzeiten = MathUtil
 			.maximum(anzahlHauptmahlzeitenUngekuerzt, MAX_TAGE_MAHLZEITENVERGUENSTIGUNG);
@@ -142,8 +151,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			MathUtil.minimum(
 				MATH.subtract(MAX_TAGE_MAHLZEITENVERGUENSTIGUNG, anzahlHauptmahlzeiten),
 				BigDecimal.ZERO);
-		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
-		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
 
 		// Nicht in HMZ berechnete NMZ
 		BigDecimal nichtBerechneteNebenmahlzeitenUngekuerzt = getNichtInHauptmahlzeitenBerechneteNebenmahlzeiten(
@@ -152,17 +159,17 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			MATH.multiply(maxZusaetzlicheTageFuerNebenmahlzeiten, anzahlNebenmahlzeitenStandardTag));
 
 		// Tasächlicher Betrag MZV HMZ/ pro Tag
-		BigDecimal tatsaechlicherBetragProTag = getTatsaechlicherBetragProTag(
-			tarifProHauptmahlzeit, minElternbeitragProTag, maxVerguenstigungProTag);
+		BigDecimal tatsaechlicherBetragProTagHauptmahlzeiten = getTatsaechlicherBetragProTag(
+			tarifProHauptmahlzeit, minElternbeitragProTag, verguenstigungMahlzeit);
 
 		//Minimaler Betrag MZV NMZ/ pro Tag
-		BigDecimal minBetragProTag = getMinimalerBetragProTag(
-			tarifProNebenmahlzeit, minElternbeitragProTag, maxVerguenstigungProTag);
+		BigDecimal minBetragProTagNebenmahlzeiten = getMinimaleVerguenstigungProTagNebenmahlzeiten(
+			tarifProNebenmahlzeit, minElternbeitragProTag, maxVerguenstigungProTagNebenmahlzeiten);
 
 		// Vergünstigung HMZ:
 		BigDecimal verguenstigungHauptmahlzeiten = getVerguenstigungHauptmahlzeiten(
 			anzahlHauptmahlzeiten,
-			tatsaechlicherBetragProTag);
+			tatsaechlicherBetragProTagHauptmahlzeiten);
 
 		// Vergünstigung der in HMZ nicht enthaltene NMZ:
 		BigDecimal verguenstigungNebenmahlzeiten = BigDecimal.ZERO;
@@ -170,8 +177,8 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			verguenstigungNebenmahlzeiten = getVerguenstigungNebenmahlzeiten(
 			anzahlNebenmahlzeitenStandardTag,
 			nichtBerechneteNebenmahlzeiten,
-			maxVerguenstigungProTag,
-			minBetragProTag);
+			maxVerguenstigungProTagNebenmahlzeiten,
+			minBetragProTagNebenmahlzeiten);
 		}
 
 		// Vergünstigung:
@@ -179,6 +186,27 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		// =Q2+R2
 		BigDecimal verguenstigung = MATH.addNullSafe(verguenstigungHauptmahlzeiten, verguenstigungNebenmahlzeiten);
 		return verguenstigung;
+	}
+
+	@Nonnull
+	private BigDecimal getMaxVerguenstigungProTagNebenmahlzeiten(
+		@Nonnull BigDecimal tarifProNebenmahlzeit,
+		@Nonnull BigDecimal minElternbeitragProTag,
+		@Nonnull BigDecimal verguenstigungMahlzeit,
+		@Nonnull BigDecimal anzahlNebenmahlzeitenStandardTag
+	) {
+		// =WENN(MIN(2*H6-M6;L6)<0;0;MIN(2*H6-M6;L6))
+		// =WENN(MIN(2*tarifProNebenmahlzeit-minElternbeitragProTag;verguenstigungMahlzeit)<0;0;MIN(2*tarifProNebenmahlzeit-minElternbeitragProTag;verguenstigungMahlzeit))
+		BigDecimal maxVerguenstigungProTagNebenmahlzeiten = MATH.subtract(
+			MATH.multiply(
+				anzahlNebenmahlzeitenStandardTag,
+				tarifProNebenmahlzeit),
+			minElternbeitragProTag);
+		// aber maximal die definierte Verguenstigung aufgrund Einkommen
+		maxVerguenstigungProTagNebenmahlzeiten = MathUtil.maximum(maxVerguenstigungProTagNebenmahlzeiten, verguenstigungMahlzeit);
+		// darf nicht negativ sein
+		maxVerguenstigungProTagNebenmahlzeiten = MathUtil.minimum(maxVerguenstigungProTagNebenmahlzeiten, BigDecimal.ZERO);
+		return maxVerguenstigungProTagNebenmahlzeiten;
 	}
 
 	@Nonnull
@@ -210,7 +238,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	}
 
 	@Nonnull
-	private BigDecimal getMinimalerBetragProTag(
+	private BigDecimal getMinimaleVerguenstigungProTagNebenmahlzeiten(
 		@Nonnull BigDecimal tarifProNebenmahlzeit,
 		@Nonnull BigDecimal minElternbeitragProTag,
 		@Nonnull BigDecimal maxVerguenstigungProTag
