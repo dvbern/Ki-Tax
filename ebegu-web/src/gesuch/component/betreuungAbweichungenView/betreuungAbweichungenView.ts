@@ -224,6 +224,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     /**
+     * Prüft, ob es eine Mutationsmeldung gibt, die noch nicht applied ist.
      * Prueft dass das Objekt existingMutationsMeldung existiert und dass es ein sentDatum hat. Das wird gebraucht,
      * um zu vermeiden, dass ein leeres Objekt als gueltiges Objekt erkannt wird.
      * Ausserdem muss die Meldung nicht applied sein und nicht den Status ERLEDIGT haben
@@ -241,6 +242,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         if (!this.hasNotAppliedMutationsmeldung()) {
             this.freigeben();
+            return;
         }
 
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
