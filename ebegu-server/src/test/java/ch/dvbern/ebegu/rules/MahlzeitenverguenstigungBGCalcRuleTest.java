@@ -70,38 +70,47 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 
 	@Test
 	public void executeRule() {
+		// Beispiel 1 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 16, 10, 3),
 			24
 		);
+		// Beispiel 2 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 3),
 			30
 		);
+		// Beispiel 3 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 3),
 			30
 		);
+		// Beispiel 4 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 2),
 			30
 		);
+		// Beispiel 5 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 2),
 			30
 		);
+		// Beispiel 6 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 6, 3),
 			30
 		);
+		// Beispiel 7 aus Excel
 		assertResults(
 			createInputData(einkommenStufe1, 8, 0, 6, 3),
 			32
 		);
+		// Beispiel 8 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 0, 4, 10, 3),
 			6
 		);
+		// Beispiel 9 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 17, 10, 3),
 			25
