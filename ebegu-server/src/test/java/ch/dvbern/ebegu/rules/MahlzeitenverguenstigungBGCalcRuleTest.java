@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
@@ -36,17 +37,18 @@ import org.junit.Test;
 
 public class MahlzeitenverguenstigungBGCalcRuleTest {
 
-	private BigDecimal einkommenStufe1 = MathUtil.DEFAULT.from(10000);
-	private BigDecimal einkommenStufe2 = MathUtil.DEFAULT.from(60000);
+	private final BigDecimal einkommenStufe1 = MathUtil.DEFAULT.from(10000);
+	private final BigDecimal einkommenStufe2 = MathUtil.DEFAULT.from(60000);
 
-	private MahlzeitenverguenstigungParameter parameter = null;
 	private MahlzeitenverguenstigungBGCalcRule rule = null;
-	private AbstractPlatz platz = TestDataUtil.createTestgesuchDagmar().extractAllBetreuungen().get(0);
+	private final AbstractPlatz platz = TestDataUtil.createTestgesuchDagmar().extractAllBetreuungen().get(0);
 
 	@Before
-	public void setUp() throws Exception {
-		platz.extractGesuch().extractFamiliensituation().setKeineMahlzeitenverguenstigungBeantragt(false);
-		parameter = new MahlzeitenverguenstigungParameter(
+	public void setUp() {
+		final Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+		Assert.assertNotNull(familiensituation);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
+		MahlzeitenverguenstigungParameter parameter = new MahlzeitenverguenstigungParameter(
 			true,
 			false,
 			BigDecimal.valueOf(51000),
@@ -70,38 +72,47 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 
 	@Test
 	public void executeRule() {
+		// Beispiel 1 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 16, 10, 3),
 			24
 		);
+		// Beispiel 2 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 3),
 			30
 		);
+		// Beispiel 3 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 3),
 			30
 		);
+		// Beispiel 4 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 10, 2),
-			30
+			28
 		);
+		// Beispiel 5 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 10, 16, 10, 2),
 			30
 		);
+		// Beispiel 6 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 20, 6, 3),
 			30
 		);
+		// Beispiel 7 aus Excel
 		assertResults(
 			createInputData(einkommenStufe1, 8, 0, 6, 3),
 			32
 		);
+		// Beispiel 8 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 0, 4, 10, 3),
 			6
 		);
+		// Beispiel 9 aus Excel
 		assertResults(
 			createInputData(einkommenStufe2, 8, 17, 10, 3),
 			25
