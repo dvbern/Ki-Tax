@@ -45,7 +45,7 @@ export class AddGemeindeComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('AddGemeindeComponent');
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public gemeinde: TSGemeinde = undefined;
     public adminMail: string = undefined;

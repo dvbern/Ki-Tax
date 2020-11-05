@@ -48,7 +48,7 @@ export class AddInstitutionComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('AddInstitutionComponent');
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
     public isBGInstitution: boolean;
     public betreuungsangebote: TSBetreuungsangebotTyp[];
     public betreuungsangebot: TSBetreuungsangebotTyp;

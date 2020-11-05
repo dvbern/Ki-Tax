@@ -45,7 +45,7 @@ import {UploadRS} from '../../core/service/uploadRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GemeindeTsKonfigComponent implements OnInit {
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: false }) public form: NgForm;
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;

@@ -30,7 +30,7 @@ import {NotrechtRS} from '../../../core/service/notrechtRS.rest';
 })
 export class RueckforderungVerlaengerungDialogComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
     public rueckforderungFormular: TSRueckforderungFormular;
 
     public constructor(private readonly dialogRef: MatDialogRef<RueckforderungVerlaengerungDialogComponent>,

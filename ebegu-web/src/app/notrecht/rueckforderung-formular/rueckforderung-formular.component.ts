@@ -70,7 +70,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         return this._rueckforderungZahlungenList;
     }
 
-    @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(NgForm, { static: false }) private readonly form: NgForm;
 
     private einreicheFristPrivatDefault: moment.Moment;
     private einreicheFristOeffentlich: moment.Moment;

@@ -42,8 +42,8 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     public displayedColumns: string[] = ['name', 'institutionCount', 'detail', 'remove'];
     public dataSource: MatTableDataSource<TSTraegerschaft>;
 
-    @ViewChild(NgForm) public form: NgForm;
-    @ViewChild(MatSort) public sort: MatSort;
+    @ViewChild(NgForm, { static: false }) public form: NgForm;
+    @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
     public constructor(
         private readonly traegerschaftRS: TraegerschaftRS,

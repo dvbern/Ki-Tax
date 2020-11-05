@@ -29,7 +29,7 @@ import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMittei
 })
 export class SendNotrechtMitteilungComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public mitteilung: TSRueckforderungMitteilung;
     public isEinladung: boolean;

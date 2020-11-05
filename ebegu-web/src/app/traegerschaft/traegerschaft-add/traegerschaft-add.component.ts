@@ -35,7 +35,7 @@ export class TraegerschaftAddComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('TraegerschaftAddComponent');
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public traegerschaft: TSTraegerschaft = undefined;
     public adminMail: string = undefined;

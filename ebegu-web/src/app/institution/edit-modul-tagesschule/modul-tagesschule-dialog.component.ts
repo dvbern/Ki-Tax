@@ -32,7 +32,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 })
 export class ModulTagesschuleDialogComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public noDaySelected: boolean = false;

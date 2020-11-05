@@ -46,10 +46,10 @@ const LOG = LogFactory.createLog('NotrechtComponent');
 })
 export class NotrechtComponent implements OnInit {
 
-    @ViewChild(MatSort)
+    @ViewChild(MatSort, { static: true })
     private readonly sort: MatSort;
 
-    @ViewChild(MatPaginator) public paginator: MatPaginator;
+    @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;

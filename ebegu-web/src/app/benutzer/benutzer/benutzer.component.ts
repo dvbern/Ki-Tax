@@ -50,7 +50,7 @@ const LOG = LogFactory.createLog('BenutzerComponent');
 })
 export class BenutzerComponent implements OnInit {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(NgForm, { static: false }) private readonly form: NgForm;
 
     private readonly log: Log = LogFactory.createLog('BenutzerComponent');
 
