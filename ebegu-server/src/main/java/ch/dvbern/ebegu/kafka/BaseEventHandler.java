@@ -40,7 +40,8 @@ public abstract class BaseEventHandler<T> {
 		@Nonnull String key,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
-		@Nonnull T dto) {
+		@Nonnull T dto,
+		@Nonnull String clientName) {
 
 		ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, dto.toString());
 
@@ -55,7 +56,7 @@ public abstract class BaseEventHandler<T> {
 			dto.getClass().getSimpleName(), key, eventType);
 
 		try {
-			processEvent(eventTime, EventType.of(eventType), dto);
+			processEvent(eventTime, EventType.of(eventType), dto, clientName);
 		} catch (IllegalArgumentException e) {
 			LOG.warn("Unknown event type '{}'", eventType);
 		}
@@ -64,5 +65,6 @@ public abstract class BaseEventHandler<T> {
 	protected abstract void processEvent(
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
-		@Nonnull T dto);
+		@Nonnull T dto,
+		@Nonnull String clientName);
 }
