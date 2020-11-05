@@ -182,7 +182,11 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	}
 
 	@Nonnull
-	private List<KindDubletteDTO> getKindDubletten(@Nonnull KindContainer kindContainer, Set<Gemeinde> gemeinden, Benutzer user) {
+	private List<KindDubletteDTO> getKindDubletten(
+		@Nonnull KindContainer kindContainer,
+		@Nonnull Set<Gemeinde> gemeinden,
+		@Nonnull Benutzer user
+	) {
 		// Wir suchen nach Name, Vorname und Geburtsdatum
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindDubletteDTO> query = cb.createQuery(KindDubletteDTO.class);
