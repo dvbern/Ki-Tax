@@ -41,7 +41,8 @@ public abstract class BaseEventHandler<T> {
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
 		@Nonnull T dto,
-		@Nonnull String clientName) {
+		@Nonnull String clientName
+	) {
 
 		ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, dto.toString());
 

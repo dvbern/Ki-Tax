@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
@@ -451,16 +450,5 @@ public class PlatzbestaetigungEventHandlerTest {
 			.setVon(LocalDate.of(2017, 8, 01))
 			.setBis(LocalDate.of(2018, 1, 31))
 			.build();
-	}
-
-	private Betreuungspensum createBetreuungspensum(DateRange gueltigkeit) {
-		Betreuungspensum betpensum = new Betreuungspensum();
-		betpensum.setGueltigkeit(gueltigkeit);
-		betpensum.setPensum(new BigDecimal(80));
-		betpensum.setUnitForDisplay(PensumUnits.PERCENTAGE);
-		betpensum.setMonatlicheHauptmahlzeiten(BigDecimal.ZERO);
-		betpensum.setMonatlicheNebenmahlzeiten(BigDecimal.ZERO);
-		betpensum.setMonatlicheBetreuungskosten(new BigDecimal(2000.00).setScale(2));
-		return betpensum;
 	}
 }
