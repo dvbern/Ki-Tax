@@ -139,10 +139,8 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall, anteilMonat);
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
-		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats und das verguenstigte
-		// Pensum reduzieren.
-		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = calculateAnteilVerguenstigtesPensumAmBetreuungspensum(input);
-		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, anteilVerguenstigesPensumAmBetreuungspensum);
+		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats reduzieren.
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat);
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);

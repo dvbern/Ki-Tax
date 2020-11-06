@@ -137,8 +137,7 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private isAtLeastOneAngebotSelected(): boolean {
-        const hasAngebot =
-            this.gemeinde.angebotBG || this.gemeinde.angebotTS || this.gemeinde.angebotFI;
+        const hasAngebot = this.gemeinde.isAtLeastOneAngebotSelected();
         this.showMessageKeinAngebotSelected = !hasAngebot;
         return hasAngebot;
     }
