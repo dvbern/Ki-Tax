@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -47,6 +48,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -62,8 +64,10 @@ import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
@@ -102,11 +106,16 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Inject
 	private BenutzerService benutzerService;
 
+	@Inject
+	private ExternalClientService externalClientService;
+
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
-		@Nonnull BetreuungEventDTO dto) {
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull String clientName
+	) {
 		String refnr = dto.getRefnr();
 		try {
 			Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungByBGNummer(refnr, false);
@@ -124,9 +133,25 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
 				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} war spaeter als dieser "
 					+ "Event im kiBon bearbeitet! Event ist ignoriert", refnr);
-			} else if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
+				return;
+			}
+			//Get InstitutinClient Gueltigkeit
+			Collection<InstitutionExternalClient> institutionExternalClients =
+				externalClientService.getInstitutionExternalClientForInstitution(
+					betreuung.getInstitutionStammdaten().getInstitution());
+			InstitutionExternalClient institutionExternalClient = institutionExternalClients.stream()
+				.filter(iec -> iec.getExternalClient().getClientName().equals(clientName))
+				.findAny()
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"processEvent",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					clientName, betreuung.getInstitutionStammdaten().getInstitution().getName()));
+
+			if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
 				//Update the Betreuung and check if all data are available
-				if (setBetreuungDaten(new PlatzbestaetigungProcessingContext(betreuung, dto))) {
+				if (setBetreuungDaten(
+					new PlatzbestaetigungProcessingContext(betreuung, dto),
+					institutionExternalClient.getGueltigkeit())) {
 					//noinspection ResultOfMethodCallIgnored
 					betreuungService.betreuungPlatzBestaetigen(betreuung);
 					LOG.info("Platzbestaetigung: Betreuung mit RefNr: {} automatisch bestätigt", refnr);
@@ -141,14 +166,14 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.BESTAETIGT) {
 				if (isSame(dto, betreuung)) {
 					LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}"
-
 						+
 						" - MutationMitteilung wird nicht erstellt!", refnr);
 					return;
 				}
 				//MutationMitteilungErstellen
 				//we map all the data we know in a mitteilung object, we are only interested into Zeitabschnitt:
-				Betreuungsmitteilung betreuungsmitteilung = this.setBetreuungsmitteilungDaten(dto, betreuung);
+				Betreuungsmitteilung betreuungsmitteilung =
+					this.setBetreuungsmitteilungDaten(dto, betreuung, institutionExternalClient.getGueltigkeit());
 				if (betreuungsmitteilung != null) {
 					// we first clear all the Mutationsmeldungen for the current Betreuung
 					mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
@@ -171,10 +196,16 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	/**
 	 * Update the Betreuung Object and return if its ready for Bestaetigen
 	 */
-	private boolean setBetreuungDaten(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+	private boolean setBetreuungDaten(
+		@Nonnull PlatzbestaetigungProcessingContext ctx,
+		@Nonnull DateRange gueltigkeit
+	) {
+		//Check if die Gemeinde erlaubt mahlzeitvergunstigung:
+		boolean mahlzeitVergunstigungEnabled =
+			isEnabled(ctx.getBetreuung(), EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
 		setErweitereBeduerfnisseBestaetigt(ctx);
 		setBetreuungInGemeinde(ctx);
-		setZeitabschnitte(ctx);
+		setZeitabschnitte(ctx, mahlzeitVergunstigungEnabled, gueltigkeit);
 
 		return ctx.isReadyForBestaetigen();
 	}
@@ -212,7 +243,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 	}
 
-	private void setZeitabschnitte(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+	protected void setZeitabschnitte(
+		@Nonnull PlatzbestaetigungProcessingContext ctx,
+		boolean mahlzeitVergunstigungEnabled,
+		@Nonnull DateRange gueltigkeit
+	) {
 		List<ZeitabschnittDTO> zeitabschnitte = ctx.getDto().getZeitabschnitte();
 		if (zeitabschnitte.isEmpty()) {
 			ctx.requireHumanConfirmation();
@@ -221,13 +256,12 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		Betreuung betreuung = ctx.getBetreuung();
+		List<BetreuungspensumContainer> currentBetreuungspensumContainers = adaptBetreuung(betreuung, gueltigkeit);
 		betreuung.getBetreuungspensumContainers().clear();
-		//Check if die Gemeinde erlaubt mahlzeitvergunstigung:
-		boolean mahlzeitVergunstigungEnabled =
-			isEnabled(betreuung, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+		betreuung.getBetreuungspensumContainers().addAll(currentBetreuungspensumContainers);
 
 		zeitabschnitte.stream()
-			.map(z -> zeitabschnittToBetreuungspensumContainer(mahlzeitVergunstigungEnabled, ctx, z))
+			.map(z -> zeitabschnittToBetreuungspensumContainer(mahlzeitVergunstigungEnabled, ctx, z, gueltigkeit))
 			.filter(Objects::nonNull)
 			.forEach(c -> betreuung.getBetreuungspensumContainers().add(c));
 	}
@@ -236,13 +270,29 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private BetreuungspensumContainer zeitabschnittToBetreuungspensumContainer(
 		boolean mahlzeitVergunstigungEnabled,
 		@Nonnull PlatzbestaetigungProcessingContext ctx,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO) {
+		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
+		@Nonnull DateRange gueltigkeit) {
 
 		Betreuung betreuung = ctx.getBetreuung();
 		Betreuungspensum betreuungspensum = mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuung);
 		if (betreuungspensum == null) {
 			ctx.requireHumanConfirmation();
 			return null;
+		}
+		// Adaptieren die Gueltigkeit oder betpens loeschen gemaess Schnittstelle Gueltigkeit
+		if (!gueltigkeit.contains(betreuungspensum.getGueltigkeit())) {
+			if (betreuungspensum.getGueltigkeit().getGueltigAb().isBefore(gueltigkeit.getGueltigAb())) {
+				if (betreuungspensum.getGueltigkeit().getGueltigBis().isBefore(gueltigkeit.getGueltigAb())) {
+					return null;
+				}
+				betreuungspensum.getGueltigkeit().setGueltigAb(gueltigkeit.getGueltigAb());
+			}
+			if (betreuungspensum.getGueltigkeit().getGueltigBis().isAfter(gueltigkeit.getGueltigBis())) {
+				if (betreuungspensum.getGueltigkeit().getGueltigAb().isAfter(gueltigkeit.getGueltigBis())) {
+					return null;
+				}
+				betreuungspensum.getGueltigkeit().setGueltigBis(gueltigkeit.getGueltigBis());
+			}
 		}
 
 		if (mahlzeitVergunstigungEnabled) {
@@ -304,8 +354,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nullable
 	private Betreuungsmitteilung setBetreuungsmitteilungDaten(
-		BetreuungEventDTO dto,
-		Betreuung betreuung) {
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull Betreuung betreuung,
+		@Nonnull DateRange gueltigkeit
+	) {
 		if (dto.getZeitabschnitte().isEmpty()) {
 			LOG.error("Zeitabschnitt are missing, we cannot work with this dto");
 			return null;
@@ -347,7 +399,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		int counter = 1;
 		boolean areZeitabschnittCorrupted = false;
 
-		List<ZeitabschnittDTO> zeitabschnitteToImport = mapZeitabschnitteToImport(dto, betreuung);
+		List<ZeitabschnittDTO> zeitabschnitteToImport = mapZeitabschnitteToImport(dto, betreuung, gueltigkeit);
 
 		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitteToImport) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
@@ -387,24 +439,30 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		return betreuungsmitteilung;
 	}
 
-	protected List<ZeitabschnittDTO> mapZeitabschnitteToImport(BetreuungEventDTO dto, Betreuung betreuung) {
+	@Nonnull
+	protected List<ZeitabschnittDTO> mapZeitabschnitteToImport(
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull Betreuung betreuung,
+		@Nonnull DateRange gueltigkeit) {
 
-		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitteBeforeGoLive(
-			splitZeitabschnitteAroundGoLive(dto.getZeitabschnitte())
+		if (gueltigkeit.getGueltigAb().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY))) {
+			gueltigkeit.setGueltigAb(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY));
+		}
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitte(
+			dto.getZeitabschnitte(), gueltigkeit
 		);
-		List<Betreuungspensum> currentPensen = betreuung.getBetreuungspensumContainers().stream()
-			.map(BetreuungspensumContainer::getBetreuungspensumJA)
-			.collect(Collectors.toList());
+		List<BetreuungspensumContainer> currentBetreuungspensumContainers = adaptBetreuung(betreuung, gueltigkeit);
+		List<Betreuungspensum> currentPensen = currentBetreuungspensumContainers.stream().map(
+			BetreuungspensumContainer::getBetreuungspensumJA).collect(Collectors.toList());
 
-		List<Betreuungspensum> currentPensenStartingBeforeGoLive = currentPensen.stream()
-			.filter(pensum -> pensum.getGueltigkeit().getGueltigAb().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY)))
-			.collect(Collectors.toList());
 
 		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
-		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the zeitabschnitt,
+		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the
+		// zeitabschnitt,
 		// end the first zeitabschnitt on the go live date and ignore the zeitabschnitt after
-		List<ZeitabschnittDTO> zeitabschnitteFromCurrentPensenToKeep = currentPensenStartingBeforeGoLive.stream()
-			.map(this::getZeitabschnittBeforeGoLiveFromPensum)
+		List<ZeitabschnittDTO> zeitabschnitteFromCurrentPensenToKeep = currentPensen.stream()
+			.map(this::pensumToZeitabschnittDTO)
 			.collect(Collectors.toList());
 
 		zeitabschnitteToImport.addAll(0, zeitabschnitteFromCurrentPensenToKeep);
@@ -412,47 +470,32 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		return zeitabschnitteToImport;
 	}
 
-	private List<ZeitabschnittDTO> splitZeitabschnitteAroundGoLive(List<ZeitabschnittDTO> zeitabschnittDTOS) {
-		List<ZeitabschnittDTO> newList = new ArrayList<>();
-
-		for (ZeitabschnittDTO zeitabschnittDTO: zeitabschnittDTOS) {
-			if(zeitabschnittDTO.getVon().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY))) {
-				ZeitabschnittDTO beforeGoLive = cloneZeitabschnittDto(zeitabschnittDTO);
-				beforeGoLive.setBis(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1));
-
-				ZeitabschnittDTO afterGoLive = cloneZeitabschnittDto(zeitabschnittDTO);
-				afterGoLive.setVon(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY));
-
-				newList.add(beforeGoLive);
-				newList.add(afterGoLive);
-			} else {
-				newList.add(zeitabschnittDTO);
+	@Nonnull
+	private List<ZeitabschnittDTO> filterZeitabschnitte(
+		@Nonnull List<ZeitabschnittDTO> zeitabschnitte,
+		@Nonnull DateRange gueltigkeit
+	) {
+		List<ZeitabschnittDTO> zeitabschnittDTOS = new ArrayList<>();
+		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitte) {
+			if (zeitabschnittDTO.getVon().isBefore(gueltigkeit.getGueltigAb())) {
+				if (zeitabschnittDTO.getBis().isBefore(gueltigkeit.getGueltigAb())) {
+					continue;
+				}
+				zeitabschnittDTO.setVon(gueltigkeit.getGueltigAb());
 			}
+			if (zeitabschnittDTO.getBis().isAfter(gueltigkeit.getGueltigBis())) {
+				if (zeitabschnittDTO.getVon().isAfter(gueltigkeit.getGueltigBis())) {
+					continue;
+				}
+				zeitabschnittDTO.setBis(gueltigkeit.getGueltigBis());
+			}
+			zeitabschnittDTOS.add(zeitabschnittDTO);
 		}
-		return newList;
+		return zeitabschnittDTOS;
 	}
 
-	private ZeitabschnittDTO cloneZeitabschnittDto(ZeitabschnittDTO original) {
-		return new ZeitabschnittDTO(
-			original.getBetreuungskosten(),
-			original.getBetreuungspensum(),
-			original.getVon(),
-			original.getBis(),
-			original.getPensumUnit(),
-			original.getAnzahlHauptmahlzeiten(),
-			original.getAnzahlNebenmahlzeiten(),
-			original.getTarifProHauptmahlzeiten(),
-			original.getTarifProNebenmahlzeiten()
-		);
-	}
-
-	private List<ZeitabschnittDTO> filterZeitabschnitteBeforeGoLive(List<ZeitabschnittDTO> zeitabschnitte) {
-		return zeitabschnitte.stream()
-			.filter(abschnitt -> abschnitt.getBis().isAfter(LocalDate.of(2020, 12, 31)))
-			.collect(Collectors.toList());
-	}
-
-	private ZeitabschnittDTO getZeitabschnittBeforeGoLiveFromPensum(Betreuungspensum pensum) {
+	@Nonnull
+	private ZeitabschnittDTO pensumToZeitabschnittDTO(@Nonnull Betreuungspensum pensum) {
 
 		Zeiteinheit pensumUnit;
 
@@ -474,8 +517,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			pensum.getMonatlicheBetreuungskosten(),
 			pensum.getPensum(),
 			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis().isAfter(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1))?
-				LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1): pensum.getGueltigkeit().getGueltigBis(),
+			pensum.getGueltigkeit().getGueltigBis(),
 			pensumUnit,
 			pensum.getMonatlicheHauptmahlzeiten(),
 			pensum.getMonatlicheNebenmahlzeiten(),
@@ -625,4 +667,104 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		return true;
 	}
+
+	@Nonnull
+	private BetreuungspensumContainer cloneBetreuungspensumContainerJa(
+		@Nonnull BetreuungspensumContainer betreuungspensumContainer
+	) {
+		BetreuungspensumContainer betreuungspensumContainerCloned = new BetreuungspensumContainer();
+		betreuungspensumContainerCloned.setBetreuung(betreuungspensumContainer.getBetreuung());
+		Betreuungspensum betreuungspensumJaCloned =
+			cloneBetreuungspensum(betreuungspensumContainer.getBetreuungspensumJA());
+		betreuungspensumContainerCloned.setBetreuungspensumJA(betreuungspensumJaCloned);
+		return betreuungspensumContainerCloned;
+	}
+
+	@Nonnull
+	private Betreuungspensum cloneBetreuungspensum(
+		@Nonnull Betreuungspensum betreuungspensum
+	) {
+		Betreuungspensum betreuungspensumCloned = new Betreuungspensum();
+		betreuungspensumCloned.setGueltigkeit(betreuungspensum.getGueltigkeit());
+		betreuungspensumCloned.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
+		betreuungspensumCloned.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
+		betreuungspensumCloned.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
+		betreuungspensumCloned.setUnitForDisplay(betreuungspensum.getUnitForDisplay());
+		betreuungspensumCloned.setPensum(betreuungspensum.getPensum());
+		betreuungspensumCloned.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
+		betreuungspensumCloned.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
+		betreuungspensumCloned.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
+		return betreuungspensumCloned;
+	}
+
+	@Nonnull
+	private List<BetreuungspensumContainer> adaptBetreuung(
+		@Nonnull Betreuung betreuung,
+		@Nonnull DateRange gueltigkeit
+	) {
+		List<BetreuungspensumContainer> currentBetreuungspensumContainer = betreuung.getBetreuungspensumContainers().stream()
+			.map(this::cloneBetreuungspensumContainerJa)
+			.collect(Collectors.toList());
+
+
+		//alle betpencont mit gueltigkeit kleiner als schnittstelle oder groesser lassen
+		currentBetreuungspensumContainer
+			.removeIf(betreuungspensumContainer -> gueltigkeit.contains(betreuungspensumContainer.getBetreuungspensumJA()
+				.getGueltigkeit()));
+		//split if necessary
+		List<BetreuungspensumContainer> splitedBetreuungspensumContainers = new ArrayList<>();
+		currentBetreuungspensumContainer.stream().forEach(betreuungspensumContainer -> {
+			if (betreuungspensumContainer.getBetreuungspensumJA()
+				.getGueltigkeit()
+				.getGueltigAb().isBefore(gueltigkeit.getGueltigAb()) &&
+				betreuungspensumContainer.getBetreuungspensumJA()
+					.getGueltigkeit()
+					.getGueltigBis()
+					.isAfter(gueltigkeit.getGueltigBis())) {
+				//its a split
+				//clone to a new one and change validity
+				BetreuungspensumContainer betreuungspensumContainerCloned =
+					cloneBetreuungspensumContainerJa(betreuungspensumContainer);
+				betreuungspensumContainerCloned.getBetreuungspensumJA()
+					.getGueltigkeit()
+					.setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
+				splitedBetreuungspensumContainers.add(betreuungspensumContainerCloned);
+				//adapt the gueltigkeit for existing pensum
+				betreuungspensumContainer.getBetreuungspensumJA()
+					.getGueltigkeit()
+					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
+			}
+		});
+		//adapt Gueltigkeit if needed
+		currentBetreuungspensumContainer.stream().forEach(betreuungspensumContainer -> {
+			if (betreuungspensumContainer.getBetreuungspensumJA()
+				.getGueltigkeit()
+				.getGueltigAb()
+				.isAfter(gueltigkeit.getGueltigAb())
+				&& betreuungspensumContainer.getBetreuungspensumJA()
+				.getGueltigkeit()
+				.getGueltigAb()
+				.isBefore(gueltigkeit.getGueltigBis())) {
+				betreuungspensumContainer.getBetreuungspensumJA()
+					.getGueltigkeit()
+					.setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
+			}
+			if (betreuungspensumContainer.getBetreuungspensumJA()
+				.getGueltigkeit()
+				.getGueltigBis()
+				.isAfter(gueltigkeit.getGueltigAb())
+				&& betreuungspensumContainer.getBetreuungspensumJA()
+				.getGueltigkeit()
+				.getGueltigBis()
+				.isBefore(gueltigkeit.getGueltigBis())) {
+				betreuungspensumContainer.getBetreuungspensumJA()
+					.getGueltigkeit()
+					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
+			}
+		});
+		//we add the splitted one if needed
+		currentBetreuungspensumContainer.addAll(splitedBetreuungspensumContainers);
+		return currentBetreuungspensumContainer;
+	}
+
 }
