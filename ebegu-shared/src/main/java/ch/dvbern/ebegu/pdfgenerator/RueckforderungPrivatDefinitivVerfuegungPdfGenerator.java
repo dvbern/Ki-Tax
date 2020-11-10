@@ -87,7 +87,7 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 	private final BigDecimal voraussichtlicheAusfallentschaedigung; // A
 	private final BigDecimal gewaehrteAusfallentschaedigung; // B
 	private final BigDecimal entschaedigungStufe1; // C
-	private BigDecimal relevanterBetrag; // D
+	private final BigDecimal relevanterBetrag; // D
 
 	public RueckforderungPrivatDefinitivVerfuegungPdfGenerator(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
@@ -190,18 +190,18 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 			document.add(begruessungAmt);
 		}
 
-		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + "\n" + translate(VORSTEHERIN));
+		Paragraph signaturEnde = PdfUtil.createParagraph(nameVerantwortlichePerson + '\n' + translate(VORSTEHERIN));
 		document.add(signaturEnde);
 	}
 
 	private void createHeaderSecondPage(PdfContentByte directContent) {
-		createContentWhereIWant(directContent, "Kanton Bern", 765, 20, getPageConfiguration().getFontBold(), 10);
-		createContentWhereIWant(directContent, "Canton de Berne", 755, 20, getPageConfiguration().getFontBold(), 10);
-		createContentWhereIWant(directContent, translate(VERFUEGUNG_TITLE), 765, 122, getPageConfiguration().getFont(), 6.5f);
-		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 750, 122, getPageConfiguration().getFont(), 6.5f);
+		createContentWhereIWant(directContent, "Kanton Bern", 765, 20, getPageConfiguration().getFonts().getFontBold(), 10);
+		createContentWhereIWant(directContent, "Canton de Berne", 755, 20, getPageConfiguration().getFonts().getFontBold(), 10);
+		createContentWhereIWant(directContent, translate(VERFUEGUNG_TITLE), 765, 122, getPageConfiguration().getFonts().getFont(), 6.5f);
+		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 750, 122, getPageConfiguration().getFonts().getFont(), 6.5f);
 
 		int y = sprache.equals(Locale.GERMAN) ? 720 : 710;
-		createContentWhereIWant(directContent, translate(SCHLUSSABRECHNUNG), y, 122, getPageConfiguration().getFont(), 6.5f);
+		createContentWhereIWant(directContent, translate(SCHLUSSABRECHNUNG), y, 122, getPageConfiguration().getFonts().getFont(), 6.5f);
 	}
 
 	private void createErsteSeite(Document document) {

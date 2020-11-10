@@ -46,7 +46,7 @@ import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
-import ch.dvbern.kibon.exchange.commons.util.DateConverter;
+import ch.dvbern.kibon.exchange.commons.util.TimestampConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
 
 @ApplicationScoped
@@ -87,7 +87,7 @@ public class InstitutionEventConverter {
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(stammdaten.getBetreuungsangebotTyp().name()))
 			.setStatus(InstitutionStatus.valueOf(institution.getStatus().name()))
 			.setAdresse(institutionKontaktAngaben)
-			.setTimestampMutiert(DateConverter.serialize(DateConverter.of(LocalDateTime.now())));
+			.setTimestampMutiert(TimestampConverter.serialize(TimestampConverter.of(LocalDateTime.now())));
 
 		InstitutionStammdatenBetreuungsgutscheine bgStammdaten =
 			stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
