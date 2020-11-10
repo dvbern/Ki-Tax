@@ -116,6 +116,9 @@ public class PlatzbestaetigungEventKafkaConsumer {
 
 	@PreDestroy
 	public void close() {
-		consumer.close();
+		// Beim Herunterfahren des Servers ist der consumer scheinbar schon null
+		if (consumer != null) {
+			consumer.close();
+		}
 	}
 }
