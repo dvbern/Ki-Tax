@@ -528,7 +528,7 @@
             <dependency>
                 <groupId>ch.dvbern.oss.excelmerger</groupId>
                 <artifactId>excelmerger-impl</artifactId>
-                <version>3.0.0-SNAPSHOT</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.invoicegenerator</groupId>
