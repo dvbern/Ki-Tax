@@ -9,7 +9,7 @@
             "projectType": "application",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-builders/custom-webpack:browser",
                     "options": {
                         "outputPath": "dist",
                         "index": "src/index.html",
@@ -27,7 +27,10 @@
                             "node_modules/jquery/dist/jquery.min.js"
                         ],
                         "extractCss": true,
-                        "extractLicenses": true
+                        "extractLicenses": true,
+                        "customWebpackConfig": {
+                            "path": "./extra-webpack.config.js"
+                        }
                     },
                     "configurations": {
                         "production": {
@@ -59,7 +62,7 @@
                     }
                 },
                 "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "builder": "@angular-builders/custom-webpack:dev-server",
                     "options": {
                         "browserTarget": "ebegu:build",
                         "proxyConfig": "src/proxy.conf.json",
