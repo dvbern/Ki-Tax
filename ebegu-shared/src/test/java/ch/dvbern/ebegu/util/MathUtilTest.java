@@ -199,4 +199,13 @@ public class MathUtilTest {
 		assertFalse(MathUtil.isClose(BigDecimal.valueOf(3.01), BigDecimal.valueOf(1.02), BigDecimal.valueOf(1.01)));
 	}
 
+	@Test
+	public void roundToFivesUp() {
+		assertEquals(MathUtil.GANZZAHL.from(5.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(4.99)));
+		assertEquals(MathUtil.GANZZAHL.from(5.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(1.2)));
+		assertEquals(MathUtil.GANZZAHL.from(5.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(0.01)));
+		assertEquals(MathUtil.GANZZAHL.from(0.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(0)));
+		assertEquals(MathUtil.GANZZAHL.from(5.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(5.00)));
+		assertEquals(MathUtil.GANZZAHL.from(10.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(5.01)));
+	}
 }
