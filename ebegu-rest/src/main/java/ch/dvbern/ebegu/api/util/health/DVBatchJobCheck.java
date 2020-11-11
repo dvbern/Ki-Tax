@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.util.health;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -44,6 +45,8 @@ public class DVBatchJobCheck implements HealthCheck {
 	private static final String IN_TIMEOUT_STATE = "IN_TIMEOUT";
 	private static final String PREVIOUS_RUN_COLUMN = "PREVIOUS_RUN";
 	private static final String TIMEOUT_METHOD_NAME_COLUMN = "TIMEOUT_METHOD_NAME";
+	private static final String EJB_TIMER_TABLE_NAME = "jboss_ejb_timer";
+	private static final String NEXT_DATE_COLUMN_NAME = "NEXT_DATE";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DVBatchJobCheck.class);
 
@@ -57,15 +60,12 @@ public class DVBatchJobCheck implements HealthCheck {
 		if (datasource != null) {
 			Connection connection = null;
 			ResultSet resultAllBatch = null;
+			PreparedStatement pst = null;
 			try {
 				connection = datasource.getConnection();
-
-				final String queryAllBatch = connection.nativeSQL(
-					"SELECT tt.* FROM jboss_ejb_timer tt INNER JOIN (SELECT TIMEOUT_METHOD_NAME, MAX(NEXT_DATE) AS "
-						+ "MaxDateTime FROM jboss_ejb_timer GROUP BY TIMEOUT_METHOD_NAME) groupedtt ON tt"
-						+ ".TIMEOUT_METHOD_NAME = groupedtt.TIMEOUT_METHOD_NAME AND tt.NEXT_DATE = groupedtt"
-						+ ".MaxDateTime;");
-				resultAllBatch = connection.prepareStatement(queryAllBatch).executeQuery();
+				final String queryAllBatch = connection.nativeSQL(getStringQuery());
+				pst = connection.prepareStatement(queryAllBatch);
+				resultAllBatch = pst.executeQuery();
 				while (resultAllBatch.next()) {
 					String statusBatchMahnungFristablauf = resultAllBatch.getString(TIMER_STATE_COLUMN);
 					if (statusBatchMahnungFristablauf.equals(IN_TIMEOUT_STATE)) {
@@ -76,7 +76,7 @@ public class DVBatchJobCheck implements HealthCheck {
 							String timeoutBatchName = resultAllBatch.getString(TIMEOUT_METHOD_NAME_COLUMN);
 							batchOK = false;
 							if (batchKO.length() > 0) {
-								batchKO.append(",");
+								batchKO.append(", ");
 							}
 							batchKO.append(timeoutBatchName);
 							batchKO.append(": IN_TIMEOUT since more than one day");
@@ -84,11 +84,18 @@ public class DVBatchJobCheck implements HealthCheck {
 					}
 				}
 			} catch (SQLException e) {
-				LOGGER.warn("Datasource check failed", e);
+				LOGGER.warn("Batchjob check failed", e);
 			} finally {
 				if (resultAllBatch != null) {
 					try {
 						resultAllBatch.close();
+					} catch (SQLException e) {
+						// ignore
+					}
+				}
+				if (pst != null) {
+					try {
+						pst.close();
 					} catch (SQLException e) {
 						// ignore
 					}
@@ -107,6 +114,31 @@ public class DVBatchJobCheck implements HealthCheck {
 			.withData("batchListInTimeout", batchKO.toString())
 			.state(batchOK)
 			.build();
+	}
+
+	/**
+	 * Build the String with String Builder to avoid SQL injection according to spotbugs
+	 */
+	private String getStringQuery() {
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("SELECT ett.* FROM ")
+			.append(EJB_TIMER_TABLE_NAME)
+			.append(" ett INNER JOIN (SELECT ")
+			.append(TIMEOUT_METHOD_NAME_COLUMN)
+			.append(", MAX(")
+			.append(NEXT_DATE_COLUMN_NAME)
+			.append(") AS MaxDateTime FROM ")
+			.append(EJB_TIMER_TABLE_NAME)
+			.append(" GROUP BY ")
+			.append(TIMEOUT_METHOD_NAME_COLUMN)
+			.append(") groupedett ON ett.")
+			.append(TIMEOUT_METHOD_NAME_COLUMN)
+			.append(" = groupedett.")
+			.append(TIMEOUT_METHOD_NAME_COLUMN)
+			.append(" AND ett.")
+			.append(NEXT_DATE_COLUMN_NAME)
+			.append(" = groupedett.MaxDateTime;");
+		return queryBuilder.toString();
 	}
 
 	/**
