@@ -56,6 +56,7 @@ public class DVBatchJobCheck implements HealthCheck {
 
 		if (datasource != null) {
 			Connection connection = null;
+			ResultSet resultAllBatch = null;
 			try {
 				connection = datasource.getConnection();
 
@@ -64,7 +65,7 @@ public class DVBatchJobCheck implements HealthCheck {
 						+ "MaxDateTime FROM jboss_ejb_timer GROUP BY TIMEOUT_METHOD_NAME) groupedtt ON tt"
 						+ ".TIMEOUT_METHOD_NAME = groupedtt.TIMEOUT_METHOD_NAME AND tt.NEXT_DATE = groupedtt"
 						+ ".MaxDateTime;");
-				ResultSet resultAllBatch = connection.prepareStatement(queryAllBatch).executeQuery();
+				resultAllBatch = connection.prepareStatement(queryAllBatch).executeQuery();
 				while (resultAllBatch.next()) {
 					String statusBatchMahnungFristablauf = resultAllBatch.getString(TIMER_STATE_COLUMN);
 					if (statusBatchMahnungFristablauf.equals(IN_TIMEOUT_STATE)) {
@@ -77,15 +78,21 @@ public class DVBatchJobCheck implements HealthCheck {
 							if (batchKO.length() > 0) {
 								batchKO.append(",");
 							}
-							batchKO.append(timeoutBatchName + ": IN_TIMEOUT since more than one day");
+							batchKO.append(timeoutBatchName);
+							batchKO.append(": IN_TIMEOUT since more than one day");
 						}
 					}
 				}
-				connection.close();
-
 			} catch (SQLException e) {
 				LOGGER.warn("Datasource check failed", e);
 			} finally {
+				if (resultAllBatch != null) {
+					try {
+						resultAllBatch.close();
+					} catch (SQLException e) {
+						// ignore
+					}
+				}
 				if (connection != null) {
 					try {
 						connection.close();
