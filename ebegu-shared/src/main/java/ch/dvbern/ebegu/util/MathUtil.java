@@ -427,9 +427,7 @@ public enum MathUtil {
 	 * 5.1 - 10.0 -> 10.0
 	 */
 	public static BigDecimal roundToFivesUp(BigDecimal value) {
-		BigDecimal result = GANZZAHL.from(Math.ceil(value.doubleValue() / 5) * 5);
-		result.setScale(value.scale());
-		return result;
+		return GANZZAHL.from(Math.ceil(value.doubleValue() / 5) * 5);
 	}
 
 	/**
