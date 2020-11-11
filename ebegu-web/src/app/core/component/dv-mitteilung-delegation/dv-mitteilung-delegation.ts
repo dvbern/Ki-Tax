@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {DvNgMitteilungDelegationDialogComponent} from '../dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 import {LogFactory} from '../../logging/LogFactory';
 
