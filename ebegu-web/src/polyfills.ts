@@ -27,17 +27,17 @@ import 'core-js/es7/object';
 /** IE10 and IE11 requires the following for the Reflect API. */
 
 import 'core-js/es6/reflect';
-import 'core-js/es7/array';
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
 (window as any).__Zone_enable_cross_context_check = true;
+// tslint:disable-next-line:no-import-side-effect
 import 'zone.js/dist/zone'; // Included with Angular CLI.
 
 /**
  * Required to support Web Animations `@angular/platform-browser/animations`.
  * Needed for: All but Chrome, Firefox and Opera. http://caniuse.com/#feat=web-animation
- **/
+ */
 // import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
 /**
@@ -45,6 +45,7 @@ import 'zone.js/dist/zone'; // Included with Angular CLI.
  * user can disable parts of macroTask/DomEvents patch by setting following flags
  */
 
+// tslint:disable-next-line:no-commented-code
 // (window as any).__Zone_disable_requestAnimationFrame = true; // disable patch requestAnimationFrame
 // (window as any).__Zone_disable_on_property = true; // disable patch onProperty such as onclick
 // (window as any).__zone_symbol__BLACK_LISTED_EVENTS = ['scroll', 'mousemove']; // disable patch specified eventNames
@@ -53,7 +54,6 @@ import 'zone.js/dist/zone'; // Included with Angular CLI.
 * in IE/Edge developer tools, the addEventListener will also be wrapped by zone.js
 * with the following flag, it will bypass `zone.js` patch for IE/Edge
 */
-
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
