@@ -173,7 +173,8 @@
                         <mat-checkbox id="angebotBG" name="angebotBG"
                                       [(ngModel)]="stammdaten.gemeinde.angebotBG"
                                       *ngIf="tageschuleEnabledForMandant"
-                                      [disabled]="!(isSuperadminOrMandant())">
+                                      [disabled]="!(isSuperadminOrMandant())"
+                                      (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
                         <div class="form-group" *ngIf="stammdaten.gemeinde.angebotBG">
@@ -193,7 +194,9 @@
 
                         <mat-checkbox id="angebotTS" name="angebotTS"
                                       [disabled]="!(isSuperadminOrMandant())"
-                                      [(ngModel)]="stammdaten.gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
+                                      [(ngModel)]="stammdaten.gemeinde.angebotTS"
+                                      *ngIf="tageschuleEnabledForMandant"
+                                      (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
                         <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
@@ -214,7 +217,9 @@
 
                         <mat-checkbox id="angebotFI" name="angebotFI"
                                       [disabled]="!(isSuperadmin())"
-                                      [(ngModel)]="stammdaten.gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
+                                      [(ngModel)]="stammdaten.gemeinde.angebotFI"
+                                      *ngIf="tageschuleEnabledForMandant"
+                                      (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
                         <div class="form-group" *ngIf="stammdaten.gemeinde.angebotFI">

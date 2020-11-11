@@ -60,11 +60,17 @@ public class MessageProcessor {
 				return;
 			}
 
+			Optional<String> clientNameOpt = getHeaderValue(headers, EventUtil.MESSAGE_HEADER_CLIENT_NAME);
+			if(!clientNameOpt.isPresent()){
+				LOG.warn("Skipping Kafka message with key = {}, clientName header was missing", key);
+				return;
+			}
+
 			LocalDateTime eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.timestamp()), ZoneId.systemDefault());
 
 			T eventDTO = record.value();
 
-			handler.onEvent(eventIdOpt.get(), key, eventTime, eventTypeOpt.get(), eventDTO);
+			handler.onEvent(eventIdOpt.get(), key, eventTime, eventTypeOpt.get(), eventDTO, clientNameOpt.get());
 		} catch (Exception e) {
 			LOG.error("Error in message processing", e);
 		}

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -39,8 +40,11 @@ import javax.validation.ValidatorFactory;
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Kind;
@@ -51,6 +55,8 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -66,6 +72,8 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	private WizardStepService wizardStepService;
 	@Inject
 	private GesuchService gesuchService;
+	@Inject
+	private BenutzerService benutzerService;
 
 	@Inject
 	private ValidatorFactory validatorFactory;
@@ -153,12 +161,16 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	@Override
 	@Nonnull
 	public Set<KindDubletteDTO> getKindDubletten(@Nonnull String gesuchId) {
+		Benutzer user = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException("getKindDubletten", "No User is logged in"));
+		Set<Gemeinde> gemeinden = user.extractGemeindenForUser();
+
 		Set<KindDubletteDTO> dublettenOfAllKinder = new HashSet<>();
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchId);
 		if (gesuchOptional.isPresent()) {
 			Set<KindContainer> kindContainers = gesuchOptional.get().getKindContainers();
 			for (KindContainer kindContainer : kindContainers) {
-				List<KindDubletteDTO> kindDubletten = getKindDubletten(kindContainer);
+				List<KindDubletteDTO> kindDubletten = getKindDubletten(kindContainer, gemeinden, user);
 				// Die Resultate sind nach Muationsdatum absteigend sortiert. Wenn also eine Fall-Id noch nicht vorkommt,
 				// dann ist dies das neueste Gesuch dieses Falls
 				dublettenOfAllKinder.addAll(kindDubletten);
@@ -170,7 +182,11 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	}
 
 	@Nonnull
-	private List<KindDubletteDTO> getKindDubletten(@Nonnull KindContainer kindContainer) {
+	private List<KindDubletteDTO> getKindDubletten(
+		@Nonnull KindContainer kindContainer,
+		@Nonnull Set<Gemeinde> gemeinden,
+		@Nonnull Benutzer user
+	) {
 		// Wir suchen nach Name, Vorname und Geburtsdatum
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindDubletteDTO> query = cb.createQuery(KindDubletteDTO.class);
@@ -187,16 +203,31 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			joinGesuch.get(AbstractEntity_.timestampErstellt)
 		).distinct(true);
 
+		ArrayList<Predicate> predicates = new ArrayList<>();
+
 		// Identische Merkmale
-		Predicate predicateName = cb.equal(joinKind.get(AbstractPersonEntity_.nachname), kindContainer.getKindJA().getNachname());
-		Predicate predicateVorname = cb.equal(joinKind.get(AbstractPersonEntity_.vorname), kindContainer.getKindJA().getVorname());
-		Predicate predicateGeburtsdatum = cb.equal(joinKind.get(AbstractPersonEntity_.geburtsdatum), kindContainer.getKindJA().getGeburtsdatum());
+		predicates.add(cb.equal(joinKind.get(AbstractPersonEntity_.nachname), kindContainer.getKindJA().getNachname()));
+		predicates.add(cb.equal(joinKind.get(AbstractPersonEntity_.vorname), kindContainer.getKindJA().getVorname()));
+		predicates.add(cb.equal(joinKind.get(AbstractPersonEntity_.geburtsdatum), kindContainer.getKindJA().getGeburtsdatum()));
 		// Aber nicht vom selben Dossier
-		Predicate predicateOtherDossier = cb.notEqual(joinGesuch.get(Gesuch_.dossier), kindContainer.getGesuch().getDossier());
+		predicates.add(cb.notEqual(joinGesuch.get(Gesuch_.dossier), kindContainer.getGesuch().getDossier()));
 		// Nur das zuletzt gueltige Gesuch
-		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.FOR_KIND_DUBLETTEN);
+		predicates.add(joinGesuch.get(Gesuch_.status).in(AntragStatus.FOR_KIND_DUBLETTEN));
+
+		// Eingeloggter Benutzer muss Berechtigung für die Gemeinde haben
+		// Superadmin und Mandant können alle Gemeinden sehen
+		if (!user.getRole().isRoleMandant() && !user.getRole().isSuperadmin()) {
+			// falls der Benutzer nicht Superadmin oder Mandant ist, muss zwingend mindestens eine Gemeinde gefunden werden
+			if (gemeinden.isEmpty()) {
+				throw new EbeguRuntimeException("getKindDubletten", "Keine Gemeinden für aktiven Benutzer gefunden");
+			}
+
+			Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.INNER);
+			predicates.add(joinDossier.get(Dossier_.gemeinde).in(gemeinden));
+		}
+
 		query.orderBy(cb.desc(joinGesuch.get(AbstractEntity_.timestampErstellt)));
-		query.where(predicateName, predicateVorname, predicateGeburtsdatum, predicateOtherDossier, predicateStatus);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getCriteriaResults(query);
 	}

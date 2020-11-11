@@ -21,11 +21,11 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -111,5 +111,11 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
+    }
+
+    public angeboteChanged(stammdaten: TSGemeindeStammdaten): void {
+        const hasAngebot =
+            stammdaten.gemeinde.angebotBG || stammdaten.gemeinde.angebotTS || stammdaten.gemeinde.angebotFI;
+        this.showMessageKeinAngebotSelected = !hasAngebot;
     }
 }
