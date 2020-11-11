@@ -2,7 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
         "declaration": false,
-    "downlevelIteration": true,
+        "downlevelIteration": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "importHelpers": true,
@@ -12,7 +12,7 @@
             "es2018.promise"
         ],
         "locale": "en",
-    "module": "esnext",
+        "module": "esnext",
         "moduleResolution": "node",
         "newLine": "lf",
         "noFallthroughCasesInSwitch": true,
