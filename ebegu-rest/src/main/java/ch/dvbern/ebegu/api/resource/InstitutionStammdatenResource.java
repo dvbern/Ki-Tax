@@ -155,15 +155,15 @@ public class InstitutionStammdatenResource {
 	}
 
 	@ApiOperation(value = "Findet alle Tagesschulinstitutionen und Stammdaten für den momentan eingeloggten Benutzer."
-		+ "Gibt alle zurück für Administratoren.", responseContainer = "List", response = JaxInstitutionStammdaten.class)
+		+ "Gibt alle zurück für Administratoren.", responseContainer = "List", response = JaxInstitutionStammdatenSummary.class)
 	@Nonnull
 	@GET
 	@Path("/tagesschulen/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdaten> getTagesschulenForCurrentBenutzer() {
+	public List<JaxInstitutionStammdatenSummary> getTagesschulenForCurrentBenutzer() {
 		return institutionStammdatenService.getTagesschulenForCurrentBenutzer().stream()
-			.map(stammdaten -> converter.institutionStammdatenToJAX(stammdaten))
+			.map(stammdaten -> converter.institutionStammdatenSummaryToJAX(stammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 }

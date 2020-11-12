@@ -136,12 +136,13 @@ public final class EbeguRuleTestsHelper {
 		return gesuchsperiodeOfAllTimes;
 	}
 
-	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
-	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true);
-	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false);
-	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN);
-	private static final MonatsRule monatsRule = new MonatsRule();
-	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+	private static final boolean isDebug = false;
+	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
+	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true, isDebug);
+	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false, isDebug);
+	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN, isDebug);
+	private static final MonatsRule monatsRule = new MonatsRule(isDebug);
+	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
 
 	private EbeguRuleTestsHelper() {
 	}
@@ -361,7 +362,7 @@ public final class EbeguRuleTestsHelper {
 		int pensum,
 		BigDecimal monatlicheBetreuungskosten
 	) {
-		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, 0, 0);
+		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, BigDecimal.ZERO, BigDecimal.ZERO);
 	}
 
 	public static Betreuung createBetreuungWithPensum(
@@ -369,8 +370,8 @@ public final class EbeguRuleTestsHelper {
 		BetreuungsangebotTyp angebot,
 		int pensum,
 		BigDecimal monatlicheBetreuungskosten,
-		Integer monatlicheHauptmahlzeiten,
-		Integer monatlicheNebenmahlzeiten
+		BigDecimal monatlicheHauptmahlzeiten,
+		BigDecimal monatlicheNebenmahlzeiten
 	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();

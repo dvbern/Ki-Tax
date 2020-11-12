@@ -45,11 +45,14 @@ public class BGCalculationInput {
 
 	private VerfuegungZeitabschnitt parent;
 
+	// Wird benoetigt, um clientseitig "Identische Berechnung" anzuzeigen (betrifft nur Verfuegungsbetrag, nicht Mahlzeiten)
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
+	// Wird nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, muss fuer Mahlzeiten separat berechnet werden!
 	private boolean sameAusbezahlteVerguenstigung;
+	private boolean sameAusbezahlteMahlzeiten;
 
 	@Nullable
 	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
@@ -404,6 +407,14 @@ public class BGCalculationInput {
 		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
 	}
 
+	public boolean isSameAusbezahlteMahlzeiten() {
+		return sameAusbezahlteMahlzeiten;
+	}
+
+	public void setSameAusbezahlteMahlzeiten(boolean sameAusbezahlteMahlzeiten) {
+		this.sameAusbezahlteMahlzeiten = sameAusbezahlteMahlzeiten;
+	}
+
 	public boolean isAbschnittLiegtNachBEGUStartdatum() {
 		return abschnittLiegtNachBEGUStartdatum;
 	}
@@ -640,10 +651,15 @@ public class BGCalculationInput {
 
 	@Override
 	public String toString() {
-		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
-			+ " EP GS2: " + getErwerbspensumGS2() + '\t'
-			+ " Restanspruch: " + getAnspruchspensumRest();
-		return sb;
+		final StringBuilder sb = new StringBuilder("BGCalculationInput{");
+		sb.append("ruleValidity=").append(ruleValidity);
+		sb.append(", anspruchspensumProzent=").append(anspruchspensumProzent);
+		sb.append(", betreuungspensumProzent=").append(betreuungspensumProzent);
+		sb.append(", fachstellenpensum=").append(fachstellenpensum);
+		sb.append(", anspruchspensumRest=").append(anspruchspensumRest);
+		sb.append(", zuSpaetEingereicht=").append(zuSpaetEingereicht);
+		sb.append('}');
+		return sb.toString();
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")

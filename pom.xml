@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2020.21.0</version>
+    <version>2020.22.0</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -59,7 +59,8 @@
         <version.bouncycastle>1.60</version.bouncycastle>
         <version.jackson>2.9.10.20200103</version.jackson>
         <version.hamcrest>2.2</version.hamcrest>
-        <version.poi>3.17</version.poi>
+        <version.poi>4.1.2</version.poi>
+        <version.iso20022>4.1.0</version.iso20022>
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
@@ -409,7 +410,7 @@
             <dependency>
                 <groupId>ch.dvbern.kibon</groupId>
                 <artifactId>kibon-exchange-api-commons</artifactId>
-                <version>1.2.5</version>
+                <version>2.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
@@ -425,6 +426,11 @@
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>1.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.20</version>
             </dependency>
             <!-- endregion -->
 
@@ -497,12 +503,12 @@
             <dependency>
                 <groupId>ch.dvbern.oss.datehelper</groupId>
                 <artifactId>date-helper</artifactId>
-                <version>1.0.5</version>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.beanvalidation</groupId>
                 <artifactId>beanvalidation</artifactId>
-                <version>1.0.11</version>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.cdipersistence</groupId>
@@ -512,22 +518,22 @@
             <dependency>
                 <groupId>ch.dvbern.oss.iso20022</groupId>
                 <artifactId>iso20022-ch-intf</artifactId>
-                <version>4.0.1</version>
+                <version>${version.iso20022}</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.iso20022</groupId>
                 <artifactId>iso20022-ch-impl</artifactId>
-                <version>4.0.1</version>
+                <version>${version.iso20022}</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.excelmerger</groupId>
                 <artifactId>excelmerger-impl</artifactId>
-                <version>2.1.1</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.invoicegenerator</groupId>
                 <artifactId>invoice-generator</artifactId>
-                <version>5.2.0</version>
+                <version>6.0.2</version>
             </dependency>
             <dependency>
               <groupId>ch.dvbern.oss.healthcheck.gc</groupId>

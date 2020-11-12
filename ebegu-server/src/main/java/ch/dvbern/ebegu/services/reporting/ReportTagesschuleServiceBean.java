@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -48,6 +48,8 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -60,12 +62,14 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleAnmeldungenDataRow;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleAnmeldungenExcelConverter;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungDataRow;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungExcelConverter;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -215,6 +219,23 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		tdr.setVornameKind(kindContainer.getKindJA().getVorname());
 		tdr.setNachnameKind(kindContainer.getKindJA().getNachname());
 		tdr.setGeburtsdatum(kindContainer.getKindJA().getGeburtsdatum());
+
+		GesuchstellerContainer gesuchsteller1 = kindContainer.getGesuch().getGesuchsteller1();
+		if (gesuchsteller1 != null && gesuchsteller1.getGesuchstellerJA() != null) {
+			Gesuchsteller gesuchsteller1JA = gesuchsteller1.getGesuchstellerJA();
+			tdr.setVornameAntragsteller1(gesuchsteller1JA.getVorname());
+			tdr.setNachnameAntragsteller1(gesuchsteller1JA.getNachname());
+			tdr.setEmailAntragsteller1(gesuchsteller1JA.getMail());
+		}
+
+		GesuchstellerContainer gesuchsteller2 = kindContainer.getGesuch().getGesuchsteller2();
+		if (gesuchsteller2 != null && gesuchsteller2.getGesuchstellerJA() != null) {
+			Gesuchsteller gesuchsteller2JA = gesuchsteller2.getGesuchstellerJA();
+			tdr.setVornameAntragsteller2(gesuchsteller2JA.getVorname());
+			tdr.setNachnameAntragsteller2(gesuchsteller2JA.getNachname());
+			tdr.setEmailAntragsteller2(gesuchsteller2JA.getMail());
+		}
+
 		tdr.setStatus(anmeldungTagesschule.getBetreuungsstatus());
 		tdr.setReferenznummer(anmeldungTagesschule.getBGNummer());
 		tdr.setAnmeldungTagesschule(anmeldungTagesschule);

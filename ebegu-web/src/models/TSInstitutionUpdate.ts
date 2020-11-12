@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSInstitutionExternalClient} from './TSInstitutionExternalClient';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
 export class TSInstitutionUpdate {
@@ -22,5 +23,5 @@ export class TSInstitutionUpdate {
     public name: string;
     public traegerschaftId: string;
     public stammdaten: TSInstitutionStammdaten;
-    public externalClients: string[];
+    public institutionExternalClients: TSInstitutionExternalClient[];
 }

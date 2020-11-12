@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
@@ -100,9 +102,9 @@ public class BetreuungsgutscheinEvaluator {
 
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
-			MonatsRule monatsRule = new MonatsRule();
-			MutationsMerger mutationsMerger = new MutationsMerger(locale);
-			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true);
+			MonatsRule monatsRule = new MonatsRule(isDebug);
+			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true, isDebug);
 
 			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
@@ -162,7 +164,7 @@ public class BetreuungsgutscheinEvaluator {
 
 				//initiale Restansprueche vorberechnen
 				if ((platz.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-					&& platz.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
+					&& platz.getVerfuegungOrVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_INSTITUTION) == null)
 					|| platz.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
 					// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen
 					// Vorgaenger und keine aktuelle verfuegung und wir muessen keinen restanspruch berechnen (vergl
@@ -193,12 +195,12 @@ public class BetreuungsgutscheinEvaluator {
 
 				// Die Abschluss-Rules ebenfalls ausführen
 
-				AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
-				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
-				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false);
-				MonatsRule monatsRule = new MonatsRule();
-				MutationsMerger mutationsMerger = new MutationsMerger(locale);
-				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule());
+				AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
+				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
+				MonatsRule monatsRule = new MonatsRule(isDebug);
+				MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
 
 				// Innerhalb eines Monats darf der Anspruch nie sinken
 				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
@@ -231,7 +233,7 @@ public class BetreuungsgutscheinEvaluator {
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 				if (!isTagesschule) {
-					setZahlungRelevanteDaten((Betreuung) platz);
+					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
 				}
 			}
 		}
@@ -264,19 +266,29 @@ public class BetreuungsgutscheinEvaluator {
 	 * in die ueberlappenden neuen Zeitabschnitte
 	 * @param betreuung in deren zu berechnenend verfuegung die Zahlungsrelevanten Daten gesetzt wurden
 	 */
-	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
+	private void setZahlungRelevanteDaten(
+		@Nonnull Betreuung betreuung,
+		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO
+	) {
 		Verfuegung verfuegungZuBerechnen = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegungZuBerechnen == null) {
 			return;
 		}
-		Verfuegung ausbezahlteVorgaenger = betreuung.getVorgaengerAusbezahlteVerfuegung();
+		final Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungProAuszahlungstyp =
+			betreuung.getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
 		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
-		if (ausbezahlteVorgaenger != null) {
+		if (vorgaengerAusbezahlteVerfuegungProAuszahlungstyp != null) {
 			// Zahlungsstatus aus vorgaenger uebernehmen
-			VerfuegungUtil.setZahlungsstatus(verfuegungZuBerechnen, ausbezahlteVorgaenger);
-			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen, ausbezahlteVorgaenger);
+			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
+			// die Mahlzeiten evtl. spaeter erst enabled werden!
+			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
+			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder eben nicht)
+			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen,
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION),
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER),
+				bgRechnerParameterDTO.getMahlzeitenverguenstigungEnabled());
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {
@@ -300,7 +312,7 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
-		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
 		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 

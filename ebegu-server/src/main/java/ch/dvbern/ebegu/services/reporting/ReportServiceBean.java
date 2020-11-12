@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -131,6 +131,18 @@ import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragDetailsExcelConver
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragTotalsExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.TraegerschaftService;
+import ch.dvbern.ebegu.services.ZahlungService;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -163,10 +175,6 @@ import static java.util.Objects.requireNonNull;
 @Stateless
 @Local(ReportService.class)
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
-
-	private static final String NO_USER_IS_LOGGED_IN = "No User is logged in";
-
-
 
 	@Inject
 	private BenutzerService benutzerService;
@@ -235,9 +243,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
-
-	@Inject
-	private GesuchService gesuchService;
 
 	@Inject
 	private EinstellungService einstellungService;
@@ -834,16 +839,21 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 
-		List<ZahlungDataRow> zahlungDataRows = zahlungsauftrag.getZahlungen()
-			.stream()
-			.filter(zahlung -> !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-								allowedInst
-									.stream()
-									.anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionId())))
-			.map(zahlung -> new ZahlungDataRow(
-				zahlung,
-				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true)
-		)).collect(Collectors.toList());
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungsauftrag.getZahlungslaufTyp());
+		List<ZahlungDataRow> zahlungDataRows = new ArrayList<>();
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			if (!EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+				allowedInst
+					.stream()
+					.anyMatch(institution -> institution.getId().equals(zahlung.getEmpfaengerId()))) {
+				Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+				ZahlungDataRow row = new ZahlungDataRow(
+					zahlung,
+					adresseKontoinhaber
+				);
+				zahlungDataRows.add(row);
+			}
+		}
 
 		return getUploadFileInfoZahlung(
 			zahlungDataRows,
@@ -872,15 +882,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 
-		final InstitutionStammdaten institutionStammdaten = institutionStammdatenService
-			.fetchInstitutionStammdatenByInstitution(zahlung.getInstitutionId(), true);
-		ZahlungDataRow dataRow = new ZahlungDataRow(zahlung, institutionStammdaten);
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlung.getZahlungsauftrag().getZahlungslaufTyp());
+		Adresse adresseKontoinhaber = zahlungslaufHelper.getAuszahlungsadresseOrDefaultadresse(zahlung);
+		ZahlungDataRow dataRow = new ZahlungDataRow(
+			zahlung,
+			adresseKontoinhaber
+		);
 
 		reportData.add(dataRow);
 
 		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
 
-		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionName();
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getEmpfaengerName();
 
 		return getUploadFileInfoZahlung(
 			reportData,
@@ -913,11 +926,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
-			.filter(zahlung -> {
+			.filter(zahlungDataRow -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
 				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
+					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
 			}).collect(Collectors.toList());
 
 		// Blatt Details
@@ -1121,30 +1134,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicatesToUse));
 		return persistence.getCriteriaResults(query);
-	}
-
-	@Nullable
-	private Predicate getPredicateForBenutzerRole(
-		@Nonnull CriteriaBuilder builder,
-		@Nonnull Root<VerfuegungZeitabschnitt> root) {
-		boolean isTSBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_TS, UserRole.ADMIN_TS);
-		boolean isBGBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_BG, UserRole.ADMIN_BG);
-
-		if (isTSBenutzer) {
-			Predicate predicateSchulamt = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung)
-				.get(Verfuegung_.betreuung)
-				.get(Betreuung_.institutionStammdaten)
-				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-			return predicateSchulamt;
-		}
-		if (isBGBenutzer) {
-			Predicate predicateNotSchulamt = builder.notEqual(root.get(VerfuegungZeitabschnitt_.verfuegung)
-				.get(Verfuegung_.betreuung)
-				.get(Betreuung_.institutionStammdaten)
-				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-			return predicateNotSchulamt;
-		}
-		return null;
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
@@ -1739,43 +1728,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 
 		return row;
-	}
-
-	private Gesuch getGueltigesGesuch(Map<Long, Gesuch> neustesVerfuegtesGesuchCache, Gesuch gesuch) {
-		Gesuch gueltigeGesuch;
-		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(
-			gesuch.getFall().getFallNummer(),
-			gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false)
-				.orElse(gesuch));
-		return gueltigeGesuch;
-	}
-
-	private Betreuung getGueltigeBetreuung(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		Betreuung gueltigeBetreuung,
-		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
-
-		return gueltigeKind
-			.map(gk -> {
-				final Betreuung betr = zeitabschnitt.getVerfuegung().getBetreuung();
-				Objects.requireNonNull(betr);
-				return gk.getBetreuungen().stream().filter(betreuung -> betreuung
-					.getBetreuungNummer()
-					.equals(betr.getBetreuungNummer()))
-					.findFirst()
-					.orElse(betr);
-			})
-			.orElse(gueltigeBetreuung);
-	}
-
-	private Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
-		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-		Objects.requireNonNull(betreuung);
-		Integer kindNummer = betreuung.getKind().getKindNummer();
-
-		return gueltigeGesuch.getKindContainers().stream()
-			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
-			.findFirst();
 	}
 
 	@Nonnull

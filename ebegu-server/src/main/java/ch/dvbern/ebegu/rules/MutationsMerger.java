@@ -68,7 +68,8 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	private Locale locale;
 
-	public MutationsMerger(@Nonnull Locale locale) {
+	public MutationsMerger(@Nonnull Locale locale, boolean isDebug) {
+		super(isDebug);
 		this.locale = locale;
 	}
 
@@ -164,11 +165,35 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
 				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
 				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
+
+				inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
+				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
+					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
+						getValueOrZero(
+							resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung().getVerpflegungskostenVerguenstigt()));
+				} else {
+					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
+				}
+				if (resultVorangehenderAbschnitt.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
+					inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(
+						getValueOrZero(
+							resultVorangehenderAbschnitt.getTsCalculationResultOhnePaedagogischerBetreuung().getVerpflegungskostenVerguenstigt()));
+				} else {
+					inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
+				}
 				if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
 					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
 			}
 		}
+	}
+
+	@Nonnull
+	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
+		if (value == null) {
+			return BigDecimal.ZERO;
+		}
+		return value;
 	}
 
 	private void handleAbgelehnteFinsit(

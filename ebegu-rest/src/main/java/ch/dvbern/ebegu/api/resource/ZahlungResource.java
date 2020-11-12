@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -124,6 +125,7 @@ public class ZahlungResource {
 
 		return zahlungService.getAllZahlungsauftraege().stream()
 			.filter(zahlungsauftrag -> zahlungsauftrag.getStatus() != ZahlungauftragStatus.ENTWURF)
+			.filter(zahlungsauftrag -> zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION)
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(), allowedInst))
 			.filter(zahlungsauftrag -> !zahlungsauftrag.getZahlungen().isEmpty())
 			.collect(Collectors.toList());
@@ -166,6 +168,7 @@ public class ZahlungResource {
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
 		return optional
+			.filter(zahlungsauftrag -> zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION)
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(),
 				institutionService.getInstitutionenReadableForCurrentBenutzer(false)))
 			.orElse(null);
@@ -201,11 +204,13 @@ public class ZahlungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
 	public JaxZahlungsauftrag createZahlung(
+		@QueryParam("zahlungslaufTyp") String sZahlungslaufTyp,
 		@QueryParam("gemeindeId") String gemeindeId,
 		@QueryParam("faelligkeitsdatum") String stringFaelligkeitsdatum,
 		@QueryParam("beschrieb") String beschrieb,
 		@Nullable @QueryParam("datumGeneriert") String stringDatumGeneriert) throws EbeguRuntimeException {
 
+		ZahlungslaufTyp zahlungslaufTyp = ZahlungslaufTyp.valueOf(sZahlungslaufTyp);
 		LocalDate faelligkeitsdatum = DateUtil.parseStringToDateOrReturnNow(stringFaelligkeitsdatum);
 		LocalDateTime datumGeneriert;
 		if (stringDatumGeneriert != null) {
@@ -215,9 +220,9 @@ public class ZahlungResource {
 		}
 
 		final Zahlungsauftrag zahlungsauftrag = zahlungService
-			.zahlungsauftragErstellen(gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
+			.zahlungsauftragErstellen(zahlungslaufTyp, gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
 
-		zahlungService.zahlungenKontrollieren(gemeindeId);
+		zahlungService.zahlungenKontrollieren(zahlungslaufTyp, gemeindeId);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
 	}

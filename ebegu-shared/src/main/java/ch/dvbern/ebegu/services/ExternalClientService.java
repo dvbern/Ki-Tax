@@ -18,10 +18,13 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 
 /**
  * Service to get information about external (3rd-party) clients
@@ -33,4 +36,10 @@ public interface ExternalClientService {
 
 	@Nonnull
 	Collection<ExternalClient> getAllForInstitution();
+
+	@Nonnull
+	Optional<ExternalClient> findExternalClient(@Nonnull String id);
+
+	@Nonnull
+	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution);
 }

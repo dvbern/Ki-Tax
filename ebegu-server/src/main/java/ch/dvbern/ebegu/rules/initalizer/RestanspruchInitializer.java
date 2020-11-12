@@ -60,7 +60,8 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RestanspruchInitializer.class);
 
-	public RestanspruchInitializer() {
+	public RestanspruchInitializer(boolean isDebug) {
+		super(isDebug);
 	}
 
 	@Override
@@ -133,7 +134,7 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 			// Die Betreuung ist bereits verfuegt, dies geschah aber noch vor der Anpasung, mit welcher der Restanspruch
 			// auf dem Result gespeichert wurde. Die Berechnung ist u.U. falsch! Damit wir dies erkennen und ggf. handeln koennen,
 			// schreiben wir einen Sentry Eintrag
-			LOG.warn("Berechnung Restanspruch: Kein gespeicherter Restanspruch fuer verfuegte Betreuung gefunden: {} in Antrag {}",
+			LOG.info("Berechnung Restanspruch: Kein gespeicherter Restanspruch fuer verfuegte Betreuung gefunden: {} in Antrag {}",
 				platz.getBGNummer(),
 				platz.extractGesuch().getLaufnummer());
 

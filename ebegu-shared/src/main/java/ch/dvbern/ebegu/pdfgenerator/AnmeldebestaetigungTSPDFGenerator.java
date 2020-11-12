@@ -48,6 +48,7 @@ import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
@@ -55,7 +56,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
 public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerator {
@@ -135,7 +136,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				StringUtils.isNotEmpty(anmeldungTagesschule.getBelegungTagesschule().getBemerkung())) {
 				document.add(PdfUtil.createParagraph(translate(BEMERKUNG), 0));
 				Paragraph bemerkungParagraph = new Paragraph();
-				bemerkungParagraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+				bemerkungParagraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				bemerkungParagraph.add(PdfUtil.createListInParagraph(Arrays.asList(anmeldungTagesschule.getBelegungTagesschule().getBemerkung().split("\\r?\\n")).stream().filter(string -> string != null && string.trim().length() > 0).collect(Collectors.toList())));
 				document.add(bemerkungParagraph);
 			}
@@ -206,11 +207,11 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		Paragraph gebuhren = new Paragraph();
 		gebuhren.add(new Phrase(pedagogischerBetreut ? translate(GEBUEHREN_MIT_PEDAGOGISCHER_BETREUUNG) :
 			translate(GEBUEHREN_OHNE_PEDAGOGISCHER_BETREUUNG),
-			getPageConfiguration().getFont()));
+			getPageConfiguration().getFonts().getFont()));
 		if(setSpacingBefore){
-			gebuhren.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			gebuhren.setSpacingBefore(DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		}
-		gebuhren.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		gebuhren.setSpacingAfter(DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return gebuhren;
 	}
 
@@ -223,31 +224,31 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		PdfUtil.setTableDefaultStyles(table);
 		table.setSpacingAfter(2 * DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		//Row: Referenznummer + Institution
-		table.addCell(new Phrase(translate(REFERENZNUMMER), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(translate(INSTITUTION), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName(),
-			getPageConfiguration().getFont()));
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
+		table.addCell(new Phrase(translate(REFERENZNUMMER), defaultFont));
+		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), defaultFont));
+		table.addCell(new Phrase(translate(INSTITUTION), defaultFont));
+		table.addCell(new Phrase(anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName(), defaultFont));
 
 		Kind kind = anmeldungTagesschule.getKind().getKindJA();
 		// Row: Name + Eintrittsdatum
-		table.addCell(new Phrase(translate(KIND_NAME), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(kind.getFullName(), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(translate(EINTRITTSDATUM), getPageConfiguration().getFont()));
+		table.addCell(new Phrase(translate(KIND_NAME), defaultFont));
+		table.addCell(new Phrase(kind.getFullName(), defaultFont));
+		table.addCell(new Phrase(translate(EINTRITTSDATUM), defaultFont));
 		Objects.requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
-		table.addCell(new Phrase(Constants.DATE_FORMATTER.format(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum()),
-			getPageConfiguration().getFont()));
+		table.addCell(new Phrase(Constants.DATE_FORMATTER.format(
+			anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum()),	defaultFont));
 		// Row: Angebot + Klasse
-		table.addCell(new Phrase(translate(ANGEBOT), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(translate(ANGEBOT_TAGESSCHULE), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(translate(KLASSE), getPageConfiguration().getFont()));
+		table.addCell(new Phrase(translate(ANGEBOT), defaultFont));
+		table.addCell(new Phrase(translate(ANGEBOT_TAGESSCHULE), defaultFont));
+		table.addCell(new Phrase(translate(KLASSE), defaultFont));
 		EinschulungTyp einschulungTyp = kind.getEinschulungTyp();
 		if (einschulungTyp != null) {
 			String einschulungString = einschulungTyp.name();
 			table.addCell(new Phrase(translate(ANMELDUNG_BESTAETIGUNG_PFAD + einschulungString),
-				getPageConfiguration().getFont()));
+				defaultFont));
 		} else {
-			table.addCell(new Phrase("", getPageConfiguration().getFont()));
+			table.addCell(new Phrase("", defaultFont));
 		}
 		return table;
 	}
@@ -431,7 +432,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		dayCell.addElement(dayParagraph);
 		if(alleZweiWochen){
 			Paragraph alleZweiWocheParagraph =
-				new Paragraph(new Phrase(translate(ALLE_2_WOCHEN), PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6.0f)));
+				new Paragraph(new Phrase(translate(ALLE_2_WOCHEN), PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 6.0f)));
 			alleZweiWocheParagraph.setAlignment(Element.ALIGN_CENTER);
 			dayCell.addElement(alleZweiWocheParagraph);
 		}
@@ -446,7 +447,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		@Nullable Color bgColor
 	) {
 		PdfPCell cell;
-		cell = new PdfPCell(new Phrase(value, getPageConfiguration().getFont()));
+		cell = new PdfPCell(new Phrase(value, getPageConfiguration().getFonts().getFont()));
 		cell.setHorizontalAlignment(alignment);
 		if (bgColor != null) {
 			cell.setBackgroundColor(bgColor);

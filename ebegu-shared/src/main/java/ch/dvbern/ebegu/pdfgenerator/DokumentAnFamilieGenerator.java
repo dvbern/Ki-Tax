@@ -41,7 +41,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.Element;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
@@ -131,27 +131,28 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		PdfPCell titelCell = new PdfPCell(new Phrase(gemeindeStammdaten.getStandardDokTitle(),
-			getPageConfiguration().getFontBold()));
+			getPageConfiguration().getFonts().getFontBold()));
 		titelCell.setPaddingBottom(2);
 		titelCell.setPaddingLeft(0);
 		titelCell.setBorder(0);
 		table.addCell(titelCell);
-		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
-		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
+		table.addCell(new Phrase("", defaultFont));
+		table.addCell(new Phrase("", defaultFont));
 		PdfPCell unterschriftTitelCell = new PdfPCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel(),
-			getPageConfiguration().getFont()));
+			defaultFont));
 		unterschriftTitelCell.setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
 		unterschriftTitelCell.setPaddingLeft(0);
 		unterschriftTitelCell.setBorder(0);
 		table.addCell(unterschriftTitelCell);
 		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel2(),
-			getPageConfiguration().getFont()));
-		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+			defaultFont));
+		table.addCell(new Phrase("", defaultFont));
 		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftName(),
-			getPageConfiguration().getFont()));
+			defaultFont));
 		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftName2(),
-			getPageConfiguration().getFont()));
-		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+			defaultFont));
+		table.addCell(new Phrase("", defaultFont));
 		return table;
 	}
 
@@ -169,9 +170,10 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4.0f);
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
-		Font fontWithSize = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8);
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
+		Font fontWithSize = PdfUtil.createFontWithSize(defaultFont, 8);
 		for (int i = 0; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6));
+			Chunk chunk = new Chunk((i + 1) + " ", PdfUtil.createFontWithSize(defaultFont, 6));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
 			fz.addText(new Phrase(content.get(i) + '\n', fontWithSize));

@@ -164,4 +164,11 @@ public interface GemeindeService {
 		@Nonnull String gesuchsperiodeId);
 
 	GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode);
+
+	/**
+	 * Gibt alle Gemeinden zurueck, die Mahlzeitenverguenstigungen auszahlen und fuer die
+	 * der eingeloggte Benutzer zustaendig ist (als Gemeinde-abhaengige Rolle!)
+	 */
+	@Nonnull
+	Collection<Gemeinde> getGemeindenWithMahlzeitenverguenstigungForBenutzer();
 }

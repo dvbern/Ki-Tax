@@ -46,8 +46,8 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
-import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
@@ -186,7 +186,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Nonnull
-	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(boolean editable,
+	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(
+		boolean editable,
 		boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
@@ -254,7 +255,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH) {
+	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(
+		boolean restrictedForSCH) {
 		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
 
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
@@ -263,8 +265,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)
 				&& benutzer.getInstitution() != null) {
 				if (benutzer.getInstitution() != null) {
-					institutionInstitutionStammdatenMap.put(benutzer.getInstitution(),
-						institutionStammdatenService.fetchInstitutionStammdatenByInstitution(benutzer.getInstitution().getId(), false));
+					institutionInstitutionStammdatenMap.put(
+						benutzer.getInstitution(),
+						institutionStammdatenService.fetchInstitutionStammdatenByInstitution(benutzer.getInstitution()
+							.getId(), false));
 				}
 			} else {
 				if (EnumUtil.isOneOf(
@@ -272,23 +276,27 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 					UserRole.ADMIN_TRAEGERSCHAFT,
 					UserRole.SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
 					// Hier suchen wir direkt die Institutionen die sind mit der Traegerschaft verbundet
-					institutionStammdatenService.getAllInstitutionStammdatenForTraegerschaft(benutzer.getTraegerschaft()).forEach(institutionStammdaten -> {
-							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+					institutionStammdatenService.getAllInstitutionStammdatenForTraegerschaft(benutzer.getTraegerschaft())
+						.forEach(institutionStammdaten -> {
+							institutionInstitutionStammdatenMap.put(
+								institutionStammdaten.getInstitution(),
 								institutionStammdaten);
-					});
+						});
 				} else if (benutzer.getRole().isRoleGemeindeabhaengig()) {
 					// Hier gibt schon in getAllInstitutionStammdaten der GemeindeListe predicate
 					institutionStammdatenService.getAllInstitutionStammdaten().forEach(institutionStammdaten -> {
 						if (isAllowedForMode(institutionStammdaten, benutzer, true, restrictedForSCH)) {
-							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
+							institutionInstitutionStammdatenMap.put(
+								institutionStammdaten.getInstitution(),
 								institutionStammdaten);
 						}
 					});
 				} else {
 					// Hier muss man ja alles lesen fuer der Mandant
 					institutionStammdatenService.getAllInstitutionStammdaten().forEach(institutionStammdaten -> {
-							institutionInstitutionStammdatenMap.put(institutionStammdaten.getInstitution(),
-								institutionStammdaten);
+						institutionInstitutionStammdatenMap.put(
+							institutionStammdaten.getInstitution(),
+							institutionStammdaten);
 					});
 				}
 			}
@@ -365,30 +373,54 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	public void saveExternalClients(
+	public void saveInstitutionExternalClients(
 		@Nonnull Institution institution,
-		@Nonnull Collection<ExternalClient> externalClients) {
+		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients) {
 
 		String id = institution.getId();
-		Set<ExternalClient> existingExternalClients = institution.getExternalClients();
 
-		// find out which are removed
-		HashSet<ExternalClient> removed = new HashSet<>(existingExternalClients);
-		removed.removeAll(externalClients);
+		Set<InstitutionExternalClient> existingExternalClients = institution.getInstitutionExternalClients();
 
-		removed.stream()
-			.map(client -> institutionClientEventConverter.clientRemovedEventOf(id, client))
-			.forEach(event -> exportedEvent.fire(event));
+		Collection<InstitutionExternalClient> newInstitutionExternalClients = new HashSet<>();
+
+		// find out which are modified and update the Gueltigkeit inside
+		if (!existingExternalClients.isEmpty()) {
+			for (InstitutionExternalClient institutionExternalClient : existingExternalClients) {
+				InstitutionExternalClient existingInstitutionExternalClient = institutionExternalClients.stream()
+					.filter(institutionExternalClient1 -> institutionExternalClient1.getExternalClient()
+						.getClientName()
+						.equals(institutionExternalClient.getExternalClient().getClientName()))
+					.findAny().orElse(null);
+				if (existingInstitutionExternalClient != null) {
+					//set parameters inside the existing one if modified and fire event
+					if (existingInstitutionExternalClient.getGueltigkeit()
+						.compareTo(institutionExternalClient.getGueltigkeit()) != 0) {
+						institutionExternalClient.setGueltigkeit(existingInstitutionExternalClient.getGueltigkeit());
+						exportedEvent.fire(institutionClientEventConverter.clientModifiedEventOf(
+							id,
+							institutionExternalClient));
+					}
+					//then add to the new collection
+					newInstitutionExternalClients.add(institutionExternalClient);
+					//and delete it otherwise it will be seen as a new element later
+					institutionExternalClients.remove(existingInstitutionExternalClient);
+				}
+				else { //it means this client was removed
+					exportedEvent.fire(institutionClientEventConverter.clientRemovedEventOf(id, institutionExternalClient));
+				}
+			}
+		}
 
 		// find out which are added
-		HashSet<ExternalClient> added = new HashSet<>(externalClients);
-		added.removeAll(existingExternalClients);
+		HashSet<InstitutionExternalClient> added = new HashSet<>(institutionExternalClients);
 
 		added.stream()
 			.map(client -> institutionClientEventConverter.clientAddedEventOf(id, client))
 			.forEach(event -> exportedEvent.fire(event));
+		newInstitutionExternalClients.addAll(added);
 
-		institution.setExternalClients(new HashSet<>(externalClients));
+		institution.getInstitutionExternalClients().clear();
+		institution.getInstitutionExternalClients().addAll(new HashSet<>(newInstitutionExternalClients));
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {
@@ -412,7 +444,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	private Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution) {
 		requireNonNull(institution, "institution cannot be null");
-		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, institution, Berechtigung_.institution);
+		return criteriaQueryHelper.getEntitiesByAttribute(
+			Berechtigung.class,
+			institution,
+			Berechtigung_.institution);
 	}
 
 	/**

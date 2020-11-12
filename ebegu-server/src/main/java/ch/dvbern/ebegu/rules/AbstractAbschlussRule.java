@@ -25,12 +25,29 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAbschlussRule {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractAbschlussRule.class);
+	private boolean isDebug = false;
+
+	protected AbstractAbschlussRule(boolean isDebug) {
+		this.isDebug = isDebug;
+	}
+
+	@Nonnull
 	public List<VerfuegungZeitabschnitt> executeIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		if (isApplicableForAngebot(platz)) {
-			return execute(platz, zeitabschnitte);
+			final List<VerfuegungZeitabschnitt> executedAbschnitte = execute(platz, zeitabschnitte);
+			if (isDebug) {
+				LOG.info(this.getClass().getSimpleName());
+				for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : executedAbschnitte) {
+					LOG.info(verfuegungZeitabschnitt.toString());
+				}
+			}
+			return executedAbschnitte;
 		}
 		return zeitabschnitte;
 	}
