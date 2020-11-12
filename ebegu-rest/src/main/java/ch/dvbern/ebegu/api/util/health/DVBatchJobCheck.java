@@ -30,6 +30,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -61,6 +62,7 @@ public class DVBatchJobCheck implements HealthCheck {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DVBatchJobCheck.class);
 
+	@SuppressFBWarnings(value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
 	@Override
 	public HealthCheckResponse call() {
 		final DataSource datasource = getDatasource();
