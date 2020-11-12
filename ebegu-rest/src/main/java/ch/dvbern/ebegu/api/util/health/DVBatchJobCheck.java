@@ -47,6 +47,17 @@ public class DVBatchJobCheck implements HealthCheck {
 	private static final String TIMEOUT_METHOD_NAME_COLUMN = "TIMEOUT_METHOD_NAME";
 	private static final String EJB_TIMER_TABLE_NAME = "jboss_ejb_timer";
 	private static final String NEXT_DATE_COLUMN_NAME = "NEXT_DATE";
+	private static final String SQL_QUERY = String.format(
+		"SELECT jet.* FROM %s jet INNER JOIN (SELECT %s, MAX(%s) AS MaxDateTime FROM %s GROUP BY %s) groupedjet ON jet"
+			+ ".%s = groupedjet.%s AND jet.%s = groupedjet.MaxDateTime;",
+		EJB_TIMER_TABLE_NAME,
+		TIMEOUT_METHOD_NAME_COLUMN,
+		NEXT_DATE_COLUMN_NAME,
+		EJB_TIMER_TABLE_NAME,
+		TIMEOUT_METHOD_NAME_COLUMN,
+		TIMEOUT_METHOD_NAME_COLUMN,
+		TIMEOUT_METHOD_NAME_COLUMN,
+		NEXT_DATE_COLUMN_NAME);
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DVBatchJobCheck.class);
 
@@ -63,7 +74,7 @@ public class DVBatchJobCheck implements HealthCheck {
 			PreparedStatement pst = null;
 			try {
 				connection = datasource.getConnection();
-				final String queryAllBatch = connection.nativeSQL(getStringQuery());
+				final String queryAllBatch = connection.nativeSQL(SQL_QUERY);
 				pst = connection.prepareStatement(queryAllBatch);
 				resultAllBatch = pst.executeQuery();
 				while (resultAllBatch.next()) {
@@ -114,31 +125,6 @@ public class DVBatchJobCheck implements HealthCheck {
 			.withData("batchListInTimeout", batchKO.toString())
 			.state(batchOK)
 			.build();
-	}
-
-	/**
-	 * Build the String with String Builder to avoid SQL injection according to spotbugs
-	 */
-	private String getStringQuery() {
-		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("SELECT ett.* FROM ")
-			.append(EJB_TIMER_TABLE_NAME)
-			.append(" ett INNER JOIN (SELECT ")
-			.append(TIMEOUT_METHOD_NAME_COLUMN)
-			.append(", MAX(")
-			.append(NEXT_DATE_COLUMN_NAME)
-			.append(") AS MaxDateTime FROM ")
-			.append(EJB_TIMER_TABLE_NAME)
-			.append(" GROUP BY ")
-			.append(TIMEOUT_METHOD_NAME_COLUMN)
-			.append(") groupedett ON ett.")
-			.append(TIMEOUT_METHOD_NAME_COLUMN)
-			.append(" = groupedett.")
-			.append(TIMEOUT_METHOD_NAME_COLUMN)
-			.append(" AND ett.")
-			.append(NEXT_DATE_COLUMN_NAME)
-			.append(" = groupedett.MaxDateTime;");
-		return queryBuilder.toString();
 	}
 
 	/**
