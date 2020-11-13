@@ -80,8 +80,8 @@ public class DVBatchJobCheck implements HealthCheck {
 				pst = connection.prepareStatement(queryAllBatch);
 				resultAllBatch = pst.executeQuery();
 				while (resultAllBatch.next()) {
-					String statusBatchMahnungFristablauf = resultAllBatch.getString(TIMER_STATE_COLUMN);
-					if (statusBatchMahnungFristablauf.equals(IN_TIMEOUT_STATE)) {
+					String statusBatchJob = resultAllBatch.getString(TIMER_STATE_COLUMN);
+					if (statusBatchJob.equals(IN_TIMEOUT_STATE)) {
 						Timestamp previousRun = resultAllBatch.getTimestamp(PREVIOUS_RUN_COLUMN);
 						if (previousRun != null && previousRun.before(Timestamp.valueOf(LocalDateTime.now()
 							.minusDays(1)))) {
