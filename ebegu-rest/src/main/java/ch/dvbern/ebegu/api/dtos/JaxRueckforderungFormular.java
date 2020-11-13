@@ -173,6 +173,15 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private String bemerkungFuerVerfuegung;
 
+	@Nullable
+	private BigDecimal beschwerdeBetrag;
+
+	@Nullable
+	private String beschwerdeBemerkung;
+
+	public JaxRueckforderungFormular() {
+	}
+
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;
@@ -556,5 +565,23 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setBemerkungFuerVerfuegung(@Nullable String bemerkungFuerVerfuegung) {
 		this.bemerkungFuerVerfuegung = bemerkungFuerVerfuegung;
+	}
+
+	@Nullable
+	public BigDecimal getBeschwerdeBetrag() {
+		return beschwerdeBetrag;
+	}
+
+	public void setBeschwerdeBetrag(@Nullable BigDecimal beschwerdeBetrag) {
+		this.beschwerdeBetrag = beschwerdeBetrag;
+	}
+
+	@Nullable
+	public String getBeschwerdeBemerkung() {
+		return beschwerdeBemerkung;
+	}
+
+	public void setBeschwerdeBemerkung(@Nullable String beschwerdeBemerkung) {
+		this.beschwerdeBemerkung = beschwerdeBemerkung;
 	}
 }

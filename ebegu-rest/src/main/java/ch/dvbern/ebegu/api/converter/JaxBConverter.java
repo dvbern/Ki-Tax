@@ -5439,6 +5439,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setStufe2VoraussichtlicheBetrag(rueckforderungFormular.getStufe2VoraussichtlicheBetrag());
 		jaxFormular.setKorrespondenzSprache(rueckforderungFormular.getKorrespondenzSprache());
 		jaxFormular.setBemerkungFuerVerfuegung(rueckforderungFormular.getBemerkungFuerVerfuegung());
+		jaxFormular.setBeschwerdeBetrag(rueckforderungFormular.getBeschwerdeBetrag());
+		jaxFormular.setBeschwerdeBemerkung(rueckforderungFormular.getBeschwerdeBemerkung());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
@@ -5502,6 +5504,8 @@ public class JaxBConverter extends AbstractConverter {
 		rueckforderungFormular.setCoronaErwerbsersatzSonstiges(rueckforderungFormularJax.getCoronaErwerbsersatzSonstiges());
 		rueckforderungFormular.setKorrespondenzSprache(rueckforderungFormularJax.getKorrespondenzSprache());
 		rueckforderungFormular.setBemerkungFuerVerfuegung(rueckforderungFormularJax.getBemerkungFuerVerfuegung());
+		rueckforderungFormular.setBeschwerdeBetrag(rueckforderungFormularJax.getBeschwerdeBetrag());
+		rueckforderungFormular.setBeschwerdeBemerkung(rueckforderungFormularJax.getBeschwerdeBemerkung());
 
 		// OptimisticLocking: Version richtig behandeln
 		return checkVersionSaveAndFlush(rueckforderungFormular, rueckforderungFormularJax.getVersion());

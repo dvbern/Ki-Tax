@@ -69,6 +69,8 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public coronaErwerbsersatzSonstiges: string;
     public korrespondenzSprache: TSSprache;
     public bemerkungFuerVerfuegung: string;
+    public beschwerdeBetrag: number;
+    public beschwerdeBemerkung: string;
 
     public constructor() {
         super();

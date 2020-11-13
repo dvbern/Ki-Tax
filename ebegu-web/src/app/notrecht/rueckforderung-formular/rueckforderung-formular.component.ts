@@ -21,7 +21,7 @@ import {
     ChangeDetectorRef,
     Component,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
@@ -35,11 +35,11 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSRueckforderungInstitutionTyp} from '../../../models/enums/TSRueckforderungInstitutionTyp';
 import {
-    isBereitZumVerfuegenOderVerfuegt,
     isAnyOfVerfuegtOrPruefungKantonStufe2,
+    isBereitZumVerfuegenOderVerfuegt,
     isNeuOrEingeladenStatus,
     isStatusRelevantForFrist,
-    TSRueckforderungStatus
+    TSRueckforderungStatus,
 } from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
@@ -62,7 +62,7 @@ import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verla
     selector: 'dv-rueckforderung-formular',
     templateUrl: './rueckforderung-formular.component.html',
     styleUrls: ['./rueckforderung-formular.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RueckforderungFormularComponent implements OnInit, AfterViewChecked {
 
@@ -79,6 +79,9 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
 
     public readOnly: boolean;
     public readOnlyDocument: boolean;
+    public showBeschwerde: boolean;
+    public beschwerdeReadOnly: boolean = true;
+    public beschwerdeAlreadyExist: boolean;
 
     // Checkbox for Institution Stufe 1:
     public betreuungKorrektAusgewiesen: boolean;
@@ -119,7 +122,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly uploadRS: UploadRS,
         private readonly cdr: ChangeDetectorRef,
-        private readonly applicationPropertyService: ApplicationPropertyRS
+        private readonly applicationPropertyService: ApplicationPropertyRS,
     ) {
     }
 
@@ -159,6 +162,8 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                     this.initRueckforderungZahlungen(response);
                     this.initDokumente(response);
                     this.calculateProvBetrag(response);
+                    this.showBeschwerde = this.initBeschwerde(response);
+                    this.beschwerdeAlreadyExist = this.showBeschwerde;
                     return response;
                 }));
     }
@@ -359,9 +364,11 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                 return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_OEFFENTLICH');
             case TSRueckforderungInstitutionTyp.PRIVAT:
                 if (rueckforderungFormular.isKurzarbeitProzessBeendet() && rueckforderungFormular.isCoronaErwerbsersatzProzessBeendet()) {
-                    return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
+                    return this.translate.instant(
+                        'CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_VOLLSTAENDIG');
                 }
-                return this.translate.instant('CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG');
+                return this.translate.instant(
+                    'CONFIRMATON_AFTER_IN_BEARBEITUNG_INSTITUTION_STUFE_2_PRIVAT_UNVOLLSTAENDIG');
             default:
                 return '';
         }
@@ -442,7 +449,8 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     public uploadRuckforderungDokumente(event: any, rueckforderungFormularId: string,
-                                        tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp): void {
+                                        tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
+    ): void {
         const files = event.target.files;
         const filesTooBig: any[] = [];
         const filesOk: any[] = [];
@@ -516,7 +524,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('FILE_ZU_GROSS'),
-            text: `${text}`
+            text: `${text}`,
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig);
@@ -558,7 +566,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
-            text: ''
+            text: '',
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
@@ -605,12 +613,14 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                     });
                 },
                 () => {
-                }
+                },
             );
     }
 
-    private removeFromList(dokument: TSRueckforderungDokument,
-                           rueckforderungDokumente: TSRueckforderungDokument[]): void {
+    private removeFromList(
+        dokument: TSRueckforderungDokument,
+        rueckforderungDokumente: TSRueckforderungDokument[],
+    ): void {
         const idx = EbeguUtil.getIndexOfElementwithID(dokument, rueckforderungDokumente);
         if (idx > -1) {
             rueckforderungDokumente.splice(idx, 1);
@@ -686,7 +696,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const relevantFristPrivat = fristVerlaengert
             ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristPrivatDefault;
         const relevanteFristOeffentlich = fristVerlaengert &&
-            rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+        rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
             ? rueckforderungFormular.extendedEinreichefrist : this.einreicheFristOeffentlich;
         const privatRelevantText = DateUtil.momentToLocalDateFormat(relevantFristPrivat, 'DD.MM.YYYY');
         const oeffentlichText = DateUtil.momentToLocalDateFormat(relevanteFristOeffentlich, 'DD.MM.YYYY');
@@ -783,6 +793,13 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     private initReadOnlyDocument(rueckforderungFormular: TSRueckforderungFormular): boolean {
         // Alles ausser BEREIT_ZUM_VERRUEGEN und VERFUEGT
         if (isBereitZumVerfuegenOderVerfuegt(rueckforderungFormular.status)) {
+            return true;
+        }
+        return false;
+    }
+
+    private initBeschwerde(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (EbeguUtil.isNotNullOrUndefined(rueckforderungFormular.beschwerdeBetrag)) {
             return true;
         }
         return false;
@@ -972,17 +989,32 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
 
     public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
-            this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)
+            this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username),
         );
     }
 
     public setDokumenteGeprueft(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
-            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id)
+            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id),
         );
     }
 
     public canDeleteDocuments(formular: TSRueckforderungFormular): boolean {
         return !isAnyOfVerfuegtOrPruefungKantonStufe2(formular.status);
+    }
+
+    public beschwerdeBearbeiten(): void {
+        this.showBeschwerde = true;
+        this.beschwerdeReadOnly = false;
+    }
+
+    public saveBeschwerde(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.saveBeschwerde(rueckforderungFormular).then((response: TSRueckforderungFormular) => {
+                this.showBeschwerde = this.initBeschwerde(response);
+                this.beschwerdeAlreadyExist = this.showBeschwerde;
+                this.beschwerdeReadOnly = true;
+                return response;
+            }));
     }
 }
