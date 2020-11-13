@@ -4115,6 +4115,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public JaxWizardStep wizardStepToJAX(WizardStep wizardStep) {
+		// OptimisticLocking: Version richtig behandeln
+		flush();
+
 		final JaxWizardStep jaxWizardStep = convertAbstractVorgaengerFieldsToJAX(wizardStep, new JaxWizardStep());
 		jaxWizardStep.setGesuchId(wizardStep.getGesuch().getId());
 		jaxWizardStep.setVerfuegbar(wizardStep.getVerfuegbar());
@@ -4130,7 +4133,9 @@ public class JaxBConverter extends AbstractConverter {
 		wizardStep.setWizardStepName(jaxWizardStep.getWizardStepName());
 		wizardStep.setWizardStepStatus(jaxWizardStep.getWizardStepStatus());
 		wizardStep.setBemerkungen(jaxWizardStep.getBemerkungen());
-		return wizardStep;
+
+		// OptimisticLocking: Version richtig behandeln
+		return checkVersionSaveAndFlush(wizardStep, jaxWizardStep.getVersion());
 	}
 
 	public JaxEbeguVorlage ebeguVorlageToJax(EbeguVorlage ebeguVorlage) {
