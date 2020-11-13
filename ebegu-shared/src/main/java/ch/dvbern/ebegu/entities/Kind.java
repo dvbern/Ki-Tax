@@ -244,19 +244,6 @@ public class Kind extends AbstractPersonEntity {
 		}
 	}
 
-	private void copyAusserordentlicherAnspruchIfStillValid(
-		@Nonnull Kind target,
-		@Nonnull AntragCopyType copyType,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		// Anspruch nur kopieren, wenn er noch gueltig ist
-		if (this.getPensumAusserordentlicherAnspruch() != null && !this.getPensumAusserordentlicherAnspruch()
-			.getGueltigkeit()
-			.endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
-			target.setPensumAusserordentlicherAnspruch(this.getPensumAusserordentlicherAnspruch()
-				.copyPensumAusserordentlicherAnspruch(new PensumAusserordentlicherAnspruch(), copyType));
-		}
-	}
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
