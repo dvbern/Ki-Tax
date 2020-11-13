@@ -305,7 +305,6 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		@Nonnull MahlzeitenverguenstigungDataRow row,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
 	) {
-		Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
 		TSCalculationResult tsCalculationResultMit = null;
 		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			tsCalculationResultMit =

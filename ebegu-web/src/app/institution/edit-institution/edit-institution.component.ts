@@ -204,7 +204,7 @@ export class EditInstitutionComponent implements OnInit {
             return;
         }
         this.forms.forEach(form => {
-            form.resetForm();
+            form.resetForm(form.value);
         });
         this.editMode = true;
     }
