@@ -204,8 +204,6 @@ public class BetreuungsgutscheinEvaluator {
 
 				// Innerhalb eines Monats darf der Anspruch nie sinken
 				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
-				// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
-				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
 				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 				zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
 				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
@@ -235,6 +233,9 @@ public class BetreuungsgutscheinEvaluator {
 				if (!isTagesschule) {
 					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
 				}
+
+				// Am Schluss der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
+				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
 			}
 		}
 	}
