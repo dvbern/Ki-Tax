@@ -99,19 +99,21 @@ public class Kind extends AbstractPersonEntity {
 	public Kind() {
 	}
 
+	@Nullable
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
 		return kinderabzugErstesHalbjahr;
 	}
 
-	public void setKinderabzugErstesHalbjahr(Kinderabzug kinderabzugErstesHalbjahr) {
+	public void setKinderabzugErstesHalbjahr(@Nullable Kinderabzug kinderabzugErstesHalbjahr) {
 		this.kinderabzugErstesHalbjahr = kinderabzugErstesHalbjahr;
 	}
 
+	@Nullable
 	public Kinderabzug getKinderabzugZweitesHalbjahr() {
 		return kinderabzugZweitesHalbjahr;
 	}
 
-	public void setKinderabzugZweitesHalbjahr(Kinderabzug kinderabzugZweitesHalbjahr) {
+	public void setKinderabzugZweitesHalbjahr(@Nullable Kinderabzug kinderabzugZweitesHalbjahr) {
 		this.kinderabzugZweitesHalbjahr = kinderabzugZweitesHalbjahr;
 	}
 
@@ -203,11 +205,13 @@ public class Kind extends AbstractPersonEntity {
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
-			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
+			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
+			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
-			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
+			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
+			// Dieser muss immer neu beantragt werden!
 			break;
 		}
 		return target;
