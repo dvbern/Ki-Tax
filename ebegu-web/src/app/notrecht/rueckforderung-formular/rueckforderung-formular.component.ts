@@ -110,6 +110,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     public rueckforderungEinsatzplaeneDokumente?: TSRueckforderungDokument[];
     public rueckforderungKurzarbeitDokumente?: TSRueckforderungDokument[];
     public rueckforderungErwerbsersatzDokumente?: TSRueckforderungDokument[];
+    public rueckforderungBeschwerdeDokumente?: TSRueckforderungDokument[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -514,6 +515,13 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                             [].concat(this.rueckforderungErwerbsersatzDokumente);
                         this.cdr.markForCheck();
                         break;
+                    case TSRueckforderungDokumentTyp.BESCHWERDE_DOKUMENTE:
+                        rueckforderungDokumente.forEach(dokument =>
+                            this.rueckforderungBeschwerdeDokumente.push(dokument));
+                        this.rueckforderungBeschwerdeDokumente =
+                            [].concat(this.rueckforderungBeschwerdeDokumente);
+                        this.cdr.markForCheck();
+                        break;
                     default:
                         return;
                 }
@@ -558,6 +566,11 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                     dokument =>
                         dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.ERWERBSERSATZ_DOKUMENTE);
                 this.rueckforderungErwerbsersatzDokumente = [].concat(this.rueckforderungErwerbsersatzDokumente);
+
+                this.rueckforderungBeschwerdeDokumente = rueckforderungDokumente.filter(
+                    dokument =>
+                        dokument.rueckforderungDokumentTyp === TSRueckforderungDokumentTyp.BESCHWERDE_DOKUMENTE);
+                this.rueckforderungBeschwerdeDokumente = [].concat(this.rueckforderungBeschwerdeDokumente);
                 this.cdr.markForCheck();
             });
     }
@@ -604,6 +617,12 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                                 this.removeFromList(dokument, this.rueckforderungErwerbsersatzDokumente);
                                 this.rueckforderungErwerbsersatzDokumente =
                                     [].concat(this.rueckforderungErwerbsersatzDokumente);
+                                this.cdr.markForCheck();
+                                break;
+                            case TSRueckforderungDokumentTyp.BESCHWERDE_DOKUMENTE:
+                                this.removeFromList(dokument, this.rueckforderungBeschwerdeDokumente);
+                                this.rueckforderungBeschwerdeDokumente =
+                                    [].concat(this.rueckforderungBeschwerdeDokumente);
                                 this.cdr.markForCheck();
                                 break;
                             default:

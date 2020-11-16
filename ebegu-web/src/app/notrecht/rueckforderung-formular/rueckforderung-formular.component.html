@@ -1455,12 +1455,13 @@
                     </div>
                 </div>
             </div>
-
             <!-- Beschwerde -->
             <div class="col-md-8 col-md-offset-2"
                  *ngIf="rueckforderungFormular.status === 'VERFUEGT'">
                 <div class="row" id="beschwerden">
                     <div class="col-sm-12">
+                        <h2 translate class="margin-top-50">NOTVERORDNUNG_BESCHWERDE</h2>
+                        <hr class="header"/>
                         <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer() && !beschwerdeAlreadyExist"
                                 (click)="beschwerdeBearbeiten();"
                                 [disabled]="showBeschwerde">
@@ -1512,6 +1513,21 @@
                                                inputId="beschwerdeBemerkung_id">
                             </dv-error-messages>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <dv-file-upload
+                            (download)="download($event[0],$event[1])"
+                            [title]="'RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE'"
+                            (delete)="delete($event)"
+                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                                rueckforderungDokumentTyp.BESCHWERDE_DOKUMENTE)"
+                            [files]="rueckforderungBeschwerdeDokumente"
+                            [readOnly]="beschwerdeReadOnly"
+                            [readOnlyDelete]="beschwerdeReadOnly"
+                        >
+                        </dv-file-upload>
                     </div>
                 </div>
                 <div class="row" *ngIf="showBeschwerde">
