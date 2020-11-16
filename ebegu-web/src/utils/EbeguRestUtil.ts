@@ -4089,6 +4089,8 @@ export class EbeguRestUtil {
         rueckforderungFormular.bemerkungFuerVerfuegung = rueckforderungFormularFromServer.bemerkungFuerVerfuegung;
         rueckforderungFormular.beschwerdeBetrag = rueckforderungFormularFromServer.beschwerdeBetrag;
         rueckforderungFormular.beschwerdeBemerkung = rueckforderungFormularFromServer.beschwerdeBemerkung;
+        rueckforderungFormular.beschwerdeAusbezahltAm =
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.beschwerdeAusbezahltAm);
         return rueckforderungFormular;
     }
 
@@ -4261,10 +4263,13 @@ export class EbeguRestUtil {
         institutionExternalClientRest: any,
         institutionExternalClientTS: TSInstitutionExternalClient,
     ): any {
-        institutionExternalClientRest.externalClient = this.externalClientToRestObject({}, institutionExternalClientTS.externalClient);
+        institutionExternalClientRest.externalClient =
+            this.externalClientToRestObject({}, institutionExternalClientTS.externalClient);
         if (institutionExternalClientTS.gueltigkeit) {
-            institutionExternalClientRest.gueltigAb = DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigAb);
-            institutionExternalClientRest.gueltigBis = DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigBis);
+            institutionExternalClientRest.gueltigAb =
+                DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigAb);
+            institutionExternalClientRest.gueltigBis =
+                DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigBis);
         }
         return institutionExternalClientRest;
     }

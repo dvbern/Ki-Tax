@@ -71,6 +71,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     public bemerkungFuerVerfuegung: string;
     public beschwerdeBetrag: number;
     public beschwerdeBemerkung: string;
+    public beschwerdeAusbezahltAm: moment.Moment;
 
     public constructor() {
         super();

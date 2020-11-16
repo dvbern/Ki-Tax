@@ -1462,12 +1462,16 @@
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">NOTVERORDNUNG_BESCHWERDE</h2>
                         <hr class="header"/>
-                        <button type="button" class="dv-btn cancel-button beschwerde-button" *ngIf="isKantonBenutzer() && !beschwerdeAlreadyExist"
+                        <button type="button"
+                                class="dv-btn cancel-button beschwerde-button"
+                                *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && !beschwerdeAlreadyExist"
                                 (click)="beschwerdeBearbeiten();"
                                 [disabled]="showBeschwerde">
                             <span translate>RUECKFORDERUNG_BESCHWERDE_ERFASSEN</span>
                         </button>
-                        <button type="button" class="dv-btn cancel-button beschwerde-button" *ngIf="isKantonBenutzer() && beschwerdeAlreadyExist"
+                        <button type="button"
+                                class="dv-btn cancel-button beschwerde-button"
+                                *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && beschwerdeAlreadyExist"
                                 (click)="beschwerdeBearbeiten();"
                                 [disabled]="!beschwerdeReadOnly">
                             <span translate>RUECKFORDERUNG_BESCHWERDE_BEARBEITEN</span>
@@ -1477,7 +1481,7 @@
                 <div class="row" *ngIf="showBeschwerde">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required long-label"
+                            <label class="long-label"
                                    for="beschwerdeBetrag_id">
                                 {{'RUECKFORDERUNG_BESCHWERDE_BETRAG' | translate}}</label>
                             <input id="beschwerdeBetrag_id" type="number"
@@ -1485,8 +1489,7 @@
                                    #beschwerdeBetrag="ngModel"
                                    [(ngModel)]="rueckforderungFormular.beschwerdeBetrag"
                                    class="form-control"
-                                   [disabled]="beschwerdeReadOnly"
-                                   required>
+                                   [disabled]="beschwerdeReadOnly">
                             <dv-error-messages [errorObject]="beschwerdeBetrag.errors"
                                                inputId="beschwerdeBetrag_id">
                             </dv-error-messages>
@@ -1543,11 +1546,11 @@
         </div>
 
 
-
         <div class="row" *ngIf="showWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular)">
             <div class="col-md-12">
                 <div class="well well-status-warten">
-                    <span>{{getTextWarnungFormularKannNichtFreigegebenWerden(rueckforderungFormular) | translate }}</span>
+                    <span>{{getTextWarnungFormularKannNichtFreigegebenWerden(
+                            rueckforderungFormular) | translate }}</span>
                 </div>
             </div>
         </div>

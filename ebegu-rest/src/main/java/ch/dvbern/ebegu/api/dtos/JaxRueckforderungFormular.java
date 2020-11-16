@@ -179,6 +179,10 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nullable
 	private String beschwerdeBemerkung;
 
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
+	private LocalDateTime beschwerdeAusbezahltAm;
+
 	public JaxRueckforderungFormular() {
 	}
 
@@ -583,5 +587,14 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setBeschwerdeBemerkung(@Nullable String beschwerdeBemerkung) {
 		this.beschwerdeBemerkung = beschwerdeBemerkung;
+	}
+
+	@Nullable
+	public LocalDateTime getBeschwerdeAusbezahltAm() {
+		return beschwerdeAusbezahltAm;
+	}
+
+	public void setBeschwerdeAusbezahltAm(@Nullable LocalDateTime beschwerdeAusbezahltAm) {
+		this.beschwerdeAusbezahltAm = beschwerdeAusbezahltAm;
 	}
 }

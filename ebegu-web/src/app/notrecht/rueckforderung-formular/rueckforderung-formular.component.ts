@@ -1036,4 +1036,8 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                 return response;
             }));
     }
+
+    public isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return this.isKantonBenutzer() && EbeguUtil.isNullOrUndefined(rueckforderungFormular.beschwerdeAusbezahltAm);
+    }
 }

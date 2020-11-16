@@ -5441,6 +5441,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setBemerkungFuerVerfuegung(rueckforderungFormular.getBemerkungFuerVerfuegung());
 		jaxFormular.setBeschwerdeBetrag(rueckforderungFormular.getBeschwerdeBetrag());
 		jaxFormular.setBeschwerdeBemerkung(rueckforderungFormular.getBeschwerdeBemerkung());
+		jaxFormular.setBeschwerdeAusbezahltAm(rueckforderungFormular.getBeschwerdeAusbezahltAm());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen(), rueckforderungFormular.getInstitutionStammdaten().getInstitution().getName()));
 
