@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {registerLocaleData} from '@angular/common';
 import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {MatPaginatorIntl} from '@angular/material';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
@@ -25,9 +26,11 @@ import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {WindowRef} from './service/windowRef.service';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-
+import localeDeCh from '@angular/common/locales/de-CH';
 // sentry
 configureRaven();
+
+registerLocaleData(localeDeCh);
 
 export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
     return new PaginatorI18n(translateService);
