@@ -141,6 +141,10 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		row.setStufe2VerfuegungAusbezahltAm(formular.getStufe2VerfuegungAusbezahltAm());
 		row.setStufe2ZahlungJetztAusgeloest((formular.isStufe2ZahlungJetztAusgeloest()) ? "Ja" : "-");
 
+		row.setBeschwerdeBetrag(formular.getBeschwerdeBetrag());
+		row.setBeschwerdeAusbezahltAm(formular.getBeschwerdeAusbezahltAm());
+		row.setBeschwerdeZahlungJetztAusgeloest(formular.isBeschwerdeZahlungJetztAusgeloest() ? "Ja" : "-");
+
 		InstitutionStammdatenBetreuungsgutscheine stammdatenBetreuungsgutscheine = stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (stammdatenBetreuungsgutscheine != null) {
 			final IBAN extractIban = stammdatenBetreuungsgutscheine.extractIban();

@@ -78,6 +78,10 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe2VerfuegungAusbezahltAm(new SimpleMergeField<>("stufe2VerfuegungAusbezahltAm", DATETIME_CONVERTER)),
 	stufe2ZahlungJetztAusgeloest(new SimpleMergeField<>("stufe2ZahlungJetztAusgeloest", STRING_CONVERTER)),
 
+	beschwerdeBetrag(new SimpleMergeField<>("beschwerdeBetrag", BIGDECIMAL_CONVERTER)),
+	beschwerdeAusbezahltAm(new SimpleMergeField<>("beschwerdeAusbezahltAm", DATETIME_CONVERTER)),
+	beschwerdeZahlungJetztAusgeloest(new SimpleMergeField<>("beschwerdeZahlungJetztAusgeloest", STRING_CONVERTER)),
+
 	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
 	kontoinhaber(new SimpleMergeField<>("kontoinhaber", STRING_CONVERTER)),
 	auszahlungOrganisation(new SimpleMergeField<>("auszahlungOrganisation", STRING_CONVERTER)),

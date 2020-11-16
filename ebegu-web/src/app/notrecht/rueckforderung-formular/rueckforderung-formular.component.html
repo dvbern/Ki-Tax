@@ -1462,12 +1462,12 @@
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">NOTVERORDNUNG_BESCHWERDE</h2>
                         <hr class="header"/>
-                        <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer() && !beschwerdeAlreadyExist"
+                        <button type="button" class="dv-btn cancel-button beschwerde-button" *ngIf="isKantonBenutzer() && !beschwerdeAlreadyExist"
                                 (click)="beschwerdeBearbeiten();"
                                 [disabled]="showBeschwerde">
                             <span translate>RUECKFORDERUNG_BESCHWERDE_ERFASSEN</span>
                         </button>
-                        <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer() && beschwerdeAlreadyExist"
+                        <button type="button" class="dv-btn cancel-button beschwerde-button" *ngIf="isKantonBenutzer() && beschwerdeAlreadyExist"
                                 (click)="beschwerdeBearbeiten();"
                                 [disabled]="!beschwerdeReadOnly">
                             <span translate>RUECKFORDERUNG_BESCHWERDE_BEARBEITEN</span>

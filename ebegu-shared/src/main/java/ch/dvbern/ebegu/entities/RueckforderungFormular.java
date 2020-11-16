@@ -696,8 +696,9 @@ public class RueckforderungFormular extends AbstractEntity {
 		return RueckforderungStatus.VERFUEGT == status && stufe2VerfuegungAusbezahltAm == null;
 	}
 
+	// nur ausbezahlen, falls es eine Beschwerde gibt
 	private boolean isAuszuzahlenBeschwerde() {
-		return RueckforderungStatus.VERFUEGT == status && beschwerdeAusbezahltAm == null;
+		return RueckforderungStatus.VERFUEGT == status && beschwerdeAusbezahltAm == null && beschwerdeBetrag != null;
 	}
 
 	public void handleAuszahlungIfNecessary() {
