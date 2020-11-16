@@ -1515,7 +1515,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" *ngIf="showBeschwerde">
                     <div class="col-sm-12">
                         <dv-file-upload
                             (download)="download($event[0],$event[1])"
