@@ -38,6 +38,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckInstitutionExternalClientDatesOverlapping;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -47,6 +48,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
+@CheckInstitutionExternalClientDatesOverlapping
 public class Institution extends AbstractMutableEntity implements HasMandant, Displayable {
 
 	private static final long serialVersionUID = -8706487439884760618L;
