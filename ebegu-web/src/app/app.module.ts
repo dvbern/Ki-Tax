@@ -24,6 +24,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {APP_JS_MODULE} from './app.angularjs.module';
 import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
+import {NewAntragListComponent} from './core/new-antrag-list/new-antrag-list.component';
 import {EinladungModule} from './einladung/einladung.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {InstitutionModule} from './institution/institution.module';
@@ -57,7 +58,7 @@ import {WelcomeModule} from './welcome/welcome.module';
         TraegerschaftModule,
         WelcomeModule,
         NotrechtModule
-    ],
+    ]
 })
 
 export class AppModule {

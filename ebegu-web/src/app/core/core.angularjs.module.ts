@@ -121,6 +121,7 @@ import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv
 import {ERRORS_JS_MODULE} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
+import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -295,6 +296,7 @@ export const CORE_JS_MODULE = angular
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
+    .directive('dvNewAntragList', downgradeComponent({component: NewAntragListComponent}))
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvMitteilungDelegation', downgradeComponent({component: DvMitteilungDelegationComponent}))
     .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
