@@ -52,6 +52,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
@@ -1949,7 +1950,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Asynchronous
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) // wir brauchen keine transaktion fuer das mailen
+	@Transactional // wir brauchen die Transaction wegen dem LazyLoading aller Betreuungen
 	public void sendMailsToAllGesuchstellerOfLastGesuchsperiode(
 		@Nonnull Gesuchsperiode lastGesuchsperiode,
 		@Nonnull Gesuchsperiode nextGesuchsperiode) {
@@ -1958,6 +1959,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			.map(dossier -> getNeuestesGesuchForDossierAndPeriod(dossier, lastGesuchsperiode))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
+			.filter(g -> !g.extractAllBetreuungen().isEmpty())
 			.collect(Collectors.toList());
 
 		mailService.sendInfoFreischaltungGesuchsperiode(nextGesuchsperiode, antraegeOfLastYear);
