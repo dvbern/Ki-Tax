@@ -18,18 +18,17 @@ pipeline {
 		stage("Test") {
 			agent {
 				docker {
-					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:latest"
-					args "--privileged"
+					image "docker.dvbern.ch/dvbern-java/adoptopenjdk-jdk11-alpine:latest"
 				}
 			}
 
 			steps {
-				withMaven(jdk: 'OpenJDK_11.0.4', maven: 'Maven_3.6.3', options: [
+				withMaven(options: [
 						junitPublisher(healthScaleFactor: 1.0),
 						spotbugsPublisher(),
 						artifactsPublisher(disabled: true)
 				]) {
-					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C ' +
+					sh 'export PATH=$MVN_CMD_DIR:$PATH && ./mvnw -B -U -T 1C ' +
 							'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
 				}
 			}
