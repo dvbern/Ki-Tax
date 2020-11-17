@@ -247,6 +247,19 @@
                                 <artifactId>mariadb-java-client</artifactId>
                                 <version>${version.mysqldriver}</version>
                             </dependency>
+                            <!--   fuer die generierung wird jaxb gebraucht-->
+                            <!--            JAXB modul einfuegen-->
+                            <!-- Runtime -->
+                            <dependency>
+                                <groupId>javax.xml.bind</groupId>
+                                <artifactId>jaxb-api</artifactId>
+                                <version>${version.jaxb-api}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.glassfish.jaxb</groupId>
+                                <artifactId>jaxb-runtime</artifactId>
+                                <version>${version.jaxb-runtime}</version>
+                            </dependency>
                         </dependencies>
                     </plugin>
                 </plugins>
