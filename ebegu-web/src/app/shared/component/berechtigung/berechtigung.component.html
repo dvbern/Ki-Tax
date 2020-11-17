@@ -89,6 +89,8 @@
 <div *ngIf="!useInputComponents">
     <fieldset>
         <table class="berechtigung">
+            <thead></thead>
+            <tbody>
             <tr>
                 <td class="bold" translate>ROLLE</td>
                 <td translate>{{translationKeyForRole(berechtigung.role)}}</td>
@@ -105,6 +107,7 @@
                 <td class="bold" translate>TRAEGERSCHAFT</td>
                 <td>{{berechtigung.traegerschaft.name}}</td>
             </tr>
+            </tbody>
         </table>
     </fieldset>
 </div>
