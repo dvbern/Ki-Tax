@@ -24,7 +24,7 @@ pipeline {
 			}
 
 			steps {
-				withMaven(options: [
+				withMaven(jdk: 'OpenJDK_11.0.4', maven: 'Maven_3.6.3', options: [
 						junitPublisher(healthScaleFactor: 1.0),
 						spotbugsPublisher(),
 						artifactsPublisher(disabled: true)

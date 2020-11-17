@@ -36,8 +36,12 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 
 	tagesschuleAnmeldungenTitle(new SimpleMergeField<>("tagesschuleAnmeldungenTitle", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
-	nachnameKindTitle(new SimpleMergeField<>("nachnameKindTitle", STRING_CONVERTER)),
-	vornameKindTitle(new SimpleMergeField<>("vornameKindTitle", STRING_CONVERTER)),
+	kindTitle(new SimpleMergeField<>("kindTitle", STRING_CONVERTER)),
+	antragsteller1Title(new SimpleMergeField<>("antragsteller1Title", STRING_CONVERTER)),
+	antragsteller2Title(new SimpleMergeField<>("antragsteller2Title", STRING_CONVERTER)),
+	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
+	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
+	emailTitle(new SimpleMergeField<>("emailTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
@@ -62,6 +66,15 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	nachnameKind(new SimpleMergeField<>("nachnameKind", STRING_CONVERTER)),
 	vornameKind(new SimpleMergeField<>("vornameKind", STRING_CONVERTER)),
 	geburtsdatumKind(new SimpleMergeField<>("geburtsdatumKind", DATE_CONVERTER)),
+
+	vornameAntragsteller1(new SimpleMergeField<>("vornameAntragsteller1", STRING_CONVERTER)),
+	nachnameAntragsteller1(new SimpleMergeField<>("nachnameAntragsteller1", STRING_CONVERTER)),
+	emailAntragsteller1(new SimpleMergeField<>("emailAntragsteller1", STRING_CONVERTER)),
+
+	vornameAntragsteller2(new SimpleMergeField<>("vornameAntragsteller2", STRING_CONVERTER)),
+	nachnameAntragsteller2(new SimpleMergeField<>("nachnameAntragsteller2", STRING_CONVERTER)),
+	emailAntragsteller2(new SimpleMergeField<>("emailAntragsteller2", STRING_CONVERTER)),
+
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
