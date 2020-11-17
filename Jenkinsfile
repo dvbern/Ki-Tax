@@ -18,7 +18,7 @@ pipeline {
 		stage("Test") {
 			agent {
 				docker {
-					image "docker.dvbern.ch/dvbern-java/adoptopenjdk-jdk11-alpine:latest"
+					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:jdk11"
 				}
 			}
 
@@ -28,7 +28,7 @@ pipeline {
 						spotbugsPublisher(),
 						artifactsPublisher(disabled: true)
 				]) {
-					sh 'export PATH=$MVN_CMD_DIR:$PATH && ./mvnw -B -U -T 1C ' +
+					sh 'mvn -B -U -T 1C ' +
 							'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
 				}
 			}
