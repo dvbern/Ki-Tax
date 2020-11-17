@@ -18,6 +18,7 @@
     "build:prod": "node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng build --configuration=production",
     "preserver": "check-engine && npm run set-version",
     "server": "ng serve --disable-host-check",
+    "server:ie": "ng serve --disable-host-check --configuration ie",
     "prelint": "check-engine",
     "lint": "concurrently 'npm:lint:ng' 'npm:lint:tsc' 'npm:lint:style'",
     "lint:ci": "concurrently 'npm:lint:ng:ci' 'npm:lint:tsc'",
@@ -32,6 +33,7 @@
     "test:ci": "ng test --progress=false --watch=false --code-coverage",
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
+    "start:ie": "npm run server:ie",
     "set-version": "node scripts/version-from-pom.js",
     "postinstall": "npm run set-version && npm rebuild node-sass && mkdirp build"
   },
