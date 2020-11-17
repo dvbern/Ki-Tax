@@ -43,7 +43,7 @@
 
         <ng-container matColumnDef="dokumenteHochgeladen">
             <th mat-header-cell *matHeaderCellDef translate>DOKUMENTE_HOCHGELADEN_KURZ</th>
-            <td mat-cell *matCellDef="let element">{{element.dokumenteHochgeladen | translate}}</td>
+            <td mat-cell *matCellDef="let element" translate>{{element.dokumenteHochgeladen != null? (element.dokumenteHochgeladen? 'LABEL_JA' : 'LABEL_NEIN') : ''}}</td>
         </ng-container>
 
         <ng-container matColumnDef="angebot">
@@ -76,8 +76,125 @@
             </th>
         </ng-container>
 
+        <ng-container matColumnDef="gemeinde-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <mat-select (selectionChange)="filterGemeinde($event.value)">
+                        <mat-option selected ><span translate>ALLE</span></mat-option>
+                        <mat-option *ngFor="let gemeinde of gemeindenList"
+                                    [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="type-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <mat-select (selectionChange)="filterType($event.value)">
+                        <mat-option selected ><span translate>ALLE</span></mat-option>
+                        <mat-option *ngFor="let type of getAntragTypen()" [value]="type">
+                            <span translate>{{type}}</span></mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="status-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <mat-select (selectionChange)="filterStatus($event.value)">
+                        <mat-option selected ><span translate>ALLE</span></mat-option>
+                        <mat-option *ngFor="let status of getAntragStatus()"
+                                    [value]="status"><span translate>{{status}}</span></mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="angebote-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <mat-select (selectionChange)="filterAngebot($event.value)">
+                        <mat-option selected ><span translate>ALLE</span></mat-option>
+                        <mat-option *ngFor="let angebot of getBetreuungsangebotTypen()"
+                                    [value]="angebot"><span translate>{{angebot}}</span></mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="periode-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <mat-select (selectionChange)="filterPeriode($event.value)">
+                        <mat-option selected ><span translate>ALLE</span></mat-option>
+                        <mat-option *ngFor="let periode of gesuchsperiodenList"
+                                    [value]="periode">{{periode}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="dokumente-hochgeladen-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <mat-select (selectionChange)="filterDocumentsUploaded($event.value)">
+                        <mat-option selected ><span translate>ALLE</span></mat-option>
+                        <mat-option [value]="true" ><span translate>LABEL_JA</span></mat-option>
+                        <mat-option [value]="false"><span translate>LABEL_NEIN</span></mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+
+        <ng-container matColumnDef="familie-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <input matInput (keyup)="filterFamilie($event.target.value)">
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="kinder-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <input matInput (keyup)="filterKinder($event.target.value)">
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="aenderungsdatum-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <input matInput (keyup)="filterGeaendert($event.target.value)">
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="institutionen-filter">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <mat-form-field>
+                    <input matInput (keyup)="filterInstitution($event.target.value)">
+                </mat-form-field>
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="verantwortlicher-TS">
+            <th mat-header-cell *matHeaderCellDef="let column">
+                <div dvNewUserSelect
+                     input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
+                     initial-all="true"
+                     show-selection-all="true"
+                     selected-user="vm.selectedVerantwortlicherBG"></div>
+            </th>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-header-row *matHeaderRowDef="['fall-filter']"></tr>
+        <tr mat-header-row
+            *matHeaderRowDef="['fall-filter', 'gemeinde-filter', 'familie-filter', 'kinder-filter', 'type-filter','periode-filter',
+            'aenderungsdatum-filter', 'status-filter', 'dokumente-hochgeladen-filter','angebote-filter', 'institutionen-filter']"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
 
 

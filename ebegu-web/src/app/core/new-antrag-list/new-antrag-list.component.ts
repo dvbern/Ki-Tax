@@ -1,9 +1,20 @@
 import {Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild} from '@angular/core';
-import {MatPaginator, MatTable, MatTableDataSource, PageEvent} from '@angular/material';
+import {MatPaginator, MatSelectChange, MatTable, MatTableDataSource, PageEvent} from '@angular/material';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus,
+} from '../../../models/enums/TSAntragStatus';
+import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp,
+} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -70,8 +81,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         verantwortlicherTS?: string,
         verantwortlicherGemeinde?: string,
         kinder?: string,
-        familienNameForLike?: string,
-        kindNameForLike?: string
     } = {};
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -85,6 +94,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly searchRS: SearchRS,
+        private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
     }
@@ -174,8 +184,90 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     }
 
     public filterFall(query: string): void {
-        console.log(query);
-        this.filterPredicate.fallNummer = query;
+        this.filterPredicate.fallNummer = query.length > 0 ? query : null;
         this.loadData();
     }
+
+    public filterGemeinde(gemeinde: string): void {
+        this.filterPredicate.gemeinde = gemeinde;
+        this.loadData();
+    }
+
+    public filterType(type: string): void {
+        this.filterPredicate.antragTyp = type;
+        this.loadData();
+    }
+
+    public filterPeriode(periode: string): void {
+        this.filterPredicate.gesuchsperiodeString = periode;
+        this.loadData();
+    }
+
+    public filterStatus(state: string): void {
+        this.filterPredicate.status = state;
+        this.loadData();
+    }
+
+    public filterDocumentsUploaded(documentsUploaded: boolean): void {
+        this.filterPredicate.dokumenteHochgeladen = documentsUploaded;
+        this.loadData();
+    }
+
+    public filterAngebot(angebot: string): void {
+        this.filterPredicate.angebote = angebot;
+        this.loadData();
+    }
+
+    public filterVerantwortlicheTS(verantwortliche: string): void {
+        this.filterPredicate.verantwortlicherTS = verantwortliche;
+        this.loadData();
+    }
+
+    public filterVerantwortlicheBG(verantwortliche: string): void {
+        this.filterPredicate.verantwortlicherBG = verantwortliche;
+        this.loadData();
+    }
+
+    public filterFamilie(query: string): void {
+        this.filterPredicate.familienName = query.length > 0 ? query : null;
+        this.loadData();
+    }
+
+    public filterKinder(query: string): void {
+        this.filterPredicate.familienName = query.length > 0 ? query : null;
+        this.loadData();
+    }
+
+    public filterGeaendert(query: string): void {
+        this.filterPredicate.aenderungsdatum = query.length > 0 ? query : null;
+        this.loadData();
+    }
+
+    public filterInstitution(query: string): void {
+        this.filterPredicate.institutionen = query.length > 0 ? query : null;
+        this.loadData();
+    }
+
+    public getAntragTypen(): TSAntragTyp[] {
+        return getNormalizedTSAntragTypValues();
+    }
+
+    /**
+     * Alle TSAntragStatus fuer das Filterdropdown
+     */
+    public getAntragStatus(): TSAntragStatus[] {
+            return getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
+    }
+
+    /**
+     * Alle Betreuungsangebot typen fuer das Filterdropdown
+     */
+    public getBetreuungsangebotTypen(): TSBetreuungsangebotTyp[] {
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
+    }
+
+    private isTagesschulangebotEnabled(): boolean {
+        return this.authServiceRS.hasMandantAngebotTS();
+    }
+
 }

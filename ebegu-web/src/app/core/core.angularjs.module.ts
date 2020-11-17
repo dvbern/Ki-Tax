@@ -122,6 +122,7 @@ import {ERRORS_JS_MODULE} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
+import {NewUserSelectDirective} from './new-antrag-list/new-user-select.directive';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -302,6 +303,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
+    .directive('newUserSelectDirective', downgradeComponent({component: NewUserSelectDirective}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)
