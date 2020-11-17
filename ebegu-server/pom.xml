@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2020.22.0-SNAPSHOT</version>
+        <version>2020.23.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -246,6 +246,19 @@
                                 <groupId>org.mariadb.jdbc</groupId>
                                 <artifactId>mariadb-java-client</artifactId>
                                 <version>${version.mysqldriver}</version>
+                            </dependency>
+                            <!--   fuer die generierung wird jaxb gebraucht-->
+                            <!--            JAXB modul einfuegen-->
+                            <!-- Runtime -->
+                            <dependency>
+                                <groupId>javax.xml.bind</groupId>
+                                <artifactId>jaxb-api</artifactId>
+                                <version>${version.jaxb-api}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.glassfish.jaxb</groupId>
+                                <artifactId>jaxb-runtime</artifactId>
+                                <version>${version.jaxb-runtime}</version>
                             </dependency>
                         </dependencies>
                     </plugin>
