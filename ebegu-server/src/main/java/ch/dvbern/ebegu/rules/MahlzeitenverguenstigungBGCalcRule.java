@@ -102,7 +102,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			inputData.getTarifNebenmahlzeit(),
 			selbstbehaltProTag,
 			verguenstigungMahlzeit,
-			inputData.getBetreuungspensumProzent(),
 			inputData.getBgPensumProzent()
 		);
 
@@ -137,17 +136,14 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		@Nonnull BigDecimal tarifProNebenmahlzeit,
 		@Nonnull BigDecimal minElternbeitragProTag,
 		@Nonnull BigDecimal verguenstigungMahlzeit,
-		@Nonnull BigDecimal betreuungspensumProzent,
 		@Nonnull BigDecimal bgPensumProzent
 	) {
+		// Ausgangslage fuer die Berechnung der maximalen Tage ist das BG-Pensum auf 5% gerundet.
+		BigDecimal anspruchForCalcMaxTage = MathUtil.roundToFivesUp(bgPensumProzent);
 		// Das Maximum der Tage fuer einen 100% Platz muss aufgrund des effektiven Betreuungspensums umgerechnet werden:
-		final BigDecimal maxTageForBetreuungspensum = MATH.multiply(MAX_TAGE_MAHLZEITENVERGUENSTIGUNG, MATH.pctToFraction(betreuungspensumProzent));
-		// Die eingegebenen Anzahl Tage bezieht sich auf das effektive Betreuungspensum und muss auf den Anteil des verguenstigten Pensums
-		// am Betreuungspensum umgerechnet werden:
-		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
-		if (betreuungspensumProzent.compareTo(BigDecimal.ZERO) > 0) {
-			anteilVerguenstigesPensumAmBetreuungspensum = MathUtil.EXACT.divide(bgPensumProzent, betreuungspensumProzent);
-		}
+		final BigDecimal maxTageForBetreuungspensum = MATH.multiply(
+			MAX_TAGE_MAHLZEITENVERGUENSTIGUNG,
+			MATH.pctToFraction(anspruchForCalcMaxTage));
 
 		// Ein vollständiger Kita Tag besteht aus 2 Nebenmahlzeiten und 1 Hauptmahlzeit
 		BigDecimal anzahlNebenmahlzeitenStandardTag = new BigDecimal("2.00");
@@ -200,7 +196,7 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 		// =Q2+R2
 		// =Q2+R2
 		BigDecimal verguenstigung = MATH.addNullSafe(verguenstigungHauptmahlzeiten, verguenstigungNebenmahlzeiten);
-		return MATH.multiply(verguenstigung, anteilVerguenstigesPensumAmBetreuungspensum);
+		return verguenstigung;
 	}
 
 	@Nonnull
