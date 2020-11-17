@@ -213,8 +213,10 @@ public final class EbeguRuleTestsHelper {
 		result = executor.executeAbschlussRules(platz, result, Locale.GERMAN);
 		executor.calculateRechner(bgRechnerParameterDTO, kitaxParams, Locale.GERMAN, Collections.emptyList(), platz, result);
 
-		AbschlussNormalizer abschlussNormalizer = new AbschlussNormalizer(doMonatsstueckelungen, isDebug);
-		result = abschlussNormalizer.execute(platz, result);
+		if (!doMonatsstueckelungen) {
+			AbschlussNormalizer abschlussNormalizer = new AbschlussNormalizer(false, isDebug);
+			result = abschlussNormalizer.execute(platz, result);
+		}
 
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 		executor.executeRestanspruchInitializer(platz, result);

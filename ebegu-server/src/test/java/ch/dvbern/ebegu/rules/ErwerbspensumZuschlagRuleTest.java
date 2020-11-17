@@ -105,10 +105,10 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(3, result.size());
+		assertEquals(5, result.size());
 		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
 		assertZeitabschnitt(result.get(1), 100, 0, 0, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-		assertZeitabschnitt(result.get(2), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
+		assertZeitabschnitt(result.get(3), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
 	}
 
 	@Test
@@ -120,10 +120,10 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(3, result.size());
+		assertEquals(5, result.size());
 		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 		assertZeitabschnitt(result.get(1), 100, pensum1 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(3), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 
 	}
 
@@ -136,10 +136,10 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(3, result.size());
+		assertEquals(5, result.size());
 		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 		assertZeitabschnitt(result.get(1), 100, 0, 0, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(3), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 
 	}
 

@@ -89,9 +89,9 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(2, result.size());
+		assertEquals(4, result.size());
 		assertZeitabschnitt(result.get(0), 80, 0, 0, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(2), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -100,10 +100,10 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(3, result.size());
+		assertEquals(5, result.size());
 		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 		assertZeitabschnitt(result.get(1), 80, 0, 0, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-		assertZeitabschnitt(result.get(2), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(3), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -124,10 +124,10 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(3, result.size());
+		assertEquals(5, result.size());
 		assertZeitabschnitt(result.get(0), 80, 100, 80, null);
 		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-		assertZeitabschnitt(result.get(2), 80, 100, 80, null);
+		assertZeitabschnitt(result.get(3), 80, 100, 80, null);
 	}
 
 	private Betreuung createGesuchWithBetreuung() {
