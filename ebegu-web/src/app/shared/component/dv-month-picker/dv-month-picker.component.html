@@ -1,0 +1,17 @@
+<div>
+    <input class="dv-mat-datepicker"
+           type="text"
+           [name]="inputId"
+           [id]="inputId"
+           [matDatepicker]="inputId"
+           required
+           placeholder="mm.jjjj"
+           [(ngModel)]="date">
+    <mat-datepicker-toggle matSuffix
+                           [for]="inputId"></mat-datepicker-toggle>
+    <mat-datepicker startView="multi-year" #inputId (yearSelected)="chosenYearHandler($event)"
+                    (monthSelected)="chosenMonthHandler($event, inputId)"></mat-datepicker>
+    <dv-error-messages [inputId]="inputId"
+                       [errorObject]="form.controls[inputId]?.errors">
+    </dv-error-messages>
+</div>

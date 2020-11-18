@@ -43,6 +43,7 @@ import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {FileUploadComponent} from './component/file-upload/file-upload.component';
@@ -117,7 +118,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         FileUploadComponent,
-        DvNgConfirmDialogComponent
+        DvNgConfirmDialogComponent,
+        DvMonthPickerComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
@@ -180,6 +182,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientMultiselectComponent,
         FileUploadComponent,
         DvNgConfirmDialogComponent,
+        DvMonthPickerComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
