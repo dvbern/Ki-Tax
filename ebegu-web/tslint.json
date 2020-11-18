@@ -280,6 +280,7 @@
             "@angular/platform-browser-dynamic/testing",
             "@angular/router/testing",
             "@angular/upgrade/static",
+            "@angular/material",
             "angular-i18n/angular-locale_de-ch",
             "core-js",
             "raven-js",

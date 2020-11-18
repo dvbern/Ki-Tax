@@ -114,10 +114,10 @@
             </div>
 
             <!-- Aktive Rolle -->
-			<dv-berechtigung displayClass="col-sm-6 dv-input-container-medium"
-							 [berechtigung]="currentBerechtigung"
-							 [disabled]="isDisabled || isDefaultVerantwortlicher">
-			</dv-berechtigung>
+            <dv-berechtigung displayClass="col-sm-6 dv-input-container-medium"
+                             [berechtigung]="currentBerechtigung"
+                             [disabled]="isDisabled || isDefaultVerantwortlicher">
+            </dv-berechtigung>
 
             <div class="margin-top-50" *ngIf="futureBerechtigung || !isDisabled">
                 <h1 [textContent]="'ROLLE_KUENFTIG' | translate"></h1>
@@ -126,10 +126,10 @@
 
             <!-- Zukünftige Berechtigung -->
             <fieldset *ngIf="futureBerechtigung">
-				<dv-berechtigung displayClass="col-sm-6 dv-input-container-medium"
-								 [berechtigung]="futureBerechtigung"
-								 [disabled]="isDisabled || isDefaultVerantwortlicher">
-				</dv-berechtigung>
+                <dv-berechtigung displayClass="col-sm-6 dv-input-container-medium"
+                                 [berechtigung]="futureBerechtigung"
+                                 [disabled]="isDisabled || isDefaultVerantwortlicher">
+                </dv-berechtigung>
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-small">
                         <div class="form-group">
@@ -205,24 +205,28 @@
                 <h1 translate class="margin-top-50">BERECHTIGUNGHISTORY</h1>
                 <div class="table-responsive">
                     <table class="table">
-                        <tr>
-                            <th translate>BERECHTIGUNG_GEAENDERT_USER</th>
-                            <th translate>BERECHTIGUNG_GEAENDERT_TS</th>
-                            <th translate>ROLLE</th>
-                            <th translate>BERECHTIGUNG_GUELTIG_AB</th>
-                            <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
-                            <th translate>STATUS</th>
-                            <th translate>GELOESCHT</th>
-                        </tr>
-                        <tr *ngFor="let entry of berechtigungHistoryList">
-                            <td>{{getGeaendertDurch(entry)}}</td>
-                            <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
-                            <td>{{getBerechtigungHistoryDescription(entry)}}</td>
-                            <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
-                            <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
-                            <td>{{('BENUTZER_STATUS_' + entry.status) | translate}}</td>
-                            <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th translate>BERECHTIGUNG_GEAENDERT_USER</th>
+                                <th translate>BERECHTIGUNG_GEAENDERT_TS</th>
+                                <th translate>ROLLE</th>
+                                <th translate>BERECHTIGUNG_GUELTIG_AB</th>
+                                <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
+                                <th translate>STATUS</th>
+                                <th translate>GELOESCHT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let entry of berechtigungHistoryList">
+                                <td>{{getGeaendertDurch(entry)}}</td>
+                                <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
+                                <td>{{getBerechtigungHistoryDescription(entry)}}</td>
+                                <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
+                                <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
+                                <td>{{('BENUTZER_STATUS_' + entry.status) | translate}}</td>
+                                <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </ng-container>

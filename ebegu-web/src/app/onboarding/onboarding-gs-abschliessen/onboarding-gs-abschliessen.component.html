@@ -55,6 +55,8 @@
                 <div class="onboarding-gs-angaben-content">
                     <ng-container *ngIf="user$ | async as user">
                         <table class="onboarding-gs-angaben-table">
+                            <thead></thead>
+                            <tbody>
                             <tr>
                                 <td class="onboarding-gs-angaben-table-label" translate>VORNAME</td>
                                 <td class="onboarding-gs-angaben-table-value">{{user.vorname}}</td>
@@ -67,6 +69,7 @@
                                 <td class="onboarding-gs-angaben-table-label" translate>EMAIL</td>
                                 <td class="onboarding-gs-angaben-table-value">{{user.email}}</td>
                             </tr>
+                            </tbody>
                         </table>
                     </ng-container>
                 </div>
