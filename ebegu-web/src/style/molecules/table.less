@@ -99,7 +99,7 @@ td, th {
     }
 }
 
-table, .table > tbody, .table > thead, .table > thead:first-child {
+table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
     & > tr {
         & > td {
             .ebeguH3();
@@ -163,6 +163,39 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
         }
         .text-right {
             text-align: right;
+        }
+    }
+    & > mat-header-row {
+        min-height: auto;
+        &:first-of-type.mat-header-row {
+            border-bottom-color: black;
+            border-top: 1px solid black;
+        }
+
+        & > mat-header-cell:first-of-type {
+            padding-left: 0;
+        }
+        & > mat-header-cell {
+            .ebeguLabel();
+            color: black;
+            height: 4rem;
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            div > button > span {
+                color: black;
+                font-size: 1.4rem;
+                letter-spacing: .1rem;
+                font-weight: 400;
+                text-transform: uppercase;
+                text-align: left;
+            }
+        }
+    }
+    & > mat-row {
+        & > mat-cell {
+
         }
     }
 }
