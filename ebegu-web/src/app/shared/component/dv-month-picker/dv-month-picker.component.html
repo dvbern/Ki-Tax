@@ -3,14 +3,18 @@
            type="text"
            [name]="inputId"
            [id]="inputId"
-           [matDatepicker]="inputId"
+           [matDatepicker]="dp"
            required
            placeholder="mm.jjjj"
+           (ngModelChange)="onChange()"
            [(ngModel)]="date">
-    <mat-datepicker-toggle matSuffix
-                           [for]="inputId"></mat-datepicker-toggle>
-    <mat-datepicker startView="multi-year" #inputId (yearSelected)="chosenYearHandler($event)"
-                    (monthSelected)="chosenMonthHandler($event, inputId)"></mat-datepicker>
+    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker #dp
+                    startView="multi-year"
+                    (yearSelected)="chosenYearHandler($event)"
+                    (monthSelected)="chosenMonthHandler($event, dp)"
+                    panelClass="example-month-picker">
+    </mat-datepicker>
     <dv-error-messages [inputId]="inputId"
                        [errorObject]="form.controls[inputId]?.errors">
     </dv-error-messages>

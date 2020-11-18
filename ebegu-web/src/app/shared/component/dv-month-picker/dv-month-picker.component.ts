@@ -1,10 +1,7 @@
-import {Component, ChangeDetectionStrategy, Input, EventEmitter, Output} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {MAT_DATE_FORMATS, MatDatepicker} from '@angular/material';
 import * as moment from 'moment';
-import {DateUtil} from '../../../../utils/DateUtil';
-import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 export const MY_FORMATS = {
     parse: {
@@ -25,23 +22,18 @@ let nextId = 0;
     templateUrl: './dv-month-picker.component.html',
     styleUrls: ['./dv-month-picker.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
     providers: [
-        // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
-        // application's root module. We provide it at the component level here, due to limitations of
-        // our example generation script.
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-        },
-
         {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
     ],
 })
 export class DvMonthPickerComponent {
 
-    private _date: moment.Moment;
-    @Output() public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter();
+    @Input()
+    public date?: moment.Moment;
+
+    @Output()
+    public readonly dateChange = new EventEmitter<moment.Moment | null>();
 
     public inputId = `dv-month-picker-${nextId++}`;
 
@@ -49,35 +41,24 @@ export class DvMonthPickerComponent {
     }
 
     public chosenYearHandler(normalizedYear: moment.Moment): void {
-        if (EbeguUtil.isNullOrUndefined(this._date)) {
-            this._date = DateUtil.localDateToMoment('2000-01-01');
-        }
-        const ctrlValue = this._date;
-        this._date = moment({
-            year: normalizedYear.year(), month: ctrlValue.month(), day: ctrlValue.day(),
-        });
+        const control = this.form.controls[this.inputId];
+        const ctrlValue = control.value || moment();
+        ctrlValue.year(normalizedYear.year());
+        control.setValue(ctrlValue);
     }
 
-    public chosenMonthHandler(
-        normalizedMonth: moment.Moment,
-        datepicker?: any,
-    ): void {
-        const ctrlValue = this._date;
-        this._date = moment({
-            year: ctrlValue.year(), month: normalizedMonth.month(), day: ctrlValue.day(),
-        });
+    public chosenMonthHandler(normalizedMonth: moment.Moment, datepicker: MatDatepicker<moment.Moment>): void {
+        const control = this.form.controls[this.inputId];
+
+        const ctrlValue = control.value || moment();
+        ctrlValue.month(normalizedMonth.month());
+        control.setValue(ctrlValue);
         datepicker.close();
-        this.dateChange.emit(this._date);
     }
 
-    @Input()
-    public get date(): moment.Moment {
-        return this._date;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    public set date(value: moment.Moment) {
-        this._date = value;
-        this.dateChange.emit(value);
+    public onChange(): void {
+        const value = this.form.controls[this.inputId].value;
+        const emitValue = moment.isMoment(value) ? value : null;
+        this.dateChange.emit(emitValue);
     }
 }

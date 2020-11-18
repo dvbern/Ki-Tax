@@ -474,29 +474,11 @@ export class EditInstitutionComponent implements OnInit {
         return '';
     }
 
-    public chosenYearHandler(externalClient: TSInstitutionExternalClient, normalizedYear: moment.Moment): void {
-        let ctrlValue = externalClient.gueltigkeit.gueltigAb;
-        if (EbeguUtil.isNullOrUndefined(ctrlValue)) {
-            ctrlValue = DateUtil.localDateToMoment('2000-01-01');
-        }
-        externalClient.gueltigkeit.gueltigAb = ctrlValue.set({year: normalizedYear.year()});
+    public dateAbChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
+        assignedClient.gueltigkeit.gueltigAb = $event ? $event.startOf('month') : null;
     }
 
-    public chosenMonthHandler(
-        externalClient: TSInstitutionExternalClient,
-        normalizedMonth: moment.Moment,
-        datepicker?: any,
-    ): void {
-        const ctrlValue = externalClient.gueltigkeit.gueltigAb;
-        externalClient.gueltigkeit.gueltigAb = ctrlValue.set({month: normalizedMonth.month()});
-        datepicker.close();
-    }
-
-    public dateAbChange($event: moment.Moment, assignedClient: TSInstitutionExternalClient): void {
-        assignedClient.gueltigkeit.gueltigAb = $event.startOf('month');
-    }
-
-    public dateBisChange($event: moment.Moment, assignedClient: TSInstitutionExternalClient): void {
-        assignedClient.gueltigkeit.gueltigBis = $event.endOf('month');
+    public dateBisChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
+        assignedClient.gueltigkeit.gueltigBis = $event ? $event.endOf('month') : null;
     }
 }
