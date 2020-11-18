@@ -1318,7 +1318,7 @@
                                     <th translate>RUECKFORDERUNG_ZAHLUNGEN_AUSGELOEST</th>
                                 </tr>
                                 <tr *ngFor="let zahlung of rueckforderungZahlungenList">
-                                    <td>{{zahlung.datumErstellt.format('L LTS')}}</td>
+                                    <td>{{zahlung.datumErstellt?.format('L LTS')}}</td>
                                     <td>{{zahlung.stufe | translate}}</td>
                                     <td>{{zahlung.betrag}}</td>
                                     <td>{{(zahlung.ausgeloest ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>

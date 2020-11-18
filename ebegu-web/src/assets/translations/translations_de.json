@@ -2172,6 +2172,7 @@
     "RUECKFORDERUNG_BESCHWERDE_SPEICHERN": "Beschwerde speichern",
     "RUECKFORDERUNG_BESCHWERDE_BEARBEITEN": "Beschwerde bearbeiten",
     "NOTVERORDNUNG_BESCHWERDE": "Beschwerde",
+    "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Beschwerde",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Beschwerde Dokument(e)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

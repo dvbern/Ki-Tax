@@ -280,6 +280,15 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         rueckforderungZahlungStufe2.ausgeloest =
             EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungAusbezahltAm);
         this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe2);
+        if (EbeguUtil.isNullOrUndefined(rueckfordeungFormular.beschwerdeBetrag)) {
+            return;
+        }
+        const beschwerdeZahlung = new TSRueckforderungZahlung();
+        beschwerdeZahlung.betrag = rueckfordeungFormular.beschwerdeBetrag;
+        beschwerdeZahlung.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE';
+        beschwerdeZahlung.ausgeloest =
+            EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.beschwerdeAusbezahltAm);
+        this.rueckforderungZahlungenList.push(beschwerdeZahlung);
 
     }
 
