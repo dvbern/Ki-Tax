@@ -115,7 +115,7 @@ import {DVSTResetSearch} from './directive/dv-st-reset-search/dv-st-reset-search
 import {DVSuppressFormSubmitOnEnter} from './directive/dv-suppress-form-submit-on-enter/dv-suppress-form-submit-on-enter';
 import {DVTimepicker} from './directive/dv-timepicker/dv-timepicker';
 import {DVTrimEmpty} from './directive/dv-trim-empty/dv-trim-empty';
-import {DVUserselect} from './directive/dv-userselect/dv-userselect';
+import {DvUserSelectConfig} from './directive/dv-userselect/dv-userselect';
 import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {ERRORS_JS_MODULE} from './errors/errors';
@@ -247,7 +247,6 @@ export const CORE_JS_MODULE = angular
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
     .directive('dvValueinput', DVValueinput.factory())
-    .directive('dvUserselect', DVUserselect.factory())
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
     .directive('dvNavigation', DVNavigation.factory())
     .directive('dvLoading', DVLoading.factory())
@@ -284,6 +283,7 @@ export const CORE_JS_MODULE = angular
     .component('dvHomeIcon', new DvHomeIconComponentConfig())
     .component('dvSkiplinks', new DvSkiplinksComponentConfig())
     .component('dvCountdown', new DvCountdownComponentConfig())
+    .component('dvUserselect', new DvUserSelectConfig())
     .component('dvBisher', new DvBisherComponentConfig())
     .component('dvDokumenteList', new DVDokumenteListConfig())
     .component('dvAntragList', new DVAntragListConfig())
@@ -303,7 +303,6 @@ export const CORE_JS_MODULE = angular
     .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
-    .directive('newUserSelectDirective', downgradeComponent({component: NewUserSelectDirective}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)

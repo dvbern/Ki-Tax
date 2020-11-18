@@ -23,7 +23,6 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
-import {NewUserSelectDirective} from './new-antrag-list/new-user-select.directive';
 import {WindowRef} from './service/windowRef.service';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
@@ -52,13 +51,9 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
         WindowRef,
     ],
     declarations: [
-        NewUserSelectDirective,
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
         // This module should be used only to provide services
-    ],
-    exports: [
-        NewUserSelectDirective,
-    ],
+    ]
 })
 export class CoreModule {
 

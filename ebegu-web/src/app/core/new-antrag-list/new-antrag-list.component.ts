@@ -17,6 +17,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
+import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {LogFactory} from '../logging/LogFactory';
@@ -218,13 +219,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         this.loadData();
     }
 
-    public filterVerantwortlicheTS(verantwortliche: string): void {
-        this.filterPredicate.verantwortlicherTS = verantwortliche;
+    public filterVerantwortlicheTS(verantwortliche: TSBenutzerNoDetails): void {
+        this.filterPredicate.verantwortlicherTS = verantwortliche ? verantwortliche.getFullName() : null;
         this.loadData();
     }
 
-    public filterVerantwortlicheBG(verantwortliche: string): void {
-        this.filterPredicate.verantwortlicherBG = verantwortliche;
+    public filterVerantwortlicheBG(verantwortliche: TSBenutzerNoDetails): void {
+        this.filterPredicate.verantwortlicherBG = verantwortliche ? verantwortliche.getFullName() : null;
         this.loadData();
     }
 
