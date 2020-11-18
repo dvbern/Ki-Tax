@@ -264,7 +264,7 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Column(nullable = true)
 	private String beschwerdeBemerkung;
 
-	@Column(name = "beschwerde_ausbezahlt_am", nullable = true)
+	@Column(nullable = true)
 	@Nullable
 	private LocalDateTime beschwerdeAusbezahltAm;
 
@@ -657,8 +657,7 @@ public class RueckforderungFormular extends AbstractEntity {
 		return korrespondenzSprache;
 	}
 
-	@Nonnull
-	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
+	public void setKorrespondenzSprache(@Nonnull Sprache korrespondenzSprache) {
 		this.korrespondenzSprache = korrespondenzSprache;
 	}
 
@@ -668,6 +667,41 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setUncheckedDocuments(boolean uncheckedDocuments) {
 		this.uncheckedDocuments = uncheckedDocuments;
+	}
+
+	@Nullable
+	public BigDecimal getBeschwerdeBetrag() {
+		return beschwerdeBetrag;
+	}
+
+	public void setBeschwerdeBetrag(@Nullable BigDecimal beschwerdeBetrag) {
+		this.beschwerdeBetrag = beschwerdeBetrag;
+	}
+
+	@Nullable
+	public String getBeschwerdeBemerkung() {
+		return beschwerdeBemerkung;
+	}
+
+	public void setBeschwerdeBemerkung(@Nullable String beschwerdeBemerkung) {
+		this.beschwerdeBemerkung = beschwerdeBemerkung;
+	}
+
+	@Nullable
+	public LocalDateTime getBeschwerdeAusbezahltAm() {
+		return beschwerdeAusbezahltAm;
+	}
+
+	public void setBeschwerdeAusbezahltAm(@Nullable LocalDateTime beschwerdeAusbezahltAm) {
+		this.beschwerdeAusbezahltAm = beschwerdeAusbezahltAm;
+	}
+
+	public boolean isBeschwerdeZahlungJetztAusgeloest() {
+		return beschwerdeZahlungJetztAusgeloest;
+	}
+
+	public void setBeschwerdeZahlungJetztAusgeloest(boolean beschwerdeZahlungJetztAusgeloest) {
+		this.beschwerdeZahlungJetztAusgeloest = beschwerdeZahlungJetztAusgeloest;
 	}
 
 	@Override
@@ -830,40 +864,5 @@ public class RueckforderungFormular extends AbstractEntity {
 		return getCoronaErwerbsersatzBeantragt() == null
 			|| !getCoronaErwerbsersatzBeantragt()
 			|| (getCoronaErwerbsersatzBeantragt() && getCoronaErwerbsersatzDefinitivVerfuegt() != null && getCoronaErwerbsersatzDefinitivVerfuegt());
-	}
-
-	@Nullable
-	public BigDecimal getBeschwerdeBetrag() {
-		return beschwerdeBetrag;
-	}
-
-	public void setBeschwerdeBetrag(@Nullable BigDecimal beschwerdeBetrag) {
-		this.beschwerdeBetrag = beschwerdeBetrag;
-	}
-
-	@Nullable
-	public String getBeschwerdeBemerkung() {
-		return beschwerdeBemerkung;
-	}
-
-	public void setBeschwerdeBemerkung(@Nullable String beschwerdeBemerkung) {
-		this.beschwerdeBemerkung = beschwerdeBemerkung;
-	}
-
-	@Nullable
-	public LocalDateTime getBeschwerdeAusbezahltAm() {
-		return beschwerdeAusbezahltAm;
-	}
-
-	public void setBeschwerdeAusbezahltAm(@Nullable LocalDateTime beschwerdeAusbezahltAm) {
-		this.beschwerdeAusbezahltAm = beschwerdeAusbezahltAm;
-	}
-
-	public boolean isBeschwerdeZahlungJetztAusgeloest() {
-		return beschwerdeZahlungJetztAusgeloest;
-	}
-
-	public void setBeschwerdeZahlungJetztAusgeloest(boolean beschwerdeZahlungJetztAusgeloest) {
-		this.beschwerdeZahlungJetztAusgeloest = beschwerdeZahlungJetztAusgeloest;
 	}
 }
