@@ -17,7 +17,7 @@
 
 import {Component, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
     getTSModulTagesschuleIntervallValues,
     TSModulTagesschuleIntervall
@@ -32,7 +32,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 })
 export class ModulTagesschuleDialogComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public noDaySelected: boolean = false;

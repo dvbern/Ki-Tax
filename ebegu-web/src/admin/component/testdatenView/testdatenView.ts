@@ -14,7 +14,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';

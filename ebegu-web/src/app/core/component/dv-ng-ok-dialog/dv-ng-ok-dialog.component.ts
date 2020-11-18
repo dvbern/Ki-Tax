@@ -14,7 +14,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 /**
  * This component shows a Dialog with a title and an OK-Button. Nothing is returned and nothing is executed
