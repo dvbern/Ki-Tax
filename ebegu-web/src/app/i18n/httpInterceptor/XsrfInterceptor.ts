@@ -26,12 +26,14 @@ import {Observable} from 'rxjs';
 @Injectable()
 export class XsrfInterceptor implements HttpInterceptor {
 
-    public constructor(private tokenExtractor: HttpXsrfTokenExtractor) {
+    public constructor(
+        private readonly tokenExtractor: HttpXsrfTokenExtractor
+    ) {
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let requestToForward = req;
-        const token = this.tokenExtractor.getToken() as string;
+        const token = this.tokenExtractor.getToken();
         if (token !== null) {
             requestToForward = req.clone({ setHeaders: { 'X-XSRF-TOKEN': token } });
         }
