@@ -14,7 +14,7 @@
  */
 
 import {Component} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {KiBonGuidedTourService} from '../../app/kibonTour/service/KiBonGuidedTourService';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';

@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
@@ -45,7 +45,7 @@ import {UploadRS} from '../../core/service/uploadRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GemeindeTsKonfigComponent implements OnInit {
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: false }) public form: NgForm;
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;

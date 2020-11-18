@@ -14,7 +14,7 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MAT_DATE_LOCALE} from '@angular/material';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
