@@ -21,9 +21,13 @@
 
     <div class="col-md-12 col-md-offset-1">
         <table class="ebegu-table">
+            <thead>
             <tr>
                 <th colspan="3"><h2 class="local-login-h2">Allgemeine Rollen</h2></th>
             </tr>
+            </thead>
+
+            <tbody>
 
             <tr [hidden]="!devMode">
                 <td>Superadmin</td>
@@ -344,6 +348,7 @@
                          (click)="logIn(juristParisLondon)"></div>
                 </td>
             </tr>
+            </tbody>
         </table>
     </div>
 </div>

@@ -15,35 +15,36 @@
 
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
-require('zone.js/dist/zone-testing');
-// zone-testing muss als 1. importiert werden. Danke require Syntax ändert IntelliJ die Reihenfolge nicht wenn man neu
+// tslint:disable-next-line:ordered-imports no-import-side-effect
+import 'zone.js/dist/zone-testing';
+// AngularJs nach jQuery
 // formatiert
 require('jquery');
-require('rxjs');
-// AngularJs nach jQuery
+// zone-testing muss als 1. importiert werden. Danke require Syntax ändert IntelliJ die Reihenfolge nicht wenn man neu
 require('angular');
+require('rxjs');
 // AngularJS Mocks nach AngularJS
 require('angular-mocks');
 
 import {getTestBed} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 // tslint:disable:no-import-side-effect
-import '@uirouter/angular-hybrid';
-import 'angular-animate';
-import 'angular-aria';
-import 'angular-cookies';
-import 'angular-hotkeys';
-import 'angular-i18n/angular-locale_de-ch';
-import 'angular-material';
-import 'angular-messages';
-import 'angular-moment';
-import 'angular-sanitize';
-import 'angular-smart-table';
-import 'angular-translate';
-import 'angular-translate-loader-static-files';
-import 'angular-ui-bootstrap';
-import 'angular-unsavedchanges';
-import 'ng-file-upload';
+require('@uirouter/angular-hybrid');
+require('angular-animate');
+require('angular-aria');
+require('angular-cookies');
+require('angular-hotkeys');
+require('angular-i18n/angular-locale_de-ch');
+require('angular-material');
+require('angular-messages');
+require('angular-moment');
+require('angular-sanitize');
+require('angular-smart-table');
+require('angular-translate');
+require('angular-translate-loader-static-files');
+require('angular-ui-bootstrap');
+require('angular-unsavedchanges');
+require('ng-file-upload');
 // tslint:enable:no-import-side-effect
 
 // First, initialize the Angular testing environment.

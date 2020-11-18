@@ -24,7 +24,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -70,7 +70,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         return this._rueckforderungZahlungenList;
     }
 
-    @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(NgForm, { static: false }) private readonly form: NgForm;
 
     private einreicheFristPrivatDefault: moment.Moment;
     private einreicheFristOeffentlich: moment.Moment;

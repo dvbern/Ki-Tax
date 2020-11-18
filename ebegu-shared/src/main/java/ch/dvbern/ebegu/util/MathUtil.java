@@ -421,6 +421,16 @@ public enum MathUtil {
 	}
 
 	/**
+	 * Rundet die eingegebene Zahl auf den naechst hoeheren 5er Schritt
+	 * Beispiel
+	 * 0.1 - 5.0 -> 5.0
+	 * 5.1 - 10.0 -> 10.0
+	 */
+	public static BigDecimal roundToFivesUp(BigDecimal value) {
+		return GANZZAHL.from(Math.ceil(value.doubleValue() / 5) * 5);
+	}
+
+	/**
 	 * rundet auf die naechste Ganzzahl groesser gleich 0
 	 */
 	public static BigDecimal positiveNonNullAndRound(@Nullable BigDecimal value) {
