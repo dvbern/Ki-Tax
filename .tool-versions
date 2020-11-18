@@ -1,2 +1,2 @@
-java openjdk-11.0.2
-maven 3.3.9
+java adopt-openjdk-11.0.9
+maven 3.6.3
