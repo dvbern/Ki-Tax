@@ -8,7 +8,7 @@ pipeline {
 	}
 	options {
 		// Only keep the most recent build
-		buildDiscarder(logRotator(numToKeepStr: "1"))
+		buildDiscarder(logRotator(numToKeepStr: "10"))
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
 		timeout(time: 2, unit: 'HOURS')
 		disableConcurrentBuilds()
