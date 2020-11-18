@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild} from '@angular/core';
-import {MatPaginator, MatSelectChange, MatTable, MatTableDataSource, PageEvent} from '@angular/material';
+import {MatPaginator, MatSelectChange, MatTable, MatTableDataSource, PageEvent, Sort} from '@angular/material';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -69,6 +69,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         fallNummer?: string,
         gemeinde?: string,
         familienName?: string,
+        kinder?: string,
         antragTyp?: string,
         gesuchsperiodeString?: string,
         eingangsdatum?: string,
@@ -78,10 +79,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         dokumenteHochgeladen?: boolean,
         angebote?: string,
         institutionen?: string,
-        verantwortlicherBG?: string,
         verantwortlicherTS?: string,
+        verantwortlicherBG?: string,
         verantwortlicherGemeinde?: string,
-        kinder?: string,
     } = {};
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -89,6 +89,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     public totalItems: number = 0;
     public page: number = 0;
     public pageSize: any = 10;
+    private sort: {
+        predicate?: string,
+        reverse?: boolean
+    } = {};
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -150,6 +154,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
             search: {
                 predicateObject: this.filterPredicate
             },
+            sort: this.sort
         };
         this.searchRS.searchAntraege(body).then((result: TSAntragSearchresultDTO) => {
             const displayedFaelle: Partial<TSAntragDTO>[] =
@@ -271,4 +276,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         return this.authServiceRS.hasMandantAngebotTS();
     }
 
+    public sortData(sortEvent: Sort): void {
+        this.sort.predicate = sortEvent.direction.length > 0 ? sortEvent.active : null;
+        this.sort.reverse = sortEvent.direction === 'asc';
+        this.loadData();
+    }
 }

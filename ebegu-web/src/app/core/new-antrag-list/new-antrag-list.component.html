@@ -1,72 +1,72 @@
 <div class="mat-elevation-z0">
-    <table mat-table [dataSource]="datasource">
+    <table mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
 
         <ng-container matColumnDef="fallNummer">
-            <th mat-header-cell *matHeaderCellDef translate>FALL</th>
+            <th mat-sort-header="fallNummer" mat-header-cell *matHeaderCellDef translate>FALL</th>
             <td mat-cell *matCellDef="let element">{{element.fallNummer}}</td>
         </ng-container>
 
         <ng-container matColumnDef="gemeinde">
-            <th mat-header-cell *matHeaderCellDef translate>GEMEINDE</th>
+            <th mat-sort-header="gemeinde" mat-header-cell *matHeaderCellDef translate>GEMEINDE</th>
             <td mat-cell *matCellDef="let element">{{element.gemeinde}}</td>
         </ng-container>
 
         <ng-container matColumnDef="familienName">
-            <th mat-header-cell *matHeaderCellDef translate>FAMILIE</th>
+            <th mat-sort-header="familienName" mat-header-cell *matHeaderCellDef translate>FAMILIE</th>
             <td mat-cell *matCellDef="let element">{{element.familienName}}</td>
         </ng-container>
 
         <ng-container matColumnDef="kinder">
-            <th mat-header-cell *matHeaderCellDef translate>KINDER</th>
+            <th mat-sort-header="kinder" mat-header-cell *matHeaderCellDef translate>KINDER</th>
             <td mat-cell *matCellDef="let element">{{element.kinder}}</td>
         </ng-container>
 
         <ng-container matColumnDef="antragTyp">
-            <th mat-header-cell *matHeaderCellDef translate>TYP</th>
+            <th mat-sort-header="antragTyp" mat-header-cell *matHeaderCellDef translate>TYP</th>
             <td mat-cell *matCellDef="let element">{{element.type}}</td>
         </ng-container>
 
         <ng-container matColumnDef="periode">
-            <th mat-header-cell *matHeaderCellDef translate>PERIODE</th>
+            <th mat-sort-header="gesuchsperiodeString" mat-header-cell *matHeaderCellDef translate>PERIODE</th>
             <td mat-cell *matCellDef="let element">{{element.periode}}</td>
         </ng-container>
 
         <ng-container matColumnDef="aenderungsdatum">
-            <th mat-header-cell *matHeaderCellDef translate>GEANDERT</th>
+            <th mat-sort-header="aenderungsdatum" mat-header-cell *matHeaderCellDef translate>GEANDERT</th>
             <td mat-cell *matCellDef="let element">{{element.aenderungsdatum.format('DD.MM.YYYY')}}</td>
         </ng-container>
 
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef translate>STATUS</th>
+            <th mat-sort-header="status" mat-header-cell *matHeaderCellDef translate>STATUS</th>
             <td mat-cell *matCellDef="let element">{{element.status | translate}}</td>
         </ng-container>
 
         <ng-container matColumnDef="dokumenteHochgeladen">
-            <th mat-header-cell *matHeaderCellDef translate>DOKUMENTE_HOCHGELADEN_KURZ</th>
+            <th mat-sort-header="dokumenteHochgeladen" mat-header-cell *matHeaderCellDef translate>DOKUMENTE_HOCHGELADEN_KURZ</th>
             <td mat-cell *matCellDef="let element" translate>{{element.dokumenteHochgeladen != null ?
                 (element.dokumenteHochgeladen ? 'LABEL_JA' : 'LABEL_NEIN') :
                 ''}}</td>
         </ng-container>
 
         <ng-container matColumnDef="angebot">
-            <th mat-header-cell *matHeaderCellDef translate>ANGEBOT</th>
+            <th mat-sort-header="angebote" mat-header-cell *matHeaderCellDef translate>ANGEBOT</th>
             <td mat-cell *matCellDef="let element">
                 <span *ngFor="let angebot of element.angebote; index as i">{{angebot | translate}}{{i
                 < element.angebote.length - 1 ? ',' : ''}}</span></td>
         </ng-container>
 
         <ng-container matColumnDef="institution">
-            <th mat-header-cell *matHeaderCellDef translate>INSTITUTION</th>
+            <th mat-sort-header="institutionen" mat-header-cell *matHeaderCellDef translate>INSTITUTION</th>
             <td mat-cell *matCellDef="let element">{{element.institutionen}}</td>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlicheTS">
-            <th mat-header-cell *matHeaderCellDef translate><i class="fa fa-graduation-cap"></i>VERANTWORTLICH</th>
+            <th mat-sort-header="verantwortlicherTS" mat-header-cell *matHeaderCellDef translate><i class="fa fa-graduation-cap"></i>VERANTWORTLICH</th>
             <td mat-cell *matCellDef="let element">{{element.verantwortlicheTS}}</td>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlicheBG">
-            <th mat-header-cell *matHeaderCellDef translate><i class="fa fa-gift"></i>VERANTWORTLICH</th>
+            <th mat-sort-header="verantwortlicherBG" mat-header-cell *matHeaderCellDef translate><i class="fa fa-gift"></i>VERANTWORTLICH</th>
             <td mat-cell *matCellDef="let element">{{element.verantwortlicheBG}}</td>
         </ng-container>
 
