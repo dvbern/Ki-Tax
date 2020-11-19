@@ -1461,24 +1461,10 @@
             <!-- Beschwerde -->
             <div class="col-md-8 col-md-offset-2"
                  *ngIf="rueckforderungFormular.status === 'VERFUEGT'">
-                <div class="row" id="beschwerden">
+                <div class="row" id="beschwerden" *ngIf="showBeschwerde || isKantonBenutzer()">
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">NOTVERORDNUNG_BESCHWERDE</h2>
                         <hr class="header"/>
-                        <button type="button"
-                                class="dv-btn cancel-button beschwerde-button"
-                                *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && !beschwerdeAlreadyExist"
-                                (click)="beschwerdeBearbeiten();"
-                                [disabled]="showBeschwerde">
-                            <span translate>RUECKFORDERUNG_BESCHWERDE_ERFASSEN</span>
-                        </button>
-                        <button type="button"
-                                class="dv-btn cancel-button beschwerde-button"
-                                *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && beschwerdeAlreadyExist"
-                                (click)="beschwerdeBearbeiten();"
-                                [disabled]="!beschwerdeReadOnly">
-                            <span translate>RUECKFORDERUNG_BESCHWERDE_BEARBEITEN</span>
-                        </button>
                     </div>
                 </div>
                 <div class="row" *ngIf="showBeschwerde">
@@ -1534,6 +1520,22 @@
                             [readOnlyDelete]="beschwerdeReadOnly"
                         >
                         </dv-file-upload>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button"
+                                class="dv-btn cancel-button beschwerde-button"
+                                *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && !beschwerdeAlreadyExist && !showBeschwerde"
+                                (click)="beschwerdeBearbeiten();">
+                            <span translate>RUECKFORDERUNG_BESCHWERDE_ERFASSEN</span>
+                        </button>
+                        <button type="button"
+                                class="dv-btn cancel-button beschwerde-button"
+                                *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && beschwerdeAlreadyExist && beschwerdeReadOnly"
+                                (click)="beschwerdeBearbeiten();">
+                            <span translate>RUECKFORDERUNG_BESCHWERDE_BEARBEITEN</span>
+                        </button>
                     </div>
                 </div>
                 <div class="row" *ngIf="showBeschwerde">
