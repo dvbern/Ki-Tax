@@ -1,6 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild} from '@angular/core';
 import {MatPaginator, MatSelectChange, MatTable, MatTableDataSource, PageEvent, Sort} from '@angular/material';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -38,7 +38,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     @ViewChild(MatTable) private table: MatTable<Partial<TSAntragDTO>>;
 
     public gesuchsperiodenList: Array<string> = [];
-    public institutionenList: Array<TSInstitution> = [];
+    private allInstitutionen: TSInstitution[];
+    public institutionenList: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
     public gemeindenList: Array<TSGemeinde> = [];
 
     public datasource: MatTableDataSource<Partial<TSAntragDTO>>;
@@ -55,14 +56,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         'angebot',
         'institution',
         'verantwortlicheTS',
-        'verantwortlicheBG'
+        'verantwortlicheBG',
     ];
 
     public filterColumns = {
         fallNummer: {
             type: 'input',
-            callback: this.filterFall
-        }
+            callback: this.filterFall,
+        },
     };
 
     private filterPredicate: {
@@ -113,7 +114,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
 
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
-            this.institutionenList = response;
+            this.allInstitutionen = response;
+            this.institutionenList.next(this.allInstitutionen);
         });
     }
 
@@ -152,9 +154,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
                 start: this.page * this.pageSize,
             },
             search: {
-                predicateObject: this.filterPredicate
+                predicateObject: this.filterPredicate,
             },
-            sort: this.sort
+            sort: this.sort,
         };
         this.searchRS.searchAntraege(body).then((result: TSAntragSearchresultDTO) => {
             const displayedFaelle: Partial<TSAntragDTO>[] =
@@ -172,7 +174,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
                         angebote: antragDto.angebote,
                         institutionen: antragDto.institutionen,
                         verantwortlicheTS: antragDto.verantwortlicherTS,
-                        verantwortlicheBG: antragDto.verantwortlicherBG
+                        verantwortlicheBG: antragDto.verantwortlicherBG,
                     };
                 });
             this.datasource.data = displayedFaelle;
@@ -250,6 +252,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     }
 
     public filterInstitution(query: string): void {
+        // filter the institutitonen list for the autocomplete
+        this.institutionenList.next(
+            query ?
+                this.allInstitutionen.filter(institution => institution.name.toLocaleLowerCase()
+                    .includes(query.toLocaleLowerCase())) :
+                this.allInstitutionen,
+        );
         this.filterPredicate.institutionen = query.length > 0 ? query : null;
         this.loadData();
     }
@@ -262,7 +271,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
      * Alle TSAntragStatus fuer das Filterdropdown
      */
     public getAntragStatus(): TSAntragStatus[] {
-            return getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
+        return getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
     }
 
     /**

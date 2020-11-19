@@ -180,8 +180,12 @@
         <ng-container matColumnDef="institutionen-filter">
             <mat-header-cell  *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <input matInput (keyup)="filterInstitution($event.target.value)">
+                    <input matInput (keyup)="filterInstitution($event.target.value)" [matAutocomplete]="auto">
                 </mat-form-field>
+
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="filterInstitution($event.option.value)">
+                    <mat-option *ngFor="let institution of institutionenList | async" [value]="institution.name">{{institution.name}}</mat-option>
+                </mat-autocomplete>
             </mat-header-cell>
         </ng-container>
 
