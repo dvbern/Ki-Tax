@@ -29,8 +29,8 @@ let nextId = 0;
 })
 export class DvMonthPickerComponent {
 
-    @Input()
-    public date?: moment.Moment;
+    @Input() public date?: moment.Moment;
+    @Input() public readonly required: boolean = false;
 
     @Output()
     public readonly dateChange = new EventEmitter<moment.Moment | null>();

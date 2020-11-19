@@ -245,7 +245,8 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigAb"
-                                                     (dateChange)="dateAbChange($event, assignedClient)">
+                                                     (dateChange)="dateAbChange($event, assignedClient)"
+                                                     [required]="true">
                                     </dv-month-picker>
                                 </div>
                                 <div class="col-sm-4">
