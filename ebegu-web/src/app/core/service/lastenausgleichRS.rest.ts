@@ -80,6 +80,17 @@ export class LastenausgleichRS {
             });
     }
 
+    public getZemisExcel(jahr: number): IPromise<TSDownloadFile> {
+        return this.http.get(`${this.serviceURL}/excel`,
+            {
+                params: {
+                    jahr,
+                }})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
     public removeLastenausgleich(lastenausgleichId: string): IPromise<any> {
         return this.http.delete(`${this.serviceURL}/${encodeURIComponent(lastenausgleichId)}`)
             .then(value => {
