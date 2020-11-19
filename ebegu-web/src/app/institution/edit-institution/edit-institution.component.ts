@@ -443,7 +443,7 @@ export class EditInstitutionComponent implements OnInit {
         if (index > -1) {
             this.externalClients.availableClients.splice(index, 1);
         }
-        this.externalClients.assignedClients.push(new TSInstitutionExternalClient(availableClient));
+        this.externalClients.assignedClients.unshift(new TSInstitutionExternalClient(availableClient));
     }
 
     public unassignClient(assignedClient: TSInstitutionExternalClient): void {
