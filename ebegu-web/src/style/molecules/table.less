@@ -82,16 +82,20 @@ td, th {
             background: #fafafa;
             color: @contrast-darkest;
         }
+
         &:focus {
             outline: 2px solid @contrast-darkest;
             outline-offset: 0;
         }
+
         &.disabled-row, &.disabled-row:hover {
             background: @contrast;
             cursor: default;
+
             &:focus {
                 outline: none;
             }
+
             & > td {
                 border-color: @contrast-dark;
             }
@@ -115,9 +119,11 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
             text-overflow: ellipsis;
             vertical-align: middle;
             white-space: nowrap;
+
             .dvb-loading-button {
                 text-align: end;
             }
+
             &.empty-table {
                 .ebeguItalic();
             }
@@ -136,12 +142,14 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
             padding: 0 0.25rem 0;
             text-overflow: ellipsis;
             vertical-align: middle;
+
             span {
                 .ebeguP();
                 line-height: 0;
             }
         }
     }
+
     & > tr:first-child {
         & > th, & > th:empty {
             .ebeguLabel();
@@ -153,20 +161,25 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
             height: 4rem;
             padding: 0 0.8rem 0;
             vertical-align: middle;
+
             span {
                 .ebeguP();
                 line-height: 0;
             }
         }
+
         & > th:first-child {
             padding-left: 0;
         }
+
         .text-right {
             text-align: right;
         }
     }
+
     & > mat-header-row {
         min-height: auto;
+
         &:first-of-type.mat-header-row {
             border-bottom-color: black;
             border-top: 1px solid black;
@@ -175,7 +188,8 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
         & > mat-header-cell:first-of-type {
             padding-left: 0;
         }
-        & > mat-header-cell {
+
+        &:first-of-type > mat-header-cell {
             .ebeguLabel();
             color: black;
             height: 4rem;
@@ -183,6 +197,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
             padding: 0 0.25rem 0;
             text-overflow: ellipsis;
             vertical-align: middle;
+
             div > button > span {
                 color: black;
                 font-size: 1.4rem;
@@ -192,7 +207,45 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
                 text-align: left;
             }
         }
+
+        &:nth-of-type(2) > mat-header-cell {
+            .ebeguLabel();
+            color: black;
+            height: 5rem;
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+
+            & > mat-form-field {
+                height: 5rem;
+
+                & > .mat-form-field-wrapper {
+                    & > div.mat-form-field-flex {
+
+                        height: 5rem;
+                        align-items: center;
+
+                        & > .mat-form-field-infix {
+                            border: 0;
+
+                            & > input {
+                                height: 30px;
+                                background: lightgrey;
+                                font-size: 1.6rem;
+                                font-weight: 700;
+                                caret-color: black;
+                            }
+                        }
+                    }
+                    & > div.mat-form-field-underline {
+                        display: none;
+                    }
+                }
+            }
+        }
     }
+
     & > mat-row {
         & > mat-cell {
 
@@ -204,6 +257,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
     table {
         min-width: 100%;
     }
+
     .table > tbody {
         & > tr, & > tr:first-child {
             &:hover {
@@ -211,6 +265,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
             }
         }
     }
+
     table, .table > tbody, .table > thead, .table > thead:first-child {
         & > tr, & > tr:first-child {
             & > td {
@@ -223,6 +278,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
                 padding: 0 0.8rem 0;
                 vertical-align: middle;
             }
+
             & > th, & > th:empty {
                 .ebeguH3();
                 border: 1px solid @contrast-lightest;
@@ -234,6 +290,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
                 padding: 0 0.8rem 0;
                 position: relative;
                 vertical-align: middle;
+
                 span {
                     .ebeguP();
                     line-height: 0;
