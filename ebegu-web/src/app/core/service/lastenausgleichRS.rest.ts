@@ -81,7 +81,7 @@ export class LastenausgleichRS {
     }
 
     public getZemisExcel(jahr: number): IPromise<TSDownloadFile> {
-        return this.http.get(`${this.serviceURL}/excel`,
+        return this.http.get(`${this.serviceURL}/zemisexcel`,
             {
                 params: {
                     jahr,

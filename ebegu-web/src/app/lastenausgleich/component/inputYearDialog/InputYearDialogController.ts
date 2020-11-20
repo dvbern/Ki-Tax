@@ -15,14 +15,13 @@
 
 import {IFormController, IPromise} from 'angular';
 import IDialogService = angular.material.IDialogService;
-import ITranslateService = angular.translate.ITranslateService;
 
 export class InputYearDialogController {
 
     public static $inject = ['$mdDialog', '$translate'];
 
     public title: string;
-    public year: number = 2020;
+    public jahr: number;
     public form: IFormController;
 
     public constructor(
@@ -39,7 +38,7 @@ export class InputYearDialogController {
 
     public ok(): void {
         if (this.form.$valid) {
-            this.$mdDialog.hide(this.year);
+            this.$mdDialog.hide(this.jahr);
         }
     }
 }

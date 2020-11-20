@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichBerechnungService;
 import ch.dvbern.ebegu.services.LastenausgleichService;
 import ch.dvbern.ebegu.util.Constants;
@@ -82,6 +83,9 @@ public class LastenausgleichResource {
 
 	@Inject
 	private ReportLastenausgleichBerechnungService reportService;
+
+	@Inject
+	private ReportKinderMitZemisNummerService zemisNummerService;
 
 	@Inject
 	private DownloadResource downloadResource;
@@ -161,6 +165,31 @@ public class LastenausgleichResource {
 		String lastenausgleichId = converter.toEntityId(jaxId);
 
 		UploadFileInfo uploadFileInfo = reportService.generateCSVReportLastenausgleichKibon(lastenausgleichId);
+		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
+
+		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
+	}
+
+
+	@ApiOperation(value = "Erstellt ein Excel mit allen Kinder des angegebenen Jahres mit einer ZEMIS-Nummer",
+		response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/zemisexcel/")
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getZemisExcel(
+		@QueryParam("jahr") @Nonnull @Valid Integer lastenausgleichJahr,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo)
+		throws ExcelMergeException, EbeguRuntimeException {
+
+		Objects.requireNonNull(lastenausgleichJahr);
+		String ip = downloadResource.getIP(request);
+
+		UploadFileInfo uploadFileInfo = zemisNummerService.generateZemisReport(lastenausgleichJahr, Locale.GERMAN);
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
