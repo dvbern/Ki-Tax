@@ -172,7 +172,7 @@ public class DoppelkitaMitManuellemAnspruchNullTest extends AbstractBGRechnerTes
 		assertResults(kita_1, LocalDate.of(2017, Month.NOVEMBER, 1),
 			0, 0, 0, -1, false);
 		assertResults(kita_2, LocalDate.of(2017, Month.NOVEMBER, 1),
-			30, 60, 30, -1, false);
+			30, 60, 30, 60, false);
 
 		// Die zweite ebenfalls verfuegen
 		betreuungVerfuegen(kita_2);
@@ -188,7 +188,7 @@ public class DoppelkitaMitManuellemAnspruchNullTest extends AbstractBGRechnerTes
 		assertResults(kita_1, LocalDate.of(2017, Month.NOVEMBER, 1),
 			0, 0, 0, -1, false);
 		assertResults(kita_2, LocalDate.of(2017, Month.NOVEMBER, 1),
-			30, 60, 30, -1, false);
+			30, 60, 30, 60, false);
 	}
 
 	private void addBetreuung(int betreuungspensum, @Nonnull LocalDate von, @Nonnull LocalDate bis, @Nonnull InstitutionStammdaten kita) {

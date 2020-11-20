@@ -54,7 +54,7 @@ public class EmptyKitaxRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
-		result.setAnspruchspensumProzent(0);
+		result.setAnspruchZeroAndSaveRestanspruch();
 		result.setVerguenstigungMahlzeitenTotal(BigDecimal.ZERO);
 		// Wir loeschen alle Bemerkungen, die den Zeitraum nach dem Stichtag betreffen
 		input.getParent().getBemerkungenList().clear();

@@ -478,9 +478,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// als Vergleichswert hinzugezogen werden
 		verfuegungPreview.getZeitabschnitte()
 			.forEach(z -> {
-				z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+				z.getBgCalculationResultAsiv().setAnspruchZeroAndSaveRestanspruch();
 				if (z.getBgCalculationResultGemeinde() != null) {
-					z.getBgCalculationResultGemeinde().setAnspruchspensumProzent(0);
+					z.getBgCalculationResultGemeinde().setAnspruchZeroAndSaveRestanspruch();
 				}
 			});
 		verfuegungPreview.setKategorieNichtEintreten(true);
