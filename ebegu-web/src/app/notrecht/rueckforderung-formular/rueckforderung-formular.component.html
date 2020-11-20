@@ -1470,17 +1470,18 @@
                 <div class="row" *ngIf="showBeschwerde">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="long-label"
-                                   for="beschwerdeBetrag_id">
+                            <label class="required long-label"
+                                   for="beschwerde_betrag_id">
                                 {{'RUECKFORDERUNG_BESCHWERDE_BETRAG' | translate}}</label>
-                            <input id="beschwerdeBetrag_id" type="number"
-                                   name="beschwerdeBetrag"
+                            <input id="beschwerde_betrag_id" type="number"
+                                   name="beschwerdeBetragName"
                                    #beschwerdeBetrag="ngModel"
                                    [(ngModel)]="rueckforderungFormular.beschwerdeBetrag"
                                    class="form-control"
-                                   [disabled]="beschwerdeReadOnly">
+                                   [disabled]="beschwerdeReadOnly"
+                                   required>
                             <dv-error-messages [errorObject]="beschwerdeBetrag.errors"
-                                               inputId="beschwerdeBetrag_id">
+                                               inputId="beschwerde_betrag_id">
                             </dv-error-messages>
                         </div>
                     </div>
@@ -1497,7 +1498,7 @@
                                       maxlength="2000"
                                       id="beschwerdeBemerkung_id"
                                       #beschwerdeBemerkung="ngModel"
-                                      name="beschwerdeBemerkung"
+                                      name="beschwerdeBemerkungName"
                                       [(ngModel)]="rueckforderungFormular.beschwerdeBemerkung"
                                       [disabled]="beschwerdeReadOnly">
                         </textarea>
@@ -1509,6 +1510,9 @@
                 </div>
                 <div class="row" *ngIf="showBeschwerde">
                     <div class="col-sm-12">
+                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteBeschwerde">
+                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                        </div>
                         <dv-file-upload
                             (download)="download($event[0],$event[1])"
                             [title]="'RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE'"
@@ -1539,7 +1543,12 @@
                     </div>
                 </div>
                 <div class="row" *ngIf="showBeschwerde">
-                    <div class="col-sm-12 dvb-loading-button">
+                    <div class="col-sm-12 flexbreak">
+                        <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
+                                (click)="abbrechenBeschwerde(rueckforderungFormular);"
+                                [disabled]="beschwerdeReadOnly">
+                            <span translate>LABEL_ABBRECHEN</span>
+                        </button>
                         <button type="button" class="dv-btn" *ngIf="isKantonBenutzer()"
                                 (click)="saveBeschwerde(rueckforderungFormular);"
                                 [disabled]="beschwerdeReadOnly">

@@ -24,7 +24,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -70,7 +70,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         return this._rueckforderungZahlungenList;
     }
 
-    @ViewChild(NgForm, { static: false }) private readonly form: NgForm;
+    @ViewChild(NgForm, {static: false}) private readonly form: NgForm;
 
     private einreicheFristPrivatDefault: moment.Moment;
     private einreicheFristOeffentlich: moment.Moment;
@@ -101,6 +101,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     public showMessageFehlendeDokumenteErwerbsersatz: boolean = false;
     public showMessageFehlendeVerfuegungBetrag: boolean = false;
     public showMessageFehlendeBemerkungen: boolean = false;
+    public showMessageFehlendeDokumenteBeschwerde: boolean = false;
 
     private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
     private _provisorischerBetrag: number;
@@ -1037,16 +1038,37 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     public saveBeschwerde(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.showMessageFehlendeDokumenteBeschwerde = false;
+        if (this.rueckforderungBeschwerdeDokumente.length === 0) {
+            this.showMessageFehlendeDokumenteBeschwerde = true;
+        }
+        if (!this.form.valid || this.showMessageFehlendeDokumenteBeschwerde) {
+            return;
+        }
         this.rueckforderungFormular$ = from(
             this.notrechtRS.saveBeschwerde(rueckforderungFormular).then((response: TSRueckforderungFormular) => {
-                this.showBeschwerde = this.initBeschwerde(response);
-                this.beschwerdeAlreadyExist = this.showBeschwerde;
-                this.beschwerdeReadOnly = true;
+                this.updateBeschwerdeView(response);
                 return response;
             }));
     }
 
     public isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular: TSRueckforderungFormular): boolean {
         return this.isKantonBenutzer() && EbeguUtil.isNullOrUndefined(rueckforderungFormular.beschwerdeAusbezahltAm);
+    }
+
+    public abbrechenBeschwerde(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.showMessageFehlendeDokumenteBeschwerde = false;
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.findRueckforderungFormular(rueckforderungFormular.id).then(
+                (response: TSRueckforderungFormular) => {
+                    this.updateBeschwerdeView(response);
+                    return response;
+                }));
+    }
+
+    private updateBeschwerdeView(rueckforderungFormular: TSRueckforderungFormular): void {
+        this.showBeschwerde = this.initBeschwerde(rueckforderungFormular);
+        this.beschwerdeAlreadyExist = this.showBeschwerde;
+        this.beschwerdeReadOnly = true;
     }
 }
