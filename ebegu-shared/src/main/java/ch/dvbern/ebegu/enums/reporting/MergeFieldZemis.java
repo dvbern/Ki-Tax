@@ -40,6 +40,7 @@ public enum MergeFieldZemis implements MergeFieldProvider {
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	name(new SimpleMergeField<>("name", STRING_CONVERTER)),
 	vorname(new SimpleMergeField<>("vorname", STRING_CONVERTER)),
+	kindId(new SimpleMergeField<>("kindId", STRING_CONVERTER)),
 	geburtsdatum(new SimpleMergeField<>("geburtsdatum", DATE_CONVERTER)),
 	zemisNummer(new SimpleMergeField<>("zemisNummer", STRING_CONVERTER)),
 	keinSelbstbehaltFuerGemeinde(new SimpleMergeField<>("keinSelbstbehaltFuerGemeinde", BOOLEAN_CONVERTER)),
