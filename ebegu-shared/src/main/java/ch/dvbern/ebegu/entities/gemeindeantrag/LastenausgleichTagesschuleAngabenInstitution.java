@@ -137,151 +137,151 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 	}
 
 	@Nonnull
-	public Boolean getLehrbetrieb() {
+	public final Boolean getLehrbetrieb() {
 		return isLehrbetrieb;
 	}
 
-	public void setLehrbetrieb(@Nonnull Boolean lehrbetrieb) {
+	public final void setLehrbetrieb(@Nonnull Boolean lehrbetrieb) {
 		isLehrbetrieb = lehrbetrieb;
 	}
 
 	@Nonnull
-	public BigDecimal getAnzahlEingeschriebeneKinder() {
+	public final BigDecimal getAnzahlEingeschriebeneKinder() {
 		return anzahlEingeschriebeneKinder;
 	}
 
-	public void setAnzahlEingeschriebeneKinder(@Nonnull BigDecimal anzahlEingeschriebeneKinder) {
+	public final void setAnzahlEingeschriebeneKinder(@Nonnull BigDecimal anzahlEingeschriebeneKinder) {
 		this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
 	}
 
 	@Nonnull
-	public BigDecimal getAnzahlEingeschriebeneKinderKindergarten() {
+	public final BigDecimal getAnzahlEingeschriebeneKinderKindergarten() {
 		return anzahlEingeschriebeneKinderKindergarten;
 	}
 
-	public void setAnzahlEingeschriebeneKinderKindergarten(@Nonnull BigDecimal anzahlEingeschriebeneKinderKindergarten) {
+	public final void setAnzahlEingeschriebeneKinderKindergarten(@Nonnull BigDecimal anzahlEingeschriebeneKinderKindergarten) {
 		this.anzahlEingeschriebeneKinderKindergarten = anzahlEingeschriebeneKinderKindergarten;
 	}
 
 	@Nonnull
-	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
+	public final BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
 		return anzahlEingeschriebeneKinderBasisstufe;
 	}
 
-	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nonnull BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
+	public final void setAnzahlEingeschriebeneKinderBasisstufe(@Nonnull BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
 		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
 	}
 
 	@Nonnull
-	public BigDecimal getAnzahlEingeschriebeneKinderPrimarstufe() {
+	public final BigDecimal getAnzahlEingeschriebeneKinderPrimarstufe() {
 		return anzahlEingeschriebeneKinderPrimarstufe;
 	}
 
-	public void setAnzahlEingeschriebeneKinderPrimarstufe(@Nonnull BigDecimal anzahlEingeschriebeneKinderPrimarstufe) {
+	public final void setAnzahlEingeschriebeneKinderPrimarstufe(@Nonnull BigDecimal anzahlEingeschriebeneKinderPrimarstufe) {
 		this.anzahlEingeschriebeneKinderPrimarstufe = anzahlEingeschriebeneKinderPrimarstufe;
 	}
 
 	@Nonnull
-	public BigDecimal getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen() {
+	public final BigDecimal getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen() {
 		return anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 	}
 
-	public void setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(@Nonnull BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen) {
+	public final void setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(@Nonnull BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen) {
 		this.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 	}
 
 	@Nonnull
-	public BigDecimal getDurchschnittKinderProTagFruehbetreuung() {
+	public final BigDecimal getDurchschnittKinderProTagFruehbetreuung() {
 		return durchschnittKinderProTagFruehbetreuung;
 	}
 
-	public void setDurchschnittKinderProTagFruehbetreuung(@Nonnull BigDecimal durchschnittKinderProTagFruehbetreuung) {
+	public final void setDurchschnittKinderProTagFruehbetreuung(@Nonnull BigDecimal durchschnittKinderProTagFruehbetreuung) {
 		this.durchschnittKinderProTagFruehbetreuung = durchschnittKinderProTagFruehbetreuung;
 	}
 
 	@Nonnull
-	public BigDecimal getDurchschnittKinderProTagMittag() {
+	public final BigDecimal getDurchschnittKinderProTagMittag() {
 		return durchschnittKinderProTagMittag;
 	}
 
-	public void setDurchschnittKinderProTagMittag(@Nonnull BigDecimal durchschnittKinderProTagMittag) {
+	public final void setDurchschnittKinderProTagMittag(@Nonnull BigDecimal durchschnittKinderProTagMittag) {
 		this.durchschnittKinderProTagMittag = durchschnittKinderProTagMittag;
 	}
 
 	@Nonnull
-	public BigDecimal getDurchschnittKinderProTagNachmittag1() {
+	public final BigDecimal getDurchschnittKinderProTagNachmittag1() {
 		return durchschnittKinderProTagNachmittag1;
 	}
 
-	public void setDurchschnittKinderProTagNachmittag1(@Nonnull BigDecimal durchschnittKinderProTagNachmittag1) {
+	public final void setDurchschnittKinderProTagNachmittag1(@Nonnull BigDecimal durchschnittKinderProTagNachmittag1) {
 		this.durchschnittKinderProTagNachmittag1 = durchschnittKinderProTagNachmittag1;
 	}
 
 	@Nonnull
-	public BigDecimal getDurchschnittKinderProTagNachmittag2() {
+	public final BigDecimal getDurchschnittKinderProTagNachmittag2() {
 		return durchschnittKinderProTagNachmittag2;
 	}
 
-	public void setDurchschnittKinderProTagNachmittag2(@Nonnull BigDecimal durchschnittKinderProTagNachmittag2) {
+	public final void setDurchschnittKinderProTagNachmittag2(@Nonnull BigDecimal durchschnittKinderProTagNachmittag2) {
 		this.durchschnittKinderProTagNachmittag2 = durchschnittKinderProTagNachmittag2;
 	}
 
 	@Nonnull
-	public Boolean getSchuleAufBasisOrganisatorischesKonzept() {
+	public final Boolean getSchuleAufBasisOrganisatorischesKonzept() {
 		return schuleAufBasisOrganisatorischesKonzept;
 	}
 
-	public void setSchuleAufBasisOrganisatorischesKonzept(@Nonnull Boolean schuleAufBasisOrganisatorischesKonzept) {
+	public final void setSchuleAufBasisOrganisatorischesKonzept(@Nonnull Boolean schuleAufBasisOrganisatorischesKonzept) {
 		this.schuleAufBasisOrganisatorischesKonzept = schuleAufBasisOrganisatorischesKonzept;
 	}
 
 	@Nonnull
-	public Boolean getSchuleAufBasisPaedagogischesKonzept() {
+	public final Boolean getSchuleAufBasisPaedagogischesKonzept() {
 		return schuleAufBasisPaedagogischesKonzept;
 	}
 
-	public void setSchuleAufBasisPaedagogischesKonzept(@Nonnull Boolean schuleAufBasisPaedagogischesKonzept) {
+	public final void setSchuleAufBasisPaedagogischesKonzept(@Nonnull Boolean schuleAufBasisPaedagogischesKonzept) {
 		this.schuleAufBasisPaedagogischesKonzept = schuleAufBasisPaedagogischesKonzept;
 	}
 
 	@Nonnull
-	public Boolean getRaeumlicheVoraussetzungenEingehalten() {
+	public final Boolean getRaeumlicheVoraussetzungenEingehalten() {
 		return raeumlicheVoraussetzungenEingehalten;
 	}
 
-	public void setRaeumlicheVoraussetzungenEingehalten(@Nonnull Boolean raeumlicheVoraussetzungenEingehalten) {
+	public final void setRaeumlicheVoraussetzungenEingehalten(@Nonnull Boolean raeumlicheVoraussetzungenEingehalten) {
 		this.raeumlicheVoraussetzungenEingehalten = raeumlicheVoraussetzungenEingehalten;
 	}
 
 	@Nonnull
-	public Boolean getBetreuungsverhaeltnisEingehalten() {
+	public final Boolean getBetreuungsverhaeltnisEingehalten() {
 		return betreuungsverhaeltnisEingehalten;
 	}
 
-	public void setBetreuungsverhaeltnisEingehalten(@Nonnull Boolean betreuungsverhaeltnisEingehalten) {
+	public final void setBetreuungsverhaeltnisEingehalten(@Nonnull Boolean betreuungsverhaeltnisEingehalten) {
 		this.betreuungsverhaeltnisEingehalten = betreuungsverhaeltnisEingehalten;
 	}
 
 	@Nonnull
-	public Boolean getErnaehrungsGrundsaetzeEingehalten() {
+	public final Boolean getErnaehrungsGrundsaetzeEingehalten() {
 		return ernaehrungsGrundsaetzeEingehalten;
 	}
 
-	public void setErnaehrungsGrundsaetzeEingehalten(@Nonnull Boolean ernaehrungsGrundsaetzeEingehalten) {
+	public final void setErnaehrungsGrundsaetzeEingehalten(@Nonnull Boolean ernaehrungsGrundsaetzeEingehalten) {
 		this.ernaehrungsGrundsaetzeEingehalten = ernaehrungsGrundsaetzeEingehalten;
 	}
 
 	@Nullable
-	public String getBemerkungen() {
+	public final String getBemerkungen() {
 		return bemerkungen;
 	}
 
-	public void setBemerkungen(@Nullable String bemerkungen) {
+	public final void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
 	}
 
 	@Override
-	public boolean isSame(AbstractEntity other) {
+	public final boolean isSame(AbstractEntity other) {
 		return getId().equals(other.getId());
 	}
 }
