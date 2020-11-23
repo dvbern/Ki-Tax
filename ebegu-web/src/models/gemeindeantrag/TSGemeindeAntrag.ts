@@ -25,4 +25,5 @@ export class TSGemeindeAntrag extends TSAbstractEntity {
     public gemeinde: TSGemeinde;
     public gesuchsperiode = TSGesuchsperiode;
     public statusString: string;
+    public antragAbgeschlossen: boolean;
 }
