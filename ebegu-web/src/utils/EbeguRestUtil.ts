@@ -870,7 +870,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
+    public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde | undefined {
         if (gemeindeFromServer) {
             this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;

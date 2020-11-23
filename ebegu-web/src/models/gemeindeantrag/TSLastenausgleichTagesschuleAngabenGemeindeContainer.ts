@@ -25,7 +25,7 @@ import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from './TSLaste
 export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbstractEntity {
     public status: TSLastenausgleichTagesschuleAngabenGemeindeStatus;
     public gemeinde: TSGemeinde;
-    public gesuchsperiode = TSGesuchsperiode;
+    public gesuchsperiode: TSGesuchsperiode;
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;

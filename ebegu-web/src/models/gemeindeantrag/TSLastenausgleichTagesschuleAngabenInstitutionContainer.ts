@@ -23,6 +23,6 @@ import {TSLastenausgleichTagesschuleAngabenInstitution} from './TSLastenausgleic
 export class TSLastenausgleichTagesschuleAngabenInstitutionContainer extends TSAbstractEntity {
     public status: TSLastenausgleichTagesschuleAngabenInstitutionStatus;
     public institution: TSInstitution;
-    public angabenDeklaration = TSLastenausgleichTagesschuleAngabenInstitution;
-    public angabenKorrektur = TSLastenausgleichTagesschuleAngabenInstitution;
+    public angabenDeklaration: TSLastenausgleichTagesschuleAngabenInstitution;
+    public angabenKorrektur: TSLastenausgleichTagesschuleAngabenInstitution;
 }

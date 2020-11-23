@@ -23,7 +23,7 @@ import {TSGesuchsperiode} from '../TSGesuchsperiode';
 export class TSGemeindeAntrag extends TSAbstractEntity {
     public gemeindeAntragTyp: TSGemeindeAntragTyp;
     public gemeinde: TSGemeinde;
-    public gesuchsperiode = TSGesuchsperiode;
+    public gesuchsperiode: TSGesuchsperiode;
     public statusString: string;
     public antragAbgeschlossen: boolean;
 }
