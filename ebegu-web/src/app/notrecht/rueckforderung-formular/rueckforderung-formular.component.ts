@@ -71,6 +71,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     @ViewChild(NgForm, {static: false}) private readonly form: NgForm;
+    @ViewChild(NgForm, {static: false}) private readonly beschwerdeForm: NgForm;
 
     private einreicheFristPrivatDefault: moment.Moment;
     private einreicheFristOeffentlich: moment.Moment;
@@ -1042,7 +1043,8 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         if (this.rueckforderungBeschwerdeDokumente.length === 0) {
             this.showMessageFehlendeDokumenteBeschwerde = true;
         }
-        if (!this.form.valid || this.showMessageFehlendeDokumenteBeschwerde) {
+        if (!this.beschwerdeForm.valid || this.showMessageFehlendeDokumenteBeschwerde) {
+            EbeguUtil.selectFirstInvalid();
             return;
         }
         this.rueckforderungFormular$ = from(

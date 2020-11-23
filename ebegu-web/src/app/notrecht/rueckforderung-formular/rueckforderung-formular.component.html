@@ -1459,73 +1459,91 @@
                 </div>
             </div>
             <!-- Beschwerde -->
-            <div class="col-md-8 col-md-offset-2"
-                 *ngIf="rueckforderungFormular.status === 'VERFUEGT'">
+            <div class="col-md-8 col-md-offset-2" *ngIf="rueckforderungFormular.status === 'VERFUEGT'">
                 <div class="row" id="beschwerden" *ngIf="showBeschwerde || isKantonBenutzer()">
                     <div class="col-sm-12">
                         <h2 translate class="margin-top-50">NOTVERORDNUNG_BESCHWERDE</h2>
                         <hr class="header"/>
                     </div>
                 </div>
-                <div class="row" *ngIf="showBeschwerde">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="required long-label"
-                                   for="beschwerde_betrag_id">
-                                {{'RUECKFORDERUNG_BESCHWERDE_BETRAG' | translate}}</label>
-                            <input id="beschwerde_betrag_id" type="number"
-                                   name="beschwerdeBetragName"
-                                   #beschwerdeBetrag="ngModel"
-                                   [(ngModel)]="rueckforderungFormular.beschwerdeBetrag"
-                                   class="form-control"
-                                   [disabled]="beschwerdeReadOnly"
-                                   required>
-                            <dv-error-messages [errorObject]="beschwerdeBetrag.errors"
-                                               inputId="beschwerde_betrag_id">
-                            </dv-error-messages>
+                <form #beschwerdeForm="ngForm"
+                      [ngClass]="{'ng-submitted': beschwerdeForm.submitted}"
+                      (ngSubmit)="saveBeschwerde(rueckforderungFormular)"
+                      *ngIf="showBeschwerde"
+                      validate>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="required long-label"
+                                       for="beschwerde_betrag_id">
+                                    {{'RUECKFORDERUNG_BESCHWERDE_BETRAG' | translate}}</label>
+                                <input id="beschwerde_betrag_id" type="number"
+                                       name="beschwerdeBetragName"
+                                       #beschwerdeBetrag="ngModel"
+                                       [(ngModel)]="rueckforderungFormular.beschwerdeBetrag"
+                                       [disabled]="beschwerdeReadOnly"
+                                       class="form-control"
+                                       required>
+                                <dv-error-messages [errorObject]="beschwerdeBetrag.errors"
+                                                   inputId="beschwerde_betrag_id">
+                                </dv-error-messages>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row" *ngIf="showBeschwerde">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label class="long-label"
-                                   for="beschwerdeBemerkung_id">
-                                {{'RUECKFORDER_BESCHWERDE_BEMERKUNG' | translate}}</label>
-                            <textarea md-no-autogrow
-                                      class="form-control"
-                                      rows="6"
-                                      maxlength="2000"
-                                      id="beschwerdeBemerkung_id"
-                                      #beschwerdeBemerkung="ngModel"
-                                      name="beschwerdeBemerkungName"
-                                      [(ngModel)]="rueckforderungFormular.beschwerdeBemerkung"
-                                      [disabled]="beschwerdeReadOnly">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="long-label"
+                                       for="beschwerde_bemerkung_id">
+                                    {{'RUECKFORDER_BESCHWERDE_BEMERKUNG' | translate}}</label>
+                                <textarea md-no-autogrow
+                                          class="form-control"
+                                          rows="6"
+                                          maxlength="2000"
+                                          id="beschwerde_bemerkung_id"
+                                          #beschwerdeBemerkung="ngModel"
+                                          name="beschwerdeBemerkungName"
+                                          [(ngModel)]="rueckforderungFormular.beschwerdeBemerkung"
+                                          [disabled]="beschwerdeReadOnly">
                         </textarea>
-                            <dv-error-messages [errorObject]="beschwerdeBemerkung.errors"
-                                               inputId="beschwerdeBemerkung_id">
-                            </dv-error-messages>
+                                <dv-error-messages [errorObject]="beschwerdeBemerkung.errors"
+                                                   inputId="beschwerde_bemerkung_id">
+                                </dv-error-messages>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row" *ngIf="showBeschwerde">
-                    <div class="col-sm-12">
-                        <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteBeschwerde">
-                            <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
-                        </div>
-                        <dv-file-upload
-                            (download)="download($event[0],$event[1])"
-                            [title]="'RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE'"
-                            (delete)="delete($event)"
-                            (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteBeschwerde">
+                                <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
+                            </div>
+                            <dv-file-upload
+                                (download)="download($event[0],$event[1])"
+                                [title]="'RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE'"
+                                (delete)="delete($event)"
+                                (uploadFile)="uploadRuckforderungDokumente($event, rueckforderungFormular.id,
                                 rueckforderungDokumentTyp.BESCHWERDE_DOKUMENTE)"
-                            [files]="rueckforderungBeschwerdeDokumente"
-                            [readOnly]="beschwerdeReadOnly"
-                            [readOnlyDelete]="beschwerdeReadOnly"
-                        >
-                        </dv-file-upload>
+                                [files]="rueckforderungBeschwerdeDokumente"
+                                [readOnly]="beschwerdeReadOnly"
+                                [readOnlyDelete]="beschwerdeReadOnly"
+                            >
+                            </dv-file-upload>
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-sm-12 flexbreak">
+                            <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
+                                    (click)="abbrechenBeschwerde(rueckforderungFormular);"
+                                    [disabled]="beschwerdeReadOnly">
+                                <span translate>LABEL_ABBRECHEN</span>
+                            </button>
+                            <dv-loading-button *ngIf="isKantonBenutzer()"
+                                               [type]="'submit'" [disabled]="beschwerdeReadOnly">
+                                <span translate>RUECKFORDERUNG_BESCHWERDE_SPEICHERN</span>
+                            </dv-loading-button>
+                        </div>
+                    </div>
+                </form>
                 <div class="row">
                     <div class="col-sm-12">
                         <button type="button"
@@ -1539,20 +1557,6 @@
                                 *ngIf="isKantonBenutzerUndBeschwerdeNichtausgeloest(rueckforderungFormular) && beschwerdeAlreadyExist && beschwerdeReadOnly"
                                 (click)="beschwerdeBearbeiten();">
                             <span translate>RUECKFORDERUNG_BESCHWERDE_BEARBEITEN</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="row" *ngIf="showBeschwerde">
-                    <div class="col-sm-12 flexbreak">
-                        <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
-                                (click)="abbrechenBeschwerde(rueckforderungFormular);"
-                                [disabled]="beschwerdeReadOnly">
-                            <span translate>LABEL_ABBRECHEN</span>
-                        </button>
-                        <button type="button" class="dv-btn" *ngIf="isKantonBenutzer()"
-                                (click)="saveBeschwerde(rueckforderungFormular);"
-                                [disabled]="beschwerdeReadOnly">
-                            <span translate>RUECKFORDERUNG_BESCHWERDE_SPEICHERN</span>
                         </button>
                     </div>
                 </div>
