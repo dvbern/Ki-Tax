@@ -31,7 +31,7 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 })
 export class TraegerschaftEditComponent implements OnInit {
 
-    @ViewChild(NgForm, { static: false }) public form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
 
     public traegerschaft$: Observable<TSTraegerschaft>;
     private traegerschaftId: string;
