@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
+import java.time.LocalDateTime;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -28,6 +30,18 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
  * Dieses Interface beschreibt die Mindestanforderungen fuer ein solches Ding.
  */
 public interface GemeindeAntrag {
+
+	@Nonnull
+	String getId();
+
+	@Nonnull
+	long getVersion();
+
+	@Nonnull
+	LocalDateTime getTimestampErstellt();
+
+	@Nonnull
+	LocalDateTime getTimestampMutiert();
 
 	@Nonnull
 	GemeindeAntragTyp getGemeindeAntragTyp();

@@ -23,6 +23,11 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
+import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -2489,7 +2494,8 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseGesuchsperiode(gesuchsperiodeTS: TSGesuchsperiode, gesuchsperiodeFromServer: any): TSGesuchsperiode {
+    public parseGesuchsperiode(gesuchsperiodeTS: TSGesuchsperiode, gesuchsperiodeFromServer: any
+    ): TSGesuchsperiode | undefined {
         if (gesuchsperiodeFromServer) {
             this.parseDateRangeEntity(gesuchsperiodeTS, gesuchsperiodeFromServer);
             gesuchsperiodeTS.status = gesuchsperiodeFromServer.status;
@@ -4273,5 +4279,319 @@ export class EbeguRestUtil {
         externalClientRest.clientName = externalClientTS.clientName;
         externalClientRest.type = externalClientTS.type;
         return externalClientRest;
+    }
+
+    public parseGemeindeAntragList(data: Array<any>): TSGemeindeAntrag[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGemeindeAntrag(new TSGemeindeAntrag(), item))
+            : [this.parseGemeindeAntrag(new TSGemeindeAntrag(), data)];
+    }
+
+    public parseGemeindeAntrag(gemeindeAntragTS: TSGemeindeAntrag, gemeindeAntragFromServer: any): TSGemeindeAntrag {
+        if (gemeindeAntragFromServer) {
+            this.parseAbstractEntity(gemeindeAntragTS, gemeindeAntragFromServer);
+            gemeindeAntragTS.gemeindeAntragTyp = gemeindeAntragFromServer.gemeindeAntragTyp;
+            gemeindeAntragTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), gemeindeAntragFromServer.gesuchsperiode);
+            gemeindeAntragTS.gemeinde =
+                this.parseGemeinde(new TSGemeinde(), gemeindeAntragFromServer.gemeinde);
+            gemeindeAntragTS.statusString = gemeindeAntragFromServer.statusString;
+            gemeindeAntragTS.antragAbgeschlossen = gemeindeAntragFromServer.antragAbgeschlossen;
+            return gemeindeAntragTS;
+        }
+        return undefined;
+    }
+
+    public parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+        gemeindeContainerTS: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        gemeindeContainerFromServer: any
+    ): TSLastenausgleichTagesschuleAngabenGemeindeContainer {
+        if (gemeindeContainerFromServer) {
+            this.parseAbstractEntity(gemeindeContainerTS, gemeindeContainerFromServer);
+            gemeindeContainerTS.status = gemeindeContainerFromServer.status;
+            gemeindeContainerTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), gemeindeContainerFromServer.gesuchsperiode);
+            gemeindeContainerTS.gemeinde =
+                this.parseGemeinde(new TSGemeinde(), gemeindeContainerFromServer.gemeinde);
+            gemeindeContainerTS.angabenDeklaration =
+                this.parseLastenausgleichTagesschuleAngabenGemeinde(
+                    new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenDeklaration);
+            gemeindeContainerTS.angabenKorrektur =
+                this.parseLastenausgleichTagesschuleAngabenGemeinde(
+                    new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenKorrektur);
+            gemeindeContainerTS.angabenInstitutionContainers =
+                this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
+            return gemeindeContainerTS;
+        }
+        return undefined;
+    }
+
+    public lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject(
+        restGemeindeContainer: any,
+        tsGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    ): TSLastenausgleichTagesschuleAngabenGemeindeContainer {
+        if (tsGemeindeContainer) {
+            this.abstractEntityToRestObject(restGemeindeContainer, tsGemeindeContainer);
+            restGemeindeContainer.status = tsGemeindeContainer.status;
+            restGemeindeContainer.gesuchsperiode =
+                this.gesuchsperiodeToRestObject({}, tsGemeindeContainer.gesuchsperiode);
+            restGemeindeContainer.gemeinde =
+                this.gemeindeToRestObject({}, tsGemeindeContainer.gemeinde);
+            restGemeindeContainer.angabenDeklaration =
+                this.lastenausgleichTagesschuleAngabenGemeindeToRestObject(
+                    {}, tsGemeindeContainer.angabenDeklaration);
+            restGemeindeContainer.angabenKorrektur =
+                this.lastenausgleichTagesschuleAngabenGemeindeToRestObject(
+                    {}, tsGemeindeContainer.angabenKorrektur);
+            restGemeindeContainer.angabenInstitutionContainers =
+                this.lastenausgleichTagesschuleAngabenInstitutionContainerListToRestObject(
+                    tsGemeindeContainer.angabenInstitutionContainers);
+            return restGemeindeContainer;
+        }
+        return undefined;
+    }
+
+    public parseLastenausgleichTagesschuleAngabenGemeinde(
+        gemeindeTS: TSLastenausgleichTagesschuleAngabenGemeinde,
+        gemeindeFromServer: any
+    ): TSLastenausgleichTagesschuleAngabenGemeinde {
+        if (gemeindeFromServer) {
+            this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
+            // A: Allgemeine Angaben
+            gemeindeTS.alleAngabenInKibonErfasst =
+                gemeindeFromServer.alleAngabenInKibonErfasst;
+            gemeindeTS.bedarfBeiElternAbgeklaert =
+                gemeindeFromServer.bedarfBeiElternAbgeklaert;
+            gemeindeTS.angebotFuerFerienbetreuungVorhanden =
+                gemeindeFromServer.angebotFuerFerienbetreuungVorhanden;
+            gemeindeTS.angebotVerfuegbarFuerAlleSchulstufen =
+                gemeindeFromServer.angebotVerfuegbarFuerAlleSchulstufen;
+            gemeindeTS.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen =
+                gemeindeFromServer.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
+            // B: Abrechnung
+            gemeindeTS.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse =
+                gemeindeFromServer.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
+            gemeindeTS.geleisteteBetreuungsstundenBesondereBeduerfnisse =
+                gemeindeFromServer.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+            gemeindeTS.davonStundenZuNormlohnMehrAls50ProzentAusgebildete =
+                gemeindeFromServer.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
+            gemeindeTS.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete =
+                gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
+            gemeindeTS.einnahmenElterngebuehren =
+                gemeindeFromServer.einnahmenElterngebuehren;
+            // C: Kostenbeteiligung Gemeinde
+            gemeindeTS.gesamtKostenTagesschule =
+                gemeindeFromServer.gesamtKostenTagesschule;
+            gemeindeTS.einnnahmenVerpflegung =
+                gemeindeFromServer.einnnahmenVerpflegung;
+            gemeindeTS.einnahmenSubventionenDritter =
+                gemeindeFromServer.einnahmenSubventionenDritter;
+            // D: Angaben zu weiteren Kosten und Ertraegen
+            gemeindeTS.bemerkungenWeitereKostenUndErtraege =
+                gemeindeFromServer.bemerkungenWeitereKostenUndErtraege;
+            // E: Kontrollfragen
+            gemeindeTS.betreuungsstundenDokumentiertUndUeberprueft =
+                gemeindeFromServer.betreuungsstundenDokumentiertUndUeberprueft;
+            gemeindeTS.elterngebuehrenGemaessVerordnungBerechnet =
+                gemeindeFromServer.elterngebuehrenGemaessVerordnungBerechnet;
+            gemeindeTS.einkommenElternBelegt =
+                gemeindeFromServer.einkommenElternBelegt;
+            gemeindeTS.maximalTarif =
+                gemeindeFromServer.maximalTarif;
+            gemeindeTS.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal =
+                gemeindeFromServer.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+            gemeindeTS.ausbildungenMitarbeitendeBelegt =
+                gemeindeFromServer.ausbildungenMitarbeitendeBelegt;
+            // Bemerkungen
+            gemeindeTS.internerKommentar =
+                gemeindeFromServer.internerKommentar;
+            gemeindeTS.bemerkungen =
+                gemeindeFromServer.bemerkungen;
+            return gemeindeTS;
+        }
+        return undefined;
+    }
+
+    public lastenausgleichTagesschuleAngabenGemeindeToRestObject(
+        restAngabenGemeinde: any,
+        tsAngabenGemeinde: TSLastenausgleichTagesschuleAngabenGemeinde
+    ): any {
+        if (tsAngabenGemeinde) {
+            this.abstractEntityToRestObject(restAngabenGemeinde, tsAngabenGemeinde);
+
+            // A: Allgemeine Angaben
+            restAngabenGemeinde.alleAngabenInKibonErfasst =
+                tsAngabenGemeinde.alleAngabenInKibonErfasst;
+            restAngabenGemeinde.bedarfBeiElternAbgeklaert =
+                tsAngabenGemeinde.bedarfBeiElternAbgeklaert;
+            restAngabenGemeinde.angebotFuerFerienbetreuungVorhanden =
+                tsAngabenGemeinde.angebotFuerFerienbetreuungVorhanden;
+            restAngabenGemeinde.angebotVerfuegbarFuerAlleSchulstufen =
+                tsAngabenGemeinde.angebotVerfuegbarFuerAlleSchulstufen;
+            restAngabenGemeinde.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen =
+                tsAngabenGemeinde.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
+            // B: Abrechnung
+            restAngabenGemeinde.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse =
+                tsAngabenGemeinde.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
+            restAngabenGemeinde.geleisteteBetreuungsstundenBesondereBeduerfnisse =
+                tsAngabenGemeinde.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+            restAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildete =
+                tsAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
+            restAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete =
+                tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
+            restAngabenGemeinde.einnahmenElterngebuehren =
+                tsAngabenGemeinde.einnahmenElterngebuehren;
+            // C: Kostenbeteiligung Gemeinde
+            restAngabenGemeinde.gesamtKostenTagesschule =
+                tsAngabenGemeinde.gesamtKostenTagesschule;
+            restAngabenGemeinde.einnnahmenVerpflegung =
+                tsAngabenGemeinde.einnnahmenVerpflegung;
+            restAngabenGemeinde.einnahmenSubventionenDritter =
+                tsAngabenGemeinde.einnahmenSubventionenDritter;
+            // D: Angaben zu weiteren Kosten und Ertraegen
+            restAngabenGemeinde.bemerkungenWeitereKostenUndErtraege =
+                tsAngabenGemeinde.bemerkungenWeitereKostenUndErtraege;
+            // E: Kontrollfragen
+            restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft =
+                tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft;
+            restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet =
+                tsAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet;
+            restAngabenGemeinde.einkommenElternBelegt =
+                tsAngabenGemeinde.einkommenElternBelegt;
+            restAngabenGemeinde.maximalTarif =
+                tsAngabenGemeinde.maximalTarif;
+            restAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal =
+                tsAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+            restAngabenGemeinde.ausbildungenMitarbeitendeBelegt =
+                tsAngabenGemeinde.ausbildungenMitarbeitendeBelegt;
+            // Bemerkungen
+            restAngabenGemeinde.internerKommentar =
+                tsAngabenGemeinde.internerKommentar;
+            restAngabenGemeinde.bemerkungen =
+                tsAngabenGemeinde.bemerkungen;
+            return restAngabenGemeinde;
+        }
+        return undefined;
+    }
+
+    public parseLastenausgleichTagesschuleAngabenInstitutionContainerList(data: Array<any>): TSLastenausgleichTagesschuleAngabenInstitutionContainer[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), item))
+            : [this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), data)];
+    }
+
+    public parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+        institutionContainerTS: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
+        institutionContainerFromServer: any
+    ): TSLastenausgleichTagesschuleAngabenInstitutionContainer {
+        if (institutionContainerFromServer) {
+            this.parseAbstractEntity(institutionContainerTS, institutionContainerFromServer);
+            institutionContainerTS.status = institutionContainerFromServer.status;
+            institutionContainerTS.institution =
+                this.parseInstitution(new TSInstitution(), institutionContainerFromServer.institution);
+            institutionContainerTS.angabenDeklaration =
+                this.parseLastenausgleichTagesschuleAngabenInstitution(
+                    new TSLastenausgleichTagesschuleAngabenInstitution(),
+                    institutionContainerFromServer.angabenDeklaration);
+            institutionContainerTS.angabenKorrektur =
+                this.parseLastenausgleichTagesschuleAngabenInstitution(
+                    new TSLastenausgleichTagesschuleAngabenInstitution(),
+                    institutionContainerFromServer.angabenKorrektur);
+            return institutionContainerTS;
+        }
+        return undefined;
+    }
+
+    private lastenausgleichTagesschuleAngabenInstitutionContainerListToRestObject(
+        tsInstitutionContainerList: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>
+    ): Array<any> {
+        return tsInstitutionContainerList
+            ? tsInstitutionContainerList.map(item => this.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({}, item))
+            : [];
+    }
+
+    public lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+        restInstitutionContainer: any,
+        tsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    ): any {
+        if (tsInstitutionContainer) {
+            this.abstractEntityToRestObject(restInstitutionContainer, tsInstitutionContainer);
+            restInstitutionContainer.status = tsInstitutionContainer.status;
+            restInstitutionContainer.institution = tsInstitutionContainer.institution;
+            restInstitutionContainer.angabenDeklaration =
+                this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({}, tsInstitutionContainer.angabenDeklaration);
+            restInstitutionContainer.angabenKorrektur =
+                this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({}, tsInstitutionContainer.angabenKorrektur);
+            return restInstitutionContainer;
+        }
+        return undefined;
+    }
+
+    public parseLastenausgleichTagesschuleAngabenInstitution(
+        angabenInstitutionTS: TSLastenausgleichTagesschuleAngabenInstitution,
+        angabenInstitutionFromServer: any
+    ): TSLastenausgleichTagesschuleAngabenInstitution | undefined {
+        if (angabenInstitutionFromServer) {
+            this.parseAbstractEntity(angabenInstitutionTS, angabenInstitutionFromServer);
+            // A: Informationen zur Tagesschule
+            angabenInstitutionTS.isLehrbetrieb = angabenInstitutionFromServer.isLehrbetrieb;
+            // B: Quantitative Angaben
+            angabenInstitutionTS.anzahlEingeschriebeneKinder = angabenInstitutionFromServer.anzahlEingeschriebeneKinder;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderKindergarten = angabenInstitutionFromServer.anzahlEingeschriebeneKinderKindergarten;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe = angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderPrimarstufe = angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung = angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
+            angabenInstitutionTS.durchschnittKinderProTagMittag = angabenInstitutionFromServer.durchschnittKinderProTagMittag;
+            angabenInstitutionTS.durchschnittKinderProTagNachmittag1 = angabenInstitutionFromServer.durchschnittKinderProTagNachmittag1;
+            angabenInstitutionTS.durchschnittKinderProTagNachmittag2 = angabenInstitutionFromServer.durchschnittKinderProTagNachmittag2;
+            // C: Qualitative Vorgaben der Tagesschuleverordnung
+            angabenInstitutionTS.schuleAufBasisOrganisatorischesKonzept = angabenInstitutionFromServer.schuleAufBasisOrganisatorischesKonzept;
+            angabenInstitutionTS.schuleAufBasisPaedagogischesKonzept = angabenInstitutionFromServer.schuleAufBasisPaedagogischesKonzept;
+            angabenInstitutionTS.raeumlicheVoraussetzungenEingehalten = angabenInstitutionFromServer.raeumlicheVoraussetzungenEingehalten;
+            angabenInstitutionTS.betreuungsverhaeltnisEingehalten = angabenInstitutionFromServer.betreuungsverhaeltnisEingehalten;
+            angabenInstitutionTS.ernaehrungsGrundsaetzeEingehalten = angabenInstitutionFromServer.ernaehrungsGrundsaetzeEingehalten;
+            // Bemerkungen
+            angabenInstitutionTS.bemerkungen = angabenInstitutionFromServer.bemerkungen;
+            return angabenInstitutionTS;
+        }
+        return undefined;
+    }
+
+    public lastenausgleichTagesschuleAngabenInstitutionToRestObject(
+        restAngabenInstitution: any,
+        tsAngabenInstitution: TSLastenausgleichTagesschuleAngabenInstitution
+    ): any {
+        if (tsAngabenInstitution) {
+            this.abstractEntityToRestObject(restAngabenInstitution, tsAngabenInstitution);
+            // A: Informationen zur Tagesschule
+            restAngabenInstitution.isLehrbetrieb = tsAngabenInstitution.isLehrbetrieb;
+            // B: Quantitative Angaben
+            restAngabenInstitution.anzahlEingeschriebeneKinder = tsAngabenInstitution.anzahlEingeschriebeneKinder;
+            restAngabenInstitution.anzahlEingeschriebeneKinderKindergarten = tsAngabenInstitution.anzahlEingeschriebeneKinderKindergarten;
+            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe = tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe = tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            restAngabenInstitution.durchschnittKinderProTagFruehbetreuung = tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
+            restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;
+            restAngabenInstitution.durchschnittKinderProTagNachmittag1 = tsAngabenInstitution.durchschnittKinderProTagNachmittag1;
+            restAngabenInstitution.durchschnittKinderProTagNachmittag2 = tsAngabenInstitution.durchschnittKinderProTagNachmittag2;
+            // C: Qualitative Vorgaben der Tagesschuleverordnung
+            restAngabenInstitution.schuleAufBasisOrganisatorischesKonzept = tsAngabenInstitution.schuleAufBasisOrganisatorischesKonzept;
+            restAngabenInstitution.schuleAufBasisPaedagogischesKonzept = tsAngabenInstitution.schuleAufBasisPaedagogischesKonzept;
+            restAngabenInstitution.raeumlicheVoraussetzungenEingehalten = tsAngabenInstitution.raeumlicheVoraussetzungenEingehalten;
+            restAngabenInstitution.betreuungsverhaeltnisEingehalten = tsAngabenInstitution.betreuungsverhaeltnisEingehalten;
+            restAngabenInstitution.ernaehrungsGrundsaetzeEingehalten = tsAngabenInstitution.ernaehrungsGrundsaetzeEingehalten;
+            // Bemerkungen
+            restAngabenInstitution.bemerkungen = tsAngabenInstitution.bemerkungen;
+            return restAngabenInstitution;
+        }
+        return undefined;
     }
 }

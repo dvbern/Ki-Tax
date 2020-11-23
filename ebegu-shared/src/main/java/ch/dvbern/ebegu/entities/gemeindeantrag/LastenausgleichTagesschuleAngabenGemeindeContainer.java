@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -175,5 +176,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@Override
 	public boolean isAntragAbgeschlossen() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT;
+	}
+
+	@CanIgnoreReturnValue
+	public boolean addLastenausgleichTagesschuleAngabenInstitutionContainer(@Nonnull final LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainerToAdd) {
+		institutionContainerToAdd.setAngabenGemeinde(this);
+		return !angabenInstitutionContainers.contains(institutionContainerToAdd)
+			&& angabenInstitutionContainers.add(institutionContainerToAdd);
 	}
 }
