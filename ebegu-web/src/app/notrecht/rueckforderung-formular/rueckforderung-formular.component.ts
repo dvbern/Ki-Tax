@@ -125,7 +125,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly uploadRS: UploadRS,
         private readonly cdr: ChangeDetectorRef,
-        private readonly applicationPropertyService: ApplicationPropertyRS,
+        private readonly applicationPropertyService: ApplicationPropertyRS
     ) {
     }
 
@@ -1036,6 +1036,10 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     public beschwerdeBearbeiten(): void {
         this.showBeschwerde = true;
         this.beschwerdeReadOnly = false;
+        // muss im nächsten zone.run() durchgeführt werden, weil vorher das input noch nicht existiert
+        setTimeout(() => {
+            document.getElementById('beschwerde_betrag_id').focus();
+        }, 0);
     }
 
     public saveBeschwerde(rueckforderungFormular: TSRueckforderungFormular): void {
