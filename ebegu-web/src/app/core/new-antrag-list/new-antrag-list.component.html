@@ -184,7 +184,7 @@
                 </mat-form-field>
 
                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="filterInstitution($event.option.value)">
-                    <mat-option *ngFor="let institution of institutionenList | async" [value]="institution.name">{{institution.name}}</mat-option>
+                    <mat-option *ngFor="let institution of institutionenList$ | async" [value]="institution.name">{{institution.name}}</mat-option>
                 </mat-autocomplete>
             </mat-header-cell>
         </ng-container>
@@ -195,7 +195,7 @@
                      [showSelectionAll]="true"
                      [angular2]="true"
                      [initialAll]="true"
-                     (onUserChanged)="filterVerantwortlicheTS($event.user)"
+                     (userChanged)="filterVerantwortlicheTS($event.user)"
                      [schulamt]="true"></div>
             </mat-header-cell>
         </ng-container>
@@ -206,7 +206,7 @@
                      [showSelectionAll]="true"
                      [angular2]="true"
                      [initialAll]="true"
-                     (onUserChanged)="filterVerantwortlicheBG($event.user)"
+                     (userChanged)="filterVerantwortlicheBG($event.user)"
                      [sachbearbeiterGemeinde]="true"></div>
             </mat-header-cell>
         </ng-container>

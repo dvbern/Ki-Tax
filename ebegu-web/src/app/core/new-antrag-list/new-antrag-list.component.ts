@@ -1,12 +1,11 @@
 import {Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild} from '@angular/core';
-import {MatPaginator, MatSelectChange, MatTable, MatTableDataSource, PageEvent, Sort} from '@angular/material';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {MatPaginator, MatTable, MatTableDataSource, PageEvent, Sort} from '@angular/material';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {
-    getTSAntragStatusPendenzValues,
     getTSAntragStatusValuesByRole,
     TSAntragStatus,
 } from '../../../models/enums/TSAntragStatus';
@@ -35,11 +34,11 @@ const LOG = LogFactory.createLog('DVAntragListController');
 export class NewAntragListComponent implements OnInit, OnDestroy {
 
     @ViewChild(MatPaginator) public paginator: MatPaginator;
-    @ViewChild(MatTable) private table: MatTable<Partial<TSAntragDTO>>;
+    @ViewChild(MatTable) private readonly table: MatTable<Partial<TSAntragDTO>>;
 
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
-    public institutionenList: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
+    public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
     public gemeindenList: Array<TSGemeinde> = [];
 
     public datasource: MatTableDataSource<Partial<TSAntragDTO>>;
@@ -62,11 +61,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     public filterColumns = {
         fallNummer: {
             type: 'input',
-            callback: this.filterFall,
+            callback: (query: string) => this.filterFall(query),
         },
     };
 
-    private filterPredicate: {
+    private readonly filterPredicate: {
         fallNummer?: string,
         gemeinde?: string,
         familienName?: string,
@@ -90,7 +89,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     public totalItems: number = 0;
     public page: number = 0;
     public pageSize: any = 10;
-    private sort: {
+    private readonly sort: {
         predicate?: string,
         reverse?: boolean
     } = {};
@@ -115,7 +114,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
             this.allInstitutionen = response;
-            this.institutionenList.next(this.allInstitutionen);
+            this.institutionenList$.next(this.allInstitutionen);
         });
     }
 
@@ -253,7 +252,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
 
     public filterInstitution(query: string): void {
         // filter the institutitonen list for the autocomplete
-        this.institutionenList.next(
+        this.institutionenList$.next(
             query ?
                 this.allInstitutionen.filter(institution => institution.name.toLocaleLowerCase()
                     .includes(query.toLocaleLowerCase())) :

@@ -28,8 +28,8 @@ describe('NewUserSelectDirective', () => {
 
     let element: Element;
 
-    beforeEach(() => destroyPlatform());
-    afterEach(() => destroyPlatform());
+    beforeEach(destroyPlatform);
+    afterEach(destroyPlatform);
 
     describe('', () => {
         it('should create an instance', () => {
@@ -51,6 +51,7 @@ describe('NewUserSelectDirective', () => {
 
             element = html(`<ng2></ng2>`);
 
+            // tslint:disable-next-line:no-unused
             bootstrap(platformBrowserDynamic(), Ng2Module, element, ng1Module).then(upgrade => {
                 expect(element).toBeTruthy();
             });

@@ -26,11 +26,12 @@ import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {WindowRef} from './service/windowRef.service';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-import localeDeCh from '@angular/common/locales/de-CH';
+// tslint:disable-next-line:match-default-export-name
+import deCH from '@angular/common/locales/de-CH';
 // sentry
 configureRaven();
 
-registerLocaleData(localeDeCh);
+registerLocaleData(deCH);
 
 export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
     return new PaginatorI18n(translateService);
