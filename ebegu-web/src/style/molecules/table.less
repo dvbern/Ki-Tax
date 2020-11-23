@@ -201,10 +201,10 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
             div > button > span {
                 color: black;
                 font-size: 1.4rem;
-                letter-spacing: .1rem;
                 font-weight: 400;
-                text-transform: uppercase;
+                letter-spacing: 0.1rem;
                 text-align: left;
+                text-transform: uppercase;
             }
         }
 
@@ -223,18 +223,18 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
                 & > .mat-form-field-wrapper {
                     & > div.mat-form-field-flex {
 
-                        height: 5rem;
                         align-items: center;
+                        height: 5rem;
 
                         & > .mat-form-field-infix {
                             border: 0;
 
                             & > input {
-                                height: 30px;
                                 background: lightgrey;
+                                caret-color: black;
                                 font-size: 1.6rem;
                                 font-weight: 700;
-                                caret-color: black;
+                                height: 30px;
                             }
                         }
                     }
@@ -243,12 +243,6 @@ table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
                     }
                 }
             }
-        }
-    }
-
-    & > mat-row {
-        & > mat-cell {
-
         }
     }
 }
