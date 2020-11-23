@@ -894,4 +894,14 @@ public class BGCalculationInput {
 	public void setPensumUnit(PensumUnits pensumUnit) {
 		this.pensumUnit = pensumUnit;
 	}
+
+	/**
+	 * Setzt den Anspruch auf 0, der bisherige Anspruch wird als AnspruchspensumRest gespeichert, fuer
+	 * eine eventuelle weitere Betreuung.
+	 */
+	public void setAnspruchZeroAndSaveRestanspruch() {
+		int anspruchVorRegel = getAnspruchspensumProzent();
+		setAnspruchspensumProzent(0);
+		setAnspruchspensumRest(anspruchVorRegel);
+	}
 }
