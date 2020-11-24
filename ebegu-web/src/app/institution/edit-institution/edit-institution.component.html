@@ -236,7 +236,7 @@
                     <div *ngIf="externalClients && !isTagesschule() && !isFerieninsel()" class="col-sm-6">
                         <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
                         <div *ngFor="let availableClient of externalClients.availableClients">
-                            <div class="row">
+                            <div class="row picker-min-height">
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <mat-checkbox (change)="assignAvailableClient(availableClient)">

@@ -61,6 +61,7 @@ import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschu
 @Component({
     selector: 'dv-edit-institution',
     templateUrl: './edit-institution.component.html',
+    styleUrls: ['./edit-institution.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
