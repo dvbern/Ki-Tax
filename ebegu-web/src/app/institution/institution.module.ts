@@ -54,16 +54,6 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         DialogImportFromOtherInstitution,
         EditBetreuungsstandortComponent
     ],
-    entryComponents: [
-        InstitutionListComponent,
-        EditInstitutionComponent,
-        AddInstitutionComponent,
-        EditInstitutionBetreuungsgutscheineComponent,
-        EditInstitutionTagesschuleComponent,
-        EditInstitutionFerieninselComponent,
-        ModulTagesschuleDialogComponent,
-        DialogImportFromOtherInstitution
-    ],
     providers: [],
 })
 export class InstitutionModule {
