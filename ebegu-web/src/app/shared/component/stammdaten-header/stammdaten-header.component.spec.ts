@@ -41,7 +41,7 @@ describe('StammdatenHeaderComponent', () => {
             providers: [
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: GemeindeRS, userValue: gemeindeServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeServiceSpy},
             ],
             declarations: [
                 StammdatenHeaderComponent,

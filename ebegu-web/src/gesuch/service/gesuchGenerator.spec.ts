@@ -97,7 +97,7 @@ describe('gesuchGenerator', () => {
             ],
         });
 
-        gesuchGenerator = TestBed.get(GesuchGenerator);
+        gesuchGenerator = TestBed.inject<GesuchGenerator>(GesuchGenerator);
     }));
 
     describe('initGesuch', () => {

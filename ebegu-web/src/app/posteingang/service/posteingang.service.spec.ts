@@ -28,7 +28,7 @@ describe('posteingangService', () => {
             ],
         });
 
-        posteingangService = TestBed.get(PosteingangService);
+        posteingangService = TestBed.inject<PosteingangService>(PosteingangService);
     }));
 
     describe('posteingangChanged', () => {

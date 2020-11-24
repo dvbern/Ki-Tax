@@ -6,7 +6,7 @@ describe('OnboardingPlaceholderService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: OnboardingPlaceholderService = TestBed.get(OnboardingPlaceholderService);
+    const service = TestBed.inject<OnboardingPlaceholderService>(OnboardingPlaceholderService);
     expect(service).toBeTruthy();
   });
 });

@@ -26,7 +26,6 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
-import {TraegerschaftModule} from '../traegerschaft.module';
 
 import {TraegerschaftAddComponent} from './traegerschaft-add.component';
 
@@ -50,7 +49,6 @@ describe('TraegerschaftAddComponent', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                TraegerschaftModule,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -61,8 +59,8 @@ describe('TraegerschaftAddComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
             ],
-            declarations: [],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            declarations: [TraegerschaftAddComponent],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
         transitionSpy.params.and.returnValue({});

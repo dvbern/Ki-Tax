@@ -28,7 +28,7 @@ describe('authLifeCycleService', () => {
             ],
         });
 
-        authLifeCycleService = TestBed.get(AuthLifeCycleService);
+        authLifeCycleService = TestBed.inject<AuthLifeCycleService>(AuthLifeCycleService);
     }));
 
     describe('changeAuthStatus', () => {
