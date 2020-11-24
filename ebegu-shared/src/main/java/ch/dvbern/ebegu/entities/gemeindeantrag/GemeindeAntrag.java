@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities.gemeindeantrag;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -34,13 +35,12 @@ public interface GemeindeAntrag {
 	@Nonnull
 	String getId();
 
-	@Nonnull
 	long getVersion();
 
-	@Nonnull
+	@Nullable
 	LocalDateTime getTimestampErstellt();
 
-	@Nonnull
+	@Nullable
 	LocalDateTime getTimestampMutiert();
 
 	@Nonnull

@@ -40,11 +40,13 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
+@CheckLastenausgleichTagesschuleAngabenGemeinde
 public class LastenausgleichTagesschuleAngabenGemeindeContainer extends AbstractEntity implements GemeindeAntrag {
 
 	private static final long serialVersionUID = -149964317716679424L;
@@ -64,8 +66,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_gesuchsperiode_id"), nullable = false)
 	private Gesuchsperiode gesuchsperiode;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable // Muss leider nullable sein, da der Container schon "leer" gespeichert werden muss
+	@Column(nullable = true)
 	private Boolean alleAngabenInKibonErfasst;
 
 	@Nullable
@@ -115,12 +117,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	@Nonnull
+	@Nullable
 	public final Boolean getAlleAngabenInKibonErfasst() {
 		return alleAngabenInKibonErfasst;
 	}
 
-	public final void setAlleAngabenInKibonErfasst(@Nonnull Boolean alleAngabenInKibonErfasst) {
+	public final void setAlleAngabenInKibonErfasst(@Nullable Boolean alleAngabenInKibonErfasst) {
 		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
 	}
 
@@ -175,6 +177,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getStatusString() {
 		return status.toString();

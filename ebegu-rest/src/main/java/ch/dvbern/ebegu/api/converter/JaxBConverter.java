@@ -5647,13 +5647,13 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public Set<JaxGemeindeAntrag> gemeindeAntragListToJax(@Nullable final Set<GemeindeAntrag> gemeindeAntragList) {
+	public List<JaxGemeindeAntrag> gemeindeAntragListToJax(@Nullable final List<GemeindeAntrag> gemeindeAntragList) {
 		if (gemeindeAntragList == null) {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 		return gemeindeAntragList.stream()
 			.map(this::gemeindeAntragToJax)
-			.collect(Collectors.toCollection(TreeSet::new));
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	@Nonnull

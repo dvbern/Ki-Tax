@@ -23,7 +23,6 @@ create table lastenausgleich_tagesschule_angaben_gemeinde_aud (
 	timestamp_mutiert datetime,
 	user_erstellt varchar(255),
 	user_mutiert varchar(255),
-	alle_angaben_in_kibon_erfasst bit,
 	angebot_fuer_ferienbetreuung_vorhanden bit,
 	angebot_verfuegbar_fuer_alle_schulstufen bit,
 	ausbildungen_mitarbeitende_belegt bit,
@@ -61,6 +60,7 @@ create table lastenausgleich_tagesschule_angaben_gemeinde_container_aud (
 	angaben_korrektur_id binary(16),
 	gemeinde_id binary(16),
 	gesuchsperiode_id binary(16),
+	alle_angaben_in_kibon_erfasst bit,
 	primary key (id, rev)
 );
 
@@ -130,7 +130,6 @@ create table lastenausgleich_tagesschule_angaben_gemeinde (
 	user_erstellt varchar(255) not null,
 	user_mutiert varchar(255) not null,
 	version bigint not null,
-	alle_angaben_in_kibon_erfasst bit not null,
 	angebot_fuer_ferienbetreuung_vorhanden bit not null,
 	angebot_verfuegbar_fuer_alle_schulstufen bit not null,
 	ausbildungen_mitarbeitende_belegt bit not null,
@@ -167,6 +166,7 @@ create table lastenausgleich_tagesschule_angaben_gemeinde_container (
 	angaben_korrektur_id binary(16),
 	gemeinde_id binary(16) not null,
 	gesuchsperiode_id binary(16) not null,
+	alle_angaben_in_kibon_erfasst bit,
 	primary key (id)
 );
 

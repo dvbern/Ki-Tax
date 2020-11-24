@@ -163,6 +163,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionContainer extends Abstr
 		return getAngabenGemeinde().getGesuchsperiode();
 	}
 
+	@Nonnull
 	@Override
 	public String getStatusString() {
 		return status.name();
