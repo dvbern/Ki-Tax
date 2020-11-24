@@ -32,9 +32,6 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	// A: Allgemeine Angaben
 
 	@NotNull @Nonnull
-	private Boolean alleAngabenInKibonErfasst;
-
-	@NotNull @Nonnull
 	private Boolean bedarfBeiElternAbgeklaert;
 
 	@NotNull @Nonnull
@@ -106,15 +103,6 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	@Nullable
 	private String bemerkungen;
-
-	@Nonnull
-	public Boolean getAlleAngabenInKibonErfasst() {
-		return alleAngabenInKibonErfasst;
-	}
-
-	public void setAlleAngabenInKibonErfasst(@Nonnull Boolean alleAngabenInKibonErfasst) {
-		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
-	}
 
 	@Nonnull
 	public Boolean getBedarfBeiElternAbgeklaert() {

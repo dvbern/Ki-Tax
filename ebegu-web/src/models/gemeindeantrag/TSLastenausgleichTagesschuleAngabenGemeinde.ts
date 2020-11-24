@@ -20,7 +20,6 @@ import {TSAbstractEntity} from '../TSAbstractEntity';
 export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntity {
 
     // A: Allgemeine Angaben
-    public alleAngabenInKibonErfasst: boolean;
     public bedarfBeiElternAbgeklaert: boolean;
     public angebotFuerFerienbetreuungVorhanden: boolean;
     public angebotVerfuegbarFuerAlleSchulstufen: boolean;

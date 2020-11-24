@@ -5689,6 +5689,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeContainer.setStatus(gemeindeContainer.getStatus());
 		jaxGemeindeContainer.setGemeinde(gemeindeToJAX(gemeindeContainer.getGemeinde()));
 		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
+		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
 		}
@@ -5718,6 +5719,9 @@ public class JaxBConverter extends AbstractConverter {
 			.ifPresent(gemeindeContainer::setGemeinde);
 		gesuchsperiodeService.findGesuchsperiode(jaxGemeindeContainer.getGesuchsperiode().getId())
 			.ifPresent(gemeindeContainer::setGesuchsperiode);
+
+		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
+
 		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {
 			if (gemeindeContainer.getAngabenDeklaration() != null) {
 				gemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToEntity(
@@ -5753,7 +5757,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(angabenGemeinde, jaxAngabenGemeinde);
 
 		// A: Allgemeine Angaben
-		jaxAngabenGemeinde.setAlleAngabenInKibonErfasst(angabenGemeinde.getAlleAngabenInKibonErfasst());
 		jaxAngabenGemeinde.setBedarfBeiElternAbgeklaert(angabenGemeinde.getBedarfBeiElternAbgeklaert());
 		jaxAngabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(angabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
 		jaxAngabenGemeinde.setAngebotVerfuegbarFuerAlleSchulstufen(angabenGemeinde.getAngebotVerfuegbarFuerAlleSchulstufen());
@@ -5792,7 +5795,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
 
 		// A: Allgemeine Angaben
-		angabenGemeinde.setAlleAngabenInKibonErfasst(jaxAngabenGemeinde.getAlleAngabenInKibonErfasst());
 		angabenGemeinde.setBedarfBeiElternAbgeklaert(jaxAngabenGemeinde.getBedarfBeiElternAbgeklaert());
 		angabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(jaxAngabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
 		angabenGemeinde.setAngebotVerfuegbarFuerAlleSchulstufen(jaxAngabenGemeinde.getAngebotVerfuegbarFuerAlleSchulstufen());

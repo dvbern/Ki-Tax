@@ -64,6 +64,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_gesuchsperiode_id"), nullable = false)
 	private Gesuchsperiode gesuchsperiode;
 
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Boolean alleAngabenInKibonErfasst;
+
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -109,6 +113,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	@Nonnull
+	public final Boolean getAlleAngabenInKibonErfasst() {
+		return alleAngabenInKibonErfasst;
+	}
+
+	public final void setAlleAngabenInKibonErfasst(@Nonnull Boolean alleAngabenInKibonErfasst) {
+		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
 	}
 
 	@Nullable
@@ -157,7 +170,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
-		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.OFFEN && angabenKorrektur != null) {
+		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE && angabenKorrektur != null) {
 			angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde(angabenKorrektur);
 		}
 	}

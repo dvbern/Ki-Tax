@@ -4316,6 +4316,7 @@ export class EbeguRestUtil {
                 this.parseGesuchsperiode(new TSGesuchsperiode(), gemeindeContainerFromServer.gesuchsperiode);
             gemeindeContainerTS.gemeinde =
                 this.parseGemeinde(new TSGemeinde(), gemeindeContainerFromServer.gemeinde);
+            gemeindeContainerTS.alleAngabenInKibonErfasst = gemeindeContainerFromServer.alleAngabenInKibonErfasst;
             gemeindeContainerTS.angabenDeklaration =
                 this.parseLastenausgleichTagesschuleAngabenGemeinde(
                     new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenDeklaration);
@@ -4340,6 +4341,7 @@ export class EbeguRestUtil {
                 this.gesuchsperiodeToRestObject({}, tsGemeindeContainer.gesuchsperiode);
             restGemeindeContainer.gemeinde =
                 this.gemeindeToRestObject({}, tsGemeindeContainer.gemeinde);
+            restGemeindeContainer.alleAngabenInKibonErfasst = tsGemeindeContainer.alleAngabenInKibonErfasst;
             restGemeindeContainer.angabenDeklaration =
                 this.lastenausgleichTagesschuleAngabenGemeindeToRestObject(
                     {}, tsGemeindeContainer.angabenDeklaration);
@@ -4361,8 +4363,6 @@ export class EbeguRestUtil {
         if (gemeindeFromServer) {
             this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
             // A: Allgemeine Angaben
-            gemeindeTS.alleAngabenInKibonErfasst =
-                gemeindeFromServer.alleAngabenInKibonErfasst;
             gemeindeTS.bedarfBeiElternAbgeklaert =
                 gemeindeFromServer.bedarfBeiElternAbgeklaert;
             gemeindeTS.angebotFuerFerienbetreuungVorhanden =
@@ -4423,8 +4423,6 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restAngabenGemeinde, tsAngabenGemeinde);
 
             // A: Allgemeine Angaben
-            restAngabenGemeinde.alleAngabenInKibonErfasst =
-                tsAngabenGemeinde.alleAngabenInKibonErfasst;
             restAngabenGemeinde.bedarfBeiElternAbgeklaert =
                 tsAngabenGemeinde.bedarfBeiElternAbgeklaert;
             restAngabenGemeinde.angebotFuerFerienbetreuungVorhanden =

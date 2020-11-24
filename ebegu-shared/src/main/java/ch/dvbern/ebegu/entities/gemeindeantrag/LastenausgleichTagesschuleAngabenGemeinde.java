@@ -41,10 +41,6 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private Boolean alleAngabenInKibonErfasst;
-
-	@NotNull @Nonnull
-	@Column(nullable = false)
 	private Boolean bedarfBeiElternAbgeklaert;
 
 	@NotNull @Nonnull
@@ -146,7 +142,6 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	public LastenausgleichTagesschuleAngabenGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeinde source) {
 		// A: Allgemeine Angaben
-		this.setAlleAngabenInKibonErfasst(source.getAlleAngabenInKibonErfasst());
 		this.setBedarfBeiElternAbgeklaert(source.getBedarfBeiElternAbgeklaert());
 		this.setAngebotFuerFerienbetreuungVorhanden(source.getAngebotFuerFerienbetreuungVorhanden());
 		this.setAngebotVerfuegbarFuerAlleSchulstufen(source.getAngebotVerfuegbarFuerAlleSchulstufen());
@@ -173,17 +168,6 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		// Bemerkungen
 		this.setInternerKommentar(source.getInternerKommentar());
 		this.setBemerkungen(source.getBemerkungen());
-	}
-
-
-
-	@Nonnull
-	public final Boolean getAlleAngabenInKibonErfasst() {
-		return alleAngabenInKibonErfasst;
-	}
-
-	public final void setAlleAngabenInKibonErfasst(@Nonnull Boolean alleAngabenInKibonErfasst) {
-		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
 	}
 
 	@Nonnull

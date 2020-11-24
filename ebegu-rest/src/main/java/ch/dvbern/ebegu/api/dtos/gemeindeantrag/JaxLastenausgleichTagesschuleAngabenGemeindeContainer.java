@@ -42,6 +42,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	@NotNull @Nonnull
 	private JaxGesuchsperiode gesuchsperiode;
 
+	@NotNull @Nonnull
+	private Boolean alleAngabenInKibonErfasst;
+
 	@Nullable
 	private JaxLastenausgleichTagesschuleAngabenGemeinde angabenDeklaration;
 
@@ -77,6 +80,15 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 
 	public void setGesuchsperiode(@Nonnull JaxGesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	@Nonnull
+	public Boolean getAlleAngabenInKibonErfasst() {
+		return alleAngabenInKibonErfasst;
+	}
+
+	public void setAlleAngabenInKibonErfasst(@Nonnull Boolean alleAngabenInKibonErfasst) {
+		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
 	}
 
 	@Nullable
