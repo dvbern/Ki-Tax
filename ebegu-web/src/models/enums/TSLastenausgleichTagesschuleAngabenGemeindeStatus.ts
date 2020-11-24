@@ -16,10 +16,10 @@
  */
 
 export enum TSLastenausgleichTagesschuleAngabenGemeindeStatus {
-    OFFEN = 'OFFEN',
-    EINGEREICHT = 'EINGEREICHT',
-    IN_BEARBEITUNG_KANTON = 'IN_BEARBEITUNG_KANTON',
-    GEPRUEFT = 'GEPRUEFT',
+    NEU = 'NEU', // Bis die erste Frage nach "alle Anmeldungen in kiBon" beantwortet ist
+    IN_BEARBEITUNG_GEMEINDE = 'IN_BEARBEITUNG_GEMEINDE',
+    IN_PRUEFUNG_KANTON = 'IN_PRUEFUNG_KANTON',
     ZWEITPRUEFUNG = 'ZWEITPRUEFUNG',
-    VERFUEGT = 'VERFUEGT',
+    GEPRUEFT = 'GEPRUEFT',
+    VERFUEGT = 'VERFUEGT', // Ausbezahlt
 }

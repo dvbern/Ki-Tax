@@ -17,6 +17,6 @@
 
 export enum TSLastenausgleichTagesschuleAngabenInstitutionStatus {
     OFFEN = 'OFFEN',
-    IN_BEARBEITUNG_GEMEINDE = 'IN_BEARBEITUNG_GEMEINDE',
+    IN_PRUEFUNG_GEMEINDE = 'IN_PRUEFUNG_GEMEINDE',
     GEPRUEFT = 'GEPRUEFT',
 }

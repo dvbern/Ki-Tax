@@ -19,10 +19,10 @@ package ch.dvbern.ebegu.enums.gemeindeantrag;
 
 public enum LastenausgleichTagesschuleAngabenGemeindeStatus {
 
-	OFFEN,
-	EINGEREICHT,
-	IN_BEARBEITUNG_KANTON,
+	NEU, // Bis die erste Frage nach "alle Anmeldungen in kiBon" beantwortet ist
+	IN_BEARBEITUNG_GEMEINDE,
+	IN_PRUEFUNG_KANTON,
+	ZWEITPRUEFUNG, // Zufaellig ausgewaehlte werden zur Zweitpruefung gesetzt
 	GEPRUEFT,
-	ZWEITPRUEFUNG,
-	VERFUEGT
+	VERFUEGT // Ausbezahlt
 }
