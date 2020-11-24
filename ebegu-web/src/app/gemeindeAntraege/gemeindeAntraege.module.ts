@@ -15,17 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tagesschulewizardx;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.enums.UserRole;
-
-public interface TagesschuleWizardStep<T> {
-
-	void next(@Nonnull UserRole role, @Nonnull TagesschuleWizard tagesschuleWizard);
-
-	void prev(@Nonnull UserRole role, @Nonnull TagesschuleWizard tagesschuleWizard);
-
-	void getStatus(T t);
-}
+@NgModule({
+  declarations: [LastenausgleichTagesschuleComponent],
+  imports: [
+    CommonModule
+  ]
+})
+export class GemeindeAntraegeModule { }

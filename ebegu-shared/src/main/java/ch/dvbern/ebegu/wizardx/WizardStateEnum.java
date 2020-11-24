@@ -15,27 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tagesschulewizardx;
+package ch.dvbern.ebegu.wizardx;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.enums.UserRole;
-
-public class AngabenGemeinde implements TagesschuleWizardStep<Gemeinde> {
-
-	@Override
-	public void next(
-		UserRole role,
-		TagesschuleWizard tagesschuleWizard) {
-
-	}
-
-	@Override
-	public void prev(UserRole role, TagesschuleWizard tagesschuleWizard) {
-
-	}
-
-	@Override
-	public void getStatus(Gemeinde gemeinde) {
-
-	}
+public enum WizardStateEnum {
+	OK,
+	KO
 }

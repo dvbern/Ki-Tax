@@ -15,31 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tagesschulewizardx;
-
+package ch.dvbern.ebegu.wizardx;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.enums.UserRole;
+public interface WizardStep<T> {
 
-public class TagesschuleWizard {
+	void next(@Nonnull Wizard wizard);
 
-	private TagesschuleWizardStep step;
-	private UserRole role;
+	void prev(@Nonnull Wizard wizard);
 
-	public void initTagesschuleWizard(@Nonnull UserRole roleToUse){
-		this.role = roleToUse;
-		if(role.isRoleGemeindeOrTS() || role.isRoleMandant() || role.isSuperadmin()){
-			this.step = new AngabenGemeinde();
-		}
-	}
+	WizardStateEnum getStatus(T t);
 
-
-	public void previousState(@Nonnull UserRole role){
-		this.step.next(role, this);
-	}
-
-	public void nextState(@Nonnull UserRole role) {
-		this.step.prev(role, this);
-	}
+	String getWizardStepName();
 }

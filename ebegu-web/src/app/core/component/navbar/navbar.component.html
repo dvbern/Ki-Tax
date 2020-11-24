@@ -52,6 +52,11 @@
                 </li>
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getGemeindeOrBGOrTSRoles()">
+                    <a uiSref="tagesschulelastenausgleich.view" [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    class="dv-ng-navbar-element uppercase"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
                     <a uiSref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
                 </li>
