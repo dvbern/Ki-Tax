@@ -16,6 +16,8 @@
   -->
 <div>
     <table class="table outer-table" width="100%">
+        <thead></thead>
+        <tbody>
         <tr [ngClass]="{'file-required': files?.length === 0, 'file-uploaded': files?.length > 0}"
         (click)="click(fileInput)">
             <td style="white-space: pre-wrap;">{{title | translate}}</td>
@@ -50,6 +52,7 @@
                     </th>
                     <th colspan="3" width="10%"></th>
                     </thead>
+                    <tbody>
                     <tr *ngFor="let file of files;">
                         <td>
                             {{file.filename}}
@@ -95,8 +98,10 @@
                                     tabindex="0"></button>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>

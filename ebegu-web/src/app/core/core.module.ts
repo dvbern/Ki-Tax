@@ -17,7 +17,7 @@
 
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
-import {MatPaginatorIntl} from '@angular/material';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {XsrfInterceptor} from '../i18n/httpInterceptor/XsrfInterceptor';

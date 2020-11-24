@@ -17,7 +17,7 @@
 
 import {Component, ChangeDetectionStrategy, ViewChild, Inject} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {TSRueckforderungFormular} from '../../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {NotrechtRS} from '../../../core/service/notrechtRS.rest';
@@ -30,7 +30,7 @@ import {NotrechtRS} from '../../../core/service/notrechtRS.rest';
 })
 export class RueckforderungVerlaengerungDialogComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
     public rueckforderungFormular: TSRueckforderungFormular;
 
     public constructor(private readonly dialogRef: MatDialogRef<RueckforderungVerlaengerungDialogComponent>,

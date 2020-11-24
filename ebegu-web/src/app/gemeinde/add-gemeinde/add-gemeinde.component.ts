@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -45,7 +45,7 @@ export class AddGemeindeComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('AddGemeindeComponent');
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public gemeinde: TSGemeinde = undefined;
     public adminMail: string = undefined;

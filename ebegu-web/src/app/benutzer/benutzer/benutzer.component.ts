@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -50,7 +50,7 @@ const LOG = LogFactory.createLog('BenutzerComponent');
 })
 export class BenutzerComponent implements OnInit {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(NgForm, { static: false }) private readonly form: NgForm;
 
     private readonly log: Log = LogFactory.createLog('BenutzerComponent');
 

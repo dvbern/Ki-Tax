@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
+import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import org.slf4j.Logger;
@@ -80,6 +81,32 @@ public class BetreuungsgutscheinExecutor {
 		return zeitabschnitte;
 	}
 
+	@Nonnull
+	public List<VerfuegungZeitabschnitt> executeAbschlussRules(
+		@Nonnull AbstractPlatz platz,
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
+		@Nonnull Locale locale
+	) {
+		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
+		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
+		MonatsRule monatsRule = new MonatsRule(isDebug);
+		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+		AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
+
+		// Innerhalb eines Monats darf der Anspruch nie sinken
+		zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
+		// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+		zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
+		// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
+		zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
+		// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
+		zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);
+		// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
+		// Daten, diese auch noch mergen
+		zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(platz, zeitabschnitte);
+		return zeitabschnitte;
+	}
+
 	public void calculateRechner(
 		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
@@ -127,5 +154,14 @@ public class BetreuungsgutscheinExecutor {
 				rechnerToUse.calculate(zeitabschnitt, bgRechnerParameterDTO);
 			}
 		});
+	}
+
+	@Nonnull
+	public List<VerfuegungZeitabschnitt> executeRestanspruchInitializer(
+		@Nonnull AbstractPlatz platz,
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
+	) {
+		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+		return restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
 	}
 }

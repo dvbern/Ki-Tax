@@ -34,7 +34,7 @@ const LOG = LogFactory.createLog('DebuggingComponent');
 })
 export class DebuggingComponent implements OnInit, OnDestroy {
 
-    @ViewChild('traceForm') private readonly traceForm: NgForm;
+    @ViewChild('traceForm', { static: true }) private readonly traceForm: NgForm;
 
     public readonly TRACE_CATEGORY = Category;
     public readonly TRACE_CATEGORY_KEYS = Object.keys(Category).filter(k => typeof Category[k as any] === 'number');

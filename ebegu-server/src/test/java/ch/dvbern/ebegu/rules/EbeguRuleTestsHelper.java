@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -37,7 +38,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
+import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
+import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.util.EinstellungenMap;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -123,9 +125,10 @@ import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.PAUSC
 public final class EbeguRuleTestsHelper {
 
 	private static Gesuchsperiode gesuchsperiodeOfAllTimes = null;
-	private static Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = getEinstellungenConfiguratorAsiv(getGesuchsperiodeOfAllTimes());
-	private static BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
-	private static KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
+	private static final Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = getEinstellungenConfiguratorAsiv(getGesuchsperiodeOfAllTimes());
+	private static final BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
+	private static final KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
+	private static final BGRechnerParameterDTO bgRechnerParameterDTO = AbstractBGRechnerTest.getParameter();
 
 
 	private static Gesuchsperiode getGesuchsperiodeOfAllTimes() {
@@ -137,12 +140,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	private static final boolean isDebug = false;
-	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
-	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true, isDebug);
-	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false, isDebug);
-	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN, isDebug);
-	private static final MonatsRule monatsRule = new MonatsRule(isDebug);
-	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+	private static BetreuungsgutscheinExecutor executor = new BetreuungsgutscheinExecutor(isDebug);
 
 	private EbeguRuleTestsHelper() {
 	}
@@ -210,24 +208,18 @@ public final class EbeguRuleTestsHelper {
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(
 			platz.extractGemeinde(), einstellungenGemeinde, kitaxParams, Locale.GERMAN);
 
-		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
+		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialenRestanspruchAbschnitte);
+		// Die Abschluss-Rules ebenfalls ausführen
+		result = executor.executeAbschlussRules(platz, result, Locale.GERMAN);
+		executor.calculateRechner(bgRechnerParameterDTO, kitaxParams, Locale.GERMAN, Collections.emptyList(), platz, result);
 
-		for (Rule rule : rules) {
-			result = rule.calculate(platz, result);
+		if (!doMonatsstueckelungen) {
+			AbschlussNormalizer abschlussNormalizer = new AbschlussNormalizer(false, isDebug);
+			result = abschlussNormalizer.execute(platz, result);
 		}
 
-		result = anspruchFristRule.executeIfApplicable(platz, result);
-		// Der RestanspruchInitializer erstellt Restansprueche, darf nicht das Resultat ueberschreiben!
-		restanspruchInitializer.executeIfApplicable(platz, result);
-		result = abschlussNormalizerDismissMonate.executeIfApplicable(platz, result);
-		if (doMonatsstueckelungen) {
-			result = monatsRule.executeIfApplicable(platz, result);
-		}
-		result = mutationsMerger.executeIfApplicable(platz, result);
-		result = abschlussNormalizerKeepMonate.executeIfApplicable(platz, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
-
-		result.forEach(VerfuegungZeitabschnitt::initBGCalculationResult);
+		executor.executeRestanspruchInitializer(platz, result);
 		return result;
 	}
 
@@ -353,7 +345,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		return restanspruchInitializer.executeIfApplicable(currentBetreuung, zeitabschnitte);
+		return executor.executeRestanspruchInitializer(currentBetreuung, zeitabschnitte);
 	}
 
 	public static Betreuung createBetreuungWithPensum(
