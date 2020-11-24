@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {MatToolbarModule} from '@angular/material';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -44,7 +45,7 @@ const MATERIAL_MODULES = [
     // MatStepperModule,
     MatTableModule,
     MatTabsModule,
-    // MatToolbarModule,
+    MatToolbarModule,
     MatTooltipModule,
     // MatBottomSheetModule
 ];

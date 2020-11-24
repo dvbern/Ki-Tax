@@ -25,6 +25,7 @@ import {APP_JS_MODULE} from './app.angularjs.module';
 import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
 import {EinladungModule} from './einladung/einladung.module';
+import {GemeindeAntraegeModule} from './gemeinde-antraege/gemeinde-antraege.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {InstitutionModule} from './institution/institution.module';
 import {NotrechtModule} from './notrecht/notrecht.module';
@@ -56,7 +57,8 @@ import {WelcomeModule} from './welcome/welcome.module';
         OnboardingModule,
         TraegerschaftModule,
         WelcomeModule,
-        NotrechtModule
+        NotrechtModule,
+        GemeindeAntraegeModule
     ],
 })
 

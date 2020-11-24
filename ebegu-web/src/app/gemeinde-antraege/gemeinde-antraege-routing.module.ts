@@ -19,7 +19,7 @@ import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {GemeindeAntraegeMainComponent} from './gemeinde-antraege-main/gemeinde-antraege-main.component';
-import {LastenausgleichTagesschuleComponent} from './lastenausgleichTagesschule/lastenausgleich-tagesschule/lastenausgleich-tagesschule.component';
+import {LastenausgleichTagesschuleComponent} from './lastenausgleich-tagesschule/lastenausgleich-tagesschule/lastenausgleich-tagesschule.component';
 
 const states: NgHybridStateDeclaration[] = [
     {
@@ -31,7 +31,7 @@ const states: NgHybridStateDeclaration[] = [
     },
     {
         name: 'gemeindeAntraege.lastenausgleichTagessschule',
-        url: '/lastenausgleichTagessschule',
+        url: '/gemeindeAntraege/lastenausgleichTagessschule',
         component: LastenausgleichTagesschuleComponent,
         data: {
             roles: TSRoleUtil.getGemeindeOrBGOrTSRoles(),
