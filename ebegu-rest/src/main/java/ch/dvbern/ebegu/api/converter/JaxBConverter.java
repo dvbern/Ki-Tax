@@ -5838,7 +5838,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxLastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToJax(
+	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToJax(
 		@Nonnull final LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer
 	) {
 		JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer = new JaxLastenausgleichTagesschuleAngabenInstitutionContainer();
@@ -5868,7 +5868,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
+	public LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
 		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer,
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer
 	) {
