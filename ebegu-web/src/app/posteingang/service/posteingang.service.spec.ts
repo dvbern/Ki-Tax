@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async, TestBed} from '@angular/core/testing';
+import {waitForAsync, TestBed} from '@angular/core/testing';
 import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from './posteingang.service';
 
@@ -21,7 +21,7 @@ describe('posteingangService', () => {
 
     let posteingangService: PosteingangService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
                 PosteingangService,

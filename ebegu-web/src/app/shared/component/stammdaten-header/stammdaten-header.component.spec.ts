@@ -16,7 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {StammdatenHeaderComponent} from './stammdaten-header.component';
@@ -32,7 +32,7 @@ describe('StammdatenHeaderComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['isSupportedImage']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
             imports: [
@@ -49,14 +49,14 @@ describe('StammdatenHeaderComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         fixture = TestBed.createComponent(StammdatenHeaderComponent);
         component = fixture.componentInstance;
         component.logoImageUrl = url;
         fixture.detectChanges();
     }));
 
-    it('should create', async(() => {
+    it('should create', waitForAsync(() => {
         expect(component).toBeTruthy();
     }));
 

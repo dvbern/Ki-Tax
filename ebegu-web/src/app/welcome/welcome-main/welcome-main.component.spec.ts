@@ -16,7 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
@@ -35,7 +35,7 @@ describe('WelcomeMainComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
             imports: [
@@ -55,13 +55,13 @@ describe('WelcomeMainComponent', () => {
 
     }));
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         fixture = TestBed.createComponent(WelcomeMainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));
 
-    it('should create', async(() => {
+    it('should create', waitForAsync(() => {
         expect(component).toBeTruthy();
     }));
 });

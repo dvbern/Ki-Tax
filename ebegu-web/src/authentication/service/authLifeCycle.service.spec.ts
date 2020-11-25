@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async, TestBed} from '@angular/core/testing';
+import {waitForAsync, TestBed} from '@angular/core/testing';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 
@@ -21,7 +21,7 @@ describe('authLifeCycleService', () => {
 
     let authLifeCycleService: AuthLifeCycleService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
                 AuthLifeCycleService,
