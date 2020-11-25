@@ -42,8 +42,10 @@
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-common</artifactId>
-            <version>${version.wildfly-arquillian-containers}</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-testenricher-msc</artifactId>
         </dependency>
     </dependencies>
 

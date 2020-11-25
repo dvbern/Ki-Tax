@@ -46,7 +46,7 @@
         <!-- keep in sync with dependencies from Wildfly BOM -->
         <version.hibernate>5.3.18.Final</version.hibernate>
         <version.org.hibernate.validator>6.0.21.Final</version.org.hibernate.validator>
-        <version.wildfly-arquillian-containers>2.2.0.Final</version.wildfly-arquillian-containers>
+        <version.wildfly-arquillian-containers>3.0.0.Final</version.wildfly-arquillian-containers>
         <hibernate-search.version>5.10.3.Final</hibernate-search.version>
         <version.infinispan>10.0.0.Final</version.infinispan>
 
@@ -506,12 +506,22 @@
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-protocol</artifactId>
-                <version>8.0.0.Final</version>
+                <version>13.0.0.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-controller-client</artifactId>
-                <version>8.0.0.Final</version>
+                <version>13.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-server</artifactId>
+                <version>13.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-testenricher-msc</artifactId>
+                <version>3.0.0.Final</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
