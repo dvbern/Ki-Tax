@@ -47,6 +47,9 @@
             "check-space"
         ],
         "curly": true,
+        "deprecation": {
+          "severity": "warning"
+        },
         "early-exit": true,
         "encoding": true,
         "eofline": true,
