@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -103,4 +105,13 @@ public interface InstitutionStammdatenService {
 	 */
 	@Nonnull
 	Set<InstitutionStammdaten> updateGemeindeForBGInstitutionen();
+
+	/**
+	 * Gibt alle Tagesschulen zurueck, welche in der uebergebenen Gesuchsperiode aktiv waren
+	 * fuer die gewuenschte Gemeinde
+	 */
+	@Nonnull
+	Collection<InstitutionStammdaten> getAllTagesschulenForGesuchsperiodeAndGemeinde(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde);
 }
