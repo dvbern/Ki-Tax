@@ -241,7 +241,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     }
 
     public filterKinder(query: string): void {
-        this.filterPredicate.familienName = query.length > 0 ? query : null;
+        this.filterPredicate.kinder = query.length > 0 ? query : null;
         this.loadData();
     }
 
