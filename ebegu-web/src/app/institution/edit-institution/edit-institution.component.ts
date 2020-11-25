@@ -452,23 +452,6 @@ export class EditInstitutionComponent implements OnInit {
         return new Date(0);
     }
 
-    public assignAvailableClient(availableClient: TSExternalClient): void {
-        const index = this.externalClients.availableClients.indexOf(availableClient);
-        if (index > -1) {
-            this.externalClients.availableClients.splice(index, 1);
-        }
-        this.externalClients.assignedClients.unshift(new TSInstitutionExternalClient(availableClient));
-    }
-
-    public unassignClient(assignedClient: TSInstitutionExternalClient): void {
-        const index = this.externalClients.assignedClients.indexOf(assignedClient);
-        if (index > -1) {
-            this.externalClients.assignedClients.splice(index, 1);
-        }
-        this.externalClients.availableClients.push(assignedClient.externalClient);
-
-    }
-
     public getGueltigAbDate(date: moment.Moment): string {
         if (!date || !date.isValid()) {
             return '';
