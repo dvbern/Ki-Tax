@@ -45,12 +45,11 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 
 	/**
-	 * Speichert den LastenausgleichTagesschule, inklusive Eintrag in die StatusHistory-Tabelle
+	 * Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer frei fuer die Bearbeitung durch die Institutionen.
+	 * Der Status wird von OFFEN auf IN_BEARBEITUNG_GEMEINDE gesetzt.
 	 */
-	@Nonnull
-	LastenausgleichTagesschuleAngabenGemeindeContainer saveLastenausgleichTagesschuleGemeinde(
-		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer,
-		boolean saveInStatusHistory);
+	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 
 	/**
 	 * Reicht den Lastenausgleich ein, inkl. kopieren der Daten vom Korrektur- in den Deklarations-Container,

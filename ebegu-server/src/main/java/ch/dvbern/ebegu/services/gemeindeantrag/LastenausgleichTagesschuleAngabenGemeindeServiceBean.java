@@ -93,9 +93,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, false);
 	}
 
-	@Override
 	@Nonnull
-	public LastenausgleichTagesschuleAngabenGemeindeContainer saveLastenausgleichTagesschuleGemeinde(
+	private LastenausgleichTagesschuleAngabenGemeindeContainer saveLastenausgleichTagesschuleGemeinde(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer,
 		boolean saveInStatusHistory
 	) {
@@ -111,6 +110,23 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Override
 	@Nonnull
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer
+	) {
+		// Nur moeglich, wenn noch OFFEN und die zwingenden Fragen beantwortet
+		Preconditions.checkState(
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
+			"LastenausgleichAngabenGemeinde muss im Status NEU sein");
+		Preconditions.checkNotNull(
+			fallContainer.getAlleAngabenInKibonErfasst(),
+			"Die zwingenden Fragen muessen zu diesem Zeitpunkt beantwortet sein");
+
+		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
+		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
+	}
+
+	@Override
+	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeEinreichen(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer
 	) {
@@ -120,7 +136,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		Preconditions.checkState(
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
-			"LastenausgleichAngabenGemeinde muss im Status OFFEN sein");
+			"LastenausgleichAngabenGemeinde muss im Status IN_BEARBEITUNG_GEMEINDE sein");
 		Preconditions.checkArgument(
 			fallContainer.getAngabenInstitutionContainers()
 				.stream()
