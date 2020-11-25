@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -83,6 +84,17 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			result.add(saved);
 		}
 		return result;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> findLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull String id
+	) {
+		Objects.requireNonNull(id, "id muss gesetzt sein");
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer container = persistence.find(LastenausgleichTagesschuleAngabenGemeindeContainer.class, id);
+		return Optional.ofNullable(container);
 	}
 
 	@Override

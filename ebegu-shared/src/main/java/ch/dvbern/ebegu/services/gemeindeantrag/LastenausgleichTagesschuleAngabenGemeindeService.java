@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -38,6 +39,13 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Sucht den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> findLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull String id);
+
+	/**
 	 * Speichert den LastenausgleichTagesschule, ohne Eintrag in die StatusHistory-Tabelle
 	 */
 	@Nonnull
@@ -48,6 +56,7 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	 * Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer frei fuer die Bearbeitung durch die Institutionen.
 	 * Der Status wird von OFFEN auf IN_BEARBEITUNG_GEMEINDE gesetzt.
 	 */
+	@Nonnull
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 

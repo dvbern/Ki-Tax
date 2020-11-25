@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -32,6 +34,14 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	 */
 	void createLastenausgleichTagesschuleInstitution(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer);
+
+	/**
+	 * Sucht den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionContainer(
+		@Nonnull String id);
+
 
 	/**
 	 * Speichert einen LastenausgleichTagesschuleAngabenInstitutionContainer

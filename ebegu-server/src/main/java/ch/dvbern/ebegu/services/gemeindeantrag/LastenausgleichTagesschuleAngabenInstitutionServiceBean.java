@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -74,6 +75,17 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 			gemeindeContainer.addLastenausgleichTagesschuleAngabenInstitutionContainer(saved);
 		}
+	}
+
+	@Nonnull
+	@Override
+	public Optional<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionContainer(
+		@Nonnull String id
+	) {
+		Objects.requireNonNull(id, "id muss gesetzt sein");
+
+		LastenausgleichTagesschuleAngabenInstitutionContainer container = persistence.find(LastenausgleichTagesschuleAngabenInstitutionContainer.class, id);
+		return Optional.ofNullable(container);
 	}
 
 	@Override
