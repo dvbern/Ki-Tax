@@ -56,7 +56,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 	}
 )
 @CheckGemeindeAtLeastOneAngebot
-public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable {
+public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable, HasMandant {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
