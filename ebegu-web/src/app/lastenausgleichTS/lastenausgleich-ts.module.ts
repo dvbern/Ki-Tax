@@ -17,6 +17,8 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
@@ -50,7 +52,9 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-t
         TranslateModule,
         MatSidenavModule,
         RouterModule,
-        UIRouterModule
+        UIRouterModule,
+        MatMenuModule,
+        MatButtonModule
     ]
 })
 export class LastenausgleichTSModule {
