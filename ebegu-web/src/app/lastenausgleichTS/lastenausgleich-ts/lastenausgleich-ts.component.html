@@ -1,6 +1,3 @@
-<p>
-  lastenausgleich-ts works!
-</p>
-<dv-lastenausgleich-ts-toolbar></dv-lastenausgleich-ts-toolbar>
+<dv-lastenausgleich-ts-toolbar *ngIf="showToolbar()"></dv-lastenausgleich-ts-toolbar>
 <dv-lastenausgleich-ts-side-nav></dv-lastenausgleich-ts-side-nav>
-<dv-lastenausgleich-ts-kommentar></dv-lastenausgleich-ts-kommentar>
+<dv-lastenausgleich-ts-kommentar *ngIf="showKommentare()"></dv-lastenausgleich-ts-kommentar>
