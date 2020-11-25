@@ -1,3 +1,8 @@
 <dv-lastenausgleich-ts-toolbar *ngIf="showToolbar()"></dv-lastenausgleich-ts-toolbar>
-<dv-lastenausgleich-ts-side-nav></dv-lastenausgleich-ts-side-nav>
-<dv-lastenausgleich-ts-kommentar *ngIf="showKommentare()"></dv-lastenausgleich-ts-kommentar>
+<div class="lastenausgleich-ts-container">
+    <dv-lastenausgleich-ts-side-nav></dv-lastenausgleich-ts-side-nav>
+    <div class="antrag">
+        <ui-view></ui-view>
+    </div>
+    <dv-lastenausgleich-ts-kommentar *ngIf="showKommentare()"></dv-lastenausgleich-ts-kommentar>
+</div>

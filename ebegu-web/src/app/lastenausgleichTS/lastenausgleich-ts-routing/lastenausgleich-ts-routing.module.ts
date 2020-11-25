@@ -17,22 +17,39 @@
 
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
+import {FreigabeComponent} from '../antrag/freigabe/freigabe.component';
+import {GemeindeAngabenComponent} from '../antrag/gemeinde-angaben/gemeinde-angaben.component';
+import {LastenausgleichTsBerechnungComponent} from '../antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
+import {TagesschulenAngabenComponent} from '../antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
 
 const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'lastenausgleich-ts',
-        abstract: true,
         url: '/lastenausgleich-ts',
-        component: UiViewComponent,
+        component: LastenausgleichTSComponent,
     },
     {
-        name: 'lastenausgleich-ts.antrag',
-        url: '/:lastenausgleichTsId',
-        component: LastenausgleichTSComponent
-    }
+        name: 'lastenausgleich-ts.gemeinde-angaben',
+        url: '/:lastenausgleichTsId/gemeinde-angaben',
+        component: GemeindeAngabenComponent
+    },
+    {
+        name: 'lastenausgleich-ts.tagesschulen-angaben',
+        url: '/:lastenausgleichTsId/tagesschulen-angaben',
+        component: TagesschulenAngabenComponent
+    },
+    {
+        name: 'lastenausgleich-ts.freigabe',
+        url: '/:lastenausgleichTsId/freigabe',
+        component: FreigabeComponent
+    },
+    {
+        name: 'lastenausgleich-ts.lastenausgleich',
+        url: '/:lastenausgleichTsId/lastenausgleich',
+        component: LastenausgleichTsBerechnungComponent
+    },
 ];
 
 @NgModule({

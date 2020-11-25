@@ -17,6 +17,15 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {RouterModule} from '@angular/router';
+import {TranslateModule} from '@ngx-translate/core';
+import {UIRouterModule} from '@uirouter/angular';
+import {FreigabeComponent} from './antrag/freigabe/freigabe.component';
+import {GemeindeAngabenComponent} from './antrag/gemeinde-angaben/gemeinde-angaben.component';
+import {LastenausgleichTsBerechnungComponent} from './antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
+import {TagesschulenAngabenComponent} from './antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
 import {LastenausgleichTsRoutingModule} from './lastenausgleich-ts-routing/lastenausgleich-ts-routing.module';
 import {LastenausgleichTsSideNavComponent} from './lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
@@ -28,11 +37,20 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-t
         LastenausgleichTSComponent,
         LastenausgleichTsSideNavComponent,
         LastenausgleichTsKommentarComponent,
-        LastenausgleichTsToolbarComponent
+        LastenausgleichTsToolbarComponent,
+        GemeindeAngabenComponent,
+        TagesschulenAngabenComponent,
+        FreigabeComponent,
+        LastenausgleichTsBerechnungComponent
     ],
     imports: [
         CommonModule,
-        LastenausgleichTsRoutingModule
+        LastenausgleichTsRoutingModule,
+        MatToolbarModule,
+        TranslateModule,
+        MatSidenavModule,
+        RouterModule,
+        UIRouterModule
     ]
 })
 export class LastenausgleichTSModule {
