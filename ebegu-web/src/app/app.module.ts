@@ -27,6 +27,7 @@ import {CoreModule} from './core/core.module';
 import {EinladungModule} from './einladung/einladung.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {InstitutionModule} from './institution/institution.module';
+import {LastenausgleichTSModule} from './lastenausgleichTS/lastenausgleich-ts.module';
 import {NotrechtModule} from './notrecht/notrecht.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
@@ -56,7 +57,8 @@ import {WelcomeModule} from './welcome/welcome.module';
         OnboardingModule,
         TraegerschaftModule,
         WelcomeModule,
-        NotrechtModule
+        NotrechtModule,
+        LastenausgleichTSModule
     ],
 })
 
