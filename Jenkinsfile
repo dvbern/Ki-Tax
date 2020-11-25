@@ -10,7 +10,7 @@ pipeline {
 		// Only keep the most recent build
 		buildDiscarder(logRotator(numToKeepStr: "10"))
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
-		timeout(time: 3, unit: 'HOURS')
+		timeout(time: 4, unit: 'HOURS')
 		disableConcurrentBuilds()
 		throttle(['ebegu-job-limit'])
 	}
