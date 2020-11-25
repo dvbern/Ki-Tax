@@ -94,7 +94,6 @@
     "ts-node": "~3.3.0",
     "tslint": "^5.20.1",
     "tslint-consistent-codestyle": "^1.16.0",
-    "tslint-eslint-rules": "~5.4.0",
     "tslint-sonarts": "^1.9.0",
     "typescript": "~3.8.3",
     "webpack": "^4.42.1",
