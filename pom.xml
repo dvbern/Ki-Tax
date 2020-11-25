@@ -46,7 +46,7 @@
         <!-- keep in sync with dependencies from Wildfly BOM -->
         <version.hibernate>5.3.18.Final</version.hibernate>
         <version.org.hibernate.validator>6.0.21.Final</version.org.hibernate.validator>
-        <version.wildfly-arquillian-containers>2.2.0.Final</version.wildfly-arquillian-containers>
+        <version.wildfly-arquillian-containers>3.0.1.Final</version.wildfly-arquillian-containers>
         <hibernate-search.version>5.10.3.Final</hibernate-search.version>
         <version.infinispan>10.0.0.Final</version.infinispan>
 
@@ -90,6 +90,13 @@
                 <artifactId>jakarta.jakartaee-api</artifactId>
                 <version>8.0.0</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.6.0.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>javax.security.jacc</groupId>
@@ -212,13 +219,13 @@
             <dependency>
                 <groupId>org.jboss.marshalling</groupId>
                 <artifactId>jboss-marshalling-river</artifactId>
-                <version>2.0.6.Final</version>
+                <version>2.0.9.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.marshalling</groupId>
                 <artifactId>jboss-marshalling</artifactId>
-                <version>2.0.6.Final</version>
+                <version>2.0.9.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -506,12 +513,12 @@
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-protocol</artifactId>
-                <version>8.0.0.Final</version>
+                <version>13.0.0.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-controller-client</artifactId>
-                <version>8.0.0.Final</version>
+                <version>13.0.0.Final</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
@@ -671,6 +678,12 @@
                 <version>2.0</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-common</artifactId>
+                <version>${version.wildfly-arquillian-containers}</version>
+                <scope>test</scope>
+            </dependency>
             <!-- endregion -->
 
         </dependencies>
@@ -762,14 +775,18 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-persistence-api</artifactId>
+            <artifactId>arquillian-persistence-impl</artifactId>
             <version>1.0.0.Alpha6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-persistence-impl</artifactId>
-            <version>1.0.0.Alpha6</version>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-common</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -817,6 +834,7 @@
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <version>${version.wildfly-arquillian-containers}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
