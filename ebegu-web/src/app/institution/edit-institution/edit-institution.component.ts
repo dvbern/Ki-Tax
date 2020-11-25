@@ -26,6 +26,7 @@ import {
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
+import {MatCheckboxChange} from '@angular/material/typings/checkbox';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -86,6 +87,7 @@ export class EditInstitutionComponent implements OnInit {
     private isRegisteringInstitution: boolean = false;
     private initiallyAssignedClients: TSInstitutionExternalClient[];
     public ebeguUtil = EbeguUtil;
+    public allPossibleClients: TSExternalClient[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -136,6 +138,17 @@ export class EditInstitutionComponent implements OnInit {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
         this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
+        this.allPossibleClients = [].concat(externalClients.assignedClients.map(eC => eC.externalClient))
+            .concat(externalClients.availableClients)
+            .sort((a: TSExternalClient, b: TSExternalClient) => {
+                if (a.clientName.toLowerCase() < b.clientName.toLowerCase()) {
+                    return -1;
+                }
+                if (a.clientName.toLowerCase() > b.clientName.toLowerCase()) {
+                    return 1;
+                }
+                return 0;
+            });
         this.changeDetectorRef.markForCheck();
     }
 
@@ -481,5 +494,27 @@ export class EditInstitutionComponent implements OnInit {
 
     public dateBisChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
         assignedClient.gueltigkeit.gueltigBis = $event ? $event.endOf('month') : null;
+    }
+
+    public changeAssignmentClient(changeEvent: MatCheckboxChange, client: TSExternalClient): void {
+        if (changeEvent.checked) {
+            if (!this.isClientAssigned(client)) {
+               this.externalClients.assignedClients.push(new TSInstitutionExternalClient(client));
+            }
+        } else {
+            const idx = this.externalClients.assignedClients.findIndex(c => c.externalClient.id === client.id);
+            if (idx >= 0) {
+               this.externalClients.assignedClients.splice(idx, 1);
+            }
+        }
+    }
+
+    public isClientAssigned(client: TSExternalClient): boolean {
+        return !!this.externalClients.assignedClients.find(c => c.externalClient.id === client.id);
+    }
+
+    public getAssignedInstitutionClient(client: TSExternalClient): TSInstitutionExternalClient {
+        return this.externalClients.assignedClients
+            .find(assignedClient => assignedClient.externalClient.id === client.id);
     }
 }

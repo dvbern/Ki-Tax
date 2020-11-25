@@ -224,7 +224,8 @@
                             <div class="col-sm-6">
                                 <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
                                 <div class="form-group">
-                                    <mat-checkbox id="sendMailWennOffenePendenzen_id" name="sendMailWennOffenePendenzen_id"
+                                    <mat-checkbox id="sendMailWennOffenePendenzen_id"
+                                                  name="sendMailWennOffenePendenzen_id"
                                                   [(ngModel)]="stammdaten.sendMailWennOffenePendenzen">
                                         {{'INSTITUTION_BENACHRICHTIGUNG_PENDENZEN'|translate}}
                                     </mat-checkbox>
@@ -235,39 +236,68 @@
 
                     <div *ngIf="externalClients && !isTagesschule() && !isFerieninsel()" class="col-sm-6">
                         <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
-                        <div *ngFor="let availableClient of externalClients.availableClients">
+                        <div *ngFor="let client of allPossibleClients">
                             <div class="row picker-min-height">
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <div class="form-group">
-                                        <mat-checkbox (change)="assignAvailableClient(availableClient)">
-                                            {{availableClient.clientName}}
-                                        </mat-checkbox>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <mat-checkbox checked="true" (change)="unassignClient(assignedClient)">
-                                            {{assignedClient.externalClient.clientName}}
+                                        <mat-checkbox (change)="changeAssignmentClient($event, client)"
+                                                      [checked]="isClientAssigned(client)">
+                                            {{client.clientName}}
                                         </mat-checkbox>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigAb"
-                                                     (dateChange)="dateAbChange($event, assignedClient)"
-                                                     [required]="true">
-                                    </dv-month-picker>
+                                    <div class="form-group">
+                                        <dv-month-picker *ngIf="isClientAssigned(client)"
+                                                         [date]="getAssignedInstitutionClient(client).gueltigkeit.gueltigAb"
+                                                         (dateChange)="dateAbChange($event, getAssignedInstitutionClient(client))"
+                                                         [required]="true">
+                                        </dv-month-picker>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigBis"
-                                                     (dateChange)="dateBisChange($event, assignedClient)">
-                                    </dv-month-picker>
+                                    <div class="form-group">
+                                        <dv-month-picker *ngIf="isClientAssigned(client)"
+                                                         [date]="getAssignedInstitutionClient(client).gueltigkeit.gueltigBis"
+                                                         (dateChange)="dateBisChange($event, getAssignedInstitutionClient(client))">
+                                        </dv-month-picker>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <!--                        <div *ngFor="let availableClient of externalClients.availableClients">-->
+                        <!--                            <div class="row picker-min-height">-->
+                        <!--                                <div class="col-sm-6">-->
+                        <!--                                    <div class="form-group">-->
+                        <!--                                        <mat-checkbox (change)="assignAvailableClient(availableClient)">-->
+                        <!--                                            {{availableClient.clientName}}-->
+                        <!--                                        </mat-checkbox>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <!--                        <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">-->
+                        <!--                            <div class="row">-->
+                        <!--                                <div class="col-sm-3">-->
+                        <!--                                    <div class="form-group">-->
+                        <!--                                        <mat-checkbox checked="true" (change)="unassignClient(assignedClient)">-->
+                        <!--                                            {{assignedClient.externalClient.clientName}}-->
+                        <!--                                        </mat-checkbox>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                                <div class="col-sm-4">-->
+                        <!--                                    <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigAb"-->
+                        <!--                                                     (dateChange)="dateAbChange($event, assignedClient)"-->
+                        <!--                                                     [required]="true">-->
+                        <!--                                    </dv-month-picker>-->
+                        <!--                                </div>-->
+                        <!--                                <div class="col-sm-4">-->
+                        <!--                                    <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigBis"-->
+                        <!--                                                     (dateChange)="dateBisChange($event, assignedClient)">-->
+                        <!--                                    </dv-month-picker>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
                     </div>
                 </div>
             </fieldset>
