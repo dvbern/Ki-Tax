@@ -119,7 +119,7 @@
     "@angular/upgrade": "^10.0.14",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@uirouter/angular": "^6.0.3",
+    "@uirouter/angular": "^7.0.0",
     "@uirouter/angular-hybrid": "^10.0.1",
     "@uirouter/angularjs": "^1.0.28",
     "@uirouter/core": "^6.0.6",
