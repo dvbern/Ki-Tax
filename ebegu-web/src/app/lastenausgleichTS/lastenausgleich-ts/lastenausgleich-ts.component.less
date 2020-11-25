@@ -1,7 +1,12 @@
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
 .lastenausgleich-ts-container {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: @contrast-light;
+
     .flex-container {
         display: flex;
         width: 100%;
@@ -9,12 +14,14 @@
     }
     dv-lastenausgleich-ts-side-nav {
         width: 35.5rem;
-        background-color: yellow;
+        background-color: @contrast-lightest;
+        display: flex;
+        flex-direction: column;
     }
 
     dv-lastenausgleich-ts-kommentar {
         width: 45rem;
-        background-color: blue;
+        background-color: @contrast-lightest;
     }
 
     .antrag {

@@ -8,9 +8,13 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class LastenausgleichTsSideNavComponent implements OnInit {
 
-  constructor() { }
+    // TODO: replace with real values
+    public readonly lastenausgleichTsId = '1234';
+    public readonly status = 'Status';
 
-  ngOnInit() {
+    public constructor() { }
+
+    public ngOnInit(): void {
   }
 
 }

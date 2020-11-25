@@ -1,1 +1,35 @@
-<div class="sidenav"></div>
+<div id="sidenavContainer">
+    <div class="mobile-sidenav-scroll">
+        <div class="sidenav gesuch-status">
+            <h2 class="access-for-all-title">{{'AFA_GESUCHSTATUS' | translate}}</h2>
+            <span class="status">{{status}}</span>
+        </div>
+        <ul class="sidenav gesuch-menu">
+            <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
+
+            <li class="row" uiSref="lastenausgleich-ts.gemeinde-angaben"
+                uiSrefActive="active-element"
+                [uiParams]="{ lastenausgleichTsId: lastenausgleichTsId }">
+                <button class="col-xs-10">
+                    <span translate>LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE</span>
+                </button>
+            </li>
+            <li class="row"
+                uiSref="lastenausgleich-ts.tagesschulen-angaben"
+                uiSrefActive="active-element"
+                [uiParams]="{ lastenausgleichTsId: lastenausgleichTsId }">
+                <button class="col-xs-10">
+                    <span translate>LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN</span>
+                </button>
+            </li>
+            <li class="row"
+                uiSref="lastenausgleich-ts.freigabe"
+                uiSrefActive="active-element"
+                [uiParams]="{ lastenausgleichTsId: lastenausgleichTsId }">
+                <button class="col-xs-10">
+                    <span translate>LASTENAUSGLEICH_TS_FREIGABE</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1287,6 +1287,7 @@
     "AFA_SIDENAV": "Antragsnavigation",
     "AFA_GESUCHSTATUS": "Antragsstatus",
     "AFA_SIDENAVMENU": "Antragssnavigationsmenü",
+    "AFA_SIDENAVMENU_TS": "Antragssnavigationsmenü Lastenausgleich Tagesschulen",
     "AFA_DASHBOARD": "Anstragsstellerdashboard",
     "AFA_TOOLBAR": "Hauptnavigation",
     "AFA_INDEXBAR": "Benutzernavigation",
@@ -2166,5 +2167,8 @@
     "BENUTZER_RESET_CONFIRMATION_TEXT": "Damit wird die Verbindung zum aktuellen BE-Login Konto gelöscht",
     "BENUTZER_RESETTED_MESSAGE": "{{fullName}} wurde zurückgesetzt",
     "MAHLZEITENVERGUENSTIGUNG": "Mahlzeitenvergünstigung",
+    "LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE": "Angaben Gemeinde",
+    "LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN": "Angaben Tagesschulen",
+    "LASTENAUSGLEICH_TS_FREIGABE": "Freigabe",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
