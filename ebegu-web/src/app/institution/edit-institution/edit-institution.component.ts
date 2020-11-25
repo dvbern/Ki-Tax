@@ -517,4 +517,16 @@ export class EditInstitutionComponent implements OnInit {
         return this.externalClients.assignedClients
             .find(assignedClient => assignedClient.externalClient.id === client.id);
     }
+
+    public getSortedAssignedClients(): TSInstitutionExternalClient[] {
+        return this.externalClients.assignedClients.sort((a: TSInstitutionExternalClient, b: TSInstitutionExternalClient) => {
+            if (a.externalClient.clientName < b.externalClient.clientName) {
+                return -1;
+            }
+            if (a.externalClient.clientName > b.externalClient.clientName) {
+                return 1;
+            }
+            return 0;
+        });
+    }
 }

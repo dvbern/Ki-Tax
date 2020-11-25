@@ -265,39 +265,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--                        <div *ngFor="let availableClient of externalClients.availableClients">-->
-                        <!--                            <div class="row picker-min-height">-->
-                        <!--                                <div class="col-sm-6">-->
-                        <!--                                    <div class="form-group">-->
-                        <!--                                        <mat-checkbox (change)="assignAvailableClient(availableClient)">-->
-                        <!--                                            {{availableClient.clientName}}-->
-                        <!--                                        </mat-checkbox>-->
-                        <!--                                    </div>-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-                        <!--                        <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">-->
-                        <!--                            <div class="row">-->
-                        <!--                                <div class="col-sm-3">-->
-                        <!--                                    <div class="form-group">-->
-                        <!--                                        <mat-checkbox checked="true" (change)="unassignClient(assignedClient)">-->
-                        <!--                                            {{assignedClient.externalClient.clientName}}-->
-                        <!--                                        </mat-checkbox>-->
-                        <!--                                    </div>-->
-                        <!--                                </div>-->
-                        <!--                                <div class="col-sm-4">-->
-                        <!--                                    <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigAb"-->
-                        <!--                                                     (dateChange)="dateAbChange($event, assignedClient)"-->
-                        <!--                                                     [required]="true">-->
-                        <!--                                    </dv-month-picker>-->
-                        <!--                                </div>-->
-                        <!--                                <div class="col-sm-4">-->
-                        <!--                                    <dv-month-picker [date]="assignedClient.gueltigkeit.gueltigBis"-->
-                        <!--                                                     (dateChange)="dateBisChange($event, assignedClient)">-->
-                        <!--                                    </dv-month-picker>-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
                     </div>
                 </div>
             </fieldset>
@@ -373,7 +340,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" *ngIf="externalClients && !isTagesschule() && !isFerieninsel()">
                                 <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
-                                <div *ngFor="let assignedClient of externalClients.assignedClients; let i = index">
+                                <div *ngFor="let assignedClient of getSortedAssignedClients(); let i = index">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             {{assignedClient.externalClient.clientName}}
