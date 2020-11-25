@@ -1,0 +1,104 @@
+/*
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.kommentar-view {
+    height: 100%;
+    overflow-y: auto;
+
+    & > form {
+        height: inherit;
+    }
+
+    md-input-container {
+        margin: 0;
+
+        label:not(.md-container-ignore) {
+            .ebeguH3();
+            position: static;
+        }
+
+        textarea {
+            margin-top: 0.5rem;
+        }
+    }
+
+    #kommentarIntern, #kommentarVerfuegung, #kommentarPruefungSTV {
+        .ebeguP();
+        background-color: @contrast-lightest;
+        border: 1px @secondary solid;
+        padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+
+        &[disabled] {
+            background-color: @contrast;
+        }
+
+        &:focus {
+            outline: 0;
+        }
+    }
+
+    /* stylelint-disable selector-class-pattern*/
+    .kommentar-feld md-input-container label:not(.md-no-float):not(._md-container-ignore) {
+
+        /* stylelint-enable */
+        color: @secondary;
+        padding-left: 1rem;
+    }
+
+    .kommentar-button {
+        align-items: center;
+        background-color: @secondary;
+        cursor: pointer;
+        display: flex;
+        width: 100%;
+
+        span {
+            margin: auto;
+        }
+
+        &:hover {
+            background: @secondary-dark;
+            color: @contrast-lightest;
+        }
+    }
+
+    .bottom-align {
+        bottom: 0;
+        padding: 0;
+        position: absolute;
+        right: 0;
+    }
+
+    .kommentar-verfuegung-align {
+        bottom: 2rem;
+        position: absolute;
+        right: 0;
+    }
+
+}
+
+.kommentar-padding {
+    padding: 1.5rem;
+
+    & + & {
+        padding-top: 0;
+    }
+}
+
