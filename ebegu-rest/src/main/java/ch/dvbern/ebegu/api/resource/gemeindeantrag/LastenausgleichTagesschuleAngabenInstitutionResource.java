@@ -157,7 +157,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenInstitutionContainer getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(
-		@Nullable JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
+		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
 	) {
 		Objects.requireNonNull(latsInstitutionContainerJax);
 		Objects.requireNonNull(latsInstitutionContainerJax.getId());
