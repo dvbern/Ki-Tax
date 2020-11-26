@@ -16,27 +16,41 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {TranslateModule} from '@ngx-translate/core';
+import {UIRouterModule} from '@uirouter/angular';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {SharedModule} from '../../shared/shared.module';
 
 import {LastenausgleichTsSideNavComponent} from './lastenausgleich-ts-side-nav.component';
 
 describe('LastenausgleichTsSideNavComponent', () => {
-  let component: LastenausgleichTsSideNavComponent;
-  let fixture: ComponentFixture<LastenausgleichTsSideNavComponent>;
+    let component: LastenausgleichTsSideNavComponent;
+    let fixture: ComponentFixture<LastenausgleichTsSideNavComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LastenausgleichTsSideNavComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                WindowRef
+            ],
+            declarations: [LastenausgleichTsSideNavComponent],
+            imports: [
+                UIRouterModule.forRoot({useHash: true}),
+                TranslateModule,
+                MatToolbarModule,
+                SharedModule
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LastenausgleichTsSideNavComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LastenausgleichTsSideNavComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

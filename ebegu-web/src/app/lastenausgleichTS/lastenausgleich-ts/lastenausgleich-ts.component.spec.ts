@@ -16,27 +16,55 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {TranslateModule} from '@ngx-translate/core';
+import {UIRouterModule} from '@uirouter/angular';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {SharedModule} from '../../shared/shared.module';
+import {LastenausgleichTsKommentarComponent} from '../lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
+import {LastenausgleichTsSideNavComponent} from '../lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
+import {LastenausgleichTsToolbarComponent} from '../lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';
 
 import {LastenausgleichTSComponent} from './lastenausgleich-ts.component';
 
 describe('LastenausgleichTSComponent', () => {
-  let component: LastenausgleichTSComponent;
-  let fixture: ComponentFixture<LastenausgleichTSComponent>;
+    let component: LastenausgleichTSComponent;
+    let fixture: ComponentFixture<LastenausgleichTSComponent>;
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LastenausgleichTSComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                WindowRef,
+                {
+                    provide: AuthServiceRS,
+                    useValue: authServiceRSSpy,
+                },
+            ],
+            declarations: [
+                LastenausgleichTSComponent,
+                LastenausgleichTsKommentarComponent,
+                LastenausgleichTsSideNavComponent,
+                LastenausgleichTsToolbarComponent,
+            ],
+            imports: [
+                SharedModule,
+                UIRouterModule.forRoot({useHash: true}),
+                TranslateModule,
+                MatToolbarModule
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LastenausgleichTSComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LastenausgleichTSComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

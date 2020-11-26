@@ -16,27 +16,39 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {TranslateModule} from '@ngx-translate/core';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {SharedModule} from '../../shared/shared.module';
 
 import {LastenausgleichTsToolbarComponent} from './lastenausgleich-ts-toolbar.component';
 
 describe('LastenausgleichTsToolbarComponent', () => {
-  let component: LastenausgleichTsToolbarComponent;
-  let fixture: ComponentFixture<LastenausgleichTsToolbarComponent>;
+    let component: LastenausgleichTsToolbarComponent;
+    let fixture: ComponentFixture<LastenausgleichTsToolbarComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LastenausgleichTsToolbarComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                WindowRef
+            ],
+            declarations: [LastenausgleichTsToolbarComponent],
+            imports: [
+                MatToolbarModule,
+                TranslateModule,
+                SharedModule
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LastenausgleichTsToolbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LastenausgleichTsToolbarComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

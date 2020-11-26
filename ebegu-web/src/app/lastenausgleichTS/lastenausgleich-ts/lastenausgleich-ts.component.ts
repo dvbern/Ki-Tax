@@ -28,7 +28,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 export class LastenausgleichTSComponent implements OnInit {
 
     public constructor(
-        private authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
