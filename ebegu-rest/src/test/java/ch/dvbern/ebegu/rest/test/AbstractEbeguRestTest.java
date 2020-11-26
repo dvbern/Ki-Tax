@@ -311,7 +311,7 @@ public abstract class AbstractEbeguRestTest {
 			.addAsWebInfResource("META-INF/test-beans.xml", "beans.xml")
 			.addAsResource("META-INF/test-orm.xml", "META-INF/orm.xml")
 			//deploy our test loginmodule
-			.addAsResource("testogin-users.properties", "users.properties")
+			.addAsResource("testlogin-users.properties", "users.properties")
 			.addAsResource("testlogin-roles.properties", "roles.properties")
 			.addAsWebInfResource("META-INF/test-jboss-web.xml", "jboss-web.xml")
 			// Deploy our test datasource
