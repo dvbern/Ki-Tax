@@ -8,6 +8,6 @@ Description: Dies ist ein dummy manfiest file fuer arquililan
 OS-Name: Linux
 Version: 0.13.0-SNAPSHOT
 Created-By: Apache Maven 3.3.9
-Build-Jdk: 1.8.0_111
+Build-Jdk: 11.0.9+11
 Dependencies: org.infinispan export
 
