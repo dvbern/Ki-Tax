@@ -26,20 +26,25 @@
         height: inherit;
     }
 
-    md-input-container {
+    .form-group {
         margin: 0;
 
-        label:not(.md-container-ignore) {
+        label {
             .ebeguH3();
             position: static;
         }
 
         textarea {
             margin-top: 0.5rem;
+            border: 1px solid @blue;
+
+            &:focus {
+                outline: 0;
+            }
         }
     }
 
-    #kommentarIntern, #kommentarVerfuegung, #kommentarPruefungSTV {
+    #kommentar {
         .ebeguP();
         background-color: @contrast-lightest;
         border: 1px @secondary solid;
@@ -48,48 +53,6 @@
         &[disabled] {
             background-color: @contrast;
         }
-
-        &:focus {
-            outline: 0;
-        }
-    }
-
-    /* stylelint-disable selector-class-pattern*/
-    .kommentar-feld md-input-container label:not(.md-no-float):not(._md-container-ignore) {
-
-        /* stylelint-enable */
-        color: @secondary;
-        padding-left: 1rem;
-    }
-
-    .kommentar-button {
-        align-items: center;
-        background-color: @secondary;
-        cursor: pointer;
-        display: flex;
-        width: 100%;
-
-        span {
-            margin: auto;
-        }
-
-        &:hover {
-            background: @secondary-dark;
-            color: @contrast-lightest;
-        }
-    }
-
-    .bottom-align {
-        bottom: 0;
-        padding: 0;
-        position: absolute;
-        right: 0;
-    }
-
-    .kommentar-verfuegung-align {
-        bottom: 2rem;
-        position: absolute;
-        right: 0;
     }
 
 }

@@ -25,9 +25,9 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class LastenausgleichTsKommentarComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
 }

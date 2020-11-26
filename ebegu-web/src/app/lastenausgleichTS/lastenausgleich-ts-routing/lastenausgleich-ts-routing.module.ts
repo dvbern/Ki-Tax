@@ -31,13 +31,13 @@ const states: NgHybridStateDeclaration[] = [
         component: LastenausgleichTSComponent,
     },
     {
-        name: 'lastenausgleich-ts.gemeinde-angaben',
-        url: '/:lastenausgleichTsId/gemeinde-angaben',
+        name: 'lastenausgleich-ts.angaben-gemeinde',
+        url: '/:lastenausgleichTsId/angaben-gemeinde',
         component: GemeindeAngabenComponent
     },
     {
-        name: 'lastenausgleich-ts.tagesschulen-angaben',
-        url: '/:lastenausgleichTsId/tagesschulen-angaben',
+        name: 'lastenausgleich-ts.angaben-tagesschulen',
+        url: '/:lastenausgleichTsId/angaben-tagesschulen',
         component: TagesschulenAngabenComponent
     },
     {

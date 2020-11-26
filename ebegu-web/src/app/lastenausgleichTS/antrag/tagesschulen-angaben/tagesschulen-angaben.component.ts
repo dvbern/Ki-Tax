@@ -25,9 +25,9 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class TagesschulenAngabenComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
 }
