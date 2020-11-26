@@ -21,21 +21,21 @@
 mat-toolbar {
     background-color: @secondary;
     height: 4rem;
-    min-height: 4rem;
     justify-content: space-between;
+    min-height: 4rem;
     padding-left: 2rem;
     padding-right: 0;
 
     button {
         background: #68ACFC;
+        border: none;
         display: flex;
         font-size: 1.6rem;
-        height: 4rem;
-        min-width: 15rem;
-        justify-content: center;
-        padding: 0;
-        border: none;
         font-weight: 400;
+        height: 4rem;
+        justify-content: center;
+        min-width: 15rem;
+        padding: 0;
 
         &:hover, &:focus {
             background: @secondary-dark;
@@ -48,9 +48,9 @@ mat-toolbar {
     span, button {
         &.menu-item {
             .menu-item-link();
+            color: @contrast-lightest;
             min-width: 15rem !important;
             padding: 0 2rem 0;
-            color: @contrast-lightest;
 
             &.bold-menu {
                 .ebeguBold();
