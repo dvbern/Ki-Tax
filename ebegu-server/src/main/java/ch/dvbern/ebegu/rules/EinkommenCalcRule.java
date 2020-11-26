@@ -137,7 +137,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					// Falls MaxEinkommen, aber kein Zuschlag fuer erweiterte Betreuung -> Anspruch wird auf 0 gesetzt
 					// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen
 					// Bei Tagesschule muss der Anspruch immer 100 bleiben, siehe BetreuungsangebotTypCalcRule
-					inputData.setAnspruchspensumProzent(0);
+					inputData.setAnspruchZeroAndSaveRestanspruch();
 				}
 			}
 			// Bemerkungen setzen, je nach Grund des Max-Einkommens

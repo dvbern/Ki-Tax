@@ -63,7 +63,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 			// nicht 0 gesetzt werden, da sonst der Restanspruch falsch berechnet wird!
 			// Daher nur 0 setzen, wenn tatsaechlich noch eine Betreuung vorhanden ist (die nicht in der
 			// Gemeinde ist)
-			input.setAnspruchspensumProzent(0);
+			input.setAnspruchZeroAndSaveRestanspruch();
 			// Die Bemerkung wollen wir nur setzen, wenn es ueberhaupt eine Betreuung gibt zu diesem Zeitpunkt
 			// Das Flag betreuungInBern ist logischerweise auf der Betreuung, und in Zeitabschnitten ohne Betreuung
 			// defaultmaessig false!

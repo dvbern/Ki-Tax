@@ -72,8 +72,7 @@ public class RueckforderungFormular extends AbstractEntity {
 		inverseForeignKey = @ForeignKey(name = "FK_rueckforderung_formular_rueckforderung_mitteilung_formular_id"),
 		indexes = {
 			@Index(name = "FK_rueckforderung_formular_mitteilung_id", columnList = "rueckforderung_formular_id"),
-			@Index(name = "IX_institution_external_clients_external_client_id", columnList =
-				"rueckforderung_mitteilung_id"),
+			@Index(name = "IX_rueckforderung_formular_mitteilung_id", columnList = "rueckforderung_mitteilung_id"),
 		}
 	)
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
