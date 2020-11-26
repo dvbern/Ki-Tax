@@ -16,7 +16,7 @@
  */
 
 import {SimpleChange} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {createClient} from '../../../../models/TSExternalClient';
@@ -31,7 +31,7 @@ describe('ExternalClientMultiselectComponent', () => {
     let component: ExternalClientMultiselectComponent;
     let fixture: ComponentFixture<ExternalClientMultiselectComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,

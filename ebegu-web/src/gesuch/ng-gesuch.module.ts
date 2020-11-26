@@ -30,13 +30,7 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
         BetreuungOverrideWarningComponent,
         DvEingabeBasisjahrComponent
     ],
-    entryComponents: [
-        FallToolbarComponent,
-        DvSwitchComponent,
-        BetreuungOverrideWarningComponent,
-        DvEingabeBasisjahrComponent
-    ],
-})
+    })
 
 export class NgGesuchModule {
 }

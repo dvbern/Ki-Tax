@@ -30,10 +30,6 @@ import {BenutzerComponent} from './benutzer/benutzer.component';
         BenutzerComponent,
         BenutzerEinladenComponent,
     ],
-    entryComponents: [
-        BenutzerComponent,
-        BenutzerEinladenComponent,
-    ],
     exports: [
         BenutzerComponent,
     ],

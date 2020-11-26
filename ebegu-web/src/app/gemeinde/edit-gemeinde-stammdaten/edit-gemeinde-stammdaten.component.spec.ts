@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
@@ -35,7 +35,7 @@ describe('EditGemeindeComponentStammdaten', () => {
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
             imports: [
@@ -56,13 +56,13 @@ describe('EditGemeindeComponentStammdaten', () => {
 
     }));
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         fixture = TestBed.createComponent(EditGemeindeComponentStammdaten);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));
 
-    it('should create', async(() => {
+    it('should create', waitForAsync(() => {
         expect(component).toBeTruthy();
     }));
 });

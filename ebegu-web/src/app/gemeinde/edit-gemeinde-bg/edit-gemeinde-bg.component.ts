@@ -55,7 +55,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
-    @ViewChild(NgModelGroup, { static: false }) private readonly group: NgModelGroup;
+    @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
     public readonly CONSTANTS = CONSTANTS;
 

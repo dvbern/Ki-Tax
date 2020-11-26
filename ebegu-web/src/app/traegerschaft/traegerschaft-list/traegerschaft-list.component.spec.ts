@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
@@ -32,7 +32,7 @@ describe('TraegerschaftListComponent', () => {
   let component: TraegerschaftListComponent;
   let fixture: ComponentFixture<TraegerschaftListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
       const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
           ['createTraegerschaft']);
       const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
