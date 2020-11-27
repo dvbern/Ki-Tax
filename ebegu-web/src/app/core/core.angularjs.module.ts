@@ -150,6 +150,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
+import {WizardStepXRS} from './service/wizardStepXRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
 import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
@@ -268,6 +269,7 @@ export const CORE_JS_MODULE = angular
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .service('applicationPropertyRS', ApplicationPropertyRS)
+    .service('WizardStepXRS', WizardStepXRS)
     .controller('DVElementController', DVRoleElementController)
     .component('dvLoadingButton', new DVLoadingButton())
     .component('dvAdresse', new AdresseComponentConfig())

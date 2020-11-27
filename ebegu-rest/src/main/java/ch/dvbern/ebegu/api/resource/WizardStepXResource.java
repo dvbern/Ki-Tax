@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
@@ -36,7 +39,9 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBWizardStepXConverter;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizard;
 import io.swagger.annotations.Api;
@@ -123,5 +128,39 @@ public class WizardStepXResource {
 			break;
 		}
 		return null;
+	}
+
+	@ApiOperation(value = "Gibt den ersten Step.", response = JaxWizardStepX.class)
+	@Nullable
+	@GET
+	@Path("/getAllSteps/{wizardtyp}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxWizardStepX> getAllWizardSteps(
+		@Nonnull @NotNull @PathParam("wizardtyp") String wizardtyp,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		UserRole userRole = principalBean.discoverMostPrivilegedRole();
+		assert userRole != null;
+		Wizard wizard = null;
+		switch (WizardTyp.valueOf(wizardtyp)) {
+		case TAGESSCHULELASTENAUSGLEICH:
+			wizard = new TagesschuleWizard(userRole);
+			break;
+		default:
+			break;
+		}
+		List<JaxWizardStepX> jaxWizardStepXList = new ArrayList<>();
+		WizardStep futurPreviousStep = wizard.getStep();
+		jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
+		wizard.nextState();
+		while(!wizard.getStep().getWizardStepName().equals(futurPreviousStep.getWizardStepName())){
+			futurPreviousStep = wizard.getStep();
+			jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
+			wizard.nextState();
+		}
+
+		return jaxWizardStepXList;
 	}
 }

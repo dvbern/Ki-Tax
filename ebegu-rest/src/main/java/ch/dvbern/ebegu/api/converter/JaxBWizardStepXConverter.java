@@ -17,20 +17,13 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.wizardx.WizardStep;
-import ch.dvbern.ebegu.wizardx.WizardTyp;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenGemeinde;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenTagesschule;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.Lastenausgleich;
-import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizard;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizardStepsEnum;
 
 @RequestScoped

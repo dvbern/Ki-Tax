@@ -15,14 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx;
+export class TSWizardStepX {
 
-import ch.dvbern.ebegu.enums.UserRole;
+    public wizardTyp: string;
 
-public interface Wizard {
-	void previousState();
-	void nextState();
-	WizardStep getStep();
-	void setStep(WizardStep step);
-	UserRole getRole();
+    public stepName: string;
+
 }

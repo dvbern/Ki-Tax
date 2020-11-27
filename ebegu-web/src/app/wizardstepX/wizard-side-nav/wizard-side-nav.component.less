@@ -8,21 +8,30 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx;
+/**
+Grösster Teil des Stylings wird von sidenav.less übernommen
+ */
 
-import ch.dvbern.ebegu.enums.UserRole;
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
 
-public interface Wizard {
-	void previousState();
-	void nextState();
-	WizardStep getStep();
-	void setStep(WizardStep step);
-	UserRole getRole();
+.gesuch-status {
+    color: @contrast-darkest;
+    margin: 5rem 2.5rem 2.5rem 2.5rem;
+
+    .status {
+        .ebeguBold();
+        font-size: 1.4rem;
+        letter-spacing: 0.1rem;
+    }
+}
+button {
+    background: none;
 }

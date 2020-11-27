@@ -29,13 +29,17 @@ public class AngabenTagesschule implements WizardStep<InstitutionStammdatenTages
 	@Override
 	public void next(
 		@Nonnull Wizard tagesschuleWizard) {
-		tagesschuleWizard.setStep(new Lastenausgleich());
+		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS() || tagesschuleWizard.getRole().isRoleMandant() || tagesschuleWizard.getRole().isSuperadmin()) {
+			tagesschuleWizard.setStep(new Lastenausgleich());
+		}
 	}
 
 	@Override
 	public void prev(
 		@Nonnull Wizard tagesschuleWizard) {
-		tagesschuleWizard.setStep(new AngabenGemeinde());
+		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS() || tagesschuleWizard.getRole().isRoleMandant() || tagesschuleWizard.getRole().isSuperadmin()) {
+			tagesschuleWizard.setStep(new AngabenGemeinde());
+		}
 	}
 
 	@Override

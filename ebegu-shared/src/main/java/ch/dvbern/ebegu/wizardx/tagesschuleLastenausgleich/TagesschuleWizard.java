@@ -57,4 +57,9 @@ public class TagesschuleWizard implements Wizard {
 	public void setStep(WizardStep step) {
 		this.step = step;
 	}
+
+	@Override
+	public UserRole getRole() {
+		return role;
+	}
 }

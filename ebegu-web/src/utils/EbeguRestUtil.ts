@@ -135,6 +135,7 @@ import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
+import {TSWizardStepX} from '../models/TSWizardStepX';
 import {TSWorkJob} from '../models/TSWorkJob';
 import {TSZahlung} from '../models/TSZahlung';
 import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
@@ -4257,10 +4258,13 @@ export class EbeguRestUtil {
         institutionExternalClientRest: any,
         institutionExternalClientTS: TSInstitutionExternalClient,
     ): any {
-        institutionExternalClientRest.externalClient = this.externalClientToRestObject({}, institutionExternalClientTS.externalClient);
+        institutionExternalClientRest.externalClient =
+            this.externalClientToRestObject({}, institutionExternalClientTS.externalClient);
         if (institutionExternalClientTS.gueltigkeit) {
-            institutionExternalClientRest.gueltigAb = DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigAb);
-            institutionExternalClientRest.gueltigBis = DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigBis);
+            institutionExternalClientRest.gueltigAb =
+                DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigAb);
+            institutionExternalClientRest.gueltigBis =
+                DateUtil.momentToLocalDate(institutionExternalClientTS.gueltigkeit.gueltigBis);
         }
         return institutionExternalClientRest;
     }
@@ -4273,5 +4277,21 @@ export class EbeguRestUtil {
         externalClientRest.clientName = externalClientTS.clientName;
         externalClientRest.type = externalClientTS.type;
         return externalClientRest;
+    }
+
+    public parseWizardStepXList(data: any): TSWizardStepX[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseWizardStepX(item))
+            : [this.parseWizardStepX(data)];
+    }
+
+    public parseWizardStepX(data: any): TSWizardStepX {
+        const wizardStep = new TSWizardStepX();
+        wizardStep.stepName = data.stepName;
+        wizardStep.wizardTyp = data.wizardTyp;
+        return wizardStep;
     }
 }
