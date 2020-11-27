@@ -17,17 +17,6 @@
 
 package ch.dvbern.ebegu.wizardx;
 
-import javax.annotation.Nonnull;
-
-public interface WizardStep<T> {
-
-	void next(@Nonnull Wizard wizard);
-
-	void prev(@Nonnull Wizard wizard);
-
-	WizardStateEnum getStatus(T t);
-
-	WizardTyp getWizardTyp();
-
-	String getWizardStepName();
+public enum WizardTyp {
+	TAGESSCHULELASTENAUSGLEICH
 }

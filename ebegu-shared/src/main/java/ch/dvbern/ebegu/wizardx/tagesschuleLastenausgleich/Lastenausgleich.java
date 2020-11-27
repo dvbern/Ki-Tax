@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
+import ch.dvbern.ebegu.wizardx.WizardTyp;
 
 public class Lastenausgleich  implements WizardStep<Gemeinde> {
 	@Override
@@ -45,5 +46,10 @@ public class Lastenausgleich  implements WizardStep<Gemeinde> {
 	@Override
 	public String getWizardStepName() {
 		return TagesschuleWizardStepsEnum.LASTENAUSGLEICH.name();
+	}
+
+	@Override
+	public WizardTyp getWizardTyp() {
+		return WizardTyp.TAGESSCHULELASTENAUSGLEICH;
 	}
 }

@@ -15,19 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx;
+package ch.dvbern.ebegu.api.dtos;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 
-public interface WizardStep<T> {
+public class JaxWizardStepX {
 
-	void next(@Nonnull Wizard wizard);
+	@NotNull
+	private String wizardTyp;
 
-	void prev(@Nonnull Wizard wizard);
+	@NotNull
+	private String stepName;
 
-	WizardStateEnum getStatus(T t);
+	public String getWizardTyp() {
+		return wizardTyp;
+	}
 
-	WizardTyp getWizardTyp();
+	public void setWizardTyp(String wizardTyp) {
+		this.wizardTyp = wizardTyp;
+	}
 
-	String getWizardStepName();
+	public String getStepName() {
+		return stepName;
+	}
+
+	public void setStepName(String stepName) {
+		this.stepName = stepName;
+	}
 }

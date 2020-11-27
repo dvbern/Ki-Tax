@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
+import ch.dvbern.ebegu.wizardx.WizardTyp;
 
 public class AngabenTagesschule implements WizardStep<InstitutionStammdatenTagesschule> {
 	@Override
@@ -47,5 +48,10 @@ public class AngabenTagesschule implements WizardStep<InstitutionStammdatenTages
 	@Override
 	public String getWizardStepName() {
 		return TagesschuleWizardStepsEnum.ANGABEN_TAGESSCHULE.name();
+	}
+
+	@Override
+	public WizardTyp getWizardTyp() {
+		return WizardTyp.TAGESSCHULELASTENAUSGLEICH;
 	}
 }
