@@ -1287,6 +1287,7 @@
     "AFA_SIDENAV": "Navigation (demande)",
     "AFA_GESUCHSTATUS": "Statut de la demande",
     "AFA_SIDENAVMENU": "Menu de navigation",
+    "AFA_SIDENAVMENU_TS": "",
     "AFA_DASHBOARD": "Tableau de bord de l'auteur-e de la demande",
     "AFA_TOOLBAR": "Page principale de navigation ",
     "AFA_INDEXBAR": "Navigation (utilisateur)",
@@ -2166,5 +2167,8 @@
     "BENUTZER_RESET_CONFIRMATION_TEXT": "La connection avec le compte BE-Login actuel sera effacée",
     "BENUTZER_RESETTED_MESSAGE": "{{fullName}} a été réinitialisé(e)",
     "MAHLZEITENVERGUENSTIGUNG": "Réduction des repas",
+    "LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE": "",
+    "LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN": "",
+    "LASTENAUSGLEICH_TS_FREIGABE": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
