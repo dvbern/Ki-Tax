@@ -45,11 +45,11 @@ public class Lastenausgleich  implements WizardStep<Gemeinde> {
 
 	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.LASTENAUSGLEICH.name();
+		return TagesschuleWizardStepsEnum.FREIGABE.name();
 	}
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.TAGESSCHULELASTENAUSGLEICH;
+		return WizardTyp.LASTENAUSGLEICH_TS;
 	}
 }

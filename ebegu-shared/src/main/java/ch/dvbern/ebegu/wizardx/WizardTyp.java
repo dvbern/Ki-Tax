@@ -18,5 +18,5 @@
 package ch.dvbern.ebegu.wizardx;
 
 public enum WizardTyp {
-	TAGESSCHULELASTENAUSGLEICH
+	LASTENAUSGLEICH_TS
 }

@@ -56,6 +56,6 @@ public class AngabenTagesschule implements WizardStep<InstitutionStammdatenTages
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.TAGESSCHULELASTENAUSGLEICH;
+		return WizardTyp.LASTENAUSGLEICH_TS;
 	}
 }

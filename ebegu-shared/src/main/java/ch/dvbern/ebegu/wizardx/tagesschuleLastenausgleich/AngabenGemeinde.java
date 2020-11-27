@@ -43,7 +43,7 @@ public class AngabenGemeinde implements WizardStep<Gemeinde> {
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.TAGESSCHULELASTENAUSGLEICH;
+		return WizardTyp.LASTENAUSGLEICH_TS;
 	}
 
 	@Override

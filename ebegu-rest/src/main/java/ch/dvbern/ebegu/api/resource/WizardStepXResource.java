@@ -73,7 +73,7 @@ public class WizardStepXResource {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		assert userRole != null;
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case TAGESSCHULELASTENAUSGLEICH:
+		case LASTENAUSGLEICH_TS:
 			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole);
 			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep());
 		default:
@@ -95,7 +95,7 @@ public class WizardStepXResource {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		assert userRole != null;
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case TAGESSCHULELASTENAUSGLEICH:
+		case LASTENAUSGLEICH_TS:
 			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole);
 			tagesschuleWizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToSTep(stepName));
 			tagesschuleWizard.nextState();
@@ -119,7 +119,7 @@ public class WizardStepXResource {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		assert userRole != null;
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case TAGESSCHULELASTENAUSGLEICH:
+		case LASTENAUSGLEICH_TS:
 			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole);
 			tagesschuleWizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToSTep(stepName));
 			tagesschuleWizard.previousState();
@@ -145,7 +145,7 @@ public class WizardStepXResource {
 		assert userRole != null;
 		Wizard wizard = null;
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case TAGESSCHULELASTENAUSGLEICH:
+		case LASTENAUSGLEICH_TS:
 			wizard = new TagesschuleWizard(userRole);
 			break;
 		default:

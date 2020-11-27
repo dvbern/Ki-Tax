@@ -20,5 +20,5 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 public enum TagesschuleWizardStepsEnum {
 	ANGABEN_GEMEINDE,
 	ANGABEN_TAGESSCHULE,
-	LASTENAUSGLEICH
+	FREIGABE
 }

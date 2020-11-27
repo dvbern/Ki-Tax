@@ -42,7 +42,7 @@ public class JaxBWizardStepXConverter {
 			return new AngabenGemeinde();
 		case ANGABEN_TAGESSCHULE:
 			return new AngabenTagesschule();
-		case LASTENAUSGLEICH:
+		case FREIGABE:
 			return new Lastenausgleich();
 		}
 		return null;

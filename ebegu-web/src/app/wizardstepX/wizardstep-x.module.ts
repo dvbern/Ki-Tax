@@ -25,7 +25,10 @@ import {WizardSideNavComponent} from './wizard-side-nav/wizard-side-nav.componen
 
 @NgModule({
     declarations: [
-        WizardSideNavComponent
+        WizardSideNavComponent,
+    ],
+    exports: [
+        WizardSideNavComponent,
     ],
     imports: [
         CommonModule,
@@ -35,8 +38,8 @@ import {WizardSideNavComponent} from './wizard-side-nav/wizard-side-nav.componen
         RouterModule,
         UIRouterModule,
         MatMenuModule,
-        MatButtonModule
-    ]
+        MatButtonModule,
+    ],
 })
 export class WizardstepXModule {
 }
