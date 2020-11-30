@@ -259,7 +259,7 @@ public class RueckforderungFormular extends AbstractEntity {
 	private BigDecimal beschwerdeBetrag;
 
 	@Nullable
-	@Size(max=2000)
+	@Size(max=10000)
 	@Column(nullable = true)
 	private String beschwerdeBemerkung;
 
