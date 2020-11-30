@@ -62,6 +62,8 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -1517,6 +1519,57 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (mahnung != null) {
 			checkWriteAuthorizedGesuchTechnicalData(mahnung.getGesuch());
 		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
+		if (latsGemeindeContainer != null) {
+			checkMandantMatches(latsGemeindeContainer.getGemeinde());
+			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+				return;
+			}
+			final boolean gehoertZuGemeinde = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
+				.stream()
+				.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
+			if (gehoertZuGemeinde) {
+				return;
+			}
+			// Alle anderen sind Stand heute nicht berechtigt
+			throwViolation(latsGemeindeContainer);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
+		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
+		checkReadAuthorization(latsGemeindeContainer);
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
+		if (latsInstitutionContainer != null) {
+			checkMandantMatches(latsInstitutionContainer.getGemeinde());
+			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+				return;
+			} else if (principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig()) {
+				final boolean gehoertZuGemeinde = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
+					.stream()
+					.anyMatch(latsInstitutionContainer.getGemeinde()::equals);
+				if (gehoertZuGemeinde) {
+					return;
+				}
+			} else if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+				checkWriteAuthorizationInstitution(latsInstitutionContainer.getInstitution());
+			}
+			// Alle anderen sind Stand heute nicht berechtigt
+			throwViolation(latsInstitutionContainer);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
+		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
+		checkReadAuthorization(latsInstitutionContainer);
 	}
 
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {

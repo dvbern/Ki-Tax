@@ -385,4 +385,9 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.GeneratedGeneralDokument"/>
 	<entity class="ch.dvbern.ebegu.entities.ReceivedEvent"/>
 	<entity class="ch.dvbern.ebegu.entities.Auszahlungsdaten"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory"/>
 </entity-mappings>
