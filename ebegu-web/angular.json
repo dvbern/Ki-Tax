@@ -31,7 +31,7 @@
                         "customWebpackConfig": {
                             "path": "./extra-webpack.config.js"
                         },
-                        "allowedCommonJsDependencies": ["lodash", "iban"]
+                        "allowedCommonJsDependencies": ["lodash", "iban", "raven-js"]
                     },
                     "configurations": {
                         "production": {
