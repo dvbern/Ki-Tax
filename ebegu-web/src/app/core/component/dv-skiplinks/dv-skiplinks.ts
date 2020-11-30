@@ -45,11 +45,11 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.routerGlobals?.current && this.routerGlobals.current.name === gesuchstellerDashboard);
+        return (this.routerGlobals.current && this.routerGlobals.current.name === gesuchstellerDashboard);
     }
 
     public isCurrentPageGesuch(): boolean {
-        return (this.routerGlobals?.current &&
+        return (this.routerGlobals.current &&
             this.routerGlobals.current.name !== gesuchstellerDashboard &&
             this.routerGlobals.current.name !== 'alleVerfuegungen.view' &&
             this.routerGlobals.current.name !== 'mitteilungen.view');
