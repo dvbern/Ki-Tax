@@ -16,7 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
-import {IbanModule} from 'ngx-iban';
+import {NgxIbanModule} from 'ngx-iban';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
@@ -36,7 +36,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         SharedModule,
         InstitutionRoutingModule,
         MaterialModule,
-        IbanModule,
+        NgxIbanModule,
         NgxMaterialTimepickerModule,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
