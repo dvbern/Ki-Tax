@@ -247,7 +247,7 @@ public class RueckforderungFormular extends AbstractEntity {
 	private Sprache korrespondenzSprache = Sprache.DEUTSCH;
 
 	@Nullable
-	@Size(min=1, max=2000)
+	@Size(min=1, max=10000)
 	@Column(nullable = true)
 	private String bemerkungFuerVerfuegung;
 
