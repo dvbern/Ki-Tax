@@ -147,7 +147,7 @@
     "iban": "0.0.14",
     "moment": "^2.24.0",
     "ng-file-upload": "~12.2.8",
-    "ngx-guided-tour": "=1.1.2",
+    "ngx-guided-tour": "^1.1.11",
     "ngx-iban": "^2.3.0",
     "ngx-material-timepicker": "^3.2.2",
     "randomcolor": "^0.5.4",
