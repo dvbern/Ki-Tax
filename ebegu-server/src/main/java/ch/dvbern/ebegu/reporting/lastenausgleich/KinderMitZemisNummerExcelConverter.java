@@ -46,7 +46,7 @@ public class KinderMitZemisNummerExcelConverter implements ExcelConverter {
 			rowGroup.addValue(MergeFieldZemis.periode, dataRow.getPeriode());
 			rowGroup.addValue(MergeFieldZemis.gemeinde, dataRow.getGemeinde());
 			rowGroup.addValue(MergeFieldZemis.name, dataRow.getName());
-			rowGroup.addValue(MergeFieldZemis.kindId, dataRow.getKindId());
+			rowGroup.addValue(MergeFieldZemis.kindNummer, dataRow.getKindNummer());
 			rowGroup.addValue(MergeFieldZemis.vorname, dataRow.getVorname());
 			rowGroup.addValue(MergeFieldZemis.geburtsdatum, dataRow.getGeburtsdatum());
 			rowGroup.addValue(MergeFieldZemis.zemisNummer, dataRow.getZemisNummer());

@@ -26,6 +26,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
@@ -40,7 +41,7 @@ public enum MergeFieldZemis implements MergeFieldProvider {
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	name(new SimpleMergeField<>("name", STRING_CONVERTER)),
 	vorname(new SimpleMergeField<>("vorname", STRING_CONVERTER)),
-	kindId(new SimpleMergeField<>("kindId", STRING_CONVERTER)),
+	kindNummer(new SimpleMergeField<>("kindId", INTEGER_CONVERTER)),
 	geburtsdatum(new SimpleMergeField<>("geburtsdatum", DATE_CONVERTER)),
 	zemisNummer(new SimpleMergeField<>("zemisNummer", STRING_CONVERTER)),
 	keinSelbstbehaltFuerGemeinde(new SimpleMergeField<>("keinSelbstbehaltFuerGemeinde", BOOLEAN_CONVERTER)),

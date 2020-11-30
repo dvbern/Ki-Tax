@@ -31,7 +31,7 @@ public class KindMitZemisNummerDataRow {
 	private @Nullable String gemeinde;
 	private @Nullable String name;
 	private @Nullable String vorname;
-	private @Nullable String kindId;
+	private @Nullable Integer kindNummer;
 	private @Nullable LocalDate geburtsdatum;
 	private @Nullable String zemisNummer;
 	private boolean keinSelbstbehaltFuerGemeinde;
@@ -80,12 +80,12 @@ public class KindMitZemisNummerDataRow {
 	}
 
 	@Nullable
-	public String getKindId() {
-		return kindId;
+	public Integer getKindNummer() {
+		return kindNummer;
 	}
 
-	public void setKindId(@Nullable String kindId) {
-		this.kindId = kindId;
+	public void setKindNummer(@Nullable Integer kindNummer) {
+		this.kindNummer = kindNummer;
 	}
 
 	public void setVorname(@Nullable String vorname) {

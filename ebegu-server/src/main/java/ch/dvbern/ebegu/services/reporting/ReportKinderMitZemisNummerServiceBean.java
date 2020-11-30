@@ -105,7 +105,7 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 					dataRow.setGemeinde(gesuch.getDossier().getGemeinde().getName());
 					dataRow.setName(kindContainer.getKindJA().getNachname());
 					dataRow.setVorname(kindContainer.getKindJA().getVorname());
-					dataRow.setKindId(kindContainer.getKindJA().getId());
+					dataRow.setKindNummer(kindContainer.getKindNummer());
 					dataRow.setGeburtsdatum(kindContainer.getKindJA().getGeburtsdatum());
 					dataRow.setZemisNummer(kindContainer.getKindJA().getZemisNummer());
 					// TODO: KIBON-1663 Kein Selbstbehalt richtig setzen, sobald das Feld in der Entity vorhanden ist
