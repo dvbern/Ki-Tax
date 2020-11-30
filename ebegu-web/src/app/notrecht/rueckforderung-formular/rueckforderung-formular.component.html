@@ -1466,7 +1466,8 @@
                         <hr class="header"/>
                     </div>
                 </div>
-                <form #beschwerdeForm="ngForm"
+                <form role="form"
+                      #beschwerdeForm="ngForm"
                       [ngClass]="{'ng-submitted': beschwerdeForm.submitted}"
                       (ngSubmit)="saveBeschwerde(rueckforderungFormular)"
                       *ngIf="showBeschwerde"
@@ -1483,6 +1484,7 @@
                                        [(ngModel)]="rueckforderungFormular.beschwerdeBetrag"
                                        [disabled]="beschwerdeReadOnly"
                                        class="form-control"
+                                       autofocus
                                        required>
                                 <dv-error-messages [errorObject]="beschwerdeBetrag.errors"
                                                    inputId="beschwerde_betrag_id">
@@ -1530,15 +1532,14 @@
                             </dv-file-upload>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" *ngIf="!beschwerdeReadOnly">
                         <div class="col-sm-12 flexbreak">
                             <button type="button" class="dv-btn cancel-button" *ngIf="isKantonBenutzer()"
-                                    (click)="abbrechenBeschwerde(rueckforderungFormular);"
-                                    [disabled]="beschwerdeReadOnly">
+                                    (click)="abbrechenBeschwerde(rueckforderungFormular);">
                                 <span translate>LABEL_ABBRECHEN</span>
                             </button>
                             <dv-loading-button *ngIf="isKantonBenutzer()"
-                                               [type]="'submit'" [disabled]="beschwerdeReadOnly">
+                                               [type]="'submit'">
                                 <span translate>RUECKFORDERUNG_BESCHWERDE_SPEICHERN</span>
                             </dv-loading-button>
                         </div>
