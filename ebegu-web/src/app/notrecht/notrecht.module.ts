@@ -41,10 +41,6 @@ import { RueckforderungVerlaengerungDialogComponent } from './rueckforderung-for
         SharedModule
     ],
     providers: [],
-    entryComponents: [
-        SendNotrechtMitteilungComponent,
-        RueckforderungVerlaengerungDialogComponent
-    ],
     // used for dv-accordion
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

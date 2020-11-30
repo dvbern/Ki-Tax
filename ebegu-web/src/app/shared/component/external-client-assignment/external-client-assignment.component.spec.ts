@@ -16,7 +16,7 @@
  */
 
 import {SimpleChange} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {createClient} from '../../../../models/TSExternalClient';
 import {TSExternalClientAssignment} from '../../../../models/TSExternalClientAssignment';
@@ -29,7 +29,7 @@ describe('ExternalClientAssignmentComponent', () => {
     let fixture: ComponentFixture<ExternalClientAssignmentComponent>;
     let translateServiceSpy: SpyObj<TranslateService>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
         TestBed.configureTestingModule({
             providers: [

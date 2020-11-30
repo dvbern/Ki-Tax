@@ -28,6 +28,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 @Component({
     selector: 'dv-edit-gemeinde-ts',
     templateUrl: './edit-gemeinde-ts.component.html',
+    styleUrls: ['./edit-gemeinde-ts.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })

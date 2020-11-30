@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container.component';
 
@@ -23,7 +23,7 @@ describe('FullHeightContainerComponent', () => {
     let component: FullHeightInnerPaddingContainerComponent;
     let fixture: ComponentFixture<FullHeightInnerPaddingContainerComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [FullHeightInnerPaddingContainerComponent],
         })

@@ -30,11 +30,6 @@ import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution
         TutorialInstitutionLoginComponent,
         TutorialGemeindeLoginComponent,
     ],
-    entryComponents: [
-        LocalLoginComponent,
-        TutorialInstitutionLoginComponent,
-        TutorialGemeindeLoginComponent,
-    ],
     providers: [
         // use providedIn in the class instead
     ],

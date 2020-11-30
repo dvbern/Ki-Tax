@@ -28,9 +28,6 @@ import {WelcomeRoutingModule} from './welcome-routing/welcome-routing.module';
     declarations: [
         WelcomeMainComponent,
     ],
-    entryComponents: [
-        WelcomeMainComponent,
-    ],
     providers: [],
 })
 export class WelcomeModule {

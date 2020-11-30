@@ -66,7 +66,7 @@ export class CoreModule {
     /**
      * @see https://angular.io/guide/singleton-services#forroot
      */
-    public static forRoot(): ModuleWithProviders {
+    public static forRoot(): ModuleWithProviders<CoreModule> {
         return {
             ngModule: CoreModule,
             providers: [

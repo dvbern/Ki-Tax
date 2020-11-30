@@ -45,7 +45,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     public dataSource: MatTableDataSource<TSGemeinde>;
     private readonly unsubscribe$ = new Subject<void>();
 
-    @ViewChild(NgForm, { static: false }) public form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
     public constructor(

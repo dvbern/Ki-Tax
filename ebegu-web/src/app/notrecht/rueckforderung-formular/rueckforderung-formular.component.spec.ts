@@ -16,7 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -45,7 +45,7 @@ describe('RueckforderungFormularComponent', () => {
     const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
         ['getNotverordnungDefaultEinreichefristPrivat', 'getNotverordnungDefaultEinreichefristOeffentlich']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristPrivat.and
             .returnValue(of('2020-08-01').toPromise());
         applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristOeffentlich.and

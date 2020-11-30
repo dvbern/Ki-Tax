@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -52,7 +52,7 @@ describe('AddGemeindeComponent', () => {
         'hasMandantAngebotTS'
     ]);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
             imports: [
@@ -85,13 +85,13 @@ describe('AddGemeindeComponent', () => {
         authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
     }));
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         fixture = TestBed.createComponent(AddGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));
 
-    it('should create', async(() => {
+    it('should create', waitForAsync(() => {
         expect(component).toBeTruthy();
     }));
 });
