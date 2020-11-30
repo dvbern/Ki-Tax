@@ -136,6 +136,11 @@ import ch.dvbern.ebegu.api.dtos.JaxVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
@@ -230,6 +235,11 @@ import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -5639,5 +5649,324 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstitutionExternalClient.getGueltigBis() == null ? Constants.END_OF_TIME : jaxInstitutionExternalClient.getGueltigBis();
 		institutionExternalClient.setGueltigkeit(new DateRange(dateAb, dateBis));
 		return institutionExternalClient;
+	}
+
+	@Nonnull
+	public List<JaxGemeindeAntrag> gemeindeAntragListToJax(@Nullable final List<GemeindeAntrag> gemeindeAntragList) {
+		if (gemeindeAntragList == null) {
+			return Collections.emptyList();
+		}
+		return gemeindeAntragList.stream()
+			.map(this::gemeindeAntragToJax)
+			.collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	@Nonnull
+	private JaxGemeindeAntrag gemeindeAntragToJax(@Nonnull final GemeindeAntrag gemeindeAntrag) {
+		JaxGemeindeAntrag jaxGemeindeAntrag = new JaxGemeindeAntrag();
+
+		jaxGemeindeAntrag.setTimestampErstellt(gemeindeAntrag.getTimestampErstellt());
+		jaxGemeindeAntrag.setTimestampMutiert(gemeindeAntrag.getTimestampMutiert());
+		jaxGemeindeAntrag.setId(gemeindeAntrag.getId());
+		jaxGemeindeAntrag.setVersion(gemeindeAntrag.getVersion());
+
+		jaxGemeindeAntrag.setGemeindeAntragTyp(gemeindeAntrag.getGemeindeAntragTyp());
+		jaxGemeindeAntrag.setGemeinde(gemeindeToJAX(gemeindeAntrag.getGemeinde()));
+		jaxGemeindeAntrag.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeAntrag.getGesuchsperiode()));
+		jaxGemeindeAntrag.setStatusString(gemeindeAntrag.getStatusString());
+		jaxGemeindeAntrag.setAntragAbgeschlossen(gemeindeAntrag.isAntragAbgeschlossen());
+
+		return jaxGemeindeAntrag;
+	}
+
+	@Nullable
+	public GemeindeAntrag gemeindeAntragToEntity(@Nullable JaxGemeindeAntrag jaxVerfuegung) {
+		throw new EbeguFingerWegException("gemeindeAntragToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nonnull
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainerToJax(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer
+	) {
+		JaxLastenausgleichTagesschuleAngabenGemeindeContainer jaxGemeindeContainer = new JaxLastenausgleichTagesschuleAngabenGemeindeContainer();
+		convertAbstractFieldsToJAX(gemeindeContainer, jaxGemeindeContainer);
+
+		jaxGemeindeContainer.setStatus(gemeindeContainer.getStatus());
+		jaxGemeindeContainer.setGemeinde(gemeindeToJAX(gemeindeContainer.getGemeinde()));
+		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
+		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
+		if (gemeindeContainer.getAngabenDeklaration() != null) {
+			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
+		}
+		if (gemeindeContainer.getAngabenKorrektur() != null) {
+			jaxGemeindeContainer.setAngabenKorrektur(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenKorrektur()));
+		}
+		final Set<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> institutionContainerList =
+			lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(gemeindeContainer.getAngabenInstitutionContainers());
+		jaxGemeindeContainer.setAngabenInstitutionContainers(institutionContainerList);
+
+		return jaxGemeindeContainer;
+	}
+
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainerToEntity(
+		@Nonnull JaxLastenausgleichTagesschuleAngabenGemeindeContainer jaxGemeindeContainer,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer
+	) {
+		requireNonNull(jaxGemeindeContainer.getGemeinde().getId());
+		requireNonNull(jaxGemeindeContainer.getGesuchsperiode().getId());
+
+		convertAbstractFieldsToJAX(gemeindeContainer, jaxGemeindeContainer);
+
+		gemeindeContainer.setStatus(jaxGemeindeContainer.getStatus());
+		// Die Gemeinde und die Periode duerfen nie vom Client uebernommen werden
+		gemeindeService.findGemeinde(jaxGemeindeContainer.getGemeinde().getId())
+			.ifPresent(gemeindeContainer::setGemeinde);
+		gesuchsperiodeService.findGesuchsperiode(jaxGemeindeContainer.getGesuchsperiode().getId())
+			.ifPresent(gemeindeContainer::setGesuchsperiode);
+
+		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
+
+		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {
+			if (gemeindeContainer.getAngabenDeklaration() != null) {
+				gemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToEntity(
+					jaxGemeindeContainer.getAngabenDeklaration(),
+					gemeindeContainer.getAngabenDeklaration()));
+			} else {
+				gemeindeContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenGemeinde());
+			}
+		}
+		if (jaxGemeindeContainer.getAngabenKorrektur() != null) {
+			if (gemeindeContainer.getAngabenKorrektur() != null) {
+				gemeindeContainer.setAngabenKorrektur(lastenausgleichTagesschuleAngabenGemeindeToEntity(
+					jaxGemeindeContainer.getAngabenKorrektur(),
+					gemeindeContainer.getAngabenKorrektur()));
+			} else {
+				gemeindeContainer.setAngabenKorrektur(new LastenausgleichTagesschuleAngabenGemeinde());
+			}
+		}
+
+		jaxGemeindeContainer.getAngabenInstitutionContainers()
+			.stream()
+			.map(this::lastenausgleichTagesschuleAngabenInstitutionContainerToStorableEntity)
+			.forEach(gemeindeContainer::addLastenausgleichTagesschuleAngabenInstitutionContainer);
+
+		return gemeindeContainer;
+	}
+
+	@Nonnull
+	public JaxLastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeindeToJax(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
+	) {
+		JaxLastenausgleichTagesschuleAngabenGemeinde jaxAngabenGemeinde = new JaxLastenausgleichTagesschuleAngabenGemeinde();
+		convertAbstractFieldsToJAX(angabenGemeinde, jaxAngabenGemeinde);
+
+		// A: Allgemeine Angaben
+		jaxAngabenGemeinde.setBedarfBeiElternAbgeklaert(angabenGemeinde.getBedarfBeiElternAbgeklaert());
+		jaxAngabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(angabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
+		jaxAngabenGemeinde.setAngebotVerfuegbarFuerAlleSchulstufen(angabenGemeinde.getAngebotVerfuegbarFuerAlleSchulstufen());
+		jaxAngabenGemeinde.setBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen(angabenGemeinde.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen());
+		// B: Abrechnung
+		jaxAngabenGemeinde.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
+		jaxAngabenGemeinde.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		jaxAngabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
+		jaxAngabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+		jaxAngabenGemeinde.setEinnahmenElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
+		// C: Kostenbeteiligung Gemeinde
+		jaxAngabenGemeinde.setGesamtKostenTagesschule(angabenGemeinde.getGesamtKostenTagesschule());
+		jaxAngabenGemeinde.setEinnnahmenVerpflegung(angabenGemeinde.getEinnnahmenVerpflegung());
+		jaxAngabenGemeinde.setEinnahmenSubventionenDritter(angabenGemeinde.getEinnahmenSubventionenDritter());
+		// D: Angaben zu weiteren Kosten und Ertraegen
+		jaxAngabenGemeinde.setBemerkungenWeitereKostenUndErtraege(angabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
+		// E: Kontrollfragen
+		jaxAngabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(angabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		jaxAngabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(angabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		jaxAngabenGemeinde.setEinkommenElternBelegt(angabenGemeinde.getEinkommenElternBelegt());
+		jaxAngabenGemeinde.setMaximalTarif(angabenGemeinde.getMaximalTarif());
+		jaxAngabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		// Bemerkungen
+		jaxAngabenGemeinde.setInternerKommentar(angabenGemeinde.getInternerKommentar());
+		jaxAngabenGemeinde.setBemerkungen(angabenGemeinde.getBemerkungen());
+
+		return jaxAngabenGemeinde;
+	}
+
+	@Nonnull
+	private LastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeindeToEntity(
+		@Nonnull JaxLastenausgleichTagesschuleAngabenGemeinde jaxAngabenGemeinde,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
+	) {
+		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
+
+		// A: Allgemeine Angaben
+		angabenGemeinde.setBedarfBeiElternAbgeklaert(jaxAngabenGemeinde.getBedarfBeiElternAbgeklaert());
+		angabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(jaxAngabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
+		angabenGemeinde.setAngebotVerfuegbarFuerAlleSchulstufen(jaxAngabenGemeinde.getAngebotVerfuegbarFuerAlleSchulstufen());
+		angabenGemeinde.setBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen(jaxAngabenGemeinde.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen());
+		// B: Abrechnung
+		angabenGemeinde.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(jaxAngabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
+		angabenGemeinde.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(jaxAngabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
+		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+		angabenGemeinde.setEinnahmenElterngebuehren(jaxAngabenGemeinde.getEinnahmenElterngebuehren());
+		// C: Kostenbeteiligung Gemeinde
+		angabenGemeinde.setGesamtKostenTagesschule(jaxAngabenGemeinde.getGesamtKostenTagesschule());
+		angabenGemeinde.setEinnnahmenVerpflegung(jaxAngabenGemeinde.getEinnnahmenVerpflegung());
+		angabenGemeinde.setEinnahmenSubventionenDritter(jaxAngabenGemeinde.getEinnahmenSubventionenDritter());
+		// D: Angaben zu weiteren Kosten und Ertraegen
+		angabenGemeinde.setBemerkungenWeitereKostenUndErtraege(jaxAngabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
+		// E: Kontrollfragen
+		angabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(jaxAngabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		angabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(jaxAngabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		angabenGemeinde.setEinkommenElternBelegt(jaxAngabenGemeinde.getEinkommenElternBelegt());
+		angabenGemeinde.setMaximalTarif(jaxAngabenGemeinde.getMaximalTarif());
+		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(jaxAngabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		// Bemerkungen
+		angabenGemeinde.setInternerKommentar(jaxAngabenGemeinde.getInternerKommentar());
+		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
+
+		return angabenGemeinde;
+	}
+
+	@Nonnull
+	private Set<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(
+		@Nullable final Set<LastenausgleichTagesschuleAngabenInstitutionContainer> institutionContainerList
+	) {
+		if (institutionContainerList == null) {
+			return Collections.emptySet();
+		}
+		return institutionContainerList.stream()
+			.map(this::lastenausgleichTagesschuleAngabenInstitutionContainerToJax)
+			.collect(Collectors.toCollection(TreeSet::new));
+	}
+
+	@Nonnull
+	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToJax(
+		@Nonnull final LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer
+	) {
+		JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer = new JaxLastenausgleichTagesschuleAngabenInstitutionContainer();
+		convertAbstractFieldsToJAX(institutionContainer, jaxInstitutionContainer);
+
+		jaxInstitutionContainer.setStatus(institutionContainer.getStatus());
+		jaxInstitutionContainer.setInstitution(institutionToJAX(institutionContainer.getInstitution()));
+		if (institutionContainer.getAngabenDeklaration() != null) {
+			jaxInstitutionContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenInstitutionToJax(institutionContainer.getAngabenDeklaration()));
+		}
+		if (institutionContainer.getAngabenKorrektur() != null) {
+			jaxInstitutionContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenInstitutionToJax(institutionContainer.getAngabenKorrektur()));
+		}
+		return jaxInstitutionContainer;
+	}
+
+	@Nonnull
+	private LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToStorableEntity(
+		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer
+	) {
+		LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainerToMergeWith =
+			persistence.find(LastenausgleichTagesschuleAngabenInstitutionContainer.class, jaxInstitutionContainer.getId());
+		if (institutionContainerToMergeWith == null) {
+			institutionContainerToMergeWith = new LastenausgleichTagesschuleAngabenInstitutionContainer();
+		}
+		return lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(jaxInstitutionContainer, institutionContainerToMergeWith);
+	}
+
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
+		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer,
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer
+	) {
+
+		requireNonNull(jaxInstitutionContainer.getInstitution().getId());
+		convertAbstractFieldsToJAX(institutionContainer, jaxInstitutionContainer);
+
+		institutionContainer.setStatus(jaxInstitutionContainer.getStatus());
+
+		// Die Institution darf nie vom Client uebernommen werden
+		institutionService.findInstitution(jaxInstitutionContainer.getInstitution().getId(), false)
+			.ifPresent(institutionContainer::setInstitution);
+
+		if (jaxInstitutionContainer.getAngabenDeklaration() != null) {
+			if (institutionContainer.getAngabenDeklaration() != null) {
+				institutionContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenInstitutionToEntity(
+					jaxInstitutionContainer.getAngabenDeklaration(),
+					institutionContainer.getAngabenDeklaration()));
+			} else {
+				institutionContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenInstitution());
+			}
+		}
+		if (jaxInstitutionContainer.getAngabenKorrektur() != null) {
+			if (institutionContainer.getAngabenKorrektur() != null) {
+				institutionContainer.setAngabenKorrektur(lastenausgleichTagesschuleAngabenInstitutionToEntity(
+					jaxInstitutionContainer.getAngabenKorrektur(),
+					institutionContainer.getAngabenKorrektur()));
+			} else {
+				institutionContainer.setAngabenKorrektur(new LastenausgleichTagesschuleAngabenInstitution());
+			}
+		}
+		return institutionContainer;
+	}
+
+	@Nonnull
+	private JaxLastenausgleichTagesschuleAngabenInstitution lastenausgleichTagesschuleAngabenInstitutionToJax(
+		@Nonnull final LastenausgleichTagesschuleAngabenInstitution angabenInstitution
+	) {
+		JaxLastenausgleichTagesschuleAngabenInstitution jaxAngabenInstitution = new JaxLastenausgleichTagesschuleAngabenInstitution();
+		convertAbstractFieldsToJAX(angabenInstitution, jaxAngabenInstitution);
+
+		// A: Informationen zur Tagesschule
+		jaxAngabenInstitution.setLehrbetrieb(angabenInstitution.getLehrbetrieb());
+		// B: Quantitative Angaben
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinder(angabenInstitution.getAnzahlEingeschriebeneKinder());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(angabenInstitution.getAnzahlEingeschriebeneKinderKindergarten());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(angabenInstitution.getAnzahlEingeschriebeneKinderBasisstufe());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		jaxAngabenInstitution.setDurchschnittKinderProTagFruehbetreuung(angabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
+		jaxAngabenInstitution.setDurchschnittKinderProTagMittag(angabenInstitution.getDurchschnittKinderProTagMittag());
+		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
+		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		// C: Qualitative Vorgaben der Tagesschuleverordnung
+		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
+		jaxAngabenInstitution.setSchuleAufBasisPaedagogischesKonzept(angabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
+		jaxAngabenInstitution.setRaeumlicheVoraussetzungenEingehalten(angabenInstitution.getRaeumlicheVoraussetzungenEingehalten());
+		jaxAngabenInstitution.setBetreuungsverhaeltnisEingehalten(angabenInstitution.getBetreuungsverhaeltnisEingehalten());
+		jaxAngabenInstitution.setErnaehrungsGrundsaetzeEingehalten(angabenInstitution.getErnaehrungsGrundsaetzeEingehalten());
+		// Bemerkungen
+		jaxAngabenInstitution.setBemerkungen(angabenInstitution.getBemerkungen());
+
+		return jaxAngabenInstitution;
+	}
+
+	@Nonnull
+	private LastenausgleichTagesschuleAngabenInstitution lastenausgleichTagesschuleAngabenInstitutionToEntity(
+		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitution jaxAngabenInstitution,
+		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution
+	) {
+		convertAbstractFieldsToEntity(jaxAngabenInstitution, angabenInstitution);
+
+		// A: Informationen zur Tagesschule
+		angabenInstitution.setLehrbetrieb(jaxAngabenInstitution.getLehrbetrieb());
+		// B: Quantitative Angaben
+		angabenInstitution.setAnzahlEingeschriebeneKinder(jaxAngabenInstitution.getAnzahlEingeschriebeneKinder());
+		angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderKindergarten());
+		angabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderBasisstufe());
+		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
+		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(jaxAngabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
+		angabenInstitution.setDurchschnittKinderProTagMittag(jaxAngabenInstitution.getDurchschnittKinderProTagMittag());
+		angabenInstitution.setDurchschnittKinderProTagNachmittag1(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag1());
+		angabenInstitution.setDurchschnittKinderProTagNachmittag2(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		// C: Qualitative Vorgaben der Tagesschuleverordnung
+		angabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(jaxAngabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
+		angabenInstitution.setSchuleAufBasisPaedagogischesKonzept(jaxAngabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
+		angabenInstitution.setRaeumlicheVoraussetzungenEingehalten(jaxAngabenInstitution.getRaeumlicheVoraussetzungenEingehalten());
+		angabenInstitution.setBetreuungsverhaeltnisEingehalten(jaxAngabenInstitution.getBetreuungsverhaeltnisEingehalten());
+		angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(jaxAngabenInstitution.getErnaehrungsGrundsaetzeEingehalten());
+		// Bemerkungen
+		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
+
+		return angabenInstitution;
 	}
 }
