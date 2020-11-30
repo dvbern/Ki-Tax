@@ -823,7 +823,8 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     private initReadOnlyDocument(rueckforderungFormular: TSRueckforderungFormular): boolean {
         // Alles ausser BEREIT_ZUM_VERRUEGEN und VERFUEGT
         if (isBereitZumVerfuegenOderVerfuegt(rueckforderungFormular.status)) {
-            return true;
+            // falls schon Verfügt kann Mandant und Superadmin immer noch hochladen
+            return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
         }
         return false;
     }
