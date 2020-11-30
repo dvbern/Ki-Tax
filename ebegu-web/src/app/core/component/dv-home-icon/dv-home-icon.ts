@@ -36,7 +36,7 @@ export class DvHomeIconController {
     public constructor(
         private readonly $state: StateService,
         private readonly gesuchModelManager: GesuchModelManager,
-        private routerGlobals: UIRouterGlobals) {
+        private readonly routerGlobals: UIRouterGlobals) {
     }
 
     public goBackHome(): void {
