@@ -2423,6 +2423,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = root.join(Gesuch_.gesuchsperiode);
 
 		Predicate predicateZemis = cb.isNotNull(joinKind.get(Kind_.ZEMIS_NUMMER));
+		Predicate predicateHasBetreuung = cb.isNotEmpty(joinKindContainer.get(KindContainer_.BETREUUNGEN));
 		Predicate predicateGueltig = cb.isTrue(root.get(Gesuch_.gueltig));
 
 		// für den Lastenausgleich 2020 müssen Kinder der Periode 19/20 und 20/21 zurückgegeben werden
@@ -2444,7 +2445,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		);
 		Predicate predicateYears = cb.or(predicateYear0, predicateYear1);
 
-		query.where(predicateZemis, predicateGueltig, predicateYears);
+		query.where(predicateZemis, predicateGueltig, predicateYears, predicateHasBetreuung);
 		return persistence.getCriteriaResults(query);
 	}
 }
