@@ -287,7 +287,7 @@ alter table lastenausgleich_tagesschule_angaben_institution_container
 			references lastenausgleich_tagesschule_angaben_institution (id);
 
 alter table lastenausgleich_tagesschule_angaben_institution_container
-	add constraint FK_lats_institutionContainer_gemeindeContainerid
+	add constraint FK_lats_institution_container_gemeinde_container_id
 		foreign key (angaben_gemeinde_id)
 			references lastenausgleich_tagesschule_angaben_gemeinde_container (id);
 

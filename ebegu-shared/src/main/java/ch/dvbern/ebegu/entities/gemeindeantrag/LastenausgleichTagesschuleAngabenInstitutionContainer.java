@@ -49,7 +49,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionContainer extends Abstr
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_institutionContainer_gemeindeContainerid"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_institution_container_gemeinde_container_id"), nullable = false)
 	private LastenausgleichTagesschuleAngabenGemeindeContainer angabenGemeinde;
 
 	@NotNull @Nonnull
