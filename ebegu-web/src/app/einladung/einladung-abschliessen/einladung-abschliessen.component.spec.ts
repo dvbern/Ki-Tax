@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -35,7 +35,7 @@ describe('EinladungAbschliessenComponent', () => {
     let fixture: ComponentFixture<EinladungAbschliessenComponent>;
     let superadmin: TSBenutzer;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
             ['getInstitutionenEditableForCurrentBenutzer']);

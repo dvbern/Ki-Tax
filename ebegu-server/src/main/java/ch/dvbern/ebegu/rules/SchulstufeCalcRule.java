@@ -74,9 +74,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 				if (einschulungTyp.ordinal() > einschulungsTypAnspruchsgrenze.ordinal()) {
 					// Der Anspruch wird (nur fuer diese Betreuung!) auf 0 gesetzt. Dafuer wird der vorher berechnete Anspruch wieder als Restanspruch
 					// gefuehrt
-					int anspruchVorRegel = inputData.getAnspruchspensumProzent();
-					inputData.setAnspruchspensumProzent(0);
-					inputData.setAnspruchspensumRest(anspruchVorRegel);
+					inputData.setAnspruchZeroAndSaveRestanspruch();
 					inputData.addBemerkung(getMsgKey(), getLocale());
 				}
 			}

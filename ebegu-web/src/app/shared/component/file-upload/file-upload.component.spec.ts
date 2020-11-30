@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
@@ -33,7 +33,7 @@ describe('FileUploadComponent', () => {
     const applicationPropertyRSSpy =
         jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(of('').toPromise());
 
         TestBed.configureTestingModule({

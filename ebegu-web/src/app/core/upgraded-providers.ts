@@ -31,7 +31,6 @@ import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {ErrorService} from './errors/service/ErrorService';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
-import {BenutzerRS} from './service/benutzerRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
@@ -99,17 +98,6 @@ export function testFaelleRSProviderServiceFactory(i: IInjectorService): TestFae
 export const testFaelleRSProvider = {
     provide: TestFaelleRS,
     useFactory: testFaelleRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
-// UserRS
-export function benutzerRSProviderServiceFactory(i: IInjectorService): BenutzerRS {
-    return i.get('BenutzerRS');
-}
-
-export const benutzerRSProvider = {
-    provide: BenutzerRS,
-    useFactory: benutzerRSProviderServiceFactory,
     deps: ['$injector'],
 };
 
@@ -350,7 +338,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     traegerschaftRSProvider,
     errorServiceProvider,
     testFaelleRSProvider,
-    benutzerRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
     zahlungRSProvider,

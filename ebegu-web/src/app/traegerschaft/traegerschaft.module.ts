@@ -38,11 +38,6 @@ import { TraegerschaftAddComponent } from './traegerschaft-add/traegerschaft-add
         TraegerschaftListComponent,
         TraegerschaftAddComponent,
     ],
-    entryComponents: [
-        TraegerschaftEditComponent,
-        TraegerschaftListComponent,
-        TraegerschaftAddComponent,
-    ],
     providers: [],
 })
 export class TraegerschaftModule {

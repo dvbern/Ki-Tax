@@ -372,7 +372,7 @@ public final class TestDataUtil {
 	public static Dossier createDefaultDossier() {
 		Dossier dossier = new Dossier();
 		dossier.setFall(createDefaultFall());
-		dossier.setGemeinde(createGemeindeParis());
+		dossier.setGemeinde(createGemeindeLondon());
 		return dossier;
 	}
 

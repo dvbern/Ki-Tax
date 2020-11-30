@@ -39,7 +39,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class GemeindeFiKonfigComponent implements OnInit {
-    @ViewChild(NgForm, { static: false }) public form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;

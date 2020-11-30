@@ -194,27 +194,7 @@ public class BetreuungsgutscheinEvaluator {
 				zeitabschnitte = executor.executeRules(rulesToRun, platz, zeitabschnitte);
 
 				// Die Abschluss-Rules ebenfalls ausführen
-
-				AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
-				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
-				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
-				MonatsRule monatsRule = new MonatsRule(isDebug);
-				MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
-				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
-
-				// Innerhalb eines Monats darf der Anspruch nie sinken
-				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
-				// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
-				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
-				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
-				zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
-				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-				zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
-				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-				zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);
-				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
-				// Daten, diese auch noch mergen
-				zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(platz, zeitabschnitte);
+				zeitabschnitte = executor.executeAbschlussRules(platz, zeitabschnitte, locale);
 
 				// Die Verfügung erstellen
 				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird
@@ -235,6 +215,9 @@ public class BetreuungsgutscheinEvaluator {
 				if (!isTagesschule) {
 					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
 				}
+
+				// Am Schluss der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
+				restanspruchZeitabschnitte = executor.executeRestanspruchInitializer(platz, zeitabschnitte);
 			}
 		}
 	}

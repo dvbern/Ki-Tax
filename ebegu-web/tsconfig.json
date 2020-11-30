@@ -12,7 +12,7 @@
             "es2018.promise"
         ],
         "locale": "en",
-        "module": "esnext",
+        "module": "es2020",
         "moduleResolution": "node",
         "newLine": "lf",
         "noFallthroughCasesInSwitch": true,

@@ -48,7 +48,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     public displayedColumns: string[] = [];
     public dataSource: MatTableDataSource<TSInstitutionListDTO>;
 
-    @ViewChild(NgForm, { static: false }) public form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort, { static: true }) public sort: MatSort;
     @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
 

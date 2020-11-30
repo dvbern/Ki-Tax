@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -36,7 +36,7 @@ describe('OnboardingBeLoginComponent', () => {
         .createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPortalAccountCreationPageLink']);
     const gemeindeId = '1';
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         transitionSpy.params.and.returnValue({gemeindeId});
 
         TestBed.configureTestingModule({

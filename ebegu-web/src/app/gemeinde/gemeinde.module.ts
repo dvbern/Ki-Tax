@@ -54,17 +54,6 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         GemeindeFiKonfigComponent,
         OverlappingZeitraumDirective
     ],
-    entryComponents: [
-        GemeindeListComponent,
-        AddGemeindeComponent,
-        EditGemeindeComponent,
-        EditGemeindeComponentBG,
-        EditGemeindeComponentFI,
-        EditGemeindeComponentTS,
-        EditGemeindeComponentStammdaten,
-        GemeindeTsKonfigComponent,
-        GemeindeFiKonfigComponent,
-    ],
     providers: [],
 })
 export class GemeindeModule {

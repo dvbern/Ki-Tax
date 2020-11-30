@@ -640,4 +640,13 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungMahlzeitenTotal = verguenstigungMahlzeitenTotal;
 	}
 
+	/**
+	 * Setzt den Anspruch auf 0, der bisherige Anspruch wird als AnspruchspensumRest gespeichert, fuer
+	 * eine eventuelle weitere Betreuung.
+	 */
+	public void setAnspruchZeroAndSaveRestanspruch() {
+		int anspruchVorRegel = getAnspruchspensumProzent();
+		setAnspruchspensumProzent(0);
+		setAnspruchspensumRest(BigDecimal.valueOf(anspruchVorRegel));
+	}
 }

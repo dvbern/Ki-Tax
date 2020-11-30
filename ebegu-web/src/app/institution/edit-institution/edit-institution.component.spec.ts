@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -32,7 +32,7 @@ describe('EditInstitutionComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
             imports: [

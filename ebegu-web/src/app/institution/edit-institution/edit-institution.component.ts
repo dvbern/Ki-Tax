@@ -76,10 +76,10 @@ export class EditInstitutionComponent implements OnInit {
     public isCheckRequired: boolean = false;
     public editMode: boolean;
 
-    @ViewChild(EditInstitutionBetreuungsgutscheineComponent, { static: false })
+    @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
     private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
 
-    @ViewChild(EditInstitutionTagesschuleComponent, { static: false })
+    @ViewChild(EditInstitutionTagesschuleComponent)
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     private isRegisteringInstitution: boolean = false;

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async} from '@angular/core/testing';
+import {waitForAsync} from '@angular/core/testing';
 import {IHttpBackendService, IQService, IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
@@ -83,7 +83,7 @@ describe('gesuchModelManager', () => {
 
     describe('API Usage', () => {
         describe('removeBetreuungFromKind', () => {
-            it('should remove the current Betreuung from the list of the current Kind', async(() => {
+            it('should remove the current Betreuung from the list of the current Kind', waitForAsync(() => {
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
                     undefined).then(() => {
@@ -98,7 +98,7 @@ describe('gesuchModelManager', () => {
             }));
         });
         describe('saveBetreuung', () => {
-            it('updates a betreuung', async(() => {
+            it('updates a betreuung', waitForAsync(() => {
                 $httpBackend.when('GET', '/ebegu/api/v1/dossier/id/undefined').respond({});
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
@@ -134,7 +134,7 @@ describe('gesuchModelManager', () => {
             }));
         });
         describe('saveGesuchAndFall', () => {
-            it('creates a Fall with a linked Gesuch', async(() => {
+            it('creates a Fall with a linked Gesuch', waitForAsync(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
@@ -146,7 +146,7 @@ describe('gesuchModelManager', () => {
                     });
                 });
             }));
-            it('only updates the Gesuch because it already exists', async(() => {
+            it('only updates the Gesuch because it already exists', waitForAsync(() => {
                 spyOn(gesuchRS, 'updateGesuch').and.returnValue($q.resolve(new TSGesuch()));
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
@@ -163,7 +163,7 @@ describe('gesuchModelManager', () => {
             }));
         });
         describe('setUserAsFallVerantwortlicherBG', () => {
-            it('puts the given user as the verantwortlicherBG for the fall', async(() => {
+            it('puts the given user as the verantwortlicherBG for the fall', waitForAsync(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
@@ -231,7 +231,7 @@ describe('gesuchModelManager', () => {
             });
         });
         describe('saveGesuchStatus', () => {
-            it('should update the status of the Gesuch im Server und Client', async(() => {
+            it('should update the status of the Gesuch im Server und Client', waitForAsync(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined)
                     .then(() => {
@@ -247,7 +247,7 @@ describe('gesuchModelManager', () => {
             }));
         });
         describe('saveVerfuegung', () => {
-            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', async(() => {
+            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', waitForAsync(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
@@ -436,7 +436,7 @@ describe('gesuchModelManager', () => {
             });
         });
         describe('areThereOnlySchulamtAngebote', () => {
-            beforeEach(async(() => {
+            beforeEach(waitForAsync(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
             }));

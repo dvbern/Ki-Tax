@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async} from '@angular/core/testing';
+import {waitForAsync} from '@angular/core/testing';
 import {IQService, IScope, ITimeoutService} from 'angular';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -43,7 +43,7 @@ describe('stammdatenView', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(async(angular.mock.inject($injector => {
+    beforeEach(waitForAsync(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
         $stateParams = $injector.get('$stateParams');
