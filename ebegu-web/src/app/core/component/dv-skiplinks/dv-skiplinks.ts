@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IDVFocusableController} from '../IDVFocusableController';
@@ -36,6 +36,7 @@ export class DvSkiplinksController implements IDVFocusableController {
 
     public constructor(
         private readonly $state: StateService,
+        private readonly routerGlobals: UIRouterGlobals
     ) {
     }
 
@@ -44,14 +45,14 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === gesuchstellerDashboard);
+        return (this.routerGlobals.current && this.routerGlobals.current.name === gesuchstellerDashboard);
     }
 
     public isCurrentPageGesuch(): boolean {
-        return (this.$state.current &&
-            this.$state.current.name !== gesuchstellerDashboard &&
-            this.$state.current.name !== 'alleVerfuegungen.view' &&
-            this.$state.current.name !== 'mitteilungen.view');
+        return (this.routerGlobals.current &&
+            this.routerGlobals.current.name !== gesuchstellerDashboard &&
+            this.routerGlobals.current.name !== 'alleVerfuegungen.view' &&
+            this.routerGlobals.current.name !== 'mitteilungen.view');
     }
 
     public focusLink(a: string): void {

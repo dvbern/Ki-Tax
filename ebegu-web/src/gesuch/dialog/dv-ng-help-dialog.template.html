@@ -37,7 +37,7 @@
         <p>DV Bern AG</p>
         <a href="" (click)="openSupportanfrage()">
             <i class="fa fa-question-circle-o">&nbsp;</i>
-            <span translate="SUPPORTANFRAGE_STELLEN">&nbsp;</span>
+            <span translate="SUPPORTANFRAGE_STELLEN"></span>
         </a>
         <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
         <p><a href="https://get.teamviewer.com/dvbv11" target="_blank" translate>TEAMVIEWER_LINK</a></p>
@@ -47,7 +47,7 @@
         <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
         <p>
             <a href="" (click)="startTour()">
-                <span translate="TOUR_STARTEN">&nbsp;</span>
+                <span translate="TOUR_STARTEN"></span>
             </a>
         </p>
     </div>
@@ -56,17 +56,17 @@
         <h2>Blog</h2>
         <p *ngIf="hasRoleMandant">
             <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_MANDANT_LINK' | translate}}">
-                <span translate="KANTON">&nbsp;</span>
+                <span translate="KANTON"></span>
             </a>
         </p>
         <p *ngIf="hasRoleGemeinde">
             <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_GEMEINDE_LINK' | translate}}">
-                <span translate="GEMEINDE">&nbsp;</span>
+                <span translate="GEMEINDE"></span>
             </a>
         </p>
         <p *ngIf="hasRoleInstitution">
             <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_INSTITUTION_LINK' | translate}}">
-                <span translate="INSTITUTION">&nbsp;</span>
+                <span translate="INSTITUTION"></span>
             </a>
         </p>
     </div>
