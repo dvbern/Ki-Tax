@@ -17,7 +17,6 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatButtonModule, MatMenuModule, MatSidenavModule, MatToolbarModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
@@ -32,13 +31,9 @@ import {WizardSideNavComponent} from './wizard-side-nav/wizard-side-nav.componen
     ],
     imports: [
         CommonModule,
-        MatToolbarModule,
         TranslateModule,
-        MatSidenavModule,
         RouterModule,
         UIRouterModule,
-        MatMenuModule,
-        MatButtonModule,
     ],
 })
 export class WizardstepXModule {
