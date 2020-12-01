@@ -16,7 +16,7 @@
  */
 
 import {APP_BASE_HREF} from '@angular/common';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -32,7 +32,7 @@ describe('BenutzerComponent', () => {
     let component: BenutzerComponent;
     let fixture: ComponentFixture<BenutzerComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,

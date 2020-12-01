@@ -16,13 +16,12 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {WelcomeModule} from '../welcome.module';
 import {WelcomeMainComponent} from './welcome-main.component';
 
 describe('WelcomeMainComponent', () => {
@@ -36,12 +35,11 @@ describe('WelcomeMainComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                WelcomeModule,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -50,19 +48,20 @@ describe('WelcomeMainComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [
+                WelcomeMainComponent
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
 
     }));
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         fixture = TestBed.createComponent(WelcomeMainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));
 
-    it('should create', async(() => {
+    it('should create', waitForAsync(() => {
         expect(component).toBeTruthy();
     }));
 });

@@ -31,7 +31,7 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 })
 
 export class StammdatenHeaderComponent implements OnInit {
-    @ViewChild(NgForm, { static: false }) public form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
     @Input() public preTitel: string;
     @Input() public titel: string;
     @Input() public administratoren: string;

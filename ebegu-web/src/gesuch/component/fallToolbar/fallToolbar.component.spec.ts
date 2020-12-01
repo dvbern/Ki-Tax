@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -49,7 +49,7 @@ describe('fallToolbar', () => {
     let gemeinde3: TSGemeinde;
     const user = new TSBenutzer();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         // by default input values are empty/undefined
         initObjects();
 
@@ -97,7 +97,7 @@ describe('fallToolbar', () => {
     }));
 
     describe('functions', () => {
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             initTestBed();
         }));
 
@@ -107,7 +107,7 @@ describe('fallToolbar', () => {
     });
 
     describe('isDossierActive', () => {
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             initTestBed();
             component.fallId = fall.id;
         }));
@@ -152,7 +152,7 @@ describe('fallToolbar', () => {
     });
 
     describe('ngOnChanges', () => {
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             initTestBed();
         }));
 
@@ -172,7 +172,7 @@ describe('fallToolbar', () => {
     });
 
     describe('showCreateNewDossier with available Gemeinden', () => {
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
@@ -193,7 +193,7 @@ describe('fallToolbar', () => {
     });
 
     describe('showCreateNewDossier with available Gemeinden but onlineGesuch', () => {
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 getAllGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
@@ -217,7 +217,7 @@ describe('fallToolbar', () => {
     });
 
     describe('showCreateNewDossier with no available Gemeinden', () => {
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             initTestBed();
         }));
 
