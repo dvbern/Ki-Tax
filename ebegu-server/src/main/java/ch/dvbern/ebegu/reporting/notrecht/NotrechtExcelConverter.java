@@ -98,6 +98,10 @@ public class NotrechtExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2VerfuegungAusbezahltAm, dataRow.getStufe2VerfuegungAusbezahltAm());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2ZahlungJetztAusgeloest, dataRow.getStufe2ZahlungJetztAusgeloest());
 
+			excelRowGroup.addValue(MergeFieldNotrecht.beschwerdeBetrag, dataRow.getBeschwerdeBetrag());
+			excelRowGroup.addValue(MergeFieldNotrecht.beschwerdeAusbezahltAm, dataRow.getBeschwerdeAusbezahltAm());
+			excelRowGroup.addValue(MergeFieldNotrecht.beschwerdeZahlungJetztAusgeloest, dataRow.getBeschwerdeZahlungJetztAusgeloest());
+
 			excelRowGroup.addValue(MergeFieldNotrecht.iban, dataRow.getIban());
 			excelRowGroup.addValue(MergeFieldNotrecht.kontoinhaber, dataRow.getKontoinhaber());
 			excelRowGroup.addValue(MergeFieldNotrecht.auszahlungOrganisation, dataRow.getAuszahlungOrganisation());
