@@ -246,6 +246,12 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-cachestore-jdbc</artifactId>
+                <version>${version.infinispan}</version>
+                <scope>provided</scope>
+            </dependency>
             <!-- endregion WildFly Stack -->
 
             <!-- region WildFly updates (im wildfly provided, aber wir wollen eine hoehere version )-->
@@ -345,12 +351,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-search-backend-jgroups</artifactId>
                 <version>${hibernate-search.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-cachestore-jdbc</artifactId>
-                <version>${version.infinispan}</version>
-                <scope>provided</scope>
             </dependency>
             <!-- endregion -->
 
