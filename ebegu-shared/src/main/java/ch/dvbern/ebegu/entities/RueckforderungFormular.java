@@ -72,8 +72,7 @@ public class RueckforderungFormular extends AbstractEntity {
 		inverseForeignKey = @ForeignKey(name = "FK_rueckforderung_formular_rueckforderung_mitteilung_formular_id"),
 		indexes = {
 			@Index(name = "FK_rueckforderung_formular_mitteilung_id", columnList = "rueckforderung_formular_id"),
-			@Index(name = "IX_institution_external_clients_external_client_id", columnList =
-				"rueckforderung_mitteilung_id"),
+			@Index(name = "IX_rueckforderung_formular_mitteilung_id", columnList = "rueckforderung_mitteilung_id"),
 		}
 	)
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -248,18 +247,34 @@ public class RueckforderungFormular extends AbstractEntity {
 	private Sprache korrespondenzSprache = Sprache.DEUTSCH;
 
 	@Nullable
-	@Size(min=1, max=2000)
+	@Size(min=1, max=10000)
 	@Column(nullable = true)
 	private String bemerkungFuerVerfuegung;
 
 	@Column
 	private boolean uncheckedDocuments;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal beschwerdeBetrag;
+
+	@Nullable
+	@Size(max=10000)
+	@Column(nullable = true)
+	private String beschwerdeBemerkung;
+
+	@Column(nullable = true)
+	@Nullable
+	private LocalDateTime beschwerdeAusbezahltAm;
+
 	@Transient
 	private boolean stufe1ZahlungJetztAusgeloest = false;
 
 	@Transient
 	private boolean stufe2ZahlungJetztAusgeloest = false;
+
+	@Transient
+	private boolean beschwerdeZahlungJetztAusgeloest = false;
 
 
 	@Nonnull
@@ -641,8 +656,7 @@ public class RueckforderungFormular extends AbstractEntity {
 		return korrespondenzSprache;
 	}
 
-	@Nonnull
-	public void setKorrespondenzSprache(Sprache korrespondenzSprache) {
+	public void setKorrespondenzSprache(@Nonnull Sprache korrespondenzSprache) {
 		this.korrespondenzSprache = korrespondenzSprache;
 	}
 
@@ -652,6 +666,41 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	public void setUncheckedDocuments(boolean uncheckedDocuments) {
 		this.uncheckedDocuments = uncheckedDocuments;
+	}
+
+	@Nullable
+	public BigDecimal getBeschwerdeBetrag() {
+		return beschwerdeBetrag;
+	}
+
+	public void setBeschwerdeBetrag(@Nullable BigDecimal beschwerdeBetrag) {
+		this.beschwerdeBetrag = beschwerdeBetrag;
+	}
+
+	@Nullable
+	public String getBeschwerdeBemerkung() {
+		return beschwerdeBemerkung;
+	}
+
+	public void setBeschwerdeBemerkung(@Nullable String beschwerdeBemerkung) {
+		this.beschwerdeBemerkung = beschwerdeBemerkung;
+	}
+
+	@Nullable
+	public LocalDateTime getBeschwerdeAusbezahltAm() {
+		return beschwerdeAusbezahltAm;
+	}
+
+	public void setBeschwerdeAusbezahltAm(@Nullable LocalDateTime beschwerdeAusbezahltAm) {
+		this.beschwerdeAusbezahltAm = beschwerdeAusbezahltAm;
+	}
+
+	public boolean isBeschwerdeZahlungJetztAusgeloest() {
+		return beschwerdeZahlungJetztAusgeloest;
+	}
+
+	public void setBeschwerdeZahlungJetztAusgeloest(boolean beschwerdeZahlungJetztAusgeloest) {
+		this.beschwerdeZahlungJetztAusgeloest = beschwerdeZahlungJetztAusgeloest;
 	}
 
 	@Override
@@ -680,6 +729,11 @@ public class RueckforderungFormular extends AbstractEntity {
 		return RueckforderungStatus.VERFUEGT == status && stufe2VerfuegungAusbezahltAm == null;
 	}
 
+	// nur ausbezahlen, falls es eine Beschwerde gibt
+	private boolean isAuszuzahlenBeschwerde() {
+		return RueckforderungStatus.VERFUEGT == status && beschwerdeAusbezahltAm == null && beschwerdeBetrag != null;
+	}
+
 	public void handleAuszahlungIfNecessary() {
 		if (isAuszuzahlenStufe1()) {
 			this.stufe1FreigabeAusbezahltAm = LocalDateTime.now();
@@ -688,6 +742,10 @@ public class RueckforderungFormular extends AbstractEntity {
 		if (isAuszuzahlenStufe2()) {
 			this.stufe2VerfuegungAusbezahltAm = LocalDateTime.now();
 			this.stufe2ZahlungJetztAusgeloest = true;
+		}
+		if (isAuszuzahlenBeschwerde()) {
+			this.beschwerdeAusbezahltAm = LocalDateTime.now();
+			this.beschwerdeZahlungJetztAusgeloest = true;
 		}
 	}
 

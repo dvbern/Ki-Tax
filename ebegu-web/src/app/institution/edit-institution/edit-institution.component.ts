@@ -25,7 +25,7 @@ import {
     ViewChildren,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig, MatCheckboxChange} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatCheckboxChange} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';

@@ -42,6 +42,8 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 
 /**
  * Interface fuer eine Klasse welche prueft ob der aktuelle Benutzer fuer ein Gesuch berechtigt ist
@@ -255,4 +257,12 @@ public interface Authorizer {
 	void checkReadAuthorization(@Nullable Mahnung mahnung);
 
 	void checkWriteAuthorization(@Nullable Mahnung mahnung);
+
+	void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer);
+
+	void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer);
+
+	void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer);
+
+	void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer);
 }

@@ -52,7 +52,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (areNotInBern(inputData)) {
-			inputData.setAnspruchspensumProzent(0);
+			inputData.setAnspruchZeroAndSaveRestanspruch();
 			inputData.addBemerkung(
 				MsgKey.WOHNSITZ_MSG,
 				getLocale(),

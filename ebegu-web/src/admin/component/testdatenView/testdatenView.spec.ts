@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MAT_DATE_LOCALE} from '@angular/material';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -31,7 +31,7 @@ describe('testdatenView', () => {
     let component: TestdatenViewComponent;
     let fixture: ComponentFixture<TestdatenViewComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         const testFaelleRSSpy = jasmine.createSpyObj<TestFaelleRS>(TestFaelleRS.name,
             [
                 'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',

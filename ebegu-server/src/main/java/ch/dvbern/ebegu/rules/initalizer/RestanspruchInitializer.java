@@ -78,39 +78,22 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 			return createInitialenRestanspruch(platz.extractGesuchsperiode(), zeitabschnitte.get(0).isHasGemeindeSpezifischeBerechnung());
 		}
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
-		boolean verfuegt = platz.getBetreuungsstatus().isAnyStatusOfVerfuegt();
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			VerfuegungZeitabschnitt restanspruchsAbschnitt = new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
 			restanspruchsAbschnitt.setHasGemeindeSpezifischeBerechnung(zeitabschnitt.isHasGemeindeSpezifischeBerechnung());
-			if (verfuegt) {
-				// Wenn die Betreuung schon verfuegt ist, muss der Restanspruch aufgrund der (gespeicherten) Resultate
-				// berechnet werden
+			restanspruchUebernehmenVerfuegt(
+				zeitabschnitt.getBgCalculationResultAsiv(),
+				restanspruchsAbschnitt.getBgCalculationInputAsiv(),
+				platz);
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
+				Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
 				restanspruchUebernehmenVerfuegt(
-					zeitabschnitt.getBgCalculationResultAsiv(),
-					restanspruchsAbschnitt.getBgCalculationInputAsiv(),
+					zeitabschnitt.getBgCalculationResultGemeinde(),
+					restanspruchsAbschnitt.getBgCalculationInputGemeinde(),
 					platz);
-				if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
-					Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
-					restanspruchUebernehmenVerfuegt(
-						zeitabschnitt.getBgCalculationResultGemeinde(),
-						restanspruchsAbschnitt.getBgCalculationInputGemeinde(),
-						platz);
-				} else {
-					restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
-				}
 			} else {
-				// Noch nicht verfuegt: Die Restansprueche wurden im Input initialisiert
-				restanspruchUebernehmenNichtVerfuegt(
-					zeitabschnitt.getBgCalculationInputAsiv(),
-					restanspruchsAbschnitt.getBgCalculationInputAsiv());
-				if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
-					restanspruchUebernehmenNichtVerfuegt(
-						zeitabschnitt.getBgCalculationInputGemeinde(),
-						restanspruchsAbschnitt.getBgCalculationInputGemeinde());
-				} else {
-					restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
-				}
+				restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
 			}
 			restanspruchZeitabschnitte.add(restanspruchsAbschnitt);
 		}
@@ -124,17 +107,14 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 	) {
 		int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchspensumProzent();
 		BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
-		// Bei verfuegten Betreuungen wird neu der Restanspruch auf dem Result gespeichert
 		if (sourceZeitabschnitt.getAnspruchspensumRest() != null) {
 			// Wir haben einen Restanspruch nach dem neuen System gespeichert
 			final BigDecimal anspruchspensumRest = sourceZeitabschnitt.getAnspruchspensumRest();
 			final int restanspruchNeu = calculateRestanspruch(betreuungspensum.intValue(), anspruchberechtigtesPensum, anspruchspensumRest.intValue());
 			targetZeitabschnitt.setAnspruchspensumRest(restanspruchNeu);
 		} else {
-			// Die Betreuung ist bereits verfuegt, dies geschah aber noch vor der Anpasung, mit welcher der Restanspruch
-			// auf dem Result gespeichert wurde. Die Berechnung ist u.U. falsch! Damit wir dies erkennen und ggf. handeln koennen,
-			// schreiben wir einen Sentry Eintrag
-			LOG.info("Berechnung Restanspruch: Kein gespeicherter Restanspruch fuer verfuegte Betreuung gefunden: {} in Antrag {}",
+			// Dieser Fall sollte neu nicht mehr vorkommen, da die Restanspruch-Rule erst nach dem Rechner aufgerufen wird
+			LOG.warn("Berechnung Restanspruch: Kein Restanspruch auf BGResult fuer Betreuung gefunden: {} in Antrag {}",
 				platz.getBGNummer(),
 				platz.extractGesuch().getLaufnummer());
 
@@ -150,15 +130,6 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 				targetZeitabschnitt.setAnspruchspensumRest(0);
 			}
 		}
-	}
-
-	private void restanspruchUebernehmenNichtVerfuegt(@Nonnull BGCalculationInput sourceZeitabschnitt, BGCalculationInput targetZeitabschnitt) {
-		int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchspensumProzent();
-		BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
-		int anspruchspensumRest = sourceZeitabschnitt.getAnspruchspensumRest();
-
-		final int restanspruchNeu = calculateRestanspruch(betreuungspensum.intValue(), anspruchberechtigtesPensum, anspruchspensumRest);
-		targetZeitabschnitt.setAnspruchspensumRest(restanspruchNeu);
 	}
 
 	private int calculateRestanspruch(int betreuungspensum, int anspruchberechtigtesPensum, int anspruchspensumRest) {

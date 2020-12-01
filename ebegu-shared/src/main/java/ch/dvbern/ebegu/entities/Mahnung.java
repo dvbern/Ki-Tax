@@ -63,7 +63,7 @@ public class Mahnung extends AbstractMutableEntity {
 	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungen;
 
-	@Column(nullable = true, columnDefinition = "DATETIME(6)")
+	@Column(nullable = true)
 	private LocalDateTime timestampAbgeschlossen;
 
 	/**

@@ -191,4 +191,17 @@ export class NotrechtRS {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });
     }
+
+    public saveBeschwerde(
+        rueckforderungFormular: TSRueckforderungFormular,
+    ): IPromise<TSRueckforderungFormular> {
+        let restRueckforderungFormular = {};
+        restRueckforderungFormular =
+            this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
+        const url = `${this.serviceURL}/updateBeschwerde`;
+        return this.$http.put(url, restRueckforderungFormular).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
 }

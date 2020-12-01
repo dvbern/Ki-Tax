@@ -16,7 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
-import {IbanModule} from 'ngx-iban';
+import {NgxIbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
@@ -36,7 +36,7 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         SharedModule,
         GemeindeRoutingModule,
         MaterialModule,
-        IbanModule,
+        NgxIbanModule,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -53,17 +53,6 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
         OverlappingZeitraumDirective
-    ],
-    entryComponents: [
-        GemeindeListComponent,
-        AddGemeindeComponent,
-        EditGemeindeComponent,
-        EditGemeindeComponentBG,
-        EditGemeindeComponentFI,
-        EditGemeindeComponentTS,
-        EditGemeindeComponentStammdaten,
-        GemeindeTsKonfigComponent,
-        GemeindeFiKonfigComponent,
     ],
     providers: [],
 })

@@ -2166,5 +2166,13 @@
     "BENUTZER_RESET_CONFIRMATION_TEXT": "La connection avec le compte BE-Login actuel sera effacée",
     "BENUTZER_RESETTED_MESSAGE": "{{fullName}} a été réinitialisé(e)",
     "MAHLZEITENVERGUENSTIGUNG": "Réduction des repas",
+    "RUECKFORDERUNG_BESCHWERDE_ERFASSEN": "Saisir une réclamation",
+    "RUECKFORDERUNG_BESCHWERDE_BETRAG": "Montant de la réclamation",
+    "RUECKFORDER_BESCHWERDE_BEMERKUNG": "Remarques concernant la réclamation",
+    "RUECKFORDERUNG_BESCHWERDE_SPEICHERN": "Sauver la réclamation",
+    "RUECKFORDERUNG_BESCHWERDE_BEARBEITEN": "Éditer la réclamation",
+    "NOTVERORDNUNG_BESCHWERDE": "Réclamation",
+    "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Réclamation",
+    "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Document(s) concernant la réclamation",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
