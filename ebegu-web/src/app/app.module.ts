@@ -34,6 +34,7 @@ import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 import {WelcomeModule} from './welcome/welcome.module';
+import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
 
 @NgModule({
     imports: [
@@ -58,7 +59,8 @@ import {WelcomeModule} from './welcome/welcome.module';
         TraegerschaftModule,
         WelcomeModule,
         NotrechtModule,
-        LastenausgleichTSModule
+        LastenausgleichTSModule,
+        WizardstepXModule
     ],
 })
 

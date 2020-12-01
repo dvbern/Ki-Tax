@@ -19,6 +19,9 @@ package ch.dvbern.ebegu.wizardx;
 
 import ch.dvbern.ebegu.enums.UserRole;
 
+/**
+ *  Wizard Interface
+ */
 public interface Wizard {
 	void previousState();
 	void nextState();

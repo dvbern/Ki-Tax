@@ -24,6 +24,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
+import {WizardstepXModule} from '../wizardstepX/wizardstep-x.module';
 import {FreigabeComponent} from './antrag/freigabe/freigabe.component';
 import {GemeindeAngabenComponent} from './antrag/gemeinde-angaben/gemeinde-angaben.component';
 import {LastenausgleichTsBerechnungComponent} from './antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
@@ -54,7 +55,8 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-t
         RouterModule,
         UIRouterModule,
         MatMenuModule,
-        MatButtonModule
+        MatButtonModule,
+        WizardstepXModule
     ]
 })
 export class LastenausgleichTSModule {

@@ -27,7 +27,6 @@ import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 })
 export class WizardSideNavComponent implements OnInit {
 
-    // TODO: replace with real values => @Input
     @Input() public readonly id: string;
     @Input() public readonly wizardTyp: string;
 
