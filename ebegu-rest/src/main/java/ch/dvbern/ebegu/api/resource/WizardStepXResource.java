@@ -47,7 +47,7 @@ import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizard;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Path("tagesschuleLastenausgleich")
+@Path("wizardstepX")
 @Stateless
 @Api(description = "Resource fuer Sozialhilfe Zeitraeume")
 @PermitAll // Rollen noch nicht festgestellt Proof of Concept phase
@@ -155,7 +155,7 @@ public class WizardStepXResource {
 		WizardStep futurPreviousStep = wizard.getStep();
 		jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
 		wizard.nextState();
-		while(!wizard.getStep().getWizardStepName().equals(futurPreviousStep.getWizardStepName())){
+		while (!wizard.getStep().getWizardStepName().equals(futurPreviousStep.getWizardStepName())) {
 			futurPreviousStep = wizard.getStep();
 			jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
 			wizard.nextState();

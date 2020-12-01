@@ -30,7 +30,7 @@ export class WizardStepXRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService,
     ) {
-        this.serviceURL = `${REST_API}tagesschuleLastenausgleich`;
+        this.serviceURL = `${REST_API}wizardstepX`;
     }
 
     public getServiceName(): string {
