@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ErrorHandler, Injectable} from '@angular/core';
-import {GuidedTourService} from 'ngx-guided-tour';
+import {DOCUMENT} from '@angular/common';
+import {ErrorHandler, Inject, Injectable} from '@angular/core';
+import {GuidedTourService, WindowRefService} from 'ngx-guided-tour';
 import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
@@ -27,8 +28,10 @@ export class KiBonGuidedTourService extends GuidedTourService {
     private readonly guidedTourSubject$ = new BehaviorSubject(false);
     private readonly _guidedTour$ = this.guidedTourSubject$.asObservable();
 
-    private constructor(public errorHandler: ErrorHandler) {
-        super(errorHandler);
+    private constructor(public errorHandler: ErrorHandler,
+                        private readonly window: WindowRefService,
+                        @Inject(DOCUMENT) private readonly domEl: any) {
+        super(errorHandler, window, domEl);
     }
 
     public emit(): void {
