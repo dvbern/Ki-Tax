@@ -50,7 +50,9 @@ export class GemeindeWarningService {
     }
 
     private prepareJsonCompareString(konfiguration: TSGemeindeKonfiguration): string {
+        // wir müessen die Konfiguration zuerst zum Rest Object konvertieren, damit die Konfigurationen verglichen werden können
         const konfigurationRestObj = this.ebeguRestUtil.gemeindeKonfigurationToRestObject({}, konfiguration);
+        // json Representation wird verwendet, damit die Objekte deep verglichen werden können
         return JSON.stringify(
             konfigurationRestObj.konfigurationen.map(k => {
                 return {
