@@ -51,6 +51,10 @@ export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
         return this.status === TSGesuchsperiodeStatus.ENTWURF;
     }
 
+    public isAktiv(): boolean {
+        return this.status === TSGesuchsperiodeStatus.AKTIV;
+    }
+
     public getBasisJahr(): number {
         return this.gueltigkeit.gueltigAb.year() - 1;
     }

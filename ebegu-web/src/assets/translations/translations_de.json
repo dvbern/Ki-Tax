@@ -2174,5 +2174,6 @@
     "NOTVERORDNUNG_BESCHWERDE": "Beschwerde",
     "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Beschwerde",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Beschwerde Dokument(e)",
+    "GEMEINDE_DANGEROUS_SAVING": "Achtung: Sie haben Änderungen an einer aktiven Periode vorgenommen. Sind Sie sicher, dass Sie dies tun wollen? Anträge dieser Periode werden nicht automatisch mutiert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
