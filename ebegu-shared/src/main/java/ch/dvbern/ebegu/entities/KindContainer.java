@@ -121,6 +121,10 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	@Nullable
 	private Boolean kindMutiert;
 
+	@Column(nullable = true)
+	@Nullable
+	private Boolean keinSelbstbehaltDurchGemeinde;
+
 	public KindContainer() {
 	}
 
@@ -184,6 +188,15 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 		this.kindMutiert = kindMutiert;
 	}
 
+	@Nullable
+	public Boolean getKeinSelbstbehaltDurchGemeinde() {
+		return keinSelbstbehaltDurchGemeinde;
+	}
+
+	public void setKeinSelbstbehaltDurchGemeinde(@Nullable Boolean keinSelbstbehaltDurchGemeinde) {
+		this.keinSelbstbehaltDurchGemeinde = keinSelbstbehaltDurchGemeinde;
+	}
+
 	@Nonnull
 	public Set<AnmeldungTagesschule> getAnmeldungenTagesschule() {
 		return anmeldungenTagesschule;
@@ -217,6 +230,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 		target.setGesuch(targetGesuch);
 		target.setKindGS(null);
 		target.setKindNummer(this.getKindNummer());
+		target.setKeinSelbstbehaltDurchGemeinde(this.getKeinSelbstbehaltDurchGemeinde());
 		target.setKindMutiert(null);
 		target.setKindJA(this.getKindJA().copyKind(new Kind(), copyType, gesuchsperiode));
 
