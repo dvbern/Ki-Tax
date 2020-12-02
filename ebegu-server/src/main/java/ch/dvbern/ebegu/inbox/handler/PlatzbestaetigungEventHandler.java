@@ -720,59 +720,19 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		currentBetreuungspensumContainer
 			.removeIf(betreuungspensumContainer -> gueltigkeit.contains(betreuungspensumContainer.getBetreuungspensumJA()
 				.getGueltigkeit()));
-		//split if necessary
-		List<BetreuungspensumContainer> splitedBetreuungspensumContainers = new ArrayList<>();
-		currentBetreuungspensumContainer.stream().forEach(betreuungspensumContainer -> {
-			if (betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigAb().isBefore(gueltigkeit.getGueltigAb()) &&
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.getGueltigBis()
-					.isAfter(gueltigkeit.getGueltigBis())) {
-				//its a split
-				//clone to a new one and change validity
-				BetreuungspensumContainer betreuungspensumContainerCloned =
-					cloneBetreuungspensumContainerJa(betreuungspensumContainer);
-				betreuungspensumContainerCloned.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
-				splitedBetreuungspensumContainers.add(betreuungspensumContainerCloned);
-				//adapt the gueltigkeit for existing pensum
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
-			}
-		});
+
 		//adapt Gueltigkeit if needed
 		currentBetreuungspensumContainer.stream().forEach(betreuungspensumContainer -> {
 			if (betreuungspensumContainer.getBetreuungspensumJA()
 				.getGueltigkeit()
-				.getGueltigAb()
-				.isAfter(gueltigkeit.getGueltigAb())
-				&& betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigAb()
-				.isBefore(gueltigkeit.getGueltigBis())) {
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
-			}
-			if (betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
 				.getGueltigBis()
-				.isAfter(gueltigkeit.getGueltigAb())
-				&& betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigBis()
-				.isBefore(gueltigkeit.getGueltigBis())) {
+				.isAfter(gueltigkeit.getGueltigAb())) {
 				betreuungspensumContainer.getBetreuungspensumJA()
 					.getGueltigkeit()
 					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
 			}
 		});
 		//we add the splitted one if needed
-		currentBetreuungspensumContainer.addAll(splitedBetreuungspensumContainers);
 		currentBetreuungspensumContainer.removeIf(betreuungspensumContainer ->
 			betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit().isAfter(
 				LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1)
