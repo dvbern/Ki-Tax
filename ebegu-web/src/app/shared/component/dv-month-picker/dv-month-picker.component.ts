@@ -17,7 +17,9 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {MAT_DATE_FORMATS, MatDatepicker} from '@angular/material';
+import {MAT_DATE_FORMATS} from '@angular/material/core';
+import {MatDatepicker} from '@angular/material/datepicker';
+
 import * as moment from 'moment';
 
 export const MY_FORMATS = {
