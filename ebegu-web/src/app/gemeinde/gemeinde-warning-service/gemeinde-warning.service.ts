@@ -16,8 +16,8 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 })
 export class GemeindeWarningService {
 
-    private dangerousKonfigurationenStr: {gesuchsperiode: TSGesuchsperiode, json: string}[] = [];
-    private ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
+    private readonly dangerousKonfigurationenStr: {gesuchsperiode: TSGesuchsperiode, json: string}[] = [];
+    private readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor() {
     }
