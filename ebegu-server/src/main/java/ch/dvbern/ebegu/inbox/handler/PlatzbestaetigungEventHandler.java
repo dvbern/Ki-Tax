@@ -400,6 +400,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		boolean areZeitabschnittCorrupted = false;
 
 		List<ZeitabschnittDTO> zeitabschnitteToImport = mapZeitabschnitteToImport(dto, betreuung, gueltigkeit);
+		//
+		//		if(zeitabschnitteToImport.isEmpty()) {
+		//			LOG.info("There are no Zeitabschnitte to import for the Gueltigkeit of this institution");
+		//			return null;
+		//		}
 
 		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitteToImport) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
@@ -452,10 +457,14 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitte(
 			dto.getZeitabschnitte(), gueltigkeit
 		);
+		//
+		//		// we don't have to adapt anything if there is no zeiabschnitt to import and can return early
+		//		if (zeitabschnitteToImport.isEmpty()) {
+		//			return zeitabschnitteToImport;
+		//		}
 		List<BetreuungspensumContainer> currentBetreuungspensumContainers = adaptBetreuung(betreuung, gueltigkeit);
 		List<Betreuungspensum> currentPensen = currentBetreuungspensumContainers.stream().map(
 			BetreuungspensumContainer::getBetreuungspensumJA).collect(Collectors.toList());
-
 
 		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
 		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the
@@ -702,10 +711,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nonnull Betreuung betreuung,
 		@Nonnull DateRange gueltigkeit
 	) {
-		List<BetreuungspensumContainer> currentBetreuungspensumContainer = betreuung.getBetreuungspensumContainers().stream()
-			.map(this::cloneBetreuungspensumContainerJa)
-			.collect(Collectors.toList());
-
+		List<BetreuungspensumContainer> currentBetreuungspensumContainer =
+			betreuung.getBetreuungspensumContainers().stream()
+				.map(this::cloneBetreuungspensumContainerJa)
+				.collect(Collectors.toList());
 
 		//alle betpencont mit gueltigkeit kleiner als schnittstelle oder groesser lassen
 		currentBetreuungspensumContainer
@@ -764,6 +773,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		});
 		//we add the splitted one if needed
 		currentBetreuungspensumContainer.addAll(splitedBetreuungspensumContainers);
+		currentBetreuungspensumContainer.removeIf(betreuungspensumContainer ->
+			betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit().isAfter(
+				LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY).minusDays(1)
+			)
+		);
 		return currentBetreuungspensumContainer;
 	}
 
