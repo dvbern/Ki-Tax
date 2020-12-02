@@ -266,16 +266,13 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
+		Assert.assertEquals(2, zeitabschnitteToImport.size());
+
 		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
 		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 7, 31), zeitabschnitteToImport.get(1).getBis());
-
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(2).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(2).getBis());
-
-		Assert.assertEquals(3, zeitabschnitteToImport.size());
+		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
+		Assert.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(1).getBis());
 	}
 
 	@Test
