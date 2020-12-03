@@ -1895,7 +1895,6 @@ export class EbeguRestUtil {
         }
         restKindContainer.betreuungen = this.betreuungListToRestObject(kindContainer.betreuungen);
         restKindContainer.kindNummer = kindContainer.kindNummer;
-        restKindContainer.keinSelbstbehaltDurchGemeinde = kindContainer.keinSelbstbehaltDurchGemeinde;
         restKindContainer.kindMutiert = kindContainer.kindMutiert;
         return restKindContainer;
     }
