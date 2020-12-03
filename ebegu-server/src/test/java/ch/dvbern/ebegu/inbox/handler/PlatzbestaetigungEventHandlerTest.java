@@ -378,6 +378,36 @@ public class PlatzbestaetigungEventHandlerTest {
 	}
 
 	@Test
+	public void rejectBetreuungEventWhenNotInClientGueltigkeitDoesNotIntersectBetreuungsPeriod() {
+		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
+		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
+		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 6, 1));
+		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 6, 30));
+
+		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
+		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
+			betreuung
+				.getBetreuungspensumContainers()
+				.stream()
+				// full period 2020/2021
+				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
+				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 7, 31)))
+				.collect(Collectors.toSet()));
+
+		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
+		DateRange gueltigkeit = new DateRange();
+		// note: client permission is after Betreuung gueltigkeit, even outside the valid period 2020/2021!
+		gueltigkeit.setGueltigAb(LocalDate.of(2021, 8, 1));
+		gueltigkeit.setGueltigBis(LocalDate.of(2022, 7, 31));
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
+			betreuungEventDTO,
+			Objects.requireNonNull(betreuung), gueltigkeit);
+
+		Assert.assertTrue(zeitabschnitteToImport.isEmpty());
+	}
+
+	@Test
 	public void testSetZeitabschnitte() {
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
 		//Zeitabschnitt bevor von soll nicht genommen werden
