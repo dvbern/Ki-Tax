@@ -2167,5 +2167,13 @@
     "BENUTZER_RESET_CONFIRMATION_TEXT": "Damit wird die Verbindung zum aktuellen BE-Login Konto gelöscht",
     "BENUTZER_RESETTED_MESSAGE": "{{fullName}} wurde zurückgesetzt",
     "MAHLZEITENVERGUENSTIGUNG": "Mahlzeitenvergünstigung",
+    "RUECKFORDERUNG_BESCHWERDE_ERFASSEN": "Beschwerde erfassen",
+    "RUECKFORDERUNG_BESCHWERDE_BETRAG": "Beschwerde Betrag",
+    "RUECKFORDER_BESCHWERDE_BEMERKUNG": "Bemerkung zur Beschwerde",
+    "RUECKFORDERUNG_BESCHWERDE_SPEICHERN": "Beschwerde speichern",
+    "RUECKFORDERUNG_BESCHWERDE_BEARBEITEN": "Beschwerde bearbeiten",
+    "NOTVERORDNUNG_BESCHWERDE": "Beschwerde",
+    "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Beschwerde",
+    "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Beschwerde Dokument(e)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

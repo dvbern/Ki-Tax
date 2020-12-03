@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {IComponentOptions, IController, IIntervalService} from 'angular';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -58,6 +58,7 @@ export class DvCountdownController implements IController {
         private readonly $rootScope: IRootScopeService,
         private readonly dvDialog: DvDialog,
         private readonly gesuchModelManager: GesuchModelManager,
+        private readonly uiRouterGlobals: UIRouterGlobals,
     ) {
     }
 
@@ -125,7 +126,7 @@ export class DvCountdownController implements IController {
     }
 
     public isOnGesuchView(): boolean {
-        return (this.$state.current && this.$state.current.name.substring(0, 7) === 'gesuch.');
+        return (this.uiRouterGlobals?.current && this.uiRouterGlobals.current.name.substring(0, 7) === 'gesuch.');
     }
 
     public isGesuchAvailableAndWritable(): boolean {

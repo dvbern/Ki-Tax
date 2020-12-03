@@ -69,6 +69,9 @@ public class NotrechtDataRow {
 	private @Nullable LocalDateTime stufe2VerfuegungDatum;
 	private @Nullable LocalDateTime stufe2VerfuegungAusbezahltAm;
 	private @Nullable String stufe2ZahlungJetztAusgeloest;
+	private @Nullable BigDecimal beschwerdeBetrag;
+	private @Nullable LocalDateTime beschwerdeAusbezahltAm;
+	private @Nullable String beschwerdeZahlungJetztAusgeloest;
 	private @Nullable String iban;
 	private @Nullable String kontoinhaber;
 	private @Nullable String auszahlungOrganisation;
@@ -435,5 +438,32 @@ public class NotrechtDataRow {
 
 	public void setStufe2ZahlungJetztAusgeloest(@Nullable String stufe2ZahlungJetztAusgeloest) {
 		this.stufe2ZahlungJetztAusgeloest = stufe2ZahlungJetztAusgeloest;
+	}
+
+	@Nullable
+	public BigDecimal getBeschwerdeBetrag() {
+		return beschwerdeBetrag;
+	}
+
+	public void setBeschwerdeBetrag(@Nullable BigDecimal beschwerdeBetrag) {
+		this.beschwerdeBetrag = beschwerdeBetrag;
+	}
+
+	@Nullable
+	public LocalDateTime getBeschwerdeAusbezahltAm() {
+		return beschwerdeAusbezahltAm;
+	}
+
+	public void setBeschwerdeAusbezahltAm(@Nullable LocalDateTime beschwerdeAusbezahltAm) {
+		this.beschwerdeAusbezahltAm = beschwerdeAusbezahltAm;
+	}
+
+	@Nullable
+	public String getBeschwerdeZahlungJetztAusgeloest() {
+		return beschwerdeZahlungJetztAusgeloest;
+	}
+
+	public void setBeschwerdeZahlungJetztAusgeloest(@Nullable String beschwerdeZahlungJetztAusgeloest) {
+		this.beschwerdeZahlungJetztAusgeloest = beschwerdeZahlungJetztAusgeloest;
 	}
 }

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -35,7 +35,8 @@ export class DvHomeIconController {
 
     public constructor(
         private readonly $state: StateService,
-        private readonly gesuchModelManager: GesuchModelManager) {
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly routerGlobals: UIRouterGlobals) {
     }
 
     public goBackHome(): void {
@@ -48,6 +49,6 @@ export class DvHomeIconController {
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === this.stateDashboard);
+        return (this.routerGlobals?.current && this.routerGlobals.current.name === this.stateDashboard);
     }
 }
