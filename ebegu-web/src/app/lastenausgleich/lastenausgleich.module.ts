@@ -16,7 +16,7 @@
  */
 
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
-import {LastenausgleichViewComponentConfig} from './component/lastenausgleichView';
+import {LastenausgleichViewComponentConfig} from './component/lastenausgleichView/lastenausgleichView';
 import {lastenausgleichRun} from './lastenausgleich.route';
 
 export const LASTENAUSGLEICH_VIEW_JS_MODULE =

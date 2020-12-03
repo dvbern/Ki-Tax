@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,27 +8,29 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
-import {TSRole} from '../../../models/enums/TSRole';
-import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
-import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
-import {LogFactory} from '../../core/logging/LogFactory';
-import {DownloadRS} from '../../core/service/downloadRS.rest';
-import {LastenausgleichRS} from '../../core/service/lastenausgleichRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
+import {TSRole} from '../../../../models/enums/TSRole';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSLastenausgleich} from '../../../../models/TSLastenausgleich';
+import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {LastenausgleichRS} from '../../../core/service/lastenausgleichRS.rest';
+import {InputYearDialogController} from '../inputYearDialog/InputYearDialogController';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
-const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
+const inputYearDialogTemplate = require('../inputYearDialog/InputYearDialogTemplate.html');
 
 const LOG = LogFactory.createLog('LastenausgleichViewController');
 
@@ -83,6 +85,24 @@ export class LastenausgleichViewController implements IController {
             this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz)
                 .then((response: TSLastenausgleich) => {
                     this.lastenausgleiche.push(response);
+                });
+        }, err => {
+            LOG.error(err);
+        });
+    }
+
+    public downloadZemisExcel(): void {
+        this.dvDialog.showDialog(inputYearDialogTemplate, InputYearDialogController).then(year => {
+            if (!year) {
+                return;
+            }
+            const win = this.downloadRS.prepareDownloadWindow();
+            this.lastenausgleichRS.getZemisExcel(year)
+                .then((downloadFile: TSDownloadFile) => {
+                    this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                })
+                .catch(() => {
+                    win.close();
                 });
         }, err => {
             LOG.error(err);

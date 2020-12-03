@@ -96,8 +96,10 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.entities.Massenversand_;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
@@ -2407,6 +2409,44 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Damit eine Ueberpruefung der Angaben erwzungen werden kann, wird
 		// hier eine neue Platzbestaetigung ausgeloest.
 		persistedGesuch.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
+	}
+
+	@Override
+	public List<Gesuch> findGesucheForZemisList(@Nonnull Integer lastenausgleichJahr) {
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Join<Gesuch, KindContainer> joinKindContainer = root.join(Gesuch_.kindContainers);
+		Join<KindContainer, Kind> joinKind = joinKindContainer.join(KindContainer_.kindJA, JoinType.INNER);
+		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = root.join(Gesuch_.gesuchsperiode);
+
+		Predicate predicateZemis = cb.isNotNull(joinKind.get(Kind_.ZEMIS_NUMMER));
+		Predicate predicateHasBetreuung = cb.isNotEmpty(joinKindContainer.get(KindContainer_.BETREUUNGEN));
+		Predicate predicateGueltig = cb.isTrue(root.get(Gesuch_.gueltig));
+
+		// für den Lastenausgleich 2020 müssen Kinder der Periode 19/20 und 20/21 zurückgegeben werden
+		Predicate predicateYear0 = cb.equal(
+			cb.function(
+				"YEAR",
+				Integer.class,
+				joinGesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)
+			),
+			lastenausgleichJahr - 1
+		);
+		Predicate predicateYear1 = cb.equal(
+			cb.function(
+				"YEAR",
+				Integer.class,
+				joinGesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)
+			),
+			lastenausgleichJahr
+		);
+		Predicate predicateYears = cb.or(predicateYear0, predicateYear1);
+
+		query.where(predicateZemis, predicateGueltig, predicateYears, predicateHasBetreuung);
+		return persistence.getCriteriaResults(query);
 	}
 }
 

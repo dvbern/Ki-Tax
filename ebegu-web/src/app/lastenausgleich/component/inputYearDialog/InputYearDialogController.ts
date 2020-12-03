@@ -12,48 +12,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-@import (reference) '../../style/variables.less';
-@import '../../style/atoms/checkbox.less';
-@import '../../style/atoms/radio.less';
 
-#kommentarDialog {
-    border: 1px @secondary solid;
-}
+import {IFormController, IPromise} from 'angular';
+import IDialogService = angular.material.IDialogService;
 
-#stepDialog {
-    max-width: 550px;
+export class InputYearDialogController {
 
-    p {
-        line-height: normal;
+    public static $inject = ['$mdDialog', '$translate'];
+
+    public title: string;
+    public jahr: number;
+    public form: IFormController;
+
+    public constructor(
+        private readonly $mdDialog: IDialogService
+    ) {}
+
+    public hide(year: number|null): IPromise<any> {
+        return this.$mdDialog.hide(year);
     }
 
-    .step-hint {
-        margin-top: 0.5rem;
-        padding-left: 3rem;
-        transition: font-weight 0.4s ease-in-out;
+    public cancel(): void {
+        this.$mdDialog.cancel();
     }
 
-    md-radio-button {
-        margin: 4rem 0 0 0;
-    }
-
-    md-radio-button:focus {
-        outline: unset !important;
-    }
-
-    .checkbox {
-        margin: 4rem 0;
-    }
-
-    .hint-transition {
-        font-weight: bold;
+    public ok(): void {
+        if (this.form.$valid) {
+            this.$mdDialog.hide(this.jahr);
+        }
     }
 }
-
-#input-year-dialog {
-    .contrast-input:not(.ng-touched) {
-        background-color: @contrast-lighter;
-    }
-}
-
-
