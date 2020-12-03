@@ -456,7 +456,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		List<Betreuungspensum> currentPensen = currentBetreuungspensumContainers.stream().map(
 			BetreuungspensumContainer::getBetreuungspensumJA).collect(Collectors.toList());
 
-
 		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
 		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the
 		// zeitabschnitt,
@@ -702,10 +701,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nonnull Betreuung betreuung,
 		@Nonnull DateRange gueltigkeit
 	) {
-		List<BetreuungspensumContainer> currentBetreuungspensumContainer = betreuung.getBetreuungspensumContainers().stream()
-			.map(this::cloneBetreuungspensumContainerJa)
-			.collect(Collectors.toList());
-
+		List<BetreuungspensumContainer> currentBetreuungspensumContainer =
+			betreuung.getBetreuungspensumContainers().stream()
+				.map(this::cloneBetreuungspensumContainerJa)
+				.collect(Collectors.toList());
 
 		//alle betpencont mit gueltigkeit kleiner als schnittstelle oder groesser lassen
 		currentBetreuungspensumContainer
@@ -753,10 +752,14 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				.getGueltigkeit()
 				.getGueltigBis()
 				.isAfter(gueltigkeit.getGueltigAb())
-				&& betreuungspensumContainer.getBetreuungspensumJA()
+				&& (betreuungspensumContainer.getBetreuungspensumJA()
 				.getGueltigkeit()
 				.getGueltigBis()
-				.isBefore(gueltigkeit.getGueltigBis())) {
+				.isBefore(gueltigkeit.getGueltigBis()) ||
+				(betreuungspensumContainer.getBetreuungspensumJA()
+					.getGueltigkeit()
+					.getGueltigBis()
+					.isEqual(gueltigkeit.getGueltigBis())))) {
 				betreuungspensumContainer.getBetreuungspensumJA()
 					.getGueltigkeit()
 					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
