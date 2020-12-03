@@ -279,6 +279,41 @@ public class PlatzbestaetigungEventHandlerTest {
 	}
 
 	@Test
+	public void testMapZeitAbschnitteToImportSplitBeforeGueltigkeit() {
+		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
+		//in der mitte Zeitabschnitt
+		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
+		zeitabschnittDTOInMitte.setVon(LocalDate.of(2020, 1, 1));
+		zeitabschnittDTOInMitte.setBis(LocalDate.of(2020, 5, 1));
+
+		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
+		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
+			betreuung
+				.getBetreuungspensumContainers()
+				.stream()
+				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
+				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(9999, 12, 31)))
+				.collect(Collectors.toSet()));
+
+		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
+		DateRange gueltigkeit = new DateRange();
+		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
+		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
+
+		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
+			betreuungEventDTO,
+			Objects.requireNonNull(betreuung), gueltigkeit);
+
+		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+
+		Assert.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
+		Assert.assertEquals(LocalDate.of(9999, 12, 31), zeitabschnitteToImport.get(1).getBis());
+
+		Assert.assertEquals(2, zeitabschnitteToImport.size());
+	}
+
+	@Test
 	public void testSetZeitabschnitte() {
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
 		//Zeitabschnitt bevor von soll nicht genommen werden
