@@ -2174,5 +2174,6 @@
     "NOTVERORDNUNG_BESCHWERDE": "Beschwerde",
     "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Beschwerde",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Beschwerde Dokument(e)",
-    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!",
+    "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "Kein Selbstbehalt durch die Gemeinde"
 }
