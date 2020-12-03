@@ -41,7 +41,7 @@ const ng1States: Ng1StateDeclaration[] = [
         template: '<zahlungsauftrag-view flex="auto" class="overflow-scroll">',
         url: '/zahlungsauftrag',
         params: {
-            isMahlzeitenzahlungen: IBooleanStateParams,
+            isMahlzeitenzahlungen: false,
         },
     },
 ];
