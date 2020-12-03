@@ -24,7 +24,7 @@ export class GemeindeWarningService {
 
     public init(konfigurationen: TSGemeindeKonfiguration[]): void {
         for (const k of konfigurationen) {
-            if (!k.gesuchsperiode.isAktiv()) {
+            if (k.gesuchsperiode.isEntwurf()) {
                 continue;
             }
             this.dangerousKonfigurationenStr.push({
