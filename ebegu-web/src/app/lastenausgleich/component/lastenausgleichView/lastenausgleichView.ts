@@ -25,12 +25,14 @@ import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {LastenausgleichRS} from '../../../core/service/lastenausgleichRS.rest';
-import {InputYearDialogController} from '../inputYearDialog/InputYearDialogController';
+import {UploadRS} from '../../../core/service/uploadRS.rest';
+import {ZemisDialogDTO} from '../zemisDialog/zemis-dialog.interface';
+import {ZemisDialogController} from '../zemisDialog/ZemisDialogController';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
-const inputYearDialogTemplate = require('../inputYearDialog/InputYearDialogTemplate.html');
+const inputYearDialogTemplate = require('../zemisDialog/ZemisDialogTemplate.html');
 
 const LOG = LogFactory.createLog('LastenausgleichViewController');
 
@@ -48,6 +50,7 @@ export class LastenausgleichViewController implements IController {
         'DvDialog',
         '$translate',
         'DownloadRS',
+        'UploadRS',
         'AuthServiceRS',
     ];
 
@@ -62,6 +65,7 @@ export class LastenausgleichViewController implements IController {
         private readonly dvDialog: DvDialog,
         private readonly $translate: ITranslateService,
         private readonly downloadRS: DownloadRS,
+        private readonly uploadRS: UploadRS,
         private readonly authServiceRS: AuthServiceRS,
     ) {
     }
@@ -92,21 +96,41 @@ export class LastenausgleichViewController implements IController {
     }
 
     public downloadZemisExcel(): void {
-        this.dvDialog.showDialog(inputYearDialogTemplate, InputYearDialogController).then(year => {
-            if (!year) {
-                return;
-            }
-            const win = this.downloadRS.prepareDownloadWindow();
-            this.lastenausgleichRS.getZemisExcel(year)
-                .then((downloadFile: TSDownloadFile) => {
-                    this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-                })
-                .catch(() => {
-                    win.close();
-                });
-        }, err => {
-            LOG.error(err);
-        });
+        this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController,  {upload: false})
+            .then((zemisDialogData: ZemisDialogDTO) => {
+                if (!zemisDialogData) {
+                    return;
+                }
+                const win = this.downloadRS.prepareDownloadWindow();
+                this.lastenausgleichRS.getZemisExcel(zemisDialogData.jahr)
+                    .then((downloadFile: TSDownloadFile) => {
+                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                    })
+                    .catch(() => {
+                        win.close();
+                    });
+            }, err => {
+                LOG.error(err);
+            });
+    }
+
+    public uploadZemisExcel(): void {
+
+        this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController, {upload: true})
+            .then((zemisDialogData: ZemisDialogDTO) => {
+                if (!zemisDialogData) {
+                    return;
+                }
+                if (!zemisDialogData.jahr || !zemisDialogData.file) {
+                    LOG.error('year or file undefined');
+                }
+                this.uploadRS.uploadZemisExcel(zemisDialogData.file, zemisDialogData.jahr).catch(err => {
+                        LOG.error('Fehler beim Speichern', err);
+                    }
+                );
+            }, err => {
+                LOG.error(err);
+            });
     }
 
     public downloadExcel(lastenausgleich: TSLastenausgleich): void {

@@ -33,12 +33,22 @@
                                        for="vm.form.jahr.$error"
                                        class="error"></dv-error-messages>
                 </dv-input-container>
+                <div class="form-group" ng-if="vm.upload">
+                    <label for="file">Choose File</label>
+                    <input type="file"
+                           id="file"
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                           ngf-select="vm.handleFileInput($files)">
+                </div>
             </div>
         </md-dialog-content>
 
         <md-dialog-actions layout-align="center center">
             <button class="dv-btn" type="submit"
-                    ng-click="vm.ok()" md-autofocus="dialog.$type==='alert'" aria-label="{{'LABEL_OK' | translate}}">
+                    ng-click="vm.ok()"
+                    md-autofocus="dialog.$type==='alert'"
+                    aria-label="{{'LABEL_OK' | translate}}"
+                    ng-disabled="vm.upload && !vm.file">
                 <span class="ng-binding ng-scope" data-translate="LABEL_OK"></span>
             </button>
             <button class="dv-btn cancel-button" type="button"

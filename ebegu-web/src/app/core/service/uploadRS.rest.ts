@@ -103,6 +103,24 @@ export class UploadRS {
         });
     }
 
+    public uploadZemisExcel(file: File, jahr: number): IPromise<void> {
+        return this.upload.upload({
+            url: `${this.serviceURL}/zemisExcel/${jahr}`,
+            method: 'POST',
+            headers: {
+                'x-filename': this.base64.encode(file.name),
+            },
+            data: {
+                file
+            },
+        }).then((response: any) => {
+            return response.data;
+        }, (response: any) => {
+            console.log(this.NOT_SUCCESS);
+            return this.q.reject(response);
+        });
+    }
+
     public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string,
                                         dokumentTyp: TSDokumentTyp): IPromise<any> {
         return this.upload.upload({

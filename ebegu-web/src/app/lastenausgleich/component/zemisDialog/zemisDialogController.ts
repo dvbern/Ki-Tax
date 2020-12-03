@@ -14,21 +14,26 @@
  */
 
 import {IFormController, IPromise} from 'angular';
+import {ZemisDialogDTO} from './zemis-dialog.interface';
 import IDialogService = angular.material.IDialogService;
 
-export class InputYearDialogController {
+export class ZemisDialogController {
 
-    public static $inject = ['$mdDialog', '$translate'];
+    public static $inject = ['$mdDialog', 'upload'];
 
-    public title: string;
     public jahr: number;
     public form: IFormController;
+    private file: File;
+    public upload: boolean;
 
     public constructor(
-        private readonly $mdDialog: IDialogService
-    ) {}
+        private readonly $mdDialog: IDialogService,
+        upload: boolean,
+    ) {
+        this.upload = upload;
+    }
 
-    public hide(year: number|null): IPromise<any> {
+    public hide(year: number | null): IPromise<any> {
         return this.$mdDialog.hide(year);
     }
 
@@ -37,8 +42,17 @@ export class InputYearDialogController {
     }
 
     public ok(): void {
-        if (this.form.$valid) {
-            this.$mdDialog.hide(this.jahr);
+        if (!this.form.$valid) {
+            return;
         }
+        const output: ZemisDialogDTO = {
+            jahr: this.jahr,
+            file: this.file
+        };
+        this.$mdDialog.hide(output);
+    }
+
+    public handleFileInput(files: File[]): void {
+        this.file = files[0];
     }
 }
