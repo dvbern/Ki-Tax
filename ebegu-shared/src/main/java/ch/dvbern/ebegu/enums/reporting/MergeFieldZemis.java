@@ -24,7 +24,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_CONVERTER;
+import static ch.dvbern.ebegu.util.ExcelMergerUtil.BOOLEAN_NULL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
@@ -44,7 +44,7 @@ public enum MergeFieldZemis implements MergeFieldProvider {
 	kindNummer(new SimpleMergeField<>("kindId", INTEGER_CONVERTER)),
 	geburtsdatum(new SimpleMergeField<>("geburtsdatum", DATE_CONVERTER)),
 	zemisNummer(new SimpleMergeField<>("zemisNummer", STRING_CONVERTER)),
-	keinSelbstbehaltFuerGemeinde(new SimpleMergeField<>("keinSelbstbehaltFuerGemeinde", BOOLEAN_CONVERTER)),
+	keinSelbstbehaltFuerGemeinde(new SimpleMergeField<>("keinSelbstbehaltFuerGemeinde", BOOLEAN_NULL_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 

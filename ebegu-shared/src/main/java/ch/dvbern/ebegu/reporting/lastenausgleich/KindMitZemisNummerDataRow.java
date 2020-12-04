@@ -34,7 +34,7 @@ public class KindMitZemisNummerDataRow {
 	private @Nullable Integer kindNummer;
 	private @Nullable LocalDate geburtsdatum;
 	private @Nullable String zemisNummer;
-	private boolean keinSelbstbehaltFuerGemeinde;
+	private @Nullable Boolean keinSelbstbehaltFuerGemeinde;
 
 	public KindMitZemisNummerDataRow() {}
 
@@ -110,11 +110,12 @@ public class KindMitZemisNummerDataRow {
 		this.zemisNummer = zemisNummer;
 	}
 
-	public boolean isKeinSelbstbehaltFuerGemeinde() {
+	@Nullable
+	public Boolean isKeinSelbstbehaltFuerGemeinde() {
 		return keinSelbstbehaltFuerGemeinde;
 	}
 
-	public void setKeinSelbstbehaltFuerGemeinde(boolean keinSelbstbehaltFuerGemeinde) {
+	public void setKeinSelbstbehaltFuerGemeinde(@Nullable Boolean keinSelbstbehaltFuerGemeinde) {
 		this.keinSelbstbehaltFuerGemeinde = keinSelbstbehaltFuerGemeinde;
 	}
 }
