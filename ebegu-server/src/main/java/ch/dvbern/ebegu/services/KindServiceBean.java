@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -43,10 +45,13 @@ import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -57,7 +62,10 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service fuer Kind
@@ -77,6 +85,8 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 	@Inject
 	private ValidatorFactory validatorFactory;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(KindService.class);
 
 	@Nonnull
 	@Override
@@ -230,5 +240,44 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	public void updateKeinSelbstbehaltFuerGemeinde(
+		@Nonnull Integer fallNummer,
+		@Nonnull Integer kindNummer,
+		int gesuchsperiodeStartJahr,
+		@Nonnull Boolean keinSelbstbehaltFuerGemeinde)
+	{
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
+
+		Root<KindContainer> root = query.from(KindContainer.class);
+		Join<KindContainer, Gesuch> joinGesuch = root.join(KindContainer_.gesuch);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
+		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = joinGesuch.join(Gesuch_.gesuchsperiode);
+
+		Predicate predicateFallNummer = cb.equal(joinFall.get(Fall_.fallNummer), fallNummer);
+		Predicate predicateKindNummer = cb.equal(root.get(KindContainer_.kindNummer), kindNummer);
+
+		Expression<Integer> yearExp = cb.function("YEAR", Integer.class, joinGesuchsperiode
+			.get(Gesuchsperiode_.gueltigkeit)
+			.get(DateRange_.gueltigAb)
+		);
+		Predicate predicatePeriode = cb.equal(yearExp, gesuchsperiodeStartJahr);
+
+		query.where(predicateFallNummer, predicateKindNummer, predicatePeriode);
+
+		// Bei Mutationen innerhalb einer Gesuchsperiode gibt es mehrere Kinder mit der gleichen
+		// Fallnummer, Kindnummer undk Gesuchsperiode. Wir updaten alle
+		Collection<KindContainer> kindContainers = persistence.getCriteriaResults(query);
+		kindContainers.forEach(kindContainer -> {
+			kindContainer.setKeinSelbstbehaltDurchGemeinde(keinSelbstbehaltFuerGemeinde);
+			LOGGER.info("Updating KindContainer with id " + kindContainer.getId() +
+				", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
+				". Set keinSelbstbehaltFuerGemeinde = " + keinSelbstbehaltFuerGemeinde);
+			persistence.persist(kindContainer);
+		});
 	}
 }

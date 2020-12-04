@@ -68,4 +68,9 @@ public interface KindService {
 	@Nonnull
 	Set<KindDubletteDTO> getKindDubletten(@Nonnull String gesuchId);
 
+	void updateKeinSelbstbehaltFuerGemeinde(
+		@Nonnull Integer fallNummer,
+		@Nonnull Integer kindNummer,
+		int gesuchsperiodeStartJahr,
+		@Nonnull Boolean keinSelbstbehaltFuerGemeinde);
 }

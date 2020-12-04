@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ import ch.dvbern.ebegu.reporting.lastenausgleich.KindMitZemisNummerDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KinderMitZemisNummerExcelConverter;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -45,8 +48,11 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.commons.lang3.Validate;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
 @Stateless
@@ -60,6 +66,9 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private KindService kindService;
 
 	@Nonnull
 	@Override
@@ -90,6 +99,30 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 			getContentTypeForExport());
 	}
 
+	@Override
+	public void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException {
+
+		try (InputStream is = new ByteArrayInputStream(fileContent)) {
+			Workbook workbook = WorkbookFactory.create(is);
+			FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+			Sheet sheet = workbook.getSheetAt(0);
+			// afterwards straight forward reading
+			Row row = sheet.getRow(6);
+			for (int i = 6; i < sheet.getPhysicalNumberOfRows(); i++) {
+				int fallNummer = (int) row.getCell(0).getNumericCellValue();
+				int kindNummer = (int) row.getCell(5).getNumericCellValue();
+				boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
+				String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
+				int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
+				kindService.updateKeinSelbstbehaltFuerGemeinde(
+					fallNummer,
+					kindNummer,
+					gesuchsperiodeStartJahr,
+					keinSelbstbehaltFuerGemeinde
+				);
+			}
+		}
+	}
 
 	private @Nonnull List<KindMitZemisNummerDataRow> getReportKinderMitZemisNummer(@Nonnull Integer lastenausgleichJahr) {
 		List<Gesuch> gesuchList = gesuchService.findGesucheForZemisList(lastenausgleichJahr);

@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.FileSaverService;
@@ -122,6 +123,9 @@ public class UploadResource {
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private ReportKinderMitZemisNummerService reportKinderMitZemisNummerService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -328,6 +332,26 @@ public class UploadResource {
 		TransferFile file = fileList.get(0);
 
 		gemeindeService.uploadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp, file.getContent());
+
+		return Response.ok().build();
+	}
+
+	@ApiOperation("Stores and processes Excel containing a list of children with a zemis number. Sets flag "
+		+ "'keinSelbstbehaltFuerGemeinde' for every child of this list.")
+	@POST
+	@Path("/zemisExcel/{jahr}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response uploadZemisExcelAndSetFlag(
+		@Nonnull @NotNull @PathParam("jahr") Integer jahr,
+		@Nonnull @NotNull MultipartFormDataInput input) throws IOException {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+		Validate.notEmpty(fileList, "Need to upload something");
+		TransferFile file = fileList.get(0);
+
+		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent(), jahr);
 
 		return Response.ok().build();
 	}
