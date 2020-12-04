@@ -93,18 +93,18 @@
 				</jdbc:string-keyed-jdbc-store>
 			</persistence>
 			<indexing/>
-			<state-transfer timeout="480000" await-initial-transfer="true"/>
+			<state-transfer timeout="480000"/>
 		</distributed-cache>
 
 		<!-- ***************************** -->
 		<!--  Cache to store Lucene locks  -->
 		<!-- ***************************** -->
-		<replicated-cache name="LuceneIndexesLocking" mode="SYNC" remote-timeout="25000">
+		<replicated-cache name="LuceneIndexesLocking" remote-timeout="25000">
 			<locking concurrency-level="500"/>
 			<transaction/>
 			<expiration/>
 			<indexing/>
-			<state-transfer timeout="480000" await-initial-transfer="true"/>
+			<state-transfer timeout="480000"/>
 		</replicated-cache>
 	</cache-container>
 
