@@ -22,6 +22,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {TSLastenausgleich} from '../../../../models/TSLastenausgleich';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {LastenausgleichRS} from '../../../core/service/lastenausgleichRS.rest';
@@ -52,6 +53,7 @@ export class LastenausgleichViewController implements IController {
         'DownloadRS',
         'UploadRS',
         'AuthServiceRS',
+        'ErrorService'
     ];
 
     public jahr: number;
@@ -67,6 +69,7 @@ export class LastenausgleichViewController implements IController {
         private readonly downloadRS: DownloadRS,
         private readonly uploadRS: UploadRS,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -128,6 +131,9 @@ export class LastenausgleichViewController implements IController {
                         LOG.error('Fehler beim Speichern', err);
                     }
                 );
+                this.errorService.addMesageAsInfo(this.$translate.instant(
+                    'ZEMIS_UPLOAD_STARTED'
+                ));
             }, err => {
                 LOG.error(err);
             });

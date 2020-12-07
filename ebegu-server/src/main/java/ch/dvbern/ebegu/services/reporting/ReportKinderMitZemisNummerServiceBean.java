@@ -35,6 +35,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KindMitZemisNummerDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KinderMitZemisNummerExcelConverter;
@@ -109,17 +110,22 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 			// afterwards straight forward reading
 			Row row = sheet.getRow(6);
 			for (int i = 6; i < sheet.getPhysicalNumberOfRows(); i++) {
-				int fallNummer = (int) row.getCell(0).getNumericCellValue();
-				int kindNummer = (int) row.getCell(5).getNumericCellValue();
-				boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
-				String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
-				int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
-				kindService.updateKeinSelbstbehaltFuerGemeinde(
-					fallNummer,
-					kindNummer,
-					gesuchsperiodeStartJahr,
-					keinSelbstbehaltFuerGemeinde
-				);
+				try {
+					int fallNummer = (int) row.getCell(0).getNumericCellValue();
+					int kindNummer = (int) row.getCell(5).getNumericCellValue();
+					boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
+					String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
+					int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
+					kindService.updateKeinSelbstbehaltFuerGemeinde(
+						fallNummer,
+						kindNummer,
+						gesuchsperiodeStartJahr,
+						keinSelbstbehaltFuerGemeinde
+					);
+				} catch (IllegalStateException exception) {
+					throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", "Falsches Format vom ZEMIS Excel in Zeile "
+						+ (i+1), "Falsches Format vom ZEMIS Excel in Zeile " + (i+1));
+				}
 			}
 		}
 	}
