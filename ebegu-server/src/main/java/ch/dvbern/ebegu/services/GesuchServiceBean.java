@@ -2418,9 +2418,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
-		Join<Gesuch, KindContainer> joinKindContainer = root.join(Gesuch_.kindContainers);
+		Join<Gesuch, KindContainer> joinKindContainer = root.join(Gesuch_.kindContainers, JoinType.INNER);
 		Join<KindContainer, Kind> joinKind = joinKindContainer.join(KindContainer_.kindJA, JoinType.INNER);
-		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = root.join(Gesuch_.gesuchsperiode);
+		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);
 
 		Predicate predicateZemis = cb.isNotNull(joinKind.get(Kind_.ZEMIS_NUMMER));
 		Predicate predicateHasBetreuung = cb.isNotEmpty(joinKindContainer.get(KindContainer_.BETREUUNGEN));
@@ -2446,6 +2446,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateYears = cb.or(predicateYear0, predicateYear1);
 
 		query.where(predicateZemis, predicateGueltig, predicateYears, predicateHasBetreuung);
+		query.distinct(true);
 		return persistence.getCriteriaResults(query);
 	}
 }
