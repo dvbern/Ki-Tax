@@ -72,11 +72,6 @@ public class PlatzbestaetigungEventHandlerTest {
 	public void testIsSame() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
 		Betreuungsmitteilung betreuungsmitteilung = createBetreuungMitteilung();
-		//first with tarif = null
-		Assert.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
-		//then with tarif the same
-		//betreuungsmitteilung.getBetreuungspensen().get(0).setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		//betreuungsmitteilung.getZeitabschnitte().get(0).setTarifProNebenmahlzeiten(BigDecimal.ZERO);
 		Assert.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
 		//then with different Betreuung
 		Assert.assertFalse(handler.isSame(betreuungsmitteilung, betreuungs.get(1)));
@@ -408,7 +403,7 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertTrue(zeitabschnitteToImport.isEmpty());
+		Assert.assertEquals(zeitabschnitteToImport.size(), betreuung.getBetreuungspensumContainers().size());
 	}
 
 	@Test
