@@ -44,7 +44,7 @@
         <database.jdbc.pwd>ebegu</database.jdbc.pwd>
 
         <!-- keep in sync with dependencies from Wildfly BOM -->
-        <version.hibernate>5.3.18.Final</version.hibernate>
+        <version.hibernate>5.3.20.Final</version.hibernate>
         <version.org.hibernate.validator>6.0.21.Final</version.org.hibernate.validator>
         <version.wildfly-arquillian-containers>3.0.1.Final</version.wildfly-arquillian-containers>
         <hibernate-search.version>5.10.7.Final</hibernate-search.version>
@@ -252,6 +252,12 @@
                 <version>${version.infinispan}</version>
                 <scope>provided</scope>
             </dependency>
+            <!-- muss gesetzt werden, nicht alle benoetigte package sind exportiert aus Wildfly-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.13</version>
+            </dependency>
             <!-- endregion WildFly Stack -->
 
             <!-- region WildFly updates (im wildfly provided, aber wir wollen eine hoehere version )-->
@@ -322,30 +328,9 @@
 
             <!-- region Hibernate-Search dependencies-->
             <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.2</version>
-            </dependency>
-            <!--dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.4.5</version>
-            </dependency-->
-
-            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-search-elasticsearch</artifactId>
                 <version>${hibernate-search.version}</version>
-                <exclusions>
-                    <!--exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpcore</artifactId>
-                    </exclusion-->
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -526,12 +511,12 @@
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-protocol</artifactId>
-                <version>13.0.0.Final</version>
+                <version>13.0.3.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-controller-client</artifactId>
-                <version>13.0.0.Final</version>
+                <version>13.0.3.Final</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
@@ -945,6 +930,8 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
+                    <!-- von parent-pom ueberschrieben, siehe KIBON-1703 -->
+                    <version>4.0.4</version>
                     <dependencies>
                         <dependency>
                             <groupId>ch.dvbern.oss.maven</groupId>

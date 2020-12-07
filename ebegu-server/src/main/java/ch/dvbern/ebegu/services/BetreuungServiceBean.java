@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -631,12 +632,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, @Nonnull boolean onlyGueltig) {
+	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
-		if (!gesuchsperiodeOptional.isPresent()) {
+		if (gesuchsperiodeOptional.isEmpty()) {
 			return Optional.empty();
 		}
 
@@ -644,6 +645,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
 		final long fallnummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
+		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(bgNummer);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -653,19 +655,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
 			KindContainer_.gesuch,
 			JoinType.LEFT);
-		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
-		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
+		final Join<Gesuch, Dossier> joinGesuchDossier = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
+		final Join<Dossier, Fall> joinDossierFall = joinGesuchDossier.join(Dossier_.fall);
+		final Join<Dossier, Gemeinde> joinDossierGemeinde = joinGesuchDossier.join(Dossier_.gemeinde);
 
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
-		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
+		Predicate predFallNummer = cb.equal(joinDossierFall.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+		Predicate predGemeinde = cb.equal(joinDossierGemeinde.get(Gemeinde_.gemeindeNummer), gemeindeNummer);
 
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(predFallNummer);
 		predicates.add(predGesuchsperiode);
 		predicates.add(predKindNummer);
 		predicates.add(predBetreuungNummer);
+		predicates.add(predGemeinde);
 
 		if (onlyGueltig) {
 			Predicate predGueltig = cb.equal(root.get(Betreuung_.gueltig), Boolean.TRUE);

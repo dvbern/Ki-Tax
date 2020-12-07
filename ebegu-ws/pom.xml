@@ -64,7 +64,6 @@
                         <configuration>
                             <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
                             <wsdlFiles>
-                                <wsdlFile>Stadt_Bern_E-BEGU_Personensuche_v1.2.wsdl</wsdlFile>
                                 <wsdlFile>geres/GeresResidentInfo_v1801.wsdl</wsdlFile>
                             </wsdlFiles>
                             <verbose>true</verbose>
