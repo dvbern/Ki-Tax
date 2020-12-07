@@ -252,11 +252,11 @@
                 <version>${version.infinispan}</version>
                 <scope>provided</scope>
             </dependency>
+            <!-- muss gesetzt werden, nicht alle benoetigte package sind exportiert aus Wildfly-->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>4.5.13</version>
-                <scope>provided</scope>
             </dependency>
             <!-- endregion WildFly Stack -->
 
@@ -930,6 +930,8 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
+                    <!-- von parent-pom ueberschrieben, siehe KIBON-1703 -->
+                    <version>4.0.4</version>
                     <dependencies>
                         <dependency>
                             <groupId>ch.dvbern.oss.maven</groupId>

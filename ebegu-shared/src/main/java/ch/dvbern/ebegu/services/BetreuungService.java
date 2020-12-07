@@ -141,7 +141,7 @@ public interface BetreuungService {
 	 * Wenn onlyGueltig = false:
 	 * return auch die Betreuung in andere Status (Warten Z.B.)
 	 */
-	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, @Nonnull boolean onlyGueltig);
+	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig);
 
 	/**
 	 * @param key PK (id) der Betreuung
