@@ -22,11 +22,14 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -34,6 +37,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
@@ -67,15 +71,15 @@ public class PlatzbestaetigungEventHandlerTest {
 	@Test
 	public void testIsSame() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
+		Betreuungsmitteilung betreuungsmitteilung = createBetreuungMitteilung();
 		//first with tarif = null
-		Assert.assertTrue(handler.isSame(betreuungEventDTO, betreuungs.get(0)));
+		Assert.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
 		//then with tarif the same
-		betreuungEventDTO.getZeitabschnitte().get(0).setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		betreuungEventDTO.getZeitabschnitte().get(0).setTarifProNebenmahlzeiten(BigDecimal.ZERO);
-		Assert.assertTrue(handler.isSame(betreuungEventDTO, betreuungs.get(0)));
+		//betreuungsmitteilung.getBetreuungspensen().get(0).setTarifProHauptmahlzeiten(BigDecimal.ZERO);
+		//betreuungsmitteilung.getZeitabschnitte().get(0).setTarifProNebenmahlzeiten(BigDecimal.ZERO);
+		Assert.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
 		//then with different Betreuung
-		Assert.assertFalse(handler.isSame(betreuungEventDTO, betreuungs.get(1)));
+		Assert.assertFalse(handler.isSame(betreuungsmitteilung, betreuungs.get(1)));
 	}
 
 	@Test
@@ -579,5 +583,21 @@ public class PlatzbestaetigungEventHandlerTest {
 			.setVon(LocalDate.of(2017, 8, 01))
 			.setBis(LocalDate.of(2018, 1, 31))
 			.build();
+	}
+
+	private Betreuungsmitteilung createBetreuungMitteilung() {
+		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
+		BetreuungsmitteilungPensum betreuungsmitteilungPensum = new BetreuungsmitteilungPensum();
+		betreuungsmitteilungPensum.setMonatlicheBetreuungskosten(new BigDecimal(2000.00).setScale(2));
+		betreuungsmitteilungPensum.setPensum(new BigDecimal(80));
+		betreuungsmitteilungPensum.setUnitForDisplay(PensumUnits.PERCENTAGE);
+		DateRange dateRange = new DateRange();
+		dateRange.setGueltigAb(LocalDate.of(2017, 8, 01));
+		dateRange.setGueltigBis(LocalDate.of(2018, 1, 31));
+		betreuungsmitteilungPensum.setGueltigkeit(dateRange);
+		Set<BetreuungsmitteilungPensum> betreuungsmitteilungPensumSet = new HashSet<>();
+		betreuungsmitteilungPensumSet.add(betreuungsmitteilungPensum);
+		betreuungsmitteilung.setBetreuungspensen(betreuungsmitteilungPensumSet);
+		return betreuungsmitteilung;
 	}
 }

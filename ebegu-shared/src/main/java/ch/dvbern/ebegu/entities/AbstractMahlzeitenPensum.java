@@ -67,6 +67,7 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
+	@Nonnull
 	public BigDecimal getTarifProHauptmahlzeit() {
 		return tarifProHauptmahlzeit;
 	}
@@ -75,6 +76,7 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
 	}
 
+	@Nonnull
 	public BigDecimal getTarifProNebenmahlzeit() {
 		return tarifProNebenmahlzeit;
 	}

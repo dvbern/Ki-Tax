@@ -164,17 +164,18 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				}
 			} else if (betreuung.getBetreuungsstatus() == Betreuungsstatus.VERFUEGT
 				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.BESTAETIGT) {
-				if (isSame(dto, betreuung)) {
-					LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}"
-						+
-						" - MutationMitteilung wird nicht erstellt!", refnr);
-					return;
-				}
 				//MutationMitteilungErstellen
 				//we map all the data we know in a mitteilung object, we are only interested into Zeitabschnitt:
 				Betreuungsmitteilung betreuungsmitteilung =
 					this.setBetreuungsmitteilungDaten(dto, betreuung, institutionExternalClient.getGueltigkeit());
 				if (betreuungsmitteilung != null) {
+					if (isSame(betreuungsmitteilung, betreuung)) {
+						mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
+						LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}"
+							+
+							" - MutationMitteilung wird nicht erstellt!", refnr);
+						return;
+					}
 					// we first clear all the Mutationsmeldungen for the current Betreuung
 					mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 					// and then send the new Betreuungsmitteilung an die Gemeinde
@@ -600,57 +601,51 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	 * Deswegen sind alle Parametern die nicht vorhanden sind (im MutationMitteilung) ignoriert
 	 * So man muss nur die Zeitabschnitt Werten ueberpruefen
 	 */
-	protected boolean isSame(BetreuungEventDTO betreuungEventDTO, Betreuung betreuung) {
+	protected boolean isSame(
+		Betreuungsmitteilung betreuungsmitteilung,
+		Betreuung betreuung) {
 		Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
-		List<ZeitabschnittDTO> zeitabschnittDTOS = betreuungEventDTO.getZeitabschnitte();
-		if (betreuungspensumContainers.size() != zeitabschnittDTOS.size()) {
+		Set<BetreuungsmitteilungPensum> betreuungsmitteilungPensums = betreuungsmitteilung.getBetreuungspensen();
+		if (betreuungspensumContainers.size() != betreuungsmitteilungPensums.size()) {
 			return false;
 		}
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
 			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
 			boolean match = false;
-			for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnittDTOS) {
-				if (zeitabschnittDTO.getVon().isEqual(betreuungspensum.getGueltigkeit().getGueltigAb()) &&
-					zeitabschnittDTO.getBis().isEqual(betreuungspensum.getGueltigkeit().getGueltigBis()) &&
-					betreuungspensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten())
+			for (BetreuungsmitteilungPensum betreuungsmitteilungPensum : betreuungsmitteilungPensums) {
+				if (betreuungsmitteilungPensum.getGueltigkeit().compareTo(betreuungspensum.getGueltigkeit()) == 0 &&
+					betreuungspensum.getMonatlicheBetreuungskosten()
+						.compareTo(betreuungsmitteilungPensum.getMonatlicheBetreuungskosten())
 						== 0 &&
-					(zeitabschnittDTO.getTarifProHauptmahlzeiten() == null ||
-						(zeitabschnittDTO.getTarifProHauptmahlzeiten() != null
-							&& betreuungspensum.getTarifProHauptmahlzeit()
-							.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten())
-							== 0))
+					(betreuungspensum.getTarifProHauptmahlzeit()
+						.compareTo(betreuungsmitteilungPensum.getTarifProHauptmahlzeit())
+						== 0)
 					&&
-					(zeitabschnittDTO.getTarifProNebenmahlzeiten() == null ||
-						(zeitabschnittDTO.getTarifProNebenmahlzeiten() != null &&
-							betreuungspensum.getTarifProNebenmahlzeit()
-								.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten())
-								== 0))
+					(betreuungspensum.getTarifProNebenmahlzeit()
+						.compareTo(betreuungsmitteilungPensum.getTarifProNebenmahlzeit())
+						== 0)
 					&&
-					(zeitabschnittDTO.getAnzahlHauptmahlzeiten() == null ||
-						(zeitabschnittDTO.getAnzahlHauptmahlzeiten() != null &&
-							betreuungspensum.getMonatlicheHauptmahlzeiten()
-								.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten())
-								== 0))
+					(betreuungspensum.getMonatlicheHauptmahlzeiten()
+						.compareTo(betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten())
+						== 0)
 					&&
-					(zeitabschnittDTO.getAnzahlNebenmahlzeiten() == null ||
-						(zeitabschnittDTO.getAnzahlNebenmahlzeiten() != null &&
-							betreuungspensum.getMonatlicheNebenmahlzeiten()
-								.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten())
-								== 0))
+					(betreuungspensum.getMonatlicheNebenmahlzeiten()
+						.compareTo(betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten())
+						== 0)
 				) {
 					//check pensum:
-					if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
-						match = betreuungspensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0;
-					} else if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.DAYS.name())) {
+					if (betreuungsmitteilungPensum.getUnitForDisplay().name().equals(PensumUnits.PERCENTAGE.name())) {
+						match = betreuungspensum.getPensum().compareTo(betreuungsmitteilungPensum.getPensum()) == 0;
+					} else if (betreuungsmitteilungPensum.getUnitForDisplay().name().equals(PensumUnits.DAYS.name())) {
 						BigDecimal pensumInPercent =
 							MathUtil.EXACT.divide(
-								MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+								MathUtil.HUNDRED.multiply(betreuungsmitteilungPensum.getPensum()),
 								MAX_TAGE_PRO_MONAT);
 						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
-					} else if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())) {
+					} else if (betreuungsmitteilungPensum.getUnitForDisplay().name().equals(PensumUnits.HOURS.name())) {
 						BigDecimal pensumInPercent =
 							MathUtil.EXACT.divide(
-								MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
+								MathUtil.HUNDRED.multiply(betreuungsmitteilungPensum.getPensum()),
 								MAX_STUNDEN_PRO_MONAT);
 						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
 					}
