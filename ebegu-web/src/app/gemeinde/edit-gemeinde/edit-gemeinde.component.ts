@@ -231,6 +231,31 @@ export class EditGemeindeComponent implements OnInit {
             ? undefined
             : this.usernameScolaris;
 
+        try {
+            await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
+            if (this.fileToUpload) {
+                this.persistLogo(this.fileToUpload);
+            } else if (this.isRegisteringGemeinde) {
+                this.$state.go('welcome');
+                return;
+            }
+
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+                await this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
+                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
+                    this.loadStammdaten();
+                }
+                this.updateExternalClients();
+            }
+
+            this.setViewMode();
+
+        } catch (err) {
+            this.setEditMode();
+        } finally {
+            this.changeDetectorRef.detectChanges();
+        }
+
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
             if (this.fileToUpload) {
                 this.persistLogo(this.fileToUpload);
@@ -239,19 +264,6 @@ export class EditGemeindeComponent implements OnInit {
                 return;
             }
         });
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
-                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
-                    this.loadStammdaten();
-                }
-                this.updateExternalClients();
-                this.setViewMode();
-            }).catch(() => {
-                this.setEditMode();
-            }).finally(() => {
-                this.changeDetectorRef.detectChanges();
-            });
-        }
 
         // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
         // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
