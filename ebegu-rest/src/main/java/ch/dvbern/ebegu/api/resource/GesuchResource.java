@@ -46,7 +46,6 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAlwaysEditableProperties;
-import ch.dvbern.ebegu.api.dtos.JaxAntragSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
@@ -736,7 +735,12 @@ public class GesuchResource {
 			-> new EbeguEntityNotFoundException("removeAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId "
 			+ "invalid: " + gesuchJaxId.getId()));
 
-		gesuchService.removeAntrag(gesuch);
+		if (gesuch.isMutation()) {
+			// Wenn es eine Mutation ist, sollen z.B. die Mitteilungen auf den letzten Antrag verschoben werden
+			gesuchService.removeOnlineMutation(gesuch.getDossier(), gesuch.getGesuchsperiode());
+		} else {
+			gesuchService.removeAntrag(gesuch);
+		}
 		return Response.ok().build();
 	}
 
