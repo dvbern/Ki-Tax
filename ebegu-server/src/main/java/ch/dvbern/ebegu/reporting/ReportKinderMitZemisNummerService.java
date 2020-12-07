@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
@@ -30,5 +31,5 @@ public interface ReportKinderMitZemisNummerService {
 	@Nonnull
 	UploadFileInfo generateZemisReport(@Nonnull Integer lastenausgleichJahr, @Nonnull Locale german) throws ExcelMergeException;
 
-	void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException;
+	void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException, MailException;
 }

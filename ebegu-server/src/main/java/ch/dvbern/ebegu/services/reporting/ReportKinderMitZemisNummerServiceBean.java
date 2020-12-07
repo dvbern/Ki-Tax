@@ -33,15 +33,19 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KindMitZemisNummerDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KinderMitZemisNummerExcelConverter;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -70,6 +74,12 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 
 	@Inject
 	private KindService kindService;
+
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Inject
+	private MailService mailService;
 
 	@Nonnull
 	@Override
@@ -101,7 +111,7 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 	}
 
 	@Override
-	public void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException {
+	public void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException, MailException {
 
 		try (InputStream is = new ByteArrayInputStream(fileContent)) {
 			Workbook workbook = WorkbookFactory.create(is);
@@ -122,12 +132,21 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 						gesuchsperiodeStartJahr,
 						keinSelbstbehaltFuerGemeinde
 					);
+					sendMail("ZEMIS Excel verarbeitet", "Die Verarbeitung des ZEMIS Excels wurde "
+						+ "erfolgreich abgeschlossen");
 				} catch (IllegalStateException exception) {
-					throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", "Falsches Format vom ZEMIS Excel in Zeile "
-						+ (i+1), "Falsches Format vom ZEMIS Excel in Zeile " + (i+1));
+					String message = "Falsches Format vom ZEMIS Excel in Zeile " + (i+1);
+					sendMail("Fehler bei der Verarbeitung des ZEMIS Excels", message);
+					throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", message, message);
 				}
 			}
 		}
+	}
+
+	private void sendMail(@Nonnull String subject, @Nonnull String message) throws MailException {
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"sendMail", "No User is logged in"));
+		mailService.sendMessage(subject, message, benutzer.getEmail());
 	}
 
 	private @Nonnull List<KindMitZemisNummerDataRow> getReportKinderMitZemisNummer(@Nonnull Integer lastenausgleichJahr) {

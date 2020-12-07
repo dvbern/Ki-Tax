@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
@@ -352,7 +353,7 @@ public class UploadResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response uploadZemisExcelAndSetFlag(
 		@Nonnull @NotNull @PathParam("jahr") Integer jahr,
-		@Nonnull @NotNull MultipartFormDataInput input) throws IOException {
+		@Nonnull @NotNull MultipartFormDataInput input) throws IOException, MailException {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 		Validate.notEmpty(fileList, "Need to upload something");
