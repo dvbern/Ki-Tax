@@ -478,4 +478,33 @@ public class NotrechtResource {
 
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
 	}
+
+	@ApiOperation(value = "Updates the reclamation of a RueckforderungFormular in the database", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Path("/updateBeschwerde")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungFormular updateBeschwerde(
+		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(rueckforderungFormularJAXP.getId());
+
+		RueckforderungFormular rueckforderungFormularFromDB =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("updateBeschwerde", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularJAXP.getId()));
+		// wir setzen nur die beschwerde Feldern um irgenwelche Json manipulation zu vermeiden
+		rueckforderungFormularFromDB.setBeschwerdeBetrag(rueckforderungFormularJAXP.getBeschwerdeBetrag());
+		rueckforderungFormularFromDB.setBeschwerdeBemerkung(rueckforderungFormularJAXP.getBeschwerdeBemerkung());
+
+		RueckforderungFormular modifiedRueckforderungFormular =
+			this.rueckforderungFormularService.save(rueckforderungFormularFromDB);
+
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
 }

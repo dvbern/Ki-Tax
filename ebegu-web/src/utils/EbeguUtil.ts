@@ -109,7 +109,6 @@ export class EbeguUtil {
         const newArray = [];
         for (let i = 0; i < a.length; i++) {
             newArray[i] = angular.copy(a[i]);
-            i++;
         }
         return newArray;
     }

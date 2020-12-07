@@ -15,21 +15,45 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Injectable} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 
 export function getWindowObject(): Window {
     // return the global native browser window object
     return window;
 }
+function getMockWindow(): any {
+    return {
+        innerWidth: 0,
+        innerHeight: 0,
+        scrollY: 0,
+        scrollX: 0,
+        pageYOffset: 0,
+        pageXOffset: 0,
+        scroll: () => {},
+        scrollTo: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+    };
+}
 
 @Injectable()
 export class WindowRef {
 
+    private readonly isBrowser: boolean = false;
+
     public get nativeWindow(): Window {
-        return getWindowObject();
+        if (this.isBrowser) {
+            return getWindowObject();
+        }
+        return getMockWindow();
     }
 
     public get nativeLocalStorage(): Storage {
         return getWindowObject().localStorage;
+    }
+
+    public constructor(@Inject(PLATFORM_ID) platformId: any) {
+        this.isBrowser = isPlatformBrowser(platformId);
     }
 }

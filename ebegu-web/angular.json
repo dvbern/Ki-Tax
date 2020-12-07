@@ -30,7 +30,8 @@
                         "extractLicenses": true,
                         "customWebpackConfig": {
                             "path": "./extra-webpack.config.js"
-                        }
+                        },
+                        "allowedCommonJsDependencies": ["lodash", "iban", "raven-js", "angular"]
                     },
                     "configurations": {
                         "production": {

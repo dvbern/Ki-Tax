@@ -35,10 +35,10 @@
     "start": "npm run server",
     "start:ie": "npm run server:ie",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "npm run set-version && npm rebuild node-sass && mkdirp build"
+    "postinstall": "ngcc && npm run set-version && npm rebuild node-sass && mkdirp build"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^8.4.1",
+    "@angular-builders/custom-webpack": "^10.0.1",
     "@angular-devkit/build-angular": "~0.1000.8",
     "@angular/cli": "^10.0.8",
     "@angular/compiler-cli": "^10.0.14",
@@ -147,8 +147,8 @@
     "iban": "0.0.14",
     "moment": "^2.24.0",
     "ng-file-upload": "~12.2.8",
-    "ngx-guided-tour": "=1.1.2",
-    "ngx-iban": "^2.3.0",
+    "ngx-guided-tour": "^1.1.11",
+    "ngx-iban": "^10.0.1",
     "ngx-material-timepicker": "^3.2.2",
     "randomcolor": "^0.5.4",
     "raven-js": "^3.27.2",
