@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -42,6 +41,7 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
@@ -53,16 +53,17 @@ public class PlatzbestaetigungEventHandlerTest {
 
 	private final PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
 	private Gesuch gesuch_1GS = null;
+	private Gesuchsperiode gesuchsperiode = null;
 
 	@BeforeEach
 	public void setUp() {
-		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
-		Gemeinde bern = TestDataUtil.createGemeindeParis();
+		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
+		TestDataUtil.createGemeindeParis();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall_1GS =
-			new Testfall01_WaeltiDagmar(gesuchsperiode1718, institutionStammdatenList);
+			new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
@@ -570,25 +571,24 @@ public class PlatzbestaetigungEventHandlerTest {
 
 	private ZeitabschnittDTO createZeitabschnittDTO() {
 		return ZeitabschnittDTO.newBuilder()
-			.setBetreuungskosten(new BigDecimal(2000.00).setScale(2))
+			.setBetreuungskosten(MathUtil.DEFAULT.from(2000))
 			.setBetreuungspensum(new BigDecimal(80))
 			.setAnzahlHauptmahlzeiten(BigDecimal.ZERO)
 			.setAnzahlNebenmahlzeiten(BigDecimal.ZERO)
 			.setPensumUnit(Zeiteinheit.PERCENTAGE)
-			.setVon(LocalDate.of(2017, 8, 01))
-			.setBis(LocalDate.of(2018, 1, 31))
+			.setVon(gesuchsperiode.getGueltigkeit().getGueltigAb())
+			.setBis(gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31))
 			.build();
 	}
 
 	private Betreuungsmitteilung createBetreuungMitteilung() {
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum = new BetreuungsmitteilungPensum();
-		betreuungsmitteilungPensum.setMonatlicheBetreuungskosten(new BigDecimal(2000.00).setScale(2));
+		betreuungsmitteilungPensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
 		betreuungsmitteilungPensum.setPensum(new BigDecimal(80));
 		betreuungsmitteilungPensum.setUnitForDisplay(PensumUnits.PERCENTAGE);
-		DateRange dateRange = new DateRange();
-		dateRange.setGueltigAb(LocalDate.of(2017, 8, 01));
-		dateRange.setGueltigBis(LocalDate.of(2018, 1, 31));
+		DateRange dateRange = new DateRange(gesuchsperiode.getGueltigkeit());
+		dateRange.setGueltigBis(gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31));
 		betreuungsmitteilungPensum.setGueltigkeit(dateRange);
 		Set<BetreuungsmitteilungPensum> betreuungsmitteilungPensumSet = new HashSet<>();
 		betreuungsmitteilungPensumSet.add(betreuungsmitteilungPensum);
