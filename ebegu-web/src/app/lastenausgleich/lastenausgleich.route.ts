@@ -31,7 +31,7 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'lastenausgleich',
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
+            roles: TSRoleUtil.getAllRolesForLastenausgleich(),
         },
     },
     {

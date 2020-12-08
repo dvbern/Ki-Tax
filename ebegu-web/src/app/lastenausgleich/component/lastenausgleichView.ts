@@ -65,7 +65,10 @@ export class LastenausgleichViewController implements IController {
     }
 
     public $onInit(): void {
-        this.lastenausgleichRS.getAllLastenausgleiche() .then((response: TSLastenausgleich[]) => {
+        const dataPromise = this.authServiceRS.getPrincipal().hasRole(TSRole.SACHBEARBEITER_GEMEINDE) ?
+            this.lastenausgleichRS.getGemeindeLastenausgleiche() : this.lastenausgleichRS.getAllLastenausgleiche();
+
+        dataPromise.then((response: TSLastenausgleich[]) => {
             this.lastenausgleiche = response;
         });
     }
