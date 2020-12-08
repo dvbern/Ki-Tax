@@ -256,15 +256,6 @@ export class EditGemeindeComponent implements OnInit {
             this.changeDetectorRef.detectChanges();
         }
 
-        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
-            if (this.fileToUpload) {
-                this.persistLogo(this.fileToUpload);
-            } else if (this.isRegisteringGemeinde) {
-                this.$state.go('welcome');
-                return;
-            }
-        });
-
         // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
         // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
         this.initializeEmptyUnrequiredFields(stammdaten);
