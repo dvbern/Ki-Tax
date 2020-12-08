@@ -270,14 +270,31 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		query.where(predicateFallNummer, predicateKindNummer, predicatePeriode);
 
 		// Bei Mutationen innerhalb einer Gesuchsperiode gibt es mehrere Kinder mit der gleichen
-		// Fallnummer, Kindnummer undk Gesuchsperiode. Wir updaten alle
+		// Fallnummer, Kindnummer und Gesuchsperiode. Wir updaten alle
 		Collection<KindContainer> kindContainers = persistence.getCriteriaResults(query);
 		kindContainers.forEach(kindContainer -> {
-			kindContainer.setKeinSelbstbehaltDurchGemeinde(keinSelbstbehaltFuerGemeinde);
-			LOGGER.info("Updating KindContainer with id " + kindContainer.getId() +
-				", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
-				". Set keinSelbstbehaltFuerGemeinde = " + keinSelbstbehaltFuerGemeinde);
-			persistence.persist(kindContainer);
+			// Flag nur setzen, falls das Kind immer noch die Checkbox kindAusAsylwesen aktiviert hat
+			if (overrideAllowed(kindContainer)) {
+				kindContainer.setKeinSelbstbehaltDurchGemeinde(keinSelbstbehaltFuerGemeinde);
+				LOGGER.info("Updating KindContainer with id " + kindContainer.getId() +
+					", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
+					". Set keinSelbstbehaltFuerGemeinde = " + keinSelbstbehaltFuerGemeinde);
+				persistence.persist(kindContainer);
+			} else {
+				LOGGER.info("KindContainer with id " + kindContainer.getId() +
+					", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
+					" has kindAusAsylwesen == false or has wrong Gesuchstatus. Not setting keinSelbstbehaltFuerGemeinde");
+			}
 		});
+	}
+
+	// Nur KindContainers überschreiben die zu verfügten Gesuchen gehören und die immer noch kindAusAsylwesen == true haben.
+	private boolean overrideAllowed(@Nonnull KindContainer kindContainer) {
+		boolean kindAusAyslwesen = false;
+		if (kindContainer.getKindJA() != null && kindContainer.getKindJA().getAusAsylwesen() != null) {
+			kindAusAyslwesen = kindContainer.getKindJA().getAusAsylwesen();
+		}
+		boolean gesuchVerfuegt = kindContainer.getGesuch().getStatus().isAnyStatusOfVerfuegt();
+		return kindAusAyslwesen && gesuchVerfuegt;
 	}
 }
