@@ -142,220 +142,220 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	public LastenausgleichTagesschuleAngabenGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeinde source) {
 		// A: Allgemeine Angaben
-		this.setBedarfBeiElternAbgeklaert(source.getBedarfBeiElternAbgeklaert());
-		this.setAngebotFuerFerienbetreuungVorhanden(source.getAngebotFuerFerienbetreuungVorhanden());
-		this.setAngebotVerfuegbarFuerAlleSchulstufen(source.getAngebotVerfuegbarFuerAlleSchulstufen());
-		this.setBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen(source.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen());
+		this.bedarfBeiElternAbgeklaert = source.bedarfBeiElternAbgeklaert;
+		this.angebotFuerFerienbetreuungVorhanden = source.angebotFuerFerienbetreuungVorhanden;
+		this.angebotVerfuegbarFuerAlleSchulstufen = source.angebotVerfuegbarFuerAlleSchulstufen;
+		this.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen = source.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
 		// B: Abrechnung
-		this.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(source.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
-		this.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(source.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
-		this.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(source.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
-		this.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(source.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
-		this.setEinnahmenElterngebuehren(source.getEinnahmenElterngebuehren());
+		this.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse = source.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
+		this.geleisteteBetreuungsstundenBesondereBeduerfnisse = source.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+		this.davonStundenZuNormlohnMehrAls50ProzentAusgebildete = source.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
+		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete = source.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
+		this.einnahmenElterngebuehren = source.einnahmenElterngebuehren;
 		// C: Kostenbeteiligung Gemeinde
-		this.setGesamtKostenTagesschule(source.getGesamtKostenTagesschule());
-		this.setEinnnahmenVerpflegung(source.getEinnnahmenVerpflegung());
-		this.setEinnahmenSubventionenDritter(source.getEinnahmenSubventionenDritter());
+		this.gesamtKostenTagesschule = source.gesamtKostenTagesschule;
+		this.einnnahmenVerpflegung = source.einnnahmenVerpflegung;
+		this.einnahmenSubventionenDritter = source.einnahmenSubventionenDritter;
 		// D: Angaben zu weiteren Kosten und Ertraegen
-		this.setBemerkungenWeitereKostenUndErtraege(source.getBemerkungenWeitereKostenUndErtraege());
+		this.bemerkungenWeitereKostenUndErtraege = source.bemerkungenWeitereKostenUndErtraege;
 		// E: Kontrollfragen
-		this.setBetreuungsstundenDokumentiertUndUeberprueft(source.getBetreuungsstundenDokumentiertUndUeberprueft());
-		this.setElterngebuehrenGemaessVerordnungBerechnet(source.getElterngebuehrenGemaessVerordnungBerechnet());
-		this.setEinkommenElternBelegt(source.getEinkommenElternBelegt());
-		this.setMaximalTarif(source.getMaximalTarif());
-		this.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(source.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
-		this.setAusbildungenMitarbeitendeBelegt(source.getAusbildungenMitarbeitendeBelegt());
+		this.betreuungsstundenDokumentiertUndUeberprueft = source.betreuungsstundenDokumentiertUndUeberprueft;
+		this.elterngebuehrenGemaessVerordnungBerechnet = source.elterngebuehrenGemaessVerordnungBerechnet;
+		this.einkommenElternBelegt = source.einkommenElternBelegt;
+		this.maximalTarif = source.maximalTarif;
+		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal = source.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+		this.ausbildungenMitarbeitendeBelegt = source.ausbildungenMitarbeitendeBelegt;
 		// Bemerkungen
-		this.setInternerKommentar(source.getInternerKommentar());
-		this.setBemerkungen(source.getBemerkungen());
+		this.internerKommentar = source.internerKommentar;
+		this.bemerkungen = source.bemerkungen;
 	}
 
 	@Nonnull
-	public final Boolean getBedarfBeiElternAbgeklaert() {
+	public Boolean getBedarfBeiElternAbgeklaert() {
 		return bedarfBeiElternAbgeklaert;
 	}
 
-	public final void setBedarfBeiElternAbgeklaert(@Nonnull Boolean bedarfBeiElternAbgeklaert) {
+	public void setBedarfBeiElternAbgeklaert(@Nonnull Boolean bedarfBeiElternAbgeklaert) {
 		this.bedarfBeiElternAbgeklaert = bedarfBeiElternAbgeklaert;
 	}
 
 	@Nonnull
-	public final Boolean getAngebotFuerFerienbetreuungVorhanden() {
+	public Boolean getAngebotFuerFerienbetreuungVorhanden() {
 		return angebotFuerFerienbetreuungVorhanden;
 	}
 
-	public final void setAngebotFuerFerienbetreuungVorhanden(@Nonnull Boolean angebotFuerFerienbetreuungVorhanden) {
+	public void setAngebotFuerFerienbetreuungVorhanden(@Nonnull Boolean angebotFuerFerienbetreuungVorhanden) {
 		this.angebotFuerFerienbetreuungVorhanden = angebotFuerFerienbetreuungVorhanden;
 	}
 
 	@Nonnull
-	public final Boolean getAngebotVerfuegbarFuerAlleSchulstufen() {
+	public Boolean getAngebotVerfuegbarFuerAlleSchulstufen() {
 		return angebotVerfuegbarFuerAlleSchulstufen;
 	}
 
-	public final void setAngebotVerfuegbarFuerAlleSchulstufen(@Nonnull Boolean angebotVerfuegbarFuerAlleSchulstufen) {
+	public void setAngebotVerfuegbarFuerAlleSchulstufen(@Nonnull Boolean angebotVerfuegbarFuerAlleSchulstufen) {
 		this.angebotVerfuegbarFuerAlleSchulstufen = angebotVerfuegbarFuerAlleSchulstufen;
 	}
 
 	@Nullable
-	public final String getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen() {
+	public String getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen() {
 		return begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
 	}
 
-	public final void setBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen(@Nullable String begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen) {
+	public void setBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen(@Nullable String begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen) {
 		this.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen = begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
 	}
 
 	@Nonnull
-	public final BigDecimal getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() {
+	public BigDecimal getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() {
 		return geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
 	}
 
-	public final void setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(@Nonnull BigDecimal geleisteteBetreuungsstundenOhneBesondereBeduerfnisse) {
+	public void setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(@Nonnull BigDecimal geleisteteBetreuungsstundenOhneBesondereBeduerfnisse) {
 		this.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse = geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
 	}
 
 	@Nonnull
-	public final BigDecimal getGeleisteteBetreuungsstundenBesondereBeduerfnisse() {
+	public BigDecimal getGeleisteteBetreuungsstundenBesondereBeduerfnisse() {
 		return geleisteteBetreuungsstundenBesondereBeduerfnisse;
 	}
 
-	public final void setGeleisteteBetreuungsstundenBesondereBeduerfnisse(@Nonnull BigDecimal geleisteteBetreuungsstundenBesondereBeduerfnisse) {
+	public void setGeleisteteBetreuungsstundenBesondereBeduerfnisse(@Nonnull BigDecimal geleisteteBetreuungsstundenBesondereBeduerfnisse) {
 		this.geleisteteBetreuungsstundenBesondereBeduerfnisse = geleisteteBetreuungsstundenBesondereBeduerfnisse;
 	}
 
 	@Nonnull
-	public final BigDecimal getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() {
+	public BigDecimal getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() {
 		return davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
 	}
 
-	public final void setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(@Nonnull BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildetesPersonal) {
+	public void setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(@Nonnull BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildetesPersonal) {
 		this.davonStundenZuNormlohnMehrAls50ProzentAusgebildete = davonStundenZuNormlohnMehrAls50ProzentAusgebildetesPersonal;
 	}
 
 	@Nonnull
-	public final BigDecimal getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() {
+	public BigDecimal getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() {
 		return davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
 	}
 
-	public final void setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(@Nonnull BigDecimal davonStundenZuNormlohnWenigerAls50ProzentAusgebildetesPersonal) {
+	public void setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(@Nonnull BigDecimal davonStundenZuNormlohnWenigerAls50ProzentAusgebildetesPersonal) {
 		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete = davonStundenZuNormlohnWenigerAls50ProzentAusgebildetesPersonal;
 	}
 
 	@Nonnull
-	public final BigDecimal getEinnahmenElterngebuehren() {
+	public BigDecimal getEinnahmenElterngebuehren() {
 		return einnahmenElterngebuehren;
 	}
 
-	public final void setEinnahmenElterngebuehren(@Nonnull BigDecimal einnahmenElterngebuehren) {
+	public void setEinnahmenElterngebuehren(@Nonnull BigDecimal einnahmenElterngebuehren) {
 		this.einnahmenElterngebuehren = einnahmenElterngebuehren;
 	}
 
 	@Nonnull
-	public final BigDecimal getGesamtKostenTagesschule() {
+	public BigDecimal getGesamtKostenTagesschule() {
 		return gesamtKostenTagesschule;
 	}
 
-	public final void setGesamtKostenTagesschule(@Nonnull BigDecimal gesamtKostenTagesschule) {
+	public void setGesamtKostenTagesschule(@Nonnull BigDecimal gesamtKostenTagesschule) {
 		this.gesamtKostenTagesschule = gesamtKostenTagesschule;
 	}
 
 	@Nonnull
-	public final BigDecimal getEinnnahmenVerpflegung() {
+	public BigDecimal getEinnnahmenVerpflegung() {
 		return einnnahmenVerpflegung;
 	}
 
-	public final void setEinnnahmenVerpflegung(@Nonnull BigDecimal einnnahmenVerpflegung) {
+	public void setEinnnahmenVerpflegung(@Nonnull BigDecimal einnnahmenVerpflegung) {
 		this.einnnahmenVerpflegung = einnnahmenVerpflegung;
 	}
 
 	@Nonnull
-	public final BigDecimal getEinnahmenSubventionenDritter() {
+	public BigDecimal getEinnahmenSubventionenDritter() {
 		return einnahmenSubventionenDritter;
 	}
 
-	public final void setEinnahmenSubventionenDritter(@Nonnull BigDecimal einnahmenSubventionenDritter) {
+	public void setEinnahmenSubventionenDritter(@Nonnull BigDecimal einnahmenSubventionenDritter) {
 		this.einnahmenSubventionenDritter = einnahmenSubventionenDritter;
 	}
 
 	@Nullable
-	public final String getBemerkungenWeitereKostenUndErtraege() {
+	public String getBemerkungenWeitereKostenUndErtraege() {
 		return bemerkungenWeitereKostenUndErtraege;
 	}
 
-	public final void setBemerkungenWeitereKostenUndErtraege(@Nullable String bemerkungenWeitereKostenUndErtraege) {
+	public void setBemerkungenWeitereKostenUndErtraege(@Nullable String bemerkungenWeitereKostenUndErtraege) {
 		this.bemerkungenWeitereKostenUndErtraege = bemerkungenWeitereKostenUndErtraege;
 	}
 
 	@Nonnull
-	public final Boolean getBetreuungsstundenDokumentiertUndUeberprueft() {
+	public Boolean getBetreuungsstundenDokumentiertUndUeberprueft() {
 		return betreuungsstundenDokumentiertUndUeberprueft;
 	}
 
-	public final void setBetreuungsstundenDokumentiertUndUeberprueft(@Nonnull Boolean betreuungsstundenDokumentiertUndUeberprueft) {
+	public void setBetreuungsstundenDokumentiertUndUeberprueft(@Nonnull Boolean betreuungsstundenDokumentiertUndUeberprueft) {
 		this.betreuungsstundenDokumentiertUndUeberprueft = betreuungsstundenDokumentiertUndUeberprueft;
 	}
 
 	@Nonnull
-	public final Boolean getElterngebuehrenGemaessVerordnungBerechnet() {
+	public Boolean getElterngebuehrenGemaessVerordnungBerechnet() {
 		return elterngebuehrenGemaessVerordnungBerechnet;
 	}
 
-	public final void setElterngebuehrenGemaessVerordnungBerechnet(@Nonnull Boolean elterngebuehrenGemaessVerordnungBerechnet) {
+	public void setElterngebuehrenGemaessVerordnungBerechnet(@Nonnull Boolean elterngebuehrenGemaessVerordnungBerechnet) {
 		this.elterngebuehrenGemaessVerordnungBerechnet = elterngebuehrenGemaessVerordnungBerechnet;
 	}
 
 	@Nonnull
-	public final Boolean getEinkommenElternBelegt() {
+	public Boolean getEinkommenElternBelegt() {
 		return einkommenElternBelegt;
 	}
 
-	public final void setEinkommenElternBelegt(@Nonnull Boolean einkommenElternBelegt) {
+	public void setEinkommenElternBelegt(@Nonnull Boolean einkommenElternBelegt) {
 		this.einkommenElternBelegt = einkommenElternBelegt;
 	}
 
 	@Nonnull
-	public final Boolean getMaximalTarif() {
+	public Boolean getMaximalTarif() {
 		return maximalTarif;
 	}
 
-	public final void setMaximalTarif(@Nonnull Boolean maximalTarif) {
+	public void setMaximalTarif(@Nonnull Boolean maximalTarif) {
 		this.maximalTarif = maximalTarif;
 	}
 
 	@Nonnull
-	public final Boolean getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal() {
+	public Boolean getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal() {
 		return mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
 	}
 
-	public final void setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(@Nonnull Boolean mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal) {
+	public void setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(@Nonnull Boolean mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal) {
 		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal = mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
 	}
 
 	@Nonnull
-	public final Boolean getAusbildungenMitarbeitendeBelegt() {
+	public Boolean getAusbildungenMitarbeitendeBelegt() {
 		return ausbildungenMitarbeitendeBelegt;
 	}
 
-	public final void setAusbildungenMitarbeitendeBelegt(@Nonnull Boolean ausbildungenMitarbeitendeBelegt) {
+	public void setAusbildungenMitarbeitendeBelegt(@Nonnull Boolean ausbildungenMitarbeitendeBelegt) {
 		this.ausbildungenMitarbeitendeBelegt = ausbildungenMitarbeitendeBelegt;
 	}
 
 	@Nullable
-	public final String getInternerKommentar() {
+	public String getInternerKommentar() {
 		return internerKommentar;
 	}
 
-	public final void setInternerKommentar(@Nullable String internerKommentar) {
+	public void setInternerKommentar(@Nullable String internerKommentar) {
 		this.internerKommentar = internerKommentar;
 	}
 
 	@Nullable
-	public final String getBemerkungen() {
+	public String getBemerkungen() {
 		return bemerkungen;
 	}
 
-	public final void setBemerkungen(@Nullable String bemerkungen) {
+	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
 	}
 

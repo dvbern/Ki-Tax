@@ -2175,6 +2175,7 @@
     "NOTVERORDNUNG_BESCHWERDE": "Réclamation",
     "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Réclamation",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Document(s) concernant la réclamation",
+    "GEMEINDE_DANGEROUS_SAVING": "Attention: vous avez effectué des changements dans une période qui est active. Êtes-vous sûre de vouloir effectuer ces changements? Les demandes de cette période ne seront pas automatiquement changées",
     "LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE": "",
     "LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN": "",
     "LASTENAUSGLEICH_TS_FREIGABE": "",

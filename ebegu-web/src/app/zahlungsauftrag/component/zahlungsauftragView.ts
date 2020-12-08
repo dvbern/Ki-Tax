@@ -104,10 +104,10 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public $onInit(): void {
-        const isMahlzeitenzahlungen = this.$stateParams.isMahlzeitenzahlungen;
-        EbeguUtil.isNotNullOrUndefined(isMahlzeitenzahlungen) && isMahlzeitenzahlungen ?  this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER :
-            this.zahlungslaufTyp = TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
-
+        const isMahlzeitenzahlungen = EbeguUtil.isNotNullAndTrue(this.$stateParams.isMahlzeitenzahlungen);
+        this.zahlungslaufTyp = isMahlzeitenzahlungen
+            ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
+            : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
         // Testlauf darf auch nur in die Zukunft gemacht werden!
         this.minDateForTestlauf = moment(moment.now());
         this.updateZahlungsauftrag();

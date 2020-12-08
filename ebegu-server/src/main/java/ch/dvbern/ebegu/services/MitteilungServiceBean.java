@@ -534,8 +534,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, gesuchPred, withBetreuungPred));
 		final List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
 
+		// Wir pruefen nur die grundsaetzliche Schreibberechtigung fuer das Gesuch
+		authorizer.checkWriteAuthorization(gesuch);
+
 		for (Mitteilung mitteilung : mitteilungen) {
-			authorizer.checkWriteAuthorizationMitteilung(mitteilung);
 			persistence.remove(Mitteilung.class, mitteilung.getId());
 		}
 	}

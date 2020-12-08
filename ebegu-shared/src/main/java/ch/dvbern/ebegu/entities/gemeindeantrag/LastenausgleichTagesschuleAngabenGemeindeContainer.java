@@ -118,11 +118,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	@Nullable
-	public final Boolean getAlleAngabenInKibonErfasst() {
+	public Boolean getAlleAngabenInKibonErfasst() {
 		return alleAngabenInKibonErfasst;
 	}
 
-	public final void setAlleAngabenInKibonErfasst(@Nullable Boolean alleAngabenInKibonErfasst) {
+	public void setAlleAngabenInKibonErfasst(@Nullable Boolean alleAngabenInKibonErfasst) {
 		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
 	}
 
