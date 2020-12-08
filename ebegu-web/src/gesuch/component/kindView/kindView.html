@@ -424,6 +424,7 @@
                             <div class="checkbox checkbox-with-margin">
                                 <md-checkbox ng-model="vm.getModel().ausAsylwesen" name="showAsylwesen" id="showAsylwesen"
                                              aria-label="{{'KIND_AUS_ASYLWESEN'|translate}}"
+                                             ng-change="vm.deleteZemisNummer(vm.getModel())"
                                              ng-disabled="vm.isGesuchReadonly()">
                                     <span data-translate="KIND_AUS_ASYLWESEN"></span>
                                 </md-checkbox>
