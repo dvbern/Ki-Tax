@@ -158,8 +158,10 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 		List<KindMitZemisNummerDataRow> dataRows = new ArrayList<>();
 		gesuchList.forEach(gesuch -> {
 			List<KindMitZemisNummerDataRow> kinder = gesuch.getKindContainers().stream()
-				// Abfrage gibt alle Gesuche mit mindesten einem Kind mit Zemis Nummer zurück. Darum müssen die Kinder nochmals gefiltert werden
-				.filter(kindContainer -> kindContainer.getKindJA().getZemisNummer() != null)
+				// Abfrage gibt alle Gesuche mit mindesten einem Kind mit Zemis Nummer und BG-Betreuung zurück.
+				// Darum müssen die Kinder nochmals gefiltert werden
+				.filter(kindContainer -> kindContainer.getKindJA().getZemisNummer() != null
+					&& !kindContainer.getBetreuungen().isEmpty())
 				.map(kindContainer -> {
 					KindMitZemisNummerDataRow dataRow = new KindMitZemisNummerDataRow();
 					dataRow.setFall(gesuch.getFall().getFallNummer());
