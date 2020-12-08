@@ -52,7 +52,8 @@ export class DvNgHelpDialogComponent {
 
     public openSupportanfrage(): void {
         this.close();
-        this.dialogRef.afterClosed().subscribe(() => this.supportDialogService.openDialog());
+        this.dialogRef.afterClosed()
+            .subscribe(() => this.supportDialogService.openDialog(), error => console.error(error));
     }
 
     public startTour(): void {

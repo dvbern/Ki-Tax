@@ -10,7 +10,7 @@ export class SupportDialogService {
     private supportDialogRef: MatDialogRef<DvNgSupportDialogComponent>;
 
     public constructor(
-        private supportDialog: MatDialog,
+        private readonly supportDialog: MatDialog,
     ) {
     }
 
