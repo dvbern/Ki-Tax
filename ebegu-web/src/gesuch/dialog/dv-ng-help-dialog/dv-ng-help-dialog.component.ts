@@ -14,18 +14,19 @@
  */
 
 import {Component} from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import {KiBonGuidedTourService} from '../../app/kibonTour/service/KiBonGuidedTourService';
-import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
-import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {KiBonGuidedTourService} from '../../../app/kibonTour/service/KiBonGuidedTourService';
+import {SupportDialogService} from '../../../app/shared/services/support-dialog.service';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 /**
  * This component shows a Help Dialog with all contact details and a Link to the user manual
  */
 @Component({
     selector: 'dv-ng-help-dialog',
-    templateUrl: './dv-ng-help-dialog.template.html',
+    styleUrls: ['./dv-ng-help-dialog.component.less'],
+    templateUrl: './dv-ng-help-dialog.component.html',
 })
 export class DvNgHelpDialogComponent {
 
@@ -38,6 +39,7 @@ export class DvNgHelpDialogComponent {
         private readonly dialogSupport: MatDialog,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly supportDialogService: SupportDialogService,
     ) {
         this.hasRoleGemeinde = this.isGemeinde();
         this.hasRoleInstitution = this.isInstitution();
@@ -50,7 +52,8 @@ export class DvNgHelpDialogComponent {
 
     public openSupportanfrage(): void {
         this.close();
-        this.dialogSupport.open(DvNgSupportDialogComponent);
+        this.dialogRef.afterClosed()
+            .subscribe(() => this.supportDialogService.openDialog(), error => console.error(error));
     }
 
     public startTour(): void {
