@@ -45,16 +45,16 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PlatzbestaetigungEventHandlerTest {
 
-	private PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
-	private Gesuch gesuch_1GS;
+	private final PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
+	private Gesuch gesuch_1GS = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
 		Gemeinde bern = TestDataUtil.createGemeindeParis();
@@ -72,9 +72,9 @@ public class PlatzbestaetigungEventHandlerTest {
 	public void testIsSame() {
 		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
 		Betreuungsmitteilung betreuungsmitteilung = createBetreuungMitteilung();
-		Assert.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
+		Assertions.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
 		//then with different Betreuung
-		Assert.assertFalse(handler.isSame(betreuungsmitteilung, betreuungs.get(1)));
+		Assertions.assertFalse(handler.isSame(betreuungsmitteilung, betreuungs.get(1)));
 	}
 
 	@Test
@@ -86,23 +86,23 @@ public class PlatzbestaetigungEventHandlerTest {
 		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
 			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum(), zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertNotNull(betreuungsmitteilungPensum);
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheBetreuungskosten()
+		Assertions.assertNotNull(betreuungsmitteilungPensum);
+		Assertions.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheBetreuungskosten()
 			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getPensum()
+		Assertions.assertEquals(0, betreuungsmitteilungPensum.getPensum()
 			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
+		Assertions.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
 			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
+		Assertions.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
 			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProHauptmahlzeit()
+		Assertions.assertEquals(0, betreuungsmitteilungPensum.getTarifProHauptmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
+		Assertions.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
+		Assertions.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
 			.getGueltigAb()
 			.isEqual(zeitabschnittDTO.getVon()));
-		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
+		Assertions.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
 			.getGueltigBis()
 			.isEqual(zeitabschnittDTO.getBis()));
 	}
@@ -116,21 +116,21 @@ public class PlatzbestaetigungEventHandlerTest {
 		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
 		Betreuungspensum betreuungsPensum =
 			handler.mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertNotNull(betreuungsPensum);
-		Assert.assertEquals(0, betreuungsPensum.getMonatlicheBetreuungskosten()
+		Assertions.assertNotNull(betreuungsPensum);
+		Assertions.assertEquals(0, betreuungsPensum.getMonatlicheBetreuungskosten()
 			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
-		Assert.assertEquals(0, betreuungsPensum.getPensum()
+		Assertions.assertEquals(0, betreuungsPensum.getPensum()
 			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
-		Assert.assertEquals(0, betreuungsPensum.getMonatlicheHauptmahlzeiten()
+		Assertions.assertEquals(0, betreuungsPensum.getMonatlicheHauptmahlzeiten()
 			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsPensum.getMonatlicheNebenmahlzeiten()
+		Assertions.assertEquals(0, betreuungsPensum.getMonatlicheNebenmahlzeiten()
 			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
-		Assert.assertEquals(0, betreuungsPensum.getTarifProHauptmahlzeit()
+		Assertions.assertEquals(0, betreuungsPensum.getTarifProHauptmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsPensum.getTarifProNebenmahlzeit()
+		Assertions.assertEquals(0, betreuungsPensum.getTarifProNebenmahlzeit()
 			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
-		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
+		Assertions.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
+		Assertions.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
 	}
 
 	@Test
@@ -142,7 +142,7 @@ public class PlatzbestaetigungEventHandlerTest {
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
 			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum()
 				, zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertNull(betreuungsmitteilungPensum);
+		Assertions.assertNull(betreuungsmitteilungPensum);
 	}
 
 	@Test
@@ -169,13 +169,13 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 6, 30), zeitabschnitteToImport.get(1).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
+		Assertions.assertEquals(LocalDate.of(2021, 6, 30), zeitabschnitteToImport.get(1).getBis());
 
-		Assert.assertEquals(2, zeitabschnitteToImport.size());
+		Assertions.assertEquals(2, zeitabschnitteToImport.size());
 	}
 
 	@Test
@@ -225,19 +225,19 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 1, 31), zeitabschnitteToImport.get(1).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
+		Assertions.assertEquals(LocalDate.of(2021, 1, 31), zeitabschnitteToImport.get(1).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 2, 1), zeitabschnitteToImport.get(2).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 3, 31), zeitabschnitteToImport.get(2).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 2, 1), zeitabschnitteToImport.get(2).getVon());
+		Assertions.assertEquals(LocalDate.of(2021, 3, 31), zeitabschnitteToImport.get(2).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 4, 1), zeitabschnitteToImport.get(3).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(3).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 4, 1), zeitabschnitteToImport.get(3).getVon());
+		Assertions.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(3).getBis());
 
-		Assert.assertEquals(4, zeitabschnitteToImport.size());
+		Assertions.assertEquals(4, zeitabschnitteToImport.size());
 	}
 
 	@Test
@@ -266,16 +266,16 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 7, 31), zeitabschnitteToImport.get(1).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
+		Assertions.assertEquals(LocalDate.of(2021, 7, 31), zeitabschnitteToImport.get(1).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(2).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(2).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(2).getVon());
+		Assertions.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(2).getBis());
 
-		Assert.assertEquals(3, zeitabschnitteToImport.size());
+		Assertions.assertEquals(3, zeitabschnitteToImport.size());
 	}
 
 	@Test
@@ -304,13 +304,13 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(9999, 12, 31), zeitabschnitteToImport.get(1).getBis());
+		Assertions.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
+		Assertions.assertEquals(LocalDate.of(9999, 12, 31), zeitabschnitteToImport.get(1).getBis());
 
-		Assert.assertEquals(2, zeitabschnitteToImport.size());
+		Assertions.assertEquals(2, zeitabschnitteToImport.size());
 	}
 	@Test
 	public void testMapZeitAbschnitteToImportShouldSplitIfBetStartsBeforeGueltigkeitAndEndsOnGueltigkeitEnd() {
@@ -338,10 +338,10 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(1, zeitabschnitteToImport.size());
+		Assertions.assertEquals(1, zeitabschnitteToImport.size());
 	}
 
 	@Test
@@ -370,10 +370,10 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
+		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
 
-		Assert.assertEquals(1, zeitabschnitteToImport.size());
+		Assertions.assertEquals(1, zeitabschnitteToImport.size());
 	}
 
 	@Test
@@ -403,7 +403,7 @@ public class PlatzbestaetigungEventHandlerTest {
 			betreuungEventDTO,
 			Objects.requireNonNull(betreuung), gueltigkeit);
 
-		Assert.assertEquals(zeitabschnitteToImport.size(), betreuung.getBetreuungspensumContainers().size());
+		Assertions.assertEquals(zeitabschnitteToImport.size(), betreuung.getBetreuungspensumContainers().size());
 	}
 
 	@Test
@@ -450,9 +450,9 @@ public class PlatzbestaetigungEventHandlerTest {
 		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
 
 		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
+			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO, gueltigkeit);
 
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
+		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true);
 		BetreuungspensumContainer[] betreuungspensumContainers =
 			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
 				.getBetreuungspensumContainers()
@@ -463,35 +463,35 @@ public class PlatzbestaetigungEventHandlerTest {
 			.sorted()
 			.collect(Collectors.toList())
 			.toArray(betreuungspensumContainers);
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2020, 8, 1),
 			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2020, 12, 31),
 			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
 
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 1, 1),
 			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 1, 31),
 			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
 
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 2, 1),
 			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 3, 31),
 			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
 
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 4, 1),
 			betreuungspensumContainers[3].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 5, 1),
 			betreuungspensumContainers[3].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
 
-		Assert.assertEquals(4, betreuungspensumContainers.length);
+		Assertions.assertEquals(4, betreuungspensumContainers.length);
 	}
 
 	@Test
@@ -517,9 +517,9 @@ public class PlatzbestaetigungEventHandlerTest {
 		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
 
 		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
+			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO, gueltigkeit);
 
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
+		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true);
 		BetreuungspensumContainer[] betreuungspensumContainers =
 			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
 				.getBetreuungspensumContainers()
@@ -531,26 +531,26 @@ public class PlatzbestaetigungEventHandlerTest {
 			.collect(Collectors.toList())
 			.toArray(betreuungspensumContainers);
 
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2020, 8, 1),
 			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2020, 12, 31),
 			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 1, 1),
 			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 5, 1),
 			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 5, 2),
 			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		Assertions.assertEquals(
 			LocalDate.of(2021, 7, 31),
 			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
 
-		Assert.assertEquals(3, betreuungspensumContainers.length);
+		Assertions.assertEquals(3, betreuungspensumContainers.length);
 	}
 
 	/**
