@@ -406,4 +406,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.model.keinSelbstbehaltDurchGemeinde !== null
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
+
+    public deleteZemisNummer(): void {
+        if (!this.getModel().ausAsylwesen) {
+            this.getModel().zemisNummer = null;
+        }
+
+    }
 }

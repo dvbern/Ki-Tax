@@ -270,14 +270,26 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		query.where(predicateFallNummer, predicateKindNummer, predicatePeriode);
 
 		// Bei Mutationen innerhalb einer Gesuchsperiode gibt es mehrere Kinder mit der gleichen
-		// Fallnummer, Kindnummer undk Gesuchsperiode. Wir updaten alle
+		// Fallnummer, Kindnummer und Gesuchsperiode. Wir updaten alle
 		Collection<KindContainer> kindContainers = persistence.getCriteriaResults(query);
 		kindContainers.forEach(kindContainer -> {
-			kindContainer.setKeinSelbstbehaltDurchGemeinde(keinSelbstbehaltFuerGemeinde);
-			LOGGER.info("Updating KindContainer with id " + kindContainer.getId() +
+			boolean kindAusAyslwesen = false;
+			if (kindContainer.getKindJA() != null && kindContainer.getKindJA().getAusAsylwesen() != null) {
+				kindAusAyslwesen = kindContainer.getKindJA().getAusAsylwesen();
+			}
+			// Flag nur setzen, falls das Kind immer noch die Checkbox kindAusAsylwesen aktiviert hat
+			if (kindAusAyslwesen) {
+				if (kindContainer.getKindJA() != null && kindContainer.getKindJA().getAusAsylwesen())
+					kindContainer.setKeinSelbstbehaltDurchGemeinde(keinSelbstbehaltFuerGemeinde);
+				LOGGER.info("Updating KindContainer with id " + kindContainer.getId() +
+					", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
+					". Set keinSelbstbehaltFuerGemeinde = " + keinSelbstbehaltFuerGemeinde);
+				persistence.persist(kindContainer);
+				return;
+			}
+			LOGGER.info("KindContainer with id " + kindContainer.getId() +
 				", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
-				". Set keinSelbstbehaltFuerGemeinde = " + keinSelbstbehaltFuerGemeinde);
-			persistence.persist(kindContainer);
+				" has kindAusAsylwesen == false. Not setting keinSelbstbehaltFuerGemeinde");
 		});
 	}
 }
