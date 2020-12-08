@@ -53,7 +53,6 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.commons.lang3.Validate;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -115,30 +114,35 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 
 		try (InputStream is = new ByteArrayInputStream(fileContent)) {
 			Workbook workbook = WorkbookFactory.create(is);
-			FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 			Sheet sheet = workbook.getSheetAt(0);
-			// afterwards straight forward reading
-			Row row = sheet.getRow(6);
-			for (int i = 6; i < sheet.getPhysicalNumberOfRows(); i++) {
-				try {
-					int fallNummer = (int) row.getCell(0).getNumericCellValue();
-					int kindNummer = (int) row.getCell(5).getNumericCellValue();
-					boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
-					String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
-					int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
-					kindService.updateKeinSelbstbehaltFuerGemeinde(
-						fallNummer,
-						kindNummer,
-						gesuchsperiodeStartJahr,
-						keinSelbstbehaltFuerGemeinde
-					);
-					sendMail("ZEMIS Excel verarbeitet", "Die Verarbeitung des ZEMIS Excels wurde "
-						+ "erfolgreich abgeschlossen");
-				} catch (IllegalStateException exception) {
-					String message = "Falsches Format vom ZEMIS Excel in Zeile " + (i+1);
-					sendMail("Fehler bei der Verarbeitung des ZEMIS Excels", message);
-					throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", message, message);
+
+			final int firstRelevantRow = 6;
+			int rowNumber = 0;
+
+			try {
+				for (Row row : sheet) {
+					rowNumber = row.getRowNum();
+					if (rowNumber >= firstRelevantRow) {
+						int fallNummer = (int) row.getCell(0).getNumericCellValue();
+						int kindNummer = (int) row.getCell(5).getNumericCellValue();
+						boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
+						String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
+						int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
+						kindService.updateKeinSelbstbehaltFuerGemeinde(
+							fallNummer,
+							kindNummer,
+							gesuchsperiodeStartJahr,
+							keinSelbstbehaltFuerGemeinde
+						);
+					}
 				}
+				sendMail("ZEMIS Excel verarbeitet", "Die Verarbeitung des ZEMIS Excels wurde "
+					+ "erfolgreich abgeschlossen");
+
+			} catch (IllegalStateException exception) {
+				String message = "Falsches Format vom ZEMIS Excel in Zeile " + (rowNumber+1);
+				sendMail("Fehler bei der Verarbeitung des ZEMIS Excels", message);
+				throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", message, message);
 			}
 		}
 	}
