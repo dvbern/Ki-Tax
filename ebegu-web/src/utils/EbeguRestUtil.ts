@@ -140,6 +140,7 @@ import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
+import {TSWizardStepX} from '../models/TSWizardStepX';
 import {TSWorkJob} from '../models/TSWorkJob';
 import {TSZahlung} from '../models/TSZahlung';
 import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
