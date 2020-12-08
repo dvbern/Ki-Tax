@@ -411,6 +411,5 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.getModel().ausAsylwesen) {
             this.getModel().zemisNummer = null;
         }
-
     }
 }
