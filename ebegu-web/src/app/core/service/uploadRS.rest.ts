@@ -57,6 +57,7 @@ export class UploadRS {
             url: this.serviceURL,
             method: 'POST',
             headers: {
+                // tslint:disable-next-line:no-duplicate-string
                 'x-filename': names.join(';'),
                 'x-gesuchID': gesuchID,
             },
