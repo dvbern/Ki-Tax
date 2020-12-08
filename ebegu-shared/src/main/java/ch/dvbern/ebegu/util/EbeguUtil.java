@@ -448,4 +448,16 @@ public final class EbeguUtil {
 		}
 		return dominantType;
 	}
+
+	/**
+	 * @return initial param if it is not null, otherwise returns default value.
+	 */
+	@Nonnull
+	public static <T> T coalesce(@Nullable T initial, @Nonnull T defaultValue) {
+		if (initial != null) {
+			return initial;
+		}
+
+		return defaultValue;
+	}
 }

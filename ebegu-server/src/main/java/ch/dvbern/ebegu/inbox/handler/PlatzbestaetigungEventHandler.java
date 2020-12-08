@@ -77,6 +77,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
+import static java.math.BigDecimal.ZERO;
+
 @ApplicationScoped
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
 
@@ -580,8 +583,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					MAX_STUNDEN_PRO_MONAT);
 			neueBetreuung.setPensum(pensumInPercent);
 		}
-		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
-		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlNebenmahlzeiten());
+		neueBetreuung.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
+		neueBetreuung.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
 		neueBetreuung.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 		neueBetreuung.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		neueBetreuung.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());

@@ -55,6 +55,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
@@ -109,17 +110,23 @@ class PlatzbestaetigungEventHandlerTest {
 	private IsPojo<AbstractMahlzeitenPensum> matches(@Nonnull ZeitabschnittDTO z) {
 		return pojo(AbstractMahlzeitenPensum.class)
 			.where(
-				AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten, comparesEqualTo(z.getBetreuungskosten()))
+				AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten,
+				comparesEqualTo(z.getBetreuungskosten()))
 			.where(
-				AbstractMahlzeitenPensum::getPensum, comparesEqualTo(z.getBetreuungspensum()))
+				AbstractMahlzeitenPensum::getPensum,
+				comparesEqualTo(z.getBetreuungspensum()))
 			.where(
-				AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten, comparesEqualTo(z.getAnzahlHauptmahlzeiten()))
+				AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten,
+				comparesEqualTo(coalesce(z.getAnzahlHauptmahlzeiten(), BigDecimal.ZERO)))
 			.where(
-				AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten, comparesEqualTo(z.getAnzahlNebenmahlzeiten()))
+				AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten,
+				comparesEqualTo(coalesce(z.getAnzahlNebenmahlzeiten(), BigDecimal.ZERO)))
 			.where(
-				AbstractMahlzeitenPensum::getTarifProHauptmahlzeit, comparesEqualTo(z.getTarifProHauptmahlzeiten()))
+				AbstractMahlzeitenPensum::getTarifProHauptmahlzeit,
+				comparesEqualTo(coalesce(z.getTarifProHauptmahlzeiten(), BigDecimal.ZERO)))
 			.where(
-				AbstractMahlzeitenPensum::getTarifProNebenmahlzeit, comparesEqualTo(z.getTarifProNebenmahlzeiten()))
+				AbstractMahlzeitenPensum::getTarifProNebenmahlzeit,
+				comparesEqualTo(coalesce(z.getTarifProNebenmahlzeiten(), BigDecimal.ZERO)))
 			.where(
 				AbstractMahlzeitenPensum::getGueltigkeit, equalTo(new DateRange(z.getVon(), z.getBis())));
 	}
