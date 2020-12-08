@@ -35,6 +35,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -139,10 +140,10 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 				sendMail("ZEMIS Excel verarbeitet", "Die Verarbeitung des ZEMIS Excels wurde "
 					+ "erfolgreich abgeschlossen");
 
-			} catch (IllegalStateException exception) {
+			} catch (IllegalStateException e) {
 				String message = "Falsches Format vom ZEMIS Excel in Zeile " + (rowNumber+1);
 				sendMail("Fehler bei der Verarbeitung des ZEMIS Excels", message);
-				throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", message, message);
+				throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", ErrorCodeEnum.ERROR_WRONG_FORMAT_ZEMIS, e, rowNumber+1);
 			}
 		}
 	}
