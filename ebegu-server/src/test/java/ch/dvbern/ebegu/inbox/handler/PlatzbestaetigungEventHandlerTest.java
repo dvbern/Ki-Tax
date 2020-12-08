@@ -450,9 +450,9 @@ public class PlatzbestaetigungEventHandlerTest {
 		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
 
 		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO, gueltigkeit);
+			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
 
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true);
+		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
 		BetreuungspensumContainer[] betreuungspensumContainers =
 			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
 				.getBetreuungspensumContainers()
@@ -517,9 +517,9 @@ public class PlatzbestaetigungEventHandlerTest {
 		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
 
 		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO, gueltigkeit);
+			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
 
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true);
+		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
 		BetreuungspensumContainer[] betreuungspensumContainers =
 			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
 				.getBetreuungspensumContainers()
