@@ -22,12 +22,15 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -45,542 +48,429 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import com.spotify.hamcrest.pojo.IsPojo;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class PlatzbestaetigungEventHandlerTest {
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static java.util.Objects.requireNonNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
+class PlatzbestaetigungEventHandlerTest {
 
 	private final PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		TestDataUtil.createGemeindeParis();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall_1GS =
-			new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
+		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
 	}
 
 	@Test
-	public void testIsSame() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
+	void testIsSame() {
+		List<Betreuung> betreuungen = gesuch_1GS.extractAllBetreuungen();
 		Betreuungsmitteilung betreuungsmitteilung = createBetreuungMitteilung();
-		Assertions.assertTrue(handler.isSame(betreuungsmitteilung, betreuungs.get(0)));
+		Assertions.assertTrue(handler.isSame(betreuungsmitteilung, betreuungen.get(0)));
 		//then with different Betreuung
-		Assertions.assertFalse(handler.isSame(betreuungsmitteilung, betreuungs.get(1)));
+		Assertions.assertFalse(handler.isSame(betreuungsmitteilung, betreuungen.get(1)));
 	}
 
 	@Test
-	public void testMapZeitabschnittBetreuungMitteilungPensum() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
+	void mapZeitabschnittToAbstractMahlzeitenPensum() {
+		Betreuung betreuung = betreuungWithSingleContainer();
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
-		zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
+		ZeitabschnittDTO dto = betreuungEventDTO.getZeitabschnitte().get(0);
+
+		BetreuungsmitteilungPensum actual = handler.mapZeitabschnitt(new BetreuungsmitteilungPensum(), dto, betreuung);
+
+		assertThat(actual, matches(dto));
+	}
+
+	@Nonnull
+	private IsPojo<AbstractMahlzeitenPensum> matches(@Nonnull ZeitabschnittDTO z) {
+		return pojo(AbstractMahlzeitenPensum.class)
+			.where(
+				AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten, comparesEqualTo(z.getBetreuungskosten()))
+			.where(
+				AbstractMahlzeitenPensum::getPensum, comparesEqualTo(z.getBetreuungspensum()))
+			.where(
+				AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten, comparesEqualTo(z.getAnzahlHauptmahlzeiten()))
+			.where(
+				AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten, comparesEqualTo(z.getAnzahlNebenmahlzeiten()))
+			.where(
+				AbstractMahlzeitenPensum::getTarifProHauptmahlzeit, comparesEqualTo(z.getTarifProHauptmahlzeiten()))
+			.where(
+				AbstractMahlzeitenPensum::getTarifProNebenmahlzeit, comparesEqualTo(z.getTarifProNebenmahlzeiten()))
+			.where(
+				AbstractMahlzeitenPensum::getGueltigkeit, equalTo(new DateRange(z.getVon(), z.getBis())));
+	}
+
+	@Test
+	void testMapWrongZeitabschnitt() {
+		Betreuung betreuung = betreuungWithSingleContainer();
+		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
+		ZeitabschnittDTO dto = betreuungEventDTO.getZeitabschnitte().get(0);
+		dto.setPensumUnit(Zeiteinheit.HOURS);
+
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
-			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum(), zeitabschnittDTO, betreuungs.get(0));
-		Assertions.assertNotNull(betreuungsmitteilungPensum);
-		Assertions.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheBetreuungskosten()
-			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
-		Assertions.assertEquals(0, betreuungsmitteilungPensum.getPensum()
-			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
-		Assertions.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
-		Assertions.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
-		Assertions.assertEquals(0, betreuungsmitteilungPensum.getTarifProHauptmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
-		Assertions.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assertions.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
-			.getGueltigAb()
-			.isEqual(zeitabschnittDTO.getVon()));
-		Assertions.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
-			.getGueltigBis()
-			.isEqual(zeitabschnittDTO.getBis()));
+			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum(), dto, betreuung);
+
+		assertThat(betreuungsmitteilungPensum, is(nullValue()));
 	}
 
-	@Test
-	public void testMapZeitabschnittBetreuungPensum() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
-		zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
-		Betreuungspensum betreuungsPensum =
-			handler.mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuungs.get(0));
-		Assertions.assertNotNull(betreuungsPensum);
-		Assertions.assertEquals(0, betreuungsPensum.getMonatlicheBetreuungskosten()
-			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
-		Assertions.assertEquals(0, betreuungsPensum.getPensum()
-			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
-		Assertions.assertEquals(0, betreuungsPensum.getMonatlicheHauptmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
-		Assertions.assertEquals(0, betreuungsPensum.getMonatlicheNebenmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
-		Assertions.assertEquals(0, betreuungsPensum.getTarifProHauptmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
-		Assertions.assertEquals(0, betreuungsPensum.getTarifProNebenmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assertions.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
-		Assertions.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
+	@Nested
+	class MapZeitabschnitteToImportTest {
+
+		@Test
+		void testMapZeitAbschnitteToImportGoLive() {
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 5, 31));
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
+			ZeitabschnittDTO dto = createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2021, 6, 30));
+
+			betreuungEventDTO.setZeitabschnitte(Collections.singletonList(dto));
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, Constants.DEFAULT_GUELTIGKEIT);
+
+			assertThat(actual, contains(
+				gueltigkeit(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				gueltigkeit(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 6, 30))
+			));
+		}
+
+		@Test
+		void testMapZeitAbschnitteToImport() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				//Zeitabschnitt bevor von soll nicht genommen werden
+				createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
+				//uberlapender Zeitabschnitt von
+				createZeitabschnittDTO(LocalDate.of(2020, 12, 1), LocalDate.of(2021, 1, 31)),
+				//in der mitte Zeitabschnitt
+				createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31)),
+				//uberlapender Zeitabschnitt bis
+				createZeitabschnittDTO(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 6, 30)),
+				//Zeitabschnitt nach bis soll nicht genommen werden
+				createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 1, 31));
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, gueltigkeit);
+
+			assertThat(actual, contains(
+				gueltigkeit(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				gueltigkeit(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
+				gueltigkeit(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31)),
+				gueltigkeit(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 1))
+			));
+		}
+
+		@Test
+		void testMapZeitAbschnitteToImportSplit() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 7, 31));
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, gueltigkeit);
+
+			assertThat(actual, contains(
+				gueltigkeit(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				gueltigkeit(LocalDate.of(2021, 5, 2), LocalDate.of(2021, 7, 31)),
+				gueltigkeit(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1))
+			));
+		}
+
+		// der Test macht gar keinen Sinn (da DTO Zeitabschnitte vor Periode). Das ist invalid input -> sollte komplett
+		// ignoriert werden
+		@Test
+		void testMapZeitAbschnitteToImportSplitBeforeGueltigkeit() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				createZeitabschnittDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, gueltigkeit);
+
+			assertThat(actual, contains(
+				gueltigkeit(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				gueltigkeit(LocalDate.of(2021, 5, 2), Constants.END_OF_TIME)
+			));
+		}
+
+		// der Test macht gar keinen Sinn (da DTO Zeitabschnitte vor Periode). Das ist invalid input -> sollte komplett
+		// ignoriert werden
+		@Test
+		void testMapZeitAbschnitteToImportShouldSplitIfBetStartsBeforeGueltigkeitAndEndsOnGueltigkeitEnd() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				createZeitabschnittDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2022, 12, 31));
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2022, 12, 31));
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, gueltigkeit);
+
+			assertThat(actual, contains(
+				gueltigkeit(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31))
+			));
+		}
+
+		// der Test macht gar keinen Sinn (da DTO Zeitabschnitte vor Periode). Das ist invalid input -> sollte komplett
+		// ignoriert werden
+		@Test
+		void testMapZeitAbschnitteToImportBisEndOfTimeSplitGoLive() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				createZeitabschnittDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), Constants.END_OF_TIME);
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, gueltigkeit);
+
+			assertThat(actual, contains(
+				gueltigkeit(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31))
+			));
+		}
+
+		// Der Fall darf nicht zu einer Mutationsmeldung führen
+		@Test
+		void rejectBetreuungEventWhenNotInClientGueltigkeitDoesNotIntersectBetreuungsPeriod() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				createZeitabschnittDTO(LocalDate.of(2021, 6, 1), LocalDate.of(2021, 6, 30))
+			);
+
+			// full period 2020/2021
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 7, 31));
+
+			// note: client permission is after Betreuung gueltigkeit, even outside the valid period 2020/2021!
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 8, 1), LocalDate.of(2022, 7, 31));
+
+			List<ZeitabschnittDTO> actual =
+				handler.mapZeitabschnitteToImport(betreuungEventDTO, betreuung, gueltigkeit);
+
+			assertThat(actual, hasSize(betreuung.getBetreuungspensumContainers().size()));
+		}
+
+		@Nonnull
+		private Matcher<ZeitabschnittDTO> gueltigkeit(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+			return pojo(ZeitabschnittDTO.class)
+				.where(ZeitabschnittDTO::getVon, is(von))
+				.where(ZeitabschnittDTO::getBis, is(bis));
+		}
 	}
 
-	@Test
-	public void testMapWrongZeitabschnitt() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
-		zeitabschnittDTO.setPensumUnit(Zeiteinheit.HOURS);
-		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
-			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum()
-				, zeitabschnittDTO, betreuungs.get(0));
-		Assertions.assertNull(betreuungsmitteilungPensum);
-	}
+	@Nested
+	class SetZeitabschnitteTest {
 
-	@Test
-	public void testMapZeitAbschnitteToImportGoLive() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
-		zeitabschnittDTO.setVon(LocalDate.of(2020, 11, 1));
-		zeitabschnittDTO.setBis(LocalDate.of(2021, 6, 30));
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
+		@Test
+		void splitDtoZeitabschnitteWithClientGueltigkeit() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				//Zeitabschnitt bevor von soll nicht genommen werden
+				createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
+				//uberlapende Zeitabschnitt von
+				createZeitabschnittDTO(LocalDate.of(2020, 12, 1), LocalDate.of(2021, 1, 31)),
+				//in der mitte Zeitabschnitt
+				createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31)),
+				///uberlapende Zeitabschnitt bis
+				createZeitabschnittDTO(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 6, 30)),
+				///Zeitabschnitt nach bis soll nicht genommen werden
+				createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 3, 31));
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
+				new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
+
+			handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
+
+			List<BetreuungspensumContainer> result = getSortedContainers(platzbestaetigungProcessingContext);
+
+			assertThat(result, contains(
+				container(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				container(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
+				container(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31)),
+				container(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 1))
+			));
+		}
+
+		@Test
+		void testSetZeitabschnitteSplit() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				//in der mitte Zeitabschnitt
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 7, 31));
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
+				new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
+
+			handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
+
+			List<BetreuungspensumContainer> result = getSortedContainers(platzbestaetigungProcessingContext);
+
+			assertThat(result, contains(
+				container(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				container(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1)),
+				container(LocalDate.of(2021, 5, 2), LocalDate.of(2021, 7, 31))
+			));
+		}
+
+		@Test
+		void testSetZeitabschnitteSplitWithEndOfTimeBetreuung() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				//in der mitte Zeitabschnitt
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
+				new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
+
+			handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
+
+			List<BetreuungspensumContainer> result = getSortedContainers(platzbestaetigungProcessingContext);
+
+			assertThat(result, contains(
+				container(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				container(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1)),
+				container(LocalDate.of(2021, 5, 2), Constants.END_OF_TIME)
+			));
+		}
+
+		@Test
+		void testSetZeitabschnitteSplitWithBetreuungTillClientGueltigAb() {
+			BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(
+				//in der mitte Zeitabschnitt
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1))
+			);
+
+			Betreuung betreuung = betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 1, 1));
+
+			DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+			PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
+				new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
+
+			handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
+
+			List<BetreuungspensumContainer> result = getSortedContainers(platzbestaetigungProcessingContext);
+
+			assertThat(result, contains(
+				container(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31)),
+				container(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1))
+			));
+		}
+
+		@Nonnull
+		private List<BetreuungspensumContainer> getSortedContainers(
+			@Nonnull PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext) {
+
+			return platzbestaetigungProcessingContext.getBetreuung()
 				.getBetreuungspensumContainers()
 				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 5, 31)))
-				.collect(Collectors.toSet()));
+				.sorted()
+				.collect(Collectors.toList());
+		}
 
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2000, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2030, 1, 1));
+		@Nonnull
+		private Matcher<BetreuungspensumContainer> container(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+			return pojo(BetreuungspensumContainer.class)
+				.where(BetreuungspensumContainer::getBetreuungspensumJA, pojo(Betreuungspensum.class)
+					.where(Betreuungspensum::getGueltigkeit, gueltigkeit(von, bis)));
+		}
 
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
-		Assertions.assertEquals(LocalDate.of(2021, 6, 30), zeitabschnitteToImport.get(1).getBis());
-
-		Assertions.assertEquals(2, zeitabschnitteToImport.size());
-	}
-
-	@Test
-	public void testMapZeitAbschnitteToImport() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//Zeitabschnitt bevor von soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTOBevor = createZeitabschnittDTO();
-		zeitabschnittDTOBevor.setVon(LocalDate.of(2020, 11, 1));
-		zeitabschnittDTOBevor.setBis(LocalDate.of(2020, 11, 30));
-		//uberlapende Zeitabschnitt von
-		ZeitabschnittDTO zeitabschnittDTOUberVon = createZeitabschnittDTO();
-		zeitabschnittDTOUberVon.setVon(LocalDate.of(2020, 12, 1));
-		zeitabschnittDTOUberVon.setBis(LocalDate.of(2021, 1, 31));
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 2, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 3, 31));
-		///uberlapende Zeitabschnitt bis
-		ZeitabschnittDTO zeitabschnittDTOUberBis = createZeitabschnittDTO();
-		zeitabschnittDTOUberBis.setVon(LocalDate.of(2021, 4, 1));
-		zeitabschnittDTOUberBis.setBis(LocalDate.of(2021, 6, 30));
-		///Zeitabschnitt nach bis soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTONachBis = createZeitabschnittDTO();
-		zeitabschnittDTONachBis.setVon(LocalDate.of(2021, 7, 1));
-		zeitabschnittDTONachBis.setBis(LocalDate.of(2021, 7, 31));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 1, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(
-			zeitabschnittDTOBevor,
-			zeitabschnittDTOUberVon,
-			zeitabschnittDTOInMitte,
-			zeitabschnittDTOUberBis,
-			zeitabschnittDTONachBis));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
-		Assertions.assertEquals(LocalDate.of(2021, 1, 31), zeitabschnitteToImport.get(1).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 2, 1), zeitabschnitteToImport.get(2).getVon());
-		Assertions.assertEquals(LocalDate.of(2021, 3, 31), zeitabschnitteToImport.get(2).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 4, 1), zeitabschnitteToImport.get(3).getVon());
-		Assertions.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(3).getBis());
-
-		Assertions.assertEquals(4, zeitabschnitteToImport.size());
-	}
-
-	@Test
-	public void testMapZeitAbschnitteToImportSplit() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 7, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
-		Assertions.assertEquals(LocalDate.of(2021, 7, 31), zeitabschnitteToImport.get(1).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(2).getVon());
-		Assertions.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(2).getBis());
-
-		Assertions.assertEquals(3, zeitabschnitteToImport.size());
-	}
-
-	@Test
-	public void testMapZeitAbschnitteToImportSplitBeforeGueltigkeit() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2020, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2020, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(9999, 12, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assertions.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
-		Assertions.assertEquals(LocalDate.of(9999, 12, 31), zeitabschnitteToImport.get(1).getBis());
-
-		Assertions.assertEquals(2, zeitabschnitteToImport.size());
-	}
-	@Test
-	public void testMapZeitAbschnitteToImportShouldSplitIfBetStartsBeforeGueltigkeitAndEndsOnGueltigkeitEnd() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2020, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2020, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2022, 12, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2022, 12, 31));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assertions.assertEquals(1, zeitabschnitteToImport.size());
-	}
-
-	@Test
-	public void testMapZeitAbschnitteToImportBisEndOfTimeSplitGoLive() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2020, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2020, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(Constants.END_OF_TIME);
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assertions.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assertions.assertEquals(1, zeitabschnitteToImport.size());
-	}
-
-	@Test
-	public void rejectBetreuungEventWhenNotInClientGueltigkeitDoesNotIntersectBetreuungsPeriod() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 6, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 6, 30));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				// full period 2020/2021
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 7, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		// note: client permission is after Betreuung gueltigkeit, even outside the valid period 2020/2021!
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 8, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2022, 7, 31));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assertions.assertEquals(zeitabschnitteToImport.size(), betreuung.getBetreuungspensumContainers().size());
-	}
-
-	@Test
-	public void testSetZeitabschnitte() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//Zeitabschnitt bevor von soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTOBevor = createZeitabschnittDTO();
-		zeitabschnittDTOBevor.setVon(LocalDate.of(2020, 11, 1));
-		zeitabschnittDTOBevor.setBis(LocalDate.of(2020, 11, 30));
-		//uberlapende Zeitabschnitt von
-		ZeitabschnittDTO zeitabschnittDTOUberVon = createZeitabschnittDTO();
-		zeitabschnittDTOUberVon.setVon(LocalDate.of(2020, 12, 1));
-		zeitabschnittDTOUberVon.setBis(LocalDate.of(2021, 1, 31));
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 2, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 3, 31));
-		///uberlapende Zeitabschnitt bis
-		ZeitabschnittDTO zeitabschnittDTOUberBis = createZeitabschnittDTO();
-		zeitabschnittDTOUberBis.setVon(LocalDate.of(2021, 4, 1));
-		zeitabschnittDTOUberBis.setBis(LocalDate.of(2021, 6, 30));
-		///Zeitabschnitt nach bis soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTONachBis = createZeitabschnittDTO();
-		zeitabschnittDTONachBis.setVon(LocalDate.of(2021, 7, 1));
-		zeitabschnittDTONachBis.setBis(LocalDate.of(2021, 7, 31));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 3, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(
-			zeitabschnittDTOBevor,
-			zeitabschnittDTOUberVon,
-			zeitabschnittDTOInMitte,
-			zeitabschnittDTOUberBis,
-			zeitabschnittDTONachBis));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
-
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
-		BetreuungspensumContainer[] betreuungspensumContainers =
-			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
-				.getBetreuungspensumContainers()
-				.size()];
-		platzbestaetigungProcessingContext.getBetreuung()
-			.getBetreuungspensumContainers()
-			.stream()
-			.sorted()
-			.collect(Collectors.toList())
-			.toArray(betreuungspensumContainers);
-		Assertions.assertEquals(
-			LocalDate.of(2020, 8, 1),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2020, 12, 31),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assertions.assertEquals(
-			LocalDate.of(2021, 1, 1),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 1, 31),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assertions.assertEquals(
-			LocalDate.of(2021, 2, 1),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 3, 31),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assertions.assertEquals(
-			LocalDate.of(2021, 4, 1),
-			betreuungspensumContainers[3].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 5, 1),
-			betreuungspensumContainers[3].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assertions.assertEquals(4, betreuungspensumContainers.length);
-	}
-
-	@Test
-	public void testSetZeitabschnitteSplit() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 7, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
-
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
-		BetreuungspensumContainer[] betreuungspensumContainers =
-			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
-				.getBetreuungspensumContainers()
-				.size()];
-		platzbestaetigungProcessingContext.getBetreuung()
-			.getBetreuungspensumContainers()
-			.stream()
-			.sorted()
-			.collect(Collectors.toList())
-			.toArray(betreuungspensumContainers);
-
-		Assertions.assertEquals(
-			LocalDate.of(2020, 8, 1),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2020, 12, 31),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 1, 1),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 5, 1),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 5, 2),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(
-			LocalDate.of(2021, 7, 31),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assertions.assertEquals(3, betreuungspensumContainers.length);
+		@Nonnull
+		private Matcher<DateRange> gueltigkeit(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+			return pojo(DateRange.class)
+				.where(DateRange::getGueltigAb, is(von))
+				.where(DateRange::getGueltigBis, is(bis));
+		}
 	}
 
 	/**
-	 * Eine BetreuungEventDTO mit genau eine Zeitabschnitt
+	 * Eine BetreuungEventDTO mit genau einem Zeitabschnitt
 	 */
+	@Nonnull
 	private BetreuungEventDTO createBetreuungEventDTO() {
+		return createBetreuungEventDTO(createZeitabschnittDTO());
+	}
+
+	@SuppressWarnings("OverloadedVarargsMethod")
+	@Nonnull
+	private BetreuungEventDTO createBetreuungEventDTO(@Nonnull ZeitabschnittDTO... zeitabschnitte) {
 		BetreuungEventDTO betreuungEventDTO = new BetreuungEventDTO();
 		betreuungEventDTO.setRefnr("20.007305.002.1.3");
-		betreuungEventDTO.setGemeindeBfsNr(99999L);
-		betreuungEventDTO.setGemeindeName("Testgemeinde");
 		betreuungEventDTO.setInstitutionId("1234-5678-9101-1121");
-		betreuungEventDTO.setAusserordentlicherBetreuungsaufwand(false);
-		ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
+		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnitte));
+
 		return betreuungEventDTO;
 	}
 
+	@Nonnull
 	private ZeitabschnittDTO createZeitabschnittDTO() {
+		return createZeitabschnittDTO(
+			gesuchsperiode.getGueltigkeit().getGueltigAb(),
+			gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31)
+		);
+	}
+
+	@Nonnull
+	private ZeitabschnittDTO createZeitabschnittDTO(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
 		return ZeitabschnittDTO.newBuilder()
 			.setBetreuungskosten(MathUtil.DEFAULT.from(2000))
 			.setBetreuungspensum(new BigDecimal(80))
-			.setAnzahlHauptmahlzeiten(BigDecimal.ZERO)
-			.setAnzahlNebenmahlzeiten(BigDecimal.ZERO)
 			.setPensumUnit(Zeiteinheit.PERCENTAGE)
-			.setVon(gesuchsperiode.getGueltigkeit().getGueltigAb())
-			.setBis(gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31))
+			.setVon(von)
+			.setBis(bis)
 			.build();
 	}
 
+	@Nonnull
 	private Betreuungsmitteilung createBetreuungMitteilung() {
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum = new BetreuungsmitteilungPensum();
@@ -593,6 +483,32 @@ public class PlatzbestaetigungEventHandlerTest {
 		Set<BetreuungsmitteilungPensum> betreuungsmitteilungPensumSet = new HashSet<>();
 		betreuungsmitteilungPensumSet.add(betreuungsmitteilungPensum);
 		betreuungsmitteilung.setBetreuungspensen(betreuungsmitteilungPensumSet);
+
 		return betreuungsmitteilung;
+	}
+
+	@Nonnull
+	private Betreuungspensum getSingleContainer(@Nonnull Betreuung betreuung) {
+		checkArgument(
+			betreuung.getBetreuungspensumContainers().size() == 1,
+			"Broken test setup: expected 1 container in %s",
+			betreuung);
+
+		return betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA();
+	}
+
+	@Nonnull
+	private Betreuung betreuungWithSingleContainer() {
+		return betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+	}
+
+	@Nonnull
+	private Betreuung betreuungWithSingleContainer(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+		Betreuung betreuung = requireNonNull(gesuch_1GS.getFirstBetreuung());
+		Betreuungspensum betreuungspensum = getSingleContainer(betreuung);
+		betreuungspensum.getGueltigkeit().setGueltigAb(von);
+		betreuungspensum.getGueltigkeit().setGueltigBis(bis);
+
+		return betreuung;
 	}
 }
