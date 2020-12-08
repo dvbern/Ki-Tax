@@ -16,6 +16,6 @@
  */
 
 export interface ZemisDialogDTO {
-    jahr: number;
+    jahr?: number;
     file?: File;
 }

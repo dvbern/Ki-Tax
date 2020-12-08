@@ -2177,7 +2177,8 @@
     "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Beschwerde",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Beschwerde Dokument(e)",
     "GEMEINDE_DANGEROUS_SAVING": "Achtung: Sie haben Änderungen an einer aktiven Periode vorgenommen. Sind Sie sicher, dass Sie dies tun wollen? Anträge dieser Periode werden nicht automatisch mutiert",
-    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!",
     "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "Kein Selbstbehalt durch die Gemeinde",
-    "ZEMIS_UPLOAD_STARTED": "Die Verarbeitung des ZEMIS Excels wurde gestartet. Sie werden per Email benachrichtigt, sobald der Prozess abgeschlossen wurde."
+    "ZEMIS_UPLOAD_STARTED": "Die Verarbeitung des ZEMIS Excels wurde gestartet. Sie werden per Email benachrichtigt, sobald der Prozess abgeschlossen wurde.",
+    "ZEMIS_UPLOAD_FINISHED": "Die Vearbeitung wurde erfolgreich abgeschlossen",
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

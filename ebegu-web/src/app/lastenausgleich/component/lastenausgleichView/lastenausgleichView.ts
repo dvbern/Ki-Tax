@@ -104,6 +104,9 @@ export class LastenausgleichViewController implements IController {
                 if (!zemisDialogData) {
                     return;
                 }
+                if (!zemisDialogData.jahr) {
+                    LOG.error('year undefined');
+                }
                 const win = this.downloadRS.prepareDownloadWindow();
                 this.lastenausgleichRS.getZemisExcel(zemisDialogData.jahr)
                     .then((downloadFile: TSDownloadFile) => {
@@ -124,10 +127,16 @@ export class LastenausgleichViewController implements IController {
                 if (!zemisDialogData) {
                     return;
                 }
-                if (!zemisDialogData.jahr || !zemisDialogData.file) {
-                    LOG.error('year or file undefined');
+                if (!zemisDialogData.file) {
+                    LOG.error('file undefined');
                 }
-                this.uploadRS.uploadZemisExcel(zemisDialogData.file, zemisDialogData.jahr).catch(err => {
+                this.uploadRS.uploadZemisExcel(zemisDialogData.file)
+                    .then(() => {
+                        this.errorService.addMesageAsInfo(this.$translate.instant(
+                            'ZEMIS_UPLOAD_FINISHED'
+                        ));
+                    })
+                    .catch(err => {
                         LOG.error('Fehler beim Speichern', err);
                     }
                 );

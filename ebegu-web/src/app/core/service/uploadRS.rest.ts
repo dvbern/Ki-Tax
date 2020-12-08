@@ -103,9 +103,9 @@ export class UploadRS {
         });
     }
 
-    public uploadZemisExcel(file: File, jahr: number): IPromise<void> {
+    public uploadZemisExcel(file: File): IPromise<void> {
         return this.upload.upload({
-            url: `${this.serviceURL}/zemisExcel/${jahr}`,
+            url: `${this.serviceURL}/zemisExcel`,
             method: 'POST',
             headers: {
                 'x-filename': this.base64.encode(file.name),

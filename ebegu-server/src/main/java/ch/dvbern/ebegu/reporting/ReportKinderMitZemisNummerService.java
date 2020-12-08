@@ -31,5 +31,5 @@ public interface ReportKinderMitZemisNummerService {
 	@Nonnull
 	UploadFileInfo generateZemisReport(@Nonnull Integer lastenausgleichJahr, @Nonnull Locale german) throws ExcelMergeException;
 
-	void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException, MailException;
+	void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent) throws IOException, MailException;
 }

@@ -110,7 +110,7 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 	}
 
 	@Override
-	public void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent, @Nonnull Integer jahr) throws IOException, MailException {
+	public void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent) throws IOException, MailException {
 
 		try (InputStream is = new ByteArrayInputStream(fileContent)) {
 			Workbook workbook = WorkbookFactory.create(is);

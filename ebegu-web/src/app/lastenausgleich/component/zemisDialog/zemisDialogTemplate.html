@@ -20,7 +20,7 @@
     <form role="form" name="vm.form">
         <md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialogContent">
             <div class="form-wrapper">
-                <dv-input-container class="form-group">
+                <dv-input-container class="form-group" ng-if="!vm.upload">
                     <label class="md-no-float required" for="download-year" data-translate="LASTENAUSGLEICH_JAHR"></label>
                     <input type="number"
                            id="download-year"
@@ -34,7 +34,7 @@
                                        class="error"></dv-error-messages>
                 </dv-input-container>
                 <div class="form-group" ng-if="vm.upload">
-                    <label for="file">Choose File</label>
+                    <label for="file"></label>
                     <input type="file"
                            id="file"
                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

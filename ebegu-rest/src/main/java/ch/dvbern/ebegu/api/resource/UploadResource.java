@@ -345,21 +345,20 @@ public class UploadResource {
 	@ApiOperation("Stores and processes Excel containing a list of children with a zemis number. Sets flag "
 		+ "'keinSelbstbehaltFuerGemeinde' for every child of this list.")
 	@POST
-	@Path("/zemisExcel/{jahr}")
+	@Path("/zemisExcel")
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response uploadZemisExcelAndSetFlag(
-		@Nonnull @NotNull @PathParam("jahr") Integer jahr,
 		@Nonnull @NotNull MultipartFormDataInput input) throws IOException, MailException {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 		Validate.notEmpty(fileList, "Need to upload something");
 		TransferFile file = fileList.get(0);
 
-		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent(), jahr);
+		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent());
 
 		return Response.ok().build();
 	}
