@@ -33,10 +33,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -72,6 +74,9 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 	@Inject
 	private FileSaverService fileSaverService;
 
+	@Inject
+	private PrincipalBean principal;
+
 	@Nonnull
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -93,9 +98,27 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"generateExcelReportLastenausgleichKibon", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, lastenausgleich.getJahr()));
 
-		List<LastenausgleichBerechnungDataRow> reportData = getReportLastenausgleichBerechnung(lastenausgleich.getLastenausgleichDetails());
+		List<LastenausgleichDetail> lastenausgleichDetails =
+			principal.getBenutzer().getCurrentBerechtigung().getRole().equals(UserRole.SACHBEARBEITER_GEMEINDE) ?
+				lastenausgleich.getLastenausgleichDetails()
+					.stream()
+					.filter(lastenausgleichDetail -> principal.getBenutzer()
+						.getCurrentBerechtigung()
+						.getGemeindeList()
+						.contains(lastenausgleichDetail.getGemeinde()))
+					.collect(Collectors.toList()) :
+				lastenausgleich.getLastenausgleichDetails();
+
+		List<LastenausgleichBerechnungDataRow> reportData =
+			getReportLastenausgleichBerechnung(lastenausgleichDetails);
+
+
 		ExcelMergerDTO excelMergerDTO = lastenausgleichExcelConverter
-			.toExcelMergerDTO(reportData, lastenausgleich.getJahr(), grundlagen.getSelbstbehaltPro100ProzentPlatz(), locale);
+			.toExcelMergerDTO(
+				reportData,
+				lastenausgleich.getJahr(),
+				grundlagen.getSelbstbehaltPro100ProzentPlatz(),
+				locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		lastenausgleichExcelConverter.applyAutoSize(sheet);

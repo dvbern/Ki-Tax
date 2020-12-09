@@ -104,6 +104,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
 				BigDecimal::add));
 			clone.setJahr(lastenausgleich.getJahr());
+			clone.setId(lastenausgleich.getId());
 			clone.setTimestampErstellt(lastenausgleich.getTimestampErstellt() != null ?
 				lastenausgleich.getTimestampErstellt() :
 				LocalDateTime.MIN);
