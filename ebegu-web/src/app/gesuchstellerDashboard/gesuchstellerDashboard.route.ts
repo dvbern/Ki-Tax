@@ -51,7 +51,7 @@ const ng1States: Ng1StateDeclaration[] = [
         template: '<gesuchsteller-dashboard-view class="layout-column flex-100" dossier="$resolve.dossier">',
         url: '/gesuchstellerDashboard',
         params: {
-            gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams,
+            infoMessage: '',
         },
         resolve: {
             // always when navigating to the Dashboard the gesuchModelManager must be reset
