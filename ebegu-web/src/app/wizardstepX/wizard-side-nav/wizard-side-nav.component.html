@@ -23,15 +23,14 @@
         </div>
         <ul class="sidenav gesuch-menu">
             <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
-            <div *ngFor="let entry of wizardSteps">
-                <li class="row" uiSref="{{wizardTyp}}.{{entry.stepName}}"
+
+                <li *ngFor="let entry of wizardSteps$ | async" class="row" uiSref="{{wizardTyp}}.{{entry.stepName}}"
                     uiSrefActive="active-element"
                     [uiParams]="{ id: id }">
                     <button class="col-xs-10">
                         <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
                     </button>
                 </li>
-            </div>
         </ul>
     </div>
 </div>

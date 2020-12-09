@@ -40,7 +40,7 @@ public class JaxBWizardStepXConverter {
 		switch (TagesschuleWizardStepsEnum.valueOf(step)) {
 		case ANGABEN_GEMEINDE:
 			return new AngabenGemeinde();
-		case ANGABEN_TAGESSCHULE:
+		case ANGABEN_TAGESSCHULEN:
 			return new AngabenTagesschule();
 		case FREIGABE:
 			return new Lastenausgleich();

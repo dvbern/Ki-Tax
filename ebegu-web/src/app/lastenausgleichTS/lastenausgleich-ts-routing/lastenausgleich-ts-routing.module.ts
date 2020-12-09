@@ -26,28 +26,28 @@ import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-
 const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        name: 'lastenausgleich-ts',
+        name: 'LASTENAUSGLEICH_TS',
         url: '/lastenausgleich-ts',
         component: LastenausgleichTSComponent,
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
-        url: '/:lastenausgleichTsId/angaben-gemeinde',
+        url: '/:id/angaben-gemeinde',
         component: GemeindeAngabenComponent
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN',
-        url: '/:lastenausgleichTsId/angaben-tagesschulen',
+        url: '/:id/angaben-tagesschulen',
         component: TagesschulenAngabenComponent
     },
     {
         name: 'LASTENAUSGLEICH_TS.FREIGABE',
-        url: '/:lastenausgleichTsId/freigabe',
+        url: '/:id/freigabe',
         component: FreigabeComponent
     },
     {
         name: 'lastenausgleich-ts.lastenausgleich',
-        url: '/:lastenausgleichTsId/lastenausgleich',
+        url: '/:id/lastenausgleich',
         component: LastenausgleichTsBerechnungComponent
     },
 ];

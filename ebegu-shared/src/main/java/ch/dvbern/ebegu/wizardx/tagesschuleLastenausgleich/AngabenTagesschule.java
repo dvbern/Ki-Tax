@@ -51,7 +51,7 @@ public class AngabenTagesschule implements WizardStep<InstitutionStammdatenTages
 
 	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.ANGABEN_TAGESSCHULE.name();
+		return TagesschuleWizardStepsEnum.ANGABEN_TAGESSCHULEN.name();
 	}
 
 	@Override

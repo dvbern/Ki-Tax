@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {from, Observable} from 'rxjs';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
@@ -30,16 +31,14 @@ export class WizardSideNavComponent implements OnInit {
     @Input() public readonly id: string;
     @Input() public readonly wizardTyp: string;
 
-    public wizardSteps: TSWizardStepX[];
+    public wizardSteps$: Observable<TSWizardStepX[]>;
     public readonly status = 'Status';
 
     public constructor(private readonly wizardSTepXRS: WizardStepXRS) {
     }
 
     public ngOnInit(): void {
-        this.wizardSTepXRS.getAllSteps(this.wizardTyp).then(steps => {
-            this.wizardSteps = steps;
-        });
+        this.wizardSteps$ = from(this.wizardSTepXRS.getAllSteps(this.wizardTyp));
     }
 
 }
