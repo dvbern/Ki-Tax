@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -98,9 +99,6 @@ public class LastenausgleichResource {
 	@Inject
 	private PrincipalBean principalBean;
 
-	@Inject
-	private LastenausgleichDetailService lastenausgleichDetailService;
-
 	@ApiOperation(value = "Gibt alle Lastenausgleiche zurueck.",
 		responseContainer = "List",
 		response = JaxLastenausgleich.class)
@@ -122,28 +120,10 @@ public class LastenausgleichResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE })
 	public List<JaxLastenausgleich> getGemeindeLastenausgleich() {
 		Set<Gemeinde> gemeindeList = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
-		Set<LastenausgleichDetail> lastenausgleichDetails = gemeindeList.stream()
-			.map(gemeinde -> lastenausgleichDetailService.getAllLastenausgleichDetailsForGemeinde(gemeinde))
-			.flatMap(List::stream)
-			.collect(Collectors.toSet());
 
-		return gemeindeList.stream()
-			.map(gemeinde -> {
-				Lastenausgleich gemeindenLastenausgleich = new Lastenausgleich();
-				lastenausgleichDetails.stream()
-					.filter(lastenausgleichDetail -> lastenausgleichDetail.getGemeinde()
-						.getId()
-						.equals(gemeinde.getId()))
-					.forEach(gemeindenLastenausgleich::addLastenausgleichDetail);
-				gemeindenLastenausgleich.setTotalAlleGemeinden(lastenausgleichDetails.stream()
-					.reduce(
-						new BigDecimal(0),
-						(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
-						BigDecimal::add));
-				return gemeindenLastenausgleich;
-			}).map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
+		return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList).stream()
+			.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
 			.collect(Collectors.toList());
-
 	}
 
 	@ApiOperation(value = "Erstellt einen neuen Lastenausgleich und speichert die Grundlagen",

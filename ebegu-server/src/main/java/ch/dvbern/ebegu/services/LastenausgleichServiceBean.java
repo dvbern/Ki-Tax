@@ -18,8 +18,11 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,6 +87,31 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		return criteriaQueryHelper.getAll(Lastenausgleich.class);
 	}
 
+	@Nonnull
+	@Override
+	public Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden) {
+		return this.getAllLastenausgleiche().stream().map(lastenausgleich -> {
+			Lastenausgleich clone = new Lastenausgleich();
+			// filter gemeinden that are not in the list
+			clone.setLastenausgleichDetails(
+				lastenausgleich.getLastenausgleichDetails()
+					.stream()
+					.filter(lastenausgleichDetail -> gemeinden.contains(lastenausgleichDetail.getGemeinde()))
+					.collect(Collectors.toList()));
+			// set total from filtered gemeinden
+			clone.setTotalAlleGemeinden(clone.getLastenausgleichDetails().stream().reduce(
+				new BigDecimal(0),
+				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
+				BigDecimal::add));
+			clone.setJahr(lastenausgleich.getJahr());
+			clone.setTimestampErstellt(lastenausgleich.getTimestampErstellt() != null ?
+				lastenausgleich.getTimestampErstellt() :
+				LocalDateTime.MIN);
+
+			return clone;
+		}).collect(Collectors.toSet());
+	}
+
 	@Override
 	@Nonnull
 	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz) {
@@ -95,7 +123,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			.append(" bei einem Selbstbehalt pro 100% Platz von ").append(selbstbehaltPro100ProzentPlatz)
 			.append(NEWLINE);
 
-		BigDecimal kostenPro100ProzentPlatz = MathUtil.DEFAULT.divideNullSafe(selbstbehaltPro100ProzentPlatz, SELBSTBEHALT);
+		BigDecimal kostenPro100ProzentPlatz =
+			MathUtil.DEFAULT.divideNullSafe(selbstbehaltPro100ProzentPlatz, SELBSTBEHALT);
 		sb.append("Kosten pro 100% Platz: ").append(kostenPro100ProzentPlatz)
 			.append(NEWLINE);
 
@@ -111,7 +140,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
 		for (Gemeinde gemeinde : aktiveGemeinden) {
-			LastenausgleichDetail detailErhebung = createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenErhebungsjahr);
+			LastenausgleichDetail detailErhebung =
+				createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenErhebungsjahr);
 			if (detailErhebung != null) {
 				lastenausgleich.addLastenausgleichDetail(detailErhebung);
 				sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
@@ -125,7 +155,12 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			if (grundlagenKorrekturjahr.isPresent()) {
 				sb.append("Korrekturen für Jahr ").append(korrekturJahr).append(NEWLINE);
 				for (Gemeinde gemeinde : aktiveGemeinden) {
-					handleKorrekturJahrFuerGemeinde(korrekturJahr, gemeinde, lastenausgleich, grundlagenKorrekturjahr.get(), sb);
+					handleKorrekturJahrFuerGemeinde(
+						korrekturJahr,
+						gemeinde,
+						lastenausgleich,
+						grundlagenKorrekturjahr.get(),
+						sb);
 				}
 			}
 			// Wir loggen dies mit WARN, damit wir es im Sentry sehen
@@ -135,7 +170,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Am Schluss das berechnete Total speichern
 		BigDecimal totalGesamterLastenausgleich = BigDecimal.ZERO;
 		for (LastenausgleichDetail lastenausgleichDetail : lastenausgleich.getLastenausgleichDetails()) {
-			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(totalGesamterLastenausgleich, lastenausgleichDetail.getBetragLastenausgleich());
+			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
+				totalGesamterLastenausgleich,
+				lastenausgleichDetail.getBetragLastenausgleich());
 		}
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
@@ -151,19 +188,27 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	) {
 		logBuilder.append("Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
 		// Wir ermitteln für die Gemeinde und das Korrekurjahr den aktuell gültigen Wert
-		LastenausgleichDetail detailAktuellesTotalKorrekturjahr = createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenKorrekturjahr);
-		logBuilder.append("Aktuell berechnetes Total: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+		LastenausgleichDetail detailAktuellesTotalKorrekturjahr =
+			createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenKorrekturjahr);
+		logBuilder.append("Aktuell berechnetes Total: ")
+			.append(NEWLINE)
+			.append(detailAktuellesTotalKorrekturjahr)
+			.append(NEWLINE);
 
 		if (detailAktuellesTotalKorrekturjahr != null) {
 			// Dieses Detail ist jetzt aber das aktuelle Total für das Jahr. Uns interessiert aber die eventuelle
 			// Differenz zu bereits ausgeglichenen Beträgen
-			Collection<LastenausgleichDetail> detailsBereitsVerrechnetKorrekturjahr = findLastenausgleichDetailForKorrekturen(korrekturJahr, gemeinde);
+			Collection<LastenausgleichDetail> detailsBereitsVerrechnetKorrekturjahr =
+				findLastenausgleichDetailForKorrekturen(korrekturJahr, gemeinde);
 			if (CollectionUtils.isNotEmpty(detailsBereitsVerrechnetKorrekturjahr)) {
 				LastenausgleichDetail detailBisherigeWerte = new LastenausgleichDetail();
 				for (LastenausgleichDetail detailBereitsVerrechnet : detailsBereitsVerrechnetKorrekturjahr) {
 					detailBisherigeWerte.add(detailBereitsVerrechnet);
 				}
-				logBuilder.append("Davon bereits verrechnet: ").append(NEWLINE).append(detailBisherigeWerte).append(NEWLINE);
+				logBuilder.append("Davon bereits verrechnet: ")
+					.append(NEWLINE)
+					.append(detailBisherigeWerte)
+					.append(NEWLINE);
 				// Gibt es eine Differenz?
 				if (detailBisherigeWerte.hasChanged(detailAktuellesTotalKorrekturjahr)) {
 					// Es gibt eine Differenz (wobei wir nur den Betrag des Lastenausgleiches anschauen)
@@ -174,7 +219,10 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 					logBuilder.append("Korrektur PLUS: ").append(NEWLINE).append(detailKorrektur).append(NEWLINE);
 					// Und erstellen einen neuen Korrektur-Eintrag mit dem aktuell berechneten Wert
 					lastenausgleich.addLastenausgleichDetail(detailAktuellesTotalKorrekturjahr);
-					logBuilder.append("Korrektur MINUS: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+					logBuilder.append("Korrektur MINUS: ")
+						.append(NEWLINE)
+						.append(detailAktuellesTotalKorrekturjahr)
+						.append(NEWLINE);
 				}
 			}
 		}
@@ -188,7 +236,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	@Nonnull
 	private Optional<Lastenausgleich> findLastenausgleichByJahr(int jahr) {
-		Optional<Lastenausgleich> optional = criteriaQueryHelper.getEntityByUniqueAttribute(Lastenausgleich.class, jahr,
+		Optional<Lastenausgleich> optional = criteriaQueryHelper.getEntityByUniqueAttribute(
+			Lastenausgleich.class,
+			jahr,
 			Lastenausgleich_.jahr);
 		return optional;
 	}
@@ -196,8 +246,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Override
 	@Nonnull
 	public Optional<LastenausgleichGrundlagen> findLastenausgleichGrundlagen(int jahr) {
-		Optional<LastenausgleichGrundlagen> optional = criteriaQueryHelper.getEntityByUniqueAttribute(LastenausgleichGrundlagen.class, jahr,
-			LastenausgleichGrundlagen_.jahr);
+		Optional<LastenausgleichGrundlagen> optional =
+			criteriaQueryHelper.getEntityByUniqueAttribute(LastenausgleichGrundlagen.class, jahr,
+				LastenausgleichGrundlagen_.jahr);
 		return optional;
 	}
 
@@ -206,12 +257,15 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Lastenausgleich und -Grundlagen löschen
 		requireNonNull(lastenausgleichId);
 		Lastenausgleich lastenausgleichToRemove = findLastenausgleich(lastenausgleichId);
-		Optional<LastenausgleichGrundlagen> lastenausgleichGrundlagen = findLastenausgleichGrundlagen(lastenausgleichToRemove.getJahr());
+		Optional<LastenausgleichGrundlagen> lastenausgleichGrundlagen =
+			findLastenausgleichGrundlagen(lastenausgleichToRemove.getJahr());
 		lastenausgleichGrundlagen.ifPresent(lastenausgleichGrundlagen1 -> persistence.remove(lastenausgleichGrundlagen1));
 		persistence.remove(lastenausgleichToRemove);
 	}
 
-	private Collection<LastenausgleichDetail> findLastenausgleichDetailForKorrekturen(int jahr, @Nonnull Gemeinde gemeinde) {
+	private Collection<LastenausgleichDetail> findLastenausgleichDetailForKorrekturen(
+		int jahr,
+		@Nonnull Gemeinde gemeinde) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<LastenausgleichDetail> query = cb.createQuery(LastenausgleichDetail.class);
 		Root<LastenausgleichDetail> root = query.from(LastenausgleichDetail.class);
@@ -232,10 +286,16 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	private void assertUnique(int jahr) {
 		if (findLastenausgleichGrundlagen(jahr).isPresent()) {
-			throw new EbeguRuntimeException(KibonLogLevel.NONE, "assertUnique", ErrorCodeEnum.ERROR_LASTENAUSGLEICH_GRUNDLAGEN_EXISTS);
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"assertUnique",
+				ErrorCodeEnum.ERROR_LASTENAUSGLEICH_GRUNDLAGEN_EXISTS);
 		}
 		if (findLastenausgleichByJahr(jahr).isPresent()) {
-			throw new EbeguRuntimeException(KibonLogLevel.NONE, "assertUnique", ErrorCodeEnum.ERROR_LASTENAUSGLEICH_EXISTS);
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"assertUnique",
+				ErrorCodeEnum.ERROR_LASTENAUSGLEICH_EXISTS);
 		}
 	}
 
@@ -245,7 +305,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull Lastenausgleich lastenausgleich,
 		@Nonnull LastenausgleichGrundlagen grundlagen
 	) {
-		Collection<VerfuegungZeitabschnitt> abschnitteProGemeindeUndJahr = getZeitabschnitte(gemeinde, grundlagen.getJahr());
+		Collection<VerfuegungZeitabschnitt> abschnitteProGemeindeUndJahr =
+			getZeitabschnitte(gemeinde, grundlagen.getJahr());
 		if (abschnitteProGemeindeUndJahr.isEmpty()) {
 			return null;
 		}
@@ -263,12 +324,14 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}
 		// Selbstbehalt Gemeinde = Total Belegung * Kosten pro 100% Platz * 20%
 		BigDecimal totalBelegung = MathUtil.EXACT.divide(totalBelegungInProzent, MathUtil.EXACT.from(100));
-		BigDecimal selbstbehaltGemeinde = MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getSelbstbehaltPro100ProzentPlatz());
+		BigDecimal selbstbehaltGemeinde =
+			MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getSelbstbehaltPro100ProzentPlatz());
 		// Eingabe Lastenausgleich = Total Gutscheine - Selbstbehalt Gemeinde
 		BigDecimal eingabeLastenausgleich = MathUtil.EXACT.subtractNullSafe(totalGutscheine, selbstbehaltGemeinde);
 
 		// Total anrechenbar = total belegung * Kosten pro 100% Platz
-		BigDecimal totalAnrechenbar = MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
+		BigDecimal totalAnrechenbar =
+			MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
 
 		LastenausgleichDetail detail = new LastenausgleichDetail();
 		detail.setJahr(grundlagen.getJahr());
@@ -300,7 +363,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Nonnull
 	private BigDecimal getAnteilKalenderjahr(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		// Pensum * AnteilDesMonats / 12. Beispiel 80% ganzer Monat = 6.67% AnteilKalenderjahr
-		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(zeitabschnitt.getGueltigkeit().getGueltigAb(),
+		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
+			zeitabschnitt.getGueltigkeit().getGueltigAb(),
 			zeitabschnitt.getGueltigkeit().getGueltigBis());
 		BigDecimal pensum = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 		BigDecimal pensumAnteilMonat = MathUtil.EXACT.multiplyNullSafe(anteilMonat, pensum);
