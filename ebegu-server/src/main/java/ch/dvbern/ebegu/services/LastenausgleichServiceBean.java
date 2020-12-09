@@ -100,7 +100,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 					.collect(Collectors.toList()));
 			// set total from filtered gemeinden
 			clone.setTotalAlleGemeinden(clone.getLastenausgleichDetails().stream().reduce(
-				new BigDecimal(0),
+				BigDecimal.ZERO,
 				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
 				BigDecimal::add));
 			clone.setJahr(lastenausgleich.getJahr());
