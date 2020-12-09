@@ -2,6 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
         "declaration": false,
+        "downlevelIteration": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "importHelpers": true,
@@ -11,6 +12,7 @@
             "es2018.promise"
         ],
         "locale": "en",
+        "module": "es2020",
         "moduleResolution": "node",
         "newLine": "lf",
         "noFallthroughCasesInSwitch": true,
@@ -22,7 +24,7 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": false,
-        "target": "es5",
+        "target": "es2015",
         "typeRoots": [
             "node_modules/@types"
         ]
@@ -30,5 +32,12 @@
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": true,
         "strictInjectionParameters": true
-    }
+    },
+    "files": [
+        "src/main.ts",
+        "src/polyfills.ts"
+    ],
+    "include": [
+        "src/**/*.d.ts"
+    ]
 }

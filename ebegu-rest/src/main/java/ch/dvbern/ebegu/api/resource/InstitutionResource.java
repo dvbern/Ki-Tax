@@ -310,6 +310,10 @@ public class InstitutionResource {
 		if (update.getInstitutionExternalClients() != null) {
 			List<InstitutionExternalClient> institutionExternalClients =
 				converter.institutionExternalClientListToEntity(update.getInstitutionExternalClients(), institution);
+			if(checkExternalClientDateOverlapping(institutionExternalClients)){
+				throw new EbeguRuntimeException("updateInstitutionAndStammdaten", ErrorCodeEnum.ERROR_INVALID_EXTERNAL_CLIENT_DATERANGE);
+			}
+
 			institutionService.saveInstitutionExternalClients(institution, institutionExternalClients);
 		}
 
@@ -514,5 +518,11 @@ public class InstitutionResource {
 
 		institutionService.deactivateStammdatenCheckRequired(institutionId);
 		return Response.ok().build();
+	}
+
+	private boolean checkExternalClientDateOverlapping(List<InstitutionExternalClient> institutionExternalClients) {
+		return institutionExternalClients.stream()
+			.anyMatch(o1 -> institutionExternalClients.stream()
+				.anyMatch(o2 -> !o1.equals(o2) && o1.getGueltigkeit().intersects(o2.getGueltigkeit())));
 	}
 }

@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
@@ -36,9 +36,11 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
+import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {GemeindeWarningService} from '../gemeinde-warning-service/gemeinde-warning.service';
 
 const LOG = LogFactory.createLog('EditGemeindeComponent');
 
@@ -85,7 +87,8 @@ export class EditGemeindeComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
-        private readonly changeDetectorRef: ChangeDetectorRef
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly gemeindeWarningService: GemeindeWarningService
     ) {
     }
 
@@ -147,6 +150,7 @@ export class EditGemeindeComponent implements OnInit {
                 if (EbeguUtil.isNotNullOrUndefined(stammdaten.usernameScolaris)) {
                     this.usernameScolaris = stammdaten.usernameScolaris;
                 }
+                this.gemeindeWarningService.init(stammdaten.konfigurationsListe);
                 return stammdaten;
             }));
 
@@ -205,47 +209,56 @@ export class EditGemeindeComponent implements OnInit {
         this.navigateBack();
     }
 
-    public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
-        this.validateData(stammdaten).then(index => {
-            if (index !== undefined) {
-                this.currentTab = index;
-                this.showSaveWarningDialog();
+    public async persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): Promise<void> {
+        const index = await this.validateData(stammdaten);
+        if (index !== undefined) {
+            this.currentTab = index;
+            this.showSaveWarningDialog();
+            return;
+        }
+
+        if (this.gemeindeWarningService.showWarning(stammdaten.konfigurationsListe)) {
+            const saveDangerous = await this.showDangerousSaveDialog();
+            if (!saveDangerous) {
+                return;
+            }
+        }
+
+        this.errorService.clearAll();
+        this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
+        stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
+        stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
+            ? undefined
+            : this.usernameScolaris;
+
+        try {
+            await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
+            if (this.fileToUpload) {
+                this.persistLogo(this.fileToUpload);
+            } else if (this.isRegisteringGemeinde) {
+                this.$state.go('welcome');
                 return;
             }
 
-            this.errorService.clearAll();
-            this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
-            stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
-            stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
-                ? undefined
-                : this.usernameScolaris;
-
-            this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
-                if (this.fileToUpload) {
-                    this.persistLogo(this.fileToUpload);
-                } else if (this.isRegisteringGemeinde) {
-                    this.$state.go('welcome');
-                    return;
-                }
-            });
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
-                this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
-                    if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
-                        this.loadStammdaten();
-                    }
-                    this.updateExternalClients();
-                    this.setViewMode();
-                }).catch(() => {
-                    this.setEditMode();
-                }).finally(() => {
-                    this.changeDetectorRef.detectChanges();
-                });
+                await this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
+                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
+                    this.loadStammdaten();
+                }
+                this.updateExternalClients();
             }
 
-            // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
-            // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
-            this.initializeEmptyUnrequiredFields(stammdaten);
-        });
+            this.setViewMode();
+
+        } catch (err) {
+            this.setEditMode();
+        } finally {
+            this.changeDetectorRef.detectChanges();
+        }
+
+        // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
+        // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
+        this.initializeEmptyUnrequiredFields(stammdaten);
     }
 
     private updateExternalClients(): void {
@@ -378,7 +391,7 @@ export class EditGemeindeComponent implements OnInit {
      * the form contains errors. This is useful in case the user has a correct tab open but the error is in another
      * tab that she doesn't see.
      */
-    private showSaveWarningDialog(): void {
+    private async showSaveWarningDialog(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
@@ -392,6 +405,16 @@ export class EditGemeindeComponent implements OnInit {
             err => {
                 LOG.error(err);
             });
+    }
+
+    private async showDangerousSaveDialog(): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING')
+        };
+        return this.dialog
+            .open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed().toPromise();
     }
 
     public isGemeindeEditable(): boolean {

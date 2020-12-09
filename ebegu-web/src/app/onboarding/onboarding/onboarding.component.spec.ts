@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
@@ -35,7 +35,7 @@ describe('OnboardingComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
 
         TestBed.configureTestingModule({

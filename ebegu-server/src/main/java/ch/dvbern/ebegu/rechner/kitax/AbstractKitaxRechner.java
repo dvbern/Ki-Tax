@@ -77,7 +77,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, resultAsiv);
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 		// Anspruch nach ASIV muss fuer Kitax-Rechner immer 0 sein
-		resultAsiv.setAnspruchspensumProzent(0);
+		resultAsiv.setAnspruchZeroAndSaveRestanspruch();
 		return resultAsiv;
 	}
 

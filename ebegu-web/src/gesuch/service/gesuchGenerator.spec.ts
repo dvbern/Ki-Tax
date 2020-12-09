@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, TestBed} from '@angular/core/testing';
+import {waitForAsync, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {GesuchsperiodeRS} from '../../app/core/service/gesuchsperiodeRS.rest';
@@ -48,7 +48,7 @@ describe('gesuchGenerator', () => {
     let user: TSBenutzer;
     const gemeinde = new TSGemeinde();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
         initValues();
 
@@ -97,11 +97,11 @@ describe('gesuchGenerator', () => {
             ],
         });
 
-        gesuchGenerator = TestBed.get(GesuchGenerator);
+        gesuchGenerator = TestBed.inject<GesuchGenerator>(GesuchGenerator);
     }));
 
     describe('initGesuch', () => {
-        it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored', async(() => {
+        it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
             gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
@@ -116,7 +116,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
-        it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', async(() => {
+        it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
             gesuchGenerator.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
@@ -131,7 +131,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
-        it('creates a new Gesuch and Dossier linked to the existing fall', async(() => {
+        it('creates a new Gesuch and Dossier linked to the existing fall', waitForAsync(() => {
             gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
@@ -143,7 +143,7 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
                 });
         }));
-        it('creates a new Gesuch linked to the existing fall and Dossier', async(() => {
+        it('creates a new Gesuch linked to the existing fall and Dossier', waitForAsync(() => {
             gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_GESUCH, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
@@ -158,7 +158,7 @@ describe('gesuchGenerator', () => {
     });
 
     describe('initMutation', () => {
-        it('creates a new mutation', async(() => {
+        it('creates a new mutation', waitForAsync(() => {
             gesuchGenerator.initMutation(gesuchId, TSEingangsart.PAPIER, gpId, dossierId, fall, dossier)
                 .then(mutation => {
                     expect(mutation).toBeDefined();
@@ -177,7 +177,7 @@ describe('gesuchGenerator', () => {
     });
 
     describe('initErneuerungsgesuch', () => {
-        it('creates a new Erneuerungsgesuch', async(() => {
+        it('creates a new Erneuerungsgesuch', waitForAsync(() => {
             gesuchGenerator.initErneuerungsgesuch(gesuchId, TSEingangsart.PAPIER, gpId, dossierId, fall, dossier)
                 .then(mutation => {
                     expect(mutation).toBeDefined();

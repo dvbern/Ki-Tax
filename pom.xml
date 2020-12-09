@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2020.22.1</version>
+    <version>2020.23.0</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -44,23 +44,24 @@
         <database.jdbc.pwd>ebegu</database.jdbc.pwd>
 
         <!-- keep in sync with dependencies from Wildfly BOM -->
-        <version.hibernate>5.3.6.Final</version.hibernate>
-        <version.org.hibernate.validator>6.1.0.Final</version.org.hibernate.validator>
-        <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
-        <hibernate-search.version>5.10.3.Final</hibernate-search.version>
-        <version.infinispan>10.0.0.Final</version.infinispan>
-        <version.org.glassfish.javax.el-impl>3.0.1-b08-jbossorg-1</version.org.glassfish.javax.el-impl>
+        <version.hibernate>5.3.20.Final</version.hibernate>
+        <version.org.hibernate.validator>6.0.21.Final</version.org.hibernate.validator>
+        <version.wildfly-arquillian-containers>3.0.1.Final</version.wildfly-arquillian-containers>
+        <hibernate-search.version>5.10.7.Final</hibernate-search.version>
+        <version.infinispan>11.0.4.Final</version.infinispan>
 
         <version.flyway>6.1.0</version.flyway>
         <version.mysqldriver>1.3.7</version.mysqldriver>
         <version.slf4j>1.7.26</version.slf4j>
-        <version.wildfly.container>14.0.1.Final</version.wildfly.container>
+        <version.wildfly.container>18.0.0.Final</version.wildfly.container>
         <version.sentry>1.7.16</version.sentry>
         <version.bouncycastle>1.60</version.bouncycastle>
-        <version.jackson>2.9.10.20200103</version.jackson>
+        <version.jackson>2.10.5</version.jackson>
         <version.hamcrest>2.2</version.hamcrest>
         <version.poi>4.1.2</version.poi>
-        <version.iso20022>4.1.0</version.iso20022>
+        <version.iso20022>4.2.0</version.iso20022>
+        <version.jaxb-api>2.3.1</version.jaxb-api>
+        <version.jaxb-runtime>2.3.2</version.jaxb-runtime>
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
@@ -79,15 +80,23 @@
             <!-- region WildFly JavaEE Stack -->
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-javaee8-with-tools</artifactId>
-                <version>14.0.1.Final</version>
+                <artifactId>wildfly-jakartaee8-with-tools</artifactId>
+                <version>21.0.1.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>8.0</version>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>8.0.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.6.0.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>javax.security.jacc</groupId>
@@ -101,13 +110,13 @@
             <dependency>
                 <groupId>org.jgroups</groupId>
                 <artifactId>jgroups</artifactId>
-                <version>4.0.13.Final</version>
-                <scope>provided</scope>
+                <version>4.2.5.Final</version>
+				<scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>${version.hibernate}</version>
+				<version>${version.hibernate}</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
@@ -119,30 +128,32 @@
             <dependency>
                 <groupId>org.jboss.threads</groupId>
                 <artifactId>jboss-threads</artifactId>
-                <version>2.3.2.Final</version>
+				<version>2.4.0.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jberet</groupId>
-                <artifactId>jberet-core</artifactId>
-                <version>1.3.1.Final</version>
+				<artifactId>jberet-core</artifactId>
+                <version>1.3.7.Final</version>
+                <!-- Es scheint nicht mehr zu deployen, wenn hier das provided eingefuegt wird! -->
+                <!-- Obwohl es im Wildfly drin ist! -->
             </dependency>
             <dependency>
                 <groupId>org.jboss.xnio</groupId>
                 <artifactId>xnio-nio</artifactId>
-                <version>3.6.5.Final</version>
+                <version>3.8.2.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.xnio</groupId>
                 <artifactId>xnio-api</artifactId>
-                <version>3.6.5.Final</version>
+                <version>3.8.2.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.23.1-GA</version>
+                <version>3.23.2-GA</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -154,7 +165,7 @@
             <dependency>
                 <groupId>org.jboss</groupId>
                 <artifactId>jandex</artifactId>
-                <version>2.0.5.Final</version>
+                <version>2.1.3.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -167,31 +178,24 @@
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator-annotation-processor</artifactId>
                 <version>${version.org.hibernate.validator}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <!-- relocation artifact -->
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${version.org.hibernate.validator}</version>
-                <scope>provided</scope>
+                <!-- nur in dependencyManagement des WildFly BOMs drin, deshalb nicht provided -->
             </dependency>
             <dependency>
                 <groupId>org.eclipse.microprofile.health</groupId>
                 <artifactId>microprofile-health-api</artifactId>
-                <version>1.0</version>
-                <!--<scope>provided</scope>-->
+                <version>2.2</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish</groupId>
-                <artifactId>javax.el-impl</artifactId>
-                <version>${version.org.glassfish.javax.el-impl}</version>
+                <artifactId>jakarta.el</artifactId>
+                <version>3.0.3</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml</groupId>
                 <artifactId>classmate</artifactId>
-                <version>1.3.4</version>
+                <version>1.5.1</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
@@ -203,68 +207,135 @@
             <dependency>
                 <groupId>org.reactivestreams</groupId>
                 <artifactId>reactive-streams</artifactId>
-                <version>1.0.2</version>
+                <version>1.0.3</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- endregion WildFly Stack -->
-
-            <!-- region WildFly updates -->
             <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <!-- neuere Version als in WildFly! -->
-                <version>${version.jackson}</version>
-                <scope>import</scope>
-                <type>pom</type>
+                <groupId>org.jboss.remoting</groupId>
+                <artifactId>jboss-remoting</artifactId>
+                <version>5.0.19.Final</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>io.undertow</groupId>
-                <artifactId>undertow-core</artifactId>
-                <version>2.0.23.Final</version>
+                <groupId>org.jboss.marshalling</groupId>
+                <artifactId>jboss-marshalling-river</artifactId>
+                <version>2.0.9.Final</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.security.elytron-web</groupId>
-                <artifactId>undertow-server</artifactId>
-                <version>2.0.0.Alpha1</version>
+                <groupId>org.jboss.marshalling</groupId>
+                <artifactId>jboss-marshalling</artifactId>
+                <version>2.0.9.Final</version>
+                <scope>provided</scope>
             </dependency>
-            <!-- endregion -->
-
-             <!-- region Hibernate-Search dependencies-->
             <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.2</version>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>2.0.2</version>
+                <scope>provided</scope>
             </dependency>
-            <!--dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.4.5</version>
-            </dependency-->
-
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-search-elasticsearch</artifactId>
-                <version>${hibernate-search.version}</version>
+                <groupId>org.wildfly.security</groupId>
+                <artifactId>wildfly-elytron</artifactId>
+                <version>1.13.1.Final</version>
+                <scope>provided</scope>
                 <exclusions>
-                    <!--exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
                     <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpcore</artifactId>
-                    </exclusion-->
+                        <groupId>org.apache.sshd</groupId>
+                        <artifactId>sshd-common</artifactId>
+                    </exclusion>
                 </exclusions>
-            </dependency>
-           <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-search-backend-jgroups</artifactId>
-                <version>${hibernate-search.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-cachestore-jdbc</artifactId>
                 <version>${version.infinispan}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- muss gesetzt werden, nicht alle benoetigte package sind exportiert aus Wildfly-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.13</version>
+            </dependency>
+            <!-- endregion WildFly Stack -->
+
+            <!-- region WildFly updates (im wildfly provided, aber wir wollen eine hoehere version )-->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${version.jackson}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <!-- endregion WildFly updates -->
+
+            <!-- region java 9 -->
+            <!-- java 9 beinhaltet jax-ws Module nicht mehr, javaee replacements einfuegen-->
+            <!-- https://stackoverflow.com/questions/48204141/replacements-for-deprecated-jpms-modules-with-java-ee-apis-->
+            <!--            JAX-WS-->
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-rt</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.staxex</groupId>
+                <artifactId>stax-ex</artifactId>
+                <version>1.7.8</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm
+                </groupId>
+                <artifactId>asm</artifactId>
+                <version>5.2</version>
+            </dependency>
+            <!--            JAXB modul einfuegen-->
+            <!-- Runtime -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${version.jaxb-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${version.jaxb-runtime}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-ri</artifactId>
+                <version>2.3.2</version>
+                <type>pom</type>
+            </dependency>
+            <dependency><!-- wegen Versionskonflikten -->
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>1.3.5</version>
+            </dependency>
+            <!-- endregion -->
+
+            <!-- region Hibernate-Search dependencies-->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-elasticsearch</artifactId>
+                <version>${hibernate-search.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-backend-jgroups</artifactId>
+                <version>${hibernate-search.version}</version>
             </dependency>
             <!-- endregion -->
 
@@ -432,6 +503,26 @@
                 <artifactId>commons-compress</artifactId>
                 <version>1.20</version>
             </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>1.6.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-protocol</artifactId>
+                <version>13.0.3.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-controller-client</artifactId>
+                <version>13.0.3.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
             <!-- endregion -->
 
             <!-- region Submodules -->
@@ -536,9 +627,9 @@
                 <version>6.0.3</version>
             </dependency>
             <dependency>
-              <groupId>ch.dvbern.oss.healthcheck.gc</groupId>
-              <artifactId>gc-health-check</artifactId>
-              <version>1.0.0</version>
+                <groupId>ch.dvbern.oss.healthcheck.gc</groupId>
+                <artifactId>gc-health-check</artifactId>
+                <version>1.0.0</version>
             </dependency>
             <!-- endregion -->
 
@@ -583,6 +674,12 @@
                 <groupId>eu.codearte.catch-exception</groupId>
                 <artifactId>catch-exception</artifactId>
                 <version>2.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-common</artifactId>
+                <version>${version.wildfly-arquillian-containers}</version>
                 <scope>test</scope>
             </dependency>
             <!-- endregion -->
@@ -676,14 +773,18 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-persistence-api</artifactId>
+            <artifactId>arquillian-persistence-impl</artifactId>
             <version>1.0.0.Alpha6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-persistence-impl</artifactId>
-            <version>1.0.0.Alpha6</version>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-common</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -692,8 +793,13 @@
             <artifactId>arquillian-suite-extension</artifactId>
             <version>1.2.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>cdi-api</artifactId>
+                    <groupId>javax.enterprise</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <!-- endregion -->
         <!-- endregion -->
 
     </dependencies>
@@ -744,6 +850,7 @@
                     <!--port offset fuer embedded wildfly -->
                     <argLine>-Djboss.socket.binding.port-offset=10000</argLine>
                     <environmentVariables>
+                        <!--suppress UnresolvedMavenProperty -->
                         <JBOSS_HOME>${jbossHome}</JBOSS_HOME>
                     </environmentVariables>
                     <systemPropertyVariables>
@@ -823,6 +930,8 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
+                    <!-- von parent-pom ueberschrieben, siehe KIBON-1703 -->
+                    <version>4.0.4</version>
                     <dependencies>
                         <dependency>
                             <groupId>ch.dvbern.oss.maven</groupId>
@@ -925,6 +1034,16 @@
                         <bundleAuditAnalyzerEnabled>false</bundleAuditAnalyzerEnabled>
                         <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                         <suppressionFile>dependency-check-suppressions.xml</suppressionFile>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>11</source>
+                        <target>11</target>
                     </configuration>
                 </plugin>
 

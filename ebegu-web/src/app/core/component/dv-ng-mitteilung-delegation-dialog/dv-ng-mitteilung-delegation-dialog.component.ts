@@ -17,7 +17,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
 import {BenutzerRS} from '../../service/benutzerRS.rest';
 import {TSBenutzer} from '../../../../models/TSBenutzer';

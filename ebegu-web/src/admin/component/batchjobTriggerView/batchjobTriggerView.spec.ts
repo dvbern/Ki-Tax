@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatDialog} from '@angular/material';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
@@ -27,7 +27,7 @@ describe('batchjobTriggerView', () => {
     let component: BatchjobTriggerViewComponent;
     let fixture: ComponentFixture<BatchjobTriggerViewComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
         const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);

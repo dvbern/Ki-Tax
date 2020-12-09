@@ -94,7 +94,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 	}
 
 	@Schedule(info = "consume kafka events", second = "*/10", minute = "*", hour = "*", persistent = true)
-	public void workKafkaData() {
+	public void runPlatzbestaetigungConsumer() {
 		try {
 			if (consumer == null) {
 				startKafkaPlatzbestaetigungConsumer();
@@ -116,6 +116,9 @@ public class PlatzbestaetigungEventKafkaConsumer {
 
 	@PreDestroy
 	public void close() {
-		consumer.close();
+		// Beim Herunterfahren des Servers ist der consumer scheinbar schon null
+		if (consumer != null) {
+			consumer.close();
+		}
 	}
 }

@@ -108,6 +108,9 @@ import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -136,6 +139,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -372,7 +376,7 @@ public final class TestDataUtil {
 	public static Dossier createDefaultDossier() {
 		Dossier dossier = new Dossier();
 		dossier.setFall(createDefaultFall());
-		dossier.setGemeinde(createGemeindeParis());
+		dossier.setGemeinde(createGemeindeLondon());
 		return dossier;
 	}
 
@@ -418,6 +422,12 @@ public final class TestDataUtil {
 		return stammdatenParis.getGemeinde();
 	}
 
+	@Nonnull
+	public static Gemeinde getGemeindeLondon(@Nonnull Persistence persistence) {
+		GemeindeStammdaten stammdatenLondon = getGemeindeStammdatenLondon(persistence);
+		return stammdatenLondon.getGemeinde();
+	}
+
 	public static GemeindeStammdaten getGemeindeStammdatenParis(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
@@ -429,6 +439,22 @@ public final class TestDataUtil {
 		if (stammdaten == null) {
 			stammdaten = createGemeindeStammdaten(gemeinde);
 			stammdaten.setId(GEMEINDE_PARIS_ID);
+			stammdaten = persistence.merge(stammdaten);
+		}
+		return stammdaten;
+	}
+
+	public static GemeindeStammdaten getGemeindeStammdatenLondon(@Nonnull Persistence persistence) {
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_LONDON_ID);
+		if (gemeinde == null) {
+			gemeinde = createGemeindeLondon();
+			persistence.persist(gemeinde.getMandant());
+			gemeinde = persistence.persist(gemeinde);
+		}
+		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, GEMEINDE_LONDON_ID);
+		if (stammdaten == null) {
+			stammdaten = createGemeindeStammdaten(gemeinde);
+			stammdaten.setId(GEMEINDE_LONDON_ID);
 			stammdaten = persistence.merge(stammdaten);
 		}
 		return stammdaten;
@@ -2192,5 +2218,73 @@ public final class TestDataUtil {
 		oeffnungszeiten.setNameKibon(name);
 		oeffnungszeiten.setNameKitax(name);
 		return oeffnungszeiten;
+	}
+
+	public static LastenausgleichTagesschuleAngabenGemeindeContainer createLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde
+	) {
+		LastenausgleichTagesschuleAngabenGemeindeContainer cnt = new LastenausgleichTagesschuleAngabenGemeindeContainer();
+		cnt.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
+		cnt.setGesuchsperiode(gesuchsperiode);
+		cnt.setGemeinde(gemeinde);
+		return cnt;
+	}
+
+	public static LastenausgleichTagesschuleAngabenGemeinde createLastenausgleichTagesschuleAngabenGemeinde() {
+		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde = new LastenausgleichTagesschuleAngabenGemeinde();
+		// A: Allgemeine Angaben
+		angabenGemeinde.setBedarfBeiElternAbgeklaert(true);
+		angabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(true);
+		angabenGemeinde.setAngebotVerfuegbarFuerAlleSchulstufen(true);
+		angabenGemeinde.setBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen(null);
+		// B: Abrechnung
+		angabenGemeinde.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(BigDecimal.TEN);
+		angabenGemeinde.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(BigDecimal.TEN);
+		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(BigDecimal.TEN);
+		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(BigDecimal.TEN);
+		angabenGemeinde.setEinnahmenElterngebuehren(BigDecimal.TEN);
+		// C: Kostenbeteiligung Gemeinde
+		angabenGemeinde.setGesamtKostenTagesschule(BigDecimal.TEN);
+		angabenGemeinde.setEinnnahmenVerpflegung(BigDecimal.TEN);
+		angabenGemeinde.setEinnahmenSubventionenDritter(BigDecimal.TEN);
+		// D: Angaben zu weiteren Kosten und Ertraegen
+		angabenGemeinde.setBemerkungenWeitereKostenUndErtraege("Meine Bemerkungen");
+		// E: Kontrollfragen
+		angabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(true);
+		angabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(true);
+		angabenGemeinde.setEinkommenElternBelegt(true);
+		angabenGemeinde.setMaximalTarif(true);
+		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(true);
+		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(true);
+		// Bemerkungen
+		angabenGemeinde.setInternerKommentar(null);
+		angabenGemeinde.setBemerkungen(null);
+		return angabenGemeinde;
+	}
+
+	public static LastenausgleichTagesschuleAngabenInstitution createLastenausgleichTagesschuleAngabenInstitution() {
+		LastenausgleichTagesschuleAngabenInstitution angabenInstitution = new LastenausgleichTagesschuleAngabenInstitution();
+		// A: Informationen zur Tagesschule
+		angabenInstitution.setLehrbetrieb(true);
+		// B: Quantitative Angaben
+		angabenInstitution.setAnzahlEingeschriebeneKinder(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(BigDecimal.TEN);
+		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(BigDecimal.TEN);
+		angabenInstitution.setDurchschnittKinderProTagMittag(BigDecimal.TEN);
+		angabenInstitution.setDurchschnittKinderProTagNachmittag1(BigDecimal.TEN);
+		angabenInstitution.setDurchschnittKinderProTagNachmittag2(BigDecimal.TEN);
+		// C: Qualitative Vorgaben der Tagesschuleverordnung
+		angabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(true);
+		angabenInstitution.setSchuleAufBasisPaedagogischesKonzept(true);
+		angabenInstitution.setRaeumlicheVoraussetzungenEingehalten(true);
+		angabenInstitution.setBetreuungsverhaeltnisEingehalten(true);
+		angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(true);
+		// Bemerkungen
+		angabenInstitution.setBemerkungen(null);
+		return angabenInstitution;
 	}
 }

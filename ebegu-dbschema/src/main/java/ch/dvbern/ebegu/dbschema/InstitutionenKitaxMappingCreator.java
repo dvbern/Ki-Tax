@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,8 @@ import org.slf4j.LoggerFactory;
  * wir zwei Institutionen daraus. Im Excel muss dazu die Spalte Institutions-Id leer bleiben, bzw. dort wo für mehrere
  * Angebote die gleiche InstitutionsId drinn steht, werden die Angebote als InstitutiosStammdaten importiert.
  */
-@SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "TooBroadScope", "PMD.AvoidDuplicateLiterals", "StringBufferReplaceableByString" })
+@SuppressWarnings({ "IOResourceOpenedButNotSafelyClosed", "TooBroadScope", "PMD.AvoidDuplicateLiterals" })
+@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
 public class InstitutionenKitaxMappingCreator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InstitutionenKitaxMappingCreator.class);

@@ -14,8 +14,8 @@
  */
 
 import {Component} from '@angular/core';
-import {MatDialog} from '@angular/material';
-import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 
 @Component({
     selector: 'dv-helpmenu',

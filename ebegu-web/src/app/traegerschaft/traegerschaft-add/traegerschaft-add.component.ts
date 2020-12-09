@@ -16,7 +16,7 @@
  */
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -35,7 +35,7 @@ export class TraegerschaftAddComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('TraegerschaftAddComponent');
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public traegerschaft: TSTraegerschaft = undefined;
     public adminMail: string = undefined;

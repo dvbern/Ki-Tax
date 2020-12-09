@@ -25,7 +25,8 @@ import {
     ViewChildren,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import {MatCheckboxChange} from '@angular/material/checkbox';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -61,6 +62,7 @@ import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschu
 @Component({
     selector: 'dv-edit-institution',
     templateUrl: './edit-institution.component.html',
+    styleUrls: ['./edit-institution.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
@@ -75,6 +77,9 @@ export class EditInstitutionComponent implements OnInit {
     public externalClients?: TSInstitutionExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
+    // maping from TSExternalClient.id to TSDateRange, caching so users can readd removed clients without losing date
+    // range
+    private assignedClientGueltigkeitCache: Map<string, TSDateRange>;
 
     @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
     private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
@@ -85,6 +90,7 @@ export class EditInstitutionComponent implements OnInit {
     private isRegisteringInstitution: boolean = false;
     private initiallyAssignedClients: TSInstitutionExternalClient[];
     public ebeguUtil = EbeguUtil;
+    public allPossibleClients: TSExternalClient[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -135,6 +141,21 @@ export class EditInstitutionComponent implements OnInit {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
         this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
+        this.assignedClientGueltigkeitCache = new Map<string, TSDateRange>();
+        for (const client of this.initiallyAssignedClients) {
+            this.assignedClientGueltigkeitCache.set(client.externalClient.id, client.gueltigkeit);
+        }
+        this.allPossibleClients = [].concat(externalClients.assignedClients.map(eC => eC.externalClient))
+            .concat(externalClients.availableClients)
+            .sort((a: TSExternalClient, b: TSExternalClient) => {
+                if (a.clientName.toLowerCase() < b.clientName.toLowerCase()) {
+                    return -1;
+                }
+                if (a.clientName.toLowerCase() > b.clientName.toLowerCase()) {
+                    return 1;
+                }
+                return 0;
+            });
         this.changeDetectorRef.markForCheck();
     }
 
@@ -438,23 +459,6 @@ export class EditInstitutionComponent implements OnInit {
         return new Date(0);
     }
 
-    public assignAvailableClient(availableClient: TSExternalClient): void {
-        const index = this.externalClients.availableClients.indexOf(availableClient);
-        if (index > -1) {
-            this.externalClients.availableClients.splice(index, 1);
-        }
-        this.externalClients.assignedClients.push(new TSInstitutionExternalClient(availableClient));
-    }
-
-    public unassignClient(assignedClient: TSInstitutionExternalClient): void {
-        const index = this.externalClients.assignedClients.indexOf(assignedClient);
-        if (index > -1) {
-            this.externalClients.assignedClients.splice(index, 1);
-        }
-        this.externalClients.availableClients.push(assignedClient.externalClient);
-
-    }
-
     public getGueltigAbDate(date: moment.Moment): string {
         if (!date || !date.isValid()) {
             return '';
@@ -472,5 +476,65 @@ export class EditInstitutionComponent implements OnInit {
             return `${this.translate.instant('BIS')} ${formatedDate}`;
         }
         return '';
+    }
+
+    public dateAbChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
+        assignedClient.gueltigkeit.gueltigAb = $event ? $event.startOf('month') : null;
+        this.updateClientGueltigkeitCache(assignedClient);
+    }
+
+    public dateBisChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
+        assignedClient.gueltigkeit.gueltigBis = $event ? $event.endOf('month') : null;
+        this.updateClientGueltigkeitCache(assignedClient);
+    }
+
+    private updateClientGueltigkeitCache(client: TSInstitutionExternalClient): void {
+        if (this.assignedClientGueltigkeitCache.has(client.externalClient.id)) {
+            this.assignedClientGueltigkeitCache.set(client.externalClient.id, client.gueltigkeit);
+        }
+    }
+
+    public changeAssignmentClient(changeEvent: MatCheckboxChange, client: TSExternalClient): void {
+        if (changeEvent.checked) {
+            if (!this.isClientAssigned(client)) {
+                const newInstitutionClient = new TSInstitutionExternalClient(client);
+                // check cache for existing gueltigkeit
+                if (this.assignedClientGueltigkeitCache.has(client.id)) {
+                    newInstitutionClient.gueltigkeit = this.assignedClientGueltigkeitCache.get(client.id);
+                } else {
+                    this.assignedClientGueltigkeitCache.set(client.id, newInstitutionClient.gueltigkeit);
+                }
+                this.externalClients.assignedClients.push(newInstitutionClient);
+            }
+        } else {
+            const idx = this.externalClients.assignedClients.findIndex(c => c.externalClient.id === client.id);
+            if (idx >= 0) {
+                this.externalClients.assignedClients.splice(idx, 1);
+            }
+        }
+    }
+
+    public isClientAssigned(client: TSExternalClient): boolean {
+        return !!this.externalClients.assignedClients.find(c => c.externalClient.id === client.id);
+    }
+
+    public getAssignedInstitutionClient(client: TSExternalClient): TSInstitutionExternalClient {
+        return this.externalClients.assignedClients
+            .find(assignedClient => assignedClient.externalClient.id === client.id);
+    }
+
+    public getSortedAssignedClients(): TSInstitutionExternalClient[] {
+        return this.externalClients.assignedClients.sort((
+            a: TSInstitutionExternalClient,
+            b: TSInstitutionExternalClient,
+        ) => {
+            if (a.externalClient.clientName < b.externalClient.clientName) {
+                return -1;
+            }
+            if (a.externalClient.clientName > b.externalClient.clientName) {
+                return 1;
+            }
+            return 0;
+        });
     }
 }

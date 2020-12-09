@@ -51,10 +51,10 @@ public class AntragStatusHistory extends AbstractMutableEntity implements Compar
 	private Benutzer benutzer = null;
 
 	@NotNull
-	@Column(nullable = false, columnDefinition = "DATETIME(6)")
+	@Column(nullable = false)
 	private LocalDateTime timestampVon;
 
-	@Column(nullable = true, columnDefinition = "DATETIME(6)")
+	@Column(nullable = true)
 	private LocalDateTime timestampBis;
 
 	@NotNull

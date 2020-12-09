@@ -149,7 +149,7 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("META-INF/test-orm.xml", "META-INF/orm.xml")
 			.addAsManifestResource("META-INF/TEST-MANIFEST.MF", "MANIFEST.MF")
 			//deploy our test loginmodule
-			.addAsResource("testogin-users.properties", "users.properties")
+			.addAsResource("testlogin-users.properties", "users.properties")
 			.addAsResource("testlogin-roles.properties", "roles.properties")
 			.addAsWebInfResource("META-INF/test-jboss-web.xml", "jboss-web.xml")
 			.addAsResource("font/OpenSans-Light.ttf", "font/OpenSans-Light.ttf")

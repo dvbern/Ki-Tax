@@ -23,7 +23,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
-import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
+import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
@@ -43,6 +43,7 @@ import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {FileUploadComponent} from './component/file-upload/file-upload.component';
@@ -117,30 +118,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         FileUploadComponent,
-        DvNgConfirmDialogComponent
-    ],
-    entryComponents: [
-        DvHelpmenuComponent,
-        DvMitteilungDelegationComponent,
-        DvNgMitteilungDelegationDialogComponent,
-        DvBenutzerEntry,
-        DvNgGemeindeDialogComponent,
-        DvNgHelpDialogComponent,
-        DvNgSupportDialogComponent,
-        DvNgLinkDialogComponent,
-        DvNgOkDialogComponent,
-        DvNgRemoveDialogComponent,
-        DvNgThreeButtonDialogComponent,
-        DvPosteingangComponent,
-        GemeindeMultiselectComponent,
-        DvBenutzerEntry,
-        NavbarComponent,
-        StammdatenHeaderComponent,
-        DvNgGesuchstellerDialogComponent,
-        ExternalClientAssignmentComponent,
-        ExternalClientMultiselectComponent,
-        FileUploadComponent,
         DvNgConfirmDialogComponent,
+        DvMonthPickerComponent
     ],
     exports: [
         CommonModule,
@@ -180,6 +159,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientMultiselectComponent,
         FileUploadComponent,
         DvNgConfirmDialogComponent,
+        DvMonthPickerComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

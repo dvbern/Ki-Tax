@@ -46,7 +46,7 @@ public class GutscheineStartdatumCalcRuleTest {
 
 		assertEquals(0, zeitabschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(
-			"Für diesen Zeitraum stellt die Gemeinde Paris noch keine Betreuungsgutscheine aus.",
+			"Für diesen Zeitraum stellt die Gemeinde London noch keine Betreuungsgutscheine aus.",
 			zeitabschnitt.getBemerkungen());
 	}
 
