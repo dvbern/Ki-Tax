@@ -27,13 +27,13 @@ import {LogFactory} from '../../../core/logging/LogFactory';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {LastenausgleichRS} from '../../../core/service/lastenausgleichRS.rest';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
-import {ZemisDialogDTO} from '../zemisDialog/zemis-dialog.interface';
-import {ZemisDialogController} from '../zemisDialog/ZemisDialogController';
+import {ZemisDialogDTO} from '../zemisDialog/zemisDialog.interface';
+import {ZemisDialogController} from '../zemisDialog/zemisDialogController';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
-const inputYearDialogTemplate = require('../zemisDialog/ZemisDialogTemplate.html');
+const inputYearDialogTemplate = require('../zemisDialog/zemisDialogTemplate.html');
 
 const LOG = LogFactory.createLog('LastenausgleichViewController');
 
