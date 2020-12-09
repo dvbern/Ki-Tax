@@ -34,6 +34,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../core/service/mitteilungRS.rest';
+import {IGesuchstellerDashboardStateParams} from '../../gesuchstellerDashboard.route';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
@@ -50,6 +51,7 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public static $inject: string[] = [
         '$state',
+        '$stateParams',
         'AuthServiceRS',
         'SearchRS',
         'EbeguUtil',
@@ -73,6 +75,7 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public constructor(
         private readonly $state: StateService,
+        private readonly $stateParams: IGesuchstellerDashboardStateParams,
         private readonly authServiceRS: AuthServiceRS,
         private readonly searchRS: SearchRS,
         private readonly ebeguUtil: EbeguUtil,
@@ -86,9 +89,8 @@ export class GesuchstellerDashboardViewController implements IController {
     }
 
     public $onInit(): void {
-        const params = this.$state.params.gesuchstellerDashboardStateParams;
-        if (params && params.infoMessage) {
-            this.errorService.addMesageAsInfo(this.$translate.instant(params.infoMessage));
+        if (this.$stateParams.infoMessage) {
+            this.errorService.addMesageAsInfo(this.$translate.instant(this.$stateParams.infoMessage));
         }
 
         this.periodYear = DateUtil
@@ -245,14 +247,15 @@ export class GesuchstellerDashboardViewController implements IController {
     public showAnmeldungTagesschuleCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
             return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreateTS(periode)
-                && periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.tagesschulanmeldungenStartdatum);        }
+                && periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.tagesschulanmeldungenStartdatum);
+        }
         return undefined;
     }
 
     public showAnmeldungFerieninselCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
             return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreateFI(periode) &&
-            periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.ferieninselanmeldungenStartdatum);
+                periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.ferieninselanmeldungenStartdatum);
         }
         return undefined;
     }
