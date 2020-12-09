@@ -14,7 +14,7 @@
  */
 
 import {IFormController, IPromise} from 'angular';
-import {ZemisDialogDTO} from './zemis-dialog.interface';
+import {ZemisDialogDTO} from './zemisDialog.interface';
 import IDialogService = angular.material.IDialogService;
 
 export class ZemisDialogController {
