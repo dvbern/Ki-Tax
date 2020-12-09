@@ -108,7 +108,7 @@ export class AuthServiceRS {
         });
     }
 
-    public initWithCookie(): IPromise<TSBenutzer> {
+    public async initWithCookie(): Promise<TSBenutzer> {
         LOG.debug('initWithCookie');
 
         const authIdbase64 = this.$cookies.get('authId');
@@ -121,7 +121,7 @@ export class AuthServiceRS {
         try {
             const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
-            return this.reloadUser(authData.authId);
+            return await this.reloadUser(authData.authId);
         } catch (e) {
             LOG.error('cookie decoding failed', e);
             this.clearPrincipal();
