@@ -21,6 +21,7 @@ import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogControl
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
@@ -116,6 +117,11 @@ export class LastenausgleichViewController implements IController {
 
     public isRemoveAllowed(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+
+    public canDownloadCSV(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public removeLastenausgleich(lastenausgleich: TSLastenausgleich): void {
