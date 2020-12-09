@@ -99,7 +99,7 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 				"generateExcelReportLastenausgleichKibon", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, lastenausgleich.getJahr()));
 
 		List<LastenausgleichDetail> lastenausgleichDetails =
-			principal.getBenutzer().getCurrentBerechtigung().getRole().equals(UserRole.SACHBEARBEITER_GEMEINDE) ?
+			principal.getBenutzer().getCurrentBerechtigung().getRole().isRoleGemeinde()?
 				lastenausgleich.getLastenausgleichDetails()
 					.stream()
 					.filter(lastenausgleichDetail -> principal.getBenutzer()

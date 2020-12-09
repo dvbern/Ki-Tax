@@ -66,7 +66,8 @@ export class LastenausgleichViewController implements IController {
     }
 
     public $onInit(): void {
-        const dataPromise = this.authServiceRS.getPrincipal().hasRole(TSRole.SACHBEARBEITER_GEMEINDE) ?
+        const dataPromise = this.authServiceRS.getPrincipal()
+            .hasOneOfRoles([TSRole.SACHBEARBEITER_GEMEINDE, TSRole.ADMIN_GEMEINDE]) ?
             this.lastenausgleichRS.getGemeindeLastenausgleiche() : this.lastenausgleichRS.getAllLastenausgleiche();
 
         dataPromise.then((response: TSLastenausgleich[]) => {
@@ -118,7 +119,6 @@ export class LastenausgleichViewController implements IController {
     public isRemoveAllowed(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
-
 
     public canDownloadCSV(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
