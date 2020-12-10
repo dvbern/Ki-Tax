@@ -31,8 +31,8 @@ import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
-import 'ng-file-upload';
 import 'angular-utf8-base64';
+import 'ng-file-upload';
 import 'raven-js';
 import 'raven-js/plugins/angular';
 // tslint:enable-no-import-side-effect
@@ -73,6 +73,7 @@ import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion'
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
+import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
 import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
@@ -84,6 +85,7 @@ import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
 import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
+import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
 import {DvMobileNavigationToggleComponentConfig} from './component/dv-mobile-navigation-toggle/dv-mobile-navigation-toggle';
 import {DvPulldownUserMenuComponentConfig} from './component/dv-pulldown-user-menu/dv-pulldown-user-menu';
@@ -146,14 +148,12 @@ import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
+import {SozialhilfeZeitraumRS} from './service/sozialhilfeZeitraumRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {ZahlungRS} from './service/zahlungRS.rest';
-import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
-import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
-import {SozialhilfeZeitraumRS} from './service/sozialhilfeZeitraumRS.rest';
 
 const dependencies = [
     /* Angular modules */
@@ -220,6 +220,7 @@ export const CORE_JS_MODULE = angular
     .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
+    .service('BenutzerRS', BenutzerRS)
     .service('VerfuegungRS', VerfuegungRS)
     .service('DokumenteRS', DokumenteRS)
     .service('UploadRS', UploadRS)
@@ -236,7 +237,6 @@ export const CORE_JS_MODULE = angular
     .service('NotrechtRS', NotrechtRS)
     .service('EinstellungRS', EinstellungRS)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
-    .factory('BenutzerRS', downgradeInjectable(BenutzerRS) as any)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
