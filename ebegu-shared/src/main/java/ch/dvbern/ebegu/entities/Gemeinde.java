@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -109,6 +110,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean angebotFI = false;
 
+	@Nullable
+	@Column(nullable = true)
+	private LocalDate gueltigBis;
+
 
 	public Mandant getMandant() {
 		return mandant;
@@ -184,6 +189,15 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	public void setAngebotFI(boolean angebotFI) {
 		this.angebotFI = angebotFI;
+	}
+
+	@Nullable
+	public LocalDate getGueltigBis() {
+		return gueltigBis;
+	}
+
+	public void setGueltigBis(@Nullable LocalDate gueltigBis) {
+		this.gueltigBis = gueltigBis;
 	}
 
 	@Override

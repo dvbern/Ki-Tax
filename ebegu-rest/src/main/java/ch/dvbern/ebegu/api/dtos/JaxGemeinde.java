@@ -64,6 +64,10 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate ferieninselanmeldungenStartdatum;
 
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate gueltigBis;
+
 	private boolean angebotBG = false;
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
@@ -143,6 +147,11 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	public void setAngebotFI(boolean angebotFI) {
 		this.angebotFI = angebotFI;
 	}
+
+	@Nullable
+	public LocalDate getGueltigBis() { return gueltigBis; }
+
+	public void setGueltigBis(@Nullable LocalDate gueltigBis) { this.gueltigBis = gueltigBis; }
 
 	@Nonnull
 	public String getKey() {

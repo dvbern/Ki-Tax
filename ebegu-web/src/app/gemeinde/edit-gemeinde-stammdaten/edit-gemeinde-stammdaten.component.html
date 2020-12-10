@@ -168,6 +168,19 @@
                 <div class="col-sm-6">
 
                     <div class="form-group">
+                        <label class="md-no-float" translate for="gemeinde_end_ID">GEMEINDE_GUELTIG_BIS</label>
+                        <input class="dv-mat-datepicker" type="text"
+                               name="gemeinde_end_ID" id="gemeinde_end_ID" #gemeindeEndDate="ngModel"
+                               [(ngModel)]="stammdaten.gemeinde.gueltigBis"
+                               [matDatepicker]="gemeinde_end_ID"
+                               [disabled]="!(isSuperadminOrMandant())"
+                               placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                        <mat-datepicker-toggle matSuffix [for]="gemeinde_end_ID"></mat-datepicker-toggle>
+                        <mat-datepicker #gemeinde_end_ID></mat-datepicker>
+                        <dv-error-messages input-id="gemeinde_end_ID"
+                                           [errorObject]="gemeindeEndDate.errors">
+                        </dv-error-messages>
+
                         <label class="md-no-float" translate for="begu_start_ID" *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
 
                         <mat-checkbox id="angebotBG" name="angebotBG"
