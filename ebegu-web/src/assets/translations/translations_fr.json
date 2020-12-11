@@ -1042,6 +1042,7 @@
     "DOSSIER_MUTIEREN_HEIRAT": "Changer le cas mariage",
     "DOSSIER_MUTIEREN_SCHEIDUNG": "Changer le cas divorce",
     "UMZUG_TITLE": "Déménagement",
+    "UMZUG_IN_NEUE_GEMEINDE": "",
     "UMZUG_ENTFERNEN": "Supprimer le déménagement",
     "UMZUG_HINZUFUEGEN": "Ajouter un déménagement",
     "UMZUG_HINT": "Prévoyez-vous de déménager ?  Veuillez saisir l'adresse modifiée le cas échéant.",
