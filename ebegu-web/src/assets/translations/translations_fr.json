@@ -2175,5 +2175,6 @@
     "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Réclamation",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Document(s) concernant la réclamation",
     "GEMEINDE_DANGEROUS_SAVING": "Attention: vous avez effectué des changements dans une période qui est active. Êtes-vous sûre de vouloir effectuer ces changements? Les demandes de cette période ne seront pas automatiquement changées",
+    "VERFUEGUNG_JSON_DEPRECATED": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
