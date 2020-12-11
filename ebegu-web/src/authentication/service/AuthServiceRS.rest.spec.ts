@@ -86,7 +86,7 @@ describe('AuthServiceRS', () => {
             };
             const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
-            spyOn(benutzerRS, 'findBenutzer').and.returnValue($q.when(benutzer) as Promise<any>);
+            spyOn(benutzerRS, 'findBenutzer').and.returnValue($q.when(benutzer));
 
             let cookieUser: TSBenutzer;
             // if we can decode the cookie the client application assumes the user is logged in for ui purposes
