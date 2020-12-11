@@ -46,7 +46,7 @@ public class DVBatchJobCheck implements HealthCheck {
 	private static final String IN_TIMEOUT_STATE = "IN_TIMEOUT";
 	private static final String PREVIOUS_RUN_COLUMN = "PREVIOUS_RUN";
 	private static final String TIMEOUT_METHOD_NAME_COLUMN = "TIMEOUT_METHOD_NAME";
-	private static final String EJB_TIMER_TABLE_NAME = "jboss_ejb_timer";
+	private static final String EJB_TIMER_TABLE_NAME = "JBOSS_EJB_TIMER";
 	private static final String NEXT_DATE_COLUMN_NAME = "NEXT_DATE";
 	private static final String SQL_QUERY = String.format(
 		"SELECT jet.* FROM %s jet INNER JOIN (SELECT %s, MAX(%s) AS MaxDateTime FROM %s GROUP BY %s) groupedjet ON jet"
