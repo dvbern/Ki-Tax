@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -672,7 +673,7 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Fuer Registrierungsprozess
 	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
-		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeinden().stream()
+		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);

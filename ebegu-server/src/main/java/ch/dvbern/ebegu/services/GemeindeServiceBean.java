@@ -17,12 +17,14 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -197,6 +199,14 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date) {
+		return getAktiveGemeinden().stream()
+			.filter(gemeinde -> gemeinde.getGueltigBis().isAfter(date.minusDays(1)))
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
