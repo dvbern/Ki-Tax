@@ -224,7 +224,7 @@ export class FallToolbarComponent implements OnChanges {
                         return of(principal.extractCurrentAktiveGemeinden());
                     }
 
-                    return from(this.gemeindeRS.getAktiveGemeinden());
+                    return from(this.gemeindeRS.getAktiveGueltigeGemeinden());
                 }),
                 map(gemeinden => this.toGemeindenWithoutDossier(gemeinden)),
             )

@@ -241,6 +241,22 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 	}
 
+
+	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV and gueltigBis after the current day",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/activegueltig")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
+	public List<JaxGemeinde> getAktiveGueltigeGemeinden() {
+		return gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Returns the Gemeinde with the given Id.", response = JaxGemeinde.class)
 	@Nullable
 	@GET
