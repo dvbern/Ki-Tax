@@ -176,6 +176,7 @@ describe('fallToolbar', () => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                getAktiveGueltigeGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             initTestBed();
