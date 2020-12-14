@@ -862,8 +862,8 @@ export class EbeguRestUtil {
                 .momentToLocalDate(gemeinde.tagesschulanmeldungenStartdatum);
             restGemeinde.ferieninselanmeldungenStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.ferieninselanmeldungenStartdatum);
-            restGemeinde.gueltigBis = DateUtil
-                .momentToLocalDate(gemeinde.gueltigBis);
+            restGemeinde.gueltigBis = gemeinde.gueltigBis === null ? '9999-12-31' :
+                DateUtil.momentToLocalDate(gemeinde.gueltigBis);
             restGemeinde.angebotBG = gemeinde.angebotBG;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
@@ -885,8 +885,8 @@ export class EbeguRestUtil {
                 .localDateToMoment(gemeindeFromServer.tagesschulanmeldungenStartdatum);
             gemeindeTS.ferieninselanmeldungenStartdatum = DateUtil
                 .localDateToMoment(gemeindeFromServer.ferieninselanmeldungenStartdatum);
-            gemeindeTS.gueltigBis = DateUtil
-                .localDateToMoment(gemeindeFromServer.gueltigBis);
+            gemeindeTS.gueltigBis = gemeindeFromServer.gueltigBis === '9999-12-31' ? null :
+                DateUtil.localDateToMoment(gemeindeFromServer.gueltigBis);
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
@@ -2498,7 +2498,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseGesuchsperiode(gesuchsperiodeTS: TSGesuchsperiode, gesuchsperiodeFromServer: any
+    public parseGesuchsperiode(gesuchsperiodeTS: TSGesuchsperiode, gesuchsperiodeFromServer: any,
     ): TSGesuchsperiode | undefined {
         if (gesuchsperiodeFromServer) {
             this.parseDateRangeEntity(gesuchsperiodeTS, gesuchsperiodeFromServer);
@@ -4320,7 +4320,7 @@ export class EbeguRestUtil {
 
     public parseLastenausgleichTagesschuleAngabenGemeindeContainer(
         gemeindeContainerTS: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
-        gemeindeContainerFromServer: any
+        gemeindeContainerFromServer: any,
     ): TSLastenausgleichTagesschuleAngabenGemeindeContainer {
         if (gemeindeContainerFromServer) {
             this.parseAbstractEntity(gemeindeContainerTS, gemeindeContainerFromServer);
@@ -4345,7 +4345,7 @@ export class EbeguRestUtil {
 
     public lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject(
         restGemeindeContainer: any,
-        tsGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer
+        tsGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
     ): TSLastenausgleichTagesschuleAngabenGemeindeContainer {
         if (tsGemeindeContainer) {
             this.abstractEntityToRestObject(restGemeindeContainer, tsGemeindeContainer);
@@ -4371,7 +4371,7 @@ export class EbeguRestUtil {
 
     public parseLastenausgleichTagesschuleAngabenGemeinde(
         gemeindeTS: TSLastenausgleichTagesschuleAngabenGemeinde,
-        gemeindeFromServer: any
+        gemeindeFromServer: any,
     ): TSLastenausgleichTagesschuleAngabenGemeinde {
         if (gemeindeFromServer) {
             this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
@@ -4430,7 +4430,7 @@ export class EbeguRestUtil {
 
     public lastenausgleichTagesschuleAngabenGemeindeToRestObject(
         restAngabenGemeinde: any,
-        tsAngabenGemeinde: TSLastenausgleichTagesschuleAngabenGemeinde
+        tsAngabenGemeinde: TSLastenausgleichTagesschuleAngabenGemeinde,
     ): any {
         if (tsAngabenGemeinde) {
             this.abstractEntityToRestObject(restAngabenGemeinde, tsAngabenGemeinde);
@@ -4493,13 +4493,19 @@ export class EbeguRestUtil {
             return [];
         }
         return Array.isArray(data)
-            ? data.map(item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), item))
-            : [this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), data)];
+            ?
+            data.map(item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                item))
+            :
+            [
+                this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                    data),
+            ];
     }
 
     public parseLastenausgleichTagesschuleAngabenInstitutionContainer(
         institutionContainerTS: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
-        institutionContainerFromServer: any
+        institutionContainerFromServer: any,
     ): TSLastenausgleichTagesschuleAngabenInstitutionContainer {
         if (institutionContainerFromServer) {
             this.parseAbstractEntity(institutionContainerTS, institutionContainerFromServer);
@@ -4520,25 +4526,31 @@ export class EbeguRestUtil {
     }
 
     private lastenausgleichTagesschuleAngabenInstitutionContainerListToRestObject(
-        tsInstitutionContainerList: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>
+        tsInstitutionContainerList: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>,
     ): Array<any> {
         return tsInstitutionContainerList
-            ? tsInstitutionContainerList.map(item => this.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({}, item))
-            : [];
+            ?
+            tsInstitutionContainerList.map(item => this.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                {},
+                item))
+            :
+            [];
     }
 
     public lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
         restInstitutionContainer: any,
-        tsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+        tsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
     ): any {
         if (tsInstitutionContainer) {
             this.abstractEntityToRestObject(restInstitutionContainer, tsInstitutionContainer);
             restInstitutionContainer.status = tsInstitutionContainer.status;
             restInstitutionContainer.institution = tsInstitutionContainer.institution;
             restInstitutionContainer.angabenDeklaration =
-                this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({}, tsInstitutionContainer.angabenDeklaration);
+                this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({},
+                    tsInstitutionContainer.angabenDeklaration);
             restInstitutionContainer.angabenKorrektur =
-                this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({}, tsInstitutionContainer.angabenKorrektur);
+                this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({},
+                    tsInstitutionContainer.angabenKorrektur);
             return restInstitutionContainer;
         }
         return undefined;
@@ -4546,7 +4558,7 @@ export class EbeguRestUtil {
 
     public parseLastenausgleichTagesschuleAngabenInstitution(
         angabenInstitutionTS: TSLastenausgleichTagesschuleAngabenInstitution,
-        angabenInstitutionFromServer: any
+        angabenInstitutionFromServer: any,
     ): TSLastenausgleichTagesschuleAngabenInstitution | undefined {
         if (angabenInstitutionFromServer) {
             this.parseAbstractEntity(angabenInstitutionTS, angabenInstitutionFromServer);
@@ -4554,20 +4566,33 @@ export class EbeguRestUtil {
             angabenInstitutionTS.isLehrbetrieb = angabenInstitutionFromServer.isLehrbetrieb;
             // B: Quantitative Angaben
             angabenInstitutionTS.anzahlEingeschriebeneKinder = angabenInstitutionFromServer.anzahlEingeschriebeneKinder;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderKindergarten = angabenInstitutionFromServer.anzahlEingeschriebeneKinderKindergarten;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe = angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderPrimarstufe = angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
-            angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung = angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
-            angabenInstitutionTS.durchschnittKinderProTagMittag = angabenInstitutionFromServer.durchschnittKinderProTagMittag;
-            angabenInstitutionTS.durchschnittKinderProTagNachmittag1 = angabenInstitutionFromServer.durchschnittKinderProTagNachmittag1;
-            angabenInstitutionTS.durchschnittKinderProTagNachmittag2 = angabenInstitutionFromServer.durchschnittKinderProTagNachmittag2;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderKindergarten =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderKindergarten;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderPrimarstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
+                angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
+            angabenInstitutionTS.durchschnittKinderProTagMittag =
+                angabenInstitutionFromServer.durchschnittKinderProTagMittag;
+            angabenInstitutionTS.durchschnittKinderProTagNachmittag1 =
+                angabenInstitutionFromServer.durchschnittKinderProTagNachmittag1;
+            angabenInstitutionTS.durchschnittKinderProTagNachmittag2 =
+                angabenInstitutionFromServer.durchschnittKinderProTagNachmittag2;
             // C: Qualitative Vorgaben der Tagesschuleverordnung
-            angabenInstitutionTS.schuleAufBasisOrganisatorischesKonzept = angabenInstitutionFromServer.schuleAufBasisOrganisatorischesKonzept;
-            angabenInstitutionTS.schuleAufBasisPaedagogischesKonzept = angabenInstitutionFromServer.schuleAufBasisPaedagogischesKonzept;
-            angabenInstitutionTS.raeumlicheVoraussetzungenEingehalten = angabenInstitutionFromServer.raeumlicheVoraussetzungenEingehalten;
-            angabenInstitutionTS.betreuungsverhaeltnisEingehalten = angabenInstitutionFromServer.betreuungsverhaeltnisEingehalten;
-            angabenInstitutionTS.ernaehrungsGrundsaetzeEingehalten = angabenInstitutionFromServer.ernaehrungsGrundsaetzeEingehalten;
+            angabenInstitutionTS.schuleAufBasisOrganisatorischesKonzept =
+                angabenInstitutionFromServer.schuleAufBasisOrganisatorischesKonzept;
+            angabenInstitutionTS.schuleAufBasisPaedagogischesKonzept =
+                angabenInstitutionFromServer.schuleAufBasisPaedagogischesKonzept;
+            angabenInstitutionTS.raeumlicheVoraussetzungenEingehalten =
+                angabenInstitutionFromServer.raeumlicheVoraussetzungenEingehalten;
+            angabenInstitutionTS.betreuungsverhaeltnisEingehalten =
+                angabenInstitutionFromServer.betreuungsverhaeltnisEingehalten;
+            angabenInstitutionTS.ernaehrungsGrundsaetzeEingehalten =
+                angabenInstitutionFromServer.ernaehrungsGrundsaetzeEingehalten;
             // Bemerkungen
             angabenInstitutionTS.bemerkungen = angabenInstitutionFromServer.bemerkungen;
             return angabenInstitutionTS;
@@ -4577,7 +4602,7 @@ export class EbeguRestUtil {
 
     public lastenausgleichTagesschuleAngabenInstitutionToRestObject(
         restAngabenInstitution: any,
-        tsAngabenInstitution: TSLastenausgleichTagesschuleAngabenInstitution
+        tsAngabenInstitution: TSLastenausgleichTagesschuleAngabenInstitution,
     ): any {
         if (tsAngabenInstitution) {
             this.abstractEntityToRestObject(restAngabenInstitution, tsAngabenInstitution);
@@ -4585,20 +4610,32 @@ export class EbeguRestUtil {
             restAngabenInstitution.isLehrbetrieb = tsAngabenInstitution.isLehrbetrieb;
             // B: Quantitative Angaben
             restAngabenInstitution.anzahlEingeschriebeneKinder = tsAngabenInstitution.anzahlEingeschriebeneKinder;
-            restAngabenInstitution.anzahlEingeschriebeneKinderKindergarten = tsAngabenInstitution.anzahlEingeschriebeneKinderKindergarten;
-            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe = tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
-            restAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe = tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
-            restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
-            restAngabenInstitution.durchschnittKinderProTagFruehbetreuung = tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
+            restAngabenInstitution.anzahlEingeschriebeneKinderKindergarten =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderKindergarten;
+            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
+                tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;
-            restAngabenInstitution.durchschnittKinderProTagNachmittag1 = tsAngabenInstitution.durchschnittKinderProTagNachmittag1;
-            restAngabenInstitution.durchschnittKinderProTagNachmittag2 = tsAngabenInstitution.durchschnittKinderProTagNachmittag2;
+            restAngabenInstitution.durchschnittKinderProTagNachmittag1 =
+                tsAngabenInstitution.durchschnittKinderProTagNachmittag1;
+            restAngabenInstitution.durchschnittKinderProTagNachmittag2 =
+                tsAngabenInstitution.durchschnittKinderProTagNachmittag2;
             // C: Qualitative Vorgaben der Tagesschuleverordnung
-            restAngabenInstitution.schuleAufBasisOrganisatorischesKonzept = tsAngabenInstitution.schuleAufBasisOrganisatorischesKonzept;
-            restAngabenInstitution.schuleAufBasisPaedagogischesKonzept = tsAngabenInstitution.schuleAufBasisPaedagogischesKonzept;
-            restAngabenInstitution.raeumlicheVoraussetzungenEingehalten = tsAngabenInstitution.raeumlicheVoraussetzungenEingehalten;
-            restAngabenInstitution.betreuungsverhaeltnisEingehalten = tsAngabenInstitution.betreuungsverhaeltnisEingehalten;
-            restAngabenInstitution.ernaehrungsGrundsaetzeEingehalten = tsAngabenInstitution.ernaehrungsGrundsaetzeEingehalten;
+            restAngabenInstitution.schuleAufBasisOrganisatorischesKonzept =
+                tsAngabenInstitution.schuleAufBasisOrganisatorischesKonzept;
+            restAngabenInstitution.schuleAufBasisPaedagogischesKonzept =
+                tsAngabenInstitution.schuleAufBasisPaedagogischesKonzept;
+            restAngabenInstitution.raeumlicheVoraussetzungenEingehalten =
+                tsAngabenInstitution.raeumlicheVoraussetzungenEingehalten;
+            restAngabenInstitution.betreuungsverhaeltnisEingehalten =
+                tsAngabenInstitution.betreuungsverhaeltnisEingehalten;
+            restAngabenInstitution.ernaehrungsGrundsaetzeEingehalten =
+                tsAngabenInstitution.ernaehrungsGrundsaetzeEingehalten;
             // Bemerkungen
             restAngabenInstitution.bemerkungen = tsAngabenInstitution.bemerkungen;
             return restAngabenInstitution;
