@@ -14,6 +14,7 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {DossierRS} from '../../../gesuch/service/dossierRS.rest';
 import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
@@ -23,7 +24,7 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class GesuchsperiodeRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q', 'GlobalCacheService'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q', 'GlobalCacheService', 'DossierRS'];
     public serviceURL: string;
 
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
@@ -36,6 +37,7 @@ export class GesuchsperiodeRS {
         public log: ILogService,
         private readonly $q: IQService,
         private readonly globalCacheService: GlobalCacheService,
+        private readonly dossierRS: DossierRS
     ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }
@@ -78,6 +80,13 @@ export class GesuchsperiodeRS {
             });
         }
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
+    }
+
+    public getActiveGesuchsperiodenForDossier(dossierId: string): IPromise<TSGesuchsperiode[]> {
+        return this.dossierRS.findDossier(dossierId)
+            .then(dossier => {
+                return this.getAllPeriodenForGemeinde(dossier.gemeinde.id);
+            });
     }
 
     public getAktivePeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {

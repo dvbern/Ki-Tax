@@ -25,7 +25,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {
     isAnyStatusOfVerfuegt,
     isAtLeastFreigegebenOrFreigabequittung,
-    isStatusVerfuegenVerfuegt
+    isStatusVerfuegenVerfuegt,
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -152,10 +152,12 @@ export class DossierToolbarController implements IDVFocusableController {
         this.updateAntragDTOList();
         // add watchers
         this.addWatchers(this.$scope);
-        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then((response: TSGesuchsperiode[]) => {
-            // Die neueste ist zuoberst
-            this.neuesteGesuchsperiode = response[0];
-        });
+        this.gesuchsperiodeRS.getActiveGesuchsperiodenForDossier(this.dossierId)
+            .then((response: TSGesuchsperiode[]) => {
+                // Die neueste ist zuoberst
+                this.neuesteGesuchsperiode = response[0];
+                this.antragErneuernPossible();
+            });
     }
 
     private updateAmountNewMitteilungenGS(): void {
@@ -695,7 +697,9 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
-        let html = `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+        let html = `<span class="margin-top-20">${stammdaten.adresse.organisation ?
+            stammdaten.adresse.organisation :
+            ''}
                           ${stammdaten.gemeinde.name}</span><br>
                     <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
@@ -709,7 +713,8 @@ export class DossierToolbarController implements IDVFocusableController {
         if (stammdaten.adresse.organisation === stammdaten.institution.name) {
             html += `<span class="margin-top-20">${stammdaten.institution.name}</span><br>`;
         } else {
-            html += `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+            html +=
+                `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.institution.name}</span><br>`;
         }
         html += `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
