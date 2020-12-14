@@ -53,12 +53,15 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.gemeinde, dataRow.getGemeinde());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.bfsNummer, dataRow.getBfsNummer());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.verrechnungsjahr, dataRow.getVerrechnungsjahr());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegung, dataRow.getTotalBelegung());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheine, dataRow.getTotalGutscheine());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegung, dataRow.getTotalBelegungMitSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheine, dataRow.getTotalGutscheineMitSelbstbehalt());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenProHundertProzentPlatz, dataRow.getKostenPro100ProzentPlatz());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltGemeinde, dataRow.getSelbstbehaltGemeinde());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.eingabeLastenausgleich, dataRow.getEingabeLastenausgleich());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.korrektur, dataRow.isKorrektur());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegungOhneSelbstbehalt, dataRow.getTotalBelegungOhneSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheineOhneSelbstbehalt, dataRow.getTotalGutscheineOhneSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenFuerSelbstbehalt, dataRow.getKostenFuerSelbstbehalt());
 		});
 
 		return excelMerger;

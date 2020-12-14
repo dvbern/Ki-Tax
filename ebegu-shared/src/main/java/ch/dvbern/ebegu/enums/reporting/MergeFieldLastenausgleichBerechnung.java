@@ -44,6 +44,9 @@ public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 	selbstbehaltGemeinde(new SimpleMergeField<>("selbstbehaltGemeinde", BIGDECIMAL_CONVERTER)),
 	eingabeLastenausgleich(new SimpleMergeField<>("eingabeLastenausgleich", BIGDECIMAL_CONVERTER)),
 	korrektur(new SimpleMergeField<>("korrektur", BOOLEAN_X_CONVERTER)),
+	totalBelegungOhneSelbstbehalt(new SimpleMergeField<>("totalBelegungOhneSelbstbehalt", BIGDECIMAL_CONVERTER)),
+	totalGutscheineOhneSelbstbehalt(new SimpleMergeField<>("totalGutscheineOhneSelbstbehalt", BIGDECIMAL_CONVERTER)),
+	kostenFuerSelbstbehalt(new SimpleMergeField<>("kostenFuerSelbstbehalt", BIGDECIMAL_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 
