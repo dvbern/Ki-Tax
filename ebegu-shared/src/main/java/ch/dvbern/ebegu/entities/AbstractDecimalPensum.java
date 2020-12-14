@@ -42,6 +42,10 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7136083144964149528L;
 
+	// these values should somehow have a link to the Rechner
+	private static final BigDecimal MAX_TAGE_PRO_MONAT = new BigDecimal("20.00");
+	private static final BigDecimal MAX_STUNDEN_PRO_MONAT = new BigDecimal("220.00");
+
 	@Min(0)
 	@NotNull
 	@Nonnull
@@ -90,6 +94,21 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setPensum(this.getPensum());
 		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
+	}
+
+	public void setPensumFromDays(@Nonnull BigDecimal days) {
+		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(days), MAX_TAGE_PRO_MONAT);
+		unitForDisplay = PensumUnits.DAYS;
+	}
+
+	public void setPensumFromHours(@Nonnull BigDecimal hours) {
+		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(hours), MAX_STUNDEN_PRO_MONAT);
+		unitForDisplay = PensumUnits.HOURS;
+	}
+
+	public void setPensumFromPercentage(@Nonnull BigDecimal percentage) {
+		pensum = percentage;
+		unitForDisplay = PensumUnits.PERCENTAGE;
 	}
 
 	@Nonnull

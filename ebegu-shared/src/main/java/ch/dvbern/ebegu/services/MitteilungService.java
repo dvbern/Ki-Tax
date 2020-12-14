@@ -74,6 +74,12 @@ public interface MitteilungService {
 	void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung);
 
 	/**
+	 * Returns all not applied Betreuungsmitteilungen that are linked with the given Betreuung.
+	 */
+	@Nonnull
+	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung);
+
+	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
 	 */
 	@Nonnull

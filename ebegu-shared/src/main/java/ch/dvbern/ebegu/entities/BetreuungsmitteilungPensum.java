@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -27,6 +26,7 @@ import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -52,9 +52,6 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
 
-	@Column(nullable = false)
-	private boolean vollstaendig = true;
-
 	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
 		return betreuungsmitteilung;
@@ -64,11 +61,12 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 		this.betreuungsmitteilung = betreuungsmitteilung;
 	}
 
+	@Nullable
 	public BetreuungspensumAbweichung getBetreuungspensumAbweichung() {
 		return betreuungspensumAbweichung;
 	}
 
-	public void setBetreuungspensumAbweichung(BetreuungspensumAbweichung betreuungspensumAbweichung) {
+	public void setBetreuungspensumAbweichung(@Nullable BetreuungspensumAbweichung betreuungspensumAbweichung) {
 		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
 	}
 
@@ -100,11 +98,11 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 		return getBetreuungsmitteilung().isSame(otherBetreuungsmitteilungPensum.getBetreuungsmitteilung());
 	}
 
-	public boolean isVollstaendig() {
-		return vollstaendig;
-	}
+	@Nonnull
+	public BetreuungsmitteilungPensum copy() {
+		BetreuungsmitteilungPensum target = new BetreuungsmitteilungPensum();
+		copyAbstractBetreuungspensumMahlzeitenEntity(target, AntragCopyType.MUTATION);
 
-	public void setVollstaendig(boolean vollstaendig) {
-		this.vollstaendig = vollstaendig;
+		return target;
 	}
 }
