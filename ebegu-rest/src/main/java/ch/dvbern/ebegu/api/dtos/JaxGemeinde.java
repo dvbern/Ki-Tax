@@ -31,6 +31,8 @@ import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
+
 /**
  * DTO fuer Gemeinden
  */
@@ -64,9 +66,9 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate ferieninselanmeldungenStartdatum;
 
-	@Nullable
+	@Nonnull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	private LocalDate gueltigBis;
+	private LocalDate gueltigBis = END_OF_TIME;
 
 	private boolean angebotBG = false;
 	private boolean angebotTS = false;
@@ -148,10 +150,10 @@ public class JaxGemeinde extends JaxAbstractDTO {
 		this.angebotFI = angebotFI;
 	}
 
-	@Nullable
+	@Nonnull
 	public LocalDate getGueltigBis() { return gueltigBis; }
 
-	public void setGueltigBis(@Nullable LocalDate gueltigBis) { this.gueltigBis = gueltigBis; }
+	public void setGueltigBis(@Nonnull LocalDate gueltigBis) { this.gueltigBis = gueltigBis; }
 
 	@Nonnull
 	public String getKey() {

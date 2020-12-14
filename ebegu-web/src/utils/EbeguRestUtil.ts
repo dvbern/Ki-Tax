@@ -862,6 +862,8 @@ export class EbeguRestUtil {
                 .momentToLocalDate(gemeinde.tagesschulanmeldungenStartdatum);
             restGemeinde.ferieninselanmeldungenStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.ferieninselanmeldungenStartdatum);
+            restGemeinde.gueltigBis = DateUtil
+                .momentToLocalDate(gemeinde.gueltigBis || DateUtil.localDateToMoment('9999-12-31'));
             restGemeinde.angebotBG = gemeinde.angebotBG;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;

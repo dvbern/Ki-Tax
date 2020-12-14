@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -46,6 +45,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.bridge.builtin.LongBridge;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
 
 @Audited
 @Entity
@@ -110,9 +110,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean angebotFI = false;
 
-	@Nullable
-	@Column(nullable = true)
-	private LocalDate gueltigBis;
+	@Nonnull
+	@NotNull
+	@Column(nullable = false)
+	private LocalDate gueltigBis = END_OF_TIME;
 
 
 	public Mandant getMandant() {
@@ -191,12 +192,12 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 		this.angebotFI = angebotFI;
 	}
 
-	@Nullable
+	@Nonnull
 	public LocalDate getGueltigBis() {
 		return gueltigBis;
 	}
 
-	public void setGueltigBis(@Nullable LocalDate gueltigBis) {
+	public void setGueltigBis(@Nonnull LocalDate gueltigBis) {
 		this.gueltigBis = gueltigBis;
 	}
 

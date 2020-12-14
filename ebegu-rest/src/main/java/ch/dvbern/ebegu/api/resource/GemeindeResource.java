@@ -732,6 +732,10 @@ public class GemeindeResource {
 			gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 			datesChanged = true;
 		}
+		if (!gemeinde.getGueltigBis().equals(jaxGemeinde.getGueltigBis())) {
+			gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
+			datesChanged = true;
+		}
 		if (datesChanged) {
 			gemeinde = gemeindeService.saveGemeinde(gemeinde);
 		}
