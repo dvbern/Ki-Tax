@@ -144,14 +144,14 @@ public class WizardStepXResource {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		assert userRole != null;
 		Wizard wizard = null;
+		List<JaxWizardStepX> jaxWizardStepXList = new ArrayList<>();
 		switch (WizardTyp.valueOf(wizardtyp)) {
 		case LASTENAUSGLEICH_TS:
 			wizard = new TagesschuleWizard(userRole);
 			break;
 		default:
-			break;
+			return jaxWizardStepXList;
 		}
-		List<JaxWizardStepX> jaxWizardStepXList = new ArrayList<>();
 		WizardStep futurPreviousStep = wizard.getStep();
 		jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
 		wizard.nextState();
