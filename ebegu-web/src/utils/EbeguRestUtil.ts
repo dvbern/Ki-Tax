@@ -1954,6 +1954,7 @@ export class EbeguRestUtil {
             kindContainerTS.kindJA = this.parseKind(new TSKind(), kindContainerFromServer.kindJA);
             kindContainerTS.betreuungen = this.parseBetreuungList(kindContainerFromServer.betreuungen);
             kindContainerTS.kindNummer = kindContainerFromServer.kindNummer;
+            kindContainerTS.keinSelbstbehaltDurchGemeinde = kindContainerFromServer.keinSelbstbehaltDurchGemeinde;
             kindContainerTS.nextNumberBetreuung = kindContainerFromServer.nextNumberBetreuung;
             kindContainerTS.kindMutiert = kindContainerFromServer.kindMutiert;
             return kindContainerTS;

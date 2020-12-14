@@ -2363,6 +2363,7 @@ public class JaxBConverter extends AbstractConverter {
 			anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
 		jaxKindContainer.getBetreuungen().addAll(anmeldungenFerieninsel);
 		jaxKindContainer.setKindNummer(persistedKind.getKindNummer());
+		jaxKindContainer.setKeinSelbstbehaltDurchGemeinde(persistedKind.getKeinSelbstbehaltDurchGemeinde());
 		jaxKindContainer.setNextNumberBetreuung(persistedKind.getNextNumberBetreuung());
 		return jaxKindContainer;
 	}

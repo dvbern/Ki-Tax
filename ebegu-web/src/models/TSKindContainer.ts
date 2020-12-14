@@ -25,6 +25,7 @@ export class TSKindContainer extends TSAbstractMutableEntity {
     private _kindJA: TSKind;
     private _betreuungen: Array<TSBetreuung>;
     private _kindNummer: number;
+    private _keinSelbstbehaltDurchGemeinde: boolean;
     private _nextNumberBetreuung: number;
     private _kindMutiert: boolean;
 
@@ -62,6 +63,14 @@ export class TSKindContainer extends TSAbstractMutableEntity {
 
     public set kindNummer(value: number) {
         this._kindNummer = value;
+    }
+
+    public get keinSelbstbehaltDurchGemeinde(): boolean {
+        return this._keinSelbstbehaltDurchGemeinde;
+    }
+
+    public set keinSelbstbehaltDurchGemeinde(value: boolean) {
+        this._keinSelbstbehaltDurchGemeinde = value;
     }
 
     public get nextNumberBetreuung(): number {

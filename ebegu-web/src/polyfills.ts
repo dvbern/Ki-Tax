@@ -17,7 +17,7 @@
 /***************************************************************************************************
 * BROWSER POLYFILLS
 */
-
+import 'core-js/es5';
 import 'core-js/es7/array';
 import 'core-js/es7/object';
 

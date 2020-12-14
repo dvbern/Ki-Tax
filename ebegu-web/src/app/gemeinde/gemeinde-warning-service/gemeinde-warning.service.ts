@@ -1,4 +1,6 @@
 import {Injectable} from '@angular/core';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -18,6 +20,12 @@ export class GemeindeWarningService {
 
     private readonly dangerousKonfigurationenStr: {gesuchsperiode: TSGesuchsperiode, json: string}[] = [];
     private readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
+    private readonly harmlessConfigs: TSEinstellungKey[] = [
+        TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB,
+        TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB,
+        TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG,
+        TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB,
+    ];
 
     public constructor() {
     }
@@ -52,6 +60,7 @@ export class GemeindeWarningService {
     private prepareJsonCompareString(konfiguration: TSGemeindeKonfiguration): string {
         // wir müessen die Konfiguration zuerst zum Rest Object konvertieren, damit die Konfigurationen verglichen werden können
         const konfigurationRestObj = this.ebeguRestUtil.gemeindeKonfigurationToRestObject({}, konfiguration);
+        this.deleteHarmlessConfigs(konfigurationRestObj);
         // json Representation wird verwendet, damit die Objekte deep verglichen werden können
         return JSON.stringify(
             konfigurationRestObj.konfigurationen.map(k => {
@@ -61,5 +70,14 @@ export class GemeindeWarningService {
                 };
             })
         );
+    }
+
+    // Es gibt einige Konfigurationen, die harmlos sind und bei aktiver Gesuchsperiode verändert werden dürfen.
+    // Z.B. Erster Schultag bei der Tagesschule
+    private deleteHarmlessConfigs(konfigurationRestObj: any): any {
+        konfigurationRestObj.konfigurationen = konfigurationRestObj.konfigurationen
+            .filter((k: TSEinstellung) => {
+                return this.harmlessConfigs.indexOf(k.key) === -1;
+            });
     }
 }

@@ -23,7 +23,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
-import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
+import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
