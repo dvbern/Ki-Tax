@@ -19,20 +19,18 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -43,7 +41,6 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
@@ -53,7 +50,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -74,18 +70,14 @@ import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
-import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
-import static java.math.BigDecimal.ZERO;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @ApplicationScoped
@@ -99,7 +91,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
 	static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
 
-	private static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
+	static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
 		.comparing(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten)
 		.thenComparing(AbstractDecimalPensum::getPensumRounded)
 		.thenComparing(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit)
@@ -309,7 +301,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		setErweitereBeduerfnisseBestaetigt(ctx);
 		setBetreuungInGemeinde(ctx);
-		setZeitabschnitteToBetreuung(ctx);
+		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx);
 
 		return ctx.isReadyForBestaetigen();
 	}
@@ -352,77 +344,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.setBetreuungInGemeinde(bfsNummer.equals(incomingBfsNumber) || name.equalsIgnoreCase(incomingName));
 	}
 
-	private void setZeitabschnitteToBetreuung(@Nonnull ProcessingContext ctx) {
-		Betreuung betreuung = ctx.getBetreuung();
-		DateRange gueltigkeit = ctx.getGueltigkeitInPeriode();
-
-		List<BetreuungspensumContainer> containersToUpdate = betreuung.getBetreuungspensumContainers().stream()
-			.filter(c -> c.getGueltigkeit().intersects(gueltigkeit))
-			.collect(Collectors.toList());
-		betreuung.getBetreuungspensumContainers().removeAll(containersToUpdate);
-
-		// first deal with gueltigBis, since findLast and findFirst might return the same container, but only for last
-		// we create a copy (and we want to copy before we mutate).
-		Optional<BetreuungspensumContainer> overlappingGueltigBis = GueltigkeitsUtil.findLast(containersToUpdate)
-			.filter(last -> last.getGueltigkeit().endsAfter(gueltigkeit))
-			.map(BetreuungspensumContainer::copyWithPensumJA)
-			.map(copy -> {
-				copy.getGueltigkeit().setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
-
-				return copy;
-			});
-
-		GueltigkeitsUtil.findFirst(containersToUpdate)
-			.filter(first -> first.getGueltigkeit().startsBefore(gueltigkeit))
-			.ifPresent(first -> first.getGueltigkeit().setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1)));
-
-		// everything still affecting gueltigkeit is obsolete (will be replaced with import data)
-		containersToUpdate.removeIf(c -> c.getGueltigkeit().intersects(gueltigkeit));
-
-		List<BetreuungspensumContainer> toImport =
-			convertZeitabschnitte(ctx, gueltigkeit, z -> toBetreuungspensumContainer(z, ctx));
-
-		overlappingGueltigBis.ifPresent(containersToUpdate::add);
-		betreuung.getBetreuungspensumContainers().addAll(containersToUpdate);
-		betreuung.getBetreuungspensumContainers().addAll(toImport);
-	}
-
-	@Nonnull
-	private <T extends Gueltigkeit> List<T> convertZeitabschnitte(
-		@Nonnull ProcessingContext ctx,
-		@Nonnull DateRange gueltigkeit,
-		@Nonnull Function<ZeitabschnittDTO, T> mappingFunction) {
-
-		List<T> toImport = ctx.getDto().getZeitabschnitte().stream()
-			.filter(z -> new DateRange(z.getVon(), z.getBis()).intersects(gueltigkeit))
-			.map(mappingFunction)
-			.collect(Collectors.toList());
-
-		GueltigkeitsUtil.findFirst(toImport)
-			.filter(first -> first.getGueltigkeit().startsBefore(gueltigkeit))
-			.ifPresent(first -> first.getGueltigkeit().setGueltigAb(gueltigkeit.getGueltigAb()));
-
-		GueltigkeitsUtil.findLast(toImport)
-			.filter(last -> last.getGueltigkeit().endsAfter(gueltigkeit))
-			.ifPresent(last -> last.getGueltigkeit().setGueltigBis(gueltigkeit.getGueltigBis()));
-
-		return toImport;
-	}
-
-	@Nonnull
-	private BetreuungspensumContainer toBetreuungspensumContainer(
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
-
-		Betreuungspensum betreuungspensum = toAbstractMahlzeitenPensum(new Betreuungspensum(), zeitabschnittDTO, ctx);
-
-		BetreuungspensumContainer container = new BetreuungspensumContainer();
-		container.setBetreuungspensumJA(betreuungspensum);
-		container.setBetreuung(ctx.getBetreuung());
-
-		return container;
-	}
-
 	@Nonnull
 	private Processing handleMutationsMitteilung(@Nonnull ProcessingContext ctx) {
 		Betreuung betreuung = ctx.getBetreuung();
@@ -432,7 +353,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		Optional<Betreuungsmitteilung> latest = findLatest(open);
 
-		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest);
+		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
 
 		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
 			return Processing.failure("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
@@ -452,11 +373,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Nonnull
 	private Betreuungsmitteilung createBetreuungsmitteilung(
 		@Nonnull ProcessingContext ctx,
-		@Nonnull Optional<Betreuungsmitteilung> latest) {
+		@Nullable Betreuungsmitteilung latest) {
 
 		Betreuung betreuung = ctx.getBetreuung();
 		Gesuch gesuch = betreuung.extractGesuch();
-		DateRange mutationRange = getMutationRange(ctx);
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
@@ -469,14 +389,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale));
 		betreuungsmitteilung.setBetreuung(betreuung);
 
-		List<BetreuungsmitteilungPensum> existing = getExisting(ctx, latest, mutationRange);
-
-		List<BetreuungsmitteilungPensum> toImport =
-			convertZeitabschnitte(ctx, mutationRange, z -> toBetreuungsmitteilungPensum(z, ctx));
-
-		existing.addAll(toImport);
-		betreuungsmitteilung.getBetreuungspensen().addAll(extendGueltigkeit(existing));
-		betreuungsmitteilung.getBetreuungspensen().forEach(p -> p.setBetreuungsmitteilung(betreuungsmitteilung));
+		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung);
 
 		BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper = ctx.isMahlzeitVergunstigungEnabled() ?
 			mahlzeitenMessage(locale) :
@@ -488,71 +401,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	@Nonnull
-	private List<BetreuungsmitteilungPensum> getExisting(
-		@Nonnull ProcessingContext ctx,
-		@Nonnull Optional<Betreuungsmitteilung> latest,
-		@Nonnull DateRange mutationRange) {
-
-		LocalDate mutationRangeAb = mutationRange.getGueltigAb();
-		LocalDate mutationRangeBis = mutationRange.getGueltigBis();
-
-		List<BetreuungsmitteilungPensum> existing =
-			getExistingFromLatestOrBetreuung(ctx.getBetreuung(), latest, mutationRange);
-
-		Optional<BetreuungsmitteilungPensum> overlappingGueltigBis =
-			GueltigkeitsUtil.findAnyAtStichtag(existing, mutationRangeBis)
-				.filter(overlappingBis -> overlappingBis.getGueltigkeit().endsAfter(mutationRange))
-				.map(BetreuungsmitteilungPensum::copy)
-				.map(copy -> {
-					copy.getGueltigkeit().setGueltigAb(mutationRangeBis.plusDays(1));
-
-					return copy;
-				});
-
-		GueltigkeitsUtil.findAnyAtStichtag(existing, mutationRangeAb)
-			.filter(overlappingAb -> overlappingAb.getGueltigkeit().startsBefore(mutationRange))
-			.ifPresent(overlappingAb -> overlappingAb.getGueltigkeit().setGueltigBis(mutationRangeAb.minusDays(1)));
-
-		overlappingGueltigBis.ifPresent(existing::add);
-
-		return existing;
-	}
-
-	@Nonnull
-	private List<BetreuungsmitteilungPensum> getExistingFromLatestOrBetreuung(
-		@Nonnull Betreuung betreuung,
-		@Nonnull Optional<Betreuungsmitteilung> latest,
-		@Nonnull DateRange mutationRange) {
-
-		return latest
-			.map(existing -> existing.getBetreuungspensen().stream()
-				.filter(c -> !mutationRange.contains(c.getGueltigkeit()))
-				.map(BetreuungsmitteilungPensum::copy))
-			.orElseGet(() -> betreuung.getBetreuungspensumContainers().stream()
-				.filter(c -> !mutationRange.contains(c.getGueltigkeit()))
-				.map(this::fromBetreuungspensumContainer))
-			.collect(Collectors.toList());
-	}
-
-	@Nonnull
-	private BetreuungsmitteilungPensum fromBetreuungspensumContainer(@Nonnull BetreuungspensumContainer container) {
-		BetreuungsmitteilungPensum pensum = new BetreuungsmitteilungPensum();
-
-		container.getBetreuungspensumJA()
-			.copyAbstractBetreuungspensumMahlzeitenEntity(pensum, AntragCopyType.MUTATION);
-
-		return pensum;
-	}
-
-	@Nonnull
-	private BetreuungsmitteilungPensum toBetreuungsmitteilungPensum(
-		@Nonnull ZeitabschnittDTO zeitabschnitt,
-		@Nonnull ProcessingContext ctx) {
-
-		return toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), zeitabschnitt, ctx);
-	}
-
-	@Nonnull
 	private Optional<Betreuungsmitteilung> findLatest(@Nonnull Collection<Betreuungsmitteilung> open) {
 		Comparator<Mitteilung> bySentDateTime = Comparator
 			.comparing(Mitteilung::getSentDatum, Comparator.nullsFirst(Comparator.naturalOrder()))
@@ -560,15 +408,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.thenComparing(AbstractEntity::getId);
 
 		return open.stream().max(bySentDateTime);
-	}
-
-	@Nonnull
-	private DateRange getMutationRange(@Nonnull ProcessingContext ctx) {
-		DateRange gueltigkeitInPeriode = ctx.getGueltigkeitInPeriode();
-
-		return gueltigkeitInPeriode.getGueltigAb().isBefore(GO_LIVE) ?
-			new DateRange(GO_LIVE, gueltigkeitInPeriode.getGueltigBis()) :
-			gueltigkeitInPeriode;
 	}
 
 	@Nonnull
@@ -619,66 +458,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			pensum.getMonatlicheBetreuungskosten());
 	}
 
-	@Nonnull
-	@CanIgnoreReturnValue
-	protected <T extends AbstractMahlzeitenPensum> T toAbstractMahlzeitenPensum(
-		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
-
-		target.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
-		target.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
-		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
-		setPensum(target, zeitabschnittDTO);
-		target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
-		target.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
-
-		if (ctx.isMahlzeitVergunstigungEnabled()) {
-			setTarifeProMahlzeiten(target, zeitabschnittDTO, ctx);
-		}
-
-		return target;
-	}
-
-	private <T extends AbstractMahlzeitenPensum> void setPensum(
-		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO) {
-
-		switch (zeitabschnittDTO.getPensumUnit()) {
-		case DAYS:
-			target.setPensumFromDays(zeitabschnittDTO.getBetreuungspensum());
-			break;
-		case HOURS:
-			target.setPensumFromHours(zeitabschnittDTO.getBetreuungspensum());
-			break;
-		case PERCENTAGE:
-			target.setPensumFromPercentage(zeitabschnittDTO.getBetreuungspensum());
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported pensum unit: " + zeitabschnittDTO.getPensumUnit());
-		}
-	}
-
-	private <T extends AbstractMahlzeitenPensum> void setTarifeProMahlzeiten(
-		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
-
-		// Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
-		if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
-			target.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-		} else {
-			target.setVollstaendig(false);
-			ctx.requireHumanConfirmation();
-		}
-		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
-			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
-		} else {
-			target.setVollstaendig(false);
-			ctx.requireHumanConfirmation();
-		}
-	}
-
 	protected boolean isSame(@Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull Betreuung betreuung) {
 		List<? extends AbstractMahlzeitenPensum> fromBetreuung = betreuung.getBetreuungspensumContainers().stream()
 			.map(BetreuungspensumContainer::getBetreuungspensumJA)
@@ -709,52 +488,5 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(created);
 
 		return created;
-	}
-
-	/**
-	 * When adjacent pensen are comparable, merge them together to one pensum with extended Gueltigkeit
-	 */
-	@Nonnull
-	protected Collection<BetreuungsmitteilungPensum> extendGueltigkeit(
-		@Nonnull Collection<BetreuungsmitteilungPensum> pensen) {
-
-		if (pensen.size() <= 1) {
-			return pensen;
-		}
-
-		List<BetreuungsmitteilungPensum> sorted = pensen.stream()
-			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR)
-			.collect(Collectors.toList());
-
-		List<BetreuungsmitteilungPensum> result = new ArrayList<>();
-		Iterator<BetreuungsmitteilungPensum> iter = sorted.iterator();
-		BetreuungsmitteilungPensum current = iter.next();
-		result.add(current);
-
-		while (iter.hasNext()) {
-			BetreuungsmitteilungPensum next = iter.next();
-
-			if (areAdjacent(current, next) && areSame(current, next)) {
-				// extend gueltigkeit of current
-				current.getGueltigkeit().setGueltigBis(next.getGueltigkeit().getGueltigBis());
-				continue;
-			}
-
-			current = next;
-			result.add(next);
-		}
-
-		return result;
-	}
-
-	private boolean areAdjacent(@Nonnull Gueltigkeit current, @Nonnull Gueltigkeit next) {
-		return current.getGueltigkeit().endsDayBefore(next.getGueltigkeit());
-	}
-
-	private boolean areSame(
-		@Nonnull BetreuungsmitteilungPensum current,
-		@Nonnull BetreuungsmitteilungPensum next) {
-
-		return COMPARATOR.compare(current, next) == 0;
 	}
 }

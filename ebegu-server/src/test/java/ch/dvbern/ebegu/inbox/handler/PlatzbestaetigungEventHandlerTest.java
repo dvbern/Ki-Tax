@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +52,6 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -64,12 +62,10 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.spotify.hamcrest.pojo.IsPojo;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockExtension;
@@ -90,16 +86,19 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.TECHNICAL_BENUTZER_ID;
-import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
-import static com.google.common.base.Preconditions.checkArgument;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -181,111 +180,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Nested
-	class MergeSamePensenTest {
-
-		@Test
-		void nopForSinglePensum() {
-			DateRange range1 = new DateRange(2020);
-			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
-
-			List<BetreuungsmitteilungPensum> pensen = Collections.singletonList(pensum1);
-			Collection<BetreuungsmitteilungPensum> result = handler.extendGueltigkeit(pensen);
-
-			assertThat(result, contains(
-				matches(pensum1, range1)
-			));
-		}
-
-		@Test
-		void shouldExtendsGueltigkeitOfAdjactentPensen() {
-			DateRange range1 = new DateRange(2020);
-			DateRange range2 = new DateRange(2021);
-			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
-			BetreuungsmitteilungPensum pensum2 = createBetreuungsmitteilungPensum(range2);
-
-			Collection<BetreuungsmitteilungPensum> result = handler.extendGueltigkeit(Arrays.asList(pensum1, pensum2));
-
-			assertThat(result, contains(
-				matches(pensum1, range1.getGueltigAb(), range2.getGueltigBis())
-			));
-		}
-
-		@Test
-		void shouldNotExtendGueltigkeitWhenNotSame() {
-			DateRange range1 = new DateRange(2020);
-			DateRange range2 = new DateRange(2021);
-			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
-			BetreuungsmitteilungPensum pensum2 = createBetreuungsmitteilungPensum(range2);
-			// make them different
-			pensum2.setMonatlicheBetreuungskosten(BigDecimal.TEN);
-
-			Collection<BetreuungsmitteilungPensum> result = handler.extendGueltigkeit(Arrays.asList(pensum1, pensum2));
-
-			assertThat(result, contains(
-				matches(pensum1, range1),
-				matches(pensum2, range2)
-			));
-		}
-
-		@Test
-		void shouldNotExtendGueltigkeitWhenGueltigeitsGap() {
-			DateRange range1 = new DateRange(2020);
-			DateRange range2 = new DateRange(2022);
-			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
-			BetreuungsmitteilungPensum pensum2 = createBetreuungsmitteilungPensum(range2);
-
-			Collection<BetreuungsmitteilungPensum> result = handler.extendGueltigkeit(Arrays.asList(pensum1, pensum2));
-
-			assertThat(result, contains(
-				matches(pensum1, range1),
-				matches(pensum2, range2)
-			));
-		}
-
-		@Test
-		void shouldExtendMultipleTimes() {
-			DateRange range1 = new DateRange(2020);
-			DateRange range2 = new DateRange(2021);
-			DateRange range3 = new DateRange(2022);
-			DateRange range4 = new DateRange(2023);
-			DateRange range5 = new DateRange(2024);
-			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
-			BetreuungsmitteilungPensum pensum2 = createBetreuungsmitteilungPensum(range2);
-			BetreuungsmitteilungPensum pensum3 = createBetreuungsmitteilungPensum(range3);
-			pensum3.setPensum(BigDecimal.TEN);
-			BetreuungsmitteilungPensum pensum4 = createBetreuungsmitteilungPensum(range4);
-			pensum4.setPensum(BigDecimal.TEN);
-			BetreuungsmitteilungPensum pensum5 = createBetreuungsmitteilungPensum(range5);
-
-			List<BetreuungsmitteilungPensum> pensen = Arrays.asList(pensum1, pensum2, pensum3, pensum4, pensum5);
-			Collection<BetreuungsmitteilungPensum> result = handler.extendGueltigkeit(pensen);
-
-			assertThat(result, contains(
-				matches(pensum1, range1.getGueltigAb(), range2.getGueltigBis()),
-				matches(pensum3, range3.getGueltigAb(), range4.getGueltigBis()),
-				matches(pensum5, range5)
-			));
-		}
-	}
-
-	@Test
-	void mapZeitabschnittToAbstractMahlzeitenPensum() {
-		Betreuung betreuung = betreuungWithSingleContainer();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO dto = betreuungEventDTO.getZeitabschnitte().get(0);
-
-		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung, Constants.DEFAULT_GUELTIGKEIT);
-
-		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true);
-
-		BetreuungsmitteilungPensum actual =
-			handler.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), dto, ctx);
-
-		assertThat(actual, matches(dto));
-	}
-
-	@Nested
 	class IgnoreEventTest {
 
 		/**
@@ -293,7 +187,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		 */
 		@Test
 		void ignoreWhenNoZeitabschnitte() {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			dto.setZeitabschnitte(Collections.emptyList());
 
 			testIgnored(dto, "Es wurden keine Zeitabschnitte übergeben.");
@@ -301,7 +195,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoBetreuungFound() {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
 			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
 				.andReturn(Optional.empty());
@@ -312,7 +206,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		@ParameterizedTest
 		@EnumSource(value = GesuchsperiodeStatus.class, names = "AKTIV", mode = Mode.EXCLUDE)
 		void ignoreEventWhenPeriodeNotAktiv(@Nonnull GesuchsperiodeStatus status) {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
 			Betreuung betreuung = betreuungWithSingleContainer();
 			betreuung.extractGesuchsperiode().setStatus(status);
@@ -325,7 +219,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenBetreuungMutiertAfterEventTimestamp() {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			LocalDateTime eventTime = LocalDateTime.of(2020, 12, 1, 10, 1);
@@ -344,7 +238,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenInvalidPensumInHours() {
-			ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
+			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
 			zeitabschnittDTO.setPensumUnit(Zeiteinheit.HOURS);
 			BetreuungEventDTO dto = createBetreuungEventDTO(zeitabschnittDTO);
 			Betreuung betreuung = betreuungWithSingleContainer();
@@ -358,7 +252,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenInvalidPensumInDays() {
-			ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
+			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
 			zeitabschnittDTO.setPensumUnit(Zeiteinheit.DAYS);
 			BetreuungEventDTO dto = createBetreuungEventDTO(zeitabschnittDTO);
 			Betreuung betreuung = betreuungWithSingleContainer();
@@ -372,7 +266,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoExternalClient() {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
@@ -396,7 +290,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenClientGueltigkeitOutsidePeriode() {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
@@ -443,7 +337,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			names = { "WARTEN", "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
 			mode = Mode.EXCLUDE)
 		void ignoreWhenInvalidBetreuungStatus(@Nonnull Betreuungsstatus status) {
-			BetreuungEventDTO dto = createBetreuungEventDTO();
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 			betreuung.setBetreuungsstatus(status);
 
@@ -484,7 +378,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		 */
 		@BeforeEach
 		void setUp() {
-			dto = createBetreuungEventDTO();
+			dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			dto.setGemeindeBfsNr(gemeinde.getBfsNummer());
 			dto.setGemeindeName(gemeinde.getName());
 			dto.getZeitabschnitte().forEach(z -> {
@@ -1130,7 +1024,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
-			assertThat(result, failed("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
+			assertThat(
+				result,
+				failed("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
 			verifyAll();
 		}
 
@@ -1233,208 +1129,16 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
 	}
 
-	/**
-	 * Eine BetreuungEventDTO mit genau einem Zeitabschnitt
-	 */
 	@Nonnull
-	private BetreuungEventDTO createBetreuungEventDTO() {
-		return createBetreuungEventDTO(createZeitabschnittDTO());
-	}
-
-	@SuppressWarnings("OverloadedVarargsMethod")
-	@Nonnull
-	private BetreuungEventDTO createBetreuungEventDTO(@Nonnull ZeitabschnittDTO... zeitabschnitte) {
-		BetreuungEventDTO betreuungEventDTO = new BetreuungEventDTO();
-		betreuungEventDTO.setRefnr("20.007305.002.1.3");
-		betreuungEventDTO.setInstitutionId("1234-5678-9101-1121");
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnitte));
-
-		return betreuungEventDTO;
-	}
-
-	@Nonnull
-	private ZeitabschnittDTO createZeitabschnittDTO() {
-		return createZeitabschnittDTO(
+	private ZeitabschnittDTO defaultZeitabschnittDTO() {
+		return PlatzbestaetigungTestUtil.createZeitabschnittDTO(
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
 			gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31)
 		);
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
-	@Nonnull
-	private ZeitabschnittDTO createZeitabschnittDTO(@Nonnull DateRange range) {
-		return createZeitabschnittDTO(range.getGueltigAb(), range.getGueltigBis());
-	}
-
-	@Nonnull
-	private ZeitabschnittDTO createZeitabschnittDTO(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
-		return ZeitabschnittDTO.newBuilder()
-			.setBetreuungskosten(MathUtil.DEFAULT.from(2000))
-			.setBetreuungspensum(new BigDecimal(80))
-			.setPensumUnit(Zeiteinheit.PERCENTAGE)
-			.setVon(von)
-			.setBis(bis)
-			.build();
-	}
-
-	@Nonnull
-	private Betreuungsmitteilung createBetreuungMitteilung(@Nonnull BetreuungsmitteilungPensum... pensen) {
-		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
-		addAll(betreuungsmitteilung, Arrays.asList(pensen));
-
-		return betreuungsmitteilung;
-	}
-
-	@Nonnull
-	private BetreuungsmitteilungPensum createBetreuungsmitteilungPensum(@Nonnull DateRange range) {
-		BetreuungsmitteilungPensum betreuungsmitteilungPensum = new BetreuungsmitteilungPensum();
-		betreuungsmitteilungPensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
-		betreuungsmitteilungPensum.setPensum(new BigDecimal(80));
-		betreuungsmitteilungPensum.setUnitForDisplay(PensumUnits.PERCENTAGE);
-		betreuungsmitteilungPensum.setGueltigkeit(range);
-
-		return betreuungsmitteilungPensum;
-	}
-
-	private void addAll(
-		@Nonnull Betreuungsmitteilung mitteilung,
-		@Nonnull Collection<BetreuungsmitteilungPensum> pensen) {
-
-		pensen.forEach(p -> p.setBetreuungsmitteilung(mitteilung));
-		mitteilung.getBetreuungspensen().addAll(pensen);
-	}
-
-	@Nonnull
-	private Betreuungspensum getSingleContainer(@Nonnull Betreuung betreuung) {
-		checkArgument(
-			betreuung.getBetreuungspensumContainers().size() == 1,
-			"Broken test setup: expected 1 container in %s",
-			betreuung);
-
-		return betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA();
-	}
-
 	@Nonnull
 	private Betreuung betreuungWithSingleContainer() {
-		return betreuungWithSingleContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
-	}
-
-	@Nonnull
-	private Betreuung betreuungWithSingleContainer(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
-		Betreuung betreuung = requireNonNull(gesuch_1GS.getFirstBetreuung());
-		Betreuungspensum betreuungspensum = getSingleContainer(betreuung);
-		betreuungspensum.getGueltigkeit().setGueltigAb(von);
-		betreuungspensum.getGueltigkeit().setGueltigBis(bis);
-
-		return betreuung;
-	}
-
-	@Nonnull
-	private DateRange getClientPeriodeGueltigkeit(@Nonnull Betreuung betreuung, @Nonnull DateRange clientGueltigkeit) {
-		return betreuung.extractGesuchsperiode().getGueltigkeit().getOverlap(clientGueltigkeit)
-			.orElseThrow(() -> new IllegalArgumentException("client gueltigkeit & periode do not overlap"));
-	}
-
-	@Nonnull
-	private Matcher<Processing> failed(@Nonnull String message) {
-		return failed(is(message));
-	}
-
-	@Nonnull
-	private Matcher<Processing> failed(@Nonnull Matcher<String> messageMatcher) {
-		return pojo(Processing.class)
-			.where(Processing::isProcessingSuccess, is(false))
-			.where(Processing::getMessage, messageMatcher);
-	}
-
-	@Nonnull
-	private IsPojo<AbstractMahlzeitenPensum> matches(@Nonnull ZeitabschnittDTO z) {
-		return matches(z, z.getVon(), z.getBis());
-	}
-
-	@Nonnull
-	private IsPojo<AbstractMahlzeitenPensum> matches(
-		@Nonnull ZeitabschnittDTO z,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis) {
-
-		return matches(z, new DateRange(von, bis));
-	}
-
-	@Nonnull
-	private IsPojo<AbstractMahlzeitenPensum> matches(@Nonnull ZeitabschnittDTO z, @Nonnull DateRange gueltigkeit) {
-
-		return pojo(AbstractMahlzeitenPensum.class)
-			.where(
-				AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten,
-				comparesEqualTo(z.getBetreuungskosten()))
-			.where(
-				AbstractMahlzeitenPensum::getPensum,
-				comparesEqualTo(z.getBetreuungspensum()))
-			.where(
-				AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten,
-				comparesEqualTo(coalesce(z.getAnzahlHauptmahlzeiten(), BigDecimal.ZERO)))
-			.where(
-				AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten,
-				comparesEqualTo(coalesce(z.getAnzahlNebenmahlzeiten(), BigDecimal.ZERO)))
-			.where(
-				AbstractMahlzeitenPensum::getTarifProHauptmahlzeit,
-				comparesEqualTo(coalesce(z.getTarifProHauptmahlzeiten(), BigDecimal.ZERO)))
-			.where(
-				AbstractMahlzeitenPensum::getTarifProNebenmahlzeit,
-				comparesEqualTo(coalesce(z.getTarifProNebenmahlzeiten(), BigDecimal.ZERO)))
-			.where(
-				AbstractMahlzeitenPensum::getGueltigkeit, equalTo(gueltigkeit));
-	}
-
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
-	@Nonnull
-	private IsPojo<AbstractMahlzeitenPensum> matches(
-		@Nonnull BetreuungspensumContainer other,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis) {
-
-		return matches(other.getBetreuungspensumJA(), von, bis);
-	}
-
-	@Nonnull
-	private IsPojo<AbstractMahlzeitenPensum> matches(
-		@Nonnull AbstractMahlzeitenPensum other,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis) {
-
-		return matches(other, new DateRange(von, bis));
-	}
-
-	@Nonnull
-	private IsPojo<AbstractMahlzeitenPensum> matches(
-		@Nonnull AbstractMahlzeitenPensum other,
-		@Nonnull DateRange gueltigkeit) {
-
-		return pojo(AbstractMahlzeitenPensum.class)
-			.where(
-				AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten,
-				comparesEqualTo(other.getMonatlicheBetreuungskosten()))
-			.where(
-				AbstractMahlzeitenPensum::getPensum,
-				comparesEqualTo(other.getPensum()))
-			.where(
-				AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten,
-				comparesEqualTo(other.getMonatlicheHauptmahlzeiten()))
-			.where(
-				AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten,
-				comparesEqualTo(other.getMonatlicheNebenmahlzeiten()))
-			.where(
-				AbstractMahlzeitenPensum::getTarifProHauptmahlzeit,
-				comparesEqualTo(other.getTarifProHauptmahlzeit()))
-			.where(
-				AbstractMahlzeitenPensum::getTarifProNebenmahlzeit,
-				comparesEqualTo(other.getTarifProNebenmahlzeit()))
-			.where(
-				AbstractMahlzeitenPensum::isVollstaendig,
-				is(other.isVollstaendig())
-			)
-			.where(
-				AbstractMahlzeitenPensum::getGueltigkeit, equalTo(gueltigkeit));
+		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);
 	}
 }
