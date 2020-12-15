@@ -92,14 +92,10 @@ public final class MitteilungUtil {
 			BigDecimal hauptmahlzeiten = pensumMitteilung.getMonatlicheHauptmahlzeiten();
 			BigDecimal nebemahlzeiten = pensumMitteilung.getMonatlicheNebenmahlzeiten();
 
-			BigDecimal tarifHaupt = BigDecimal.ZERO;
-			if (pensumMitteilung.getTarifProHauptmahlzeit() != null) {
-				tarifHaupt = pensumMitteilung.getTarifProHauptmahlzeit();
-			}
-			BigDecimal tarifNeben = BigDecimal.ZERO;
-			if (pensumMitteilung.getTarifProNebenmahlzeit() != null) {
-				tarifNeben = pensumMitteilung.getTarifProNebenmahlzeit();
-			}
+			BigDecimal tarifHaupt = pensumMitteilung.getTarifProHauptmahlzeit();
+
+			BigDecimal tarifNeben = pensumMitteilung.getTarifProNebenmahlzeit();
+
 			return ServerMessageUtil.getMessage(
 				"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif", locale, index,
 				datumAb,

@@ -15,35 +15,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.kafka;
-
-import java.util.Arrays;
-import java.util.Optional;
+package ch.dvbern.ebegu.inbox.handler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-/**
- * All known event types.
- */
-public enum EventType {
-	PLATZBESTAETIGUNG_BETREUUNG("PlatzbestaetigungBetreuung");
+public class Processing {
 
-	private final String name;
+	private final boolean processingSuccess;
 
-	@Nonnull
-	EventType(String name) {
-		this.name = name;
+	@Nullable
+	private final String message;
+
+	private Processing(boolean processingSuccess, @Nullable String message) {
+		this.processingSuccess = processingSuccess;
+		this.message = message;
 	}
 
 	@Nonnull
-	public static Optional<EventType> of(@Nonnull String name) {
-		return Arrays.stream(values())
-			.filter(value -> value.getName().equals(name))
-			.findAny();
+	public static Processing success() {
+		return new Processing(true, null);
 	}
 
 	@Nonnull
-	public String getName() {
-		return name;
+	public static Processing failure(@Nonnull String message) {
+		return new Processing(false, message);
+	}
+
+	public boolean isProcessingSuccess() {
+		return processingSuccess;
+	}
+
+	@Nullable
+	public String getMessage() {
+		return message;
 	}
 }
