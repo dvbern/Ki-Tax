@@ -121,6 +121,9 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		this.familiensituationGS = familiensituationGS;
 	}
 
+	/**
+	 * @return nicht unbedingt die Erstgesuch, kann auch eine Mutation sein!!! Name ist verwirkend
+	 */
 	@Nullable
 	public Familiensituation getFamiliensituationErstgesuch() {
 		return familiensituationErstgesuch;
