@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.util;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -192,21 +194,58 @@ public final class EbeguUtil {
 		return false;
 	}
 
+	@Nonnull
+	public static <T> Comparator<Collection<? extends T>> collectionComparator(@Nonnull Comparator<T> comparator) {
+		return (a, b) -> areComparableCollections(a, b, comparator) ? 0 : 1;
+	}
+
+	/**
+	 * @return TRUE, iff collection a and collection b are comparable according to the given comparator.
+	 */
+	public static <T> boolean areComparableCollections(
+		@Nonnull Collection<? extends T> a,
+		@Nonnull Collection<? extends T> b,
+		@Nonnull Comparator<T> comparator) {
+
+		int sizeDifference = a.size() - b.size();
+
+		if (sizeDifference != 0) {
+			return false;
+		}
+
+		// creating sorted copies, such that we can compare item by item (order matters!)
+		List<T> aPos = new ArrayList<>(a);
+		aPos.sort(comparator);
+
+		List<T> bPos = new ArrayList<>(b);
+		bPos.sort(comparator);
+
+		return IntStream.range(0, aPos.size())
+			.allMatch(i -> comparator.compare(aPos.get(i), bPos.get(i)) == 0);
+	}
+
 	/**
 	 * finanzielle situation ist by default nicht zwingend
 	 */
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
-		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
+		return gesuch.getFamiliensituationContainer() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer()
+			.getFamiliensituationJA()
+			.getSozialhilfeBezueger())
+			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer()
+			.getFamiliensituationJA()
+			.getVerguenstigungGewuenscht());
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
-		return (gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+		return (gesuch.getFamiliensituationContainer() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() == null);
 	}
 
-	public static boolean isFinanzielleSituationIntroducedAndComplete(@Nonnull Gesuch gesuch,
+	public static boolean isFinanzielleSituationIntroducedAndComplete(
+		@Nonnull Gesuch gesuch,
 		@Nullable WizardStepName wizardStepName) {
 		if (gesuch.getGesuchsteller1() == null
 			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
@@ -215,39 +254,60 @@ public final class EbeguUtil {
 		}
 
 		if (wizardStepName == null || wizardStepName == WizardStepName.FINANZIELLE_SITUATION) {
-			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA())) {
+			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA())) {
 				return false;
 			}
-			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
-				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA())
+			if (gesuch.getGesuchsteller2() != null
+				&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
+				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA())
 			) {
 				return false;
 			}
 		}
 		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
-			&& gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
-			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
+			&& gesuch.getEinkommensverschlechterungInfoContainer()
+			.getEinkommensverschlechterungInfoJA()
+			.getEinkommensverschlechterung()) {
+			if (gesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvFuerBasisJahrPlus1()) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())) {
+				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus1())) {
 					return false;
 				}
-				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
-						&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1())
+				if (gesuch.getGesuchsteller2() != null
+					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
+					&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus1())
 				) {
 					return false;
 				}
 			}
-			if (gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
+			if (gesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvFuerBasisJahrPlus2()) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2())) {
+				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus2())) {
 					return false;
 				}
-				if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-					return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2());
+				if (gesuch.getGesuchsteller2() != null
+					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+					return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+						.getEinkommensverschlechterungContainer()
+						.getEkvJABasisJahrPlus2());
 				}
 			}
 		}
@@ -260,15 +320,18 @@ public final class EbeguUtil {
 			return false;
 		}
 		// Zwingend ist nur das erste Jahr, FALLS ueberhaupt eines ausgefuellt wird.
-		// Das einzige, das wir validieren koennen, ist das Jahr+1 bzw. Jahr+2 nicht ausgefuellt sein duerfen, falls Basisjahr null
-		if (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null || finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null) {
+		// Das einzige, das wir validieren koennen, ist das Jahr+1 bzw. Jahr+2 nicht ausgefuellt sein duerfen, falls
+		// Basisjahr null
+		if (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null
+			|| finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null) {
 			// Basisjahr ist zwingend
 			return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
 		}
 		return true;
 	}
 
-	private static boolean isAbstractFinanzielleSituationVollstaendig(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+	private static boolean isAbstractFinanzielleSituationVollstaendig(
+		@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
 		return finanzielleSituation.getSchulden() != null && finanzielleSituation.getBruttovermoegen() != null
 			&& finanzielleSituation.getNettolohn() != null && finanzielleSituation.getFamilienzulage() != null
 			&& finanzielleSituation.getErsatzeinkommen() != null && finanzielleSituation.getErhalteneAlimente() != null
@@ -279,7 +342,9 @@ public final class EbeguUtil {
 		return gesuch.getFamiliensituationContainer() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
-			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger()))
+			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer()
+			.getFamiliensituationJA()
+			.getSozialhilfeBezueger()))
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() != null;
 	}
 
@@ -310,7 +375,8 @@ public final class EbeguUtil {
 	 * for this reason it will return just the first language it finds.
 	 */
 	@Nonnull
-	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch,
+	public static Sprache extractKorrespondenzsprache(
+		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeService gemeindeService) {
 		final List<Sprache> gemeindeSprachen = extractGemeindeSprachenFromGesuch(gesuch, gemeindeService);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
@@ -331,7 +397,8 @@ public final class EbeguUtil {
 	 * for this reason it will return just the first language it finds.
 	 */
 	@Nonnull
-	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch,
+	public static Sprache extractKorrespondenzsprache(
+		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeStammdaten gemeindeStammdaten) {
 		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gemeindeStammdaten);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
@@ -357,7 +424,8 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	private static List<Sprache> extractGemeindeSprachenFromGesuch(@Nonnull Gesuch gesuch,
+	private static List<Sprache> extractGemeindeSprachenFromGesuch(
+		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeService gemeindeService) {
 		return extractGemeindeSprachen(gesuch.getDossier().getGemeinde(), gemeindeService);
 	}
@@ -368,7 +436,8 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	public static List<Sprache> extractGemeindeSprachen(@Nonnull Gemeinde gemeinde,
+	public static List<Sprache> extractGemeindeSprachen(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull GemeindeService gemeindeService) {
 		final String gemeindeId = gemeinde.getId();
 		final GemeindeStammdaten gemeindeStammdatenOpt = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
@@ -447,5 +516,17 @@ public final class EbeguUtil {
 			}
 		}
 		return dominantType;
+	}
+
+	/**
+	 * @return initial param if it is not null, otherwise returns default value.
+	 */
+	@Nonnull
+	public static <T> T coalesce(@Nullable T initial, @Nonnull T defaultValue) {
+		if (initial != null) {
+			return initial;
+		}
+
+		return defaultValue;
 	}
 }
