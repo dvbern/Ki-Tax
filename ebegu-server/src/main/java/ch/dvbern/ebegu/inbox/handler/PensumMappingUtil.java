@@ -245,13 +245,13 @@ public final class PensumMappingUtil {
 
 		switch (zeitabschnittDTO.getPensumUnit()) {
 		case DAYS:
-			target.setPensumFromDays(zeitabschnittDTO.getBetreuungspensum());
+			target.applyPensumFromDays(zeitabschnittDTO.getBetreuungspensum());
 			break;
 		case HOURS:
-			target.setPensumFromHours(zeitabschnittDTO.getBetreuungspensum());
+			target.applyPensumFromHours(zeitabschnittDTO.getBetreuungspensum());
 			break;
 		case PERCENTAGE:
-			target.setPensumFromPercentage(zeitabschnittDTO.getBetreuungspensum());
+			target.applyPensumFromPercentage(zeitabschnittDTO.getBetreuungspensum());
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported pensum unit: " + zeitabschnittDTO.getPensumUnit());

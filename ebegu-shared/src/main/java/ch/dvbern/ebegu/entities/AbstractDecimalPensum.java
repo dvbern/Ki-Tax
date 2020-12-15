@@ -96,17 +96,17 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setUnitForDisplay(this.getUnitForDisplay());
 	}
 
-	public void setPensumFromDays(@Nonnull BigDecimal days) {
+	public void applyPensumFromDays(@Nonnull BigDecimal days) {
 		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(days), MAX_TAGE_PRO_MONAT);
 		unitForDisplay = PensumUnits.DAYS;
 	}
 
-	public void setPensumFromHours(@Nonnull BigDecimal hours) {
+	public void applyPensumFromHours(@Nonnull BigDecimal hours) {
 		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(hours), MAX_STUNDEN_PRO_MONAT);
 		unitForDisplay = PensumUnits.HOURS;
 	}
 
-	public void setPensumFromPercentage(@Nonnull BigDecimal percentage) {
+	public void applyPensumFromPercentage(@Nonnull BigDecimal percentage) {
 		pensum = percentage;
 		unitForDisplay = PensumUnits.PERCENTAGE;
 	}
