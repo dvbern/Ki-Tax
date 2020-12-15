@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,27 +8,32 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
-import {TSRole} from '../../../models/enums/TSRole';
-import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
-import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
-import {LogFactory} from '../../core/logging/LogFactory';
-import {DownloadRS} from '../../core/service/downloadRS.rest';
-import {LastenausgleichRS} from '../../core/service/lastenausgleichRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
+import {TSRole} from '../../../../models/enums/TSRole';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSLastenausgleich} from '../../../../models/TSLastenausgleich';
+import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {LastenausgleichRS} from '../../../core/service/lastenausgleichRS.rest';
+import {UploadRS} from '../../../core/service/uploadRS.rest';
+import {ZemisDialogDTO} from '../zemisDialog/zemisDialog.interface';
+import {ZemisDialogController} from '../zemisDialog/zemisDialogController';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
-const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
+const inputYearDialogTemplate = require('../zemisDialog/zemisDialogTemplate.html');
 
 const LOG = LogFactory.createLog('LastenausgleichViewController');
 
@@ -46,7 +51,9 @@ export class LastenausgleichViewController implements IController {
         'DvDialog',
         '$translate',
         'DownloadRS',
+        'UploadRS',
         'AuthServiceRS',
+        'ErrorService'
     ];
 
     public jahr: number;
@@ -60,7 +67,9 @@ export class LastenausgleichViewController implements IController {
         private readonly dvDialog: DvDialog,
         private readonly $translate: ITranslateService,
         private readonly downloadRS: DownloadRS,
+        private readonly uploadRS: UploadRS,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -87,6 +96,56 @@ export class LastenausgleichViewController implements IController {
         }, err => {
             LOG.error(err);
         });
+    }
+
+    public downloadZemisExcel(): void {
+        this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController,  {upload: false})
+            .then((zemisDialogData: ZemisDialogDTO) => {
+                if (!zemisDialogData) {
+                    return;
+                }
+                if (!zemisDialogData.jahr) {
+                    LOG.error('year undefined');
+                }
+                const win = this.downloadRS.prepareDownloadWindow();
+                this.lastenausgleichRS.getZemisExcel(zemisDialogData.jahr)
+                    .then((downloadFile: TSDownloadFile) => {
+                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                    })
+                    .catch(() => {
+                        win.close();
+                    });
+            }, err => {
+                LOG.error(err);
+            });
+    }
+
+    public uploadZemisExcel(): void {
+
+        this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController, {upload: true})
+            .then((zemisDialogData: ZemisDialogDTO) => {
+                if (!zemisDialogData) {
+                    return;
+                }
+                if (!zemisDialogData.file) {
+                    LOG.error('file undefined');
+                }
+                this.uploadRS.uploadZemisExcel(zemisDialogData.file)
+                    .then(() => {
+                        this.errorService.addMesageAsInfo(this.$translate.instant(
+                            'ZEMIS_UPLOAD_FINISHED'
+                        ));
+                    })
+                    .catch(err => {
+                        LOG.error('Fehler beim Speichern', err);
+                    }
+                );
+                this.errorService.addMesageAsInfo(this.$translate.instant(
+                    'ZEMIS_UPLOAD_STARTED'
+                ));
+            }, err => {
+                LOG.error(err);
+            });
     }
 
     public downloadExcel(lastenausgleich: TSLastenausgleich): void {

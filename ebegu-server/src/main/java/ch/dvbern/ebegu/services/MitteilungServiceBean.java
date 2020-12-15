@@ -346,7 +346,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
+	@Override
+	public Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -356,10 +357,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
 
-		Predicate predicateBetreuung = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
+		Predicate predicateBetreuung = cb.equal(root.get(Mitteilung_.betreuung), betreuungParam);
 		predicates.add(predicateBetreuung);
 
-		final Predicate predicateNotApplied = cb.equal(root.get(Betreuungsmitteilung_.APPLIED), Boolean.FALSE);
+		final Predicate predicateNotApplied = cb.isFalse(root.get(Betreuungsmitteilung_.APPLIED));
 		predicates.add(predicateNotApplied);
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
@@ -383,7 +384,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
 
-		Predicate predicateLinkedObject = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
+		Predicate predicateLinkedObject = cb.equal(root.get(Mitteilung_.betreuung), betreuungParam);
 		predicates.add(predicateLinkedObject);
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
@@ -549,7 +550,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<BetreuungspensumAbweichung> root = query.from(BetreuungspensumAbweichung.class);
 		final Join<Betreuung, KindContainer> join = root
 			.join(BetreuungspensumAbweichung_.betreuung, JoinType.LEFT)
-			.join(Betreuung_.kind, JoinType.LEFT);
+			.join(AbstractPlatz_.kind, JoinType.LEFT);
 
 		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
 		query.where(gesuchPred);
@@ -719,11 +720,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
 
 		Predicate predicateLinkedObject =
-			cb.equal(root.get(Betreuungsmitteilung_.betreuung).get(Betreuung_.id), betreuungId);
+			cb.equal(root.get(Mitteilung_.betreuung).get(AbstractEntity_.id), betreuungId);
 		Predicate predicateNotErledigt =
-			cb.equal(root.get(Betreuungsmitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT).not();
+			cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT).not();
 
-		query.orderBy(cb.desc(root.get(Betreuungsmitteilung_.sentDatum)));
+		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
 		query.where(predicateLinkedObject, predicateNotErledigt);
 
 		final List<Betreuungsmitteilung> result =
@@ -965,7 +966,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		switch (mode) {
 		case SEARCH:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(root.get(Mitteilung_.id)).where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+			query.select(root.get(AbstractEntity_.id)).where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			constructOrderByClause(
 				mitteilungTableFilterDto,
 				cb,
@@ -980,7 +981,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(cb.countDistinct(root.get(Gesuch_.id)))
+			query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			break;
 		}
@@ -1094,7 +1095,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 			Root<Mitteilung> root = query.from(Mitteilung.class);
-			Predicate predicate = root.get(Mitteilung_.id).in(gesuchIds);
+			Predicate predicate = root.get(AbstractEntity_.id).in(gesuchIds);
 			query.where(predicate);
 			//reduce to unique gesuche
 			List<Mitteilung> listWithDuplicates = persistence.getCriteriaResults(query);

@@ -20,22 +20,30 @@ package ch.dvbern.ebegu.inbox.handler;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 
-public class PlatzbestaetigungProcessingContext {
+public class ProcessingContext {
 
 	@Nonnull
 	private final Betreuung betreuung;
 	@Nonnull
 	private final BetreuungEventDTO dto;
+	@Nonnull
+	private final DateRange gueltigkeitInPeriode;
+	private final boolean mahlzeitVergunstigungEnabled;
 
 	private boolean isReadyForBestaetigen = true;
 
-	public PlatzbestaetigungProcessingContext(
+	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
-		@Nonnull BetreuungEventDTO dto) {
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull DateRange clientGueltigkeitInPeriode,
+		boolean mahlzeitVergunstigungEnabled) {
 		this.betreuung = betreuung;
 		this.dto = dto;
+		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
+		this.mahlzeitVergunstigungEnabled = mahlzeitVergunstigungEnabled;
 	}
 
 	public void requireHumanConfirmation() {
@@ -50,6 +58,19 @@ public class PlatzbestaetigungProcessingContext {
 	@Nonnull
 	public BetreuungEventDTO getDto() {
 		return dto;
+	}
+
+	@Nonnull
+	public DateRange getGueltigkeitInPeriode() {
+		return gueltigkeitInPeriode;
+	}
+
+	public boolean isMahlzeitVergunstigungEnabled() {
+		return mahlzeitVergunstigungEnabled;
+	}
+
+	public boolean isGueltigkeitCoveringPeriode() {
+		return gueltigkeitInPeriode.equals(betreuung.extractGesuchsperiode().getGueltigkeit());
 	}
 
 	public boolean isReadyForBestaetigen() {

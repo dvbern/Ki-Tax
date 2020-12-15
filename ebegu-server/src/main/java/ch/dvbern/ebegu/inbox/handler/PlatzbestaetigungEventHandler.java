@@ -17,47 +17,44 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -68,28 +65,45 @@ import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
+import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 @ApplicationScoped
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
-	private static final BigDecimal MAX_TAGE_PRO_MONAT = new BigDecimal("20.00");
-	private static final BigDecimal MAX_STUNDEN_PRO_MONAT = new BigDecimal("220.00");
-	private static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
+
+	static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff";
 	private static final String MESSAGE_KEY = "mutationsmeldung_message";
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
-	private static final Integer GO_LIVE_YEAR = 2021;
-	private static final Integer GO_LIVE_MONTH = 1;
-	private static final Integer GO_LIVE_DAY = 1;
+	static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
+
+	static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
+		.comparing(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten)
+		.thenComparing(AbstractDecimalPensum::getPensumRounded)
+		.thenComparing(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit)
+		.thenComparing(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit)
+		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten)
+		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten);
+
+	private static final Comparator<AbstractMahlzeitenPensum> COMPARATOR_WITH_GUELTIGKEIT = COMPARATOR
+		.thenComparing(AbstractMahlzeitenPensum::getGueltigkeit);
+
+	private static final Comparator<Betreuungsmitteilung> MITTEILUNG_COMPARATOR = Comparator
+		.comparing(Betreuungsmitteilung::getBetreuungspensen, collectionComparator(COMPARATOR_WITH_GUELTIGKEIT));
 
 	@Inject
 	private BetreuungService betreuungService;
@@ -114,112 +128,197 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
 		@Nonnull BetreuungEventDTO dto,
-		@Nonnull String clientName
-	) {
-		String refnr = dto.getRefnr();
-		try {
-			Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungByBGNummer(refnr, false);
-			if (!betreuungOpt.isPresent()) {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} existiert nicht!", refnr);
-				return;
-			}
-			Betreuung betreuung = betreuungOpt.get();
-			if (betreuung.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
-				LOG.warn(
-					"Platzbestaetigung: die Gesuchsperiode fuer die Betreuung mit RefNr: {} ist nicht aktiv!",
-					refnr);
-				return;
-			}
-			if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
-				LOG.warn("Platzbestaetigung: die Betreuung mit RefNr: {} war spaeter als dieser "
-					+ "Event im kiBon bearbeitet! Event ist ignoriert", refnr);
-				return;
-			}
-			//Get InstitutinClient Gueltigkeit
-			Collection<InstitutionExternalClient> institutionExternalClients =
-				externalClientService.getInstitutionExternalClientForInstitution(
-					betreuung.getInstitutionStammdaten().getInstitution());
-			InstitutionExternalClient institutionExternalClient = institutionExternalClients.stream()
-				.filter(iec -> iec.getExternalClient().getClientName().equals(clientName))
-				.findAny()
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"processEvent",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					clientName, betreuung.getInstitutionStammdaten().getInstitution().getName()));
+		@Nonnull String clientName) {
 
-			if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
-				//Update the Betreuung and check if all data are available
-				if (setBetreuungDaten(
-					new PlatzbestaetigungProcessingContext(betreuung, dto),
-					institutionExternalClient.getGueltigkeit())) {
-					//noinspection ResultOfMethodCallIgnored
-					betreuungService.betreuungPlatzBestaetigen(betreuung);
-					LOG.info("Platzbestaetigung: Betreuung mit RefNr: {} automatisch bestätigt", refnr);
-				} else {
-					//noinspection ResultOfMethodCallIgnored
-					betreuungService.saveBetreuung(betreuung, false);
-					LOG.info(
-						"Platzbestaetigung: Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt",
-						refnr);
-				}
-			} else if (betreuung.getBetreuungsstatus() == Betreuungsstatus.VERFUEGT
-				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.BESTAETIGT) {
-				if (isSame(dto, betreuung)) {
-					LOG.warn("Platzbestaetigung: die Betreuung ist identisch wie der Event mit RefNr: {}"
-						+
-						" - MutationMitteilung wird nicht erstellt!", refnr);
-					return;
-				}
-				//MutationMitteilungErstellen
-				//we map all the data we know in a mitteilung object, we are only interested into Zeitabschnitt:
-				Betreuungsmitteilung betreuungsmitteilung =
-					this.setBetreuungsmitteilungDaten(dto, betreuung, institutionExternalClient.getGueltigkeit());
-				if (betreuungsmitteilung != null) {
-					// we first clear all the Mutationsmeldungen for the current Betreuung
-					mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
-					// and then send the new Betreuungsmitteilung an die Gemeinde
-					//noinspection ResultOfMethodCallIgnored
-					this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
-					LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", refnr);
-				}
-			} else {
-				LOG.warn(
-					"Platzbestaetigung: die Betreuung mit RefNr: {} hat einen ungültigen Status: {}",
-					refnr,
-					betreuung.getBetreuungsstatus());
-			}
-		} catch (Exception e) {
-			LOG.error("Error while processing the record: {} error: {}", refnr, e.getMessage());
+		Processing processing = attemptProcessing(eventTime, dto, clientName);
+
+		if (!processing.isProcessingSuccess()) {
+			String message = processing.getMessage();
+			LOG.warn("Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", dto.getRefnr(), message);
 		}
+	}
+
+	@Nonnull
+	protected Processing attemptProcessing(
+		@Nonnull LocalDateTime eventTime,
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull String clientName) {
+
+		if (dto.getZeitabschnitte().isEmpty()) {
+			return Processing.failure("Es wurden keine Zeitabschnitte übergeben.");
+		}
+
+		return betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false)
+			.map(betreuung -> processEventForBetreuung(eventTime, dto, clientName, betreuung))
+			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
+	}
+
+	@Nonnull
+	private Processing processEventForBetreuung(
+		@Nonnull LocalDateTime eventTime,
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull String clientName,
+		@Nonnull Betreuung betreuung) {
+
+		if (betreuung.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
+			return Processing.failure("Die Gesuchsperiode ist nicht aktiv.");
+		}
+
+		if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
+			return Processing.failure("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
+		}
+
+		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.HOURS) && !betreuung.isAngebotTagesfamilien()) {
+			return Processing.failure("Eine Pensum in HOURS kann nur für ein Angebot in einer TFO angegeben werden.");
+		}
+
+		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.DAYS) && !betreuung.isAngebotKita()) {
+			return Processing.failure("Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
+		}
+
+		return getExternalClient(clientName, betreuung)
+			.map(externalClient -> processEventForExternalClient(dto, betreuung, externalClient.getGueltigkeit()))
+			.orElseGet(() -> clientNotFoundFailure(clientName, betreuung));
+	}
+
+	private boolean hasZeitabschnittWithPensumUnit(@Nonnull BetreuungEventDTO dto, @Nonnull Zeiteinheit zeiteinheit) {
+		return dto.getZeitabschnitte().stream().anyMatch(z -> z.getPensumUnit() == zeiteinheit);
+	}
+
+	@Nonnull
+	private Optional<InstitutionExternalClient> getExternalClient(
+		@Nonnull String clientName,
+		@Nonnull Betreuung betreuung) {
+
+		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+		Collection<InstitutionExternalClient> institutionExternalClients =
+			externalClientService.getInstitutionExternalClientForInstitution(institution);
+
+		return institutionExternalClients.stream()
+			.filter(iec -> iec.getExternalClient().getClientName().equals(clientName))
+			.findAny();
+	}
+
+	@Nonnull
+	private Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull Betreuung betreuung) {
+		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+
+		return Processing.failure(String.format(
+			"Kein InstitutionExternalClient Namens >>%s<< ist der Institution %s/%s zugewiesen",
+			clientName,
+			institution.getName(),
+			institution.getId()));
+	}
+
+	@Nonnull
+	private Processing processEventForExternalClient(
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull Betreuung betreuung,
+		@Nonnull DateRange clientGueltigkeit) {
+
+		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
+		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
+		if (overlap.isEmpty()) {
+			return Processing.failure("Der Client hat innerhalb der Periode keinen Berechtigung.");
+		}
+
+		Processing validationProcess = validateZeitabschnitteGueltigkeit(dto, overlap.get());
+		if (!validationProcess.isProcessingSuccess()) {
+			return validationProcess;
+		}
+
+		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+		ProcessingContext ctx = new ProcessingContext(betreuung, dto, overlap.get(), mahlzeitVergunstigungEnabled);
+
+		Betreuungsstatus status = betreuung.getBetreuungsstatus();
+
+		if (status == Betreuungsstatus.WARTEN) {
+			return handlePlatzbestaetigung(ctx);
+		}
+
+		if (isMutationsMitteilungStatus(status)) {
+			return handleMutationsMitteilung(ctx);
+		}
+
+		return Processing.failure("Die Betreuung hat einen ungültigen Status: " + status);
+	}
+
+	@Nonnull
+	private Processing validateZeitabschnitteGueltigkeit(
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull DateRange gueltigkeitInPeriode) {
+
+		List<DateRange> ranges = dto.getZeitabschnitte().stream()
+			.map(z -> new DateRange(z.getVon(), z.getBis()))
+			.collect(Collectors.toList());
+
+		if (GueltigkeitsUtil.hasOverlap(ranges)) {
+			return Processing.failure("Zeitabschnitte dürfen nicht überlappen.");
+		}
+
+		if (ranges.stream().noneMatch(r -> r.intersects(gueltigkeitInPeriode))) {
+			return Processing.failure("Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode.");
+		}
+
+		return Processing.success();
+	}
+
+	protected boolean isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
+		return status == Betreuungsstatus.VERFUEGT
+			|| status == Betreuungsstatus.BESTAETIGT
+			|| status == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+			|| status == Betreuungsstatus.STORNIERT;
+	}
+
+	/**
+	 * Update the Betreuung and automatically confirm if all required data is present.
+	 */
+	@Nonnull
+	private Processing handlePlatzbestaetigung(@Nonnull ProcessingContext ctx) {
+		boolean isReadyForBestaetigen = updateBetreuungForPlatzbestaetigung(ctx);
+
+		if (isReadyForBestaetigen) {
+			//noinspection ResultOfMethodCallIgnored
+			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung());
+			LOG.info("Betreuung mit RefNr: {} automatisch bestätigt", ctx.getDto().getRefnr());
+		} else {
+			//noinspection ResultOfMethodCallIgnored
+			betreuungService.saveBetreuung(ctx.getBetreuung(), false);
+			LOG.info("Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt", ctx.getDto().getRefnr());
+		}
+
+		return Processing.success();
 	}
 
 	/**
 	 * Update the Betreuung Object and return if its ready for Bestaetigen
 	 */
-	private boolean setBetreuungDaten(
-		@Nonnull PlatzbestaetigungProcessingContext ctx,
-		@Nonnull DateRange gueltigkeit
-	) {
-		//Check if die Gemeinde erlaubt mahlzeitvergunstigung:
-		boolean mahlzeitVergunstigungEnabled =
-			isEnabled(ctx.getBetreuung(), EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+	private boolean updateBetreuungForPlatzbestaetigung(@Nonnull ProcessingContext ctx) {
+
+		if (!ctx.isGueltigkeitCoveringPeriode()) {
+			ctx.requireHumanConfirmation();
+		}
+
 		setErweitereBeduerfnisseBestaetigt(ctx);
 		setBetreuungInGemeinde(ctx);
-		setZeitabschnitte(ctx, mahlzeitVergunstigungEnabled, gueltigkeit);
+		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx);
 
 		return ctx.isReadyForBestaetigen();
 	}
 
-	private void setErweitereBeduerfnisseBestaetigt(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+	private void setErweitereBeduerfnisseBestaetigt(@Nonnull ProcessingContext ctx) {
 		ErweiterteBetreuung eb = ctx.getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
 		// Der Wert aus dem DTO wird nur berücksichtigt, wenn bereits bei dem Antrag erweitere Bedürfnisse angemeldet
 		// wurden.
-		if (eb != null && eb.getErweiterteBeduerfnisse()) {
-			eb.setErweiterteBeduerfnisseBestaetigt(ctx.getDto().getAusserordentlicherBetreuungsaufwand());
+		if (eb != null) {
+			Boolean claimed = eb.getErweiterteBeduerfnisse();
+			boolean confirmed = ctx.getDto().getAusserordentlicherBetreuungsaufwand();
+
+			eb.setErweiterteBeduerfnisseBestaetigt(claimed == confirmed);
 		}
 	}
 
-	private void setBetreuungInGemeinde(@Nonnull PlatzbestaetigungProcessingContext ctx) {
+	private void setBetreuungInGemeinde(@Nonnull ProcessingContext ctx) {
 		Betreuung betreuung = ctx.getBetreuung();
 		boolean enabled = isEnabled(betreuung, EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED);
 
@@ -228,100 +327,145 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return;
 		}
 
-		String incomingGemeindeName = ctx.getDto().getGemeindeName();
-		if (incomingGemeindeName == null) {
+		String incomingName = ctx.getDto().getGemeindeName();
+		Long incomingBfsNumber = ctx.getDto().getGemeindeBfsNr();
+
+		if (incomingName == null && incomingBfsNumber == null) {
 			// Gemeinde not received, cannot evaluate -> abort automated processing
 			ctx.requireHumanConfirmation();
 			return;
 		}
 
 		Gemeinde gemeinde = betreuung.extractGemeinde();
+		Long bfsNummer = gemeinde.getBfsNummer();
+		String name = gemeinde.getName();
 
-		if (!gemeinde.getName().equalsIgnoreCase(incomingGemeindeName)) {
-			getOrCreateErweiterteBetreuung(betreuung)
-				.setBetreuungInGemeinde(false);
-		}
+		getOrCreateErweiterteBetreuung(betreuung)
+			.setBetreuungInGemeinde(bfsNummer.equals(incomingBfsNumber) || name.equalsIgnoreCase(incomingName));
 	}
 
-	protected void setZeitabschnitte(
-		@Nonnull PlatzbestaetigungProcessingContext ctx,
-		boolean mahlzeitVergunstigungEnabled,
-		@Nonnull DateRange gueltigkeit
-	) {
-		List<ZeitabschnittDTO> zeitabschnitte = ctx.getDto().getZeitabschnitte();
-		if (zeitabschnitte.isEmpty()) {
-			ctx.requireHumanConfirmation();
+	@Nonnull
+	private Processing handleMutationsMitteilung(@Nonnull ProcessingContext ctx) {
+		Betreuung betreuung = ctx.getBetreuung();
 
-			return;
+		Collection<Betreuungsmitteilung> open =
+			mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung);
+
+		Optional<Betreuungsmitteilung> latest = findLatest(open);
+
+		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
+
+		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
+			return Processing.failure("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
 		}
+
+		if (latest.isEmpty() && isSame(betreuungsmitteilung, betreuung)) {
+			return Processing.failure("Die Betreuungsmeldung und die Betreuung sind identisch.");
+		}
+
+		//noinspection ResultOfMethodCallIgnored
+		mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
+		LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", ctx.getDto().getRefnr());
+
+		return Processing.success();
+	}
+
+	@Nonnull
+	private Betreuungsmitteilung createBetreuungsmitteilung(
+		@Nonnull ProcessingContext ctx,
+		@Nullable Betreuungsmitteilung latest) {
 
 		Betreuung betreuung = ctx.getBetreuung();
-		List<BetreuungspensumContainer> currentBetreuungspensumContainers = adaptBetreuung(betreuung, gueltigkeit);
-		betreuung.getBetreuungspensumContainers().clear();
-		betreuung.getBetreuungspensumContainers().addAll(currentBetreuungspensumContainers);
+		Gesuch gesuch = betreuung.extractGesuch();
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
 
-		zeitabschnitte.stream()
-			.map(z -> zeitabschnittToBetreuungspensumContainer(mahlzeitVergunstigungEnabled, ctx, z, gueltigkeit))
-			.filter(Objects::nonNull)
-			.forEach(c -> betreuung.getBetreuungspensumContainers().add(c));
+		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
+		betreuungsmitteilung.setDossier(gesuch.getDossier());
+		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+		betreuungsmitteilung.setSender(getMutationsmeldungBenutzer());
+		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
+		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale));
+		betreuungsmitteilung.setBetreuung(betreuung);
+
+		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung);
+
+		BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper = ctx.isMahlzeitVergunstigungEnabled() ?
+			mahlzeitenMessage(locale) :
+			defaultMessage(locale);
+
+		betreuungsmitteilung.setMessage(getMessage(messageMapper, betreuungsmitteilung.getBetreuungspensen()));
+
+		return betreuungsmitteilung;
 	}
 
-	@Nullable
-	private BetreuungspensumContainer zeitabschnittToBetreuungspensumContainer(
-		boolean mahlzeitVergunstigungEnabled,
-		@Nonnull PlatzbestaetigungProcessingContext ctx,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull DateRange gueltigkeit) {
+	@Nonnull
+	private Optional<Betreuungsmitteilung> findLatest(@Nonnull Collection<Betreuungsmitteilung> open) {
+		Comparator<Mitteilung> bySentDateTime = Comparator
+			.comparing(Mitteilung::getSentDatum, Comparator.nullsFirst(Comparator.naturalOrder()))
+			.thenComparing(AbstractEntity::getTimestampErstellt, Comparator.nullsFirst(Comparator.naturalOrder()))
+			.thenComparing(AbstractEntity::getId);
 
-		Betreuung betreuung = ctx.getBetreuung();
-		Betreuungspensum betreuungspensum = mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuung);
-		if (betreuungspensum == null) {
-			ctx.requireHumanConfirmation();
-			return null;
-		}
-		// Adaptieren die Gueltigkeit oder betpens loeschen gemaess Schnittstelle Gueltigkeit
-		if (!gueltigkeit.contains(betreuungspensum.getGueltigkeit())) {
-			if (betreuungspensum.getGueltigkeit().getGueltigAb().isBefore(gueltigkeit.getGueltigAb())) {
-				if (betreuungspensum.getGueltigkeit().getGueltigBis().isBefore(gueltigkeit.getGueltigAb())) {
-					return null;
-				}
-				betreuungspensum.getGueltigkeit().setGueltigAb(gueltigkeit.getGueltigAb());
-			}
-			if (betreuungspensum.getGueltigkeit().getGueltigBis().isAfter(gueltigkeit.getGueltigBis())) {
-				if (betreuungspensum.getGueltigkeit().getGueltigAb().isAfter(gueltigkeit.getGueltigBis())) {
-					return null;
-				}
-				betreuungspensum.getGueltigkeit().setGueltigBis(gueltigkeit.getGueltigBis());
-			}
-		}
-
-		if (mahlzeitVergunstigungEnabled) {
-			setTarifeProMahlzeiten(ctx, zeitabschnittDTO, betreuungspensum);
-		}
-
-		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
-		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
-		betreuungspensumContainer.setBetreuung(betreuung);
-
-		return betreuungspensumContainer;
+		return open.stream().max(bySentDateTime);
 	}
 
-	private void setTarifeProMahlzeiten(
-		@Nonnull PlatzbestaetigungProcessingContext ctx,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull Betreuungspensum betreuungspensum) {
+	@Nonnull
+	private Benutzer getMutationsmeldungBenutzer() {
+		return benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, TECHNICAL_BENUTZER_ID));
+	}
 
-		// Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
-		if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
-			betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-		} else {
-			ctx.requireHumanConfirmation();
-		}
-		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
-			betreuungspensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-		} else {
-			ctx.requireHumanConfirmation();
-		}
+	@Nonnull
+	private String getMessage(
+		@Nonnull BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper,
+		@Nonnull Set<BetreuungsmitteilungPensum> pensen) {
+
+		List<BetreuungsmitteilungPensum> sorted = pensen.stream()
+			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR)
+			.collect(Collectors.toList());
+
+		return IntStream.rangeClosed(1, sorted.size())
+			.mapToObj(index -> messageMapper.apply(sorted.get(index - 1), index))
+			.collect(Collectors.joining(StringUtils.LF));
+	}
+
+	@Nonnull
+	private BiFunction<BetreuungsmitteilungPensum, Integer, String> mahlzeitenMessage(@Nonnull Locale lang) {
+		return (pensum, counter) -> ServerMessageUtil.getMessage(
+			MESSAGE_MAHLZEIT_KEY,
+			lang,
+			counter,
+			pensum.getGueltigkeit().getGueltigAb(),
+			pensum.getGueltigkeit().getGueltigBis(),
+			pensum.getPensum(),
+			pensum.getMonatlicheBetreuungskosten(),
+			pensum.getMonatlicheHauptmahlzeiten(),
+			pensum.getTarifProHauptmahlzeit(),
+			pensum.getMonatlicheNebenmahlzeiten(),
+			pensum.getTarifProNebenmahlzeit());
+	}
+
+	@Nonnull
+	private BiFunction<BetreuungsmitteilungPensum, Integer, String> defaultMessage(@Nonnull Locale lang) {
+		return (pensum, counter) -> ServerMessageUtil.getMessage(
+			MESSAGE_KEY,
+			lang,
+			counter,
+			pensum.getGueltigkeit().getGueltigAb(),
+			pensum.getGueltigkeit().getGueltigBis(),
+			pensum.getPensum(),
+			pensum.getMonatlicheBetreuungskosten());
+	}
+
+	protected boolean isSame(@Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull Betreuung betreuung) {
+		List<? extends AbstractMahlzeitenPensum> fromBetreuung = betreuung.getBetreuungspensumContainers().stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumJA)
+			.collect(Collectors.toList());
+
+		Set<? extends AbstractMahlzeitenPensum> fromMitteilung = betreuungsmitteilung.getBetreuungspensen();
+
+		return EbeguUtil.areComparableCollections(fromBetreuung, fromMitteilung, COMPARATOR_WITH_GUELTIGKEIT);
 	}
 
 	private boolean isEnabled(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
@@ -345,426 +489,4 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		return created;
 	}
-
-	/**
-	 * Create a new Betreuungsmitteilung Object and return if its ready for Bestaetigen
-	 *
-	 * @return Betreuungsmitteilung oder null
-	 */
-	@SuppressWarnings("PMD.NcssMethodCount")
-	@Nullable
-	private Betreuungsmitteilung setBetreuungsmitteilungDaten(
-		@Nonnull BetreuungEventDTO dto,
-		@Nonnull Betreuung betreuung,
-		@Nonnull DateRange gueltigkeit
-	) {
-		if (dto.getZeitabschnitte().isEmpty()) {
-			LOG.error("Zeitabschnitt are missing, we cannot work with this dto");
-			return null;
-		}
-		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
-		Gesuch gesuch = betreuung.extractGesuch();
-		betreuungsmitteilung.setDossier(gesuch.getDossier());
-		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-		//we don't have any sender...
-		Benutzer benutzer =
-			benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID)
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					StringUtils.EMPTY,
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					TECHNICAL_BENUTZER_ID));
-		betreuungsmitteilung.setSender(benutzer);
-		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
-		betreuungsmitteilung.setBetreuung(betreuung);
-		Gemeinde gemeinde = betreuung.extractGemeinde();
-		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId());
-		Locale sprache = Sprache.DEUTSCH.getLocale();
-		if (stammdaten.isPresent() && stammdaten.get().getKorrespondenzsprache() == KorrespondenzSpracheTyp.FR) {
-			sprache = Sprache.FRANZOESISCH.getLocale();
-		}
-
-		betreuungsmitteilung.setSubject(translate(BETREFF_KEY, sprache));
-
-		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-
-		//Pensen mappen and create message
-		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-		Einstellung mahlzeitVergunstigungEnabled =
-			einstellungService.findEinstellung(
-				EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-				gemeinde,
-				gesuchsperiode);
-		StringBuilder message = new StringBuilder();
-		int counter = 1;
-		boolean areZeitabschnittCorrupted = false;
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = mapZeitabschnitteToImport(dto, betreuung, gueltigkeit);
-
-		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitteToImport) {
-			BetreuungsmitteilungPensum betreuungsmitteilungPensum = mapZeitabschnitt(new BetreuungsmitteilungPensum()
-				, zeitabschnittDTO, betreuung);
-			if (betreuungsmitteilungPensum == null) {
-				areZeitabschnittCorrupted = true;
-				continue;
-			}
-			betreuungsmitteilungPensum.setVollstaendig(!areZeitabschnittCorrupted);
-			if (message.length() > 0) {
-				message.append(StringUtils.LF);
-			}
-			if (mahlzeitVergunstigungEnabled.getValueAsBoolean()) {
-				//Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
-				if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
-					betreuungsmitteilungPensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-				} else {
-					//Die MutationsMitteilung soll in Status WARTEN eroeffnet werden
-					betreuungsmitteilungPensum.setVollstaendig(false);
-				}
-				if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
-					betreuungsmitteilungPensum.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-				} else {
-					//Die MutationsMitteilung soll in Status WARTEN eroeffnet werden
-					betreuungsmitteilungPensum.setVollstaendig(false);
-				}
-				message.append(mahlzeitenMessage(sprache, counter, betreuungsmitteilungPensum));
-			} else {
-				message.append(defaultMessage(sprache, counter, betreuungsmitteilungPensum));
-			}
-			//set betreuungsmitteilungPensum in model
-			betreuungsmitteilungPensum.setBetreuungsmitteilung(betreuungsmitteilung);
-			betreuungsmitteilung.getBetreuungspensen().add(betreuungsmitteilungPensum);
-			counter++;
-		}
-		betreuungsmitteilung.setMessage(message.toString());
-		return betreuungsmitteilung;
-	}
-
-	@Nonnull
-	protected List<ZeitabschnittDTO> mapZeitabschnitteToImport(
-		@Nonnull BetreuungEventDTO dto,
-		@Nonnull Betreuung betreuung,
-		@Nonnull DateRange gueltigkeit) {
-
-		if (gueltigkeit.getGueltigAb().isBefore(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY))) {
-			gueltigkeit.setGueltigAb(LocalDate.of(GO_LIVE_YEAR, GO_LIVE_MONTH, GO_LIVE_DAY));
-		}
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = filterZeitabschnitte(
-			dto.getZeitabschnitte(), gueltigkeit
-		);
-		List<BetreuungspensumContainer> currentBetreuungspensumContainers = adaptBetreuung(betreuung, gueltigkeit);
-		List<Betreuungspensum> currentPensen = currentBetreuungspensumContainers.stream().map(
-			BetreuungspensumContainer::getBetreuungspensumJA).collect(Collectors.toList());
-
-
-		// We want to keep only the zeitabschnitt from before the go live date, therefore we can
-		// keep the zeitabschnitte that end before the go live date and for the pensen around the go live we split the
-		// zeitabschnitt,
-		// end the first zeitabschnitt on the go live date and ignore the zeitabschnitt after
-		List<ZeitabschnittDTO> zeitabschnitteFromCurrentPensenToKeep = currentPensen.stream()
-			.map(this::pensumToZeitabschnittDTO)
-			.collect(Collectors.toList());
-
-		zeitabschnitteToImport.addAll(0, zeitabschnitteFromCurrentPensenToKeep);
-
-		return zeitabschnitteToImport;
-	}
-
-	@Nonnull
-	private List<ZeitabschnittDTO> filterZeitabschnitte(
-		@Nonnull List<ZeitabschnittDTO> zeitabschnitte,
-		@Nonnull DateRange gueltigkeit
-	) {
-		List<ZeitabschnittDTO> zeitabschnittDTOS = new ArrayList<>();
-		for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnitte) {
-			if (zeitabschnittDTO.getVon().isBefore(gueltigkeit.getGueltigAb())) {
-				if (zeitabschnittDTO.getBis().isBefore(gueltigkeit.getGueltigAb())) {
-					continue;
-				}
-				zeitabschnittDTO.setVon(gueltigkeit.getGueltigAb());
-			}
-			if (zeitabschnittDTO.getBis().isAfter(gueltigkeit.getGueltigBis())) {
-				if (zeitabschnittDTO.getVon().isAfter(gueltigkeit.getGueltigBis())) {
-					continue;
-				}
-				zeitabschnittDTO.setBis(gueltigkeit.getGueltigBis());
-			}
-			zeitabschnittDTOS.add(zeitabschnittDTO);
-		}
-		return zeitabschnittDTOS;
-	}
-
-	@Nonnull
-	private ZeitabschnittDTO pensumToZeitabschnittDTO(@Nonnull Betreuungspensum pensum) {
-
-		Zeiteinheit pensumUnit;
-
-		switch (pensum.getUnitForDisplay()) {
-		case DAYS:
-			pensumUnit = Zeiteinheit.DAYS;
-			break;
-		case HOURS:
-			pensumUnit = Zeiteinheit.HOURS;
-			break;
-		case PERCENTAGE:
-			pensumUnit = Zeiteinheit.PERCENTAGE;
-			break;
-		default:
-			pensumUnit = null;
-		}
-
-		return new ZeitabschnittDTO(
-			pensum.getMonatlicheBetreuungskosten(),
-			pensum.getPensum(),
-			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis(),
-			pensumUnit,
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getMonatlicheNebenmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit(),
-			pensum.getTarifProNebenmahlzeit()
-		);
-	}
-
-	@Nonnull
-	private String mahlzeitenMessage(@Nonnull Locale lang, int counter, @Nonnull BetreuungsmitteilungPensum pensum) {
-		return translate(MESSAGE_MAHLZEIT_KEY, lang, counter,
-			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis(),
-			pensum.getPensum(),
-			pensum.getMonatlicheBetreuungskosten(),
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit(),
-			pensum.getMonatlicheNebenmahlzeiten(),
-			pensum.getTarifProNebenmahlzeit());
-	}
-
-	@Nonnull
-	private String defaultMessage(@Nonnull Locale lang, int counter, @Nonnull BetreuungsmitteilungPensum pensum) {
-		return translate(MESSAGE_KEY, lang, counter,
-			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis(),
-			pensum.getPensum(),
-			pensum.getMonatlicheBetreuungskosten());
-	}
-
-	@Nullable
-	protected <T extends AbstractMahlzeitenPensum> T mapZeitabschnitt(
-		T neueBetreuung,
-		ZeitabschnittDTO zeitabschnittDTO,
-		Betreuung betreuung) {
-
-		if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
-			neueBetreuung.setPensum(zeitabschnittDTO.getBetreuungspensum()); // schauen ob es so korrekt ist
-			neueBetreuung.setUnitForDisplay(PensumUnits.PERCENTAGE);
-		} else if (betreuung.isAngebotKita()) {
-			if (!zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.DAYS.name())) {
-				LOG.error("Pensum is not supported, Zeitabschnitt ist corrupted");
-				return null;
-			}
-			neueBetreuung.setUnitForDisplay(PensumUnits.DAYS);
-			BigDecimal pensumInPercent =
-				MathUtil.EXACT.divide(
-					MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
-					MAX_TAGE_PRO_MONAT);
-			neueBetreuung.setPensum(pensumInPercent);
-		} else if (betreuung.isAngebotTagesfamilien()) {
-			if (!zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())) {
-				LOG.error("Pensum is not supported, Zeitabschnitt ist corrupted");
-				return null;
-			}
-			neueBetreuung.setUnitForDisplay(PensumUnits.HOURS);
-			BigDecimal pensumInPercent =
-				MathUtil.EXACT.divide(
-					MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
-					MAX_STUNDEN_PRO_MONAT);
-			neueBetreuung.setPensum(pensumInPercent);
-		}
-		neueBetreuung.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
-		neueBetreuung.setMonatlicheNebenmahlzeiten(zeitabschnittDTO.getAnzahlNebenmahlzeiten());
-		neueBetreuung.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
-		neueBetreuung.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
-		neueBetreuung.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
-
-		return neueBetreuung;
-	}
-
-	@Nonnull
-	protected String translate(String key, Locale sprache, Object... args) {
-		return ServerMessageUtil.getMessage(key, sprache, args);
-	}
-
-	/**
-	 * Dieser Methode prueft ob die Zeitabschnitt gleich sind als die von der letzte Gesuch
-	 * Wenn gleich dann soll keine MutationMitteilung erstellt werden
-	 *
-	 * Deswegen sind alle Parametern die nicht vorhanden sind (im MutationMitteilung) ignoriert
-	 * So man muss nur die Zeitabschnitt Werten ueberpruefen
-	 */
-	protected boolean isSame(BetreuungEventDTO betreuungEventDTO, Betreuung betreuung) {
-		Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
-		List<ZeitabschnittDTO> zeitabschnittDTOS = betreuungEventDTO.getZeitabschnitte();
-		if (betreuungspensumContainers.size() != zeitabschnittDTOS.size()) {
-			return false;
-		}
-		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
-			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-			boolean match = false;
-			for (ZeitabschnittDTO zeitabschnittDTO : zeitabschnittDTOS) {
-				if (zeitabschnittDTO.getVon().isEqual(betreuungspensum.getGueltigkeit().getGueltigAb()) &&
-					zeitabschnittDTO.getBis().isEqual(betreuungspensum.getGueltigkeit().getGueltigBis()) &&
-					betreuungspensum.getMonatlicheBetreuungskosten().compareTo(zeitabschnittDTO.getBetreuungskosten())
-						== 0 &&
-					(zeitabschnittDTO.getTarifProHauptmahlzeiten() == null ||
-						(zeitabschnittDTO.getTarifProHauptmahlzeiten() != null
-							&& betreuungspensum.getTarifProHauptmahlzeit()
-							.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten())
-							== 0))
-					&&
-					(zeitabschnittDTO.getTarifProNebenmahlzeiten() == null ||
-						(zeitabschnittDTO.getTarifProNebenmahlzeiten() != null &&
-							betreuungspensum.getTarifProNebenmahlzeit()
-								.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten())
-								== 0))
-					&&
-					(zeitabschnittDTO.getAnzahlHauptmahlzeiten() == null ||
-						(zeitabschnittDTO.getAnzahlHauptmahlzeiten() != null &&
-							betreuungspensum.getMonatlicheHauptmahlzeiten()
-								.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten())
-								== 0))
-					&&
-					(zeitabschnittDTO.getAnzahlNebenmahlzeiten() == null ||
-						(zeitabschnittDTO.getAnzahlNebenmahlzeiten() != null &&
-							betreuungspensum.getMonatlicheNebenmahlzeiten()
-								.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten())
-								== 0))
-				) {
-					//check pensum:
-					if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.PERCENTAGE.name())) {
-						match = betreuungspensum.getPensum().compareTo(zeitabschnittDTO.getBetreuungspensum()) == 0;
-					} else if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.DAYS.name())) {
-						BigDecimal pensumInPercent =
-							MathUtil.EXACT.divide(
-								MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
-								MAX_TAGE_PRO_MONAT);
-						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
-					} else if (zeitabschnittDTO.getPensumUnit().name().equals(PensumUnits.HOURS.name())) {
-						BigDecimal pensumInPercent =
-							MathUtil.EXACT.divide(
-								MathUtil.HUNDRED.multiply(zeitabschnittDTO.getBetreuungspensum()),
-								MAX_STUNDEN_PRO_MONAT);
-						match = betreuungspensum.getPensum().compareTo(pensumInPercent) == 0;
-					}
-				}
-				if (match) {
-					break;
-				}
-			}
-			if (!match) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	@Nonnull
-	private BetreuungspensumContainer cloneBetreuungspensumContainerJa(
-		@Nonnull BetreuungspensumContainer betreuungspensumContainer
-	) {
-		BetreuungspensumContainer betreuungspensumContainerCloned = new BetreuungspensumContainer();
-		betreuungspensumContainerCloned.setBetreuung(betreuungspensumContainer.getBetreuung());
-		Betreuungspensum betreuungspensumJaCloned =
-			cloneBetreuungspensum(betreuungspensumContainer.getBetreuungspensumJA());
-		betreuungspensumContainerCloned.setBetreuungspensumJA(betreuungspensumJaCloned);
-		return betreuungspensumContainerCloned;
-	}
-
-	@Nonnull
-	private Betreuungspensum cloneBetreuungspensum(
-		@Nonnull Betreuungspensum betreuungspensum
-	) {
-		Betreuungspensum betreuungspensumCloned = new Betreuungspensum();
-		betreuungspensumCloned.setGueltigkeit(betreuungspensum.getGueltigkeit());
-		betreuungspensumCloned.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
-		betreuungspensumCloned.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
-		betreuungspensumCloned.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
-		betreuungspensumCloned.setUnitForDisplay(betreuungspensum.getUnitForDisplay());
-		betreuungspensumCloned.setPensum(betreuungspensum.getPensum());
-		betreuungspensumCloned.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
-		betreuungspensumCloned.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
-		betreuungspensumCloned.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
-		return betreuungspensumCloned;
-	}
-
-	@Nonnull
-	private List<BetreuungspensumContainer> adaptBetreuung(
-		@Nonnull Betreuung betreuung,
-		@Nonnull DateRange gueltigkeit
-	) {
-		List<BetreuungspensumContainer> currentBetreuungspensumContainer = betreuung.getBetreuungspensumContainers().stream()
-			.map(this::cloneBetreuungspensumContainerJa)
-			.collect(Collectors.toList());
-
-
-		//alle betpencont mit gueltigkeit kleiner als schnittstelle oder groesser lassen
-		currentBetreuungspensumContainer
-			.removeIf(betreuungspensumContainer -> gueltigkeit.contains(betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()));
-		//split if necessary
-		List<BetreuungspensumContainer> splitedBetreuungspensumContainers = new ArrayList<>();
-		currentBetreuungspensumContainer.stream().forEach(betreuungspensumContainer -> {
-			if (betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigAb().isBefore(gueltigkeit.getGueltigAb()) &&
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.getGueltigBis()
-					.isAfter(gueltigkeit.getGueltigBis())) {
-				//its a split
-				//clone to a new one and change validity
-				BetreuungspensumContainer betreuungspensumContainerCloned =
-					cloneBetreuungspensumContainerJa(betreuungspensumContainer);
-				betreuungspensumContainerCloned.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
-				splitedBetreuungspensumContainers.add(betreuungspensumContainerCloned);
-				//adapt the gueltigkeit for existing pensum
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
-			}
-		});
-		//adapt Gueltigkeit if needed
-		currentBetreuungspensumContainer.stream().forEach(betreuungspensumContainer -> {
-			if (betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigAb()
-				.isAfter(gueltigkeit.getGueltigAb())
-				&& betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigAb()
-				.isBefore(gueltigkeit.getGueltigBis())) {
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
-			}
-			if (betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigBis()
-				.isAfter(gueltigkeit.getGueltigAb())
-				&& betreuungspensumContainer.getBetreuungspensumJA()
-				.getGueltigkeit()
-				.getGueltigBis()
-				.isBefore(gueltigkeit.getGueltigBis())) {
-				betreuungspensumContainer.getBetreuungspensumJA()
-					.getGueltigkeit()
-					.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
-			}
-		});
-		//we add the splitted one if needed
-		currentBetreuungspensumContainer.addAll(splitedBetreuungspensumContainers);
-		return currentBetreuungspensumContainer;
-	}
-
 }
