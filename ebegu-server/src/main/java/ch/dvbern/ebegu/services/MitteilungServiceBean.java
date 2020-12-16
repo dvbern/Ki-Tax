@@ -644,9 +644,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			throw new IllegalArgumentException("Eine Betreuungsmitteilung darf nur an das Jugendamt geschickt werden");
 		}
 
-		// we first clear all the Mutationsmeldungen for the current Betreuung
-		removeOffeneBetreuungsmitteilungenForBetreuung(betreuungsmitteilung.getBetreuung());
-
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU); // vorsichtshalber
 		betreuungsmitteilung.setSentDatum(LocalDateTime.now());
 
