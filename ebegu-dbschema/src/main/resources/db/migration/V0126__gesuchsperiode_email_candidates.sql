@@ -27,3 +27,26 @@ CREATE TABLE gesuchsperiode_email_candidate_aud (
 	primary key (id, rev)
 );
 
+ALTER TABLE gesuchsperiode_email_candidate
+	ADD CONSTRAINT UK_gesuchsperiode_email_candiate_dossier UNIQUE (dossier_id);
+
+ALTER TABLE gesuchsperiode_email_candidate_aud
+	ADD CONSTRAINT FK_gesuchsperiode_email_candidate_aud_rev
+		FOREIGN KEY (rev)
+			REFERENCES revinfo (rev);
+
+ALTER TABLE gesuchsperiode_email_candidate
+	ADD CONSTRAINT FK_gesuchsperiode_massenversand_dossier_id
+		FOREIGN KEY (dossier_id)
+			REFERENCES dossier (id);
+
+ALTER TABLE gesuchsperiode_email_candidate
+	ADD CONSTRAINT FK_gesuchsperiode_massenversand_last_gesuchsperiode_id
+		FOREIGN KEY (last_gesuchsperiode_id)
+			REFERENCES gesuchsperiode (id);
+
+ALTER TABLE gesuchsperiode_email_candidate
+	ADD CONSTRAINT FK_gesuchsperiode_massenversand_next_gesuchsperiode_id
+		FOREIGN KEY (next_gesuchsperiode_id)
+			REFERENCES gesuchsperiode (id);
+
