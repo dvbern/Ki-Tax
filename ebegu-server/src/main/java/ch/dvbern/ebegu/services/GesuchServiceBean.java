@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ejb.Asynchronous;
 import javax.ejb.EJBAccessException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -52,7 +51,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
-import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
@@ -1951,23 +1949,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	@Asynchronous
-	@Transactional // wir brauchen die Transaction wegen dem LazyLoading aller Betreuungen
-	public void sendMailsToAllGesuchstellerOfLastGesuchsperiode(
-		@Nonnull Gesuchsperiode lastGesuchsperiode,
-		@Nonnull Gesuchsperiode nextGesuchsperiode) {
-		Collection<Dossier> allDossiers = dossierService.getAllDossiers(true);
-		List<Gesuch> antraegeOfLastYear = allDossiers.stream()
-			.map(dossier -> getNeuestesGesuchForDossierAndPeriod(dossier, lastGesuchsperiode))
-			.filter(Optional::isPresent)
-			.map(Optional::get)
-			.filter(g -> !g.extractAllBetreuungen().isEmpty())
-			.collect(Collectors.toList());
-
-		mailService.sendInfoFreischaltungGesuchsperiode(nextGesuchsperiode, antraegeOfLastYear);
-	}
-
-	@Override
 	public Gesuch updateBetreuungenStatus(@NotNull Gesuch gesuch) {
 		gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.ALLE_BESTAETIGT);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
@@ -1984,7 +1965,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Nonnull
-	private Optional<Gesuch> getNeuestesGesuchForDossierAndPeriod(
+	@Override
+	public Optional<Gesuch> getNeuestesGesuchForDossierAndPeriod(
 		@Nonnull Dossier dossier,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		authorizer.checkReadAuthorizationDossier(dossier);

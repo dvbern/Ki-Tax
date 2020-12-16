@@ -30,14 +30,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
  * Service fuer Batch-Jobs.
@@ -84,6 +83,9 @@ public class DailyBatchBean implements DailyBatch {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private GesuchsperiodeEmailService gesuchsperiodeEmailService;
 
 	@Override
 	@Asynchronous
@@ -256,6 +258,19 @@ public class DailyBatchBean implements DailyBatch {
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job UpdateGemeindeForBGInstitutionen konnte nicht durchgefuehrt werden!", e);
 			return new AsyncResult<>(-1);
+		}
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.HOURS, value = 1)
+	public void runBatchSendEmailsForNewGesuchsperiode() {
+		try {
+			LOGGER.info("Starting Job SendEmailsForNewGesuchsperiode...");
+			gesuchsperiodeEmailService.sendMailsForNCandidates(100);
+			LOGGER.info("... Job SendEmailsForNewGesuchsperiode finished");
+		} catch (RuntimeException e) {
+			LOGGER.error("Batch-Job SendEmailsForNewGesuchsperiode konnte nicht durchgefuehrt werden!", e);
 		}
 	}
 }
