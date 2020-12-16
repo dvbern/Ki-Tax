@@ -28,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.dto.dataexport.v1.ExportConverter;
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungenExportDTO;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -37,6 +38,7 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import net.bull.javamelody.internal.common.LOG;
 
 import static java.util.Objects.requireNonNull;
 
@@ -56,8 +58,16 @@ public class ExportServiceBean implements ExportService {
 	@Inject
 	private ExportConverter exportConverter;
 
+	@Inject BenutzerService benutzerService;
+
 	@Override
 	public UploadFileInfo exportVerfuegungOfBetreuungAsFile(String betreuungID) {
+
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"exportVerfuegungOfBetreuungAsFile", "No User is logged in"));
+
+		LOG.info("Deprecated exportVerfuegungOfBetreuungAsFile is used by " + benutzer.getEmail());
+
 		Betreuung betreuung = readBetreuung(betreuungID);
 
 		VerfuegungenExportDTO verfuegungenExportDTO = convertBetreuungToExport(betreuung);

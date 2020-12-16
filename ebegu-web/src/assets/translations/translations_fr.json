@@ -2181,5 +2181,6 @@
     "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "",
     "ZEMIS_UPLOAD_STARTED": "",
     "ZEMIS_UPLOAD_FINISHED": "",
+    "VERFUEGUNG_JSON_DEPRECATED": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
