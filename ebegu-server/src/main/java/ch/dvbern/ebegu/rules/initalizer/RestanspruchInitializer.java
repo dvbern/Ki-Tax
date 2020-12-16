@@ -113,11 +113,6 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 			final int restanspruchNeu = calculateRestanspruch(betreuungspensum.intValue(), anspruchberechtigtesPensum, anspruchspensumRest.intValue());
 			targetZeitabschnitt.setAnspruchspensumRest(restanspruchNeu);
 		} else {
-			// Dieser Fall sollte neu nicht mehr vorkommen, da die Restanspruch-Rule erst nach dem Rechner aufgerufen wird
-			LOG.warn("Berechnung Restanspruch: Kein Restanspruch auf BGResult fuer Betreuung gefunden: {} in Antrag {}",
-				platz.getBGNummer(),
-				platz.extractGesuch().getLaufnummer());
-
 			if (betreuungspensum.compareTo(BigDecimal.ZERO) == 0) {
 				// In der Vorgaengerverfuegung bestand keine Betreuung mehr fuer diesen Abschnitt. Wir setzen
 				// den Restanspruch auf -1 (= noch nicht berechnet)
