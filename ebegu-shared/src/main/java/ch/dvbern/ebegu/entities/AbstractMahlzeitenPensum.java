@@ -49,6 +49,9 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 	@Column(nullable = false)
 	private BigDecimal tarifProNebenmahlzeit = BigDecimal.ZERO;
 
+	@Column(nullable = false)
+	private boolean vollstaendig = true;
+
 	@Nonnull
 	public BigDecimal getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
@@ -67,6 +70,7 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
+	@Nonnull
 	public BigDecimal getTarifProHauptmahlzeit() {
 		return tarifProHauptmahlzeit;
 	}
@@ -75,6 +79,7 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
 	}
 
+	@Nonnull
 	public BigDecimal getTarifProNebenmahlzeit() {
 		return tarifProNebenmahlzeit;
 	}
@@ -83,9 +88,21 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 
-	public void copyAbstractBetreuungspensumMahlzeitenEntity(@Nonnull AbstractMahlzeitenPensum target,
+	public boolean isVollstaendig() {
+		return vollstaendig;
+	}
+
+	public void setVollstaendig(boolean vollstaendig) {
+		this.vollstaendig = vollstaendig;
+	}
+
+	public void copyAbstractBetreuungspensumMahlzeitenEntity(
+		@Nonnull AbstractMahlzeitenPensum target,
 		@Nonnull AntragCopyType copyType) {
+
 		super.copyAbstractBetreuungspensumEntity(target, copyType);
+		target.setVollstaendig(this.isVollstaendig());
+
 		switch (copyType) {
 		case MUTATION:
 			target.setMonatlicheHauptmahlzeiten(this.getMonatlicheHauptmahlzeiten());

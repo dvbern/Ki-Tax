@@ -61,10 +61,22 @@
                     </div>
 
                     <!-- Button -->
-                    <div class="col-md-3" flex layout="row" layout-align="center center">
+                    <div class="col-md-3" flex layout="row" layout-align="center center" id="actions">
                         <dv-loading-button button-click="vm.createLastenausgleich()"
                                            aria-label="{{'LASTENAUSGLEICH_ERSTELLEN' | translate}}" type="submit">
                             <span class="uppercase" data-translate="LASTENAUSGLEICH_ERSTELLEN"></span>
+                        </dv-loading-button>
+                        <dv-loading-button
+                                button-click="vm.downloadZemisExcel()"
+                                aria-label="{{'ZEMIS_LISTE_HERUNTERLADEN' | translate}}"
+                                title="{{'ZEMIS_LISTE_HERUNTERLADEN' | translate}}">
+                            <span class="fa fa-download"></span>
+                        </dv-loading-button>
+                        <dv-loading-button
+                                button-click="vm.uploadZemisExcel()"
+                                aria-label="{{'ZEMIS_LISTE_HOCHLADEN' | translate}}"
+                                title="{{'ZEMIS_LISTE_HOCHLADEN' | translate}}">
+                            <span class="fa fa-upload"></span>
                         </dv-loading-button>
                     </div>
                 </div>

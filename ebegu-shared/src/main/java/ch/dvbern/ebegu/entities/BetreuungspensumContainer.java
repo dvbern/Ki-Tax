@@ -30,7 +30,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.Gueltigkeit;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -40,7 +42,8 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class BetreuungspensumContainer extends AbstractMutableEntity implements Comparable<BetreuungspensumContainer> {
+public class BetreuungspensumContainer extends AbstractMutableEntity
+	implements Gueltigkeit, Comparable<BetreuungspensumContainer> {
 
 	private static final long serialVersionUID = -6784987861150035840L;
 
@@ -88,6 +91,12 @@ public class BetreuungspensumContainer extends AbstractMutableEntity implements 
 		this.betreuungspensumJA = betreuungspensumJA;
 	}
 
+	@Nonnull
+	@Override
+	public DateRange getGueltigkeit() {
+		return betreuungspensumJA.getGueltigkeit();
+	}
+
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -129,6 +138,11 @@ public class BetreuungspensumContainer extends AbstractMutableEntity implements 
 		builder.append(this.getBetreuungspensumJA(), o.getBetreuungspensumJA());
 		builder.append(this.getBetreuungspensumJA().getId(), o.getBetreuungspensumJA().getId());
 		return builder.toComparison();
+	}
+
+	@Nonnull
+	public BetreuungspensumContainer copyWithPensumJA() {
+		return copyBetreuungspensumContainer(new BetreuungspensumContainer(), AntragCopyType.MUTATION, betreuung);
 	}
 
 	@Nonnull

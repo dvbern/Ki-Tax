@@ -1042,6 +1042,7 @@
     "DOSSIER_MUTIEREN_HEIRAT": "Changer le cas mariage",
     "DOSSIER_MUTIEREN_SCHEIDUNG": "Changer le cas divorce",
     "UMZUG_TITLE": "Déménagement",
+    "UMZUG_IN_NEUE_GEMEINDE": "",
     "UMZUG_ENTFERNEN": "Supprimer le déménagement",
     "UMZUG_HINZUFUEGEN": "Ajouter un déménagement",
     "UMZUG_HINT": "Prévoyez-vous de déménager ?  Veuillez saisir l'adresse modifiée le cas échéant.",
@@ -1933,6 +1934,8 @@
     "LASTENAUSGLEICH_JAHR": "Année",
     "LASTENAUSGLEICH_SELBSTBEHALT": "Franchise par place à 100%",
     "LASTENAUSGLEICH_ERSTELLEN": "Créer la compensation des charges",
+    "ZEMIS_LISTE_HERUNTERLADEN": "",
+    "ZEMIS_LISTE_HOCHLADEN": "",
     "LASTENAUSGLEICH_LIST": "Compensation des charges définie",
     "LASTENAUSGLEICH_GENERIERT": "Généré",
     "LASTENAUSGLEICH_TOTALBETRAG": "Montant total",
@@ -2175,5 +2178,9 @@
     "RUECKFORDERUNG_ZAHLUNGEN_BESCHWERDE": "Réclamation",
     "RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE": "Document(s) concernant la réclamation",
     "GEMEINDE_DANGEROUS_SAVING": "Attention: vous avez effectué des changements dans une période qui est active. Êtes-vous sûre de vouloir effectuer ces changements? Les demandes de cette période ne seront pas automatiquement changées",
+    "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "",
+    "ZEMIS_UPLOAD_STARTED": "",
+    "ZEMIS_UPLOAD_FINISHED": "",
+    "VERFUEGUNG_JSON_DEPRECATED": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

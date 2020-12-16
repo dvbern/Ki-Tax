@@ -38,6 +38,7 @@ import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {OkDialogController} from '../../dialog/OkDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StepDialogController} from '../../dialog/StepDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -47,8 +48,10 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+const okDialogTempl = require('../../dialog/okDialogTemplate.html');
 const stepDialogTempl = require('../../dialog/stepDialog.html');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
@@ -77,7 +80,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$timeout',
         'AuthServiceRS',
         'I18nServiceRSRest',
-        '$q'
+        '$q',
+        '$translate'
     ];
 
     // this is the model...
@@ -115,6 +119,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly authServiceRs: AuthServiceRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly $q: IQService,
+        private readonly $translate: ITranslateService
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -529,7 +534,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
-    public openExport(): void {
+    public async openExport(): Promise<void> {
+        await this.showDeprecatedJsonDialog();
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getDokumentAccessTokenVerfuegungExport(this.getBetreuung().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -537,6 +543,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
+    }
+
+    private showDeprecatedJsonDialog(): IPromise<any> {
+        const title = this.$translate.instant('VERFUEGUNG_JSON_DEPRECATED');
+        return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
+            title
+        });
     }
 
     public openNichteintretenPDF(): void {

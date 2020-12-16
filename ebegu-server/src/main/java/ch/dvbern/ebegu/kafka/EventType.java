@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.kafka;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -35,11 +36,10 @@ public enum EventType {
 	}
 
 	@Nonnull
-	public static EventType of(@Nonnull String name) {
+	public static Optional<EventType> of(@Nonnull String name) {
 		return Arrays.stream(values())
 			.filter(value -> value.getName().equals(name))
-			.findAny()
-			.orElseThrow(() -> new IllegalArgumentException("No EventType found for name " + name));
+			.findAny();
 	}
 
 	@Nonnull

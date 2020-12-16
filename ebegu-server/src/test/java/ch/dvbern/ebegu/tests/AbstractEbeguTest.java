@@ -133,6 +133,7 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("reporting/Kanton.xlsx", "reporting/Kanton.xlsx")
 			.addAsResource("reporting/Mitarbeiterinnen.xlsx", "reporting/Mitarbeiterinnen.xlsx")
 			.addAsResource("reporting/GesuchstellerKinderBetreuung.xlsx", "reporting/GesuchstellerKinderBetreuung.xlsx")
+			.addAsResource("reporting/KinderMitZemisNummer.xlsx", "reporting/KinderMitZemisNummer.xlsx")
 			.addAsResource("mail/templates/InfoBetreuungAbgelehnt_de.ftl", "mail/templates/InfoBetreuungAbgelehnt_de.ftl")
 			.addAsResource("mail/templates/InfoBetreuungenBestaetigt_de.ftl", "mail/templates/InfoBetreuungenBestaetigt_de.ftl")
 			.addAsResource("mail/templates/InfoBetreuungGeloescht_de.ftl", "mail/templates/InfoBetreuungGeloescht_de.ftl")

@@ -57,6 +57,7 @@ export class UploadRS {
             url: this.serviceURL,
             method: 'POST',
             headers: {
+                // tslint:disable-next-line:no-duplicate-string
                 'x-filename': names.join(';'),
                 'x-gesuchID': gesuchID,
             },
@@ -100,6 +101,24 @@ export class UploadRS {
             return this.q.reject(response);
         }, (evt: any) => {
             this.notifyCallbackByUpload(evt);
+        });
+    }
+
+    public uploadZemisExcel(file: File): IPromise<void> {
+        return this.upload.upload({
+            url: `${this.serviceURL}/zemisExcel`,
+            method: 'POST',
+            headers: {
+                'x-filename': this.base64.encode(file.name),
+            },
+            data: {
+                file
+            },
+        }).then((response: any) => {
+            return response.data;
+        }, (response: any) => {
+            console.log(this.NOT_SUCCESS);
+            return this.q.reject(response);
         });
     }
 
