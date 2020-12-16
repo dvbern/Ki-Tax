@@ -86,17 +86,18 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.TECHNICAL_BENUTZER_ID;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
@@ -1067,6 +1068,40 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			verifyAll();
 		}
 
+		/**
+		 * regression test: when there is an existing Zeitabschnitt starting in client range but exceeding it, it
+		 * should only be included once (after the client's gueltigkeit).
+		 *
+		 * The setup requires to set distinct values to the Zeitabschnitte, here ensured with Betreuungskost, because
+		 * otherwise the Zeitabschnitte merging creates a single Zeitabschnitt (and thus does not show the problem).
+		 */
+		@Test
+		void shouldNotCreateOverlappingPensen() {
+			LocalDate march = LocalDate.of(2021, 3, 1);
+			clientGueltigkeit = new DateRange(march, LocalDate.of(2021, 6, 30));
+			zeitabschnittDTO.setVon(march);
+			zeitabschnittDTO.setBis(LocalDate.of(2021, 7, 2));
+			zeitabschnittDTO.setBetreuungskosten(BigDecimal.valueOf(100));
+
+			BetreuungsmitteilungPensum p1 =
+				createBetreuungsmitteilungPensum(new DateRange(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 28)));
+			p1.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
+			BetreuungsmitteilungPensum p2 =
+				createBetreuungsmitteilungPensum(new DateRange(march, LocalDate.of(2021, 7, 1)));
+			p2.setMonatlicheBetreuungskosten(BigDecimal.valueOf(99));
+			Betreuungsmitteilung existing = createBetreuungMitteilung(p1, p2);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess(existing);
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(p1, p1.getGueltigkeit()),
+				matches(zeitabschnittDTO, new DateRange(march, clientGueltigkeit.getGueltigBis())),
+				matches(p2, LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 1))
+			));
+		}
+
 		private void testProcessingSuccess(@Nonnull Betreuungsmitteilung... existing) {
 			expectMutationsmeldung(existing);
 
@@ -1098,8 +1133,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		private Capture<Betreuungsmitteilung> expectNewMitteilung() {
 			Capture<Betreuungsmitteilung> captured = EasyMock.newCapture();
 			//noinspection ConstantConditions
-			expect(mitteilungService.sendBetreuungsmitteilung(EasyMock.capture(captured)))
-				.andReturn(null);
+			mitteilungService.replaceBetreungsmitteilungen(EasyMock.capture(captured));
+			expectLastCall();
 
 			return captured;
 		}

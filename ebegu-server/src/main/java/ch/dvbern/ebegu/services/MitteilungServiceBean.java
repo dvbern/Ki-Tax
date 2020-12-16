@@ -66,7 +66,6 @@ import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
@@ -83,7 +82,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -116,6 +114,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Mitteilungen
@@ -622,6 +622,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return persistence.getCriteriaSingleResult(query);
 	}
 
+	@Override
+	public void replaceBetreungsmitteilungen(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+
+		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
+
+		//noinspection ResultOfMethodCallIgnored
+		sendBetreuungsmitteilung(betreuungsmitteilung);
+	}
+
 	@Nonnull
 	@Override
 	public Betreuungsmitteilung sendBetreuungsmitteilung(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
@@ -633,6 +643,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (MitteilungTeilnehmerTyp.JUGENDAMT != betreuungsmitteilung.getEmpfaengerTyp()) {
 			throw new IllegalArgumentException("Eine Betreuungsmitteilung darf nur an das Jugendamt geschickt werden");
 		}
+
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU); // vorsichtshalber
 		betreuungsmitteilung.setSentDatum(LocalDateTime.now());
 
@@ -762,7 +773,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung,
+	public void createMutationsmeldungAbweichungen(
+		@Nonnull Betreuungsmitteilung mitteilung,
 		@Nonnull Betreuung betreuung) {
 
 		// convert BetreuungspensumAbweichung to MitteilungPensum
@@ -787,10 +799,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
 
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sendBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(pensenFromAbweichungen, mahlzeitenverguenstigungEnabled, locale));
+		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
+			pensenFromAbweichungen,
+			mahlzeitenverguenstigungEnabled,
+			locale));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -966,7 +983,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		switch (mode) {
 		case SEARCH:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(root.get(AbstractEntity_.id)).where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+			query.select(root.get(AbstractEntity_.id))
+				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			constructOrderByClause(
 				mitteilungTableFilterDto,
 				cb,
@@ -1112,7 +1130,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return Collections.emptyList();
 	}
 
-	private void applyBetreuungsmitteilungToMutation(@Nonnull Gesuch gesuch, @Nonnull Betreuungsmitteilung mitteilung
+	private void applyBetreuungsmitteilungToMutation(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Betreuungsmitteilung mitteilung
 	) {
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(mitteilung);
@@ -1142,7 +1162,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				existingBetreuung.getBetreuungspensumContainers().add(betPenCont);
 
 				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {
-					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
+					betPensumMitteilung.getBetreuungspensumAbweichung()
+						.setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
 				}
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT wenn Vollstaendig,
