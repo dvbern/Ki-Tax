@@ -76,13 +76,13 @@ public final class PensumMappingUtil {
 			.filter(first -> first.getGueltigkeit().startsBefore(gueltigkeit))
 			.ifPresent(first -> first.getGueltigkeit().setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1)));
 
+		overlappingGueltigBis.ifPresent(containersToUpdate::add);
 		// everything still affecting gueltigkeit is obsolete (will be replaced with import data)
 		containersToUpdate.removeIf(c -> c.getGueltigkeit().intersects(gueltigkeit));
 
 		List<BetreuungspensumContainer> toImport =
 			convertZeitabschnitte(ctx, gueltigkeit, z -> toBetreuungspensumContainer(z, ctx));
 
-		overlappingGueltigBis.ifPresent(containersToUpdate::add);
 		betreuung.getBetreuungspensumContainers().addAll(containersToUpdate);
 		betreuung.getBetreuungspensumContainers().addAll(toImport);
 	}
@@ -176,6 +176,8 @@ public final class PensumMappingUtil {
 			.ifPresent(overlappingAb -> overlappingAb.getGueltigkeit().setGueltigBis(mutationRangeAb.minusDays(1)));
 
 		overlappingGueltigBis.ifPresent(existing::add);
+		// everything still affecting gueltigkeit is obsolete (will be replaced with import data)
+		existing.removeIf(c -> c.getGueltigkeit().intersects(mutationRange));
 
 		return existing;
 	}

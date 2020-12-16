@@ -363,8 +363,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
-		//noinspection ResultOfMethodCallIgnored
-		mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
+		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
 		LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", ctx.getDto().getRefnr());
 
 		return Processing.success();
