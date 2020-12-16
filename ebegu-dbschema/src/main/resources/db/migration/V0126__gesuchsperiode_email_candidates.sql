@@ -50,3 +50,4 @@ ALTER TABLE gesuchsperiode_email_candidate
 		FOREIGN KEY (next_gesuchsperiode_id)
 			REFERENCES gesuchsperiode (id);
 
+CREATE INDEX IX_gesuchsperiode_email_candidate_status ON gesuchsperiode_email_candidate(status);
