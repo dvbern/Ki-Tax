@@ -4493,14 +4493,8 @@ export class EbeguRestUtil {
             return [];
         }
         return Array.isArray(data)
-            ?
-            data.map(item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
-                item))
-            :
-            [
-                this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
-                    data),
-            ];
+            ? data.map(item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), item))
+            : [this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), data)];
     }
 
     public parseLastenausgleichTagesschuleAngabenInstitutionContainer(
