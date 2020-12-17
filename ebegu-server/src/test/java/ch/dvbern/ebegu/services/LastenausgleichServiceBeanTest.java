@@ -114,8 +114,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
 		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
 		Assert.assertEquals(2017, detail.getJahr().longValue());
-		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungen());
-		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheine());
+		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1451.30), detail.getSelbstbehaltGemeinde()); // dies entspricht genau 20% der Kosten
 		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getBetragLastenausgleich()); // dies entspricht genau 80% der Kosten
 	}
@@ -135,8 +135,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
 		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
 		Assert.assertEquals(2018, detail.getJahr().longValue());
-		Assert.assertEquals(MathUtil.DEFAULT.from(26.67), detail.getTotalBelegungen());
-		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getTotalBetragGutscheine());
+		Assert.assertEquals(MathUtil.DEFAULT.from(26.67), detail.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1161.04), detail.getSelbstbehaltGemeinde()); // dies entspricht genau 20% der Kosten
 		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), detail.getBetragLastenausgleich()); // dies entspricht genau 80% der Kosten
 	}
@@ -157,8 +157,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
 		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
 		Assert.assertEquals(2017, detail.getJahr().longValue());
-		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungen());
-		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheine());
+		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(2902.60), detail.getSelbstbehaltGemeinde());
 		Assert.assertEquals(MathUtil.DEFAULT.from(4353.90), detail.getBetragLastenausgleich());
 	}
@@ -179,8 +179,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
 		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
 		Assert.assertEquals(2017, detail.getJahr().longValue());
-		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungen());
-		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheine());
+		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(725.65), detail.getSelbstbehaltGemeinde());
 		Assert.assertEquals(MathUtil.DEFAULT.from(6530.85), detail.getBetragLastenausgleich());
 	}
@@ -200,8 +200,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail = lastenausgleich2017.getLastenausgleichDetails().iterator().next();
 		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
 		Assert.assertEquals(2017, detail.getJahr().longValue());
-		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungen());
-		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheine());
+		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1451.30), detail.getSelbstbehaltGemeinde()); // dies entspricht genau 20% der Kosten
 		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getBetragLastenausgleich()); // dies entspricht genau 80% der Kosten
 
@@ -221,8 +221,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail2018 = lastenausgleich2018.getLastenausgleichDetails().get(0);
 		Assert.assertEquals(gesuch.extractGemeinde(), detail2018.getGemeinde());
 		Assert.assertEquals(2018, detail2018.getJahr().longValue());
-		Assert.assertEquals(MathUtil.DEFAULT.from(53.33), detail2018.getTotalBelegungen());
-		Assert.assertEquals(MathUtil.DEFAULT.from(11610.40), detail2018.getTotalBetragGutscheine());
+		Assert.assertEquals(MathUtil.DEFAULT.from(53.33), detail2018.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(11610.40), detail2018.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(2322.08), detail2018.getSelbstbehaltGemeinde());
 		Assert.assertEquals(MathUtil.DEFAULT.from(9288.32), detail2018.getBetragLastenausgleich());
 		Assert.assertFalse(detail2018.isKorrektur());
@@ -230,8 +230,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail2017_korrektur = lastenausgleich2018.getLastenausgleichDetails().get(1);
 		Assert.assertEquals(gesuch.extractGemeinde(), detail2017_korrektur.getGemeinde());
 		Assert.assertEquals(2017, detail2017_korrektur.getJahr().longValue());
-		Assert.assertEquals(MathUtil.DEFAULT.from(-33.33), detail2017_korrektur.getTotalBelegungen());
-		Assert.assertEquals(MathUtil.DEFAULT.from(-7256.50), detail2017_korrektur.getTotalBetragGutscheine());
+		Assert.assertEquals(MathUtil.DEFAULT.from(-33.33), detail2017_korrektur.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(-7256.50), detail2017_korrektur.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(-1451.30), detail2017_korrektur.getSelbstbehaltGemeinde());
 		Assert.assertEquals(MathUtil.DEFAULT.from(-5805.20), detail2017_korrektur.getBetragLastenausgleich());
 		Assert.assertTrue(detail2017_korrektur.isKorrektur());
@@ -239,8 +239,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		LastenausgleichDetail detail2017_new = lastenausgleich2018.getLastenausgleichDetails().get(2);
 		Assert.assertEquals(gesuch.extractGemeinde(), detail2017_new.getGemeinde());
 		Assert.assertEquals(2017, detail2017_new.getJahr().longValue());
-		Assert.assertEquals(MathUtil.DEFAULT.from(66.67), detail2017_new.getTotalBelegungen());
-		Assert.assertEquals(MathUtil.DEFAULT.from(14513.00), detail2017_new.getTotalBetragGutscheine());
+		Assert.assertEquals(MathUtil.DEFAULT.from(66.67), detail2017_new.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(14513.00), detail2017_new.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(2902.60), detail2017_new.getSelbstbehaltGemeinde());
 		Assert.assertEquals(MathUtil.DEFAULT.from(11610.40), detail2017_new.getBetragLastenausgleich());
 		Assert.assertTrue(detail2017_new.isKorrektur());
