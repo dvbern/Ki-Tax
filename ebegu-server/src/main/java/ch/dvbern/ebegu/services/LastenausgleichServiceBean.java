@@ -148,6 +148,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
 				totalGesamterLastenausgleich,
 				lastenausgleichDetail.getBetragLastenausgleich());
+			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
+				totalGesamterLastenausgleich,
+				lastenausgleichDetail.getTotalBetragGutscheineOhneSelbstbehalt());
 		}
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
