@@ -45,8 +45,8 @@ public class LastenausgleichBerechnungDataRow {
 		this.gemeinde = row.getGemeinde();
 		this.bfsNummer = row.getBfsNummer();
 		this.verrechnungsjahr = row.getVerrechnungsjahr();
-		this.setTotalBelegungMitSelbstbehalt(row.getTotalBelegungMitSelbstbehalt());
-		this.setTotalGutscheineMitSelbstbehalt(row.getTotalGutscheineMitSelbstbehalt());
+		this.totalBelegungMitSelbstbehalt = row.getTotalBelegungMitSelbstbehalt();
+		this.totalGutscheineMitSelbstbehalt = row.getTotalGutscheineMitSelbstbehalt();
 		this.totalAnrechenbar = row.getTotalAnrechenbar();
 		this.kostenPro100ProzentPlatz = row.getKostenPro100ProzentPlatz();
 		this.selbstbehaltGemeinde = row.getSelbstbehaltGemeinde();
