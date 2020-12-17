@@ -31,11 +31,14 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchsperiodeEmailCandidate;
 import ch.dvbern.ebegu.entities.GesuchsperiodeEmailCandidate_;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchsperiodeEmailCandiateStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +58,9 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 
 	@Inject
 	private MailService mailService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(GesuchsperiodeEmailCandidate.class.getSimpleName());
@@ -109,6 +115,19 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 
 		if (gesuch.getFall().getBesitzer() == null) {
 			gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.KEIN_BESITZER);
+			return;
+		}
+
+		String gemeindeId = gesuch.getDossier().getGemeinde().getId();
+		GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sendMailAndChangeStatus",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeId
+			));
+
+		if (!gemeindeStammdaten.getEmailBeiGesuchsperiodeOeffnung()) {
+			gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.GEMEINDE_EINSTELLUNG_DEAKTIVIERT);
 			return;
 		}
 
