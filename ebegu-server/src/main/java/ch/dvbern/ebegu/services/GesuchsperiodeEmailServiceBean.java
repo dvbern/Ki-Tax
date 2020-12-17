@@ -79,8 +79,8 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 		LOG.info("Emails für " + candidates.size() + " Dossiers werden versendet");
 		candidates.forEach(c -> {
 			try {
-				sendMailAndChangeStatus(c);
-				persistence.persist(c);
+				GesuchsperiodeEmailCandidate updatedStatusCandidate = sendMailAndChangeStatus(c);
+				persistence.persist(updatedStatusCandidate);
 			} catch (Exception e) {
 				c.setStatus(GesuchsperiodeEmailCandiateStatus.FEHLGESCHLAGEN);
 				LOG.error("Mail versenden fehlgeschlagen", e);
@@ -90,7 +90,7 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 		});
 	}
 
-	private void sendMailAndChangeStatus(@Nonnull GesuchsperiodeEmailCandidate gesuchsperiodeEmailCandidate) {
+	private GesuchsperiodeEmailCandidate sendMailAndChangeStatus(@Nonnull GesuchsperiodeEmailCandidate gesuchsperiodeEmailCandidate) {
 		Optional<Gesuch> gesuchOpt = gesuchService.getNeuestesGesuchForDossierAndPeriod(
 			gesuchsperiodeEmailCandidate.getDossier(),
 			gesuchsperiodeEmailCandidate.getLastGesuchsperiode()
@@ -98,18 +98,18 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 
 		if (gesuchOpt.isEmpty()) {
 			gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.KEIN_GESUCH);
-			return;
+			return gesuchsperiodeEmailCandidate;
 		}
 		Gesuch gesuch = gesuchOpt.get();
 
 		if (gesuch.extractAllBetreuungen().isEmpty()) {
 			gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.NUR_TAGESSCHULEN);
-			return;
+			return gesuchsperiodeEmailCandidate;
 		}
 
 		if (gesuch.getFall().getBesitzer() == null) {
 			gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.KEIN_BESITZER);
-			return;
+			return gesuchsperiodeEmailCandidate;
 		}
 
 		mailService.sendInfoFreischaltungGesuchsperiode(
@@ -118,6 +118,7 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 		);
 
 		gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.VERSENDET);
+		return  gesuchsperiodeEmailCandidate;
 	}
 
 	private List<GesuchsperiodeEmailCandidate> getNCandidates(@Nonnull Integer numberOfCandidates) {
