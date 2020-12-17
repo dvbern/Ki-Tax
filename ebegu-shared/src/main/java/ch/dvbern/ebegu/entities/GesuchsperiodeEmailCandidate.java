@@ -27,7 +27,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeEmailCandiateStatus;
@@ -48,7 +47,7 @@ public class GesuchsperiodeEmailCandidate extends AbstractEntity {
 
 	@Nonnull
 	@NotNull
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_massenversand_dossier_id"), nullable = false)
 	private Dossier dossier;
 

@@ -27,9 +27,6 @@ CREATE TABLE gesuchsperiode_email_candidate_aud (
 	primary key (id, rev)
 );
 
-ALTER TABLE gesuchsperiode_email_candidate
-	ADD CONSTRAINT UK_gesuchsperiode_email_candiate_dossier UNIQUE (dossier_id);
-
 ALTER TABLE gesuchsperiode_email_candidate_aud
 	ADD CONSTRAINT FK_gesuchsperiode_email_candidate_aud_rev
 		FOREIGN KEY (rev)
