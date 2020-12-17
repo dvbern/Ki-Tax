@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -88,6 +89,7 @@ import org.apache.commons.lang.StringUtils;
  * erstellt und es gibt kein Problem mit den Verknuepfungen zwischen Entities
  * Der richtige Prozess findet man in TestfaelleService#createAndSaveGesuch()
  */
+@CanIgnoreReturnValue
 public abstract class AbstractTestfall {
 
 	public static final String ID_MANDANT_KANTON_BERN = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";

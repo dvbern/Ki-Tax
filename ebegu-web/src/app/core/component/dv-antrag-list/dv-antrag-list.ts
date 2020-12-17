@@ -151,7 +151,7 @@ export class DVAntragListController implements IController {
 
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
-            this.institutionenList = angular.copy(response);
+            this.institutionenList = response;
         });
     }
 

@@ -1042,6 +1042,7 @@
     "DOSSIER_MUTIEREN_HEIRAT": "Dossier mutieren Heirat",
     "DOSSIER_MUTIEREN_SCHEIDUNG": "Dossier mutieren Scheidung",
     "UMZUG_TITLE": "Umzug",
+    "UMZUG_IN_NEUE_GEMEINDE": "Sofern Sie in eine neue Gemeinde im Kanton Bern umgezogen sind/umziehen klicken Sie bitte oben neben Ihrer Gemeinde auf \"+Gemeinde hinzufügen\" und klicken Sie sich dort durch den Antrag, um die Daten zu bestätigen. Danach müssen Sie den Antrag bei der neuen Gemeinde erneut einreichen.",
     "UMZUG_ENTFERNEN": "Umzug löschen",
     "UMZUG_HINZUFUEGEN": "Umzug hinzufügen",
     "UMZUG_HINT": "Planen Sie einen Umzug? Bitte geben Sie allfällige Adressänderungen ein.",
@@ -2180,5 +2181,6 @@
     "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "Kein Selbstbehalt durch die Gemeinde",
     "ZEMIS_UPLOAD_STARTED": "Die Verarbeitung des ZEMIS Excels wurde gestartet. Sie werden per Email benachrichtigt, sobald der Prozess abgeschlossen wurde.",
     "ZEMIS_UPLOAD_FINISHED": "Die Vearbeitung wurde erfolgreich abgeschlossen",
+    "VERFUEGUNG_JSON_DEPRECATED": "Achtung: Der JSON Export der Verfügung ist veraltet und wird Ende Januar 2021 entfernt. Bitte melden Sie sich beim kiBon Support, falls Sie diese Funktion noch verwenden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

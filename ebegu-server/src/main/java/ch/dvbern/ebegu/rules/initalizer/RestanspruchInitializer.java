@@ -58,8 +58,6 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
  */
 public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RestanspruchInitializer.class);
-
 	public RestanspruchInitializer(boolean isDebug) {
 		super(isDebug);
 	}
@@ -84,14 +82,12 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 			restanspruchsAbschnitt.setHasGemeindeSpezifischeBerechnung(zeitabschnitt.isHasGemeindeSpezifischeBerechnung());
 			restanspruchUebernehmenVerfuegt(
 				zeitabschnitt.getBgCalculationResultAsiv(),
-				restanspruchsAbschnitt.getBgCalculationInputAsiv(),
-				platz);
+				restanspruchsAbschnitt.getBgCalculationInputAsiv());
 			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
 				Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
 				restanspruchUebernehmenVerfuegt(
 					zeitabschnitt.getBgCalculationResultGemeinde(),
-					restanspruchsAbschnitt.getBgCalculationInputGemeinde(),
-					platz);
+					restanspruchsAbschnitt.getBgCalculationInputGemeinde());
 			} else {
 				restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
 			}
@@ -102,8 +98,7 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
 	private void restanspruchUebernehmenVerfuegt(
 		@Nonnull BGCalculationResult sourceZeitabschnitt,
-		@Nonnull BGCalculationInput targetZeitabschnitt,
-		@Nonnull AbstractPlatz platz
+		@Nonnull BGCalculationInput targetZeitabschnitt
 	) {
 		int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchspensumProzent();
 		BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
@@ -113,11 +108,6 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 			final int restanspruchNeu = calculateRestanspruch(betreuungspensum.intValue(), anspruchberechtigtesPensum, anspruchspensumRest.intValue());
 			targetZeitabschnitt.setAnspruchspensumRest(restanspruchNeu);
 		} else {
-			// Dieser Fall sollte neu nicht mehr vorkommen, da die Restanspruch-Rule erst nach dem Rechner aufgerufen wird
-			LOG.warn("Berechnung Restanspruch: Kein Restanspruch auf BGResult fuer Betreuung gefunden: {} in Antrag {}",
-				platz.getBGNummer(),
-				platz.extractGesuch().getLaufnummer());
-
 			if (betreuungspensum.compareTo(BigDecimal.ZERO) == 0) {
 				// In der Vorgaengerverfuegung bestand keine Betreuung mehr fuer diesen Abschnitt. Wir setzen
 				// den Restanspruch auf -1 (= noch nicht berechnet)

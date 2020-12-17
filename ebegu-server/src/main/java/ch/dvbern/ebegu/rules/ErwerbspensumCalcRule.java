@@ -176,6 +176,12 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return erwerbspensum;
 	}
 
+	/**
+	 * Monat Rule, der GS2 ist nach aenderung die Famsit ab Anfang naechste Monat erst berucksichtig
+	 * @param betreuung
+	 * @param gueltigkeit
+	 * @return
+	 */
 	private boolean hasSecondGSForZeit(@Nonnull AbstractPlatz betreuung, @Nonnull DateRange gueltigkeit) {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
@@ -184,7 +190,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
-			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb)) {
+			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb.plusMonths(1).withDayOfMonth(1))) {
 				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 		}
 		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());

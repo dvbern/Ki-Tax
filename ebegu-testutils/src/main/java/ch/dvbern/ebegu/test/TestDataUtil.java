@@ -157,6 +157,7 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
@@ -228,6 +229,7 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
  * comments homa
  */
 @SuppressWarnings("PMD.NcssTypeCount")
+@CanIgnoreReturnValue
 public final class TestDataUtil {
 
 	private static final String iban = "CH39 0900 0000 3066 3817 2";
@@ -1039,7 +1041,7 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
-	private static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo) {
+	public static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
