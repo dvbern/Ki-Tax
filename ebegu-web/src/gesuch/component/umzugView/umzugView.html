@@ -31,6 +31,10 @@
                    dv-show-expression="vm.gesuchModelManager.getGesuch().isMutation()"
                    class="inline-hint"
                    data-translate="UMZUG_LIST_HINT"></p>
+                <p data-translate="UMZUG_IN_NEUE_GEMEINDE"
+                   class="inline-hint neue-gemeinde"
+                   dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                ></p>
             </div>
         </div>
     </div>

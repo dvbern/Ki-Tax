@@ -153,6 +153,11 @@ public interface MitteilungService {
 	Long getAmountNewMitteilungenForCurrentBenutzer();
 
 	/**
+	 * Entfernt alle offenen Betreuungsmitteilungen und speichert stattdessen die übergebene Betreuungsmitteilung.
+	 */
+	void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung);
+
+	/**
 	 * Sendet die uebergebene Betreuungsmitteilung. Der Empfaenger wird automatisch gesetzt
 	 */
 	@Nonnull
