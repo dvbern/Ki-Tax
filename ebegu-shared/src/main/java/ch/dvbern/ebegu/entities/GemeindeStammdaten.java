@@ -236,6 +236,11 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private String tsEmail;
 
 	@Nonnull
+	@Column(nullable = false)
+	@NotNull
+	private Boolean emailBeiGesuchsperiodeOeffnung = false;
+
+	@Nonnull
 	@ManyToMany
 	@JoinTable(
 		joinColumns = @JoinColumn(name = "gemeinde_stammdaten_id", nullable = false),
@@ -690,5 +695,14 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setTsEmail(@Nullable String tsEmail) {
 		this.tsEmail = tsEmail;
+	}
+
+	@Nonnull
+	public Boolean getEmailBeiGesuchsperiodeOeffnung() {
+		return emailBeiGesuchsperiodeOeffnung;
+	}
+
+	public void setEmailBeiGesuchsperiodeOeffnung(@Nonnull Boolean emailBeiGesuchsperiodeOeffnung) {
+		this.emailBeiGesuchsperiodeOeffnung = emailBeiGesuchsperiodeOeffnung;
 	}
 }

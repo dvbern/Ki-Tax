@@ -951,6 +951,7 @@ export class EbeguRestUtil {
                 stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             restStammdaten.externalClients = stammdaten.externalClients || null;
             restStammdaten.usernameScolaris = stammdaten.usernameScolaris;
+            restStammdaten.emailBeiGesuchsperiodeOeffnung = stammdaten.emailBeiGesuchsperiodeOeffnung;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -1013,6 +1014,7 @@ export class EbeguRestUtil {
             stammdatenTS.tsVerantwortlicherNachVerfuegungBenachrichtigen =
                 stammdatenFromServer.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
+            stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
 
             return stammdatenTS;
         }

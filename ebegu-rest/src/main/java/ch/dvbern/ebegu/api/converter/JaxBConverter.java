@@ -4932,6 +4932,7 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
 		stammdaten.setTsEmail(jaxStammdaten.getTsEmail());
 		stammdaten.setTsTelefon(jaxStammdaten.getTsTelefon());
+		stammdaten.setEmailBeiGesuchsperiodeOeffnung(jaxStammdaten.getEmailBeiGesuchsperiodeOeffnung());
 
 		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
 			if (stammdaten.getRechtsmittelbelehrung() == null) {
@@ -5006,6 +5007,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setBgEmail(stammdaten.getBgEmail());
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
+		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
 
 		// Konfiguration: Wir laden immer alle Gesuchsperioden
 		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
