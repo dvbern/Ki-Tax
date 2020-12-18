@@ -20,9 +20,11 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 
@@ -38,8 +40,18 @@ public interface LastenausgleichService {
 	Collection<Lastenausgleich> getAllLastenausgleiche();
 
 	/**
-	 * Berechnet einen Lastenausgleich fuer das uebergebene Jahr. Die Kosten pro 100% Platz werden als LastenausgleichGrundlagen gespeichert.
-	 * Der Lastenausgleich kann pro Jahr nur einmal erstellt werden, auch die Grundlagen duerfen nicht mehr geaendert werden.
+	 * Gibt alle Lastenausgleiche für die Gemeinden zurück. Die LastenausgleichDetails mit Gemeinden, die nicht in
+	 * dieser Liste sind werden entfernt und das Gesamt des Lastenausgleichs entsprechend neu berechnet, aber nicht
+	 * persistiert.
+	 */
+	@Nonnull
+	Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden);
+
+	/**
+	 * Berechnet einen Lastenausgleich fuer das uebergebene Jahr. Die Kosten pro 100% Platz werden als
+	 * LastenausgleichGrundlagen gespeichert.
+	 * Der Lastenausgleich kann pro Jahr nur einmal erstellt werden, auch die Grundlagen duerfen nicht mehr geaendert
+	 * werden.
 	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
 	 */
 	@Nonnull
