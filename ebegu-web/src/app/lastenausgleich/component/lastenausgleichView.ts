@@ -53,6 +53,7 @@ export class LastenausgleichViewController implements IController {
     public jahr: number;
     public selbstbehaltPro100ProzentPlatz: number;
     public lastenausgleiche: TSLastenausgleich[] = [];
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public form: IFormController;
 
@@ -66,11 +67,7 @@ export class LastenausgleichViewController implements IController {
     }
 
     public $onInit(): void {
-        const dataPromise = this.authServiceRS.getPrincipal()
-            .hasOneOfRoles([TSRole.SACHBEARBEITER_GEMEINDE, TSRole.ADMIN_GEMEINDE]) ?
-            this.lastenausgleichRS.getGemeindeLastenausgleiche() : this.lastenausgleichRS.getAllLastenausgleiche();
-
-        dataPromise.then((response: TSLastenausgleich[]) => {
+        this.lastenausgleichRS.getAllLastenausgleiche().then((response: TSLastenausgleich[]) => {
             this.lastenausgleiche = response;
         });
     }

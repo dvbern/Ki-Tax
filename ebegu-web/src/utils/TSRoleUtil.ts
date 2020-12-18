@@ -348,7 +348,7 @@ export class TSRoleUtil {
     }
 
     public static getAllRolesForLastenausgleich(): ReadonlyArray<TSRole> {
-        return this.getMandantRoles().concat(this.getGemeindeOnlyRoles());
+        return this.getMandantRoles().concat(this.getGemeindeOrBGRoles());
     }
 
     public static getMandantOnlyRoles(): ReadonlyArray<TSRole> {

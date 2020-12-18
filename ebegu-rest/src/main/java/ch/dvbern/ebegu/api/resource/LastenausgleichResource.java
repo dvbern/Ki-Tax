@@ -67,8 +67,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -105,21 +107,16 @@ public class LastenausgleichResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG })
 	public List<JaxLastenausgleich> getAllLastenausgleiche() {
+		if(principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG)) {
+			Set<Gemeinde> gemeindeList = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
+
+			return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList).stream()
+				.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
+				.collect(Collectors.toList());
+		}
 		return lastenausgleichService.getAllLastenausgleiche().stream()
-			.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
-			.collect(Collectors.toList());
-	}
-
-	@GET
-	@Path("/gemeinde")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE })
-	public List<JaxLastenausgleich> getGemeindeLastenausgleich() {
-		Set<Gemeinde> gemeindeList = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
-
-		return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList).stream()
 			.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
 			.collect(Collectors.toList());
 	}

@@ -86,10 +86,4 @@ export class LastenausgleichRS {
                 return value.data;
             });
     }
-
-    public getGemeindeLastenausgleiche(): IPromise<any> {
-        return this.http.get(`${this.serviceURL}/gemeinde`).then((response: any) => {
-            return this.ebeguRestUtil.parseLastenausgleichList(response.data);
-        });
-    }
 }
