@@ -104,7 +104,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			// set total from filtered gemeinden
 			clone.setTotalAlleGemeinden(clone.getLastenausgleichDetails().stream().reduce(
 				BigDecimal.ZERO,
-				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
+				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich())
+					.add(lastenausgleichDetail.getTotalBetragGutscheineOhneSelbstbehalt()),
 				BigDecimal::add));
 			clone.setJahr(lastenausgleich.getJahr());
 			clone.setId(lastenausgleich.getId());
@@ -243,7 +244,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	@Nonnull
 	private Optional<Lastenausgleich> findLastenausgleichByJahr(int jahr) {
-		Optional<Lastenausgleich> optional = criteriaQueryHelper.getEntityByUniqueAttribute(Lastenausgleich.class,
+		Optional<Lastenausgleich> optional = criteriaQueryHelper.getEntityByUniqueAttribute(
+			Lastenausgleich.class,
 			jahr,
 			Lastenausgleich_.jahr);
 		return optional;
