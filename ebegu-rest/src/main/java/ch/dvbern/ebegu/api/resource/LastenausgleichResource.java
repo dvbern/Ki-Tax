@@ -107,9 +107,10 @@ public class LastenausgleichResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE,
+		SACHBEARBEITER_BG, ADMIN_BG })
 	public List<JaxLastenausgleich> getAllLastenausgleiche() {
-		if(principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG)) {
+		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG)) {
 			Set<Gemeinde> gemeindeList = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
 
 			return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList).stream()
@@ -149,7 +150,8 @@ public class LastenausgleichResource {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE,
+		SACHBEARBEITER_BG, ADMIN_BG })
 	public Response getLastenausgleichReportExcel(
 		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
