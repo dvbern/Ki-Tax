@@ -18,8 +18,11 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,6 +88,32 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Override
 	public Collection<Lastenausgleich> getAllLastenausgleiche() {
 		return criteriaQueryHelper.getAll(Lastenausgleich.class);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden) {
+		return this.getAllLastenausgleiche().stream().map(lastenausgleich -> {
+			Lastenausgleich clone = new Lastenausgleich();
+			// filter gemeinden that are not in the list
+			clone.setLastenausgleichDetails(
+				lastenausgleich.getLastenausgleichDetails()
+					.stream()
+					.filter(lastenausgleichDetail -> gemeinden.contains(lastenausgleichDetail.getGemeinde()))
+					.collect(Collectors.toList()));
+			// set total from filtered gemeinden
+			clone.setTotalAlleGemeinden(clone.getLastenausgleichDetails().stream().reduce(
+				BigDecimal.ZERO,
+				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
+				BigDecimal::add));
+			clone.setJahr(lastenausgleich.getJahr());
+			clone.setId(lastenausgleich.getId());
+			clone.setTimestampErstellt(lastenausgleich.getTimestampErstellt() != null ?
+				lastenausgleich.getTimestampErstellt() :
+				LocalDateTime.MIN);
+
+			return clone;
+		}).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -346,6 +375,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		detail.setKostenFuerSelbstbehalt(MathUtil.toTwoKommastelle(kostenOhneSelbstbehaltGemeinde));
 
 		return detail;
+
 	}
 
 	@Nonnull
