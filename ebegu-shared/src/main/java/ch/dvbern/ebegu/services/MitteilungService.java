@@ -74,6 +74,12 @@ public interface MitteilungService {
 	void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung);
 
 	/**
+	 * Returns all not applied Betreuungsmitteilungen that are linked with the given Betreuung.
+	 */
+	@Nonnull
+	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung);
+
+	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
 	 */
 	@Nonnull
@@ -145,6 +151,11 @@ public interface MitteilungService {
 	 */
 	@Nonnull
 	Long getAmountNewMitteilungenForCurrentBenutzer();
+
+	/**
+	 * Entfernt alle offenen Betreuungsmitteilungen und speichert stattdessen die übergebene Betreuungsmitteilung.
+	 */
+	void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung);
 
 	/**
 	 * Sendet die uebergebene Betreuungsmitteilung. Der Empfaenger wird automatisch gesetzt

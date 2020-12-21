@@ -141,8 +141,6 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.services.ZahlungService;
-import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
-import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -150,6 +148,8 @@ import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
@@ -1327,7 +1327,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private void addKindToGesuchstellerKinderBetreuungDataRow(
 		GesuchstellerKinderBetreuungDataRow row,
-		Betreuung betreuung) {
+		Betreuung betreuung, Locale locale) {
 
 		Kind kind = betreuung.getKind().getKindJA();
 		row.setKindName(kind.getNachname());
@@ -1338,6 +1338,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		row.setKindFachstelle(kind.getPensumFachstelle() != null
 			? String.valueOf(kind.getPensumFachstelle().getFachstelle().getName())
+			: StringUtils.EMPTY);
+
+		row.setKindIntegration(kind.getPensumFachstelle() != null
+			? ServerMessageUtil.translateEnumValue(kind.getPensumFachstelle().getIntegrationTyp(), locale)
 			: StringUtils.EMPTY);
 
 		row.setKindErwBeduerfnisse(betreuung.hasErweiterteBetreuung());
@@ -1584,7 +1588,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		// Kind
-		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung);
+		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung, locale);
 		return row;
 	}
 
@@ -1722,7 +1726,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		// Kind
-		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung);
+		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung, locale);
 
 		// Betreuung
 		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);

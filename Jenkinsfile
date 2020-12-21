@@ -26,7 +26,8 @@ pipeline {
 			steps {
 				withMaven(options: [
 						junitPublisher(healthScaleFactor: 1.0),
-						spotbugsPublisher(),
+						findbugsPublisher(disabled: true),
+						spotbugsPublisher(disabled: true),
 						artifactsPublisher(disabled: true)
 				]) {
 					sh 'mvn -B -U -T 1C ' +
@@ -36,8 +37,12 @@ pipeline {
 
 			post {
 				always {
-					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
-							(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
+					recordIssues(enabledForFailure: true, tools: [
+							pmdParser(),
+							checkStyle(),
+							spotBugs(pattern: '**/target/spotbugs/spotbugsXml.xml', useRankAsPriority: true),
+							tsLint(pattern: '**/tslint-checkstyle-report.xml')
+					])
 					junit allowEmptyResults: true,
 							testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
 					cleanWs cleanWhenFailure: false, cleanWhenNotBuilt: false, cleanWhenUnstable: false, notFailBuild: true

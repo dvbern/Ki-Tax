@@ -34,7 +34,6 @@ public abstract class BaseEventHandler<T> {
 	@Inject
 	private ReceivedEventService receivedEventService;
 
-
 	public void onEvent(
 		@Nonnull String eventId,
 		@Nonnull String key,
@@ -48,7 +47,7 @@ public abstract class BaseEventHandler<T> {
 
 		if (!receivedEventService.saveReceivedEvent(receivedEvent)) {
 			LOG.info("Event with UUID '{}' and timestamp '{}' of type '{}' was already retrieved, ignoring it",
-				eventId, eventTime,	eventType);
+				eventId, eventTime, eventType);
 
 			return;
 		}
@@ -56,11 +55,10 @@ public abstract class BaseEventHandler<T> {
 		LOG.info("Received '{}' event -- key: '{}', event type: '{}'",
 			dto.getClass().getSimpleName(), key, eventType);
 
-		try {
-			processEvent(eventTime, EventType.of(eventType), dto, clientName);
-		} catch (IllegalArgumentException e) {
-			LOG.warn("Unknown event type '{}'", eventType);
-		}
+		EventType.of(eventType).ifPresentOrElse(
+			type -> processEvent(eventTime, type, dto, clientName),
+			() -> LOG.warn("Unknown event type '{}'", eventType)
+		);
 	}
 
 	protected abstract void processEvent(

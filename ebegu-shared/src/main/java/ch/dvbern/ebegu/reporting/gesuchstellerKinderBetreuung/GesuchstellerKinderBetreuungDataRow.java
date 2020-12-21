@@ -87,6 +87,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String kindVorname;
 	@Nullable private LocalDate kindGeburtsdatum;
 	@Nullable private String kindFachstelle;
+	@Nullable private String kindIntegration;
 	@Nullable private Boolean kindErwBeduerfnisse;
 	@Nullable private Boolean kindSprichtAmtssprache;
 	@Nullable private EinschulungTyp kindEinschulungTyp;
@@ -564,6 +565,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setKindFachstelle(@Nullable String kindFachstelle) {
 		this.kindFachstelle = kindFachstelle;
+	}
+
+	@Nullable
+	public String getKindIntegration() {
+		return kindIntegration;
+	}
+
+	public void setKindIntegration(@Nullable String kindIntegration) {
+		this.kindIntegration = kindIntegration;
 	}
 
 	@Nullable

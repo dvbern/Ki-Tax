@@ -347,6 +347,10 @@ export class TSRoleUtil {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
+    public static getAllRolesForLastenausgleich(): ReadonlyArray<TSRole> {
+        return this.getMandantRoles().concat(this.getGemeindeOrBGRoles());
+    }
+
     public static getMandantOnlyRoles(): ReadonlyArray<TSRole> {
         return [TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
