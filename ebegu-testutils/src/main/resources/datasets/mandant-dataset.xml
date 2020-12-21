@@ -61,7 +61,6 @@
 			  angebotbg="true"
 			  angebotts="false"
 			  angebotfi="false"
-			  email_bei_gesuchsperiode_oeffnung="true"
 	/>
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6Hdw=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
@@ -79,8 +78,7 @@
 			  ferieninselanmeldungen_startdatum="2020-08-01"
 			  angebotbg="true"
 			  angebotts="false"
-			  angebotfi="false"
-			  email_bei_gesuchsperiode_oeffnung="true"/>
+			  angebotfi="false"/>
 	<sequence id="43RuuG7vQO+eUparSNjyIA=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"
