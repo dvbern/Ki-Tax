@@ -45,6 +45,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
+import static ch.dvbern.ebegu.util.MathUtil.roundToFranken;
 
 @Entity
 @Audited
@@ -249,7 +250,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
-		this.verguenstigungMahlzeitenTotal = roundToFrankenRappen(verguenstigungMahlzeitenTotal);
+		this.verguenstigungMahlzeitenTotal = roundToFranken(verguenstigungMahlzeitenTotal);
 		return this;
 	}
 

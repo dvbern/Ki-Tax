@@ -362,10 +362,22 @@ public enum MathUtil {
 		}
 		// Ab welcher Nachkommastelle soll gerundet werden???
 		// Wir runden zuerst die vierte auf die dritte...
-		BigDecimal roundedUp = amount.multiply(MathUtil.HUNDRED).divide(MathUtil.HUNDRED, 3, BigDecimal.ROUND_HALF_UP);
+		BigDecimal roundedUp = amount.multiply(MathUtil.HUNDRED).divide(MathUtil.HUNDRED, 3, RoundingMode.HALF_UP);
 		// ... dann davon auf 5-Rappen runden
 		BigDecimal divided = GANZZAHL.divide(roundedUp, ROUNDING_INCREMENT);
 		return DEFAULT.multiply(divided, ROUNDING_INCREMENT);
+	}
+
+	/**
+	 * Rundet einen BigDecimal auf dem höeren Franken.
+	 */
+	@Nonnull
+	public static BigDecimal roundToFranken(@Nullable BigDecimal amount) {
+		if (amount == null) {
+			return BigDecimal.ZERO;
+		}
+		amount = amount.setScale(0, RoundingMode.UP);
+		return amount;
 	}
 
 	/**
