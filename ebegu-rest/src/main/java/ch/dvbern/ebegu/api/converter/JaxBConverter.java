@@ -5009,8 +5009,15 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
 
-		// Konfiguration: Wir laden immer alle Gesuchsperioden
-		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
+		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden()
+			.stream()
+			.filter(gesuchsperiode -> stammdaten.getGemeinde()
+				.getGueltigBis()
+				.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+			.collect(Collectors.toList());
+
+		for (Gesuchsperiode gesuchsperiode : gueltigeGesuchsperiodenForGemeinde) {
 			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
 				stammdaten.getGemeinde(),
 				gesuchsperiode));

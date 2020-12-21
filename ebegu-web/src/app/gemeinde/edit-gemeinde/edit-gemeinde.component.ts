@@ -242,12 +242,10 @@ export class EditGemeindeComponent implements OnInit {
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 await this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
-                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
-                    this.loadStammdaten();
-                }
                 this.updateExternalClients();
             }
 
+            this.loadStammdaten();
             this.setViewMode();
 
         } catch (err) {
