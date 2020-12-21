@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,9 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.DownloadFile;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
@@ -65,7 +68,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -93,20 +100,34 @@ public class LastenausgleichResource {
 	@Inject
 	private JaxBConverter converter;
 
+	@Inject
+	private PrincipalBean principalBean;
 
-	@ApiOperation(value = "Gibt alle Lastenausgleiche zurueck.", responseContainer = "List", response = JaxLastenausgleich.class)
+	@ApiOperation(value = "Gibt alle Lastenausgleiche zurueck.",
+		responseContainer = "List",
+		response = JaxLastenausgleich.class)
 	@Nullable
 	@GET
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE,
+		SACHBEARBEITER_BG, ADMIN_BG })
 	public List<JaxLastenausgleich> getAllLastenausgleiche() {
+		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG)) {
+			Set<Gemeinde> gemeindeList = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
+
+			return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList).stream()
+				.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
+				.collect(Collectors.toList());
+		}
 		return lastenausgleichService.getAllLastenausgleiche().stream()
 			.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Erstellt einen neuen Lastenausgleich und speichert die Grundlagen", response = JaxLastenausgleich.class)
+	@ApiOperation(value = "Erstellt einen neuen Lastenausgleich und speichert die Grundlagen",
+		response = JaxLastenausgleich.class)
 	@Nullable
 	@GET
 	@Path("/create")
@@ -120,7 +141,8 @@ public class LastenausgleichResource {
 		int jahr = Integer.parseInt(sJahr);
 		BigDecimal selbstbehaltPro100ProzentPlatz = MathUtil.DEFAULT.from(sSelbstbehaltPro100ProzentPlatz);
 
-		Lastenausgleich lastenausgleich = lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz);
+		Lastenausgleich lastenausgleich =
+			lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz);
 		return converter.lastenausgleichToJAX(lastenausgleich);
 	}
 
@@ -132,6 +154,8 @@ public class LastenausgleichResource {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE,
+		SACHBEARBEITER_BG, ADMIN_BG })
 	public Response getLastenausgleichReportExcel(
 		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
@@ -141,7 +165,8 @@ public class LastenausgleichResource {
 		String ip = downloadResource.getIP(request);
 		String lastenausgleichId = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, Locale.GERMAN);
+		UploadFileInfo uploadFileInfo =
+			reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, Locale.GERMAN);
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
