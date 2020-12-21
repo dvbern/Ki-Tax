@@ -231,10 +231,11 @@ public final class PensumMappingUtil {
 		target.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
 		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 		setPensum(target, zeitabschnittDTO);
-		target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
-		target.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
 
-		if (ctx.isMahlzeitVergunstigungEnabled()) {
+		if (ctx.isMahlzeitVerguenstigungEnabled()) {
+			target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
+			target.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
+
 			setTarifeProMahlzeiten(target, zeitabschnittDTO, ctx);
 		}
 
