@@ -413,6 +413,11 @@
             "check-type"
         ],
         "rxjs-finnish": {
+            "options": [{
+                "functions": false,
+                "methods": false,
+                "properties": false
+            }],
             "severity": "error"
         },
         "rxjs-no-create": {

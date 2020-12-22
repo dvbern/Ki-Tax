@@ -41,7 +41,6 @@ import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
-import {WizardStepXRS} from './service/wizardStepXRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 
@@ -332,7 +331,6 @@ export const uploadRSProvider = {
     useFactory: uploadRSServiceFactory,
     deps: ['$injector'],
 };
-
 
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
