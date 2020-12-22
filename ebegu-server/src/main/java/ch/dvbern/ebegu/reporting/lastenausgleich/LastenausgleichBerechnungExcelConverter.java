@@ -49,8 +49,8 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldLastenausgleichBerechnung.berechnungsjahr, ""+year);
 		excelMerger.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltProHundertProzentPlatz, selbstbehaltPro100ProzentPlatz);
 
-		//Titeln
-		this.setTiteln(excelMerger, locale);
+		//Titel
+		this.setHeaders(excelMerger, locale);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO rowGroup = excelMerger.createGroup(MergeFieldLastenausgleichBerechnung.repeatRow);
@@ -71,7 +71,7 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		return excelMerger;
 	}
 
-	private void setTiteln(ExcelMergerDTO excelMerger, Locale locale) {
+	private void setHeaders(ExcelMergerDTO excelMerger, Locale locale) {
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.lastenausgleichTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_lastenausgleichTitel", locale));
