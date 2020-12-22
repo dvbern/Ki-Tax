@@ -60,7 +60,8 @@
 			  ferieninselanmeldungen_startdatum="2020-08-01"
 			  angebotbg="true"
 			  angebotts="false"
-			  angebotfi="false"/>
+			  angebotfi="false"
+			  gueltig_bis="9999-12-31"/>
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6Hdw=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"
@@ -77,7 +78,8 @@
 			  ferieninselanmeldungen_startdatum="2020-08-01"
 			  angebotbg="true"
 			  angebotts="false"
-			  angebotfi="false"/>
+			  angebotfi="false"
+			  gueltig_bis="9999-12-31"/>
 	<sequence id="43RuuG7vQO+eUparSNjyIA=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"

@@ -31,6 +31,7 @@ import {ZemisDialogDTO} from '../zemisDialog/zemisDialog.interface';
 import {ZemisDialogController} from '../zemisDialog/zemisDialogController';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
+import { TSRoleUtil } from '../../../../utils/TSRoleUtil';
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 const inputYearDialogTemplate = require('../zemisDialog/zemisDialogTemplate.html');
@@ -59,6 +60,7 @@ export class LastenausgleichViewController implements IController {
     public jahr: number;
     public selbstbehaltPro100ProzentPlatz: number;
     public lastenausgleiche: TSLastenausgleich[] = [];
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public form: IFormController;
 
@@ -172,6 +174,10 @@ export class LastenausgleichViewController implements IController {
 
     public isRemoveAllowed(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public canDownloadCSV(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public removeLastenausgleich(lastenausgleich: TSLastenausgleich): void {

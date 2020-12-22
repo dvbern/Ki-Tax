@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -50,7 +51,9 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetr
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.contains;
 
 class PensumMappingUtilTest {
@@ -74,7 +77,6 @@ class PensumMappingUtilTest {
 		z.setPensumUnit(zeiteinheit);
 		z.setBetreuungspensum(betreuungspensum);
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(z);
-		ZeitabschnittDTO dto = betreuungEventDTO.getZeitabschnitte().get(0);
 
 		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung);
 
@@ -82,9 +84,32 @@ class PensumMappingUtilTest {
 			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true);
 
 		BetreuungsmitteilungPensum actual =
-			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), dto, ctx);
+			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);
 
-		assertThat(actual, matches(dto, pensumInPercent, Constants.DEFAULT_GUELTIGKEIT));
+		assertThat(actual, matches(z, pensumInPercent, Constants.DEFAULT_GUELTIGKEIT));
+	}
+
+	@Test
+	void ignoresMahlzeitenWhenMahlzeitenVerguenstigungNotEnabled() {
+		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+		z.setAnzahlHauptmahlzeiten(BigDecimal.ONE);
+		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
+		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(z);
+
+		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung);
+
+		ProcessingContext ctx =
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false);
+
+		BetreuungsmitteilungPensum actual =
+			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);
+
+		assertThat(actual, pojo(AbstractMahlzeitenPensum.class)
+			.where(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten, comparesEqualTo(BigDecimal.ZERO))
+			.where(AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten, comparesEqualTo(BigDecimal.ZERO))
+			.where(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit, comparesEqualTo(BigDecimal.ZERO))
+			.where(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit, comparesEqualTo(BigDecimal.ZERO)));
 	}
 
 	@Nonnull
