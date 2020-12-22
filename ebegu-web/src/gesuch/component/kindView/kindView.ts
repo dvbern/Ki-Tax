@@ -84,6 +84,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public allowedRoles: ReadonlyArray<TSRole>;
     public minValueAllowed: number = 0;
     public maxValueAllowed: number = 100;
+    public kontingentierungEnabled: boolean;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -127,6 +128,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
+        this.getEinstellungKontingentierung();
     }
 
     public $postLink(): void {
@@ -411,5 +413,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.getModel().ausAsylwesen) {
             this.getModel().zemisNummer = null;
         }
+    }
+
+    private getEinstellungKontingentierung(): void {
+        this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
     }
 }

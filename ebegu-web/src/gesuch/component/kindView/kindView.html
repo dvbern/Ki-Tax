@@ -98,7 +98,7 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="GEBURTSDATUM" for="geburtsdatum_ID">
                                 </label>
-                                <dv-datepicker no-future
+                                <dv-datepicker no-future="!(vm.kontingentierungEnabled)"
                                                input-id="geburtsdatum_ID" name="geburtsdatum"
                                                ng-model="vm.getModel().geburtsdatum" ng-required="true"
                                                class="input-element"
