@@ -35,7 +35,7 @@ ALTER TABLE gesuchsperiode_email_candidate_aud
 ALTER TABLE gesuchsperiode_email_candidate
 	ADD CONSTRAINT FK_gesuchsperiode_massenversand_dossier_id
 		FOREIGN KEY (dossier_id)
-			REFERENCES dossier (id);
+			REFERENCES dossier (id) ON DELETE CASCADE;
 
 ALTER TABLE gesuchsperiode_email_candidate
 	ADD CONSTRAINT FK_gesuchsperiode_massenversand_last_gesuchsperiode_id
