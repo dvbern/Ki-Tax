@@ -1,3 +1,6 @@
+
+@import (reference) '../../../style/variables.less';
+
 table {
     width: 100%;
 }
@@ -12,4 +15,20 @@ mat-form-field {
 
 ::ng-deep .mat-form-field-infix {
     width: auto !important;
+}
+
+.fa-undo {
+    &:hover {
+        color: @primary;
+        cursor: pointer;
+    }
+}
+
+#titleText {
+    display: inline-block;
+}
+
+#refreshIcon {
+    display: inline-block;
+    margin-left: 1rem;
 }
