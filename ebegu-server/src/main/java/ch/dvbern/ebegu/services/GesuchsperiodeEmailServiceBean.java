@@ -128,7 +128,7 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 
 		if (!gemeindeStammdaten.getEmailBeiGesuchsperiodeOeffnung()) {
 			gesuchsperiodeEmailCandidate.setStatus(GesuchsperiodeEmailCandiateStatus.GEMEINDE_EINSTELLUNG_DEAKTIVIERT);
-			return;
+			return gesuchsperiodeEmailCandidate;
 		}
 
 		mailService.sendInfoFreischaltungGesuchsperiode(

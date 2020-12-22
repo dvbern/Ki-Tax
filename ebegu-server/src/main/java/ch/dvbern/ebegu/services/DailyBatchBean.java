@@ -267,7 +267,7 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchSendEmailsForNewGesuchsperiode() {
 		try {
 			LOGGER.info("Starting Job SendEmailsForNewGesuchsperiode...");
-			gesuchsperiodeEmailService.sendMailsForNCandidates(100);
+			gesuchsperiodeEmailService.sendMailsForNCandidates(200);
 			LOGGER.info("... Job SendEmailsForNewGesuchsperiode finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job SendEmailsForNewGesuchsperiode konnte nicht durchgefuehrt werden!", e);
