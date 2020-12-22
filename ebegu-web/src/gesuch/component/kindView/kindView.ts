@@ -46,6 +46,7 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import * as moment from 'moment';
 
 export class KindViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -143,7 +144,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {
                 amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate),
             });
     }
 
@@ -161,10 +162,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private getEinstellungenFachstelle(
         minValueEinstellungKey: TSEinstellungKey,
-        maxValueEinstellungKey: TSEinstellungKey
+        maxValueEinstellungKey: TSEinstellungKey,
     ): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+            this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
                 .forEach(value => {
@@ -215,6 +216,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             return this.$q.when(this.model);
+        }
+
+        if (this.getModel().geburtsdatum.isAfter(moment())) {
+            this.getModel().zukunftigeGeburtsdatum = true;
         }
 
         this.errorService.clearAll();

@@ -96,6 +96,10 @@ public class Kind extends AbstractPersonEntity {
 	@Pattern(regexp = Constants.REGEX_ZEMIS, message = "{validator.constraints.zemis.message}")
 	private String zemisNummer;
 
+	@Column(nullable = false)
+	@NotNull
+	private Boolean zukunftigeGeburtsdatum = false;
+
 	public Kind() {
 	}
 
@@ -197,6 +201,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			target.setZukunftigeGeburtsdatum(false);
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -204,6 +209,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			target.setZukunftigeGeburtsdatum(false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
@@ -272,5 +278,13 @@ public class Kind extends AbstractPersonEntity {
 
 	public boolean isGeprueft() {
 		return kinderabzugErstesHalbjahr != null;
+	}
+
+	public Boolean getZukunftigeGeburtsdatum() {
+		return zukunftigeGeburtsdatum;
+	}
+
+	public void setZukunftigeGeburtsdatum(Boolean zukunftigeGeburtsdatum) {
+		this.zukunftigeGeburtsdatum = zukunftigeGeburtsdatum;
 	}
 }

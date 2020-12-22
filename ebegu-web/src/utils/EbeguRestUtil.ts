@@ -1908,6 +1908,7 @@ export class EbeguRestUtil {
         restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
+        restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         if (kind.pensumFachstelle) {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
         }
@@ -1972,6 +1973,7 @@ export class EbeguRestUtil {
             kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
+            kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             if (kindFromServer.pensumFachstelle) {
                 kindTS.pensumFachstelle =
                     this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
