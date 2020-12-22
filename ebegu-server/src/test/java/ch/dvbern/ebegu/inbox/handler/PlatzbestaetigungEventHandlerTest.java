@@ -19,436 +19,1161 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.MitteilungStatus;
+import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.ExternalClientService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.easymock.Capture;
+import org.easymock.EasyMock;
+import org.easymock.EasyMockExtension;
+import org.easymock.EasyMockSupport;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
-public class PlatzbestaetigungEventHandlerTest {
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.TECHNICAL_BENUTZER_ID;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static java.util.Objects.requireNonNull;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 
-	private PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
-	private Gesuch gesuch_1GS;
+@ExtendWith(EasyMockExtension.class)
+public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
-	@Before
-	public void setUp() {
-		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
-		Gemeinde bern = TestDataUtil.createGemeindeParis();
+	public static final String CLIENT_NAME = "foo";
+	public static final LocalDateTime EVENT_TIME = LocalDateTime.now();
+
+	@TestSubject
+	private final PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private BetreuungService betreuungService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private EinstellungService einstellungService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private MitteilungService mitteilungService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private GemeindeService gemeindeService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private BenutzerService benutzerService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private ExternalClientService externalClientService;
+
+	private Gesuch gesuch_1GS = null;
+	private Gesuchsperiode gesuchsperiode = null;
+	private Gemeinde gemeinde = null;
+
+	@BeforeEach
+	void setUp() {
+		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
+		gemeinde = TestDataUtil.createGemeindeParis();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall_1GS =
-			new Testfall01_WaeltiDagmar(gesuchsperiode1718, institutionStammdatenList);
+			new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, false, gemeinde);
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
 	}
 
+	@ParameterizedTest
+	@EnumSource(value = Betreuungsstatus.class,
+		names = { "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
+		mode = Mode.INCLUDE)
+	void isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
+		assertThat(handler.isMutationsMitteilungStatus(status), is(true));
+	}
+
 	@Test
-	public void testIsSame() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//first with tarif = null
-		Assert.assertTrue(handler.isSame(betreuungEventDTO, betreuungs.get(0)));
-		//then with tarif the same
-		betreuungEventDTO.getZeitabschnitte().get(0).setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		betreuungEventDTO.getZeitabschnitte().get(0).setTarifProNebenmahlzeiten(BigDecimal.ZERO);
-		Assert.assertTrue(handler.isSame(betreuungEventDTO, betreuungs.get(0)));
+	void testIsSame() {
+		List<Betreuung> betreuungen = gesuch_1GS.extractAllBetreuungen();
+		Betreuungsmitteilung betreuungsmitteilung = createBetreuungMitteilung(
+			createBetreuungsmitteilungPensum(new DateRange(
+				gesuchsperiode.getGueltigkeit().getGueltigAb(),
+				gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31)
+			))
+		);
+
+		assertThat(handler.isSame(betreuungsmitteilung, betreuungen.get(0)), is(true));
 		//then with different Betreuung
-		Assert.assertFalse(handler.isSame(betreuungEventDTO, betreuungs.get(1)));
+		assertThat(handler.isSame(betreuungsmitteilung, betreuungen.get(1)), is(false));
 	}
 
-	@Test
-	public void testMapZeitabschnittBetreuungMitteilungPensum() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
-		zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
-		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
-			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum(), zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertNotNull(betreuungsmitteilungPensum);
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheBetreuungskosten()
-			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getPensum()
-			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheHauptmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getMonatlicheNebenmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProHauptmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsmitteilungPensum.getTarifProNebenmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
-			.getGueltigAb()
-			.isEqual(zeitabschnittDTO.getVon()));
-		Assert.assertTrue(betreuungsmitteilungPensum.getGueltigkeit()
-			.getGueltigBis()
-			.isEqual(zeitabschnittDTO.getBis()));
+	@Nested
+	class IgnoreEventTest {
+
+		/**
+		 * Should use "Stornieren" API instead
+		 */
+		@Test
+		void ignoreWhenNoZeitabschnitte() {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			dto.setZeitabschnitte(Collections.emptyList());
+
+			testIgnored(dto, "Es wurden keine Zeitabschnitte übergeben.");
+		}
+
+		@Test
+		void ignoreEventWhenNoBetreuungFound() {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.empty());
+
+			testIgnored(dto, "Betreuung nicht gefunden.");
+		}
+
+		@ParameterizedTest
+		@EnumSource(value = GesuchsperiodeStatus.class, names = "AKTIV", mode = Mode.EXCLUDE)
+		void ignoreEventWhenPeriodeNotAktiv(@Nonnull GesuchsperiodeStatus status) {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+
+			Betreuung betreuung = betreuungWithSingleContainer();
+			betreuung.extractGesuchsperiode().setStatus(status);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+
+			testIgnored(dto, "Die Gesuchsperiode ist nicht aktiv.");
+		}
+
+		@Test
+		void ignoreEventWhenBetreuungMutiertAfterEventTimestamp() {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			Betreuung betreuung = betreuungWithSingleContainer();
+
+			LocalDateTime eventTime = LocalDateTime.of(2020, 12, 1, 10, 1);
+			LocalDateTime betreuungMutiertTime = eventTime.plusSeconds(1);
+			betreuung.setTimestampMutiert(betreuungMutiertTime);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(eventTime, dto, CLIENT_NAME);
+			assertThat(result, failed("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde."));
+			verifyAll();
+		}
+
+		@Test
+		void ignoreEventWhenInvalidPensumInHours() {
+			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
+			zeitabschnittDTO.setPensumUnit(Zeiteinheit.HOURS);
+			BetreuungEventDTO dto = createBetreuungEventDTO(zeitabschnittDTO);
+			Betreuung betreuung = betreuungWithSingleContainer();
+			betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+
+			testIgnored(dto, "Eine Pensum in HOURS kann nur für ein Angebot in einer TFO angegeben werden.");
+		}
+
+		@Test
+		void ignoreEventWhenInvalidPensumInDays() {
+			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
+			zeitabschnittDTO.setPensumUnit(Zeiteinheit.DAYS);
+			BetreuungEventDTO dto = createBetreuungEventDTO(zeitabschnittDTO);
+			Betreuung betreuung = betreuungWithSingleContainer();
+			betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+
+			testIgnored(dto, "Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
+		}
+
+		@Test
+		void ignoreEventWhenNoExternalClient() {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			Betreuung betreuung = betreuungWithSingleContainer();
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+			expect(externalClientService.getInstitutionExternalClientForInstitution(institution))
+				.andReturn(Collections.emptySet());
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(
+				result,
+				failed(stringContainsInOrder(
+					"Kein InstitutionExternalClient Namens",
+					"ist der Institution",
+					"zugewiesen"))
+			);
+			verifyAll();
+		}
+
+		@Test
+		void ignoreEventWhenClientGueltigkeitOutsidePeriode() {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			Betreuung betreuung = betreuungWithSingleContainer();
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			mockClient(new DateRange(2022));
+
+			testIgnored(dto, "Der Client hat innerhalb der Periode keinen Berechtigung.");
+		}
+
+		@Test
+		void ignoreWhenZeitabschnitteOverlap() {
+			BetreuungEventDTO dto = createBetreuungEventDTO(
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10)),
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 11))
+			);
+			Betreuung betreuung = betreuungWithSingleContainer();
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+
+			testIgnored(dto, "Zeitabschnitte dürfen nicht überlappen.");
+		}
+
+		@Test
+		void ignoreWhenNoZeitabschnittInGueltigkeit() {
+			LocalDate gesuchsperiodeAb = gesuchsperiode.getGueltigkeit().getGueltigAb();
+			LocalDate zeitabschnittBis = gesuchsperiodeAb.plusMonths(8).minusDays(1);
+
+			BetreuungEventDTO dto = createBetreuungEventDTO(
+				createZeitabschnittDTO(gesuchsperiodeAb, zeitabschnittBis)
+			);
+			Betreuung betreuung = betreuungWithSingleContainer();
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			mockClient(new DateRange(zeitabschnittBis.plusDays(1), Constants.END_OF_TIME));
+
+			testIgnored(dto, "Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode.");
+		}
+
+		@ParameterizedTest
+		@EnumSource(value = Betreuungsstatus.class,
+			names = { "WARTEN", "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
+			mode = Mode.EXCLUDE)
+		void ignoreWhenInvalidBetreuungStatus(@Nonnull Betreuungsstatus status) {
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			Betreuung betreuung = betreuungWithSingleContainer();
+			betreuung.setBetreuungsstatus(status);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+			withMahlzeitenverguenstigung(true);
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(
+				result, failed(stringContainsInOrder("Die Betreuung hat einen ungültigen Status: ", status.name()))
+			);
+			verifyAll();
+		}
+
+		private void testIgnored(@Nonnull BetreuungEventDTO dto, @Nonnull String message) {
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(result, failed(message));
+			verifyAll();
+		}
 	}
 
-	@Test
-	public void testMapZeitabschnittBetreuungPensum() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
-		zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
-		zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
-		Betreuungspensum betreuungsPensum =
-			handler.mapZeitabschnitt(new Betreuungspensum(), zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertNotNull(betreuungsPensum);
-		Assert.assertEquals(0, betreuungsPensum.getMonatlicheBetreuungskosten()
-			.compareTo(zeitabschnittDTO.getBetreuungskosten()));
-		Assert.assertEquals(0, betreuungsPensum.getPensum()
-			.compareTo(zeitabschnittDTO.getBetreuungspensum()));
-		Assert.assertEquals(0, betreuungsPensum.getMonatlicheHauptmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsPensum.getMonatlicheNebenmahlzeiten()
-			.compareTo(zeitabschnittDTO.getAnzahlNebenmahlzeiten()));
-		Assert.assertEquals(0, betreuungsPensum.getTarifProHauptmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProHauptmahlzeiten()));
-		Assert.assertEquals(0, betreuungsPensum.getTarifProNebenmahlzeit()
-			.compareTo(zeitabschnittDTO.getTarifProNebenmahlzeiten()));
-		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigAb().isEqual(zeitabschnittDTO.getVon()));
-		Assert.assertTrue(betreuungsPensum.getGueltigkeit().getGueltigBis().isEqual(zeitabschnittDTO.getBis()));
+	@Nested
+	class PlatzbestaetigungTest {
+
+		private BetreuungEventDTO dto = null;
+		private Betreuung betreuung = null;
+		private DateRange clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
+		private boolean zusaetzlicherGutscheinGemeindeEnabled = true;
+
+		/**
+		 * The default setup yields an automatic Platzbestaetigung in the most demanding case (Gemeinde with
+		 * Mahlzeiten)
+		 */
+		@BeforeEach
+		void setUp() {
+			dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			dto.setGemeindeBfsNr(gemeinde.getBfsNummer());
+			dto.setGemeindeName(gemeinde.getName());
+			dto.getZeitabschnitte().forEach(z -> {
+				z.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
+				z.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
+			});
+			betreuung = betreuungWithSingleContainer();
+			betreuung.getBetreuungspensumContainers().clear();
+			ErweiterteBetreuung erweiterteBetreuung =
+				requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA());
+			// the default test data already sets TRUE, but the actual default is NULL...
+			erweiterteBetreuung.setBetreuungInGemeinde(null);
+
+			clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
+		}
+
+		@Test
+		void automaticPlatzbestaetigung() {
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+				.andReturn(betreuung);
+
+			testProcessingSuccess();
+		}
+
+		@Test
+		void requrieHumanInteractionWhenHauptmahlZeitenTarifMissing() {
+			dto.getZeitabschnitte().get(0).setTarifProHauptmahlzeiten(null);
+
+			expectHumanConfirmation();
+
+			testProcessingSuccess();
+		}
+
+		@Test
+		void requrieHumanInteractionWhenNebenmahlZeitenTarifMissing() {
+			dto.getZeitabschnitte().get(0).setTarifProNebenmahlzeiten(null);
+
+			expectHumanConfirmation();
+
+			testProcessingSuccess();
+		}
+
+		/**
+		 * Confirmation of {@code ErweiterteBeduerfnisse} when claim and response match
+		 */
+		@ParameterizedTest
+		@CsvSource({
+			"true, true, true",
+			"true, false, false",
+			"false, true, false",
+			"false, false, true"
+		})
+		void setErweiterteBeduerfnisseBestaetigt(
+			boolean erweiterteBeduerfnisseClaimed,
+			boolean erweiterteBeduerfnisseConfirmed,
+			boolean confirmation) {
+
+			ErweiterteBetreuung erweiterteBetreuung =
+				requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA());
+
+			erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBeduerfnisseClaimed);
+
+			dto.setAusserordentlicherBetreuungsaufwand(erweiterteBeduerfnisseConfirmed);
+
+			expectPlatzBestaetigung();
+
+			testProcessingSuccess();
+
+			assertThat(erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt(), is(confirmation));
+		}
+
+		@Test
+		void ignoreErweiterteBeduerfnisseWhenNotClaimed() {
+			// removes the claim
+			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(null);
+			// to be ignored
+			dto.setAusserordentlicherBetreuungsaufwand(true);
+			// disable ZusaetzlicherGutscheinGeminde, because it automatically creates ErweiterteBetreuung
+			zusaetzlicherGutscheinGemeindeEnabled = false;
+
+			expectPlatzBestaetigung();
+
+			testProcessingSuccess();
+
+			assertThat(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA(), nullValue());
+		}
+
+		@Test
+		void ignoreGemeindeWhenNotRequired() {
+			zusaetzlicherGutscheinGemeindeEnabled = false;
+
+			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(null);
+
+			expectPlatzBestaetigung();
+
+			testProcessingSuccess();
+
+			assertThat(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA(), nullValue());
+		}
+
+		@Test
+		void requrieHumanInteractionWhenGemeindeMissing() {
+			dto.setGemeindeName(null);
+			dto.setGemeindeBfsNr(null);
+
+			expectHumanConfirmation();
+
+			testProcessingSuccess();
+		}
+
+		@ParameterizedTest
+		@CsvSource(value = {
+			// match by name
+			"Foo, 1, Foo, null, true",
+			// match by name case insensitive
+			"Foo, 1, foo, null, true",
+			// match by bfs number
+			"Foo, 1, null, 1, true",
+			// match by name or bfs number (name match, bfs mismatch)
+			"Foo, 1, Foo, 2, true",
+			// match by name or bfs number (name mismatch, bfs match)
+			"Foo, 1, Bar, 1, true",
+			// mismatch by name
+			"Foo, 1, Bar, null, false",
+			// mismatch by bfs number
+			"Foo, 1, null, 2, false",
+			// mismatch both
+			"Foo, 1, Bar, 2, false",
+		}, nullValues = "null")
+		void matchGemeindeByNameOrBfsNumber(
+			@Nonnull String kiBonName,
+			@Nonnull Long kiBonBfsNumber,
+			@Nullable String dtoName,
+			@Nullable Long dtoBfsNumber,
+			boolean betreuungInGemeinde) {
+
+			gemeinde.setName(kiBonName);
+			gemeinde.setBfsNummer(kiBonBfsNumber);
+
+			dto.setGemeindeName(dtoName);
+			dto.setGemeindeBfsNr(dtoBfsNumber);
+
+			expectPlatzBestaetigung();
+
+			ErweiterteBetreuung erweiterteBetreuung =
+				requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA());
+			// the default test data already sets TRUE, but the actual default is NULL...
+			erweiterteBetreuung.setBetreuungInGemeinde(null);
+
+			testProcessingSuccess();
+
+			assertThat(erweiterteBetreuung.getBetreuungInGemeinde(), is(betreuungInGemeinde));
+		}
+
+		@Nested
+		class ZeitabschnitteTest {
+
+			/**
+			 * The automatic confirmation must be disabled, when the client is not permittet to set data for the entire
+			 * periode. Otherwise it is not possible to augment the data with Zeitabschnitte from another client.
+			 */
+			@Test
+			void requireHumanConfirmatinWhenClientGueltigkeitIsNotCoveringEntirePeriod() {
+				clientGueltigkeit =
+					new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusDays(1), Constants.END_OF_TIME);
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+			}
+
+			@Test
+			void splitDtoZeitabschnitteWithClientGueltigkeit() {
+				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31));
+
+				ZeitabschnittDTO beforeGueltigAb =
+					createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30));
+
+				ZeitabschnittDTO overlapGueltigAb =
+					createZeitabschnittDTO(LocalDate.of(2020, 12, 1), LocalDate.of(2021, 1, 31));
+
+				ZeitabschnittDTO containedInGueltigkeit =
+					createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31));
+
+				ZeitabschnittDTO overlapGueltigBis =
+					createZeitabschnittDTO(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+
+				ZeitabschnittDTO afterGueltigBis =
+					createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31));
+
+				dto.setZeitabschnitte(Arrays.asList(
+					beforeGueltigAb,
+					overlapGueltigAb,
+					containedInGueltigkeit,
+					overlapGueltigBis,
+					afterGueltigBis));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(overlapGueltigAb, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 1, 31))),
+					container(matches(containedInGueltigkeit)),
+					container(matches(overlapGueltigBis, LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31)))
+				));
+			}
+
+			/**
+			 * In case there are already BetreuungspensumContainers, split them when necessary at ClientGueltigkeit and
+			 * fill new Zeitabschnitte from Client.
+			 */
+			@Test
+			void updateBetreuungpensumContainersWithDtoZeitabschnitte() {
+				BetreuungspensumContainer original = addCompleteContainer(gesuchsperiode.getGueltigkeit());
+
+				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 15), LocalDate.of(2021, 5, 31));
+
+				// "von" is before client gueltigAb -> must be ignored
+				// "bis" is before client gueltigBis -> there must be a gap from "bis" to "gueltigBis"
+				ZeitabschnittDTO z = createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2021, 4, 30));
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(original, LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 14))),
+					container(matches(z, LocalDate.of(2020, 12, 15), LocalDate.of(2021, 4, 30))),
+					container(matches(original, LocalDate.of(2021, 6, 1), LocalDate.of(2021, 7, 31)))
+				));
+			}
+
+			@Test
+			void preservesIncompleteContainerOutsideClientGueltigkeit() {
+				BetreuungspensumContainer incomplete = addIncompleteContainer(gesuchsperiode.getGueltigkeit());
+
+				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 15), LocalDate.of(2021, 5, 31));
+
+				ZeitabschnittDTO z = createZeitabschnittDTO(clientGueltigkeit);
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(incomplete, LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 14))),
+					container(matches(z, clientGueltigkeit)),
+					container(matches(incomplete, LocalDate.of(2021, 6, 1), LocalDate.of(2021, 7, 31)))
+				));
+			}
+
+			@Test
+			void keepsEndOfTimeOfOriginalZeitabschnitt() {
+				BetreuungspensumContainer original =
+					addCompleteContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
+				clientGueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 5, 1));
+
+				ZeitabschnittDTO z = createZeitabschnittDTO(clientGueltigkeit);
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(original, LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31))),
+					container(matches(z, clientGueltigkeit)),
+					container(matches(original, LocalDate.of(2021, 5, 2), Constants.END_OF_TIME))
+				));
+			}
+
+			/**
+			 * regression test: original implementation did set endOf 1st container to 2020-01-01 and created an
+			 * overlap at that day.
+			 */
+			@Test
+			void handlesOriginalBisEqualClientAb() {
+				LocalDate edgeCase = LocalDate.of(2021, 1, 1);
+				BetreuungspensumContainer original = addCompleteContainer(LocalDate.of(2020, 8, 1), edgeCase);
+
+				clientGueltigkeit = new DateRange(edgeCase, LocalDate.of(2021, 5, 1));
+
+				ZeitabschnittDTO z = createZeitabschnittDTO(clientGueltigkeit);
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(original, LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31))),
+					container(matches(z, edgeCase, LocalDate.of(2021, 5, 1)))
+				));
+			}
+
+			@Nonnull
+			private Matcher<BetreuungspensumContainer> container(@Nonnull Matcher<AbstractMahlzeitenPensum> matcher) {
+				return pojo(BetreuungspensumContainer.class)
+					.where(BetreuungspensumContainer::getBetreuungspensumJA, matcher);
+			}
+
+			@Nonnull
+			@CanIgnoreReturnValue
+			private BetreuungspensumContainer addIncompleteContainer(@Nonnull DateRange range) {
+				BetreuungspensumContainer container = addCompleteContainer(range);
+				container.getBetreuungspensumJA().setVollstaendig(false);
+
+				return container;
+			}
+
+			@Nonnull
+			@CanIgnoreReturnValue
+			private BetreuungspensumContainer addCompleteContainer(@Nonnull DateRange range) {
+				return addCompleteContainer(range.getGueltigAb(), range.getGueltigBis());
+			}
+
+			@Nonnull
+			@CanIgnoreReturnValue
+			private BetreuungspensumContainer addCompleteContainer(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+				BetreuungspensumContainer container = new BetreuungspensumContainer();
+				Betreuungspensum pensum = new Betreuungspensum(new DateRange(von, bis));
+				container.setBetreuungspensumJA(pensum);
+				pensum.setVollstaendig(true);
+
+				container.setBetreuung(betreuung);
+				betreuung.getBetreuungspensumContainers().add(container);
+
+				return container;
+			}
+		}
+
+		private void testProcessingSuccess() {
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+
+			mockClient(clientGueltigkeit);
+			withMahlzeitenverguenstigung(true);
+			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(result.isProcessingSuccess(), is(true));
+			verifyAll();
+		}
+
+		private void withZusaetzlicherGutschein(boolean enabled) {
+			Einstellung einstellung = mock(Einstellung.class);
+			expect(einstellungService
+				.findEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gemeinde, gesuchsperiode))
+				.andReturn(einstellung);
+			expect(einstellung.getValueAsBoolean()).andReturn(enabled);
+		}
+
+		private void expectPlatzBestaetigung() {
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+				.andReturn(betreuung);
+		}
+
+		private void expectHumanConfirmation() {
+			expect(betreuungService.saveBetreuung(betreuung, false))
+				.andReturn(betreuung);
+		}
 	}
 
-	@Test
-	public void testMapWrongZeitabschnitt() {
-		List<Betreuung> betreuungs = gesuch_1GS.extractAllBetreuungen();
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = betreuungEventDTO.getZeitabschnitte().get(0);
-		zeitabschnittDTO.setPensumUnit(Zeiteinheit.HOURS);
-		BetreuungsmitteilungPensum betreuungsmitteilungPensum =
-			handler.mapZeitabschnitt(new BetreuungsmitteilungPensum()
-				, zeitabschnittDTO, betreuungs.get(0));
-		Assert.assertNull(betreuungsmitteilungPensum);
+	@Nested
+	class MutationsmeldungTest {
+
+		private BetreuungEventDTO dto = null;
+		private ZeitabschnittDTO zeitabschnittDTO = null;
+		private Betreuung betreuung = null;
+		private Betreuungspensum betreuungspensum = null;
+		private DateRange clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
+		private boolean withMahlzeitenEnabled = true;
+
+		/**
+		 * The default setup yields an Mutationsmeldung
+		 */
+		@BeforeEach
+		void setUp() {
+			zeitabschnittDTO = createZeitabschnittDTO(GO_LIVE, gesuchsperiode.getGueltigkeit().getGueltigBis());
+
+			zeitabschnittDTO.setTarifProHauptmahlzeiten(BigDecimal.ZERO);
+			zeitabschnittDTO.setTarifProNebenmahlzeiten(BigDecimal.ZERO);
+			dto = createBetreuungEventDTO(zeitabschnittDTO);
+			dto.setGemeindeBfsNr(gemeinde.getBfsNummer());
+			dto.setGemeindeName(gemeinde.getName());
+			betreuung = betreuungWithSingleContainer();
+			betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
+			betreuungspensum = getSingleContainer(betreuung);
+			// set a pensum different of default zeitabschnitt DTO, otherwiese pensen will be merged, making validation
+			// of gueltigkeiten harder
+			betreuungspensum.setPensum(BigDecimal.valueOf(50));
+			ErweiterteBetreuung erweiterteBetreuung =
+				requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA());
+			// the default test data already sets TRUE, but the actual default is NULL...
+			erweiterteBetreuung.setBetreuungInGemeinde(null);
+
+			clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
+		}
+
+		@Test
+		void createsNewBetreuungsmeldungWhenNoneExists() {
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			// limit to periode gueltigkeit (default is periodeAb to END_OF_TIME)
+			betreuungspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
+
+			testProcessingSuccess();
+
+			Dossier dossier = gesuch_1GS.getDossier();
+
+			assertThat(capture.getValue(), pojo(Betreuungsmitteilung.class)
+				.where(Betreuungsmitteilung::getDossier, sameInstance(dossier))
+				.where(Betreuungsmitteilung::getSenderTyp, is(MitteilungTeilnehmerTyp.INSTITUTION))
+				.where(Betreuungsmitteilung::getSender, notNullValue())
+				.where(Betreuungsmitteilung::getEmpfaengerTyp, is(MitteilungTeilnehmerTyp.JUGENDAMT))
+				.where(Betreuungsmitteilung::getEmpfaenger, sameInstance(dossier.getFall().getBesitzer()))
+				.where(Betreuungsmitteilung::getMitteilungStatus, is(MitteilungStatus.NEU))
+				.where(Betreuungsmitteilung::getSubject, is("Mutationsmeldung"))
+				.where(Betreuungsmitteilung::getBetreuung, sameInstance(betreuung))
+				.where(Betreuungsmitteilung::getBetreuungspensen, contains(
+					matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
+					matches(zeitabschnittDTO)
+				))
+			);
+		}
+
+		@Test
+		void createsDefaultMessage() {
+			withMahlzeitenEnabled = false;
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			// ignoring the dates, because their formatting is not platform independent
+			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
+				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000\n",
+				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000\n",
+				"Pensum 3 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000"));
+		}
+
+		@Test
+		void createsMahlzeitenMessage() {
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			// ignoring the dates, because their formatting is not platform independent
+			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
+				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000, "
+					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
+				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000, "
+					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
+				"Pensum 3 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000, "
+					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0"));
+		}
+
+		@Test
+		void preservesOriginalGueltigkeit() {
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
+				matches(zeitabschnittDTO),
+				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+			));
+		}
+
+		@Test
+		void setsIncompleteWhenHauptmahlZeitenTarifMissing() {
+			zeitabschnittDTO.setTarifProHauptmahlzeiten(null);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
+				matches(zeitabschnittDTO)
+					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false)),
+				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+			));
+		}
+
+		@Test
+		void setsIncompleteWhenNebenmahlZeitenTarifMissing() {
+			zeitabschnittDTO.setTarifProNebenmahlzeiten(null);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
+				matches(zeitabschnittDTO)
+					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false)),
+				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+			));
+		}
+
+		@Test
+		void splitDtoZeitabschnitteWithClientGueltigkeit() {
+			clientGueltigkeit = new DateRange(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 5, 31));
+
+			ZeitabschnittDTO beforeGueltigAb =
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 14));
+
+			ZeitabschnittDTO overlapGueltigAb =
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 31));
+
+			ZeitabschnittDTO containedInGueltigkeit =
+				createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31));
+
+			ZeitabschnittDTO overlapGueltigBis =
+				createZeitabschnittDTO(LocalDate.of(2021, 4, 10), LocalDate.of(2021, 5, 31));
+
+			ZeitabschnittDTO afterGueltigBis =
+				createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31));
+
+			dto.setZeitabschnitte(Arrays.asList(
+				beforeGueltigAb,
+				overlapGueltigAb,
+				containedInGueltigkeit,
+				overlapGueltigBis,
+				afterGueltigBis));
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), LocalDate.of(2021, 1, 14)),
+				matches(overlapGueltigAb, clientGueltigkeit.getGueltigAb(), LocalDate.of(2021, 3, 31)),
+				matches(overlapGueltigBis, LocalDate.of(2021, 4, 10), clientGueltigkeit.getGueltigBis()),
+				matches(
+					betreuungspensum,
+					clientGueltigkeit.getGueltigBis().plusDays(1),
+					betreuungspensum.getGueltigkeit().getGueltigBis())
+			));
+		}
+
+		@Test
+		void ignoresZeitabschnitteBeforeGoLive() {
+			ZeitabschnittDTO beforeGoLive =
+				createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 12, 14));
+
+			ZeitabschnittDTO overlapGueltigAb =
+				createZeitabschnittDTO(LocalDate.of(2020, 12, 15), LocalDate.of(2021, 1, 31));
+
+			dto.setZeitabschnitte(Arrays.asList(beforeGoLive, overlapGueltigAb));
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
+				matches(overlapGueltigAb, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
+				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+			));
+		}
+
+		@Test
+		void createsNewBetreuungsmeldungBasedOnExistingBetreuungsmeldung() {
+			DateRange periode = gesuchsperiode.getGueltigkeit();
+			BetreuungsmitteilungPensum existingPensum = createBetreuungsmitteilungPensum(new DateRange(
+				periode.getGueltigAb().plusMonths(1),
+				periode.getGueltigBis()));
+			existingPensum.setPensum(BigDecimal.valueOf(50));
+			Betreuungsmitteilung existing = createBetreuungMitteilung(existingPensum);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+			testProcessingSuccess(existing);
+
+			// betreuung has a pensum from 2020-08-01 to 2021-07-31
+			// there is an existing Betreuungsmitteilung with a single pensum from 2020-09-01 to 2021-07-31
+			// -> the new Betreuungsmitteilung should ignore August 2020, since the existing mutation did not define
+			// anything in that range.
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(existingPensum, existingPensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
+				matches(zeitabschnittDTO, GO_LIVE, periode.getGueltigBis())
+			));
+		}
+
+		@Test
+		void createsNewBetreuungsmeldungBasedOnNewestOpenBetreuungsmeldung() {
+			DateRange periode = gesuchsperiode.getGueltigkeit();
+
+			LocalDateTime now = LocalDateTime.now();
+
+			BetreuungsmitteilungPensum newestPensum = createBetreuungsmitteilungPensum(periode);
+			newestPensum.setPensum(BigDecimal.valueOf(75));
+			Betreuungsmitteilung newest = createBetreuungMitteilung(newestPensum);
+			newest.setSentDatum(now.minusMinutes(1));
+
+			BetreuungsmitteilungPensum otherOpenPensum = createBetreuungsmitteilungPensum(periode);
+			otherOpenPensum.setPensum(BigDecimal.valueOf(70));
+			Betreuungsmitteilung otherOpen = createBetreuungMitteilung(otherOpenPensum);
+			otherOpen.setSentDatum(now.minusHours(1));
+
+			BetreuungsmitteilungPensum completedPensum = createBetreuungsmitteilungPensum(periode);
+			completedPensum.setPensum(BigDecimal.valueOf(60));
+			Betreuungsmitteilung completed = createBetreuungMitteilung(completedPensum);
+			completed.setApplied(true);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess(completed, otherOpen, newest);
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(newestPensum, periode.getGueltigAb(), GO_LIVE.minusDays(1)),
+				matches(zeitabschnittDTO, GO_LIVE, periode.getGueltigBis())
+			));
+		}
+
+		@Test
+		void ignoresBetreuungsmeldungWhenIdenticalToExistingBetreuung() {
+			// limit to periode gueltigkeit (default is periodeAb to END_OF_TIME)
+			betreuungspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
+			// make sure pensum is the same
+			betreuungspensum.setPensum(zeitabschnittDTO.getBetreuungspensum());
+
+			expectMutationsmeldung();
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(result, failed("Die Betreuungsmeldung und die Betreuung sind identisch."));
+			verifyAll();
+		}
+
+		@Test
+		void ignoresBetreuungsmeldungWhenIdenticalToExistingBetreuungsmeldung() {
+			BetreuungsmitteilungPensum betreuungsmitteilungPensum =
+				createBetreuungsmitteilungPensum(gesuchsperiode.getGueltigkeit());
+			Betreuungsmitteilung betreuungMitteilung = createBetreuungMitteilung(betreuungsmitteilungPensum);
+
+			expectMutationsmeldung(betreuungMitteilung);
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(
+				result,
+				failed("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
+			verifyAll();
+		}
+
+		@Test
+		void createsBetreuungsmeldungWhenIdenticalToExistingBetreuungAndOpenBetreuungsmeldung() {
+			DateRange periode = gesuchsperiode.getGueltigkeit();
+			// limit to periode gueltigkeit (default is periodeAb to END_OF_TIME)
+			betreuungspensum.setGueltigkeit(periode);
+			// make sure pensum is the same
+			betreuungspensum.setPensum(zeitabschnittDTO.getBetreuungspensum());
+
+			Betreuungsmitteilung betreuungMitteilung = createBetreuungMitteilung(
+				// existing Betreuungsmitteilung and new one are not equal due to different  gueltigkeit
+				createBetreuungsmitteilungPensum(new DateRange(periode.getGueltigAb(), GO_LIVE))
+			);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess(betreuungMitteilung);
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(betreuungspensum, periode)
+			));
+		}
+
+		@Test
+		void ignoresBetreuungsmeldungWhenClientGueltigkeitEndsBeforeGoLive() {
+			clientGueltigkeit = new DateRange(2020);
+			zeitabschnittDTO.setVon(clientGueltigkeit.getGueltigAb());
+			zeitabschnittDTO.setBis(clientGueltigkeit.getGueltigBis());
+
+			expectMutationsmeldung();
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(result, failed("Die Betreuungsmeldung und die Betreuung sind identisch."));
+			verifyAll();
+		}
+
+		/**
+		 * regression test: when there is an existing Zeitabschnitt starting in client range but exceeding it, it
+		 * should only be included once (after the client's gueltigkeit).
+		 *
+		 * The setup requires to set distinct values to the Zeitabschnitte, here ensured with Betreuungskost, because
+		 * otherwise the Zeitabschnitte merging creates a single Zeitabschnitt (and thus does not show the problem).
+		 */
+		@Test
+		void shouldNotCreateOverlappingPensen() {
+			LocalDate march = LocalDate.of(2021, 3, 1);
+			clientGueltigkeit = new DateRange(march, LocalDate.of(2021, 6, 30));
+			zeitabschnittDTO.setVon(march);
+			zeitabschnittDTO.setBis(LocalDate.of(2021, 7, 2));
+			zeitabschnittDTO.setBetreuungskosten(BigDecimal.valueOf(100));
+
+			BetreuungsmitteilungPensum p1 =
+				createBetreuungsmitteilungPensum(new DateRange(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 28)));
+			p1.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
+			BetreuungsmitteilungPensum p2 =
+				createBetreuungsmitteilungPensum(new DateRange(march, LocalDate.of(2021, 7, 1)));
+			p2.setMonatlicheBetreuungskosten(BigDecimal.valueOf(99));
+			Betreuungsmitteilung existing = createBetreuungMitteilung(p1, p2);
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess(existing);
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(p1, p1.getGueltigkeit()),
+				matches(zeitabschnittDTO, new DateRange(march, clientGueltigkeit.getGueltigBis())),
+				matches(p2, LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 1))
+			));
+		}
+
+		private void testProcessingSuccess(@Nonnull Betreuungsmitteilung... existing) {
+			expectMutationsmeldung(existing);
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			assertThat(result.isProcessingSuccess(), is(true));
+			verifyAll();
+		}
+
+		private void expectMutationsmeldung(@Nonnull Betreuungsmitteilung... existing) {
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+
+			mockClient(clientGueltigkeit);
+			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
+
+			expect(benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID))
+				.andReturn(Optional.of(new Benutzer()));
+
+			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
+				.andReturn(Arrays.asList(existing));
+
+			expect(gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()))
+				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));
+		}
+
+		@Nonnull
+		private Capture<Betreuungsmitteilung> expectNewMitteilung() {
+			Capture<Betreuungsmitteilung> captured = EasyMock.newCapture();
+			//noinspection ConstantConditions
+			mitteilungService.replaceBetreungsmitteilungen(EasyMock.capture(captured));
+			expectLastCall();
+
+			return captured;
+		}
 	}
 
-	@Test
-	public void testMapZeitAbschnitteToImportGoLive() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
-		zeitabschnittDTO.setVon(LocalDate.of(2020, 11, 1));
-		zeitabschnittDTO.setBis(LocalDate.of(2021, 6, 30));
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 5, 31)))
-				.collect(Collectors.toSet()));
+	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
+		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
+		ExternalClient externalClient = mock(ExternalClient.class);
 
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2000, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2030, 1, 1));
+		expect(externalClientService.getInstitutionExternalClientForInstitution(anyObject()))
+			.andReturn(Collections.singleton(institutionExternalClient));
 
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
+		expect(institutionExternalClient.getExternalClient())
+			.andReturn(externalClient);
 
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
+		expect(externalClient.getClientName())
+			.andReturn(CLIENT_NAME);
 
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 6, 30), zeitabschnitteToImport.get(1).getBis());
-
-		Assert.assertEquals(2, zeitabschnitteToImport.size());
+		expect(institutionExternalClient.getGueltigkeit())
+			.andReturn(clientGueltigkeit);
 	}
 
-	@Test
-	public void testMapZeitAbschnitteToImport() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//Zeitabschnitt bevor von soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTOBevor = createZeitabschnittDTO();
-		zeitabschnittDTOBevor.setVon(LocalDate.of(2020, 11, 1));
-		zeitabschnittDTOBevor.setBis(LocalDate.of(2020, 11, 30));
-		//uberlapende Zeitabschnitt von
-		ZeitabschnittDTO zeitabschnittDTOUberVon = createZeitabschnittDTO();
-		zeitabschnittDTOUberVon.setVon(LocalDate.of(2020, 12, 1));
-		zeitabschnittDTOUberVon.setBis(LocalDate.of(2021, 1, 31));
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 2, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 3, 31));
-		///uberlapende Zeitabschnitt bis
-		ZeitabschnittDTO zeitabschnittDTOUberBis = createZeitabschnittDTO();
-		zeitabschnittDTOUberBis.setVon(LocalDate.of(2021, 4, 1));
-		zeitabschnittDTOUberBis.setBis(LocalDate.of(2021, 6, 30));
-		///Zeitabschnitt nach bis soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTONachBis = createZeitabschnittDTO();
-		zeitabschnittDTONachBis.setVon(LocalDate.of(2021, 7, 1));
-		zeitabschnittDTONachBis.setBis(LocalDate.of(2021, 7, 31));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 1, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(
-			zeitabschnittDTOBevor,
-			zeitabschnittDTOUberVon,
-			zeitabschnittDTOInMitte,
-			zeitabschnittDTOUberBis,
-			zeitabschnittDTONachBis));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 1, 31), zeitabschnitteToImport.get(1).getBis());
-
-		Assert.assertEquals(LocalDate.of(2021, 2, 1), zeitabschnitteToImport.get(2).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 3, 31), zeitabschnitteToImport.get(2).getBis());
-
-		Assert.assertEquals(LocalDate.of(2021, 4, 1), zeitabschnitteToImport.get(3).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(3).getBis());
-
-		Assert.assertEquals(4, zeitabschnitteToImport.size());
+	private void withMahlzeitenverguenstigung(boolean enabled) {
+		Einstellung einstellung = mock(Einstellung.class);
+		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, gesuchsperiode))
+			.andReturn(einstellung);
+		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
 	}
 
-	@Test
-	public void testMapZeitAbschnitteToImportSplit() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 7, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		List<ZeitabschnittDTO> zeitabschnitteToImport = handler.mapZeitabschnitteToImport(
-			betreuungEventDTO,
-			Objects.requireNonNull(betreuung), gueltigkeit);
-
-		Assert.assertEquals(LocalDate.of(2020, 8, 1), zeitabschnitteToImport.get(0).getVon());
-		Assert.assertEquals(LocalDate.of(2020, 12, 31), zeitabschnitteToImport.get(0).getBis());
-
-		Assert.assertEquals(LocalDate.of(2021, 5, 2), zeitabschnitteToImport.get(1).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 7, 31), zeitabschnitteToImport.get(1).getBis());
-
-		Assert.assertEquals(LocalDate.of(2021, 1, 1), zeitabschnitteToImport.get(2).getVon());
-		Assert.assertEquals(LocalDate.of(2021, 5, 1), zeitabschnitteToImport.get(2).getBis());
-
-		Assert.assertEquals(3, zeitabschnitteToImport.size());
+	@Nonnull
+	private ZeitabschnittDTO defaultZeitabschnittDTO() {
+		return PlatzbestaetigungTestUtil.createZeitabschnittDTO(
+			gesuchsperiode.getGueltigkeit().getGueltigAb(),
+			gesuchsperiode.getGueltigkeit().getGueltigBis().withDayOfYear(31)
+		);
 	}
 
-	@Test
-	public void testSetZeitabschnitte() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//Zeitabschnitt bevor von soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTOBevor = createZeitabschnittDTO();
-		zeitabschnittDTOBevor.setVon(LocalDate.of(2020, 11, 1));
-		zeitabschnittDTOBevor.setBis(LocalDate.of(2020, 11, 30));
-		//uberlapende Zeitabschnitt von
-		ZeitabschnittDTO zeitabschnittDTOUberVon = createZeitabschnittDTO();
-		zeitabschnittDTOUberVon.setVon(LocalDate.of(2020, 12, 1));
-		zeitabschnittDTOUberVon.setBis(LocalDate.of(2021, 1, 31));
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 2, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 3, 31));
-		///uberlapende Zeitabschnitt bis
-		ZeitabschnittDTO zeitabschnittDTOUberBis = createZeitabschnittDTO();
-		zeitabschnittDTOUberBis.setVon(LocalDate.of(2021, 4, 1));
-		zeitabschnittDTOUberBis.setBis(LocalDate.of(2021, 6, 30));
-		///Zeitabschnitt nach bis soll nicht genommen werden
-		ZeitabschnittDTO zeitabschnittDTONachBis = createZeitabschnittDTO();
-		zeitabschnittDTONachBis.setVon(LocalDate.of(2021, 7, 1));
-		zeitabschnittDTONachBis.setBis(LocalDate.of(2021, 7, 31));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 3, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(
-			zeitabschnittDTOBevor,
-			zeitabschnittDTOUberVon,
-			zeitabschnittDTOInMitte,
-			zeitabschnittDTOUberBis,
-			zeitabschnittDTONachBis));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
-
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
-		BetreuungspensumContainer[] betreuungspensumContainers =
-			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
-				.getBetreuungspensumContainers()
-				.size()];
-		platzbestaetigungProcessingContext.getBetreuung()
-			.getBetreuungspensumContainers()
-			.stream()
-			.sorted()
-			.collect(Collectors.toList())
-			.toArray(betreuungspensumContainers);
-		Assert.assertEquals(
-			LocalDate.of(2020, 8, 1),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2020, 12, 31),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assert.assertEquals(
-			LocalDate.of(2021, 1, 1),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2021, 1, 31),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assert.assertEquals(
-			LocalDate.of(2021, 2, 1),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2021, 3, 31),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assert.assertEquals(
-			LocalDate.of(2021, 4, 1),
-			betreuungspensumContainers[3].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2021, 5, 1),
-			betreuungspensumContainers[3].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assert.assertEquals(4, betreuungspensumContainers.length);
-	}
-
-	@Test
-	public void testSetZeitabschnitteSplit() {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO();
-		//in der mitte Zeitabschnitt
-		ZeitabschnittDTO zeitabschnittDTOInMitte = createZeitabschnittDTO();
-		zeitabschnittDTOInMitte.setVon(LocalDate.of(2021, 1, 1));
-		zeitabschnittDTOInMitte.setBis(LocalDate.of(2021, 5, 1));
-
-		Betreuung betreuung = gesuch_1GS.getFirstBetreuung();
-		Objects.requireNonNull(betreuung).setBetreuungspensumContainers(
-			betreuung
-				.getBetreuungspensumContainers()
-				.stream()
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(LocalDate.of(2020, 8, 1)))
-				.peek(p -> p.getBetreuungspensumJA().getGueltigkeit().setGueltigBis(LocalDate.of(2021, 7, 31)))
-				.collect(Collectors.toSet()));
-
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTOInMitte));
-		DateRange gueltigkeit = new DateRange();
-		gueltigkeit.setGueltigAb(LocalDate.of(2021, 1, 1));
-		gueltigkeit.setGueltigBis(LocalDate.of(2021, 5, 1));
-
-		PlatzbestaetigungProcessingContext platzbestaetigungProcessingContext =
-			new PlatzbestaetigungProcessingContext(betreuung, betreuungEventDTO);
-
-		handler.setZeitabschnitte(platzbestaetigungProcessingContext, true, gueltigkeit);
-		BetreuungspensumContainer[] betreuungspensumContainers =
-			new BetreuungspensumContainer[platzbestaetigungProcessingContext.getBetreuung()
-				.getBetreuungspensumContainers()
-				.size()];
-		platzbestaetigungProcessingContext.getBetreuung()
-			.getBetreuungspensumContainers()
-			.stream()
-			.sorted()
-			.collect(Collectors.toList())
-			.toArray(betreuungspensumContainers);
-
-		Assert.assertEquals(
-			LocalDate.of(2020, 8, 1),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2020, 12, 31),
-			betreuungspensumContainers[0].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(
-			LocalDate.of(2021, 1, 1),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2021, 5, 1),
-			betreuungspensumContainers[1].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(
-			LocalDate.of(2021, 5, 2),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			LocalDate.of(2021, 7, 31),
-			betreuungspensumContainers[2].getBetreuungspensumJA().getGueltigkeit().getGueltigBis());
-
-		Assert.assertEquals(3, betreuungspensumContainers.length);
-	}
-
-	/**
-	 * Eine BetreuungEventDTO mit genau eine Zeitabschnitt
-	 */
-	private BetreuungEventDTO createBetreuungEventDTO() {
-		BetreuungEventDTO betreuungEventDTO = new BetreuungEventDTO();
-		betreuungEventDTO.setRefnr("20.007305.002.1.3");
-		betreuungEventDTO.setGemeindeBfsNr(99999L);
-		betreuungEventDTO.setGemeindeName("Testgemeinde");
-		betreuungEventDTO.setInstitutionId("1234-5678-9101-1121");
-		betreuungEventDTO.setAusserordentlicherBetreuungsaufwand(false);
-		ZeitabschnittDTO zeitabschnittDTO = createZeitabschnittDTO();
-		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnittDTO));
-		return betreuungEventDTO;
-	}
-
-	private ZeitabschnittDTO createZeitabschnittDTO() {
-		return ZeitabschnittDTO.newBuilder()
-			.setBetreuungskosten(new BigDecimal(2000.00).setScale(2))
-			.setBetreuungspensum(new BigDecimal(80))
-			.setAnzahlHauptmahlzeiten(BigDecimal.ZERO)
-			.setAnzahlNebenmahlzeiten(BigDecimal.ZERO)
-			.setPensumUnit(Zeiteinheit.PERCENTAGE)
-			.setVon(LocalDate.of(2017, 8, 01))
-			.setBis(LocalDate.of(2018, 1, 31))
-			.build();
+	@Nonnull
+	private Betreuung betreuungWithSingleContainer() {
+		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);
 	}
 }

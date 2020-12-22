@@ -121,6 +121,10 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	@Nullable
 	private Boolean kindMutiert;
 
+	@Column(nullable = true)
+	@Nullable
+	private Boolean keinSelbstbehaltDurchGemeinde;
+
 	public KindContainer() {
 	}
 
@@ -184,6 +188,15 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 		this.kindMutiert = kindMutiert;
 	}
 
+	@Nullable
+	public Boolean getKeinSelbstbehaltDurchGemeinde() {
+		return keinSelbstbehaltDurchGemeinde;
+	}
+
+	public void setKeinSelbstbehaltDurchGemeinde(@Nullable Boolean keinSelbstbehaltDurchGemeinde) {
+		this.keinSelbstbehaltDurchGemeinde = keinSelbstbehaltDurchGemeinde;
+	}
+
 	@Nonnull
 	public Set<AnmeldungTagesschule> getAnmeldungenTagesschule() {
 		return anmeldungenTagesschule;
@@ -225,11 +238,13 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.setNextNumberBetreuung(this.getNextNumberBetreuung());
 			copyBetreuungen(target, copyType, targetGesuch);
 			copyAnmeldungen(target, copyType, targetGesuch);
+			target.setKeinSelbstbehaltDurchGemeinde(this.getKeinSelbstbehaltDurchGemeinde());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert
+			target.setKeinSelbstbehaltDurchGemeinde(null);
 			break;
 		}
 		return target;

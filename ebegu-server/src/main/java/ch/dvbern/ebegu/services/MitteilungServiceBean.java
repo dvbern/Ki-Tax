@@ -66,7 +66,6 @@ import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
@@ -83,7 +82,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -116,6 +114,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Mitteilungen
@@ -346,7 +346,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
+	@Override
+	public Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -356,10 +357,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
 
-		Predicate predicateBetreuung = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
+		Predicate predicateBetreuung = cb.equal(root.get(Mitteilung_.betreuung), betreuungParam);
 		predicates.add(predicateBetreuung);
 
-		final Predicate predicateNotApplied = cb.equal(root.get(Betreuungsmitteilung_.APPLIED), Boolean.FALSE);
+		final Predicate predicateNotApplied = cb.isFalse(root.get(Betreuungsmitteilung_.APPLIED));
 		predicates.add(predicateNotApplied);
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
@@ -383,7 +384,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
 
-		Predicate predicateLinkedObject = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
+		Predicate predicateLinkedObject = cb.equal(root.get(Mitteilung_.betreuung), betreuungParam);
 		predicates.add(predicateLinkedObject);
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
@@ -549,7 +550,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<BetreuungspensumAbweichung> root = query.from(BetreuungspensumAbweichung.class);
 		final Join<Betreuung, KindContainer> join = root
 			.join(BetreuungspensumAbweichung_.betreuung, JoinType.LEFT)
-			.join(Betreuung_.kind, JoinType.LEFT);
+			.join(AbstractPlatz_.kind, JoinType.LEFT);
 
 		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
 		query.where(gesuchPred);
@@ -621,6 +622,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return persistence.getCriteriaSingleResult(query);
 	}
 
+	@Override
+	public void replaceBetreungsmitteilungen(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+
+		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
+
+		//noinspection ResultOfMethodCallIgnored
+		sendBetreuungsmitteilung(betreuungsmitteilung);
+	}
+
 	@Nonnull
 	@Override
 	public Betreuungsmitteilung sendBetreuungsmitteilung(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
@@ -632,6 +643,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (MitteilungTeilnehmerTyp.JUGENDAMT != betreuungsmitteilung.getEmpfaengerTyp()) {
 			throw new IllegalArgumentException("Eine Betreuungsmitteilung darf nur an das Jugendamt geschickt werden");
 		}
+
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU); // vorsichtshalber
 		betreuungsmitteilung.setSentDatum(LocalDateTime.now());
 
@@ -719,11 +731,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
 
 		Predicate predicateLinkedObject =
-			cb.equal(root.get(Betreuungsmitteilung_.betreuung).get(Betreuung_.id), betreuungId);
+			cb.equal(root.get(Mitteilung_.betreuung).get(AbstractEntity_.id), betreuungId);
 		Predicate predicateNotErledigt =
-			cb.equal(root.get(Betreuungsmitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT).not();
+			cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT).not();
 
-		query.orderBy(cb.desc(root.get(Betreuungsmitteilung_.sentDatum)));
+		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
 		query.where(predicateLinkedObject, predicateNotErledigt);
 
 		final List<Betreuungsmitteilung> result =
@@ -761,7 +773,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung,
+	public void createMutationsmeldungAbweichungen(
+		@Nonnull Betreuungsmitteilung mitteilung,
 		@Nonnull Betreuung betreuung) {
 
 		// convert BetreuungspensumAbweichung to MitteilungPensum
@@ -786,10 +799,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
 
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sendBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(pensenFromAbweichungen, mahlzeitenverguenstigungEnabled, locale));
+		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
+			pensenFromAbweichungen,
+			mahlzeitenverguenstigungEnabled,
+			locale));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -965,7 +983,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		switch (mode) {
 		case SEARCH:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(root.get(Mitteilung_.id)).where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+			query.select(root.get(AbstractEntity_.id))
+				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			constructOrderByClause(
 				mitteilungTableFilterDto,
 				cb,
@@ -980,7 +999,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(cb.countDistinct(root.get(Gesuch_.id)))
+			query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			break;
 		}
@@ -1094,7 +1113,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 			Root<Mitteilung> root = query.from(Mitteilung.class);
-			Predicate predicate = root.get(Mitteilung_.id).in(gesuchIds);
+			Predicate predicate = root.get(AbstractEntity_.id).in(gesuchIds);
 			query.where(predicate);
 			//reduce to unique gesuche
 			List<Mitteilung> listWithDuplicates = persistence.getCriteriaResults(query);
@@ -1111,7 +1130,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return Collections.emptyList();
 	}
 
-	private void applyBetreuungsmitteilungToMutation(@Nonnull Gesuch gesuch, @Nonnull Betreuungsmitteilung mitteilung
+	private void applyBetreuungsmitteilungToMutation(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Betreuungsmitteilung mitteilung
 	) {
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(mitteilung);
@@ -1141,7 +1162,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				existingBetreuung.getBetreuungspensumContainers().add(betPenCont);
 
 				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {
-					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
+					betPensumMitteilung.getBetreuungspensumAbweichung()
+						.setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
 				}
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT wenn Vollstaendig,

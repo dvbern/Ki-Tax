@@ -25,6 +25,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -34,6 +35,8 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -66,6 +69,8 @@ import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.FileSaverService;
@@ -74,6 +79,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -83,6 +89,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.tika.Tika;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
@@ -122,6 +129,9 @@ public class UploadResource {
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private ReportKinderMitZemisNummerService reportKinderMitZemisNummerService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -328,6 +338,27 @@ public class UploadResource {
 		TransferFile file = fileList.get(0);
 
 		gemeindeService.uploadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp, file.getContent());
+
+		return Response.ok().build();
+	}
+
+	@ApiOperation("Stores and processes Excel containing a list of children with a zemis number. Sets flag "
+		+ "'keinSelbstbehaltFuerGemeinde' for every child of this list.")
+	@POST
+	@Path("/zemisExcel")
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response uploadZemisExcelAndSetFlag(
+		@Nonnull @NotNull MultipartFormDataInput input) throws IOException, MailException {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+		Validate.notEmpty(fileList, "Need to upload something");
+		TransferFile file = fileList.get(0);
+
+		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent());
 
 		return Response.ok().build();
 	}

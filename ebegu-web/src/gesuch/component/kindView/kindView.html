@@ -424,6 +424,7 @@
                             <div class="checkbox checkbox-with-margin">
                                 <md-checkbox ng-model="vm.getModel().ausAsylwesen" name="showAsylwesen" id="showAsylwesen"
                                              aria-label="{{'KIND_AUS_ASYLWESEN'|translate}}"
+                                             ng-change="vm.deleteZemisNummer(vm.getModel())"
                                              ng-disabled="vm.isGesuchReadonly()">
                                     <span data-translate="KIND_AUS_ASYLWESEN"></span>
                                 </md-checkbox>
@@ -437,8 +438,8 @@
 
                     <!-- ZEMIS Nummer -->
                     <div ng-if="vm.showZemisNummer()">
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
+                        <div class="row" id="zemis-nummer">
+                            <div class="col-sm-4 col-xs-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float" data-translate="ZEMIS_NUMMER"
                                            for="zemisNummer"></label>
@@ -454,6 +455,16 @@
                                                        for="vm.form.zemisNummer.$error"
                                                        class="error"></dv-error-messages>
                                 </dv-input-container>
+                            </div>
+                            <div class="col-sm-8 col-xs-12 dv-input-container-question" ng-if="vm.showKeinSelbstbehaltDurchGemeinde()">
+                                <div class="checkbox checkbox-with-margin">
+                                    <md-checkbox ng-model="vm.getContainer().keinSelbstbehaltDurchGemeinde"
+                                                 name="keinSelbstbehaltDurchGemeinde" id="keinSelbstbehaltDurchGemeinde"
+                                                 aria-label="{{'KEIN_SELBSTBEHALT_DURCH_GEMEINDE'|translate}}"
+                                                 ng-disabled="true">
+                                        <span data-translate="KEIN_SELBSTBEHALT_DURCH_GEMEINDE"></span>
+                                    </md-checkbox>
+                                </div>
                             </div>
                         </div>
                     </div>

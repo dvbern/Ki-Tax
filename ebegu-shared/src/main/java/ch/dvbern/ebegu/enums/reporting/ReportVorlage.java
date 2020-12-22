@@ -132,6 +132,12 @@ public enum ReportVorlage {
 		Constants.DATA,
 		MergeFieldLastenausgleichBerechnung.class
 	),
+	VORLAGE_REPORT_ZEMIS(
+		"/reporting/KinderMitZemisNummer.xlsx",
+		ReportFileName.KINDER_MIT_ZEMIS_NUMMER,
+		Constants.DATA,
+		MergeFieldZemis.class
+	),
 	VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN(
 		"/reporting/TagesschuleAnmeldungen.xlsx",
 		ReportFileName.TAGESSCHULE_ANMELDUNGEN,

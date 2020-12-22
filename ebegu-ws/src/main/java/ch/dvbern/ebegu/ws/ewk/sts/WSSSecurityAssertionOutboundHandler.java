@@ -57,6 +57,10 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 				SOAPElement securityElem =
 					factory.createElement("Security", prefix, WSSE_NS_URI);
 
+				if (envelope.getHeader() != null) {
+					envelope.getHeader().detachNode();
+				}
+
 				SOAPHeader header = envelope.addHeader();
 
 				Node assertionNode = stsAssertionManager.getValidSTSAssertionForPersonensuche();

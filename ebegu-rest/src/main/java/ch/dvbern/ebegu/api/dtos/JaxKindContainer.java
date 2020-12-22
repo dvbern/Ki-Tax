@@ -47,6 +47,9 @@ public class JaxKindContainer extends JaxAbstractDTO {
 	@Min(1)
 	private Integer kindNummer = 1;
 
+	@Nullable
+	private Boolean keinSelbstbehaltDurchGemeinde;
+
 	@Min(1)
 	private Integer nextNumberBetreuung = 1;
 
@@ -83,6 +86,15 @@ public class JaxKindContainer extends JaxAbstractDTO {
 
 	public void setKindNummer(Integer kindNummer) {
 		this.kindNummer = kindNummer;
+	}
+
+	@Nullable
+	public Boolean getKeinSelbstbehaltDurchGemeinde() {
+		return keinSelbstbehaltDurchGemeinde;
+	}
+
+	public void setKeinSelbstbehaltDurchGemeinde(@Nullable Boolean keinSelbstbehaltDurchGemeinde) {
+		this.keinSelbstbehaltDurchGemeinde = keinSelbstbehaltDurchGemeinde;
 	}
 
 	public Integer getNextNumberBetreuung() {

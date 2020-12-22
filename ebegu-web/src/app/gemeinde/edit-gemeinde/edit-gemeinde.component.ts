@@ -231,26 +231,27 @@ export class EditGemeindeComponent implements OnInit {
             ? undefined
             : this.usernameScolaris;
 
-        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
+        try {
+            await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
             if (this.fileToUpload) {
                 this.persistLogo(this.fileToUpload);
             } else if (this.isRegisteringGemeinde) {
                 this.$state.go('welcome');
                 return;
             }
-        });
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
-                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
-                    this.loadStammdaten();
-                }
+
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+                await this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
                 this.updateExternalClients();
-                this.setViewMode();
-            }).catch(() => {
-                this.setEditMode();
-            }).finally(() => {
-                this.changeDetectorRef.detectChanges();
-            });
+            }
+
+            this.loadStammdaten();
+            this.setViewMode();
+
+        } catch (err) {
+            this.setEditMode();
+        } finally {
+            this.changeDetectorRef.detectChanges();
         }
 
         // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann

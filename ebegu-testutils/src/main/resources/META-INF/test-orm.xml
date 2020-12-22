@@ -390,4 +390,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde"/>
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer"/>
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory"/>
+	<entity class="ch.dvbern.ebegu.entities.GesuchsperiodeEmailCandidate"/>
 </entity-mappings>

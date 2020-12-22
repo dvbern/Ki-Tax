@@ -28,20 +28,24 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
+import ch.dvbern.ebegu.reporting.lastenausgleich.KindMitZemisNummerDataRow;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -79,6 +83,9 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private ReportKinderMitZemisNummerService kinderMitZemisNummerService;
 
 	@Before
 	public void init() {
@@ -358,5 +365,19 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 				assertFalse(row.isTagesschule());
 				assertFalse(row.isFerieninsel());
 			});
+	}
+
+	@Test
+	public void generateZemisExcel() throws ExcelMergeException {
+
+		int lastenausgleichJahr = 2018;
+
+		List<Gesuch> gesuchList = gesuchService.findGesucheForZemisList(lastenausgleichJahr);
+
+		// nur gültige gesuche mit kind mit Zemis Nummer
+		assertEquals(gesuchList.size(), 1);
+
+		UploadFileInfo uploadFileInfo = kinderMitZemisNummerService.generateZemisReport(lastenausgleichJahr, Constants.DEUTSCH_LOCALE);
+		assertNotNull(uploadFileInfo.getBytes());
 	}
 }

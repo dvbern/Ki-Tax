@@ -108,4 +108,9 @@ public class DailyBatchScheduler {
 	public void runBatchUpdateGemeindeForBGInstitutionen() {
 		dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
 	}
+
+	@Schedule(second = "59", minute = "45", hour = "*", persistent = true)
+	public void runBatchSendEmailsForNewGesuchsperiode() {
+		dailyBatch.runBatchSendEmailsForNewGesuchsperiode();
+	}
 }

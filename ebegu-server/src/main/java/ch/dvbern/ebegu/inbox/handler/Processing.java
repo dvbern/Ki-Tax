@@ -18,41 +18,36 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
+public class Processing {
 
-public class PlatzbestaetigungProcessingContext {
+	private final boolean processingSuccess;
 
-	@Nonnull
-	private final Betreuung betreuung;
-	@Nonnull
-	private final BetreuungEventDTO dto;
+	@Nullable
+	private final String message;
 
-	private boolean isReadyForBestaetigen = true;
-
-	public PlatzbestaetigungProcessingContext(
-		@Nonnull Betreuung betreuung,
-		@Nonnull BetreuungEventDTO dto) {
-		this.betreuung = betreuung;
-		this.dto = dto;
-	}
-
-	public void requireHumanConfirmation() {
-		isReadyForBestaetigen = false;
+	private Processing(boolean processingSuccess, @Nullable String message) {
+		this.processingSuccess = processingSuccess;
+		this.message = message;
 	}
 
 	@Nonnull
-	public Betreuung getBetreuung() {
-		return betreuung;
+	public static Processing success() {
+		return new Processing(true, null);
 	}
 
 	@Nonnull
-	public BetreuungEventDTO getDto() {
-		return dto;
+	public static Processing failure(@Nonnull String message) {
+		return new Processing(false, message);
 	}
 
-	public boolean isReadyForBestaetigen() {
-		return isReadyForBestaetigen;
+	public boolean isProcessingSuccess() {
+		return processingSuccess;
+	}
+
+	@Nullable
+	public String getMessage() {
+		return message;
 	}
 }

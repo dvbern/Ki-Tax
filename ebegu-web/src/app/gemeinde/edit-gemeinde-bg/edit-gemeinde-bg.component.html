@@ -180,6 +180,22 @@
                         </div>
                     </div>
 
+                    <!--Antragsteller bei Öffnung der Gesuchsperiode per Email informieren-->
+                    <div class="form-group">
+                        <div class="form-group checkbox-with-tooltip">
+                            <div>
+                            <mat-checkbox id="emailBeiGesuchsperiodeOeffnung" name="emailBeiGesuchsperiodeOeffnung"
+                                          [(ngModel)]="stammdaten.emailBeiGesuchsperiodeOeffnung">
+                                {{'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG'|translate}}
+                            </mat-checkbox>
+                            </div>
+                            <div class="tooltip-margin">
+                            <dv-tooltip id="emailBeiGesuchsperiodeOeffnung_tooltip"
+                                        [text]="'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_HELP'|translate"></dv-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Betreuungsgutscheine anbieten ab -->
                     <div class="form-group mt-5">
                         <h3 translate>BEGU_START</h3>
@@ -1070,6 +1086,17 @@
                     <div *ngIf="stammdaten.gemeinde.angebotTS && stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
                         <div>
                             <h3>{{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA'|translate}}</h3>
+                        </div>
+                    </div>
+                    <!--Antragsteller bei Öffnung der Gesuchsperiode per Email informieren-->
+                    <div>
+                        <div>
+                            <h3 *ngIf="stammdaten.emailBeiGesuchsperiodeOeffnung">
+                                {{ 'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_JA' | translate }}
+                            </h3>
+                            <h3 *ngIf="!stammdaten.emailBeiGesuchsperiodeOeffnung">
+                                {{ 'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_NEIN' | translate }}
+                            </h3>
                         </div>
                     </div>
 

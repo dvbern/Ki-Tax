@@ -400,20 +400,15 @@ public interface GesuchService {
 	void postGesuchVerfuegen(@Nonnull Gesuch gesuch);
 
 	/**
-	 * Sucht das jeweils juengste Gesuch pro Fall der lastGesuchsperiode und sendet eine
-	 * Infomail betreffend der neuen Gesuchsperiode (nextGesuchsperiode).
-	 * Diese Methode wird asynchron ausgefuehrt, da das ermitteln des jeweils letzten Gesuchs pro
-	 * Fall sehr lange geht.
-	 */
-	void sendMailsToAllGesuchstellerOfLastGesuchsperiode(
-		@Nonnull Gesuchsperiode lastGesuchsperiode,
-		@Nonnull Gesuchsperiode nextGesuchsperiode);
-
-	/**
 	 * Checks all Betreuungen of the given Gesuch and updates the flag gesuchBetreuungenStatus with the corresponding
 	 * value.
 	 */
 	Gesuch updateBetreuungenStatus(@NotNull Gesuch gesuch);
+
+	@Nonnull
+	Optional<Gesuch> getNeuestesGesuchForDossierAndPeriod(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Setzt den uebergebene FinSitStatus im gegebenen Gesuch
@@ -468,4 +463,10 @@ public interface GesuchService {
 	 * Erstellt eine Mutation und verlangt alle Platzbestaetigungen neu.
 	 */
 	void createMutationAndAskForPlatzbestaetigung(@Nonnull Gesuch gesuch);
+
+	/**
+	 * Findet alle verfügten und gültigen Gesuche von Kindern mit einer ZEMIS Nummer von einer der Lastenausgleichsperioden
+	 * haben. Z.B. Lastenausgleich 2020: Gesuche der Periode 2018/19 oder Periode 19/20 werden berücksichtigt
+	 */
+	List<Gesuch> findGesucheForZemisList(@Nonnull Integer lastenausgleichJahr);
 }

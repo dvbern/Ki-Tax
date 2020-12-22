@@ -232,7 +232,7 @@ public class GesuchsperiodeResource {
 	}
 
 	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV oder INAKTIV sind und nach dem " +
-		"BetreuungsgutscheineStartdatum der Gemeinde liegen.",
+		"BetreuungsgutscheineStartdatum und vor Ende der Gültigkeit der Gemeinde liegen.",
 		responseContainer = "List",
 		response = JaxGesuchsperiode.class)
 	@Nonnull
@@ -253,7 +253,7 @@ public class GesuchsperiodeResource {
 	}
 
 	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV sind und nach dem " +
-		"BetreuungsgutscheineStartdatum der Gemeinde liegen.",
+		"BetreuungsgutscheineStartdatum und vor Ende der Gültigkeit der Gemeinde liegen.",
 		responseContainer = "List",
 		response = JaxGesuchsperiode.class)
 	@Nonnull

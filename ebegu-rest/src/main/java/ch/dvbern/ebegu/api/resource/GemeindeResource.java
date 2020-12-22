@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -236,6 +237,22 @@ public class GemeindeResource {
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGemeinde> getAktiveGemeinden() {
 		return gemeindeService.getAktiveGemeinden().stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+	}
+
+
+	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV and gueltigBis after the current day",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/activegueltig")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
+	public List<JaxGemeinde> getAktiveGueltigeGemeinden() {
+		return gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -672,7 +689,7 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Fuer Registrierungsprozess
 	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
-		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeinden().stream()
+		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);
@@ -730,6 +747,10 @@ public class GemeindeResource {
 		}
 		if (!gemeinde.getFerieninselanmeldungenStartdatum().equals(jaxGemeinde.getFerieninselanmeldungenStartdatum())) {
 			gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+			datesChanged = true;
+		}
+		if (!gemeinde.getGueltigBis().equals(jaxGemeinde.getGueltigBis())) {
+			gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
 			datesChanged = true;
 		}
 		if (datesChanged) {

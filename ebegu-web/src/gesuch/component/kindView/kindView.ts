@@ -401,4 +401,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             && this.getGesuch().dossier.gemeinde.angebotTS
             && this.getGesuch().dossier.gemeinde.angebotBG;
     }
+
+    public showKeinSelbstbehaltDurchGemeinde(): boolean {
+        return this.model.keinSelbstbehaltDurchGemeinde !== null
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public deleteZemisNummer(): void {
+        if (!this.getModel().ausAsylwesen) {
+            this.getModel().zemisNummer = null;
+        }
+    }
 }

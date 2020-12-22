@@ -103,6 +103,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private GesuchsperiodeEmailService gesuchsperiodeEmailService;
+
 	@Nonnull
 	@Override
 	public Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
@@ -181,7 +184,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
 				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1));
 			if (lastGesuchsperiodeOptional.isPresent()) {
-				gesuchService.sendMailsToAllGesuchstellerOfLastGesuchsperiode(
+				gesuchsperiodeEmailService.getAndSaveGesuchsperiodeEmailCandidates(
 					lastGesuchsperiodeOptional.get(),
 					gesuchsperiode);
 				gesuchsperiode.setDatumAktiviert(LocalDate.now());

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +69,14 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Collection<Gemeinde> getAktiveGemeinden();
+
+
+	/**
+	 * Gibt alle Gemeinden im Status "AKTIV" und mit gueltigBis Datum nach datum zurueck.
+	 *
+	 */
+	@Nonnull
+	Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date);
 
 	/**
 	 * Gibt die GemeindeStammdaten anhand ihrer Id zurück
