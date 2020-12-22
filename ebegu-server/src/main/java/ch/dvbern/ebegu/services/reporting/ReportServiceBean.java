@@ -2106,6 +2106,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
+		row.setGueltigAb(institutionStammdaten.getGueltigkeit().getGueltigAb());
+		if (!institutionStammdaten.getGueltigkeit().getGueltigBis().isEqual(Constants.END_OF_TIME)) {
+			row.setGueltigBis(institutionStammdaten.getGueltigkeit().getGueltigBis());
+		}
+
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (institutionStammdatenBG != null) {
