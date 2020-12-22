@@ -45,6 +45,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.bridge.builtin.LongBridge;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
 
 @Audited
 @Entity
@@ -108,6 +109,11 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	@Column(nullable = false)
 	private boolean angebotFI = false;
+
+	@Nonnull
+	@NotNull
+	@Column(nullable = false)
+	private LocalDate gueltigBis = END_OF_TIME;
 
 
 	public Mandant getMandant() {
@@ -186,6 +192,15 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 		this.angebotFI = angebotFI;
 	}
 
+	@Nonnull
+	public LocalDate getGueltigBis() {
+		return gueltigBis;
+	}
+
+	public void setGueltigBis(@Nonnull LocalDate gueltigBis) {
+		this.gueltigBis = gueltigBis;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -241,6 +256,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	public boolean isGesuchsperiodeRelevantForGemeinde(@Nonnull Gesuchsperiode gesuchsperiode) {
 		// Pruefen, ob irgendein Angebot waehrend dieser Gesuchsperiode vorhanden war
 		LocalDate endeGesuchperiode = gesuchsperiode.getGueltigkeit().getGueltigBis();
+		LocalDate startGesuchperiode = gesuchsperiode.getGueltigkeit().getGueltigAb();
+		if (getGueltigBis().isBefore(startGesuchperiode)) {
+			return false;
+		}
 		if (angebotBG && betreuungsgutscheineStartdatum.isBefore(endeGesuchperiode)) {
 			return true;
 		}

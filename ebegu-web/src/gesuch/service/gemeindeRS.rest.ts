@@ -70,6 +70,12 @@ export class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
+    public getAktiveGueltigeGemeinden(): IPromise<TSGemeinde[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE);
+        return this.$http.get(`${this.serviceURL}/activegueltig`, {cache})
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
+
     public getGemeindenForTSByPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubjectTS$.asObservable();
     }

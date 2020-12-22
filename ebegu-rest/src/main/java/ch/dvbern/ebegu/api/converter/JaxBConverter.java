@@ -4827,6 +4827,7 @@ public class JaxBConverter extends AbstractConverter {
 		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
 		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
 		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+		gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
 		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
 		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
@@ -4844,6 +4845,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
 		jaxGemeinde.setTagesschulanmeldungenStartdatum(persistedGemeinde.getTagesschulanmeldungenStartdatum());
 		jaxGemeinde.setFerieninselanmeldungenStartdatum(persistedGemeinde.getFerieninselanmeldungenStartdatum());
+		jaxGemeinde.setGueltigBis(persistedGemeinde.getGueltigBis());
 		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
@@ -5007,8 +5009,15 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
 
-		// Konfiguration: Wir laden immer alle Gesuchsperioden
-		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
+		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden()
+			.stream()
+			.filter(gesuchsperiode -> stammdaten.getGemeinde()
+				.getGueltigBis()
+				.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+			.collect(Collectors.toList());
+
+		for (Gesuchsperiode gesuchsperiode : gueltigeGesuchsperiodenForGemeinde) {
 			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
 				stammdaten.getGemeinde(),
 				gesuchsperiode));

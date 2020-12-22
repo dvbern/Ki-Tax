@@ -2182,5 +2182,6 @@
     "ZEMIS_UPLOAD_STARTED": "Le traitement du fichier excel des SYMIC a démarré. Vous serez informé par email dès que le processus sera terminé",
     "ZEMIS_UPLOAD_FINISHED": "Le traitement a été terminé avec succès",
     "VERFUEGUNG_JSON_DEPRECATED": "Attention: l'exportation de la décision sous format JSON eset obsolète et sera supprimé fin janvier. Veuillez vous adresser au support de kiBon si vous utilisé encore cette fonctionnalitée",
+    "GEMEINDE_GUELTIG_BIS": "Gemeinde gültig bis",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

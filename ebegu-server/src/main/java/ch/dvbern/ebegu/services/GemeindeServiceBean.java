@@ -17,12 +17,14 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -197,6 +199,14 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date) {
+		return getAktiveGemeinden().stream()
+			.filter(gemeinde -> gemeinde.getGueltigBis().isAfter(date.minusDays(1)))
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -497,16 +507,22 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 				GemeindeStammdatenGesuchsperiode_.gesuchsperiode);
 	}
 
-	private Collection<GemeindeStammdatenGesuchsperiode> getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
+	private Collection<GemeindeStammdatenGesuchsperiode> getGueltigeGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(
+		@Nonnull String gesuchsperiodeId, @Nonnull LocalDate gesuchsperiodeStart) {
 		requireNonNull(gesuchsperiodeId, "Gesuchsperiode id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
 			cb.createQuery(GemeindeStammdatenGesuchsperiode.class);
 		Root<GemeindeStammdatenGesuchsperiode> root = query.from(GemeindeStammdatenGesuchsperiode.class);
 		Predicate predicateGesuchsperiode =
-			cb.equal(root.get(GemeindeStammdatenGesuchsperiode_.gesuchsperiode).get(AbstractEntity_.id),
+			cb.equal(
+				root.get(GemeindeStammdatenGesuchsperiode_.gesuchsperiode).get(AbstractEntity_.id),
 				gesuchsperiodeId);
-		query.where(predicateGesuchsperiode);
+		Predicate predicateGemeindeGueltig =
+			cb.greaterThanOrEqualTo(
+				root.get(GemeindeStammdatenGesuchsperiode_.gemeinde).get(Gemeinde_.gueltigBis),
+				gesuchsperiodeStart);
+		query.where(predicateGesuchsperiode, predicateGemeindeGueltig);
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -585,7 +601,10 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public void copyGesuchsperiodeGemeindeStammdaten(@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode) {
-		getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(lastGesuchsperiode.getId()).stream().forEach(
+		getGueltigeGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(
+			lastGesuchsperiode.getId(),
+			gesuchsperiodeToCreate.getGueltigkeit().getGueltigAb()
+		).forEach(
 			gemeindeStammdatenGesuchsperiode -> {
 				GemeindeStammdatenGesuchsperiode newGemeindeStammdatenGesuchsperiode =
 					gemeindeStammdatenGesuchsperiode.copyForGesuchsperiode(gesuchsperiodeToCreate);
