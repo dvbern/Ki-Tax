@@ -41,6 +41,8 @@ public interface DailyBatch {
 
 	void runBatchInstitutionCheckRequired();
 
+	void runBatchSendEmailsForNewGesuchsperiode();
+
 	/**
 	 * @return the number of changed InstitutionStammdaten
 	 */
