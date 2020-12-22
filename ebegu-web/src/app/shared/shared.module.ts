@@ -39,6 +39,8 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
+import {NewUserSelectDirective} from '../core/new-antrag-list/new-user-select.directive';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
@@ -119,7 +121,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientMultiselectComponent,
         FileUploadComponent,
         DvNgConfirmDialogComponent,
-        DvMonthPickerComponent
+        DvMonthPickerComponent,
+        NewAntragListComponent,
+        NewUserSelectDirective
     ],
     exports: [
         CommonModule,
