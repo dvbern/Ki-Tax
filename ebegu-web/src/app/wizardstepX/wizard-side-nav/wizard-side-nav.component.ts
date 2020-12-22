@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
@@ -38,7 +38,7 @@ export class WizardSideNavComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.wizardSteps$ = from(this.wizardSTepXRS.getAllSteps(this.wizardTyp));
+        this.wizardSteps$ = this.wizardSTepXRS.getAllSteps(this.wizardTyp);
     }
 
 }

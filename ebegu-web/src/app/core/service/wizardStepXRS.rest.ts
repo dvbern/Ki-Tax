@@ -15,55 +15,58 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../constants/CONSTANTS';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class WizardStepXRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    public serviceURL: string;
+    public serviceURL: string = `${CONSTANTS.REST_API}wizardstepX`;
+    private readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: IHttpService,
-        REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
-        private readonly $log: ILogService,
+        public http: HttpClient,
     ) {
-        this.serviceURL = `${REST_API}wizardstepX`;
     }
 
     public getServiceName(): string {
         return 'WizardStepXRS';
     }
 
-    public getAllSteps(wizardStepTyp: string): IPromise<TSWizardStepX[]> {
+    public getAllSteps(wizardStepTyp: string): Observable<TSWizardStepX[]> {
         return this.http.get(`${this.serviceURL}/getAllSteps/${encodeURIComponent(wizardStepTyp)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseWizardStepXList(response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseWizardStepXList(response);
+            }));
     }
 
-    public initFirstStep(wizardStepTyp: string): IPromise<TSWizardStepX> {
+    public initFirstStep(wizardStepTyp: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/initFirstStep/${encodeURIComponent(wizardStepTyp)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseWizardStepX(response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseWizardStepX(response);
+            }));
     }
 
-    public getNextStep(wizardStepTyp: string, wizardStep: string): IPromise<TSWizardStepX> {
+    public getNextStep(wizardStepTyp: string, wizardStep: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/getNextStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(
             wizardStep)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseWizardStepX(response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseWizardStepX(response);
+            }));
     }
 
-    public getPreviousStep(wizardStepTyp: string, wizardStep: string): IPromise<TSWizardStepX> {
+    public getPreviousStep(wizardStepTyp: string, wizardStep: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/getPreviousStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(
             wizardStep)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseWizardStepX(response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseWizardStepX(response);
+            }));
     }
 }

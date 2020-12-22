@@ -333,16 +333,6 @@ export const uploadRSProvider = {
     deps: ['$injector'],
 };
 
-// WizardStepXRS
-export function wizardStepXRSProviderServiceFactory(i: IInjectorService): WizardStepXRS {
-    return i.get('WizardStepXRS');
-}
-
-export const wizardStepXRSProvider = {
-    provide: WizardStepXRS,
-    useFactory: wizardStepXRSProviderServiceFactory,
-    deps: ['$injector'],
-};
 
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
@@ -369,5 +359,4 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     mandantRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
-    wizardStepXRSProvider
 ];

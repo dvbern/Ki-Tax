@@ -19,6 +19,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -29,7 +30,7 @@ describe('WizardSideNavComponent', () => {
     let component: WizardSideNavComponent;
     let fixture: ComponentFixture<WizardSideNavComponent>;
     const wizardSTepXRS = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name, {
-        getAllSteps: Promise.resolve([]),
+        getAllSteps: of([]),
     });
     beforeEach(async(() => {
         TestBed.configureTestingModule({
