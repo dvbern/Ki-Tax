@@ -25,6 +25,13 @@
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
+            <div class="row" ng-if="vm.isGeburtsdatumInZunkunft()">
+                <div class="col-md-12">
+                    <div class="well well-status-warten">
+                        <span>{{'KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM' | translate }}</span>
+                    </div>
+                </div>
+            </div>
             <p class="inline-hint" data-translate="PFLICHTFELDER_HINT"></p>
         </div>
     </div>

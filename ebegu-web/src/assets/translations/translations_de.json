@@ -2182,5 +2182,6 @@
     "ZEMIS_UPLOAD_STARTED": "Die Verarbeitung des ZEMIS Excels wurde gestartet. Sie werden per Email benachrichtigt, sobald der Prozess abgeschlossen wurde.",
     "ZEMIS_UPLOAD_FINISHED": "Die Vearbeitung wurde erfolgreich abgeschlossen",
     "VERFUEGUNG_JSON_DEPRECATED": "Achtung: Der JSON Export der Verfügung ist veraltet und wird Ende Januar 2021 entfernt. Bitte melden Sie sich beim kiBon Support, falls Sie diese Funktion noch verwenden",
+    "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

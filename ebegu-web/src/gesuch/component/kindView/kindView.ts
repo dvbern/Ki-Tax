@@ -218,7 +218,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return this.$q.when(this.model);
         }
 
-        this.getModel().zukunftigeGeburtsdatum = this.getModel().geburtsdatum.isAfter(moment()) ? true : false;
+        this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft() ? true : false;
 
         this.errorService.clearAll();
         return this.gesuchModelManager.saveKind(this.model);
@@ -416,6 +416,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.getModel().ausAsylwesen) {
             this.getModel().zemisNummer = null;
         }
+    }
+
+    public isGeburtsdatumInZunkunft(): boolean {
+        return this.getModel().geburtsdatum.isAfter(moment());
     }
 
     private getEinstellungKontingentierung(): void {
