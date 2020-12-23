@@ -184,7 +184,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 		//Send Email
 		lastenausgleich.getLastenausgleichDetails().stream().forEach(lastenausgleichDetail ->
-			mailService.sendInfoLastenausgleichGemeinde(lastenausgleichDetail.getGemeinde())
+			mailService.sendInfoLastenausgleichGemeinde(lastenausgleichDetail.getGemeinde(), storedLastenausgleich)
 		);
 		return storedLastenausgleich;
 	}

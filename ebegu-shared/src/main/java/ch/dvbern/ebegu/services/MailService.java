@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
@@ -199,5 +200,5 @@ public interface MailService {
 
 	void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
 
-	void sendInfoLastenausgleichGemeinde(Gemeinde gemeinde);
+	void sendInfoLastenausgleichGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich);
 }
