@@ -2085,10 +2085,10 @@
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN": "Informer le responsable pour les écoles à journée continue par email lorsqu'une demande mixte est décidée",
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "Le responsable pour les écoles à journée continue est informé par email lorsqu'une demande mixte est décidée",
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "Après que le responsable pour les bon de gardes aie terminé une demande mixte, le responsable pour les écoles à journée continue reçoit un email. Cela est nécessaire dans certaine commune pour leur processus interne.<br> Réglage recommandé: désactivé.",
-    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG": "",
-    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_JA": "",
-    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_NEIN": "",
-    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_HELP": "",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG": "Informer les auteurs de demande lors de l'ouverture d'une nouvelle période par email",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_JA": "Les auteurs de demande seront informés par email lors de l'ouverture d'une nouvelle période",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_NEIN": "Les auteurs de demande ne seront PAS informés par email lors de l'ouverture d'une nouvelle période",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_HELP": "Lors de l'ouverture d'une nouvelle période de demande, par défault, tous les parents qui avaient effectué une demande de bon de garde lors de la période précédente seront informés par email. Les auteurs de demande qui n'ont qu'une inscription à une école à journée continue ne reçoivent pas d'email. Avec ce réglage vous pouvez désactiver l'envoie automatique de cet email.",
     "ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_OFFENTLICH": "Nous confirmons avoir remboursé (sous la forme de note d'une crédit ou d'un remboursement effectif) les contributions parentales pour les journées de prise en charge non disponibles ainsi que les frais de prise en charge pour les absences en raison du coronavirus, ou attestons n'avoir rien facturé.",
     "NOTWENDIGEN_INFORMATIONEN_LIEFERN_OFFENTLICH": "L'organisme responsable, représenté par la ou le soussigné-e, atteste que les données fournies dans le formulaire et ses annexes sont <b>exactes</b> et <b>complètes</b>. Il s'engage à livrer aux autorités compétentes les informations nécessaires au contrôle des données. Les parents peuvent également être contactés à des fins de contrôle.",
     "ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_PRIVAT": "Nous confirmons que les contributions parentales pour la prise en charge pour laquelle des indemnités pour pertes financières ont été demandées, ont été remboursées ou décomptées ou ne pas été facturées.",
@@ -2186,6 +2186,6 @@
     "ZEMIS_UPLOAD_STARTED": "Le traitement du fichier excel des SYMIC a démarré. Vous serez informé par email dès que le processus sera terminé",
     "ZEMIS_UPLOAD_FINISHED": "Le traitement a été terminé avec succès",
     "VERFUEGUNG_JSON_DEPRECATED": "Attention: l'exportation de la décision sous format JSON eset obsolète et sera supprimé dans quelques mois. Veuillez vous adresser au support de kiBon si vous utilisé encore cette fonctionnalitée",
-    "GEMEINDE_GUELTIG_BIS": "Gemeinde gültig bis",
+    "GEMEINDE_GUELTIG_BIS": "Fin de validitée de la commune",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
