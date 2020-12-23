@@ -27,11 +27,16 @@ ${templateConfiguration.mailCss}
 	<p>
 		Gerne möchten wir Sie mit dieser Mail informieren, dass die Gesuchperiode ${gesuchsperiode.gesuchsperiodeString} ab sofort
 		für die Erfassung Ihrer Daten in kiBon offen steht. <br>
-		<a href="https://www.kibon.ch/">Hier</a> können Sie das neue Gesuch erfassen.
 	</p>
 	<p>
 		Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
-		und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
+		und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird. D.h. ist direkt ab August ein Gutschein
+		gewünscht, muss der vollständige Antrag spätestens im Juli eingereicht sein. Bitte füllen Sie wenn möglich die
+		Steuererklärung aus, bevor Sie ihre finanziellen Verhältnisse in kiBon erfassen. Sie können alle notwendigen Angaben
+		danach der Steuererklärung entnehmen und diese im Bereich «Dokumente» als Beleg für Ihre Angaben verwenden.
+	</p>
+	<p>
+		<a href="https://www.kibon.ch/">Hier können Sie den neuen Antrag erfassen.</a>
 	</p>
 	<p>
 		Falls Sie für die Periode ${gesuchsperiode.gesuchsperiodeString} kein Gesuch stellen möchten, sind für Sie keine weiteren Schritte notwendig.
