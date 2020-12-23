@@ -372,7 +372,7 @@ public enum MathUtil {
 	 * Rundet einen BigDecimal auf dem höeren Franken.
 	 */
 	@Nonnull
-	public static BigDecimal roundToFranken(@Nullable BigDecimal amount) {
+	public static BigDecimal roundUpToFranken(@Nullable BigDecimal amount) {
 		if (amount == null) {
 			return BigDecimal.ZERO;
 		}
