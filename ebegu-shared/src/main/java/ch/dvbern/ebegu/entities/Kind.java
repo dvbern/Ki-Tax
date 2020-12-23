@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -201,7 +202,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setZukunftigeGeburtsdatum(false);
+			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(LocalDate.now()) ? true : false);
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -209,7 +210,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setZukunftigeGeburtsdatum(false);
+			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(LocalDate.now()) ? true : false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
@@ -272,7 +273,8 @@ public class Kind extends AbstractPersonEntity {
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
 			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
 			EbeguUtil.isSame(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
-			EbeguUtil.isSame(getPensumAusserordentlicherAnspruch(),
+			EbeguUtil.isSame(
+				getPensumAusserordentlicherAnspruch(),
 				otherKind.getPensumAusserordentlicherAnspruch());
 	}
 
