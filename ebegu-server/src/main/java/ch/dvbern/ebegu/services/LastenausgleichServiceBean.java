@@ -183,7 +183,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		Lastenausgleich storedLastenausgleich = persistence.merge(lastenausgleich);
 
 		//Send Email
-		lastenausgleich.getLastenausgleichDetails().stream().forEach(lastenausgleichDetail ->
+		storedLastenausgleich.getLastenausgleichDetails().stream().forEach(lastenausgleichDetail ->
 			mailService.sendInfoLastenausgleichGemeinde(lastenausgleichDetail.getGemeinde(), storedLastenausgleich)
 		);
 		return storedLastenausgleich;

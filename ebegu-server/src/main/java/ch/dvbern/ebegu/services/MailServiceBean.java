@@ -740,7 +740,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				LOG.warn("skipping InfoGemeindeLastenausgleichDurch because Gemeinde Email is null");
 			}
 		} catch (Exception e) {
-			LOG.error("Error mit Gemeinde: " + gemeinde.getName() + " ,error message: " + e.getMessage());
+			LOG.error("Error mit Gemeinde: {}, error message: {}", gemeinde.getName(), e.getMessage(), e);
 		}
 	}
 }
