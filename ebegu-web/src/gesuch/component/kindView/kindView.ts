@@ -218,7 +218,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return this.$q.when(this.model);
         }
 
-        this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft() ? true : false;
+        this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
 
         this.errorService.clearAll();
         return this.gesuchModelManager.saveKind(this.model);
