@@ -16,7 +16,7 @@
     <mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
 
         <ng-container matColumnDef="fallNummer">
-            <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis"><span translate>FALL</span>
+            <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis" style="width:10px"><span translate>FALL</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let element" class="ellipsis">{{element.fallNummer}}</mat-cell>
         </ng-container>
