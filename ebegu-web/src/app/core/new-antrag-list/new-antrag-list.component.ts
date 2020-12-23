@@ -1,4 +1,12 @@
-import {Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {Sort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
@@ -7,10 +15,7 @@ import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
-import {
-    getTSAntragStatusValuesByRole,
-    TSAntragStatus,
-} from '../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
@@ -32,6 +37,8 @@ const LOG = LogFactory.createLog('DVAntragListController');
     templateUrl: './new-antrag-list.component.html',
     styleUrls: ['./new-antrag-list.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    // we need this to overwrite angular material styles
+    encapsulation: ViewEncapsulation.None
 })
 export class NewAntragListComponent implements OnInit, OnDestroy {
 

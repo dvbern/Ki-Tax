@@ -13,81 +13,89 @@
 </div>
 
 <div class="mat-elevation-z0">
-    <mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)" >
+    <mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
 
         <ng-container matColumnDef="fallNummer">
-            <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis"><span translate>FALL</span></mat-header-cell>
+            <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis"><span translate>FALL</span>
+            </mat-header-cell>
             <mat-cell *matCellDef="let element" class="ellipsis">{{element.fallNummer}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="gemeinde">
-            <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis"><span translate>GEMEINDE</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element" class="ellipsis">{{element.gemeinde}}</mat-cell>
+            <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis">
+                <span translate>GEMEINDE</span></mat-header-cell>
+            <mat-cell *matCellDef="let element" class="ellipsis">{{element.gemeinde}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="familienName">
-            <mat-header-cell mat-sort-header="familienName" *matHeaderCellDef class="ellipsis"><span translate>FAMILIE</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element" class="ellipsis">{{element.familienName}}</mat-cell>
+            <mat-header-cell mat-sort-header="familienName" *matHeaderCellDef class="ellipsis">
+                <span translate>FAMILIE</span></mat-header-cell>
+            <mat-cell *matCellDef="let element" class="ellipsis">{{element.familienName}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="kinder">
-            <mat-header-cell mat-sort-header="kinder" *matHeaderCellDef ><span translate>KINDER</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.kinder}}</mat-cell>
+            <mat-header-cell mat-sort-header="kinder" *matHeaderCellDef><span translate>KINDER</span></mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.kinder}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="antragTyp">
-            <mat-header-cell mat-sort-header="antragTyp" *matHeaderCellDef ><span translate>TYP</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.type}}</mat-cell>
+            <mat-header-cell mat-sort-header="antragTyp" *matHeaderCellDef><span translate>TYP</span></mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.type}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="periode">
-            <mat-header-cell mat-sort-header="gesuchsperiodeString" *matHeaderCellDef ><span translate>PERIODE</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.periode}}</mat-cell>
+            <mat-header-cell mat-sort-header="gesuchsperiodeString" *matHeaderCellDef><span translate>PERIODE</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.periode}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="aenderungsdatum">
-            <mat-header-cell mat-sort-header="aenderungsdatum" *matHeaderCellDef ><span translate>GEANDERT</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.aenderungsdatum.format('DD.MM.YYYY')}}</mat-cell>
+            <mat-header-cell mat-sort-header="aenderungsdatum" *matHeaderCellDef><span translate>GEANDERT</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.aenderungsdatum.format('DD.MM.YYYY')}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="status">
-            <mat-header-cell mat-sort-header="status" *matHeaderCellDef ><span translate>STATUS</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.status | translate}}</mat-cell>
+            <mat-header-cell mat-sort-header="status" *matHeaderCellDef><span translate>STATUS</span></mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.status | translate}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="dokumenteHochgeladen">
-            <mat-header-cell mat-sort-header="dokumenteHochgeladen" *matHeaderCellDef ><span translate>DOKUMENTE_HOCHGELADEN_KURZ</span></mat-header-cell>
+            <mat-header-cell mat-sort-header="dokumenteHochgeladen" *matHeaderCellDef><span translate>DOKUMENTE_HOCHGELADEN_KURZ</span>
+            </mat-header-cell>
             <mat-cell *matCellDef="let element" translate>{{element.dokumenteHochgeladen != null ?
                 (element.dokumenteHochgeladen ? 'LABEL_JA' : 'LABEL_NEIN') :
                 ''}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="angebot">
-            <mat-header-cell mat-sort-header="angebote" *matHeaderCellDef ><span translate>ANGEBOT</span></mat-header-cell>
+            <mat-header-cell mat-sort-header="angebote" *matHeaderCellDef><span translate>ANGEBOT</span>
+            </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <span *ngFor="let angebot of element.angebote; index as i">{{angebot | translate}}{{i
                 < element.angebote.length - 1 ? ',' : ''}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="institution">
-            <mat-header-cell mat-sort-header="institutionen" *matHeaderCellDef ><span translate>INSTITUTION</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.institutionen}}</mat-cell>
+            <mat-header-cell mat-sort-header="institutionen" *matHeaderCellDef><span translate>INSTITUTION</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.institutionen}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlicheTS">
-            <mat-header-cell mat-sort-header="verantwortlicherTS"  *matHeaderCellDef translate>
+            <mat-header-cell mat-sort-header="verantwortlicherTS" *matHeaderCellDef translate>
                 <i class="fa fa-graduation-cap"></i><span translate>VERANTWORTLICH</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.verantwortlicheTS}}</mat-cell>
+            <mat-cell *matCellDef="let element">{{element.verantwortlicheTS}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlicheBG">
-            <mat-header-cell mat-sort-header="verantwortlicherBG"  *matHeaderCellDef>
+            <mat-header-cell mat-sort-header="verantwortlicherBG" *matHeaderCellDef>
                 <i class="fa fa-gift"></i><span translate>VERANTWORTLICH</span></mat-header-cell>
-            <mat-cell  *matCellDef="let element">{{element.verantwortlicheBG}}</mat-cell>
+            <mat-cell *matCellDef="let element">{{element.verantwortlicheBG}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="fall-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterFall($event.target.value)">
                 </mat-form-field>
@@ -95,9 +103,10 @@
         </ng-container>
 
         <ng-container matColumnDef="gemeinde-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <mat-select (selectionChange)="filterGemeinde($event.value)">
+                    <div class="select-background"></div>
+                    <mat-select (selectionChange)="filterGemeinde($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let gemeinde of gemeindenList"
                                     [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
@@ -107,9 +116,10 @@
         </ng-container>
 
         <ng-container matColumnDef="type-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <mat-select (selectionChange)="filterType($event.value)">
+                    <div class="select-background"></div>
+                    <mat-select (selectionChange)="filterType($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let type of getAntragTypen()" [value]="type">
                             <span translate>{{type}}</span></mat-option>
@@ -119,9 +129,10 @@
         </ng-container>
 
         <ng-container matColumnDef="status-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <mat-select (selectionChange)="filterStatus($event.value)">
+                    <div class="select-background"></div>
+                    <mat-select (selectionChange)="filterStatus($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let status of getAntragStatus()"
                                     [value]="status"><span translate>{{status}}</span></mat-option>
@@ -131,9 +142,10 @@
         </ng-container>
 
         <ng-container matColumnDef="angebote-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <mat-select (selectionChange)="filterAngebot($event.value)">
+                    <div class="select-background"></div>
+                    <mat-select (selectionChange)="filterAngebot($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let angebot of getBetreuungsangebotTypen()"
                                     [value]="angebot"><span translate>{{angebot}}</span></mat-option>
@@ -143,9 +155,10 @@
         </ng-container>
 
         <ng-container matColumnDef="periode-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <mat-select (selectionChange)="filterPeriode($event.value)">
+                    <div class="select-background"></div>
+                    <mat-select (selectionChange)="filterPeriode($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let periode of gesuchsperiodenList"
                                     [value]="periode">{{periode}}</mat-option>
@@ -155,9 +168,11 @@
         </ng-container>
 
         <ng-container matColumnDef="dokumente-hochgeladen-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
-                    <mat-select (selectionChange)="filterDocumentsUploaded($event.value)">
+                    <div class="select-background"></div>
+                    <mat-select (selectionChange)="filterDocumentsUploaded($event.value)"
+                                panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
                         <mat-option [value]="false"><span translate>LABEL_NEIN</span></mat-option>
@@ -168,7 +183,7 @@
 
 
         <ng-container matColumnDef="familie-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterFamilie($event.target.value)">
                 </mat-form-field>
@@ -176,7 +191,7 @@
         </ng-container>
 
         <ng-container matColumnDef="kinder-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterKinder($event.target.value)">
                 </mat-form-field>
@@ -184,7 +199,7 @@
         </ng-container>
 
         <ng-container matColumnDef="aenderungsdatum-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterGeaendert($event.target.value)">
                 </mat-form-field>
@@ -192,19 +207,22 @@
         </ng-container>
 
         <ng-container matColumnDef="institutionen-filter">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterInstitution($event.target.value)" [matAutocomplete]="auto">
                 </mat-form-field>
 
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="filterInstitution($event.option.value)">
-                    <mat-option *ngFor="let institution of institutionenList$ | async" [value]="institution.name">{{institution.name}}</mat-option>
+                <mat-autocomplete #auto="matAutocomplete"
+                                  (optionSelected)="filterInstitution($event.option.value)"
+                                  [classList]="'mat-select-panel1'">
+                    <mat-option *ngFor="let institution of institutionenList$ | async"
+                                [value]="institution.name">{{institution.name}}</mat-option>
                 </mat-autocomplete>
             </mat-header-cell>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlich-TS" st-table="">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <div dvNewUserSelect
                      [showSelectionAll]="true"
                      [angular2]="true"
@@ -215,7 +233,7 @@
         </ng-container>
 
         <ng-container matColumnDef="verantwortlich-BG" st-table="">
-            <mat-header-cell  *matHeaderCellDef="let column">
+            <mat-header-cell *matHeaderCellDef="let column">
                 <div dvNewUserSelect
                      [showSelectionAll]="true"
                      [angular2]="true"

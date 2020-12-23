@@ -1,5 +1,7 @@
 
 @import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
 
 table {
     width: 100%;
@@ -97,5 +99,58 @@ mat-form-field {
                 font-size: 1.2rem;
             }
         }
+    }
+}
+
+.mat-select-panel1 {
+    background: #e5e5e5;
+    .ebeguLabel();
+    font-size: 1.6rem !important;
+    font-weight: 700;
+    letter-spacing: normal;
+    color: black !important;
+    font-family: Open Sans, Arial, Helvetica, sans-serif;
+}
+
+mat-form-field {
+    position: relative;
+}
+
+.select-background {
+    height: 4rem;
+    width: 100%;
+    top: -0.2rem;
+    position: absolute;
+    background: #e5e5e5;
+}
+
+.mat-form-field {
+    line-height: normal;
+    .ebeguLabel();
+    font-size: 1.6rem !important;
+    font-weight: 700;
+    color: black !important;
+    font-family: Open Sans, Arial, Helvetica, sans-serif;
+}
+
+.mat-autocomplete-panel {
+    background: #e5e5e5;
+    .ebeguLabel();
+    font-size: 1.4rem !important;
+    font-weight: 700;
+    letter-spacing: normal;
+    color: black !important;
+    font-family: Open Sans, Arial, Helvetica, sans-serif;
+}
+
+.mat-option {
+    font-size: 1.6rem;
+}
+
+.dv-select-style {
+    background: #e5e5e5;
+
+    & > select {
+        background: #e5e5e5;
     }
 }
