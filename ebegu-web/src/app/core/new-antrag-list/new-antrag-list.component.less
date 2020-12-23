@@ -32,3 +32,70 @@ mat-form-field {
     display: inline-block;
     margin-left: 1rem;
 }
+
+::ng-deep .mat-sort-header-arrow[style] {
+
+    // Hide default arrow stem
+    .mat-sort-header-stem {
+        display: none;
+    }
+    .mat-sort-header-indicator {
+        opacity: 1;
+        color: black;
+        font-weight: bold;
+
+        // Hide default arrow as its composed of left, right and middle
+        .mat-sort-header-pointer-left, .mat-sort-header-pointer-right, .mat-sort-header-pointer-middle  {
+            display: none;
+        }
+    }
+}
+
+// custom ascending arrow
+[aria-sort="ascending"] {
+    ::ng-deep .mat-sort-header-arrow {
+        .mat-sort-header-indicator {
+            &::before {
+                content: "\f0de";
+                top: 0.1em;
+                position: absolute;
+                font-family: FontAwesome,sans-serif;
+                font-size: 1.2rem;
+            }
+        }
+    }
+}
+
+// custom descending arrow
+[aria-sort="descending"] {
+    ::ng-deep .mat-sort-header-arrow {
+        .mat-sort-header-indicator {
+            &::before {
+                content: "\f0dd";
+                top: -1em;
+                position: absolute;
+                font-family: FontAwesome,sans-serif;
+                font-size: 1.2rem;
+            }
+        }
+    }
+}
+
+// custom no-sort arrows
+[aria-sort="none"] {
+    ::ng-deep .mat-sort-header-arrow {
+        // we need the important to overwrite material element styles
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        .mat-sort-header-indicator {
+            transform: translateY(0) !important;
+            &::before {
+                content: "\f0dc";
+                top: 0;
+                position: absolute;
+                font-family: FontAwesome,sans-serif;
+                font-size: 1.2rem;
+            }
+        }
+    }
+}
