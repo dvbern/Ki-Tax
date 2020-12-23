@@ -143,6 +143,7 @@ public class LastenausgleichResource {
 
 		Lastenausgleich lastenausgleich =
 			lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz);
+
 		return converter.lastenausgleichToJAX(lastenausgleich);
 	}
 

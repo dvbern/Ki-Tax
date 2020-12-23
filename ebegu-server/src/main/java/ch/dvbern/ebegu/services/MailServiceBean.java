@@ -699,4 +699,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			LOG.warn("Skipping RueckforderungProvisorischVerfuegt because E-Mail of Institution is null");
 		}
 	}
+
+	@Override
+	public void sendInfoLastenausgleichGemeinde(Gemeinde gemeinde) {
+
+	}
 }

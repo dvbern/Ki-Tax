@@ -198,4 +198,6 @@ public interface MailService {
 	String sendNotrechtBestaetigungPruefungStufe1(@Nonnull RueckforderungFormular rueckforderungFormular);
 
 	void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
+
+	void sendInfoLastenausgleichGemeinde(Gemeinde gemeinde);
 }
