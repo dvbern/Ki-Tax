@@ -35,7 +35,7 @@ mat-form-field {
     margin-left: 1rem;
 }
 
-::ng-deep .mat-sort-header-arrow[style] {
+.mat-sort-header-arrow[style] {
 
     // Hide default arrow stem
     .mat-sort-header-stem {
@@ -55,7 +55,7 @@ mat-form-field {
 
 // custom ascending arrow
 [aria-sort="ascending"] {
-    ::ng-deep .mat-sort-header-arrow {
+    .mat-sort-header-arrow {
         .mat-sort-header-indicator {
             &::before {
                 content: "\f0de";
@@ -70,7 +70,7 @@ mat-form-field {
 
 // custom descending arrow
 [aria-sort="descending"] {
-    ::ng-deep .mat-sort-header-arrow {
+    .mat-sort-header-arrow {
         .mat-sort-header-indicator {
             &::before {
                 content: "\f0dd";
@@ -85,7 +85,7 @@ mat-form-field {
 
 // custom no-sort arrows
 [aria-sort="none"] {
-    ::ng-deep .mat-sort-header-arrow {
+    .mat-sort-header-arrow {
         // we need the important to overwrite material element styles
         opacity: 1 !important;
         transform: translateY(0) !important;
