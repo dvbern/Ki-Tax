@@ -732,7 +732,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			} else {
 				LOG.warn("skipping InfoGemeindeLastenausgleichDurch because Gemeinde Email is null");
 			}
-		} catch (Exception e) {
+		}  catch (EbeguEntityNotFoundException nf) {
+			LOG.error("Gemeindestammdaten not Found: ", gemeinde.getId(), nf);
+		}
+		catch (Exception e) {
 			logExceptionAccordingToEnvironment(
 				e,
 				"Mail InfoGemeindeLastenausgleichDurch konnte nicht verschickt werden fuer Gemeinde",
