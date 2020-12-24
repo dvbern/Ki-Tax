@@ -172,4 +172,48 @@ mat-cell {
     font-size: 1.4rem !important;
 }
 
+mat-cell.mat-cell, mat-header-cell.mat-header-cell, mat-footer-cell {
+    flex: 2;
+}
 
+@column-widths: {
+    fallNummer: 0 0 8rem;
+    gemeinde: 5rem;
+    familienName: 5rem;
+    kinder: 5rem;
+    antragTyp: 5rem;
+    periode: 5rem;
+}
+
+
+.mat-column-fallNummer, .mat-column-fall-filter {
+    flex: 0 0 8rem !important;
+    min-width: 8rem !important;;
+}
+.mat-column-status, .mat-column-status-filter {
+    flex: 3 1 !important;;
+    min-width: 0% !important;;
+}
+.mat-column-dokumenteHochgeladen, .mat-column-dokumente-hochgeladen-filter {
+    flex: 0 0 8rem !important;;
+    min-width: 8rem !important;;
+}
+.mat-column-institution, .mat-column-institutionen-filter {
+    flex: 4 1 !important;;
+    min-width: 0% !important;;
+}
+.mat-column-verantwortlicheTS, .mat-column-verantwortlich-TS {
+    flex: 3 1 !important;;
+    min-width: 0% !important;;
+}
+.mat-column-verantwortlicheBG, .mat-column-verantwortlich-BG{
+    flex: 3 1 !important;;
+    min-width: 0% !important;;
+}
+
+/*each(@column-widths, {
+    .mat-column-@{key} {
+        flex: 0 0 @value;
+        min-width: @value
+    }
+})*/

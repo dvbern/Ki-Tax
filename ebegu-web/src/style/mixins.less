@@ -203,18 +203,13 @@
     }
 }
 
-@column-widths: {
-    fallNummer: 8rem;
-    gemeinde: 5rem;
-    familienName: 5rem;
-    kinder: 5rem;
-    antragTyp: 5rem;
-    periode: 5rem;
+
+.mat-columns(column-widths) {
+    each(column-widths, {
+        .mat-column-@{key} {
+            flex: 0 0 @value;
+            min-width: @value
+        }
+    })
 }
 
-/*each(@column-widths, {
-    .mat-column-@{key} {
-        flex: 0 0 @value;
-        min-width: @value
-    }
-})*/
