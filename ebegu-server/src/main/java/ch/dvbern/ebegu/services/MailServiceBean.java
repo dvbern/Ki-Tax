@@ -727,20 +727,16 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			if (StringUtils.isNotEmpty(mailaddress)) {
 				String message =
 					mailTemplateConfig.getInfoGemeindeLastenausgleichDurch(lastenausgleich, sprachen, mailaddress);
-				try {
-					sendMessageWithTemplate(message, mailaddress);
-					LOG.debug("Email fuer InfoGemeindeLastenausgleichDurch wurde versendet an {}", mailaddress);
-				} catch (Exception e) {
-					logExceptionAccordingToEnvironment(
-						e,
-						"Mail InfoGemeindeLastenausgleichDurch konnte nicht verschickt werden fuer Gemeinde",
-						gemeinde.getName());
-				}
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoGemeindeLastenausgleichDurch wurde versendet an {}", mailaddress);
 			} else {
 				LOG.warn("skipping InfoGemeindeLastenausgleichDurch because Gemeinde Email is null");
 			}
 		} catch (Exception e) {
-			LOG.error("Error mit Gemeinde: {}, error message: {}", gemeinde.getName(), e.getMessage(), e);
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoGemeindeLastenausgleichDurch konnte nicht verschickt werden fuer Gemeinde",
+				gemeinde.getName());
 		}
 	}
 }
