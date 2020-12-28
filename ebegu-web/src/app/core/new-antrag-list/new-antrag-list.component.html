@@ -262,8 +262,15 @@
 
 
     </mat-table>
-    <mat-paginator [pageIndex]="page"
-                   [pageSize]="pageSize"
-                   [length]="totalItems"
-                   (page)="handlePagination($event)"></mat-paginator>
+
+    <div class="bottom-pagination">
+        <nav>
+            <ul class="pagination">
+                <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
+                    <a (click)="handlePagination({pageIndex: index - 1, pageSize: pageSize})">{{index}}</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
 </div>

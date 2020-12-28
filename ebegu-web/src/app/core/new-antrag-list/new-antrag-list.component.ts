@@ -102,6 +102,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         predicate?: string,
         reverse?: boolean
     } = {};
+    public paginationItems: number[];
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -187,13 +188,18 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
                 });
             this.datasource.data = displayedFaelle;
             this.totalItems = result.totalResultSize;
+            this.paginationItems = [];
+            for (let i = 1; i <= Math.ceil(this.totalItems / this.pageSize); i ++) {
+                this.paginationItems.push(i);
+            }
+            console.log(this.paginationItems);
             // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
             //  these since they are not zone-aware. Remove once the service is migrated
             this.changeDetectorRef.markForCheck();
         });
     }
 
-    public handlePagination(pageEvent: PageEvent): void {
+    public handlePagination(pageEvent: Partial<PageEvent>): void {
         this.page = pageEvent.pageIndex;
         this.pageSize = pageEvent.pageSize;
         this.loadData();
