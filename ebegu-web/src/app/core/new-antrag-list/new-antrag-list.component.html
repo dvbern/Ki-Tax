@@ -16,7 +16,8 @@
     <mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
 
         <ng-container matColumnDef="fallNummer">
-            <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis"><span class="no-padding-left" translate>FALL</span>
+            <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis">
+                <span class="no-padding-left" translate>FALL</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let element" class="ellipsis">{{element.fallNummer}}</mat-cell>
         </ng-container>
@@ -104,10 +105,11 @@
 
         <ng-container matColumnDef="gemeinde-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
+                    <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterGemeinde($event.value)" panelClass="mat-select-panel1">
-                        <mat-option selected><span translate>ALLE</span></mat-option>
+                        <mat-option><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let gemeinde of gemeindenList"
                                     [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
                     </mat-select>
@@ -117,8 +119,9 @@
 
         <ng-container matColumnDef="type-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
+                    <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterType($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let type of getAntragTypen()" [value]="type">
@@ -130,8 +133,9 @@
 
         <ng-container matColumnDef="status-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
+                    <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterStatus($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let status of getAntragStatus()"
@@ -143,8 +147,9 @@
 
         <ng-container matColumnDef="angebote-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
+                    <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterAngebot($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let angebot of getBetreuungsangebotTypen()"
@@ -156,8 +161,9 @@
 
         <ng-container matColumnDef="periode-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
+                    <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterPeriode($event.value)" panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
                         <mat-option *ngFor="let periode of gesuchsperiodenList"
@@ -169,8 +175,9 @@
 
         <ng-container matColumnDef="dokumente-hochgeladen-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
+                    <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterDocumentsUploaded($event.value)"
                                 panelClass="mat-select-panel1">
                         <mat-option selected><span translate>ALLE</span></mat-option>
@@ -208,8 +215,11 @@
 
         <ng-container matColumnDef="institutionen-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
-                    <input matInput (keyup)="filterInstitution($event.target.value)" [matAutocomplete]="auto">
+                <mat-form-field floatLabel="never">
+                    <input matInput
+                           [placeholder]="'SUCHBEGRIFF_EINGEBEN' | translate"
+                           (keyup)="filterInstitution($event.target.value)"
+                           [matAutocomplete]="auto">
                 </mat-form-field>
 
                 <mat-autocomplete #auto="matAutocomplete"
