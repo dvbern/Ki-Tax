@@ -258,7 +258,7 @@
             *matHeaderRowDef="['fall-filter', 'gemeinde-filter', 'familie-filter', 'kinder-filter', 'type-filter','periode-filter',
             'aenderungsdatum-filter', 'status-filter', 'dokumente-hochgeladen-filter','angebote-filter', 'institutionen-filter',
             'verantwortlich-TS', 'verantwortlich-BG']"></mat-header-row>
-        <mat-row *matRowDef="let element; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let element; columns: displayedColumns;" (click)="onEditClicked(element, $event)" class="pointer-cursor"></mat-row>
 
 
     </mat-table>

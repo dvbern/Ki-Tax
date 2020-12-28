@@ -1,9 +1,9 @@
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component,
+    Component, EventEmitter,
     OnDestroy,
-    OnInit,
+    OnInit, Output,
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
@@ -38,12 +38,14 @@ const LOG = LogFactory.createLog('DVAntragListController');
     styleUrls: ['./new-antrag-list.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     // we need this to overwrite angular material styles
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NewAntragListComponent implements OnInit, OnDestroy {
 
     @ViewChild(MatPaginator) public paginator: MatPaginator;
     @ViewChild(MatTable) private readonly table: MatTable<Partial<TSAntragDTO>>;
+
+    @Output() public readonly editClicked: EventEmitter<{ antrag: TSAntragDTO, event: Event }> = new EventEmitter<any>();
 
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
@@ -172,6 +174,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
                 result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
+                        dossierId: antragDto.dossierId,
+                        antragId: antragDto.antragId,
                         gemeinde: antragDto.gemeinde,
                         status: antragDto.status,
                         familienName: antragDto.familienName,
@@ -189,7 +193,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
             this.datasource.data = displayedFaelle;
             this.totalItems = result.totalResultSize;
             this.paginationItems = [];
-            for (let i = 1; i <= Math.ceil(this.totalItems / this.pageSize); i ++) {
+            for (let i = 1; i <= Math.ceil(this.totalItems / this.pageSize); i++) {
                 this.paginationItems.push(i);
             }
             console.log(this.paginationItems);
@@ -303,5 +307,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         this.sort.predicate = sortEvent.direction.length > 0 ? sortEvent.active : null;
         this.sort.reverse = sortEvent.direction === 'asc';
         this.loadData();
+    }
+
+    private onEditClicked(antrag: TSAntragDTO, event: Event): void {
+        this.editClicked.emit({antrag, event});
     }
 }
