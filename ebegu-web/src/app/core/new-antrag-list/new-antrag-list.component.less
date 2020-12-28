@@ -243,7 +243,11 @@ span > label > mat-label {
     padding-left: 1rem;
 }
 
-mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-form-field-wrapper > div.mat-form-field-flex > .mat-form-field-infix input + span > label {
-    top: 2.8rem;
+mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-form-field-wrapper > div.mat-form-field-flex > .mat-form-field-infix input {
     padding-left: 5px;
+    
+    + span > label {
+        top: 2.8rem;
+        padding-left: 5px;
+    }
 }
