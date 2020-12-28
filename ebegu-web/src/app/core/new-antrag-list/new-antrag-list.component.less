@@ -202,6 +202,10 @@ mat-cell.mat-cell, mat-header-cell.mat-header-cell, mat-footer-cell {
     flex: 4 1 !important;;
     min-width: 0% !important;;
 }
+.mat-column-angebot, .mat-column-angebote-filter {
+    flex: 4 1 !important;;
+    min-width: 0% !important;;
+}
 .mat-column-verantwortlicheTS, .mat-column-verantwortlich-TS {
     flex: 3 1 !important;;
     min-width: 0% !important;;
@@ -219,9 +223,10 @@ mat-cell.mat-cell:last-of-type {
     width: 100%;
 }
 
-/*each(@column-widths, {
-    .mat-column-@{key} {
-        flex: 0 0 @value;
-        min-width: @value
-    }
-})*/
+mat-row.mat-row {
+    min-height: auto;
+}
+
+span.no-padding-left {
+    padding-left: 0 !important;
+}

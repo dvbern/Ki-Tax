@@ -97,7 +97,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
 
     public totalItems: number = 0;
     public page: number = 0;
-    public pageSize: any = 10;
+    public pageSize: any = 20;
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
