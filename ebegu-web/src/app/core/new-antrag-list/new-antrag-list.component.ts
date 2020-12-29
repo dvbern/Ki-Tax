@@ -10,8 +10,9 @@ import {
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {Sort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
+import {BehaviorSubject, forkJoin, Observable, of, Subject} from 'rxjs';
+import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
@@ -114,6 +115,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         private readonly searchRS: SearchRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -316,5 +318,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
 
     public addZerosToFallnummer(fallNummer: number): string {
         return EbeguUtil.addZerosToFallNummer(fallNummer);
+    }
+
+    public createAngeboteString(angebote: string[]): Observable<string> {
+        if (!angebote) {
+            return of('');
+        }
+        return forkJoin(angebote.map(angebot => this.translate.get(angebot)))
+            .pipe(map(translatedAngebote => translatedAngebote.join(', '),
+            ));
     }
 }

@@ -20,7 +20,7 @@
                 <span class="no-padding-left" translate>FALL</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let element" class="ellipsis">
-                <span>{{addZerosToFallnummer(element.fallNummer)}}</span>
+                <span [title]="addZerosToFallnummer(element.fallNummer)">{{addZerosToFallnummer(element.fallNummer)}}</span>
             </mat-cell>
         </ng-container>
 
@@ -28,47 +28,47 @@
             <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis">
                 <span translate>GEMEINDE</span></mat-header-cell>
             <mat-cell *matCellDef="let element" class="ellipsis">
-                <span>{{element.gemeinde}}</span>
+                <span [title]="element.gemeinde">{{element.gemeinde}}</span>
             </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="familienName">
             <mat-header-cell mat-sort-header="familienName" *matHeaderCellDef class="ellipsis">
                 <span translate>FAMILIE</span></mat-header-cell>
-            <mat-cell *matCellDef="let element" class="ellipsis"><span>{{element.familienName}}</span></mat-cell>
+            <mat-cell *matCellDef="let element" class="ellipsis"><span [title]="element.familienName">{{element.familienName}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="kinder">
             <mat-header-cell mat-sort-header="kinder" *matHeaderCellDef><span translate>KINDER</span></mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.kinder}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.kinder">{{element.kinder}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="antragTyp">
             <mat-header-cell mat-sort-header="antragTyp" *matHeaderCellDef><span translate>TYP</span></mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.type}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.antragTyp | translate" translate>{{element.antragTyp}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="periode">
             <mat-header-cell mat-sort-header="gesuchsperiodeString" *matHeaderCellDef><span translate>PERIODE</span>
             </mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.periode}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.periode">{{element.periode}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="aenderungsdatum">
             <mat-header-cell mat-sort-header="aenderungsdatum" *matHeaderCellDef><span translate>GEANDERT</span>
             </mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.aenderungsdatum.format('DD.MM.YYYY')}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.aenderungsdatum.format('DD.MM.YYYY')">{{element.aenderungsdatum.format('DD.MM.YYYY')}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="status">
             <mat-header-cell mat-sort-header="status" *matHeaderCellDef><span translate>STATUS</span></mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.status | translate}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.status | translate">{{element.status | translate}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="dokumenteHochgeladen">
             <mat-header-cell mat-sort-header="dokumenteHochgeladen" *matHeaderCellDef><span translate>DOKUMENTE_HOCHGELADEN_KURZ</span>
             </mat-header-cell>
-            <mat-cell *matCellDef="let element"><span translate>{{element.dokumenteHochgeladen != null ?
+            <mat-cell *matCellDef="let element"><span translate [title]="(element.dokumenteHochgeladen != null? element.dokumenteHochgeladen? 'LABEL_JA' : 'LABEL_NEIN' : '')  | translate">{{element.dokumenteHochgeladen != null ?
                 (element.dokumenteHochgeladen ? 'LABEL_JA' : 'LABEL_NEIN') :
                 ''}}</span></mat-cell>
         </ng-container>
@@ -76,7 +76,7 @@
         <ng-container matColumnDef="angebot">
             <mat-header-cell mat-sort-header="angebote" *matHeaderCellDef><span translate>ANGEBOT</span>
             </mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>
+            <mat-cell *matCellDef="let element"><span [title]="createAngeboteString(element.angebote) | async">
                 <span *ngFor="let angebot of element.angebote; index as i">{{angebot | translate}}{{i
                 < element.angebote.length - 1 ? ',' : ''}}</span></span></mat-cell>
         </ng-container>
@@ -84,19 +84,19 @@
         <ng-container matColumnDef="institution">
             <mat-header-cell mat-sort-header="institutionen" *matHeaderCellDef><span translate>INSTITUTION</span>
             </mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.institutionen}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.institutionen">{{element.institutionen}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlicheTS">
             <mat-header-cell mat-sort-header="verantwortlicherTS" *matHeaderCellDef translate>
                 <i class="fa fa-graduation-cap"></i><span translate>VERANTWORTLICH</span></mat-header-cell>
-            <mat-cell *matCellDef="let element"><span>{{element.verantwortlicheTS}}</span></mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.verantwortlicheTS">{{element.verantwortlicheTS}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="verantwortlicheBG">
             <mat-header-cell mat-sort-header="verantwortlicherBG" *matHeaderCellDef>
                 <i class="fa fa-gift"></i><span translate>VERANTWORTLICH</span></mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.verantwortlicheBG}}</mat-cell>
+            <mat-cell *matCellDef="let element"><span [title]="element.verantwortlicheBG">{{element.verantwortlicheBG}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="fall-filter">
