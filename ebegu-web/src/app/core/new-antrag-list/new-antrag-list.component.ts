@@ -26,6 +26,7 @@ import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {LogFactory} from '../logging/LogFactory';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
@@ -311,5 +312,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
 
     private onEditClicked(antrag: TSAntragDTO, event: Event): void {
         this.editClicked.emit({antrag, event});
+    }
+
+    public addZerosToFallnummer(fallNummer: number): string {
+        return EbeguUtil.addZerosToFallNummer(fallNummer);
     }
 }
