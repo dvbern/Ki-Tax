@@ -191,6 +191,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
                         institutionen: antragDto.institutionen,
                         verantwortlicheTS: antragDto.verantwortlicherTS,
                         verantwortlicheBG: antragDto.verantwortlicherBG,
+                        hasBesitzer: antragDto.hasBesitzer
                     };
                 });
             this.datasource.data = displayedFaelle;
