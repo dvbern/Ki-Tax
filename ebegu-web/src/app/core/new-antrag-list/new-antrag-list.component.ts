@@ -1,9 +1,9 @@
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component, EventEmitter,
+    Component, EventEmitter, Input, OnChanges,
     OnDestroy,
-    OnInit, Output,
+    OnInit, Output, SimpleChanges,
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
@@ -42,12 +42,30 @@ const LOG = LogFactory.createLog('DVAntragListController');
     // we need this to overwrite angular material styles
     encapsulation: ViewEncapsulation.None,
 })
-export class NewAntragListComponent implements OnInit, OnDestroy {
+export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     @ViewChild(MatPaginator) public paginator: MatPaginator;
     @ViewChild(MatTable) private readonly table: MatTable<Partial<TSAntragDTO>>;
 
     @Output() public readonly editClicked: EventEmitter<{ antrag: TSAntragDTO, event: Event }> = new EventEmitter<any>();
+
+    /**
+     * Can be one of
+     * 'fallNummer',
+     * 'gemeinde',
+     * 'familienName',
+     * 'kinder',
+     * 'antragTyp',
+     * 'periode',
+     * 'aenderungsdatum',
+     * 'status',
+     * 'dokumenteHochgeladen',
+     * 'angebote',
+     * 'institutionen',
+     * 'verantwortlicheTS',
+     * 'verantwortlicheBG',
+     */
+    @Input() public hiddenColumns: string[] = [];
 
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
@@ -55,7 +73,22 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     public gemeindenList: Array<TSGemeinde> = [];
 
     public datasource: MatTableDataSource<Partial<TSAntragDTO>>;
-    public displayedColumns: string[] = [
+    public filterColumns: string[] = [
+        'fallNummer-filter',
+        'gemeinde-filter',
+        'familie-filter',
+        'kinder-filter',
+        'antragTyp-filter',
+        'periode-filter',
+        'aenderungsdatum-filter',
+        'status-filter',
+        'dokumenteHochgeladen-filter',
+        'angebote-filter',
+        'institutionen-filter',
+        'verantwortlicheTS-filter',
+        'verantwortlicheBG-filter',
+    ];
+    private allColumns = [
         'fallNummer',
         'gemeinde',
         'familienName',
@@ -65,18 +98,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         'aenderungsdatum',
         'status',
         'dokumenteHochgeladen',
-        'angebot',
-        'institution',
+        'angebote',
+        'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
     ];
 
-    public filterColumns = {
-        fallNummer: {
-            type: 'input',
-            callback: (query: string) => this.filterFall(query),
-        },
-    };
+    public displayedColumns: string[] = this.allColumns;
 
     private readonly filterPredicate: {
         fallNummer?: string,
@@ -100,8 +128,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
     private readonly unsubscribe$ = new Subject<void>();
 
     public totalItems: number = 0;
-    public page: number = 0;
-    public pageSize: any = 20;
+
+    @Input() public page: number = 0;
+    @Input() public pageSize: any = 20;
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
@@ -124,6 +153,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
         this.initTable();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.hiddenColumns) {
+            this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+            this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+        }
     }
 
     public updateInstitutionenList(): void {
@@ -191,7 +227,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy {
                         institutionen: antragDto.institutionen,
                         verantwortlicheTS: antragDto.verantwortlicherTS,
                         verantwortlicheBG: antragDto.verantwortlicherBG,
-                        hasBesitzer: antragDto.hasBesitzer
+                        hasBesitzer: antragDto.hasBesitzer,
                     };
                 });
             this.datasource.data = displayedFaelle;

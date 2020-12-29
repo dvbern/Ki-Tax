@@ -76,7 +76,7 @@
                 ''}}</span></mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="angebot">
+        <ng-container matColumnDef="angebote">
             <mat-header-cell mat-sort-header="angebote" *matHeaderCellDef><span translate>ANGEBOT</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let element"><span [title]="createAngeboteString(element.angebote) | async">
@@ -84,7 +84,7 @@
                 < element.angebote.length - 1 ? ',' : ''}}</span></span></mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="institution">
+        <ng-container matColumnDef="institutionen">
             <mat-header-cell mat-sort-header="institutionen" *matHeaderCellDef><span translate>INSTITUTION</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let element"><span [title]="element.institutionen">{{element.institutionen}}</span></mat-cell>
@@ -102,7 +102,7 @@
             <mat-cell *matCellDef="let element"><span [title]="element.verantwortlicheBG">{{element.verantwortlicheBG}}</span></mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="fall-filter">
+        <ng-container matColumnDef="fallNummer-filter">
             <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterFall($event.target.value)">
@@ -124,7 +124,7 @@
             </mat-header-cell>
         </ng-container>
 
-        <ng-container matColumnDef="type-filter">
+        <ng-container matColumnDef="antragTyp-filter">
             <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
@@ -180,7 +180,7 @@
             </mat-header-cell>
         </ng-container>
 
-        <ng-container matColumnDef="dokumente-hochgeladen-filter">
+        <ng-container matColumnDef="dokumenteHochgeladen-filter">
             <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field floatLabel="never">
                     <div class="select-background"></div>
@@ -196,7 +196,7 @@
         </ng-container>
 
 
-        <ng-container matColumnDef="familie-filter">
+        <ng-container matColumnDef="familienName-filter">
             <mat-header-cell *matHeaderCellDef="let column">
                 <mat-form-field>
                     <input matInput (keyup)="filterFamilie($event.target.value)">
@@ -238,7 +238,7 @@
             </mat-header-cell>
         </ng-container>
 
-        <ng-container matColumnDef="verantwortlich-TS" st-table="">
+        <ng-container matColumnDef="verantwortlicheTS-filter" st-table="">
             <mat-header-cell *matHeaderCellDef="let column">
                 <div dvNewUserSelect
                      [showSelectionAll]="true"
@@ -249,7 +249,7 @@
             </mat-header-cell>
         </ng-container>
 
-        <ng-container matColumnDef="verantwortlich-BG" st-table="">
+        <ng-container matColumnDef="verantwortlicheBG-filter" st-table="">
             <mat-header-cell *matHeaderCellDef="let column">
                 <div dvNewUserSelect
                      [showSelectionAll]="true"
@@ -262,9 +262,7 @@
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-header-row
-            *matHeaderRowDef="['fall-filter', 'gemeinde-filter', 'familie-filter', 'kinder-filter', 'type-filter','periode-filter',
-            'aenderungsdatum-filter', 'status-filter', 'dokumente-hochgeladen-filter','angebote-filter', 'institutionen-filter',
-            'verantwortlich-TS', 'verantwortlich-BG']"></mat-header-row>
+            *matHeaderRowDef="filterColumns"></mat-header-row>
         <mat-row *matRowDef="let element; columns: displayedColumns;"
                  (click)="onEditClicked(element, $event)"
                  class="pointer-cursor"></mat-row>
