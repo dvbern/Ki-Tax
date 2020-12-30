@@ -16,7 +16,6 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {Sort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
-import * as moment from 'moment';
 import {BehaviorSubject, forkJoin, from, Observable, of, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -34,6 +33,9 @@ import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
+import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
+import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {LogFactory} from '../logging/LogFactory';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
@@ -81,17 +83,17 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Used to provide other data than the default all faelle. Providing this input disables the provided filter and
      * pagination, meaning that instead of applying filter and pagination, they are emitted via their respective event
-     * to enable server-side filtering and pagination. 
+     * to enable server-side filtering and pagination.
      */
     @Input() public data$: Observable<DVAntragListItem[]>;
 
     /**
-     * Emits any time the filter changes
+     * Emits any time the filter changes. Only emits when the data$ input is provided.
      */
     @Output() public readonly filterChange: EventEmitter<DVAntragListFilter> = new EventEmitter<DVAntragListFilter>();
 
     /**
-     * Emits any time the user clicks on the pagination navigation
+     * Emits any time the user clicks on the pagination navigation. Omly emits when the data$ input is provided.
      */
     @Output() public readonly paginationEvent: EventEmitter<DVPaginationEvent> = new EventEmitter<DVPaginationEvent>();
 
@@ -151,7 +153,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     private readonly unsubscribe$ = new Subject<void>();
 
     public totalItems: number = 0;
-
 
     private readonly sort: {
         predicate?: string,
@@ -410,48 +411,4 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             .pipe(map(translatedAngebote => translatedAngebote.join(', '),
             ));
     }
-}
-
-interface DVAntragListItem {
-    fallNummer?: number;
-    dossierId?: string;
-    antragId?: string;
-    gemeinde?: string;
-    status?: string;
-    familienName?: string;
-    kinder?: string[];
-    antragTyp?: string;
-    periode?: string;
-    aenderungsdatum?: moment.Moment;
-    dokumenteHochgeladen?: boolean;
-    angebote?: TSBetreuungsangebotTyp[];
-    institutionen?: string[];
-    verantwortlicheTS?: string;
-    verantwortlicheBG?: string;
-
-    hasBesitzer?(): boolean;
-}
-
-interface DVAntragListFilter {
-    fallNummer?: string;
-    gemeinde?: string;
-    familienName?: string;
-    kinder?: string;
-    antragTyp?: string;
-    gesuchsperiodeString?: string;
-    eingangsdatum?: string;
-    eingangsdatumSTV?: string;
-    aenderungsdatum?: string;
-    status?: string;
-    dokumenteHochgeladen?: boolean;
-    angebote?: string;
-    institutionen?: string;
-    verantwortlicherTS?: string;
-    verantwortlicherBG?: string;
-    verantwortlicherGemeinde?: string;
-}
-
-interface DVPaginationEvent {
-    pageSize: number;
-    page: number;
 }
