@@ -1,9 +1,14 @@
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component, EventEmitter, Input, OnChanges,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
     OnDestroy,
-    OnInit, Output, SimpleChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
@@ -11,7 +16,8 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {Sort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
-import {BehaviorSubject, forkJoin, Observable, of, Subject} from 'rxjs';
+import * as moment from 'moment';
+import {BehaviorSubject, forkJoin, from, Observable, of, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -45,9 +51,12 @@ const LOG = LogFactory.createLog('DVAntragListController');
 export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     @ViewChild(MatPaginator) public paginator: MatPaginator;
-    @ViewChild(MatTable) private readonly table: MatTable<Partial<TSAntragDTO>>;
+    @ViewChild(MatTable) private readonly table: MatTable<DVAntragListItem>;
 
-    @Output() public readonly editClicked: EventEmitter<{ antrag: TSAntragDTO, event: Event }> = new EventEmitter<any>();
+    /**
+     * Emits when the user clicks on a row
+     */
+    @Output() public readonly rowClicked: EventEmitter<{ antrag: TSAntragDTO, event: Event }> = new EventEmitter<any>();
 
     /**
      * Can be one of
@@ -64,15 +73,46 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      * 'institutionen',
      * 'verantwortlicheTS',
      * 'verantwortlicheBG',
+     *
+     * Hides the column in the table
      */
     @Input() public hiddenColumns: string[] = [];
+
+    /**
+     * Used to provide other data than the default all faelle. Providing this input disables the provided filter and
+     * pagination, meaning that instead of applying filter and pagination, they are emitted via their respective event
+     * to enable server-side filtering and pagination. 
+     */
+    @Input() public data$: Observable<DVAntragListItem[]>;
+
+    /**
+     * Emits any time the filter changes
+     */
+    @Output() public readonly filterChange: EventEmitter<DVAntragListFilter> = new EventEmitter<DVAntragListFilter>();
+
+    /**
+     * Emits any time the user clicks on the pagination navigation
+     */
+    @Output() public readonly paginationEvent: EventEmitter<DVPaginationEvent> = new EventEmitter<DVPaginationEvent>();
+
+    /**
+     * The first page the list starts on
+     */
+    @Input() public page: number = 0;
+
+    /**
+     * How many items should be displayed per page
+     */
+    @Input() public pageSize: any = 20;
 
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
     public gemeindenList: Array<TSGemeinde> = [];
 
-    public datasource: MatTableDataSource<Partial<TSAntragDTO>>;
+    private customData: boolean = false;
+
+    public datasource: MatTableDataSource<DVAntragListItem>;
     public filterColumns: string[] = [
         'fallNummer-filter',
         'gemeinde-filter',
@@ -106,31 +146,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public displayedColumns: string[] = this.allColumns;
 
-    private readonly filterPredicate: {
-        fallNummer?: string,
-        gemeinde?: string,
-        familienName?: string,
-        kinder?: string,
-        antragTyp?: string,
-        gesuchsperiodeString?: string,
-        eingangsdatum?: string,
-        eingangsdatumSTV?: string,
-        aenderungsdatum?: string,
-        status?: string,
-        dokumenteHochgeladen?: boolean,
-        angebote?: string,
-        institutionen?: string,
-        verantwortlicherTS?: string,
-        verantwortlicherBG?: string,
-        verantwortlicherGemeinde?: string,
-    } = {};
+    private readonly filterPredicate: DVAntragListFilter = {};
 
     private readonly unsubscribe$ = new Subject<void>();
 
     public totalItems: number = 0;
 
-    @Input() public page: number = 0;
-    @Input() public pageSize: any = 20;
+
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
@@ -159,6 +181,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         if (changes.hiddenColumns) {
             this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
             this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+        }
+
+        if (changes.data$) {
+            this.customData = !!this.data$;
         }
     }
 
@@ -193,7 +219,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private initTable(): void {
-        this.datasource = new MatTableDataSource<TSAntragDTO>([]);
+        this.datasource = new MatTableDataSource<DVAntragListItem>([]);
         this.loadData();
     }
 
@@ -208,9 +234,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             },
             sort: this.sort,
         };
-        this.searchRS.searchAntraege(body).then((result: TSAntragSearchresultDTO) => {
-            const displayedFaelle: Partial<TSAntragDTO>[] =
-                result.antragDTOs.map(antragDto => {
+        const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
+            this.data$ :
+            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
+                this.totalItems = result.totalResultSize;
+                return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
@@ -230,8 +258,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                         hasBesitzer: antragDto.hasBesitzer,
                     };
                 });
-            this.datasource.data = displayedFaelle;
-            this.totalItems = result.totalResultSize;
+            }));
+
+        dataToLoad$.subscribe((result: DVAntragListItem[]) => {
+            this.datasource.data = result;
             this.paginationItems = [];
             for (let i = 1; i <= Math.ceil(this.totalItems / this.pageSize); i++) {
                 this.paginationItems.push(i);
@@ -243,70 +273,85 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         });
     }
 
+    private applyFilter(): void {
+        if (this.customData) {
+            this.filterChange.emit(this.filterPredicate);
+        } else {
+            this.loadData();
+        }
+    }
+
     public handlePagination(pageEvent: Partial<PageEvent>): void {
         this.page = pageEvent.pageIndex;
         this.pageSize = pageEvent.pageSize;
+
+        if (this.customData) {
+            this.paginationEvent.emit({
+                page: this.page,
+                pageSize: this.pageSize,
+            });
+        }
         this.loadData();
     }
 
     public filterFall(query: string): void {
         this.filterPredicate.fallNummer = query.length > 0 ? query : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterGemeinde(gemeinde: string): void {
         this.filterPredicate.gemeinde = gemeinde;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterType(type: string): void {
         this.filterPredicate.antragTyp = type;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterPeriode(periode: string): void {
         this.filterPredicate.gesuchsperiodeString = periode;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterStatus(state: string): void {
         this.filterPredicate.status = state;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterDocumentsUploaded(documentsUploaded: boolean): void {
         this.filterPredicate.dokumenteHochgeladen = documentsUploaded;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterAngebot(angebot: string): void {
         this.filterPredicate.angebote = angebot;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterVerantwortlicheTS(verantwortliche: TSBenutzerNoDetails): void {
         this.filterPredicate.verantwortlicherTS = verantwortliche ? verantwortliche.getFullName() : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterVerantwortlicheBG(verantwortliche: TSBenutzerNoDetails): void {
         this.filterPredicate.verantwortlicherBG = verantwortliche ? verantwortliche.getFullName() : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterFamilie(query: string): void {
         this.filterPredicate.familienName = query.length > 0 ? query : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterKinder(query: string): void {
         this.filterPredicate.kinder = query.length > 0 ? query : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterGeaendert(query: string): void {
         this.filterPredicate.aenderungsdatum = query.length > 0 ? query : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public filterInstitution(query: string): void {
@@ -318,7 +363,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.allInstitutionen,
         );
         this.filterPredicate.institutionen = query.length > 0 ? query : null;
-        this.loadData();
+        this.applyFilter();
     }
 
     public getAntragTypen(): TSAntragTyp[] {
@@ -350,7 +395,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private onEditClicked(antrag: TSAntragDTO, event: Event): void {
-        this.editClicked.emit({antrag, event});
+        this.rowClicked.emit({antrag, event});
     }
 
     public addZerosToFallnummer(fallNummer: number): string {
@@ -365,4 +410,48 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             .pipe(map(translatedAngebote => translatedAngebote.join(', '),
             ));
     }
+}
+
+interface DVAntragListItem {
+    fallNummer?: number;
+    dossierId?: string;
+    antragId?: string;
+    gemeinde?: string;
+    status?: string;
+    familienName?: string;
+    kinder?: string[];
+    antragTyp?: string;
+    periode?: string;
+    aenderungsdatum?: moment.Moment;
+    dokumenteHochgeladen?: boolean;
+    angebote?: TSBetreuungsangebotTyp[];
+    institutionen?: string[];
+    verantwortlicheTS?: string;
+    verantwortlicheBG?: string;
+
+    hasBesitzer?(): boolean;
+}
+
+interface DVAntragListFilter {
+    fallNummer?: string;
+    gemeinde?: string;
+    familienName?: string;
+    kinder?: string;
+    antragTyp?: string;
+    gesuchsperiodeString?: string;
+    eingangsdatum?: string;
+    eingangsdatumSTV?: string;
+    aenderungsdatum?: string;
+    status?: string;
+    dokumenteHochgeladen?: boolean;
+    angebote?: string;
+    institutionen?: string;
+    verantwortlicherTS?: string;
+    verantwortlicherBG?: string;
+    verantwortlicherGemeinde?: string;
+}
+
+interface DVPaginationEvent {
+    pageSize: number;
+    page: number;
 }
