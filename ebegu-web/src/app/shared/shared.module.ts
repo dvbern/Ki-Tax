@@ -37,6 +37,7 @@ import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/d
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
@@ -123,7 +124,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         NewAntragListComponent,
-        NewUserSelectDirective
+        NewUserSelectDirective,
+        DvLoadingButtonXDirective
     ],
     exports: [
         CommonModule,
@@ -165,6 +167,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         NewAntragListComponent,
+        DvLoadingButtonXDirective,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

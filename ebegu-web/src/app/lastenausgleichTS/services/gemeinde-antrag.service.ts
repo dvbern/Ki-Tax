@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import * as moment from 'moment';
 import {Observable, of} from 'rxjs';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -8,7 +9,6 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import * as moment from 'moment';
 
 @Injectable({
     providedIn: 'root',
@@ -43,5 +43,13 @@ export class GemeindeAntragService {
         }
 
         return dummyData;
+    }
+
+    public getTypes(): string[] {
+        return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG];
+    }
+
+    public createAntrag(toCreate: {periode: string, antragTyp: string}): Observable<TSGemeindeAntrag> {
+        return this.http.post<TSGemeindeAntrag>(this.API_BASE_URL, toCreate);
     }
 }

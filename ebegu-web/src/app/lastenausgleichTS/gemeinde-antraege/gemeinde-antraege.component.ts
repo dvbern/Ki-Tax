@@ -1,6 +1,9 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
@@ -25,9 +28,13 @@ export class GemeindeAntraegeComponent implements OnInit {
     ];
 
     public antragList$: Observable<DVAntragListItem[]>;
+    public gesuchsperioden: TSGesuchsperiode[];
+    public formGroup: FormGroup;
 
     public constructor(
-        private readonly gemeindeAntragService: GemeindeAntragService,
+        public readonly gemeindeAntragService: GemeindeAntragService,
+        private readonly gesuchsperiodenService: GesuchsperiodeRS,
+        private readonly fb: FormBuilder
     ) {
     }
 
@@ -39,11 +46,22 @@ export class GemeindeAntraegeComponent implements OnInit {
                         gemeinde: antrag.gemeinde.name,
                         status: antrag.statusString,
                         periode: antrag.gesuchsperiode.gesuchsperiodeString,
-                        antragTyp: antrag.gemeindeAntragTyp
+                        antragTyp: antrag.gemeindeAntragTyp,
                     };
                 });
             }),
-        )
+        );
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
+        this.formGroup = this.fb.group({
+            periode: ['', Validators.required],
+            antragTyp: ['', Validators.required]
+        });
     }
 
+    public createAntrag(): void {
+        if (!this.formGroup.valid) {
+           return;
+        }
+        this.gemeindeAntragService.createAntrag(this.formGroup.value);
+    }
 }

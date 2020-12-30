@@ -5,47 +5,45 @@
           dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForLastenausgleich()">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <div class="row lastenausgleich-form" layout="row">
+                <div class="row lastenausgleich-form layout-row" layout="row">
 
                     <!-- Jahr -->
                     <div class="col-md-3">
-                            <label class="md-no-float required"
-                                   for="jahr"
-                                   translate>LASTENAUSGLEICH_JAHR</label>
-                            <input id="jahr"
-                                   type="text"
-                                   name="jahr"
-                                   ng-model="vm.jahr"
-                                   dv-max-length
-                                   class="form-control input-dv"
-                                   required
-                                   aria-describedby="jahr-error">
-                            <dv-error-messages input-id="jahr"
-                                               for="vm.form.jahr.$error"
-                                               class="error"></dv-error-messages>
+                        <label class="md-no-float required"
+                               for="gemeindeantragperiode"
+                               translate>GESUCHSPERIODEN</label>
+                        <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtperiode"
+                                id="gemeindeantragperiode"
+                                class="form-control">
+                            <option *ngFor="let periode of gesuchsperioden"
+                                    [value]="periode">{{periode.gesuchsperiodeString}}</option>
+                        </select>
                     </div>
 
                     <!-- Selbstbehalt pro 100% Platz -->
                     <div class="col-md-3">
 
+                        <div class="asd">
                             <label class="md-no-float required"
-                                   for="selbstbehaltPro100ProzentPlatz"
-                                   translate>LASTENAUSGLEICH_SELBSTBEHALT</label>
-                            <input type="number"
-                                   id="selbstbehaltPro100ProzentPlatz"
-                                   name="selbstbehaltPro100ProzentPlatz"
-                                   required
-                                   class="form-control"
-                                   min="0"
-                                   aria-describedby="selbstbehaltPro100ProzentPlatz-error"
-                                   ng-model="vm.selbstbehaltPro100ProzentPlatz"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS">
-                            <dv-error-messages input-id="selbstbehaltPro100ProzentPlatz"
-                                               for="vm.form.selbstbehaltPro100ProzentPlatz.$error"
-                                               class="error"></dv-error-messages>
+                                   for="gemeindeantragtyp"
+                                   translate>TYP</label>
+                            <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtyp"
+                                    id="gemeindeantragtyp"
+                                    class="form-control">
+                                <option *ngFor="let typ of gemeindeAntragService.getTypes()"
+                                        [value]="typ">{{typ}}</option>
+                            </select>
+                            <div class="dv-error-messages"></div>
+                        </div>
+
+
                     </div>
-
-
+                    <div class="col-md-3 layout-align-center-center layout-row flex" flex layout="row" layout-align="center center" id="actions">
+                        <div dvLoadingButtonX
+                             aria-label="{{'LASTENAUSGLEICH_ERSTELLEN' | translate}}" type="submit" (buttonClick)="createAntrag()">
+                            <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
