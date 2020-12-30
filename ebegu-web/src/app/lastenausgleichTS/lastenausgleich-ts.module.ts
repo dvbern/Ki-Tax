@@ -24,6 +24,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
+import {SharedModule} from '../shared/shared.module';
 import {WizardstepXModule} from '../wizardstepX/wizardstep-x.module';
 import {FreigabeComponent} from './antrag/freigabe/freigabe.component';
 import {GemeindeAngabenComponent} from './antrag/gemeinde-angaben/gemeinde-angaben.component';
@@ -34,6 +35,7 @@ import {LastenausgleichTsRoutingModule} from './lastenausgleich-ts-routing/laste
 import {LastenausgleichTsSideNavComponent} from './lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
 import {LastenausgleichTsToolbarComponent} from './lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';
 import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-ts.component';
+import { GemeindeAntraegeComponent } from './gemeinde-antraege/gemeinde-antraege.component';
 
 @NgModule({
     declarations: [
@@ -44,7 +46,8 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-t
         GemeindeAngabenComponent,
         TagesschulenAngabenComponent,
         FreigabeComponent,
-        LastenausgleichTsBerechnungComponent
+        LastenausgleichTsBerechnungComponent,
+        GemeindeAntraegeComponent
     ],
     imports: [
         CommonModule,
@@ -56,8 +59,9 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-t
         UIRouterModule,
         MatMenuModule,
         MatButtonModule,
-        WizardstepXModule
-    ]
+        WizardstepXModule,
+        SharedModule,
+    ],
 })
 export class LastenausgleichTSModule {
 }

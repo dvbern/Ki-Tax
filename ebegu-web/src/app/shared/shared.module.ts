@@ -164,6 +164,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
+        NewAntragListComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

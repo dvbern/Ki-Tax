@@ -76,7 +76,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     public filterColumns: string[] = [
         'fallNummer-filter',
         'gemeinde-filter',
-        'familie-filter',
+        'familienName-filter',
         'kinder-filter',
         'antragTyp-filter',
         'periode-filter',

@@ -21,6 +21,7 @@ import {FreigabeComponent} from '../antrag/freigabe/freigabe.component';
 import {GemeindeAngabenComponent} from '../antrag/gemeinde-angaben/gemeinde-angaben.component';
 import {LastenausgleichTsBerechnungComponent} from '../antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from '../antrag/tagesschulen-angaben/tagesschulen-angaben.component';
+import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
 
 const states: NgHybridStateDeclaration[] = [
@@ -29,6 +30,12 @@ const states: NgHybridStateDeclaration[] = [
         name: 'LASTENAUSGLEICH_TS',
         url: '/lastenausgleich-ts',
         component: LastenausgleichTSComponent,
+    },
+    {
+        parent: 'app',
+        name: 'GEMEINDE_ANTRAEGE',
+        url: '/gemeinde-antraege',
+        component: GemeindeAntraegeComponent,
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
