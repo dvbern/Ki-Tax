@@ -107,6 +107,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      */
     @Input() public pageSize: any = 20;
 
+    /**
+     * The list of states that should be displayed in the filter dropdown. Overwrites the faelle default
+     */
+    @Input() public filterStateList: string[];
+
+    /**
+     * The list of types that should be displayed in the types dropdown. Overwirtes the antragTypes default
+     */
+    @Input() public filterTypeList: string[];
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
@@ -367,15 +377,15 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.applyFilter();
     }
 
-    public getAntragTypen(): TSAntragTyp[] {
-        return getNormalizedTSAntragTypValues();
+    public getAntragTypen(): string[] |TSAntragTyp[] {
+        return this.filterTypeList || getNormalizedTSAntragTypValues();
     }
 
     /**
      * Alle TSAntragStatus fuer das Filterdropdown
      */
-    public getAntragStatus(): TSAntragStatus[] {
-        return getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
+    public getAntragStatus(): string[] | TSAntragStatus[] {
+        return this.filterStateList || getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
     }
 
     /**
