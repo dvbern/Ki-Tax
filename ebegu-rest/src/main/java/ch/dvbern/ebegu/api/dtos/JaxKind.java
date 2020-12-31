@@ -58,6 +58,8 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nullable
 	private String zemisNummer;
 
+	@NotNull
+	private Boolean zukunftigeGeburtsdatum = false;
 
 	@NotNull
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
@@ -137,5 +139,13 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	public void setZemisNummer(@Nullable String zemisNummer) {
 		this.zemisNummer = zemisNummer;
+	}
+
+	public Boolean getZukunftigeGeburtsdatum() {
+		return zukunftigeGeburtsdatum;
+	}
+
+	public void setZukunftigeGeburtsdatum(Boolean zukunftigeGeburtsdatum) {
+		this.zukunftigeGeburtsdatum = zukunftigeGeburtsdatum;
 	}
 }

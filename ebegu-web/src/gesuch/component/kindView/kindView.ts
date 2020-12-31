@@ -46,6 +46,7 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import * as moment from 'moment';
 
 export class KindViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -84,6 +85,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public allowedRoles: ReadonlyArray<TSRole>;
     public minValueAllowed: number = 0;
     public maxValueAllowed: number = 100;
+    public kontingentierungEnabled: boolean;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -127,6 +129,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
+        this.getEinstellungKontingentierung();
     }
 
     public $postLink(): void {
@@ -141,7 +144,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {
                 amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate),
             });
     }
 
@@ -159,10 +162,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private getEinstellungenFachstelle(
         minValueEinstellungKey: TSEinstellungKey,
-        maxValueEinstellungKey: TSEinstellungKey
+        maxValueEinstellungKey: TSEinstellungKey,
     ): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+            this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
                 .forEach(value => {
@@ -214,6 +217,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             // promise immediately
             return this.$q.when(this.model);
         }
+
+        this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
 
         this.errorService.clearAll();
         return this.gesuchModelManager.saveKind(this.model);
@@ -411,5 +416,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.getModel().ausAsylwesen) {
             this.getModel().zemisNummer = null;
         }
+    }
+
+    public isGeburtsdatumInZunkunft(): boolean {
+        return this.getModel().geburtsdatum.isAfter(moment());
+    }
+
+    private getEinstellungKontingentierung(): void {
+        this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
     }
 }
