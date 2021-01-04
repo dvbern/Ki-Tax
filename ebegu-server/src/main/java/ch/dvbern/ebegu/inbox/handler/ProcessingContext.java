@@ -31,7 +31,7 @@ public class ProcessingContext {
 	private final BetreuungEventDTO dto;
 	@Nonnull
 	private final DateRange gueltigkeitInPeriode;
-	private final boolean mahlzeitVergunstigungEnabled;
+	private final boolean mahlzeitVerguenstigungEnabled;
 
 	private boolean isReadyForBestaetigen = true;
 
@@ -39,11 +39,11 @@ public class ProcessingContext {
 		@Nonnull Betreuung betreuung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
-		boolean mahlzeitVergunstigungEnabled) {
+		boolean mahlzeitVerguenstigungEnabled) {
 		this.betreuung = betreuung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
-		this.mahlzeitVergunstigungEnabled = mahlzeitVergunstigungEnabled;
+		this.mahlzeitVerguenstigungEnabled = mahlzeitVerguenstigungEnabled;
 	}
 
 	public void requireHumanConfirmation() {
@@ -65,8 +65,8 @@ public class ProcessingContext {
 		return gueltigkeitInPeriode;
 	}
 
-	public boolean isMahlzeitVergunstigungEnabled() {
-		return mahlzeitVergunstigungEnabled;
+	public boolean isMahlzeitVerguenstigungEnabled() {
+		return mahlzeitVerguenstigungEnabled;
 	}
 
 	public boolean isGueltigkeitCoveringPeriode() {

@@ -27,11 +27,19 @@ ${templateConfiguration.mailCss}
 	<p>
 		Nous avons le plaisir de vous informer que la période couverte par la demande ${gesuchsperiode.gesuchsperiodeString} est dès à présent active dans kiBon
 		pour la saisie de vos données. <br>
-		Vous pouvez saisir une nouvelle demande <a href="https://www.kibon.ch/">ici</a>.
 	</p>
 	<p>
-		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition qu'elle soit assortie de tous les documents requis,
-		et pour le début de la prise en charge dans le cadre de la nouvelle période.
+		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition qu'elle soit assortie de
+		tous les documents requis, et pour le début de la prise en charge dans le cadre de la nouvelle période. En d’autres termes, si
+		vous souhaitez recevoir un bon à partir d’août, la demande dûment complétée doit être déposée en juillet au plus tard.
+	</p>
+	<p>
+		Veuillez si possible remplir la déclaration d’impôt avant de saisir les informations concernant votre situation financière.
+		Vous pourrez en effet reprendre toutes les données nécessaires de la déclaration et les utiliser comme justificatifs dans la
+		rubrique « Documents ».
+	</p>
+	<p>
+		<a href="https://www.kibon.ch/">Vous pouvez saisir une nouvelle demande ici</a>.
 	</p>
 	<p>
 		Si vous ne souhaitez pas déposer de demande pour la période ${gesuchsperiode.gesuchsperiodeString}, vous n'avez plus rien à entreprendre.

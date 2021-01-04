@@ -2085,6 +2085,10 @@
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN": "Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch verfügt wurde",
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "Verantwortlicher Tagesschule wird per Email informiert, nachdem ein Mischgesuch verfügt wurde",
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP": "Nachdem ein Mischgesuch durch den Verantwortlichen Betreuungsgutscheine abgeschlossen wurde, erhält der Verantwortliche Tagesschulen eine Email. Dies ist bei manchen Gemeinden für interne Prozesse notwendig.<br>Empfohlene Einstellung: Aus.",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG": "Antragsteller bei der Öffnung einer neuen Gesuchsperiode per Email informieren",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_JA": "Antragsteller werden bei der Öffnung einer neuen Gesuchsperiode per Email informiert",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_NEIN": "Antragsteller werden bei der Öffnung einer neuen Gesuchsperiode per Email NICHT informiert",
+    "EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_HELP": "Wenn eine neue Gesuchsperiode geöffnet wird, werden standardmässig alle Eltern, die in der vorherigen Gesuchsperiode einen Antrag auf einen Betreuungsgutschein gestellt haben, per Email informiert. Antragsteller mit nur Tagesschule Betreuungen erhalten keine Email. Mit dieser Einstellung kann das automatische Versenden der Emails deaktiviert werden.",
     "ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_OFFENTLICH": "Hiermit bestätigen wir, dass wir die Elternbeiträge für die Betreuung für nicht angebote Betreuungstage und Plätze von corona abwesenden Kindern zurückerstattet (gutgeschrieben oder verrechnet) oder gar nie in Rechnung gestellt haben.",
     "NOTWENDIGEN_INFORMATIONEN_LIEFERN_OFFENTLICH": "Die Trägerschaft, vertreten durch die zeichnungsberechtigte/n Person/en, bestätigt die <b>Richtigkeit und Vollständigkeit</b> der in diesem Formular und den Beilagen gemachten Angaben. Sie verpflichtet sich, den zuständigen Behörden die für die Überprüfung der Angaben notwendigen Informationen zu liefern. Eltern können ebenfall kontaktiert werden um Angaben zu plausibilisieren.",
     "ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_PRIVAT": "Hiermit bestätigen wir, dass wir die Elternbeiträge für die Betreuung, für die eine Ausfallentschädigung beantragt wird, zurückerstattet oder verrechnet oder nicht in Rechnung gestellt haben.",
@@ -2181,6 +2185,8 @@
     "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "Kein Selbstbehalt durch die Gemeinde",
     "ZEMIS_UPLOAD_STARTED": "Die Verarbeitung des ZEMIS Excels wurde gestartet. Sie werden per Email benachrichtigt, sobald der Prozess abgeschlossen wurde.",
     "ZEMIS_UPLOAD_FINISHED": "Die Vearbeitung wurde erfolgreich abgeschlossen",
-    "VERFUEGUNG_JSON_DEPRECATED": "Achtung: Der JSON Export der Verfügung ist veraltet und wird Ende Januar 2021 entfernt. Bitte melden Sie sich beim kiBon Support, falls Sie diese Funktion noch verwenden",
+    "VERFUEGUNG_JSON_DEPRECATED": "Achtung: Der JSON Export der Verfügung ist veraltet und wird in einigen Monaten entfernt. Bitte melden Sie sich beim kiBon Support, falls Sie diese Funktion noch verwenden",
+    "GEMEINDE_GUELTIG_BIS": "Gemeinde gültig bis",
+    "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -111,6 +111,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String tsTelefon;
 	@NotNull
 	private Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen;
+	@Nonnull
+	private Boolean emailBeiGesuchsperiodeOeffnung;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -451,5 +453,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setTsTelefon(@Nullable String tsTelefon) {
 		this.tsTelefon = tsTelefon;
+	}
+
+	@Nonnull
+	public Boolean getEmailBeiGesuchsperiodeOeffnung() {
+		return emailBeiGesuchsperiodeOeffnung;
+	}
+
+	public void setEmailBeiGesuchsperiodeOeffnung(@Nonnull Boolean emailBeiGesuchsperiodeOeffnung) {
+		this.emailBeiGesuchsperiodeOeffnung = emailBeiGesuchsperiodeOeffnung;
 	}
 }

@@ -48,6 +48,8 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 
+	private static final long serialVersionUID = -4297840799469141643L;
+
 	@Nonnull
 	@Override
 	public ZahlungslaufTyp getZahlungslaufTyp() {

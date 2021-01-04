@@ -11,19 +11,19 @@ INSERT INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstel
 INSERT INTO gemeinde (
 	id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, gemeinde_nummer, mandant_id, status, bfs_nummer,
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum, angebotbg,
-                      angebotts, angebotfi)
+                      angebotts, angebotfi, gueltig_bis)
 VALUES (
 		   UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0,
 		   'London', 2, UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), 'AKTIV', 99999,
-        '2016-01-01', '2020-08-01', '2020-08-01', true, false, false);
+        '2016-01-01', '2020-08-01', '2020-08-01', true, false, false, '9999-12-31');
 INSERT INTO gemeinde (
 	id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, gemeinde_nummer, mandant_id, status, bfs_nummer,
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum,
-                      angebotbg, angebotts, angebotfi)
+                      angebotbg, angebotts, angebotfi, gueltig_bis)
 VALUES (
 		   UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0,
 		   'Paris', 1, UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), 'AKTIV', 99998, '2016-01-01',
-        '2020-08-01', '2020-08-01', true, false, false);
+        '2020-08-01', '2020-08-01', true, false, false, '9999-12-31');
 
 INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
 					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('4a7afba9-4af0-11e9-9a3a-afd41a03c0bb', '-', '')),

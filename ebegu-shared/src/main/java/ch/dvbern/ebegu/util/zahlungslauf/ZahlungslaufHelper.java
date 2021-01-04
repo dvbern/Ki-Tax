@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.util.zahlungslauf;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +35,7 @@ import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
  * Interface fuer Zahlungshelper. In diesen wird alles ausgelagert, was pro ZahlungslaufTyp
  * unterschiedlich ist, z.B. je nach Empfaenger unterschiedliche Zahlungsadresse
  */
-public interface ZahlungslaufHelper {
+public interface ZahlungslaufHelper extends Serializable {
 
 	/**
 	 * Gibt den ZahlungslaufTyp zurueck, welcher mit diesem Helper behandelt wird
