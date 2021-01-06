@@ -190,7 +190,8 @@ public class Kind extends AbstractPersonEntity {
 	public Kind copyKind(
 		@Nonnull Kind target,
 		@Nonnull AntragCopyType copyType,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull LocalDate regelStartDatum) {
 		super.copyAbstractPersonEntity(target, copyType);
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		target.setSprichtAmtssprache(this.getSprichtAmtssprache());
@@ -202,7 +203,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(LocalDate.now()) ? true : false);
+			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -210,7 +211,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(LocalDate.now()) ? true : false);
+			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
