@@ -76,7 +76,9 @@ public class LastenausgleichBerechnungCSVConverter {
 			BigDecimal totalRevisionValue = BigDecimal.ZERO;
 			for (LastenausgleichBerechnungDataRow entry : gemeindeGroup.getValue()) {
 				if (entry.isKorrektur()) {
-					totalRevisionValue = totalRevisionValue.add(entry.getEingabeLastenausgleich());
+					totalRevisionValue = totalRevisionValue
+						.add(entry.getEingabeLastenausgleich())
+						.add(entry.getTotalGutscheineOhneSelbstbehalt());
 				} else {
 					currentErhebung = entry;
 				}
