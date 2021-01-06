@@ -53,6 +53,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow1.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15176)));
 		dataRow1.setSelbstbehaltGemeinde(ROUND.from(MATH.from(3035294.12)));
 		dataRow1.setEingabeLastenausgleich(ROUND.from(MATH.from(13341176.47)));
+		dataRow1.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow1.setKorrektur(false);
 
 		LastenausgleichBerechnungDataRow dataRow2 = new LastenausgleichBerechnungDataRow();
@@ -66,6 +67,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15176)));
 		dataRow2.setSelbstbehaltGemeinde(ROUND.from(MATH.from(303529.41)));
 		dataRow2.setEingabeLastenausgleich(ROUND.from(MATH.from(1114117.65)));
+		dataRow2.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow2.setKorrektur(false);
 
 		LastenausgleichBerechnungDataRow dataRow3 = new LastenausgleichBerechnungDataRow();
@@ -79,6 +81,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow3.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(-14105)));
 		dataRow3.setSelbstbehaltGemeinde(ROUND.from(MATH.from(141050)));
 		dataRow3.setEingabeLastenausgleich(ROUND.from(MATH.from(-1158697.06)));
+		dataRow3.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow3.setKorrektur(true);
 
 		LastenausgleichBerechnungDataRow dataRow4 = new LastenausgleichBerechnungDataRow();
@@ -92,6 +95,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow4.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(14105)));
 		dataRow4.setSelbstbehaltGemeinde(ROUND.from(MATH.from(141050)));
 		dataRow4.setEingabeLastenausgleich(ROUND.from(MATH.from(258950)));
+		dataRow4.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow4.setKorrektur(true);
 
 		List<LastenausgleichBerechnungDataRow> reportData = new ArrayList<>();
@@ -129,6 +133,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow1.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
 		dataRow1.setSelbstbehaltGemeinde(ROUND.from(MATH.from(1000)));
 		dataRow1.setEingabeLastenausgleich(ROUND.from(MATH.from(6256.5)));
+		dataRow1.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow1.setKorrektur(false);
 
 		LastenausgleichBerechnungDataRow dataRow2 = new LastenausgleichBerechnungDataRow();
@@ -141,6 +146,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
 		dataRow2.setSelbstbehaltGemeinde(BigDecimal.ZERO);
 		dataRow2.setEingabeLastenausgleich(BigDecimal.ZERO);
+		dataRow2.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow2.setKorrektur(false);
 
 		LastenausgleichBerechnungDataRow dataRow3 = new LastenausgleichBerechnungDataRow();
@@ -154,6 +160,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow3.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(-15000)));
 		dataRow3.setSelbstbehaltGemeinde(ROUND.from(MATH.from(-1000)));
 		dataRow3.setEingabeLastenausgleich(ROUND.from(MATH.from(-6256.5)));
+		dataRow3.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow3.setKorrektur(true);
 
 		LastenausgleichBerechnungDataRow dataRow4 = new LastenausgleichBerechnungDataRow();
@@ -163,9 +170,10 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow4.setTotalBelegungMitSelbstbehalt(BigDecimal.ZERO);
 		dataRow4.setTotalAnrechenbar(BigDecimal.ZERO);
 		dataRow4.setTotalGutscheineMitSelbstbehalt(BigDecimal.ZERO);
-		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
+		dataRow4.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
 		dataRow4.setSelbstbehaltGemeinde(BigDecimal.ZERO);
 		dataRow4.setEingabeLastenausgleich(BigDecimal.ZERO);
+		dataRow4.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow4.setKorrektur(true);
 
 		List<LastenausgleichBerechnungDataRow> reportData = new ArrayList<>();
@@ -178,7 +186,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 
 		String csvExpected = "BFS-Nr.;kibon_Belegung;kibon_Gutscheine;kibon_Erhebung;kibon_Selbstbehalt\n"
 			+ "351;33.33;7256.50;6256.50;1000.00\n"
-			+ "546;0;0;-6256.50;0\n";
+			+ "546;0;0.00;-6256.50;0\n";
 
 		Assert.assertEquals(csvExpected, lastenausgleichCSV);
 	}
@@ -230,6 +238,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow3.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(-14105)));
 		dataRow3.setSelbstbehaltGemeinde(ROUND.from(MATH.from(141050)));
 		dataRow3.setEingabeLastenausgleich(ROUND.from(MATH.from(-1158697.06)));
+		dataRow3.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow3.setKorrektur(true);
 
 		LastenausgleichBerechnungDataRow dataRow4 = new LastenausgleichBerechnungDataRow();
@@ -243,6 +252,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		dataRow4.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(14105)));
 		dataRow4.setSelbstbehaltGemeinde(ROUND.from(MATH.from(141050)));
 		dataRow4.setEingabeLastenausgleich(ROUND.from(MATH.from(258950)));
+		dataRow4.setTotalGutscheineOhneSelbstbehalt(BigDecimal.ZERO);
 		dataRow4.setKorrektur(true);
 
 		List<LastenausgleichBerechnungDataRow> reportData = new ArrayList<>();
