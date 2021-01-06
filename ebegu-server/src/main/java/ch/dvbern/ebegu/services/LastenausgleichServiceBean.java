@@ -181,12 +181,16 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
 		Lastenausgleich storedLastenausgleich = persistence.merge(lastenausgleich);
+		sendEmailsToGemeinden(storedLastenausgleich);
 
-		//Send Email
-		storedLastenausgleich.getLastenausgleichDetails().stream().forEach(lastenausgleichDetail ->
-			mailService.sendInfoLastenausgleichGemeinde(lastenausgleichDetail.getGemeinde(), storedLastenausgleich)
-		);
 		return storedLastenausgleich;
+	}
+
+	private void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich) {
+		storedLastenausgleich.getLastenausgleichDetails().stream()
+			.map(LastenausgleichDetail::getGemeinde)
+			.distinct()
+			.forEach(gemeinde -> mailService.sendInfoLastenausgleichGemeinde(gemeinde, storedLastenausgleich));
 	}
 
 	private void handleKorrekturJahrFuerGemeinde(
