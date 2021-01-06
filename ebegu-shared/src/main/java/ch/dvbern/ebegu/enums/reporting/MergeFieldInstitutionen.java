@@ -27,6 +27,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 /**
@@ -48,6 +49,8 @@ public enum MergeFieldInstitutionen implements MergeFieldProvider {
 	telefonTitle(new SimpleMergeField<>("telefonTitle", STRING_CONVERTER)),
 	emailTitle(new SimpleMergeField<>("emailTitle", STRING_CONVERTER)),
 	urlTitle(new SimpleMergeField<>("urlTitle", STRING_CONVERTER)),
+	gueltigAbTitle(new SimpleMergeField<>("gueltigAbTitle", STRING_CONVERTER)),
+	gueltigBisTitle(new SimpleMergeField<>("gueltigBisTitle", STRING_CONVERTER)),
 	oeffnungstageTitle(new SimpleMergeField<>("oeffnungstageTitle", STRING_CONVERTER)),
 	oeffnungszeitenTitle(new SimpleMergeField<>("oeffnungszeitenTitle", STRING_CONVERTER)),
 	oeffnungsAbweichungenTitle(new SimpleMergeField<>("oeffnungsAbweichungenTitle", STRING_CONVERTER)),
@@ -71,6 +74,8 @@ public enum MergeFieldInstitutionen implements MergeFieldProvider {
 	email(new SimpleMergeField<>("email", STRING_CONVERTER)),
 	url(new SimpleMergeField<>("url", STRING_CONVERTER)),
 	oeffnungstage(new SimpleMergeField<>("oeffnungstage", STRING_CONVERTER)),
+	gueltigAb(new SimpleMergeField<>("gueltigAb", DATE_CONVERTER)),
+	gueltigBis(new SimpleMergeField<>("gueltigBis", DATE_CONVERTER)),
 	oeffnungszeiten(new SimpleMergeField<>("oeffnungszeiten", STRING_CONVERTER)),
 	oeffnungsAbweichungen(new SimpleMergeField<>("oeffnungsAbweichungen", STRING_CONVERTER)),
 	isBaby(new SimpleMergeField<>("isBaby", BOOLEAN_X_CONVERTER)),
