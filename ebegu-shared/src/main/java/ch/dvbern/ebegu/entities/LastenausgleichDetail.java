@@ -260,7 +260,13 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		this.setKostenFuerSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getKostenFuerSelbstbehalt(), other.getKostenFuerSelbstbehalt()));
 	}
 
+	/**
+	 * Prüft, ob sich der Lastenausgleich verändert hat. Dazu wird für die "Belegungen mit Selbstbehalt für Gemeinde"
+	 * auf den BetragLastenausgleich geschaut und für die "Belegungen ohne Selbstbehalt für Gemeinde" auf den
+	 * totalBetragGutscheineOhneSelbstbehalt
+	 */
 	public boolean hasChanged(@Nonnull LastenausgleichDetail detail) {
-		return this.getBetragLastenausgleich().compareTo(detail.getBetragLastenausgleich()) != 0;
+		return this.getBetragLastenausgleich().compareTo(detail.getBetragLastenausgleich()) != 0
+			|| this.getTotalBetragGutscheineOhneSelbstbehalt().compareTo(detail.getTotalBetragGutscheineOhneSelbstbehalt()) != 0;
 	}
 }
