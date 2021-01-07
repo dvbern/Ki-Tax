@@ -80,7 +80,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungExcelConverter;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -107,9 +106,6 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 	@Inject
 	private FileSaverService fileSaverService;
-
-	@Inject
-	private BenutzerService benutzerService;
 
 	@Inject
 	private GemeindeService gemeindeService;
