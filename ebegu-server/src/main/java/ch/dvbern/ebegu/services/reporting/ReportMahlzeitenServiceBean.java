@@ -21,8 +21,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +61,7 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer_;
 import ch.dvbern.ebegu.entities.Familiensituation_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -76,8 +75,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
@@ -85,6 +84,7 @@ import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungExcelConverter;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -114,6 +114,9 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	private BenutzerService benutzerService;
 
 	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
 	private Persistence persistence;
 
 	@Nonnull
@@ -123,7 +126,8 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	public UploadFileInfo generateExcelReportMahlzeiten(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull String gemeindeId
 	) throws ExcelMergeException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG;
@@ -134,7 +138,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<MahlzeitenverguenstigungDataRow> reportData = getReportMahlzeitenverguenstigung(datumVon, datumBis);
+		List<MahlzeitenverguenstigungDataRow> reportData = getReportMahlzeitenverguenstigung(datumVon, datumBis, gemeindeId);
 		ExcelMergerDTO excelMergerDTO =
 			mahlzeitenverguenstigungExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
 
@@ -154,14 +158,18 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	@Override
 	public List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis
+		@Nonnull LocalDate datumBis,
+		@Nonnull String gemeindeId
 	) {
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getReportDataMahlzeitenverguenstigung", NO_USER_IS_LOGGED_IN));
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"getReportDataMahlzeitenverguenstigung", gemeindeId));
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList =
-			getBetreuungenReportDataMahlzeitenverguenstigung(datumVon, datumBis, user);
-		zeitabschnittList.addAll(getAnmeldungenReportDataMahlzeitenverguenstigung(datumVon, datumBis, user));
+			getBetreuungenReportDataMahlzeitenverguenstigung(datumVon, datumBis, gemeinde);
+		zeitabschnittList.addAll(getAnmeldungenReportDataMahlzeitenverguenstigung(datumVon, datumBis, gemeinde));
 		List<MahlzeitenverguenstigungDataRow> dataRows = convertToMahlzeitDataRow(zeitabschnittList);
 
 		dataRows.sort(Comparator.comparing(MahlzeitenverguenstigungDataRow::getBgNummer)
@@ -381,7 +389,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	private List<VerfuegungZeitabschnitt> getBetreuungenReportDataMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Benutzer user) {
+		@Nonnull Gemeinde gemeinde) {
 		validateDateParams(datumVon, datumBis);
 
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
@@ -423,15 +431,10 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		Predicate predicateBetreuungGueltig = builder.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicatesToUse.add(predicateBetreuungGueltig);
 
-		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
-		if (user.getCurrentBerechtigung().getRole() != UserRole.SUPER_ADMIN) {
-			Collection<Gemeinde> gemeindenForBenutzer = user.extractGemeindenForUser();
-			if (gemeindenForBenutzer.isEmpty()) {
-				return Collections.emptyList();
-			}
-			Predicate inGemeindeForBetreuung = joinBetreuungGemeinde.in(gemeindenForBenutzer);
-			predicatesToUse.add(inGemeindeForBetreuung);
-		}
+		// Nur Gesuche von der gewählten Gemeinde
+		Predicate inGemeindeForBetreuung = builder.equal(joinBetreuungGemeinde.get(Gemeinde_.id), gemeinde.getId());
+		predicatesToUse.add(inGemeindeForBetreuung);
+
 		Predicate predicateForBenutzerRole = getPredicateForBenutzerRole(builder, root);
 		if (predicateForBenutzerRole != null) {
 			predicatesToUse.add(predicateForBenutzerRole);
@@ -445,7 +448,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	private List<VerfuegungZeitabschnitt> getAnmeldungenReportDataMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Benutzer user) {
+		@Nonnull Gemeinde gemeinde) {
 		validateDateParams(datumVon, datumBis);
 
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
@@ -489,15 +492,10 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			builder.equal(joinAnmeldung.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
 		predicatesToUse.add(predicateAnmeldungGueltig);
 
-		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
-		if (user.getCurrentBerechtigung().getRole() != UserRole.SUPER_ADMIN) {
-			Collection<Gemeinde> gemeindenForBenutzer = user.extractGemeindenForUser();
-			if (gemeindenForBenutzer.isEmpty()) {
-				return Collections.emptyList();
-			}
-			Predicate inGemeindeForTagesschule = joinAnmeldungGemeinde.in(gemeindenForBenutzer);
-			predicatesToUse.add(inGemeindeForTagesschule);
-		}
+		// Nur Gesuche von der gewählten Gemeinde
+		Predicate inGemeindeForTagesschule = builder.equal(joinAnmeldungGemeinde.get(Gemeinde_.id), gemeinde.getId());
+		predicatesToUse.add(inGemeindeForTagesschule);
+
 		Predicate predicateForBenutzerRole = getPredicateForBenutzerRole(builder, root);
 		if (predicateForBenutzerRole != null) {
 			predicatesToUse.add(predicateForBenutzerRole);

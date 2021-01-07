@@ -33,12 +33,14 @@ public interface ReportMahlzeitenService {
 	UploadFileInfo generateExcelReportMahlzeiten(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull String gemeindeId
 	) throws ExcelMergeException;
 
 	@Nonnull
 	List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis
+		@Nonnull LocalDate datumBis,
+		@Nonnull String gemeindeId
 	);
 }
