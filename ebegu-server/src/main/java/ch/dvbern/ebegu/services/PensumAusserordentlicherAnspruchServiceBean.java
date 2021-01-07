@@ -28,7 +28,9 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
+import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -83,10 +85,18 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 			return false;
 		}
 		for (Betreuung betreuung : gesuchWithCalcVerfuegung.extractAllBetreuungen()) {
-			if (betreuung.getVerfuegungOrVerfuegungPreview() != null) {
-				Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
+			Verfuegung verfuegung;
+			// im status GESCHLOSSEN_OHNE_VERFUEGUNG gibt es keine Verfügung oder VerfügungPreview. Hier muss der
+			// Vorgänger genommen werden.
+			if (betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+				verfuegung = betreuung.getVorgaengerVerfuegung();
+			} else {
+				verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
+			}
+			if (verfuegung != null) {
+				Objects.requireNonNull(verfuegung);
 				// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat
-				for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte()) {
+				for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegung.getZeitabschnitte()) {
 					if (!verfuegungZeitabschnitt.isMinimalesEwpUnterschritten()) {
 						return false;
 					}
