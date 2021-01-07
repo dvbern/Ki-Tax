@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -224,14 +225,15 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	}
 
 	@Nonnull
-	public KindContainer copyKindContainer(@Nonnull KindContainer target, @Nonnull AntragCopyType copyType, @Nonnull Gesuch targetGesuch,
-			@Nonnull Gesuchsperiode gesuchsperiode) {
+	public KindContainer copyKindContainer(
+		@Nonnull KindContainer target, @Nonnull AntragCopyType copyType, @Nonnull Gesuch targetGesuch,
+		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull LocalDate regelStartDatum) {
 		super.copyAbstractEntity(target, copyType);
 		target.setGesuch(targetGesuch);
 		target.setKindGS(null);
 		target.setKindNummer(this.getKindNummer());
 		target.setKindMutiert(null);
-		target.setKindJA(this.getKindJA().copyKind(new Kind(), copyType, gesuchsperiode));
+		target.setKindJA(this.getKindJA().copyKind(new Kind(), copyType, gesuchsperiode, regelStartDatum));
 
 		switch (copyType) {
 		case MUTATION:

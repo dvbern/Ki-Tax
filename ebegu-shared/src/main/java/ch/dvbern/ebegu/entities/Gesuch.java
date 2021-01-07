@@ -868,7 +868,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		copyFamiliensituation(target, copyType, this.isMutation());
 		copyGesuchsteller1(target, copyType);
 
-		copyKindContainer(target, copyType);
+		copyKindContainer(target, copyType, target.getRegelStartDatum() != null ? target.getRegelStartDatum() : LocalDate.now());
 
 		switch (copyType) {
 		case MUTATION:
@@ -936,9 +936,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 	}
 
-	private void copyKindContainer(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+	private void copyKindContainer(
+		@Nonnull Gesuch target,
+		@Nonnull AntragCopyType copyType,
+		@Nonnull LocalDate regelStartDatum) {
 		this.getKindContainers().forEach(
-			kindContainer -> target.addKindContainer(kindContainer.copyKindContainer(new KindContainer(), copyType, target, target.getGesuchsperiode()))
+			kindContainer -> target.addKindContainer(kindContainer.copyKindContainer(new KindContainer(), copyType, target, target.getGesuchsperiode(), regelStartDatum))
 		);
 	}
 
