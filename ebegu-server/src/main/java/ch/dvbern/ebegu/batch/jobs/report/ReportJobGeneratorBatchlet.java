@@ -121,6 +121,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private UploadFileInfo generateReport(
 		@Nonnull ReportVorlage workJobType,
 		@Nonnull LocalDate dateFrom,

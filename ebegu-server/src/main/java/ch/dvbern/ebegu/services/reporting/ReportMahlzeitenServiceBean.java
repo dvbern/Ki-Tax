@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
@@ -77,7 +76,6 @@ import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
@@ -162,8 +160,6 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		@Nonnull String gemeindeId
 	) {
 
-		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getReportDataMahlzeitenverguenstigung", NO_USER_IS_LOGGED_IN));
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"getReportDataMahlzeitenverguenstigung", gemeindeId));
 
