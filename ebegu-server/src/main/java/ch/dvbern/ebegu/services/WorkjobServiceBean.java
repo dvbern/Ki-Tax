@@ -48,11 +48,11 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.entities.Workjob_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -69,10 +69,10 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.BETRAG_PRO_KIND;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_FROM_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_TO_PARAM;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.DO_SAVE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_BG_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_MISCH_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_TS_GESUCHE;
-import static ch.dvbern.ebegu.enums.WorkJobConstants.DO_SAVE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.LANGUAGE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
@@ -140,6 +140,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
+		@Nullable Gemeinde gemeinde,
 		@Nullable String text,
 		@Nonnull Locale locale
 	) {
@@ -154,6 +155,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			inklMischGesuche,
 			inklTsGesuche,
 			ohneErneuerungsgesuch,
+			gemeinde,
 			text,
 			false,
 			BigDecimal.ZERO,
@@ -172,6 +174,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
+		@Nullable Gemeinde gemeinde,
 		@Nullable String text,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
@@ -206,6 +209,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
 		setPropertyIfPresent(jobParameters, WorkJobConstants.STAMMDATEN_ID_PARAM, stammdatenIdParam);
+		if (gemeinde != null) {
+			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_MAHLZEITENVERGUENSTIGUNG, gemeinde.getId());
+		}
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
 		jobOperator.getJobNames();
 		workJob.setStatus(BatchJobStatus.REQUESTED);
@@ -242,7 +248,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
-			null,
+			null, null,
 			locale);
 	}
 
@@ -261,6 +267,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
+			null,
 			null,
 			doSave,
 			betragProKind,
@@ -286,6 +293,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
+			null,
 			null,
 			false,
 			BigDecimal.ZERO,

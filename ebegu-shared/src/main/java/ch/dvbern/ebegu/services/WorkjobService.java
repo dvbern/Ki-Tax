@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -55,6 +56,7 @@ public interface WorkjobService {
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
+		@Nullable Gemeinde gemeinde,
 		@Nullable String text,
 		@Nonnull Locale locale
 	);
