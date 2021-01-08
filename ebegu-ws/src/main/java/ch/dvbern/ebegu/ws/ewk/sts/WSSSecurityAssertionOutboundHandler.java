@@ -74,7 +74,7 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 
 				header.addChildElement(securityElem);
 
-				WSUtil.transformAssertionHeaders(header.getElementsByTagName("*"));
+				WSUtil.correctAssertionNodes(header.getElementsByTagName("*"));
 			} catch (Exception e) {
 				LOGGER.error("Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when calling the GERES Service", e);
 			}

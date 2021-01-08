@@ -20,13 +20,20 @@ package ch.dvbern.ebegu.ws.tools;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class WSUtil {
 
-	public static void transformAssertionHeaders(NodeList nodeList) throws SOAPException {
+	/**
+	 * Zeit Java 11 hat die JAX-WS Lib sich geaendert
+	 * Die neue Lib generiert leider einen falschen XML Struktur bei der SAML Assertion Nodes
+	 * Wir muessen deswegen gewisse Namespace addieren und gewisse loeschen
+	 * Dieser Methode ist dafuer geeignet
+	 * @param nodeList
+	 * @throws SOAPException
+	 */
+	public static void correctAssertionNodes(NodeList nodeList) throws SOAPException {
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			if(node.getNodeName().equals("Assertion")){

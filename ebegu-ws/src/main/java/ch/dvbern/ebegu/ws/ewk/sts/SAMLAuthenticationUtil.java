@@ -38,6 +38,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.ws.tools.WSUtil;
 import ch.dvbern.lib.date.converters.zoned.LocalDateTimeUTCConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,6 +214,7 @@ public final class SAMLAuthenticationUtil {
 		SOAPElement request = soapBody.addChildElement(new QName(RENEWAL_STS_NS, "RenewAssertion"));
 		request.addChildElement("RenewalToken").setValue(renewalToken);
 		request.addChildElement(assertionElement);
+		WSUtil.correctAssertionNodes(request.getElementsByTagName("*"));
 		return soapMessage;
 	}
 
