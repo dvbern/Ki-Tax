@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
@@ -37,16 +38,25 @@ public interface GemeindeAntragService {
 	List<GemeindeAntrag> createGemeindeAntrag(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
 
 	/**
-	 * Gibt alle GemeindeAntraege der Benutzerin zurück. Falls gesuchsperiode und/oder antragstyp mitgegeben werden wird
-	 * entsprechend gefiltert.
-	 * @return
+	 * Gibt alle GemeindeAntraege der Benutzerin zurück. Falls gesuchsperiode und/oder antragstyp mitgegeben werden
+	 * wird entsprechend gefiltert.
 	 */
 	@Nonnull
 	List<? extends GemeindeAntrag> getGemeindeAntraege();
+
+	@Nonnull
+	List<? extends GemeindeAntrag> getGemeindeAntraege(
+		@Nullable String gemeinde,
+		@Nullable String periode,
+		@Nullable String typ,
+		@Nullable String status);
+
 	@Nonnull
 	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode);
+
 	@Nonnull
 	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull GemeindeAntragTyp typ);
+
 	@Nonnull
 	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
 }

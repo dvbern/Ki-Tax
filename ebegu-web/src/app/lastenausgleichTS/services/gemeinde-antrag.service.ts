@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import * as moment from 'moment';
 import {Observable, of} from 'rxjs';
@@ -25,13 +25,21 @@ export class GemeindeAntragService {
     }
 
     public getAllGemeindeAntraege(filter: DVAntragListFilter): Observable<TSGemeindeAntrag[]> {
+        let params = new HttpParams();
+        if (filter.gemeinde) {
+            params = params.append('gemeinde', filter.gemeinde);
+        }
+        if (filter.gesuchsperiodeString) {
+            params = params.append('periode', filter.gesuchsperiodeString);
+        }
+        if (filter.antragTyp) {
+            params = params.append('typ', filter.antragTyp);
+        }
+        if (filter.status) {
+            params = params.append('status', filter.status);
+        }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
-            params: {
-                gemeinde: filter.gemeinde,
-                periode: filter.gesuchsperiodeString,
-                typ: filter.antragTyp,
-                status: filter.status,
-            },
+            params
         }).pipe(map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)));
     }
 

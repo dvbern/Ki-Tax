@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
@@ -74,5 +75,15 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	 * @return
 	 */
 	@Nonnull
-	List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulen();
+	List<LastenausgleichTagesschuleAngabenGemeindeContainer> getAllLastenausgleicheTagesschulen();
+
+	/**
+	 * Gibt die gefilterten Lastenausgleiche der Tagesschulen für die Benutzerin zurück
+	 * @return
+	 */
+	@Nonnull
+	List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulen(
+		@Nullable String gemeinde,
+		@Nullable String periode,
+		@Nullable String status);
 }
