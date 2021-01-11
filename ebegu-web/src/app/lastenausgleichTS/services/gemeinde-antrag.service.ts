@@ -24,8 +24,8 @@ export class GemeindeAntragService {
     }
 
     public getAllGemeindeAntraege(): Observable<TSGemeindeAntrag[]> {
-        // return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL);
-        return of(this.createDummyData(10));
+         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL);
+        //return of(this.createDummyData(10));
     }
 
     private createDummyData(n: number): TSGemeindeAntrag[] {

@@ -35,4 +35,18 @@ public interface GemeindeAntragService {
 	 */
 	@Nonnull
 	List<GemeindeAntrag> createGemeindeAntrag(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
+
+	/**
+	 * Gibt alle GemeindeAntraege der Benutzerin zurück. Falls gesuchsperiode und/oder antragstyp mitgegeben werden wird
+	 * entsprechend gefiltert.
+	 * @return
+	 */
+	@Nonnull
+	List<? extends GemeindeAntrag> getGemeindeAntraege();
+	@Nonnull
+	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode);
+	@Nonnull
+	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull GemeindeAntragTyp typ);
+	@Nonnull
+	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
 }

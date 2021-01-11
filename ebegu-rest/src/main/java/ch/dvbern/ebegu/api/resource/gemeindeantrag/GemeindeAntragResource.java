@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -88,5 +89,15 @@ public class GemeindeAntragResource {
 
 		final List<GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
 		return converter.gemeindeAntragListToJax(gemeindeAntragList);
+	}
+
+	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
+	@GET
+	@Path("")
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public List<JaxGemeindeAntrag> getAllGemeindeAntraege() {
+		return converter.gemeindeAntragListToJax(
+			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege()
+		);
 	}
 }

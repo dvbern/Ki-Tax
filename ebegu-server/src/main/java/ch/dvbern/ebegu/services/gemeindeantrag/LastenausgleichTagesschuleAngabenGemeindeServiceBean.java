@@ -22,17 +22,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -55,6 +63,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private PrincipalBean principal;
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenInstitutionService angabenInstitutionService;
@@ -159,6 +170,24 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		fallContainer.copyForFreigabe();
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
+	}
+
+	@Nonnull
+	@Override
+	public List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulen() {
+		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query = cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root = query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+
+		if(!principal.isCallerInAnyOfRole(UserRole.SUPER_ADMIN, UserRole.ADMIN_MANDANT, UserRole.SACHBEARBEITER_MANDANT)) {
+			Predicate gemeindeIn = root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
+			query.where(gemeindeIn);
+		}
+
+
+		return persistence.getCriteriaResults(query);
 	}
 }
 
