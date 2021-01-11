@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
+import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -46,7 +47,6 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import * as moment from 'moment';
 
 export class KindViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -418,8 +418,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         }
     }
 
-    public isGeburtsdatumInZunkunft(): boolean {
+    private isGeburtsdatumInZunkunft(): boolean {
         return this.getModel().geburtsdatum.isAfter(moment());
+    }
+
+    public showGeburtsdatumWarning(): boolean {
+        return this.isGeburtsdatumInZunkunft() || this.getModel().zukunftigeGeburtsdatum;
     }
 
     private getEinstellungKontingentierung(): void {
