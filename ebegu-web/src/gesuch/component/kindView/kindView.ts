@@ -418,9 +418,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         }
     }
 
-    public isGeburtsdatumInZunkunft(): boolean {
-        return this.getModel().geburtsdatum.isAfter(moment())
-            || this.getModel().zukunftigeGeburtsdatum === true;
+    private isGeburtsdatumInZunkunft(): boolean {
+        return this.getModel().geburtsdatum.isAfter(moment());
+    }
+
+    public showGeburtsdatumWarning(): boolean {
+        return this.isGeburtsdatumInZunkunft() || this.getModel().zukunftigeGeburtsdatum;
     }
 
     private getEinstellungKontingentierung(): void {

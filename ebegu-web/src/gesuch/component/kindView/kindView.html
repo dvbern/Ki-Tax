@@ -113,7 +113,7 @@
                             </dv-input-container>
                         </div>
                     </div>
-                    <div class="row" ng-if="vm.isGeburtsdatumInZunkunft()">
+                    <div class="row" ng-if="vm.showGeburtsdatumWarning()">
                         <div class="col-md-12">
                             <div class="well well-status-warten">
                                 <span>{{'KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM' | translate }}</span>
