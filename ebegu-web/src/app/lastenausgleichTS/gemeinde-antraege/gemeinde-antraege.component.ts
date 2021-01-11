@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {debounceTime, filter, map, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -98,5 +99,13 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public onFilterChange(filterChange: DVAntragListFilter): void {
         this.filterDebounceSubject.next(filterChange);
+    }
+
+    public getStateFilter(): string[] {
+        return Object.keys(TSLastenausgleichTagesschuleAngabenGemeindeStatus);
+    }
+
+    public getTypeList() {
+        return gemeinde
     }
 }

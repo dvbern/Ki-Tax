@@ -205,6 +205,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
         }
 
+        // tslint:disable-next-line:early-exit
         if (changes.data$) {
             this.customData = !!this.data$;
             if (!changes.data$.firstChange) {

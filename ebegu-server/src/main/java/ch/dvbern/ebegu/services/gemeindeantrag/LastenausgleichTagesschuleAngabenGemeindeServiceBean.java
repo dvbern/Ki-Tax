@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
@@ -258,7 +259,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		}
 		if (status != null) {
 			query.where(
-				cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status), status)
+				cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status), LastenausgleichTagesschuleAngabenGemeindeStatus.valueOf(status))
 			);
 		}
 
