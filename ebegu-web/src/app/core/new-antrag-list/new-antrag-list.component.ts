@@ -266,7 +266,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                         institutionen: antragDto.institutionen,
                         verantwortlicheTS: antragDto.verantwortlicherTS,
                         verantwortlicheBG: antragDto.verantwortlicherBG,
-                        hasBesitzer: antragDto.hasBesitzer,
+                        hasBesitzer: () => antragDto.hasBesitzer(),
                     };
                 });
             }));
