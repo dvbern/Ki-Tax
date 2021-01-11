@@ -54,5 +54,5 @@
         </div>
     </form>
 
-    <dv-new-antrag-list [hiddenColumns]="hiddenDVTableColumns" [data$]="antragList$"></dv-new-antrag-list>
+    <dv-new-antrag-list [hiddenColumns]="hiddenDVTableColumns" [data$]="antragList$" (rowClicked)="navigate($event.antrag, $event.event)"></dv-new-antrag-list>
 </div>

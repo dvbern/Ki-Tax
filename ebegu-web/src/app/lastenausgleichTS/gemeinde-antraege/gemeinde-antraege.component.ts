@@ -74,8 +74,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    private navigate(path: string, navObj: any, isCtrlKeyPressed: boolean): void {
-        if (isCtrlKeyPressed) {
+    private navigate(antrag: DVAntragListItem , event: MouseEvent): void {
+        const path = 'LASTENAUSGLEICH_TS';
+        const navObj = {
+            id: antrag.antragId
+        };
+        if (event.ctrlKey) {
             const url = this.$state.href(path, navObj);
             window.open(url, '_blank');
         } else {

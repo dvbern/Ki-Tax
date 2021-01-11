@@ -58,7 +58,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Emits when the user clicks on a row
      */
-    @Output() public readonly rowClicked: EventEmitter<{ antrag: TSAntragDTO, event: Event }> = new EventEmitter<any>();
+    @Output() public readonly rowClicked: EventEmitter<{ antrag: TSAntragDTO, event: MouseEvent }> = new EventEmitter<any>();
 
     /**
      * Can be one of
@@ -405,7 +405,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.loadData();
     }
 
-    private onEditClicked(antrag: TSAntragDTO, event: Event): void {
+    private onEditClicked(antrag: TSAntragDTO, event: MouseEvent): void {
         this.rowClicked.emit({antrag, event});
     }
 
