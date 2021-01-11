@@ -1,5 +1,5 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
@@ -15,6 +15,8 @@ import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GemeindeAntraegeComponent implements OnInit {
+
+    @ViewChild(NgForm) public form: NgForm;
 
     public hiddenDVTableColumns = [
         'fallNummer',

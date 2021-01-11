@@ -14,11 +14,8 @@ export class DvLoadingButtonXDirective extends UpgradeComponent {
     @Input() public buttonDisabled: any;
     @Output() public readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(elementRef: ElementRef, injector: Injector) {
+    public constructor(elementRef: ElementRef, injector: Injector) {
         super('dvLoadingButton', elementRef, injector);
     }
-
-
-
 
 }
