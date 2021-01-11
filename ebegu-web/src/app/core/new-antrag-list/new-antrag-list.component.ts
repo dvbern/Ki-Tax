@@ -207,7 +207,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
         if (changes.data$) {
             this.customData = !!this.data$;
-            this.loadData();
+            if (!changes.data$.firstChange) {
+                this.loadData();
+            }
         }
     }
 

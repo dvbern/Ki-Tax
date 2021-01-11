@@ -68,5 +68,6 @@
                         [data$]="antragList$"
                         (rowClicked)="navigate($event.antrag, $event.event)"
                         [disablePagination]="true"
+                        (filterChange)="onFilterChange($event)"
                         [totalItems]="totalItems"></dv-new-antrag-list>
 </div>

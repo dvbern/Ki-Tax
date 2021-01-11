@@ -1,10 +1,11 @@
 import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {StateService} from '@uirouter/core';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {debounceTime, filter, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
+import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
@@ -35,6 +36,9 @@ export class GemeindeAntraegeComponent implements OnInit {
     public formGroup: FormGroup;
     public totalItems: number;
 
+    private filterDebounceSubject: BehaviorSubject<DVAntragListFilter> = new BehaviorSubject<DVAntragListFilter>({});
+    private readonly DEBOUNCE_TIME = 300;
+
     public constructor(
         public readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
@@ -53,7 +57,8 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private loadData(): void {
-        this.antragList$ = this.gemeindeAntragService.getAllGemeindeAntraege().pipe(
+        this.antragList$ = this.filterDebounceSubject.pipe(
+            switchMap(emittedFilter => this.gemeindeAntragService.getAllGemeindeAntraege(emittedFilter)),
             map(gemeindeAntraege => {
                 return gemeindeAntraege.map(antrag => {
                     return {
@@ -89,5 +94,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         } else {
             this.$state.go(path, navObj);
         }
+    }
+
+    public onFilterChange(filterChange: DVAntragListFilter): void {
+        this.filterDebounceSubject.next(filterChange);
     }
 }

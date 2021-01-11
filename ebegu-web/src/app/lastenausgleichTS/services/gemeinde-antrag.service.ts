@@ -11,6 +11,7 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 
 @Injectable({
     providedIn: 'root',
@@ -23,9 +24,15 @@ export class GemeindeAntragService {
     public constructor(private readonly http: HttpClient) {
     }
 
-    public getAllGemeindeAntraege(): Observable<TSGemeindeAntrag[]> {
-         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL)
-             .pipe(map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)));
+    public getAllGemeindeAntraege(filter: DVAntragListFilter): Observable<TSGemeindeAntrag[]> {
+        return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
+            params: {
+                gemeinde: filter.gemeinde,
+                periode: filter.gesuchsperiodeString,
+                typ: filter.antragTyp,
+                status: filter.status,
+            },
+        }).pipe(map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)));
     }
 
     private createDummyData(n: number): TSGemeindeAntrag[] {
@@ -52,8 +59,9 @@ export class GemeindeAntragService {
         return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG];
     }
 
-    public createAntrag(toCreate: {periode: string, antragTyp: string}): Observable<TSGemeindeAntrag[]> {
-        return this.http.post<TSGemeindeAntrag[]>(`${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`, toCreate)
+    public createAntrag(toCreate: { periode: string, antragTyp: string }): Observable<TSGemeindeAntrag[]> {
+        return this.http.post<TSGemeindeAntrag[]>(`${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
+            toCreate)
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }
 }
