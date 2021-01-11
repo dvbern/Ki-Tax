@@ -2,7 +2,7 @@ import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
@@ -31,6 +31,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
     public formGroup: FormGroup;
+    public totalItems: number;
 
     public constructor(
         public readonly gemeindeAntragService: GemeindeAntragService,
@@ -62,6 +63,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     };
                 });
             }),
+            tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length)
         );
     }
 

@@ -117,6 +117,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      */
     @Input() public filterTypeList: string[];
 
+    /**
+     * The amount of total entries in the database. Is taken from the default request if default request is used,
+     * otherwise 0
+     */
+    @Input()
+    public totalItems: number = 0;
+
+    /**
+     * Hides pagination
+     */
+    @Input()
+    public disablePagination: boolean = false;
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
@@ -162,8 +175,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    public totalItems: number = 0;
-
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
@@ -196,6 +207,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
         if (changes.data$) {
             this.customData = !!this.data$;
+            this.loadData();
         }
     }
 
@@ -277,7 +289,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             for (let i = 1; i <= Math.ceil(this.totalItems / this.pageSize); i++) {
                 this.paginationItems.push(i);
             }
-            console.log(this.paginationItems);
             // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
             //  these since they are not zone-aware. Remove once the service is migrated
             this.changeDetectorRef.markForCheck();
@@ -377,7 +388,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.applyFilter();
     }
 
-    public getAntragTypen(): string[] |TSAntragTyp[] {
+    public getAntragTypen(): string[] | TSAntragTyp[] {
         return this.filterTypeList || getNormalizedTSAntragTypValues();
     }
 

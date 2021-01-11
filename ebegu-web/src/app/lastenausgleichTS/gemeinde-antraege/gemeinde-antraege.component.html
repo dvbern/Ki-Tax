@@ -43,9 +43,15 @@
 
 
                     </div>
-                    <div class="col-md-3 layout-align-center-center layout-row flex" flex layout="row" layout-align="center center" id="actions">
+                    <div class="col-md-3 layout-align-center-center layout-row flex"
+                         flex
+                         layout="row"
+                         layout-align="center center"
+                         id="actions">
                         <div dvLoadingButtonX
-                             aria-label="{{'LASTENAUSGLEICH_ERSTELLEN' | translate}}" type="submit" (buttonClick)="createAntrag()">
+                             aria-label="{{'LASTENAUSGLEICH_ERSTELLEN' | translate}}"
+                             type="submit"
+                             (buttonClick)="createAntrag()">
                             <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
                         </div>
                     </div>
@@ -54,5 +60,9 @@
         </div>
     </form>
 
-    <dv-new-antrag-list [hiddenColumns]="hiddenDVTableColumns" [data$]="antragList$" (rowClicked)="navigate($event.antrag, $event.event)"></dv-new-antrag-list>
+    <dv-new-antrag-list [hiddenColumns]="hiddenDVTableColumns"
+                        [data$]="antragList$"
+                        (rowClicked)="navigate($event.antrag, $event.event)"
+                        [disablePagination]="true"
+                        [totalItems]="totalItems"></dv-new-antrag-list>
 </div>

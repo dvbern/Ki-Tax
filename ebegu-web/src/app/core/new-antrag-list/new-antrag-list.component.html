@@ -270,7 +270,7 @@
 
     </mat-table>
 
-    <div class="bottom-pagination">
+    <div class="bottom-pagination" *ngIf="!disablePagination">
         <nav>
             <ul class="pagination">
                 <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">

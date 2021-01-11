@@ -2192,5 +2192,7 @@
     "LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE": "Angaben Gemeinde",
     "LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN": "Angaben Tagesschulen",
     "LASTENAUSGLEICH_TS_FREIGABE": "Freigabe",
+    "LASTENAUSGLEICH_TAGESSCHULEN": "Lastenausgleich Tagesschulen",
+    "FERIENBETREUUNG": "Ferienbetreuung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
