@@ -1,5 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -34,15 +35,26 @@ export class GemeindeAntraegeComponent implements OnInit {
     public constructor(
         public readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
-        private readonly fb: FormBuilder
+        private readonly fb: FormBuilder,
+        private readonly $state: StateService
     ) {
     }
 
     public ngOnInit(): void {
+        this.loadData();
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
+        this.formGroup = this.fb.group({
+            periode: ['', Validators.required],
+            antragTyp: ['', Validators.required]
+        });
+    }
+
+    private loadData(): void {
         this.antragList$ = this.gemeindeAntragService.getAllGemeindeAntraege().pipe(
             map(gemeindeAntraege => {
                 return gemeindeAntraege.map(antrag => {
                     return {
+                        antragId: antrag.id,
                         gemeinde: antrag.gemeinde.name,
                         status: antrag.statusString,
                         periode: antrag.gesuchsperiode.gesuchsperiodeString,
@@ -51,17 +63,23 @@ export class GemeindeAntraegeComponent implements OnInit {
                 });
             }),
         );
-        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
-        this.formGroup = this.fb.group({
-            periode: ['', Validators.required],
-            antragTyp: ['', Validators.required]
-        });
     }
 
     public createAntrag(): void {
         if (!this.formGroup.valid) {
            return;
         }
-        this.gemeindeAntragService.createAntrag(this.formGroup.value);
+        this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
+            this.loadData();
+        });
+    }
+
+    private navigate(path: string, navObj: any, isCtrlKeyPressed: boolean): void {
+        if (isCtrlKeyPressed) {
+            const url = this.$state.href(path, navObj);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go(path, navObj);
+        }
     }
 }

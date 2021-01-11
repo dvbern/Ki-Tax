@@ -2,6 +2,7 @@
      dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForLastenausgleich()">
 
     <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate dv-show-element
+          [formGroup]="formGroup"
           dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForLastenausgleich()">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -14,9 +15,11 @@
                                translate>GESUCHSPERIODEN</label>
                         <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtperiode"
                                 id="gemeindeantragperiode"
+                                formControlName="periode"
                                 class="form-control">
+                            <option selected [value]="null"></option>
                             <option *ngFor="let periode of gesuchsperioden"
-                                    [value]="periode">{{periode.gesuchsperiodeString}}</option>
+                                    [value]="periode.id">{{periode.gesuchsperiodeString}}</option>
                         </select>
                     </div>
 
@@ -29,9 +32,11 @@
                                    translate>TYP</label>
                             <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtyp"
                                     id="gemeindeantragtyp"
+                                    formControlName="antragTyp"
                                     class="form-control">
+                                <option selected [value]="null"></option>
                                 <option *ngFor="let typ of gemeindeAntragService.getTypes()"
-                                        [value]="typ">{{typ}}</option>
+                                        [value]="typ" translate>{{typ}}</option>
                             </select>
                             <div class="dv-error-messages"></div>
                         </div>

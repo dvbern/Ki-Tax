@@ -17,6 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -61,6 +62,7 @@ import { GemeindeAntraegeComponent } from './gemeinde-antraege/gemeinde-antraege
         MatButtonModule,
         WizardstepXModule,
         SharedModule,
+        ReactiveFormsModule,
     ],
 })
 export class LastenausgleichTSModule {
