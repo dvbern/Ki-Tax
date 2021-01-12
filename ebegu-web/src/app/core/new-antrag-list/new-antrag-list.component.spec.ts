@@ -11,6 +11,7 @@ import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {MaterialModule} from '../../shared/material.module';
+import {ErrorService} from '../errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -60,6 +61,8 @@ describe('NewAntragListComponent', () => {
     const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege']);
     const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['getPrincipalRole', 'hasMandantAngebotTS']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
+        ['addMesageAsError']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -71,6 +74,7 @@ describe('NewAntragListComponent', () => {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: AuthServiceRS, useValue: authRSSpy},
                 {provide: SearchRS, useValue: searchRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
         }).compileComponents();
 
