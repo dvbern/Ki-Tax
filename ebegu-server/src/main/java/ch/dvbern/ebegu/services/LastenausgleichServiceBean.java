@@ -81,6 +81,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Inject
 	private VerfuegungService verfuegungService;
 
+	@Inject
+	private MailService mailService;
+
 	@Nonnull
 	@Override
 	public Collection<Lastenausgleich> getAllLastenausgleiche() {
@@ -177,7 +180,17 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
-		return persistence.merge(lastenausgleich);
+		Lastenausgleich storedLastenausgleich = persistence.merge(lastenausgleich);
+		sendEmailsToGemeinden(storedLastenausgleich);
+
+		return storedLastenausgleich;
+	}
+
+	private void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich) {
+		storedLastenausgleich.getLastenausgleichDetails().stream()
+			.map(LastenausgleichDetail::getGemeinde)
+			.distinct()
+			.forEach(gemeinde -> mailService.sendInfoLastenausgleichGemeinde(gemeinde, storedLastenausgleich));
 	}
 
 	private void handleKorrekturJahrFuerGemeinde(

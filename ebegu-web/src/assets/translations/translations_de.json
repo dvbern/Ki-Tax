@@ -2187,5 +2187,6 @@
     "ZEMIS_UPLOAD_FINISHED": "Die Vearbeitung wurde erfolgreich abgeschlossen",
     "VERFUEGUNG_JSON_DEPRECATED": "Achtung: Der JSON Export der Verfügung ist veraltet und wird in einigen Monaten entfernt. Bitte melden Sie sich beim kiBon Support, falls Sie diese Funktion noch verwenden",
     "GEMEINDE_GUELTIG_BIS": "Gemeinde gültig bis",
+    "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

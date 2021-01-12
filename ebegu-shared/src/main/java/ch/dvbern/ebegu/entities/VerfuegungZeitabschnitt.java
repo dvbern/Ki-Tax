@@ -63,7 +63,8 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = "bg_calculation_result_asiv_id", name = "UK_verfuegung_zeitabschnitt_result_asiv")
+	uniqueConstraints = @UniqueConstraint(columnNames = "bg_calculation_result_asiv_id",
+		name = "UK_verfuegung_zeitabschnitt_result_asiv")
 )
 public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements Comparable<VerfuegungZeitabschnitt> {
 
@@ -95,7 +96,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 * Berechnungsresultate. Berechnung nach ASIV (Standard)
 	 */
 	@Valid
-	@Nonnull @NotNull
+	@Nonnull
+	@NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = false)
 	private BGCalculationResult bgCalculationResultAsiv = new BGCalculationResult();
@@ -114,19 +116,23 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@ManyToOne(optional = false)
 	private Verfuegung verfuegung;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@OneToMany(mappedBy = "verfuegungZeitabschnitt")
 	private List<Zahlungsposition> zahlungsposition = new ArrayList<>();
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung =
+		VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
@@ -578,7 +584,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
-
 	@Nullable
 	public String getBemerkungen() {
 		return bemerkungen;
@@ -727,8 +732,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		boolean gemeindeCloseTo = true;
 		if (hasGemeindeSpezifischeBerechnung) {
 			Objects.requireNonNull(this.getBgCalculationResultGemeinde());
-			Objects.requireNonNull(that.getBgCalculationResultGemeinde());
-			gemeindeCloseTo = this.getBgCalculationResultGemeinde().isCloseTo(that.getBgCalculationResultGemeinde());
+			if (that.hasGemeindeSpezifischeBerechnung) {
+				Objects.requireNonNull(that.getBgCalculationResultGemeinde());
+				gemeindeCloseTo =
+					this.getBgCalculationResultGemeinde().isCloseTo(that.getBgCalculationResultGemeinde());
+			} else {
+				gemeindeCloseTo = false;
+			}
 		}
 		return asivCloseTo && gemeindeCloseTo;
 	}

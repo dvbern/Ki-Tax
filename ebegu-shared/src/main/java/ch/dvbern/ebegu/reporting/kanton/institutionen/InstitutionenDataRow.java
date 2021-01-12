@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.reporting.kanton.institutionen;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nullable;
@@ -33,6 +34,8 @@ public class InstitutionenDataRow {
 	private String telefon = null;
 	private String email = null;
 	private String url = null;
+	private @Nullable LocalDate gueltigAb = null;
+	private @Nullable LocalDate gueltigBis = null;
 	private String oeffnungstage = null;
 	private String oeffnungszeiten = null;
 	private @Nullable String oeffnungsAbweichungen = null;
@@ -107,6 +110,24 @@ public class InstitutionenDataRow {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Nullable
+	public LocalDate getGueltigAb() {
+		return gueltigAb;
+	}
+
+	public void setGueltigAb(@Nullable LocalDate gueltigAb) {
+		this.gueltigAb = gueltigAb;
+	}
+
+	@Nullable
+	public LocalDate getGueltigBis() {
+		return gueltigBis;
+	}
+
+	public void setGueltigBis(@Nullable LocalDate gueltigBis) {
+		this.gueltigBis = gueltigBis;
 	}
 
 	public String getOeffnungstage() {

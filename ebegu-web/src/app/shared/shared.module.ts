@@ -26,12 +26,15 @@ import {GuidedTourModule} from 'ngx-guided-tour';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
+import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
+import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
@@ -57,10 +60,8 @@ import {TooltipDirective} from './directive/TooltipDirective';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
+import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {UiViewComponent} from './ui-view/ui-view.component';
-import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
-import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
-import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
@@ -119,7 +120,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         ExternalClientMultiselectComponent,
         FileUploadComponent,
         DvNgConfirmDialogComponent,
-        DvMonthPickerComponent
+        DvMonthPickerComponent,
+        EbeguDatePipe
     ],
     exports: [
         CommonModule,
@@ -160,6 +162,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
+        EbeguDatePipe,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
