@@ -1,8 +1,8 @@
 import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {debounceTime, filter, map, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
@@ -13,7 +13,6 @@ import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 @Component({
     selector: 'dv-gemeinde-antraege',
     templateUrl: './gemeinde-antraege.component.html',
-    styleUrls: ['./gemeinde-antraege.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GemeindeAntraegeComponent implements OnInit {
@@ -103,9 +102,5 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public getStateFilter(): string[] {
         return Object.keys(TSLastenausgleichTagesschuleAngabenGemeindeStatus);
-    }
-
-    public getTypeList() {
-        return gemeinde
     }
 }

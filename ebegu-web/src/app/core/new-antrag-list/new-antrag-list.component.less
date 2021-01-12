@@ -11,6 +11,7 @@ tr.mat-header-row {
 }
 
 mat-form-field {
+    position: relative;
     width: 100%;
 }
 
@@ -42,9 +43,9 @@ mat-form-field {
     }
 
     .mat-sort-header-indicator {
-        opacity: 1;
         color: black;
         font-weight: bold;
+        opacity: 1;
 
         // Hide default arrow as its composed of left, right and middle
         .mat-sort-header-pointer-left, .mat-sort-header-pointer-right, .mat-sort-header-pointer-middle {
@@ -54,37 +55,37 @@ mat-form-field {
 }
 
 // custom ascending arrow
-[aria-sort="ascending"] {
+[aria-sort='ascending'] {
     .mat-sort-header-arrow {
         .mat-sort-header-indicator {
             &::before {
-                content: "\f0de";
-                top: 0.1em;
-                position: absolute;
+                content: '\f0de';
                 font-family: FontAwesome, sans-serif;
                 font-size: 1.2rem;
+                position: absolute;
+                top: 0.1em;
             }
         }
     }
 }
 
 // custom descending arrow
-[aria-sort="descending"] {
+[aria-sort='descending'] {
     .mat-sort-header-arrow {
         .mat-sort-header-indicator {
             &::before {
-                content: "\f0dd";
-                top: -1em;
-                position: absolute;
+                content: '\f0dd';
                 font-family: FontAwesome, sans-serif;
                 font-size: 1.2rem;
+                position: absolute;
+                top: -1em;
             }
         }
     }
 }
 
 // custom no-sort arrows
-[aria-sort="none"] {
+[aria-sort='none'] {
     .mat-sort-header-arrow {
         // we need the important to overwrite material element styles
         opacity: 1 !important;
@@ -94,55 +95,51 @@ mat-form-field {
             transform: translateY(0) !important;
 
             &::before {
-                content: "\f0dc";
-                top: 0;
-                position: absolute;
+                content: '\f0dc';
                 font-family: FontAwesome, sans-serif;
                 font-size: 1.2rem;
+                position: absolute;
+                top: 0;
             }
         }
     }
 }
 
 .mat-select-panel1 {
-    background: #e5e5e5;
     .ebeguLabel();
+    background: #e5e5e5;
+    color: black !important;
+    font-family: Open Sans, Arial, Helvetica, sans-serif;
     font-size: 1.6rem !important;
     font-weight: 700;
     letter-spacing: normal;
-    color: black !important;
-    font-family: Open Sans, Arial, Helvetica, sans-serif;
-}
-
-mat-form-field {
-    position: relative;
 }
 
 .select-background {
-    height: 4rem;
-    width: 100%;
-    top: -0.2rem;
-    position: absolute;
     background: #e5e5e5;
+    height: 4rem;
+    position: absolute;
+    top: -0.2rem;
+    width: 100%;
 }
 
 .mat-form-field {
-    line-height: normal;
     .ebeguLabel();
-    font-size: 1.6rem !important;
-    font-weight: 700;
     color: black !important;
     font-family: Open Sans, Arial, Helvetica, sans-serif;
+    font-size: 1.6rem !important;
+    font-weight: 700;
+    line-height: normal;
 }
 
 .mat-autocomplete-panel {
-    background: #e5e5e5;
     .ebeguLabel();
+    background: #e5e5e5;
+    color: black !important;
+    font-family: Open Sans, Arial, Helvetica, sans-serif;
     font-size: 1.4rem !important;
     font-weight: 700;
     letter-spacing: normal;
-    color: black !important;
-    font-family: Open Sans, Arial, Helvetica, sans-serif;
 }
 
 .mat-option {
@@ -160,18 +157,18 @@ mat-form-field {
 mat-cell {
     .ebeguH3();
     color: @contrast-darkest;
+    // we need to declare this additionally in important because there is a global style that would otherwise overwrite
+    // this and I don't konw where the global is applied and if we could remove it instead
+    font-size: 1.4rem !important;
     height: 6rem;
     line-height: 3rem;
+    margin: 0;
     overflow: hidden;
     padding: 0 0.25rem 0;
     position: relative;
     text-overflow: ellipsis;
     vertical-align: middle;
     white-space: nowrap;
-    margin: 0;
-    // we need to declare this additionally in important because there is a global style that would otherwise overwrite
-    // this and I don't konw where the global is applied and if we could remove it instead
-    font-size: 1.4rem !important;
 
     span:first-child {
         margin: 0 calc(0.8rem - 0.25rem) 0;
@@ -185,48 +182,51 @@ mat-cell.mat-cell, mat-header-cell.mat-header-cell, mat-footer-cell {
 }
 
 @column-widths: {
-    fallNummer: 0 0 8rem;
-    gemeinde: 5rem;
-    familienName: 5rem;
-    kinder: 5rem;
     antragTyp: 5rem;
+    fallNummer: 0 0 8rem;
+    familienName: 5rem;
+    gemeinde: 5rem;
+    kinder: 5rem;
     periode: 5rem;
 }
 
-
+/* stylelint-disable-next-line selector-class-pattern */
 .mat-column-fallNummer, .mat-column-fallNummer-filter {
     flex: 0 0 8rem !important;
-    min-width: 8rem !important;;
+    min-width: 8rem !important;
 }
 
 .mat-column-status, .mat-column-status-filter {
-    flex: 3 1 !important;;
-    min-width: 0 !important;;
+    flex: 3 1 !important;
+    min-width: 0 !important;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .mat-column-dokumenteHochgeladen, .mat-column-dokumenteHochgeladen-filter {
-    flex: 0 0 8rem !important;;
-    min-width: 8rem !important;;
+    flex: 0 0 8rem !important;
+    min-width: 8rem !important;
 }
 
 .mat-column-institutionen, .mat-column-institutionen-filter {
-    flex: 4 1 !important;;
-    min-width: 0 !important;;
+    flex: 4 1 !important;
+    min-width: 0 !important;
 }
 
 .mat-column-angebote, .mat-column-angebote-filter {
-    flex: 4 1 !important;;
-    min-width: 0 !important;;
+    flex: 4 1 !important;
+    min-width: 0 !important;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .mat-column-verantwortlicheTS, .mat-column-verantwortlicheTS-filter {
-    flex: 3 1 !important;;
-    min-width: 0 !important;;
+    flex: 3 1 !important;
+    min-width: 0 !important;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .mat-column-verantwortlicheBG, .mat-column-verantwortlicheBG-filter {
-    flex: 3 1 !important;;
-    min-width: 0 !important;;
+    flex: 3 1 !important;
+    min-width: 0 !important;
 }
 
 mat-cell.mat-cell:last-of-type {
@@ -253,16 +253,16 @@ mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .
     padding-left: 5px;
 
     + span > label {
-        top: 2.8rem;
         padding-left: 5px;
+        top: 2.8rem;
     }
 }
 
 .bottom-pagination {
-    display: flex;
-    width: 100%;
-    justify-content: center;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .pointer-cursor {
@@ -270,5 +270,5 @@ mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .
 }
 
 mat-row mat-cell:first-of-type {
-    padding-left: .8rem;
+    padding-left: 0.8rem;
 }
