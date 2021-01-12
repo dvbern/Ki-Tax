@@ -4,7 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus,} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -98,7 +98,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    private navigate(antrag: DVAntragListItem, event: MouseEvent): void {
+    public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
         const path = 'LASTENAUSGLEICH_TS';
         const navObj = {
             id: antrag.antragId,
