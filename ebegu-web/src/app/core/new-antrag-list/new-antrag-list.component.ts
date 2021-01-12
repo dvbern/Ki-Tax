@@ -36,6 +36,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
+import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
@@ -153,7 +154,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'verantwortlicheTS-filter',
         'verantwortlicheBG-filter',
     ];
-    private allColumns = [
+    private readonly allColumns = [
         'fallNummer',
         'gemeinde',
         'familienName',
@@ -189,6 +190,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
+        private readonly errorService: ErrorService,
     ) {
     }
 
@@ -260,7 +262,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             },
             sort: this.sort,
         };
-        const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
+        const dataToLoad$ = this.data$ ?
             this.data$ :
             from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
                 this.totalItems = result.totalResultSize;
@@ -295,6 +297,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
             //  these since they are not zone-aware. Remove once the service is migrated
             this.changeDetectorRef.markForCheck();
+        }, error => {
+            this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
+                this.errorService.addMesageAsError(message);
+            }, translateError => console.error('Could not load translation', translateError));
         });
     }
 

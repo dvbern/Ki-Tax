@@ -2194,5 +2194,7 @@
     "LASTENAUSGLEICH_TS_FREIGABE": "",
     "LASTENAUSGLEICH_TAGESSCHULEN": "Lastenausgleich Tagesschulen",
     "FERIENBETREUUNG": "Ferienbetreuung",
+    "CREATE_ANTRAG_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
+    "DATA_RETRIEVAL_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

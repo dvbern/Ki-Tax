@@ -1,10 +1,14 @@
 import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
+} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
@@ -36,14 +40,16 @@ export class GemeindeAntraegeComponent implements OnInit {
     public formGroup: FormGroup;
     public totalItems: number;
 
-    private filterDebounceSubject: BehaviorSubject<DVAntragListFilter> = new BehaviorSubject<DVAntragListFilter>({});
-    private readonly DEBOUNCE_TIME = 300;
+    private readonly filterDebounceSubject: BehaviorSubject<DVAntragListFilter> =
+        new BehaviorSubject<DVAntragListFilter>({});
 
     public constructor(
         public readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
         private readonly fb: FormBuilder,
-        private readonly $state: StateService
+        private readonly $state: StateService,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -52,7 +58,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
         this.formGroup = this.fb.group({
             periode: ['', Validators.required],
-            antragTyp: ['', Validators.required]
+            antragTyp: ['', Validators.required],
         });
     }
 
@@ -70,23 +76,27 @@ export class GemeindeAntraegeComponent implements OnInit {
                     };
                 });
             }),
-            tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length)
+            tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
         );
     }
 
     public createAntrag(): void {
         if (!this.formGroup.valid) {
-           return;
+            return;
         }
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadData();
+        }, error => {
+            this.translate.get('CREATE_ANTRAG_ERROR', error).subscribe(message => {
+                this.errorService.addMesageAsError(message);
+            }, translateError => console.error('Could no translate', translateError));
         });
     }
 
-    private navigate(antrag: DVAntragListItem , event: MouseEvent): void {
+    private navigate(antrag: DVAntragListItem, event: MouseEvent): void {
         const path = 'LASTENAUSGLEICH_TS';
         const navObj = {
-            id: antrag.antragId
+            id: antrag.antragId,
         };
         if (event.ctrlKey) {
             const url = this.$state.href(path, navObj);

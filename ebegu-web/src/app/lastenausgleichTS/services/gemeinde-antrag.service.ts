@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import * as moment from 'moment';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -19,7 +19,7 @@ import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 export class GemeindeAntragService {
 
     private readonly API_BASE_URL = `${CONSTANTS.REST_API}gemeindeantrag`;
-    private ebeguRestUtil = new EbeguRestUtil();
+    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(private readonly http: HttpClient) {
     }

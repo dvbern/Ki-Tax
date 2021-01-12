@@ -424,7 +424,7 @@
             "severity": "error"
         },
         "rxjs-no-do": {
-            "severity": "error"
+            "severity": "warning"
         },
         "rxjs-no-ignored-error": {
             "severity": "error"
