@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.CsvCreator;
+import ch.dvbern.ebegu.util.MathUtil;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -75,7 +76,9 @@ public class LastenausgleichBerechnungCSVConverter {
 			BigDecimal totalRevisionValue = BigDecimal.ZERO;
 			for (LastenausgleichBerechnungDataRow entry : gemeindeGroup.getValue()) {
 				if (entry.isKorrektur()) {
-					totalRevisionValue = totalRevisionValue.add(entry.getEingabeLastenausgleich());
+					totalRevisionValue = totalRevisionValue
+						.add(entry.getEingabeLastenausgleich())
+						.add(entry.getTotalGutscheineOhneSelbstbehalt());
 				} else {
 					currentErhebung = entry;
 				}
@@ -83,6 +86,8 @@ public class LastenausgleichBerechnungCSVConverter {
 			LastenausgleichBerechnungCSVDataRow toAdd;
 			if (currentErhebung != null) {
 				toAdd = new LastenausgleichBerechnungCSVDataRow(currentErhebung);
+				toAdd.setTotalBelegung(MathUtil.DEFAULT.addNullSafe(toAdd.getTotalBelegungMitSelbstbehalt(), toAdd.getTotalBelegungOhneSelbstbehalt()));
+				toAdd.setTotalGutscheine(MathUtil.DEFAULT.addNullSafe(toAdd.getTotalGutscheineMitSelbstbehalt(), toAdd.getTotalGutscheineOhneSelbstbehalt()));
 			// falls keine Erhebung existiert, muss ein Eintrag speziell für die Revision gemacht werden
 			} else {
 				toAdd = new LastenausgleichBerechnungCSVDataRow();
@@ -117,7 +122,7 @@ public class LastenausgleichBerechnungCSVConverter {
 			row.getBfsNummer(),
 			row.getTotalBelegung().toString(),
 			row.getTotalGutscheine().toString(),
-			row.getEingabeLastenausgleich().add(row.getTotalRevision()).toString(),
+			MathUtil.DEFAULT.addNullSafe(row.getEingabeLastenausgleich(), row.getTotalGutscheineOhneSelbstbehalt()).add(row.getTotalRevision()).toString(),
 			row.getSelbstbehaltGemeinde().toString()
 		});
 	}

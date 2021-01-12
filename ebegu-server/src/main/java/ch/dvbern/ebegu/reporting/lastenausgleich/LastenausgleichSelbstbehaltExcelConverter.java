@@ -65,6 +65,7 @@ public class LastenausgleichSelbstbehaltExcelConverter implements ExcelConverter
 				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getTarif()), locale));
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.zusatz, dataRow.getZusatz());
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.gutschein, dataRow.getGutschein());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.keinSelbstbehaltDurchGemeinde, dataRow.getKeinSelbstbehaltDurchGemeinde());
 		});
 
 		return excelMerger;

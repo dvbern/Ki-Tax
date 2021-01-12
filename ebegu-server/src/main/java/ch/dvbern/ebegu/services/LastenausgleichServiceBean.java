@@ -36,7 +36,10 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail_;
@@ -104,7 +107,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			// set total from filtered gemeinden
 			clone.setTotalAlleGemeinden(clone.getLastenausgleichDetails().stream().reduce(
 				BigDecimal.ZERO,
-				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich()),
+				(subtotal, lastenausgleichDetail) -> subtotal.add(lastenausgleichDetail.getBetragLastenausgleich())
+					.add(lastenausgleichDetail.getTotalBetragGutscheineOhneSelbstbehalt()),
 				BigDecimal::add));
 			clone.setJahr(lastenausgleich.getJahr());
 			clone.setId(lastenausgleich.getId());
@@ -177,6 +181,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
 				totalGesamterLastenausgleich,
 				lastenausgleichDetail.getBetragLastenausgleich());
+			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
+				totalGesamterLastenausgleich,
+				lastenausgleichDetail.getTotalBetragGutscheineOhneSelbstbehalt());
 		}
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
@@ -329,12 +336,26 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		BigDecimal totalBelegungInProzent = BigDecimal.ZERO;
 		// Total Gutscheine: Totals aller aktuell gültigen Zeitabschnitte, die im Kalenderjahr liegen
 		BigDecimal totalGutscheine = BigDecimal.ZERO;
+		// Total Belegung = Totals aller Pensum ohne selbstbehalt * AnteilDesMonats / 12
+		BigDecimal totalBelegungOhneSelbstbeahltInProzent = BigDecimal.ZERO;
+		// Total Gutscheine: Totals aller aktuell gültigen Zeitabschnitte ohne Selbstbehalt, die im Kalenderjahr liegen
+		BigDecimal totalGutscheineOhneSelbstbeahlt = BigDecimal.ZERO;
 		for (VerfuegungZeitabschnitt abschnitt : abschnitteProGemeindeUndJahr) {
 			BigDecimal anteilKalenderjahr = getAnteilKalenderjahr(abschnitt);
 			BigDecimal gutschein = abschnitt.getBgCalculationResultAsiv().getVerguenstigung();
+			Betreuung betreuung = abschnitt.getVerfuegung().getBetreuung();
+			if (betreuung != null
+				&& betreuung.getKind().getKeinSelbstbehaltDurchGemeinde() != null
+				&& betreuung.getKind().getKeinSelbstbehaltDurchGemeinde()) {
+				totalBelegungOhneSelbstbeahltInProzent =
+					MathUtil.EXACT.addNullSafe(totalBelegungOhneSelbstbeahltInProzent, anteilKalenderjahr);
+				totalGutscheineOhneSelbstbeahlt =
+					MathUtil.EXACT.addNullSafe(totalGutscheineOhneSelbstbeahlt, gutschein);
+			} else {
+				totalBelegungInProzent = MathUtil.EXACT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
+				totalGutscheine = MathUtil.EXACT.addNullSafe(totalGutscheine, gutschein);
+			}
 
-			totalBelegungInProzent = MathUtil.EXACT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
-			totalGutscheine = MathUtil.EXACT.addNullSafe(totalGutscheine, gutschein);
 		}
 		// Selbstbehalt Gemeinde = Total Belegung * Kosten pro 100% Platz * 20%
 		BigDecimal totalBelegung = MathUtil.EXACT.divide(totalBelegungInProzent, MathUtil.EXACT.from(100));
@@ -347,16 +368,27 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		BigDecimal totalAnrechenbar =
 			MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
 
+		// Ohne Selbstbehalt Gemeinde Kosten = Total Belegung ohne Selbstbehalt * Selbstbehalt pro 100% Platz
+		BigDecimal totalBelegungOhneSelbstbehalt =
+			MathUtil.EXACT.divide(totalBelegungOhneSelbstbeahltInProzent, MathUtil.EXACT.from(100));
+		BigDecimal kostenOhneSelbstbehaltGemeinde = MathUtil.EXACT.multiplyNullSafe(
+			totalBelegungOhneSelbstbehalt,
+			grundlagen.getSelbstbehaltPro100ProzentPlatz());
+
 		LastenausgleichDetail detail = new LastenausgleichDetail();
 		detail.setJahr(grundlagen.getJahr());
 		detail.setGemeinde(gemeinde);
-		detail.setTotalBelegungen(MathUtil.toTwoKommastelle(totalBelegungInProzent));
+		detail.setTotalBelegungenMitSelbstbehalt(MathUtil.toTwoKommastelle(totalBelegungInProzent));
 		detail.setTotalAnrechenbar(MathUtil.toTwoKommastelle(totalAnrechenbar));
-		detail.setTotalBetragGutscheine(MathUtil.toTwoKommastelle(totalGutscheine));
+		detail.setTotalBetragGutscheineMitSelbstbehalt(MathUtil.toTwoKommastelle(totalGutscheine));
 		detail.setSelbstbehaltGemeinde(MathUtil.toTwoKommastelle(selbstbehaltGemeinde));
 		detail.setBetragLastenausgleich(MathUtil.toTwoKommastelle(eingabeLastenausgleich));
 		detail.setLastenausgleich(lastenausgleich);
 		detail.setKorrektur(lastenausgleich.getJahr().compareTo(grundlagen.getJahr()) != 0);
+		detail.setTotalBelegungenOhneSelbstbehalt(MathUtil.toTwoKommastelle(totalBelegungOhneSelbstbeahltInProzent));
+		detail.setTotalBetragGutscheineOhneSelbstbehalt(MathUtil.toTwoKommastelle(totalGutscheineOhneSelbstbeahlt));
+		detail.setKostenFuerSelbstbehalt(MathUtil.toTwoKommastelle(kostenOhneSelbstbehaltGemeinde));
+
 		return detail;
 
 	}
@@ -365,12 +397,14 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	private LastenausgleichDetail createLastenausgleichDetailKorrektur(
 		@Nonnull LastenausgleichDetail detail
 	) {
-		detail.setTotalBelegungen(detail.getTotalBelegungen().negate());
+		detail.setTotalBelegungenMitSelbstbehalt(detail.getTotalBelegungenMitSelbstbehalt().negate());
 		detail.setTotalAnrechenbar(detail.getTotalAnrechenbar().negate());
-		detail.setTotalBetragGutscheine(detail.getTotalBetragGutscheine().negate());
+		detail.setTotalBetragGutscheineMitSelbstbehalt(detail.getTotalBetragGutscheineMitSelbstbehalt().negate());
 		detail.setSelbstbehaltGemeinde(detail.getSelbstbehaltGemeinde().negate());
 		detail.setBetragLastenausgleich(detail.getBetragLastenausgleich().negate());
 		detail.setKorrektur(true);
+		detail.setTotalBelegungenOhneSelbstbehalt(detail.getTotalBelegungenOhneSelbstbehalt().negate());
+		detail.setTotalBetragGutscheineOhneSelbstbehalt(detail.getTotalBetragGutscheineOhneSelbstbehalt().negate());
 		return detail;
 	}
 

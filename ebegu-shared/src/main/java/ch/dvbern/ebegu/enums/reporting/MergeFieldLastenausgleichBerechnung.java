@@ -31,7 +31,25 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 
-	// This template exists only in german, since its use is intern
+	//Titeln
+	lastenausgleichTitel(new SimpleMergeField<>("lastenausgleichTitel", STRING_CONVERTER)),
+	parameterTitle(new SimpleMergeField<>("parameterTitle", STRING_CONVERTER)),
+	jahrTitel(new SimpleMergeField<>("jahrTitel", STRING_CONVERTER)),
+	selbstbehaltProHundertProzentPlatzTitel(new SimpleMergeField<>("selbstbehaltProHundertProzentPlatzTitel", STRING_CONVERTER)),
+	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
+	bfsNummerTitel(new SimpleMergeField<>("bfsNummerTitel", STRING_CONVERTER)),
+	totalBelegungTitel(new SimpleMergeField<>("totalBelegungTitel", STRING_CONVERTER)),
+	totalGutscheineTitel(new SimpleMergeField<>("totalGutscheineTitel", STRING_CONVERTER)),
+	belegungenMitSelbstbehaltTitel(new SimpleMergeField<>("belegungenMitSelbstbehaltTitel", STRING_CONVERTER)),
+	kostenProPlatzTitel(new SimpleMergeField<>("kostenProPlatzTitel", STRING_CONVERTER)),
+	selbstbehaltGemeindeTitel(new SimpleMergeField<>("selbstbehaltGemeindeTitel", STRING_CONVERTER)),
+	eingabeLastenausgleichTitel(new SimpleMergeField<>("eingabeLastenausgleichTitel", STRING_CONVERTER)),
+	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
+	belegungenOhneSelbstbehaltTitel(new SimpleMergeField<>("belegungenOhneSelbstbehaltTitel", STRING_CONVERTER)),
+	totalGutscheineEingabeLastTitel(new SimpleMergeField<>("totalGutscheineEingabeLastTitel", STRING_CONVERTER)),
+	kostenFuerSelbstbehaltTitel(new SimpleMergeField<>("kostenFuerSelbstbehaltTitel", STRING_CONVERTER)),
+
+	//Werten
 	berechnungsjahr(new SimpleMergeField<>("berechnungsjahr", STRING_CONVERTER)),
 	selbstbehaltProHundertProzentPlatz(new SimpleMergeField<>("selbstbehaltProHundertProzentPlatz", BIGDECIMAL_CONVERTER)),
 
@@ -44,6 +62,9 @@ public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 	selbstbehaltGemeinde(new SimpleMergeField<>("selbstbehaltGemeinde", BIGDECIMAL_CONVERTER)),
 	eingabeLastenausgleich(new SimpleMergeField<>("eingabeLastenausgleich", BIGDECIMAL_CONVERTER)),
 	korrektur(new SimpleMergeField<>("korrektur", BOOLEAN_X_CONVERTER)),
+	totalBelegungOhneSelbstbehalt(new SimpleMergeField<>("totalBelegungOhneSelbstbehalt", PERCENT_CONVERTER)),
+	totalGutscheineOhneSelbstbehalt(new SimpleMergeField<>("totalGutscheineOhneSelbstbehalt", BIGDECIMAL_CONVERTER)),
+	kostenFuerSelbstbehalt(new SimpleMergeField<>("kostenFuerSelbstbehalt", BIGDECIMAL_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 
