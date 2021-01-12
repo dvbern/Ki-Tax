@@ -2,11 +2,12 @@ import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/co
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {
     TSLastenausgleichTagesschuleAngabenGemeindeStatus,
 } from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
@@ -17,7 +18,7 @@ import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 @Component({
     selector: 'dv-gemeinde-antraege',
     templateUrl: './gemeinde-antraege.component.html',
-    styleUrls:  ['./gemeinde-antraege.component.less'],
+    styleUrls: ['./gemeinde-antraege.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GemeindeAntraegeComponent implements OnInit {
@@ -65,7 +66,11 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     private loadData(): void {
         this.antragList$ = this.filterDebounceSubject.pipe(
-            switchMap(emittedFilter => this.gemeindeAntragService.getAllGemeindeAntraege(emittedFilter)),
+            mergeMap(emittedFilter => this.gemeindeAntragService.getAllGemeindeAntraege(emittedFilter)
+                .pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
+                    tap(msg => this.errorService.addMesageAsError(msg)),
+                    mergeMap(() => of([] as TSGemeindeAntrag[])),
+                )))),
             map(gemeindeAntraege => {
                 return gemeindeAntraege.map(antrag => {
                     return {
@@ -78,6 +83,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 });
             }),
             tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
+
         );
     }
 
