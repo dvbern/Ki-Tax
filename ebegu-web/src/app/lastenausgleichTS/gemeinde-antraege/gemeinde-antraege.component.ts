@@ -1,12 +1,10 @@
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
-import {
-    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
-} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus,} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -66,7 +64,7 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     private loadData(): void {
         this.antragList$ = this.filterDebounceSubject.pipe(
-            mergeMap(emittedFilter => this.gemeindeAntragService.getAllGemeindeAntraege(emittedFilter)
+            mergeMap(emittedFilter => this.gemeindeAntragService.getGemeindeAntraege(emittedFilter)
                 .pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                     tap(msg => this.errorService.addMesageAsError(msg)),
                     mergeMap(() => of([] as TSGemeindeAntrag[])),

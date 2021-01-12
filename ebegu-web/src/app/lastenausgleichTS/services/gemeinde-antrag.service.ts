@@ -24,7 +24,7 @@ export class GemeindeAntragService {
     public constructor(private readonly http: HttpClient) {
     }
 
-    public getAllGemeindeAntraege(filter: DVAntragListFilter): Observable<TSGemeindeAntrag[]> {
+    public getGemeindeAntraege(filter: DVAntragListFilter): Observable<TSGemeindeAntrag[]> {
         let params = new HttpParams();
         if (filter.gemeinde) {
             params = params.append('gemeinde', filter.gemeinde);
