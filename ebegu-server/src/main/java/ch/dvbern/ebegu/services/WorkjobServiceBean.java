@@ -210,7 +210,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
 		setPropertyIfPresent(jobParameters, WorkJobConstants.STAMMDATEN_ID_PARAM, stammdatenIdParam);
 		if (gemeinde != null) {
-			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_MAHLZEITENVERGUENSTIGUNG, gemeinde.getId());
+			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_PARAM, gemeinde.getId());
 		}
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
 		jobOperator.getJobNames();

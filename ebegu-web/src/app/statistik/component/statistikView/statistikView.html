@@ -920,14 +920,15 @@
                                         </div>
                                         <div class="col-xs-3" ng-if="vm.gemeindenMahlzeitenverguenstigungen.length > 1">
                                             <div class="form-group">
-                                                <label class="md-no-float" for="gemeinden_mahlzeitenverguenstigung"
-                                                       data-translate="GEMEINDEN"></label>
+                                                <label class="md-no-float required" for="gemeinden_mahlzeitenverguenstigung"
+                                                       data-translate="GEMEINDE"></label>
                                                 <div class="dv-select-style">
                                                     <select name="gemeinden_mahlzeitenverguenstigung"
                                                             id="gemeinden_mahlzeitenverguenstigung"
                                                             ng-model="vm.statistikParameter.gemeindeMahlzeitenverguenstigungen"
                                                             ng-options="gemeinde as gemeinde.name for gemeinde in vm.gemeindenMahlzeitenverguenstigungen | orderBy: 'name'"
-                                                            class="form-control">
+                                                            class="form-control"
+                                                            required>
                                                         <option value="">{{'KEINE' | translate}}</option>
                                                     </select>
                                                     <dv-error-messages for="mahlzeitenverguenstigung.gemeinden_mahlzeitenverguenstigung.$error"

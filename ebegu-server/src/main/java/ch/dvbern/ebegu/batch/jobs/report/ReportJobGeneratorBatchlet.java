@@ -194,7 +194,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return generateReportNotrecht();
 			}
 			case VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG: {
-				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_MAHLZEITENVERGUENSTIGUNG);
+				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
 				if (gemeindeId == null) {
 					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
 				}
