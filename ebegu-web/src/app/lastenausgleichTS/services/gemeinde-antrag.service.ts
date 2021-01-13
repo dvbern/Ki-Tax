@@ -40,27 +40,9 @@ export class GemeindeAntragService {
         }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
             params
-        }).pipe(map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)));
-    }
-
-    private createDummyData(n: number): TSGemeindeAntrag[] {
-        const dummyGemeindeNamen = ['Paris', 'Belp', 'London'];
-        const dummyData = [];
-        for (let i = 0; i < n; i++) {
-            const dummyGemeinde = new TSGemeinde();
-            dummyGemeinde.name = dummyGemeindeNamen[Math.floor(Math.random() * dummyGemeindeNamen.length)];
-            const dummyGemeindeAntrag = new TSGemeindeAntrag();
-            dummyGemeindeAntrag.gemeinde = dummyGemeinde;
-            const dummyGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV,
-                new TSDateRange(moment('31-01-2019'), (moment('01-08-2019'))));
-            dummyGemeindeAntrag.gemeindeAntragTyp = TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN;
-            dummyGemeindeAntrag.gesuchsperiode = dummyGesuchsperiode;
-            dummyGemeindeAntrag.statusString = 'Neu';
-
-            dummyData.push(dummyGemeindeAntrag);
-        }
-
-        return dummyData;
+        }).pipe(
+            map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege))
+        );
     }
 
     public getTypes(): string[] {

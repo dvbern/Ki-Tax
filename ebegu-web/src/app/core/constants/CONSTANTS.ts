@@ -48,3 +48,7 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10485760;
+
+export const HTTP_ERROR_CODES = {
+    CONFLICT: 409
+};

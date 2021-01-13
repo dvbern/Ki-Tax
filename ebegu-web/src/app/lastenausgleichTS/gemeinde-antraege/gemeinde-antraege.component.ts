@@ -1,3 +1,4 @@
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
@@ -9,6 +10,7 @@ import {
 } from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -83,7 +85,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                 });
             }),
             tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
-
         );
     }
 
@@ -93,8 +94,11 @@ export class GemeindeAntraegeComponent implements OnInit {
         }
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadData();
-        }, error => {
-            this.translate.get('CREATE_ANTRAG_ERROR', error).subscribe(message => {
+        }, (error: HttpErrorResponse) => {
+            const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
+                this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
+
+            errorMessage$.subscribe(message => {
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could no translate', translateError));
         });
