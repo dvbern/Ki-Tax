@@ -82,16 +82,20 @@ td, th {
             background: #fafafa;
             color: @contrast-darkest;
         }
+
         &:focus {
             outline: 2px solid @contrast-darkest;
             outline-offset: 0;
         }
+
         &.disabled-row, &.disabled-row:hover {
             background: @contrast;
             cursor: default;
+
             &:focus {
                 outline: none;
             }
+
             & > td {
                 border-color: @contrast-dark;
             }
@@ -99,7 +103,7 @@ td, th {
     }
 }
 
-table, .table > tbody, .table > thead, .table > thead:first-child {
+table, .table > tbody, .table > thead, .table > thead:first-child, mat-table {
     & > tr {
         & > td {
             .ebeguH3();
@@ -115,9 +119,11 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             text-overflow: ellipsis;
             vertical-align: middle;
             white-space: nowrap;
+
             .dvb-loading-button {
                 text-align: end;
             }
+
             &.empty-table {
                 .ebeguItalic();
             }
@@ -136,12 +142,14 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             padding: 0 0.25rem 0;
             text-overflow: ellipsis;
             vertical-align: middle;
+
             span {
                 .ebeguP();
                 line-height: 0;
             }
         }
     }
+
     & > tr:first-child {
         & > th, & > th:empty {
             .ebeguLabel();
@@ -153,16 +161,91 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             height: 4rem;
             padding: 0 0.8rem 0;
             vertical-align: middle;
+
             span {
                 .ebeguP();
                 line-height: 0;
             }
         }
+
         & > th:first-child {
             padding-left: 0;
         }
+
         .text-right {
             text-align: right;
+        }
+    }
+
+    & > mat-header-row {
+        min-height: auto;
+
+        &:first-of-type.mat-header-row {
+            border-bottom-color: black;
+            border-top: 1px solid black;
+        }
+
+        & > mat-header-cell:first-of-type {
+            padding-left: 0;
+        }
+
+        &:first-of-type > mat-header-cell {
+            .ebeguLabel();
+            color: black;
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+            height: calc(4rem - 2px);
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            vertical-align: middle;
+
+            div > .mat-sort-header-content > span {
+                color: black;
+                font-size: 1.4rem;
+                font-weight: 400;
+                letter-spacing: 0.1rem;
+                padding-left: 5px;
+                text-align: left;
+                text-transform: uppercase;
+            }
+        }
+
+        &:nth-of-type(2) > mat-header-cell {
+            .ebeguLabel();
+            color: black;
+            height: calc(5rem - 1px);
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+
+            & > mat-form-field {
+                height: 5rem;
+
+                & > .mat-form-field-wrapper {
+                    & > div.mat-form-field-flex {
+
+                        align-items: center;
+                        height: 5rem;
+
+                        & > .mat-form-field-infix {
+                            border: 0;
+
+                            & > input {
+                                background: #e5e5e5;
+                                caret-color: black;
+                                font-size: 1.6rem;
+                                font-weight: 700;
+                                height: 4rem;
+                            }
+                        }
+                    }
+                    & > div.mat-form-field-underline {
+                        display: none;
+                    }
+                }
+            }
         }
     }
 }
@@ -171,6 +254,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
     table {
         min-width: 100%;
     }
+
     .table > tbody {
         & > tr, & > tr:first-child {
             &:hover {
@@ -178,6 +262,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             }
         }
     }
+
     table, .table > tbody, .table > thead, .table > thead:first-child {
         & > tr, & > tr:first-child {
             & > td {
@@ -190,6 +275,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
                 padding: 0 0.8rem 0;
                 vertical-align: middle;
             }
+
             & > th, & > th:empty {
                 .ebeguH3();
                 border: 1px solid @contrast-lightest;
@@ -201,6 +287,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
                 padding: 0 0.8rem 0;
                 position: relative;
                 vertical-align: middle;
+
                 span {
                     .ebeguP();
                     line-height: 0;
@@ -217,3 +304,5 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
 .table-fixed {
     table-layout: fixed;
 }
+
+

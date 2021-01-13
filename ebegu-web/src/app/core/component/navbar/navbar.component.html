@@ -57,6 +57,11 @@
                 </li>
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getGemeindeRoles()">
+                    <a uiSref="GEMEINDE_ANTRAEGE" [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    class="dv-ng-navbar-element uppercase"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                     <dv-posteingang uiSref="posteingang.view"></dv-posteingang>
                 </li>

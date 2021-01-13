@@ -15,8 +15,19 @@
 
 <div class="dv-userselect">
     <div class="dv-select-style">
-        <select st-input-event="change"
+        <select ng-if="!vm.angular2"
+                st-input-event="change"
                 st-search="{{vm.dvUsersearch}}"
+                ng-attr-id="{{vm.inputId}}"
+                ng-attr-name={{vm.inputId}}"
+                ng-change="vm.valueChanged()"
+
+                class="form-control"
+                ng-options="user.getFullName() for user in vm.userList | orderBy: 'nachname' track by user.getFullName()"
+                ng-model="vm.selectedUser">
+            <option value="" ng-if="vm.showSelectionAll">{{"ALLE" | translate}}</option>
+        </select>
+        <select ng-if="vm.angular2" st-input-event="change"
                 ng-attr-id="{{vm.inputId}}"
                 ng-attr-name={{vm.inputId}}"
                 ng-change="vm.valueChanged()"
