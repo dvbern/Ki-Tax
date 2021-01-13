@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
@@ -47,12 +48,15 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -60,6 +64,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
+import org.apache.lucene.util.QueryBuilder;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -97,6 +102,14 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		List<GemeindeAntrag> result = new ArrayList<>();
 		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
 		for (Gemeinde gemeinde : aktiveGemeinden) {
+			Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> existingOptional =
+				findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
+			if (existingOptional.isPresent()) {
+				throw new EntityExistsException(
+					LastenausgleichTagesschuleAngabenGemeindeContainer.class,
+					"LastenausgleichTagesschule Gemeinde Angaben existieren für gemeinde und periode bereits",
+					gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+			}
 			LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer =
 				new LastenausgleichTagesschuleAngabenGemeindeContainer();
 			fallContainer.setGesuchsperiode(gesuchsperiode);
@@ -122,6 +135,30 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		LastenausgleichTagesschuleAngabenGemeindeContainer container =
 			persistence.find(LastenausgleichTagesschuleAngabenGemeindeContainer.class, id);
 		return Optional.ofNullable(container);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> findLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode
+	) {
+		Objects.requireNonNull(gemeinde, "gemeinde muss gesetzt sein");
+		Objects.requireNonNull(gesuchsperiode, "gesuchsperiode muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query =
+			cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
+			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+
+		Predicate gemeindePredicate =
+			cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde), gemeinde);
+		Predicate gesuchsperiodePredicate =
+			cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode), gesuchsperiode);
+
+		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 	@Override
@@ -244,9 +281,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		}
 		if (periode != null) {
 			String[] years = Arrays.stream(periode.split("/"))
-					.map(year -> year.length() == 4 ? year : "20".concat(year))
-					.collect(Collectors.toList())
-					.toArray(String[]::new);
+				.map(year -> year.length() == 4 ? year : "20".concat(year))
+				.collect(Collectors.toList())
+				.toArray(String[]::new);
 			Path<DateRange> dateRangePath =
 				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER)
 					.get(AbstractDateRangedEntity_.gueltigkeit);
@@ -259,7 +296,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		}
 		if (status != null) {
 			query.where(
-				cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status), LastenausgleichTagesschuleAngabenGemeindeStatus.valueOf(status))
+				cb.equal(
+					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status),
+					LastenausgleichTagesschuleAngabenGemeindeStatus.valueOf(status))
 			);
 		}
 

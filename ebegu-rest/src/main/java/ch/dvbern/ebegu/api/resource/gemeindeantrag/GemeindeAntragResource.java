@@ -33,18 +33,20 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
@@ -76,11 +78,11 @@ public class GemeindeAntragResource {
 	@Inject
 	private JaxBConverter converter;
 
-
-	@ApiOperation("Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
+	@ApiOperation(
+		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
 	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxGemeindeAntrag> createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
@@ -92,16 +94,24 @@ public class GemeindeAntragResource {
 
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException("createGemeindeAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId));
+			orElseThrow(() -> new EbeguEntityNotFoundException(
+				"createGemeindeAntrag",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId));
 
-		final List<GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
-		return converter.gemeindeAntragListToJax(gemeindeAntragList);
+		try {
+			final List<GemeindeAntrag> gemeindeAntragList =
+				gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
+			return converter.gemeindeAntragListToJax(gemeindeAntragList);
+		} catch (EntityExistsException e) {
+			throw new WebApplicationException(e.getMessage() + ' ' + e.getArgs().toString(), Status.CONFLICT);
+		}
 	}
 
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
 	@GET
 	@Path("")
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
