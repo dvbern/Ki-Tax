@@ -17,11 +17,13 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 
 /**
@@ -57,4 +59,9 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	@Nonnull
 	LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionFreigeben(
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer);
+
+	/**
+	 * Gibt alle LastenausgleichTagesschuleAngabenInsitutionContainer zurück, die zu diesem Gemeinde-Antrag gehören
+	 */
+	List<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionByGemeindeAntragId(String gemeindeAntragId);
 }

@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -78,6 +79,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -134,6 +136,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private InstitutionStammdatenService stammdatenService;
+
+	@Inject
+	GemeindeAntragService gemeindeAntragService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller need to
@@ -1570,6 +1575,33 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
 		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
 		checkReadAuthorization(latsInstitutionContainer);
+	}
+
+	@Override
+	public void checkReadAuthorizationLastenausgleichTagesschuleAngabenInstitution(@Nonnull String gemeindeAntragId) {
+		Objects.requireNonNull(gemeindeAntragId);
+		Optional<LastenausgleichTagesschuleAngabenInstitutionContainer> antrag =
+			(Optional<LastenausgleichTagesschuleAngabenInstitutionContainer>) gemeindeAntragService.findGemeindeAntrag(
+				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+				gemeindeAntragId);
+		if (!antrag.isEmpty()) {
+			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+				return;
+			}
+			if (principalBean.isCallerInAnyOfRole(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE)
+				&& !principalBean.belongsToGemeinde(antrag.get().getGemeinde())) {
+				throwViolation(antrag.get());
+			}
+
+			if (principalBean.isCallerInAnyOfRole(ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)
+				&& !institutionService.getInstitutionenReadableForCurrentBenutzer(false)
+				.stream()
+				.filter(institution -> institution.getId() == antrag.get().getInstitution().getId())
+				.findAny()
+				.isPresent()){
+				throwViolation(antrag.get());
+			}
+		}
 	}
 
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {
