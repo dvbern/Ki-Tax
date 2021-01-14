@@ -31,7 +31,7 @@
                             [uiParams]="{ id: id }">
                         <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
                     </button>
-                    <button class="col-xs-10" *ngIf="entry.disabled">
+                    <button class="col-xs-10" *ngIf="entry.disabled" disabled>
                         <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
                     </button>
                 </li>

@@ -33,6 +33,7 @@ public class JaxBWizardStepXConverter {
 		JaxWizardStepX wizardStepX = new JaxWizardStepX();
 		wizardStepX.setStepName(step.getWizardStepName());
 		wizardStepX.setWizardTyp(step.getWizardTyp().name());
+		wizardStepX.setDisabled(step.getDisabled());
 		return wizardStepX;
 	}
 
