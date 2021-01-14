@@ -41,16 +41,14 @@ export class WizardStepXRS {
     }
 
     public getAllSteps(wizardStepTyp: string, id: string): Observable<TSWizardStepX[]> {
-        return this.http.get(`${this.serviceURL}/getAllSteps/${encodeURIComponent(wizardStepTyp)}/
-        ${encodeURIComponent(id)}`)
+        return this.http.get(`${this.serviceURL}/getAllSteps/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepXList(response);
             }));
     }
 
     public initFirstStep(wizardStepTyp: string, id: string): Observable<TSWizardStepX> {
-        return this.http.get(`${this.serviceURL}/initFirstStep/${encodeURIComponent(wizardStepTyp)}/
-        ${encodeURIComponent(id)}`)
+        return this.http.get(`${this.serviceURL}/initFirstStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepX(response);
             }));
