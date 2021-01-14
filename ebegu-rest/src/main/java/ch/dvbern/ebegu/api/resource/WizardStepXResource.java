@@ -90,7 +90,7 @@ public class WizardStepXResource {
 				.orElseThrow(() -> new EbeguEntityNotFoundException("initWizardStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
-			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep());
+			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep(), tagesschuleWizard);
 		default:
 			break;
 		}
@@ -121,10 +121,10 @@ public class WizardStepXResource {
 
 			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
 			tagesschuleWizard.setStep(
-				wizardStepXConverter.convertTagesschuleWizardStepJaxToSTep(stepName, lastenausgleichTagesschuleAngabenGemeindeContainer)
+				wizardStepXConverter.convertTagesschuleWizardStepJaxToStep(stepName)
 			);
 			tagesschuleWizard.nextState();
-			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep());
+			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep(), tagesschuleWizard);
 		default:
 			break;
 		}
@@ -154,9 +154,9 @@ public class WizardStepXResource {
 					.orElseThrow(() -> new EbeguEntityNotFoundException("getPreviousStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
-			tagesschuleWizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToSTep(stepName, lastenausgleichTagesschuleAngabenGemeindeContainer));
+			tagesschuleWizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToStep(stepName));
 			tagesschuleWizard.previousState();
-			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep());
+			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep(), tagesschuleWizard);
 		default:
 			break;
 		}
@@ -194,11 +194,11 @@ public class WizardStepXResource {
 			return jaxWizardStepXList;
 		}
 		WizardStep futurPreviousStep = wizard.getStep();
-		jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
+		jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep, wizard));
 		wizard.nextState();
 		while (!wizard.getStep().getWizardStepName().equals(futurPreviousStep.getWizardStepName())) {
 			futurPreviousStep = wizard.getStep();
-			jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep));
+			jaxWizardStepXList.add(wizardStepXConverter.convertStepToJax(futurPreviousStep, wizard));
 			wizard.nextState();
 		}
 

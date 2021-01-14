@@ -22,6 +22,7 @@ import javax.enterprise.context.RequestScoped;
 
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenGemeinde;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenTagesschule;
@@ -31,25 +32,24 @@ import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizardSteps
 @RequestScoped
 public class JaxBWizardStepXConverter {
 
-	public JaxWizardStepX convertStepToJax(WizardStep step) {
+	public JaxWizardStepX convertStepToJax(WizardStep step, Wizard wizard) {
 		JaxWizardStepX wizardStepX = new JaxWizardStepX();
 		wizardStepX.setStepName(step.getWizardStepName());
 		wizardStepX.setWizardTyp(step.getWizardTyp().name());
-		wizardStepX.setDisabled(step.getDisabled());
+		wizardStepX.setDisabled(step.isDisabled(wizard));
 		return wizardStepX;
 	}
 
-	public WizardStep convertTagesschuleWizardStepJaxToSTep(
-		String step,
-		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer
+	public WizardStep convertTagesschuleWizardStepJaxToStep(
+		String step
 	) {
 		switch (TagesschuleWizardStepsEnum.valueOf(step)) {
 		case ANGABEN_GEMEINDE:
-			return new AngabenGemeinde(lastenausgleichTagesschuleAngabenGemeindeContainer);
+			return new AngabenGemeinde();
 		case ANGABEN_TAGESSCHULEN:
-			return new AngabenTagesschule(lastenausgleichTagesschuleAngabenGemeindeContainer);
+			return new AngabenTagesschule();
 		case FREIGABE:
-			return new Lastenausgleich(lastenausgleichTagesschuleAngabenGemeindeContainer);
+			return new Lastenausgleich();
 		}
 		return null;
 	}

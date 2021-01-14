@@ -26,34 +26,26 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenTagesschule extends WizardStep<InstitutionStammdatenTagesschule> {
-
-	private LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer;
-
-	public AngabenTagesschule(
-		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer
-	) {
-		this.lastenausgleichTagesschuleAngabenGemeindeContainer = lastenausgleichTagesschuleAngabenGemeindeContainer;
-	};
+public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
 
 	@Override
 	public void next(
-		@Nonnull Wizard tagesschuleWizard) {
-		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS() || tagesschuleWizard.getRole().isRoleMandant() || tagesschuleWizard.getRole().isSuperadmin()) {
-			tagesschuleWizard.setStep(new Lastenausgleich(lastenausgleichTagesschuleAngabenGemeindeContainer));
+		@Nonnull TagesschuleWizard wizard) {
+		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
+			wizard.setStep(new Lastenausgleich());
 		}
 	}
 
 	@Override
 	public void prev(
-		@Nonnull Wizard tagesschuleWizard) {
-		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS() || tagesschuleWizard.getRole().isRoleMandant() || tagesschuleWizard.getRole().isSuperadmin()) {
-			tagesschuleWizard.setStep(new AngabenGemeinde(lastenausgleichTagesschuleAngabenGemeindeContainer));
+		@Nonnull TagesschuleWizard wizard) {
+		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
+			wizard.setStep(new AngabenGemeinde());
 		}
 	}
 
 	@Override
-	public WizardStateEnum getStatus(InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
 		// IF ALL DATA Filled RETURN OK
 		// IF NOT KO
 		return WizardStateEnum.OK;
@@ -62,6 +54,11 @@ public class AngabenTagesschule extends WizardStep<InstitutionStammdatenTagessch
 	@Override
 	public String getWizardStepName() {
 		return TagesschuleWizardStepsEnum.ANGABEN_TAGESSCHULEN.name();
+	}
+
+	@Override
+	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
+		return false;
 	}
 
 	@Override
