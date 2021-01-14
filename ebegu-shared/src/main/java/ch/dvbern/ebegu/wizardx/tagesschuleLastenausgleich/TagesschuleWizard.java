@@ -19,22 +19,26 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.Wizard;
-import ch.dvbern.ebegu.wizardx.WizardTyp;
+import ch.dvbern.ebegu.wizardx.WizardStep;
 
 public class TagesschuleWizard implements Wizard {
 
 	private WizardStep step;
 	private UserRole role;
+	private LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer;
 
-	public TagesschuleWizard(@Nonnull UserRole roleToUse) {
+	public TagesschuleWizard(
+		@Nonnull UserRole roleToUse,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer) {
 		this.role = roleToUse;
+		this.lastenausgleichTagesschuleAngabenGemeindeContainer = lastenausgleichTagesschuleAngabenGemeindeContainer;
 		if (role.isRoleGemeindeOrTS() || role.isRoleMandant() || role.isSuperadmin()) {
-			this.setStep(new AngabenGemeinde());
+			this.setStep(new AngabenGemeinde(lastenausgleichTagesschuleAngabenGemeindeContainer));
 		} else {
-			this.setStep(new AngabenTagesschule());
+			this.setStep(new AngabenTagesschule(lastenausgleichTagesschuleAngabenGemeindeContainer));
 		}
 	}
 

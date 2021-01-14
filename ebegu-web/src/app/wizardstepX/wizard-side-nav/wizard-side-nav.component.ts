@@ -38,7 +38,7 @@ export class WizardSideNavComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.wizardSteps$ = this.wizardSTepXRS.getAllSteps(this.wizardTyp);
+        this.wizardSteps$ = this.wizardSTepXRS.getAllSteps(this.wizardTyp, this.id);
     }
 
 }

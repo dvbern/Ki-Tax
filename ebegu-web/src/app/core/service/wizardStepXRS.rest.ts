@@ -40,31 +40,33 @@ export class WizardStepXRS {
         return 'WizardStepXRS';
     }
 
-    public getAllSteps(wizardStepTyp: string): Observable<TSWizardStepX[]> {
-        return this.http.get(`${this.serviceURL}/getAllSteps/${encodeURIComponent(wizardStepTyp)}`)
+    public getAllSteps(wizardStepTyp: string, id: string): Observable<TSWizardStepX[]> {
+        return this.http.get(`${this.serviceURL}/getAllSteps/${encodeURIComponent(wizardStepTyp)}/
+        ${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepXList(response);
             }));
     }
 
-    public initFirstStep(wizardStepTyp: string): Observable<TSWizardStepX> {
-        return this.http.get(`${this.serviceURL}/initFirstStep/${encodeURIComponent(wizardStepTyp)}`)
+    public initFirstStep(wizardStepTyp: string, id: string): Observable<TSWizardStepX> {
+        return this.http.get(`${this.serviceURL}/initFirstStep/${encodeURIComponent(wizardStepTyp)}/
+        ${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepX(response);
             }));
     }
 
-    public getNextStep(wizardStepTyp: string, wizardStep: string): Observable<TSWizardStepX> {
+    public getNextStep(wizardStepTyp: string, wizardStep: string, id: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/getNextStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(
-            wizardStep)}`)
+            wizardStep)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepX(response);
             }));
     }
 
-    public getPreviousStep(wizardStepTyp: string, wizardStep: string): Observable<TSWizardStepX> {
+    public getPreviousStep(wizardStepTyp: string, wizardStep: string, id: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/getPreviousStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(
-            wizardStep)}`)
+            wizardStep)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepX(response);
             }));
