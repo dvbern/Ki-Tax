@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Properties;
 
 import javax.annotation.Nonnull;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
@@ -71,9 +70,10 @@ public class PlatzbestaetigungEventKafkaConsumer {
 
 	private Consumer<String, BetreuungEventDTO> consumer = null;
 
-	@PostConstruct
-	public void startKafkaPlatzbestaetigungConsumer() {
-		if (!ebeguConfiguration.getKafkaURL().isPresent() || !ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
+	private void startKafkaPlatzbestaetigungConsumer() {
+		if (ebeguConfiguration.getKafkaURL().isEmpty()
+			|| !ebeguConfiguration.isBetreuungAnfrageApiEnabled()
+			|| !ebeguConfiguration.isKafkaConsumerEnabled()) {
 			LOG.debug("Kafka URL not set or Betreuung Api is not enabled, not consuming events.");
 			return;
 		}
@@ -93,7 +93,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 
 	}
 
-	@Schedule(info = "consume kafka events", second = "*/10", minute = "*", hour = "*", persistent = true)
+	@Schedule(info = "consume kafka events", second = "*/10", minute = "*", hour = "*", persistent = false)
 	public void runPlatzbestaetigungConsumer() {
 		try {
 			if (consumer == null) {

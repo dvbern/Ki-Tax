@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
@@ -125,8 +126,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungTagesschuleUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+	public void sendInfoSchulamtAnmeldungTagesschuleUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung)
+		throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(
+			abstractAnmeldung.extractGesuch(),
 			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
@@ -140,7 +143,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Override
 	public void sendInfoSchulamtAnmeldungAbgelehnt(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(
+			abstractAnmeldung.extractGesuch(),
 			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
@@ -155,8 +159,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungFerieninselUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+	public void sendInfoSchulamtAnmeldungFerieninselUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung)
+		throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(
+			abstractAnmeldung.extractGesuch(),
 			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
@@ -303,7 +309,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					return true;
 				}
 
-				LOG.info("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 or email address are null: "
+				LOG.info(
+					"skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 or email address are null: "
 						+ "{} : {}",
 					gesuchsteller,
 					emailAddress);
@@ -511,7 +518,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			return;
 		}
 		// Gewisse Mails sollen nur in bestimmten Status gesendet werden.
-		if (ArrayUtils.isNotEmpty(statusInWhichToSendMail) && EnumUtil.isNoneOf(gesuch.getStatus(),
+		if (ArrayUtils.isNotEmpty(statusInWhichToSendMail) && EnumUtil.isNoneOf(
+			gesuch.getStatus(),
 			statusInWhichToSendMail)) {
 			return;
 		}
@@ -562,8 +570,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(),
+	public void sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung)
+		throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(
+			abstractAnmeldung.extractGesuch(),
 			gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
@@ -604,7 +614,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS) throws MailException {
+	public void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS)
+		throws MailException {
 		String mailaddressTS = verantwortlicherTS.getEmail();
 		List<Sprache> sprachen =
 			EbeguUtil.extractGemeindeSprachen(gesuch.extractGemeinde(), gemeindeService);
@@ -684,7 +695,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException {
+	public void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular)
+		throws MailException {
 		InstitutionStammdaten institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		String mailaddress = ebeguConfiguration.getNotverordnungEmpfaengerMail();
 
@@ -697,6 +709,37 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 		} else {
 			LOG.warn("Skipping RueckforderungProvisorischVerfuegt because E-Mail of Institution is null");
+		}
+	}
+
+	@Override
+	public void sendInfoLastenausgleichGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich) {
+		try {
+			List<Sprache> sprachen =
+				EbeguUtil.extractGemeindeSprachen(gemeinde, gemeindeService);
+
+			GemeindeStammdaten stammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() ->
+					new EbeguEntityNotFoundException("sendInfoLastenausgleichGemeinde",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeinde.getId()));
+
+			String mailaddress = stammdaten.getMail();
+			if (StringUtils.isNotEmpty(mailaddress)) {
+				String message =
+					mailTemplateConfig.getInfoGemeindeLastenausgleichDurch(lastenausgleich, sprachen, mailaddress);
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoGemeindeLastenausgleichDurch wurde versendet an {}", mailaddress);
+			} else {
+				LOG.warn("skipping InfoGemeindeLastenausgleichDurch because Gemeinde Email is null");
+			}
+		}  catch (EbeguEntityNotFoundException nf) {
+			LOG.error("Gemeindestammdaten not Found: ", gemeinde.getId(), nf);
+		}
+		catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoGemeindeLastenausgleichDurch konnte nicht verschickt werden fuer Gemeinde",
+				gemeinde.getName());
 		}
 	}
 }

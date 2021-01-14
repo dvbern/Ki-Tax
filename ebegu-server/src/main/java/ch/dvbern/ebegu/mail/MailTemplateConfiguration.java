@@ -674,4 +674,10 @@ public class MailTemplateConfiguration {
 
 		return doProcessTemplate(MailTemplate.NotrechtProvisorischeVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
 	}
+
+	public String getInfoGemeindeLastenausgleichDurch(Lastenausgleich lastenausgleich, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("jahr", lastenausgleich.getJahr().toString());
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichDurch, sprachen), paramMap);
+	}
 }

@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -26,6 +26,8 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichTSComponent implements OnInit {
+
+    @Input() public  lastenausgleichId: string;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS

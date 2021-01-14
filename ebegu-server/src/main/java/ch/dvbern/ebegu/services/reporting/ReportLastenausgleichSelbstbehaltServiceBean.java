@@ -116,6 +116,7 @@ public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReport
 				dataRow.setTarif(kindJA.getEinschulungTyp());
 				dataRow.setZusatz(betreuung.hasErweiterteBetreuung());
 				dataRow.setGutschein(zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung());
+				dataRow.setKeinSelbstbehaltDurchGemeinde(betreuung.getKind().getKeinSelbstbehaltDurchGemeinde());
 
 				return dataRow;
 			})

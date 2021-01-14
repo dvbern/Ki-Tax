@@ -25,6 +25,8 @@ import java.math.BigDecimal;
 public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow {
 
 	private BigDecimal totalRevision;
+	private BigDecimal totalBelegung;
+	private BigDecimal totalGutscheine;
 
 	public LastenausgleichBerechnungCSVDataRow() {};
 
@@ -38,5 +40,21 @@ public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnu
 
 	public void setTotalRevision(BigDecimal totalRevision) {
 		this.totalRevision = totalRevision;
+	}
+
+	public BigDecimal getTotalBelegung() {
+		return totalBelegung;
+	}
+
+	public void setTotalBelegung(BigDecimal totalBelegung) {
+		this.totalBelegung = totalBelegung;
+	}
+
+	public BigDecimal getTotalGutscheine() {
+		return totalGutscheine;
+	}
+
+	public void setTotalGutscheine(BigDecimal totalGutscheine) {
+		this.totalGutscheine = totalGutscheine;
 	}
 }

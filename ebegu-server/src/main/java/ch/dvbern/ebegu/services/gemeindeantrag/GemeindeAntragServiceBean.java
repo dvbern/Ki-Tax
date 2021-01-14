@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -109,6 +110,15 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull GemeindeAntragTyp typ) {
 		return Collections.emptyList();
+	}
+
+	@Nonnull
+	public Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId) {
+		if(typ == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+			return lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeindeAntragId);
+		}
+
+		return Optional.empty();
 	}
 }
 

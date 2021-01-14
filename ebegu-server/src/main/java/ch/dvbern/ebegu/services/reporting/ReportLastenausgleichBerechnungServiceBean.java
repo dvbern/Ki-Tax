@@ -165,12 +165,15 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 				dataRow.setGemeinde(detail.getGemeinde().getName());
 				dataRow.setBfsNummer(String.valueOf(detail.getGemeinde().getBfsNummer()));
 				dataRow.setVerrechnungsjahr(String.valueOf(detail.getJahr()));
-				dataRow.setTotalBelegung(detail.getTotalBelegungen());
+				dataRow.setTotalBelegungMitSelbstbehalt(detail.getTotalBelegungenMitSelbstbehalt());
 				dataRow.setTotalAnrechenbar(detail.getTotalAnrechenbar());
-				dataRow.setTotalGutscheine(detail.getTotalBetragGutscheine());
+				dataRow.setTotalGutscheineMitSelbstbehalt(detail.getTotalBetragGutscheineMitSelbstbehalt());
 				dataRow.setKostenPro100ProzentPlatz(grundlagenOfVerrechnungsjahr.getKostenPro100ProzentPlatz());
 				dataRow.setSelbstbehaltGemeinde(detail.getSelbstbehaltGemeinde());
 				dataRow.setEingabeLastenausgleich(detail.getBetragLastenausgleich());
+				dataRow.setTotalGutscheineOhneSelbstbehalt(detail.getTotalBetragGutscheineOhneSelbstbehalt());
+				dataRow.setTotalBelegungOhneSelbstbehalt(detail.getTotalBelegungenOhneSelbstbehalt());
+				dataRow.setKostenFuerSelbstbehalt(detail.getKostenFuerSelbstbehalt());
 				dataRow.setKorrektur(detail.isKorrektur());
 				return dataRow;
 			})

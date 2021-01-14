@@ -206,6 +206,11 @@ public interface EbeguConfiguration {
 	 */
 	boolean isBetreuungAnfrageApiEnabled();
 
+	/**
+	 * @return TRUE, falls Daten Kafka gelesen werden dürfen.
+	 */
+	boolean isKafkaConsumerEnabled();
+
 
 	/**
 	 * @return Filepath zum Keystore in dem der Private Key fuer den Secure-Token-Service Webservice liegt,

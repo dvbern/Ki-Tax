@@ -59,6 +59,7 @@ export class DatepickerController implements IController {
     public ngRequired: boolean;
     public placeholder: string;
     public dvOnBlur: () => void;
+    public noFuture: boolean;
     public dvMinDate: any;
     public dvMaxDate: any;
 
@@ -101,7 +102,10 @@ export class DatepickerController implements IController {
         if (this.dvMinDate === undefined) {
             this.dvMinDate = DateUtil.localDateToMoment('1900-01-01');
         }
-        const noFuture = 'noFuture' in this.$attrs;
+        if (this.noFuture === undefined) {
+            this.noFuture = false;
+        }
+
         // wenn kein Placeholder gesetzt wird wird der standardplaceholder verwendet. kann mit placeholder=""
         // ueberscrieben werden
         if (this.placeholder === undefined) {
@@ -143,7 +147,7 @@ export class DatepickerController implements IController {
             }
             return result;
         };
-        if (noFuture) {
+        if (this.noFuture) {
             this.ngModelCtrl.$validators.dvNoFutureDate = (modelValue, viewValue) => {
                 let result = true;
                 if (viewValue) {

@@ -32,6 +32,7 @@ export class TSKind extends TSAbstractPersonEntity {
     private _ausAsylwesen: boolean;
     private _zemisNummer: string; // ZEMIS-Nummer in Format 12345678.9 | 012345678.9 | 012.345.678.9 | 012.345.678-9
     private _zemisNummerStandardFormat: string; // ZEMIS-Nummer in Format 12345678.9
+    private _zukunftigeGeburtsdatum: boolean;
 
     public constructor() {
         super();
@@ -120,5 +121,13 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public isGeprueft(): boolean {
         return this._kinderabzugErstesHalbjahr !== null;
+    }
+
+    public get zukunftigeGeburtsdatum(): boolean {
+        return this._zukunftigeGeburtsdatum;
+    }
+
+    public set zukunftigeGeburtsdatum(value: boolean) {
+        this._zukunftigeGeburtsdatum = value;
     }
 }

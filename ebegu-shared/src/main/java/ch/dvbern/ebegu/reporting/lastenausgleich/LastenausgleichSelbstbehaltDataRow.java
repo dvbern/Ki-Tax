@@ -43,6 +43,7 @@ public class LastenausgleichSelbstbehaltDataRow {
 	private EinschulungTyp tarif;
 	private Boolean zusatz;
 	private BigDecimal gutschein;
+	private @Nullable Boolean keinSelbstbehaltDurchGemeinde;
 
 	public String getBgNummer() {
 		return bgNummer;
@@ -141,4 +142,12 @@ public class LastenausgleichSelbstbehaltDataRow {
 		this.gutschein = gutschein;
 	}
 
+	@Nullable
+	public Boolean getKeinSelbstbehaltDurchGemeinde() {
+		return keinSelbstbehaltDurchGemeinde;
+	}
+
+	public void setKeinSelbstbehaltDurchGemeinde(@Nullable Boolean keinSelbstbehaltDurchGemeinde) {
+		this.keinSelbstbehaltDurchGemeinde = keinSelbstbehaltDurchGemeinde;
+	}
 }

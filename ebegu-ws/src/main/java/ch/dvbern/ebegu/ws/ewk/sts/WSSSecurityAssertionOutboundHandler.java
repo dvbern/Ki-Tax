@@ -32,6 +32,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -73,7 +74,7 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 
 				header.addChildElement(securityElem);
 
-
+				WSUtil.correctAssertionNodes(header.getElementsByTagName("*"));
 			} catch (Exception e) {
 				LOGGER.error("Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when calling the GERES Service", e);
 			}

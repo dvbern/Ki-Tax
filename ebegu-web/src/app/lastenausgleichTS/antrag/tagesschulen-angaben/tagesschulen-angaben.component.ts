@@ -15,19 +15,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
 
 @Component({
-  selector: 'dv-tagesschulen-angaben',
-  templateUrl: './tagesschulen-angaben.component.html',
-  styleUrls: ['./tagesschulen-angaben.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-tagesschulen-angaben',
+    templateUrl: './tagesschulen-angaben.component.html',
+    styleUrls: ['./tagesschulen-angaben.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagesschulenAngabenComponent implements OnInit {
 
-  public constructor() { }
+    @Input() public lastenausgleichId: string;
 
-  public ngOnInit(): void {
-  }
+    public constructor(
+        private tagesschuleAngabenService: TagesschuleAngabenRS,
+    ) {
+    }
+
+    public ngOnInit(): void {
+        this.tagesschuleAngabenService.getAllVisibleTagesschulenAngabenForTSLastenausgleich(this.lastenausgleichId)
+            .subscribe(console.log);
+    }
 
 }

@@ -17,12 +17,14 @@
 
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {Transition} from '@uirouter/core';
 import {FreigabeComponent} from '../antrag/freigabe/freigabe.component';
 import {GemeindeAngabenComponent} from '../antrag/gemeinde-angaben/gemeinde-angaben.component';
 import {LastenausgleichTsBerechnungComponent} from '../antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from '../antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
+import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
 const states: NgHybridStateDeclaration[] = [
     {
@@ -36,6 +38,14 @@ const states: NgHybridStateDeclaration[] = [
         name: 'LASTENAUSGLEICH_TS',
         url: '/lastenausgleich-ts/:id',
         component: LastenausgleichTSComponent,
+        resolve: [
+            {
+                token: 'lastenausgleichId',
+                deps: [Transition, GemeindeAntragService],
+                resolveFn: (trans: Transition) =>
+                    (trans.params().id),
+            },
+        ],
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',

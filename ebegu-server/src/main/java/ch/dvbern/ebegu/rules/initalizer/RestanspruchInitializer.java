@@ -30,8 +30,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.FERIENINSEL;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;

@@ -91,6 +91,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
 	private static final String KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED = "kibon.exchange.betreuunganfrage.enabled";
+	private static final String KIBON_KAFKA_CONSUMER_ENABLED = "kibon.kafka.consumer.enabled";
 	private static final String KIBON_KAFKA_PLATZBESTAETIGUNG_GROUP_ID = "kibon.kafka.platzbestaetigung.group.id";
 
 	private static final String CLAMAV_HOST = "ebegu.clamav.host";
@@ -298,6 +299,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public boolean isBetreuungAnfrageApiEnabled() {
 		return getBoolean(KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED, false);
+	}
+
+	@Override
+	public boolean isKafkaConsumerEnabled() {
+		return getBoolean(KIBON_KAFKA_CONSUMER_ENABLED, false);
 	}
 
 	@Override
