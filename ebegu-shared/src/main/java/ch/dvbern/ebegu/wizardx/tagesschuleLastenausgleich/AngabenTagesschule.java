@@ -25,7 +25,8 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenTagesschule implements WizardStep<InstitutionStammdatenTagesschule> {
+public class AngabenTagesschule extends WizardStep<InstitutionStammdatenTagesschule> {
+
 	@Override
 	public void next(
 		@Nonnull Wizard tagesschuleWizard) {

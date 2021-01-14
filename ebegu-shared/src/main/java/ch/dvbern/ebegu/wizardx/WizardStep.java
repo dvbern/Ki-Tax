@@ -20,41 +20,51 @@ package ch.dvbern.ebegu.wizardx;
 import javax.annotation.Nonnull;
 
 /**
- * Interface for Wizardsteps, take an entity as parameter
+ * Abstract class for Wizardsteps, take an entity as parameter
  * Routing should be wizardTyp.wizardStepName
  * Can be extended with other methods who should be shared through all wizards
  * @param <T>
  */
-public interface WizardStep<T> {
+public abstract class WizardStep<T> {
+
+	private boolean disabled = false;
 
 	/**
 	 * Next Step of the wizard - can be the same if none
 	 * @param wizard
 	 */
-	void next(@Nonnull Wizard wizard);
+	abstract public void next(@Nonnull Wizard wizard);
 
 	/**
 	 * Previous Step of the wizard - can be the same if first
 	 * @param wizard
 	 */
-	void prev(@Nonnull Wizard wizard);
+	abstract public void prev(@Nonnull Wizard wizard);
 
 	/**
 	 * Status of the wizard
 	 * @param t
 	 * @return
 	 */
-	WizardStateEnum getStatus(T t);
+	abstract public WizardStateEnum getStatus(T t);
 
 	/**
 	 * Typ of Wizard, used for routing with Step Name
 	 * @return
 	 */
-	WizardTyp getWizardTyp();
+	abstract public WizardTyp getWizardTyp();
 
 	/**
 	 * Name of the wizard step, used for routing
 	 * @return
 	 */
-	String getWizardStepName();
+	abstract public String getWizardStepName();
+
+	public boolean getDisabled() {
+		return this.disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 }

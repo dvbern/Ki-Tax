@@ -25,7 +25,8 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class Lastenausgleich  implements WizardStep<Gemeinde> {
+public class Lastenausgleich extends WizardStep<Gemeinde> {
+
 	@Override
 	public void next(
 		@Nonnull Wizard tagesschuleWizard) {

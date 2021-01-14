@@ -23,7 +23,7 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenGemeinde implements WizardStep<Gemeinde> {
+public class AngabenGemeinde extends WizardStep<Gemeinde> {
 
 	@Override
 	public void next(
