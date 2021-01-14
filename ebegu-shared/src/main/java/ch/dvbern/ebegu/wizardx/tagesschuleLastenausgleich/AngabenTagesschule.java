@@ -40,7 +40,7 @@ public class AngabenTagesschule extends WizardStep<InstitutionStammdatenTagessch
 	public void next(
 		@Nonnull Wizard tagesschuleWizard) {
 		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS() || tagesschuleWizard.getRole().isRoleMandant() || tagesschuleWizard.getRole().isSuperadmin()) {
-			tagesschuleWizard.setStep(new Lastenausgleich(lastenausgleichTagesschuleAngabenGemeindeContainer));
+			tagesschuleWizard.setStep(new Freigabe(lastenausgleichTagesschuleAngabenGemeindeContainer));
 		}
 	}
 
