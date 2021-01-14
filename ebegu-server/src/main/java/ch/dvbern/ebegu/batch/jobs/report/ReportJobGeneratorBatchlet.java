@@ -36,6 +36,7 @@ import javax.inject.Named;
 
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
@@ -120,6 +121,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private UploadFileInfo generateReport(
 		@Nonnull ReportVorlage workJobType,
 		@Nonnull LocalDate dateFrom,
@@ -131,69 +133,73 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 		switch (workJobType) {
 
-		case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
-		case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
-			return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
-		case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-			return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_KANTON: {
-			return this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
-		}
-		case VORLAGE_REPORT_MITARBEITERINNEN: {
-			return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
-		}
-		case VORLAGE_REPORT_BENUTZER: {
-			return this.reportService.generateExcelReportBenutzer(locale);
-		}
-		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
-			Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
-			return this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
-		}
-		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
-			Objects.requireNonNull(gesuchPeriodeId);
-			return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-			return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_KINDER: {
-			return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_GESUCHSTELLER: {
-			return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
-		}
-		case VORLAGE_REPORT_MASSENVERSAND: {
-			Objects.requireNonNull(gesuchPeriodeId);
-			return generateReportMassenversand(dateFrom, dateTo, gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_INSTITUTIONEN: {
-			return this.reportService.generateExcelReportInstitutionen(locale);
-		}
-		case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
-			boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
-			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
-			return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
-		}
-		case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
-			return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
-		}
-		case VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN: {
-			Objects.requireNonNull(gesuchPeriodeId);
-			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
-			return this.reportTagesschuleService.generateExcelReportTagesschuleAnmeldungen(stammdatenId, gesuchPeriodeId, locale);
-		}
-		case VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG: {
-			return this.reportTagesschuleService.generateExcelReportTagesschuleRechnungsstellung(locale);
-		}
-		case VORLAGE_REPORT_NOTRECHT: {
-			return generateReportNotrecht();
-		}
-		case VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG: {
-			return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale);
-		}
+			case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
+			case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
+				return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
+			case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
+				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_KANTON: {
+				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
+			}
+			case VORLAGE_REPORT_MITARBEITERINNEN: {
+				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
+			}
+			case VORLAGE_REPORT_BENUTZER: {
+				return this.reportService.generateExcelReportBenutzer(locale);
+			}
+			case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
+				Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
+				return this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
+			}
+			case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
+				Objects.requireNonNull(gesuchPeriodeId);
+				return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
+				return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_KINDER: {
+				return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_GESUCHSTELLER: {
+				return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
+			}
+			case VORLAGE_REPORT_MASSENVERSAND: {
+				Objects.requireNonNull(gesuchPeriodeId);
+				return generateReportMassenversand(dateFrom, dateTo, gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_INSTITUTIONEN: {
+				return this.reportService.generateExcelReportInstitutionen(locale);
+			}
+			case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
+				boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+				BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
+				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
+			}
+			case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
+				return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
+			}
+			case VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN: {
+				Objects.requireNonNull(gesuchPeriodeId);
+				final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
+				return this.reportTagesschuleService.generateExcelReportTagesschuleAnmeldungen(stammdatenId, gesuchPeriodeId, locale);
+			}
+			case VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG: {
+				return this.reportTagesschuleService.generateExcelReportTagesschuleRechnungsstellung(locale);
+			}
+			case VORLAGE_REPORT_NOTRECHT: {
+				return generateReportNotrecht();
+			}
+			case VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG: {
+				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
+				if (gemeindeId == null) {
+					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
+				}
+				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
+			}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
 	}

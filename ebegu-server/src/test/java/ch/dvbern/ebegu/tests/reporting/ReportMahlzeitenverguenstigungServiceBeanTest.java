@@ -44,12 +44,14 @@ public class ReportMahlzeitenverguenstigungServiceBeanTest {
 	private FileSaverService fileSaverService = new FileSaverServiceMock();
 
 	@Test
-	public void generateExcelReportMassenversand() throws Exception {
+	public void generateExcelReportMahlzeiten() throws Exception {
 
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportMahlzeiten(
 			LocalDate.now().minusDays(100),
 			LocalDate.now().plusDays(100),
-			Constants.DEFAULT_LOCALE);
+			Constants.DEFAULT_LOCALE,
+			"1111"
+			);
 
 		assertNotNull(uploadFileInfo.getBytes());
 	}

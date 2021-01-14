@@ -918,6 +918,24 @@
                                                                    class="error"></dv-error-messages>
                                             </dv-input-container>
                                         </div>
+                                        <div class="col-xs-3" ng-if="vm.gemeindenMahlzeitenverguenstigungen.length > 1">
+                                            <div class="form-group">
+                                                <label class="md-no-float required" for="gemeinden_mahlzeitenverguenstigung"
+                                                       data-translate="GEMEINDE"></label>
+                                                <div class="dv-select-style">
+                                                    <select name="gemeinden_mahlzeitenverguenstigung"
+                                                            id="gemeinden_mahlzeitenverguenstigung"
+                                                            ng-model="vm.statistikParameter.gemeindeMahlzeitenverguenstigungen"
+                                                            ng-options="gemeinde as gemeinde.name for gemeinde in vm.gemeindenMahlzeitenverguenstigungen | orderBy: 'name'"
+                                                            class="form-control"
+                                                            required>
+                                                        <option value="">{{'KEINE' | translate}}</option>
+                                                    </select>
+                                                    <dv-error-messages for="mahlzeitenverguenstigung.gemeinden_mahlzeitenverguenstigung.$error"
+                                                                       class="error"></dv-error-messages>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-xs-3 statistik-button">
                                             <dv-loading-button type="submit"
                                                                style="margin-left:auto;margin-right:auto;width:13rem;">
