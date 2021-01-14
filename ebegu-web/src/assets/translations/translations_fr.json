@@ -2196,5 +2196,8 @@
     "FERIENBETREUUNG": "Ferienbetreuung",
     "CREATE_ANTRAG_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
     "DATA_RETRIEVAL_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
+    "IN_BEARBEITUNG_GEMEINDE": "In Bearbeitung Gemeinde",
+    "IN_PRUEFUNG_KANTON": "In Prüfung Kanton",
+    "ZWEITPRUEFUNG": "Zweitprüfung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
