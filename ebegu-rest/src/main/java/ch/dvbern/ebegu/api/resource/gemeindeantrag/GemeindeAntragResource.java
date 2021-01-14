@@ -144,7 +144,7 @@ public class GemeindeAntragResource {
 			gemeindeAntragId)
 			.stream()
 			// does user belong to institution or is mandant
-			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> principal.isCallerInAnyOfRole(UserRole.getMandantRoles())
+			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())
 				|| institutionService.getInstitutionenReadableForCurrentBenutzer(
 				false).stream()
 				.filter(institution -> institution.getId()
@@ -153,9 +153,8 @@ public class GemeindeAntragResource {
 				.isEmpty())
 			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> {
 				switch (lastenausgleichTagesschuleAngabenInstitutionContainer.getStatus()) {
-				case NEU:
-					return false;
 				case OFFEN:
+				case IN_PRUEFUNG_GEMEINDE:
 					return principal.isCallerInAnyOfRole(
 						UserRole.SUPER_ADMIN,
 						UserRole.ADMIN_GEMEINDE,

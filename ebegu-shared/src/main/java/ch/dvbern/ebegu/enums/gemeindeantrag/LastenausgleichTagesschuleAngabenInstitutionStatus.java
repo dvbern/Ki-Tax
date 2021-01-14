@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.enums.gemeindeantrag;
 
 public enum LastenausgleichTagesschuleAngabenInstitutionStatus {
-	NEU,
 	OFFEN,
 	IN_PRUEFUNG_GEMEINDE,
 	GEPRUEFT
