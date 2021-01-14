@@ -104,7 +104,7 @@
 
         <ng-container matColumnDef="fallNummer-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field class="dv-faelle-mat-form-field">
                     <input matInput (keyup)="filterFall($event.target.value)">
                 </mat-form-field>
             </mat-header-cell>
@@ -112,7 +112,7 @@
 
         <ng-container matColumnDef="gemeinde-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <div class="select-background"></div>
                     <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterGemeinde($event.value)" panelClass="mat-select-panel1">
@@ -126,7 +126,7 @@
 
         <ng-container matColumnDef="antragTyp-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <div class="select-background"></div>
                     <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterType($event.value)" panelClass="mat-select-panel1">
@@ -140,7 +140,7 @@
 
         <ng-container matColumnDef="status-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <div class="select-background"></div>
                     <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterStatus($event.value)" panelClass="mat-select-panel1">
@@ -154,7 +154,7 @@
 
         <ng-container matColumnDef="angebote-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <div class="select-background"></div>
                     <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterAngebot($event.value)" panelClass="mat-select-panel1">
@@ -168,7 +168,7 @@
 
         <ng-container matColumnDef="periode-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <div class="select-background"></div>
                     <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterPeriode($event.value)" panelClass="mat-select-panel1">
@@ -182,7 +182,7 @@
 
         <ng-container matColumnDef="dokumenteHochgeladen-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <div class="select-background"></div>
                     <mat-label translate>ALLE</mat-label>
                     <mat-select (selectionChange)="filterDocumentsUploaded($event.value)"
@@ -198,7 +198,7 @@
 
         <ng-container matColumnDef="familienName-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field class="dv-faelle-mat-form-field">
                     <input matInput (keyup)="filterFamilie($event.target.value)">
                 </mat-form-field>
             </mat-header-cell>
@@ -206,7 +206,7 @@
 
         <ng-container matColumnDef="kinder-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field class="dv-faelle-mat-form-field">
                     <input matInput (keyup)="filterKinder($event.target.value)">
                 </mat-form-field>
             </mat-header-cell>
@@ -214,7 +214,7 @@
 
         <ng-container matColumnDef="aenderungsdatum-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field>
+                <mat-form-field class="dv-faelle-mat-form-field">
                     <input matInput (keyup)="filterGeaendert($event.target.value)">
                 </mat-form-field>
             </mat-header-cell>
@@ -222,7 +222,7 @@
 
         <ng-container matColumnDef="institutionen-filter">
             <mat-header-cell *matHeaderCellDef="let column">
-                <mat-form-field floatLabel="never">
+                <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                     <input matInput
                            [placeholder]="'SUCHBEGRIFF_EINGEBEN' | translate"
                            (keyup)="filterInstitution($event.target.value)"
@@ -260,8 +260,8 @@
             </mat-header-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-header-row
+        <mat-header-row *matHeaderRowDef="displayedColumns" class="dv-faelle-mat-header-row"></mat-header-row>
+        <mat-header-row class="dv-faelle-mat-header-row"
             *matHeaderRowDef="filterColumns"></mat-header-row>
         <mat-row *matRowDef="let element; columns: displayedColumns;"
                  (click)="onEditClicked(element, $event)"
