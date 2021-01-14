@@ -24,7 +24,10 @@ export class GemeindeAntragService {
     public constructor(private readonly http: HttpClient) {
     }
 
-    public getGemeindeAntraege(filter: DVAntragListFilter): Observable<TSGemeindeAntrag[]> {
+    public getGemeindeAntraege(filter: DVAntragListFilter, sort: {
+        predicate?: string,
+        reverse?: boolean
+    }): Observable<TSGemeindeAntrag[]> {
         let params = new HttpParams();
         if (filter.gemeinde) {
             params = params.append('gemeinde', filter.gemeinde);
@@ -39,8 +42,33 @@ export class GemeindeAntragService {
             params = params.append('status', filter.status);
         }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
-            params
-        }).pipe(map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)));
+            params,
+        }).pipe(
+            map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)),
+            map(antraege => {
+                switch (sort.predicate) {
+                    case 'status':
+                        return sort.reverse ?
+                            antraege.sort((a, b) => a.statusString.localeCompare(b.statusString)) :
+                            antraege.sort((a, b) => b.statusString.localeCompare(a.statusString));
+                    case 'gemeinde':
+                        return sort.reverse ?
+                            antraege.sort((a, b) => a.gemeinde.name.localeCompare(b.gemeinde.name)) :
+                            antraege.sort((a, b) => b.gemeinde.name.localeCompare(a.gemeinde.name));
+                    case 'antragTyp':
+                        return sort.reverse ?
+                            antraege.sort((a, b) => a.gemeindeAntragTyp.localeCompare(b.gemeindeAntragTyp)) :
+                            antraege.sort((a, b) => b.gemeindeAntragTyp.localeCompare(a.gemeindeAntragTyp));
+                    case 'gesuchsperiodeString':
+                        return sort.reverse ?
+                            antraege.sort((a, b) =>
+                                a.gesuchsperiode.gesuchsperiodeString.localeCompare(b.gesuchsperiode.gesuchsperiodeString)) :
+                            antraege.sort((a, b) =>
+                                b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString));
+                    default:
+                        return antraege;
+                }
+            }));
     }
 
     private createDummyData(n: number): TSGemeindeAntrag[] {
