@@ -15,9 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-lastenausgleich-ts',
@@ -25,16 +28,27 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
     styleUrls: ['./lastenausgleich-ts.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LastenausgleichTSComponent implements OnInit {
+export class LastenausgleichTSComponent implements OnInit, OnDestroy {
 
     @Input() public  lastenausgleichId: string;
 
+    private lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private subscription: Subscription;
+
     public constructor(
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private lastenausgleichTSService: LastenausgleichTSService
     ) {
     }
 
     public ngOnInit(): void {
+        this.lastenausgleichTSService.updateLATSAngabenGemeindeContainer(this.lastenausgleichId);
+        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .subscribe(container => {this.lATSAngabenGemeindeContainer = container; });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     public showToolbar(): boolean {

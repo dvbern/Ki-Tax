@@ -15,6 +15,31 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>
-  gemeinde-angaben works!
-</p>
+<div class="gemeinde-angaben">
+    <h1 class="access-for-all-title" translate>LAT_GEMEINDE_ANGABEN</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2 translate>LAT_GEMEINDE_ANGABEN</h2>
+            <hr class="header"/>
+        </div>
+    </div>
+
+    <form *ngIf="!!lATSAngabenGemeindeContainer">
+        <div class="row">
+            <div class="col-xs-12 dv-input-container-question">
+                <div class="form-group">
+                    <label class="ebegu-h1" required id="example-radio-group-label" translate>LAT_ANGABEN_GEMEINDE_FRAGE_1</label>
+                    <mat-radio-group
+                        aria-labelledby="example-radio-group-label"
+                        class="example-radio-group"
+                        name="example-question"
+                        [(ngModel)]="lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

@@ -16,18 +16,32 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
-  selector: 'dv-gemeinde-angaben',
-  templateUrl: './gemeinde-angaben.component.html',
-  styleUrls: ['./gemeinde-angaben.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-gemeinde-angaben',
+    templateUrl: './gemeinde-angaben.component.html',
+    styleUrls: ['./gemeinde-angaben.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeAngabenComponent implements OnInit {
 
-  public constructor() { }
+    public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private subscription: Subscription;
 
-  public ngOnInit(): void {
-  }
+    public constructor(
+        private lastenausgleichTSService: LastenausgleichTSService
+    ) {}
+
+    public ngOnInit(): void {
+        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .subscribe(container => {this.lATSAngabenGemeindeContainer = container; });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
 
 }
