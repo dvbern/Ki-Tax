@@ -20,5 +20,6 @@ export class TSWizardStepX {
     public wizardTyp: string;
 
     public stepName: string;
+    public disabled: boolean;
 
 }

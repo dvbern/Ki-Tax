@@ -4654,6 +4654,7 @@ export class EbeguRestUtil {
         const wizardStep = new TSWizardStepX();
         wizardStep.stepName = data.stepName;
         wizardStep.wizardTyp = data.wizardTyp;
+        wizardStep.disabled = data.disabled;
         return wizardStep;
     }
 }

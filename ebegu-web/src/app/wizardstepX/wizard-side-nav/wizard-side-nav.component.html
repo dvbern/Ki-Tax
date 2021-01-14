@@ -24,10 +24,14 @@
         <ul class="sidenav gesuch-menu">
             <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
 
-                <li *ngFor="let entry of wizardSteps$ | async" class="row" uiSref="{{wizardTyp}}.{{entry.stepName}}"
-                    uiSrefActive="active-element"
-                    [uiParams]="{ id: id }">
-                    <button class="col-xs-10">
+                <li *ngFor="let entry of wizardSteps$ | async" class="row"
+                    uiSrefActive="active-element">
+                    <button class="col-xs-10" *ngIf="!entry.disabled"
+                            uiSref="{{wizardTyp}}.{{entry.stepName}}"
+                            [uiParams]="{ id: id }">
+                        <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
+                    </button>
+                    <button class="col-xs-10" *ngIf="entry.disabled">
                         <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
                     </button>
                 </li>
