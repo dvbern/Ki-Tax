@@ -66,4 +66,8 @@ public class TagesschuleWizard implements Wizard {
 	public UserRole getRole() {
 		return role;
 	}
+
+	public LastenausgleichTagesschuleAngabenGemeindeContainer getLastenausgleichTagesschuleAngabenGemeindeContainer() {
+		return lastenausgleichTagesschuleAngabenGemeindeContainer;
+	}
 }

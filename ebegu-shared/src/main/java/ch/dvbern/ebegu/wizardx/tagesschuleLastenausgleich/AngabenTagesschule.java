@@ -19,9 +19,7 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.wizardx.Wizard;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -58,7 +56,8 @@ public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		return false;
+		LastenausgleichTagesschuleAngabenGemeindeStatus status = wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus();
+		return status.equals(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class Lastenausgleich implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		return false;
+		return true;
 	}
 
 	@Override

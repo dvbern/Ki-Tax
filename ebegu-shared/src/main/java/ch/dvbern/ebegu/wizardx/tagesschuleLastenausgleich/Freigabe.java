@@ -56,9 +56,7 @@ public class Freigabe implements WizardStep<TagesschuleWizard> {
 	}
 
 	@Override
-	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		return false;
-	}
+	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) { return true; }
 
 	@Override
 	public WizardTyp getWizardTyp() {
