@@ -240,6 +240,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -279,6 +280,7 @@ import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
+import ch.dvbern.ebegu.services.SozialdienstService;
 import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -375,6 +377,10 @@ public class JaxBConverter extends AbstractConverter {
 	private FerieninselStammdatenService ferieninselStammdatenService;
 	@Inject
 	private ExternalClientService externalClientService;
+	@Inject
+	private SozialdienstService sozialdienstService;
+	@Inject
+	private JaxSozialdienstConverter sozialdienstConverter;
 
 	public JaxBConverter() {
 		//nop
@@ -3951,6 +3957,22 @@ public class JaxBConverter extends AbstractConverter {
 			berechtigung.setTraegerschaft(null);
 		}
 
+		if (jaxBerechtigung.getSozialdienst() != null && jaxBerechtigung.getSozialdienst().getId() != null) {
+			final Optional<Sozialdienst> sozialdienstFromDB =
+				sozialdienstService.findSozialdienst(jaxBerechtigung.getSozialdienst().getId());
+			if (sozialdienstFromDB.isPresent()) {
+				// Traegerschaft darf nicht vom Client ueberschrieben werden
+				berechtigung.setSozialdienst(sozialdienstFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException(
+					"berechtigungToEntity -> sozialdienst",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					jaxBerechtigung.getSozialdienst().getId());
+			}
+		} else {
+			berechtigung.setSozialdienst(null);
+		}
+
 		// Gemeinden: Duerfen nicht vom Frontend übernommen werden, sondern müssen aus der DB gelesen werden!
 		loadGemeindenFromJax(jaxBerechtigung, berechtigung);
 		return berechtigung;
@@ -3981,6 +4003,9 @@ public class JaxBConverter extends AbstractConverter {
 		if (berechtigung.getTraegerschaft() != null) {
 			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
 		}
+		if (berechtigung.getSozialdienst() != null){
+			jaxBerechtigung.setSozialdienst(sozialdienstConverter.sozialdienstToJAX(berechtigung.getSozialdienst()));
+		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
 			.map(this::gemeindeToJAX)
@@ -4002,6 +4027,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (history.getTraegerschaft() != null) {
 			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
+		}
+		if (history.getSozialdienst() != null){
+			jaxHistory.setSozialdienst(sozialdienstConverter.sozialdienstToJAX(history.getSozialdienst()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setStatus(history.getStatus());
