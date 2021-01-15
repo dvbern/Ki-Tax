@@ -22,6 +22,9 @@ import {map} from 'rxjs/operators';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
+import {LogFactory} from '../logging/LogFactory';
+
+const LOG = LogFactory.createLog('WizardStepXRS');
 
 @Injectable({
     providedIn: 'root',
@@ -48,7 +51,7 @@ export class WizardStepXRS {
             }))
             .subscribe(obj => {
                 this.wizardSteps.next(obj);
-            });
+            }, err => LOG.error(err));
     }
 
     public getAllSteps(): Observable<TSWizardStepX[]> {

@@ -6,6 +6,9 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../models/gemei
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('LastenausgleichTSService');
 
 @Injectable({
     providedIn: 'root',
@@ -30,7 +33,7 @@ export class LastenausgleichTSService {
             )))
             .subscribe(container => {
                 this.next(container);
-            });
+            }, error => LOG.error(error));
     }
 
     public getLATSAngabenGemeindeContainer(): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
@@ -43,7 +46,7 @@ export class LastenausgleichTSService {
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => {
             this.next(result);
-        });
+        }, err => LOG.error(err));
     }
 
     public saveLATSAngabenGemeindeContainer(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
@@ -52,7 +55,7 @@ export class LastenausgleichTSService {
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => {
             this.next(result);
-        });
+        }, error => LOG.error(error));
     }
 
     private next(result: any): void {

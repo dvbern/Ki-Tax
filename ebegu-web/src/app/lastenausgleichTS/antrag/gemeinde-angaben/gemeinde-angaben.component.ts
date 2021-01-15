@@ -20,7 +20,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {LogFactory} from '../../../core/logging/LogFactory';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('GemeindeAngabenComponent');
 
 @Component({
     selector: 'dv-gemeinde-angaben',
@@ -35,8 +38,8 @@ export class GemeindeAngabenComponent implements OnInit {
     private subscription: Subscription;
 
     public constructor(
-        private lastenausgleichTSService: LastenausgleichTSService,
-        private ref: ChangeDetectorRef
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private readonly ref: ChangeDetectorRef
     ) {}
 
     public ngOnInit(): void {
@@ -45,7 +48,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.lATSAngabenGemeindeContainer = container;
                 this.initForm();
                 this.ref.detectChanges();
-            });
+            }, err => LOG.error(err));
     }
 
     public ngOnDestroy(): void {

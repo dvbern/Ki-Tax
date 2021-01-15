@@ -21,8 +21,11 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('LastenausgleichTSComponent');
 
 @Component({
     selector: 'dv-lastenausgleich-ts',
@@ -54,7 +57,7 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
                 this.lATSAngabenGemeindeContainer = container;
                 // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
                 this.wizardStepXRS.updateSteps(this.wizardTyp, this.lastenausgleichId);
-            });
+            }, err => LOG.error(err));
     }
 
     public ngOnDestroy(): void {

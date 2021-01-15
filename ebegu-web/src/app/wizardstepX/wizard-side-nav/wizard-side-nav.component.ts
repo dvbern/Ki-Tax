@@ -35,7 +35,7 @@ export class WizardSideNavComponent implements OnInit {
     public wizardSteps$: Observable<TSWizardStepX[]>;
 
     public constructor(
-        private wizardStepXRS: WizardStepXRS
+        private readonly wizardStepXRS: WizardStepXRS
     ) {}
 
     public ngOnInit(): void {
