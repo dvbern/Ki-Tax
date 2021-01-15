@@ -69,6 +69,7 @@
                         (rowClicked)="navigate($event.antrag, $event.event)"
                         [disablePagination]="true"
                         (filterChange)="onFilterChange($event)"
+                        (sortChange)="onSortChange($event)"
                         [filterStateList]="getStateFilter()"
                         [filterTypeList]="gemeindeAntragService.getTypes()"
                         [totalItems]="totalItems"></dv-new-antrag-list>
