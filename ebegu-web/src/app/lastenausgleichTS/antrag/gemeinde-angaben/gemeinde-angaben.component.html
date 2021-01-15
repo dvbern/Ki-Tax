@@ -24,11 +24,14 @@
         </div>
     </div>
 
-    <form *ngIf="!!lATSAngabenGemeindeContainer" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="lATSAngabenGemeindeContainer" [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="row">
             <div class="col-xs-12 dv-input-container-question">
-                <div class="form-group">
-                    <label class="ebegu-h1" required id="alle-angaben-radio-group" translate>LAT_ANGABEN_GEMEINDE_FRAGE_1</label>
+                <div class="form-group dv-mat-radio-group">
+                    <label class="ebegu-h1" required id="alle-angaben-radio-group" translate>
+                        LAT_ANGABEN_GEMEINDE_FRAGE_1
+                        <span>&nbsp;*</span>
+                    </label>
                     <mat-radio-group
                         aria-labelledby="alle-angaben-radio-group"
                         class=""
