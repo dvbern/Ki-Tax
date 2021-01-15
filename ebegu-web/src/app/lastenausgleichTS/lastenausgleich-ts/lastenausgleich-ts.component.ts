@@ -16,10 +16,12 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 @Component({
@@ -35,16 +37,24 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     private lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private subscription: Subscription;
 
+    public wizardSteps$: Observable<TSWizardStepX[]>;
+    public wizardTyp = 'LASTENAUSGLEICH_TS';
+
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
-        private lastenausgleichTSService: LastenausgleichTSService
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private readonly wizardStepXRS: WizardStepXRS
     ) {
     }
 
     public ngOnInit(): void {
         this.lastenausgleichTSService.updateLATSAngabenGemeindeContainer(this.lastenausgleichId);
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
-            .subscribe(container => {this.lATSAngabenGemeindeContainer = container; });
+            .subscribe(container => {
+                this.lATSAngabenGemeindeContainer = container;
+                // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
+                this.wizardStepXRS.updateSteps(this.wizardTyp, this.lastenausgleichId);
+            });
     }
 
     public ngOnDestroy(): void {

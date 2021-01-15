@@ -51,7 +51,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public onSubmit(): void {
         if (this.form.valid) {
-            this.save();
+            this.lATSAngabenGemeindeFuerInstitutionenFreigeben();
         }
     }
 
@@ -64,9 +64,9 @@ export class GemeindeAngabenComponent implements OnInit {
         });
     }
 
-    private save(): void {
+    private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
         this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.form.get('alleAngabenInKibonErfasst').value;
-        this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
+        this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
     }
 
 }
