@@ -80,6 +80,10 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_traegerschaft_id"))
 	private Traegerschaft traegerschaft = null;
 
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_sozialdienst_id"))
+	private Sozialdienst sozialdienst = null;
 
 	public Benutzer getBenutzer() {
 		return benutzer;
@@ -151,7 +155,8 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 			&& getRole() == otherBerechtigung.getRole()
 			&& Objects.equals(getInstitution(), otherBerechtigung.getInstitution())
 			&& Objects.equals(getTraegerschaft(), otherBerechtigung.getTraegerschaft())
-			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit());
+			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit())
+			&& Objects.equals(getSozialdienst(), otherBerechtigung.getSozialdienst());
 	}
 
 	@Override
@@ -177,5 +182,14 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 			.map(Gemeinde::getName)
 			.sorted(String::compareToIgnoreCase)
 			.collect(Collectors.joining(", "));
+	}
+
+	@Nullable
+	public Sozialdienst getSozialdienst() {
+		return sozialdienst;
+	}
+
+	public void setSozialdienst(@Nullable Sozialdienst sozialdienst) {
+		this.sozialdienst = sozialdienst;
 	}
 }

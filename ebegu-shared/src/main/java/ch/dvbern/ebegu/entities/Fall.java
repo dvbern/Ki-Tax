@@ -17,13 +17,16 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -48,7 +51,8 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "fallNummer", name = "UK_fall_nummer"),
-		@UniqueConstraint(columnNames = "besitzer_id", name = "UK_fall_besitzer")
+		@UniqueConstraint(columnNames = "besitzer_id", name = "UK_fall_besitzer"),
+		@UniqueConstraint(columnNames = "sozialdienst_fall_id", name = "UK_fall_sozialdienst_fall_id")
 	},
 	indexes = {
 		@Index(name = "IX_fall_fall_nummer", columnList = "fallNummer"),
@@ -73,6 +77,11 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_besitzer_id"))
 	@IndexedEmbedded
 	private Benutzer besitzer = null; // Erfassender (im IAM eingeloggter) Gesuchsteller
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_sozialdienst_fall_id"), nullable = true)
+	private SozialdienstFall sozialdienstFall;
 
 	/**
 	 * nextNumberKind ist die Nummer, die das naechste Kind bekommen wird. Aus diesem Grund ist es by default 1
@@ -147,5 +156,14 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 	public String getMessageForAccessException() {
 		return "fallNummer: " + this.getFallNummer()
 			+ ", besitzer: " + (this.getBesitzer() != null ? this.getBesitzer().getUsername() : "null");
+	}
+
+	@Nullable
+	public SozialdienstFall getSozialdienstFall() {
+		return sozialdienstFall;
+	}
+
+	public void setSozialdienstFall(@Nullable SozialdienstFall sozialdienstFall) {
+		this.sozialdienstFall = sozialdienstFall;
 	}
 }
