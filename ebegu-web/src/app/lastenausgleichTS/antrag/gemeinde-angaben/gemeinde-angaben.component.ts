@@ -44,4 +44,12 @@ export class GemeindeAngabenComponent implements OnInit {
         this.subscription.unsubscribe();
     }
 
+    public onSubmit(): void {
+        this.save();
+    }
+
+    private save(): void {
+        this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
+    }
+
 }

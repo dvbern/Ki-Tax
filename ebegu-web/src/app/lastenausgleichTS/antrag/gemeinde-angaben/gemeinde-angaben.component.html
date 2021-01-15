@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="!!lATSAngabenGemeindeContainer">
+    <form *ngIf="!!lATSAngabenGemeindeContainer" (ngSubmit)="onSubmit()">
         <div class="row">
             <div class="col-xs-12 dv-input-container-question">
                 <div class="form-group">
@@ -40,6 +40,8 @@
                 </div>
             </div>
         </div>
+
+        <button type="submit">Submit</button>
     </form>
 
 </div>
