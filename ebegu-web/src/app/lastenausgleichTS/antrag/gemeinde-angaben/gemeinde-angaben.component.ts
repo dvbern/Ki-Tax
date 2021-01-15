@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -29,6 +30,7 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 export class GemeindeAngabenComponent implements OnInit {
 
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    public form: FormGroup;
     private subscription: Subscription;
 
     public constructor(
@@ -37,7 +39,10 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public ngOnInit(): void {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
-            .subscribe(container => {this.lATSAngabenGemeindeContainer = container; });
+            .subscribe(container => {
+                this.lATSAngabenGemeindeContainer = container;
+                this.initForm();
+            });
     }
 
     public ngOnDestroy(): void {
@@ -45,10 +50,22 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onSubmit(): void {
-        this.save();
+        if (this.form.valid) {
+            this.save();
+        }
+    }
+
+    private initForm(): void {
+        this.form = new FormGroup({
+            alleAngabenInKibonErfasst: new FormControl(
+                this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                Validators.required
+            )
+        });
     }
 
     private save(): void {
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.form.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
     }
 
