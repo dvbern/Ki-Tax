@@ -15,9 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
@@ -34,7 +35,8 @@ export class GemeindeAngabenComponent implements OnInit {
     private subscription: Subscription;
 
     public constructor(
-        private lastenausgleichTSService: LastenausgleichTSService
+        private lastenausgleichTSService: LastenausgleichTSService,
+        private ref: ChangeDetectorRef
     ) {}
 
     public ngOnInit(): void {
@@ -42,6 +44,7 @@ export class GemeindeAngabenComponent implements OnInit {
             .subscribe(container => {
                 this.lATSAngabenGemeindeContainer = container;
                 this.initForm();
+                this.ref.detectChanges();
             });
     }
 
@@ -69,4 +72,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
     }
 
+    public showAntragErstellen(): boolean {
+        return this.lATSAngabenGemeindeContainer?.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
+    }
 }
