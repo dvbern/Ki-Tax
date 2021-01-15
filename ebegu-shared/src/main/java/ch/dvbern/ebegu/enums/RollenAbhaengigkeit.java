@@ -27,12 +27,14 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 
 public enum RollenAbhaengigkeit {
 	GEMEINDE(Gemeinde.class),
 	INSTITUTION(Institution.class),
 	TRAEGERSCHAFT(Traegerschaft.class),
 	KANTON(Mandant.class),
+	SOZIALDIENST(Sozialdienst.class),
 	NONE(null);
 
 	@Nullable

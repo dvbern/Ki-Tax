@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.entities;
+package ch.dvbern.ebegu.entities.sozialdienst;
 
 import java.util.Objects;
 
@@ -33,6 +33,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BerechtigungChangedEntityListener;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeinde;

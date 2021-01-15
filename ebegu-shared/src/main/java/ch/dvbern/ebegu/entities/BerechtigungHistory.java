@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.Constants;

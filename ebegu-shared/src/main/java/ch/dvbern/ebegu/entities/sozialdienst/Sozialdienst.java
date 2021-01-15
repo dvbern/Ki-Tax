@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.entities;
+package ch.dvbern.ebegu.entities.sozialdienst;
 
 import java.util.Objects;
 
@@ -32,6 +32,10 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Displayable;
+import ch.dvbern.ebegu.entities.HasMandant;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.SozialdienstStatus;
 import org.hibernate.envers.Audited;
 
@@ -44,7 +48,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@UniqueConstraint(columnNames = "name", name = "UK_sozialdienst_name"),
 	}
 )
-public class Sozialdienst extends AbstractEntity {
+public class Sozialdienst extends AbstractEntity implements Displayable, HasMandant {
 
 	private static final long serialVersionUID = 3613740962178552103L;
 

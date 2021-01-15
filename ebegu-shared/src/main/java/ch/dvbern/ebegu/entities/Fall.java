@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,6 +32,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;

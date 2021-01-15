@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.entities;
+package ch.dvbern.ebegu.entities.sozialdienst;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -38,6 +38,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import org.hibernate.envers.Audited;
 
@@ -50,7 +52,7 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 	uniqueConstraints =
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_sozialdienst_fall_adresse_id")
 )
-public class SozialdienstFall extends AbstractEntity{
+public class SozialdienstFall extends AbstractEntity {
 
 	private static final long serialVersionUID = -3978972308622826784L;
 	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
