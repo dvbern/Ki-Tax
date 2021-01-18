@@ -17,6 +17,7 @@ import {MatTableDataSource} from '@angular/material/table';
     templateUrl: './dv-simple-table.component.html',
     styleUrls: ['./dv-simple-table.component.less'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DvSimpleTableComponent implements OnInit, OnChanges {
 
