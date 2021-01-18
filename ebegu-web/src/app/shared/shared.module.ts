@@ -124,10 +124,13 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
+        EbeguDatePipe,
+        DvMonthPickerComponent,
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
-        EbeguDatePipe
+        EbeguDatePipe,
+        DvLoadingButtonXDirective
     ],
     exports: [
         CommonModule,
@@ -168,6 +171,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
+        EbeguDatePipe,
         NewAntragListComponent,
         DvLoadingButtonXDirective,
         EbeguDatePipe,

@@ -14,6 +14,7 @@
  */
 
 import {IHttpParamSerializer, IHttpService, ILogService, IPromise} from 'angular';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 
 /**
  * spricht die reportAsync resourec an welce die reports async generiert
@@ -262,11 +263,13 @@ export class ReportAsyncRS {
 
     public getMahlzeitenverguenstigungReportExcel(
         auswertungVon: string,
-        auswertungBis: string
+        auswertungBis: string,
+        gemeinde: TSGemeinde
     ): IPromise<string> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
+            gemeindeId: gemeinde.id
         });
         return this.http.get(`${this.serviceURL}/excel/mahlzeitenverguenstigung?${reportParams}`)
             .then((response: any) => {

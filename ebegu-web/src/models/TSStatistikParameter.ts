@@ -15,6 +15,7 @@
 
 import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {TSGemeinde} from './TSGemeinde';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
@@ -31,6 +32,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _doSave: boolean;
     private _betragProKind: number;
     private _tagesschuleAnmeldungen: TSInstitutionStammdaten;
+    private _gemeindeMahlzeitenverguenstigungen: TSGemeinde;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment,
@@ -144,5 +146,13 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set tagesschuleAnmeldungen(value: TSInstitutionStammdaten) {
         this._tagesschuleAnmeldungen = value;
+    }
+
+    public get gemeindeMahlzeitenverguenstigungen(): TSGemeinde {
+        return this._gemeindeMahlzeitenverguenstigungen;
+    }
+
+    public set gemeindeMahlzeitenverguenstigungen(value: TSGemeinde) {
+        this._gemeindeMahlzeitenverguenstigungen = value;
     }
 }

@@ -199,7 +199,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Inject
 	private EinstellungService einstellungService;
 
-
 	@Nonnull
 	@Override
 	public Gesuch createGesuch(@Nonnull Gesuch gesuchToCreate) {
@@ -286,7 +285,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Set<ErwerbspensumContainer> validErwerbspensen = new HashSet<>();
 		for (ErwerbspensumContainer erwerbspensumContainer : gesuchstellerContainer.getErwerbspensenContainers()) {
 			if (erwerbspensumContainer.getErwerbspensumJA() != null &&
-					erwerbspensumContainer.getErwerbspensumJA().getTaetigkeit() != Taetigkeit.FREIWILLIGENARBEIT) {
+				erwerbspensumContainer.getErwerbspensumJA().getTaetigkeit() != Taetigkeit.FREIWILLIGENARBEIT) {
 				validErwerbspensen.add(erwerbspensumContainer);
 			}
 		}
@@ -307,8 +306,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Nonnull
-	private Gesuch createMutation(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Eingangsart eingangsart, @Nonnull StringBuilder logInfo) {
+	private Gesuch createMutation(
+		@Nonnull Gesuch gesuchToCreate,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Eingangsart eingangsart,
+		@Nonnull StringBuilder logInfo
+	) {
 		if (isThereAnyOpenMutation(gesuchToCreate.getDossier(), gesuchsperiode)) {
 			throw new EbeguExistingAntragException(
 				"antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
@@ -325,26 +328,35 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// die Berechnung die richtige FinSit verwendet wird!
 			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
 
-			return gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
+			return gesuchForMutation.copyForMutation(
+				new Gesuch(),
+				eingangsart,
+				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
 		}
 		return gesuchToCreate;
 	}
 
 	@Nonnull
-	private Gesuch createErneuerungsgesuch(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode,
+	private Gesuch createErneuerungsgesuch(
+		@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Eingangsart eingangsart,
 		@Nonnull StringBuilder logInfo) {
 		Optional<Gesuch> gesuchForErneuerungOptional = getGesuchFuerErneuerungsantrag(gesuchToCreate.getDossier());
 		if (gesuchForErneuerungOptional.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
-			return gesuchForErneuerung.copyForErneuerung(new Gesuch(), gesuchsperiode, eingangsart);
+			return gesuchForErneuerung.copyForErneuerung(
+				new Gesuch(),
+				gesuchsperiode,
+				eingangsart,
+				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
 		}
 		return gesuchToCreate;
 	}
 
 	@Nonnull
-	private Gesuch createErstgesuch(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode,
+	private Gesuch createErstgesuch(
+		@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Eingangsart eingangsart, @Nonnull StringBuilder logInfo) {
 		List<String> existingForFall = getAllGesuchIDsForFall(gesuchToCreate.getFall().getId());
 		if (CollectionUtils.isNotEmpty(existingForFall)) {
@@ -355,7 +367,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Nonnull
-	private Gesuch createErstgesuchInNeuemDossier(@Nonnull Gesuch gesuchToCreate,
+	private Gesuch createErstgesuchInNeuemDossier(
+		@Nonnull Gesuch gesuchToCreate,
 		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart, @Nonnull StringBuilder logInfo) {
 		Optional<Gesuch> gesuchToCopyOptional =
 			getNeustesGeprueftesGesuchInAnotherDossier(gesuchToCreate.getDossier());
@@ -366,9 +379,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
 					gesuchToCreate.getDossier());
 			} else {
-				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuchToCreate, eingangsart,
+				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuchToCreate,
+					eingangsart,
 					gesuchToCreate.getDossier(),
-					gesuchsperiode);
+					gesuchsperiode,
+					gesuchToCreate.getRegelStartDatum() != null ?
+						gesuchToCreate.getRegelStartDatum() :
+						LocalDate.now());
 			}
 		}
 		return gesuchToCreate;
@@ -413,7 +430,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			for (int i = 0; i < gesuch.getKindContainers().size(); i++) {
 				KindContainer kindContainerToWorkWith = kindArray[i];
 				AnmeldungTagesschule[] anmeldungTagesschuleArray =
-					kindContainerToWorkWith.getAnmeldungenTagesschule().toArray(new AnmeldungTagesschule[kindContainerToWorkWith.getAnmeldungenTagesschule().size()]);
+					kindContainerToWorkWith.getAnmeldungenTagesschule()
+						.toArray(new AnmeldungTagesschule[kindContainerToWorkWith.getAnmeldungenTagesschule().size()]);
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
@@ -422,7 +440,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					}
 				}
 				AnmeldungFerieninsel[] anmeldungFerieninselArray =
-					kindContainerToWorkWith.getAnmeldungenFerieninsel().toArray(new AnmeldungFerieninsel[kindContainerToWorkWith.getAnmeldungenFerieninsel().size()]);
+					kindContainerToWorkWith.getAnmeldungenFerieninsel()
+						.toArray(new AnmeldungFerieninsel[kindContainerToWorkWith.getAnmeldungenFerieninsel().size()]);
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenFerieninsel().size(); j++) {
 					AnmeldungFerieninsel anmeldungFerieninsel = anmeldungFerieninselArray[j];
 					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
@@ -484,14 +503,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
-	public Gesuch findGesuchForFreigabe(@Nonnull String gesuchId, @Nonnull Integer anzahlZurueckgezogen,
+	public Gesuch findGesuchForFreigabe(
+		@Nonnull String gesuchId, @Nonnull Integer anzahlZurueckgezogen,
 		boolean checkAnzahlZurueckgezogen) {
 		Objects.requireNonNull(gesuchId, "gesuchId muss gesetzt sein");
 		Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
 		if (gesuch == null) {
 			throw new EbeguRuntimeException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		if (checkAnzahlZurueckgezogen && !Objects.equals(anzahlZurueckgezogen,
+		if (checkAnzahlZurueckgezogen && !Objects.equals(
+			anzahlZurueckgezogen,
 			gesuch.getAnzahlGesuchZurueckgezogen())) {
 			throw new EbeguRuntimeException(
 				KibonLogLevel.NONE,
@@ -584,7 +605,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
-				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
+					&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
 					// der Mutation eine Verfügung gespeichert. Diese muss nun wieder gelöscht werden
 					vorgaenger.setVerfuegung(null);
@@ -598,7 +619,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
 			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
-				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(anmeldung.extractGesuch().getId(), anmeldung.getId());
+				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
+					anmeldung.extractGesuch().getId(),
+					anmeldung.getId());
 			});
 	}
 
@@ -721,7 +744,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
 			predicatesToUse.add(dossierPredicate);
 
-			// Alle AUSSER Superadmin, Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
+			// Alle AUSSER Superadmin, Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt
+			// werden,
 			// d.h. sie duerfen IN_BEARBEITUNG_GS und FREIGABEQUITTUNG NICHT sehen
 			if (!(principalBean.isCallerInAnyOfRole(
 				UserRole.SUPER_ADMIN,
@@ -916,7 +940,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 					anmeldung.setGueltig(true);
 					if (anmeldung.getVorgaengerId() != null) {
-						final Optional<? extends AbstractAnmeldung> anmeldungOptional = betreuungService.findAnmeldung(anmeldung.getVorgaengerId());
+						final Optional<? extends AbstractAnmeldung> anmeldungOptional =
+							betreuungService.findAnmeldung(anmeldung.getVorgaengerId());
 						anmeldungOptional.ifPresent(abstractAnmeldung -> {
 							abstractAnmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
 							abstractAnmeldung.setGueltig(false);
@@ -974,8 +999,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			if (gesuch.getTyp() == AntragTyp.MUTATION
 				|| Eingangsart.ONLINE != gesuch.getEingangsart()
 				|| gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
-				throw new EbeguRuntimeException(KibonLogLevel.WARN, "antragZurueckziehen", "Only Online Erst-/Erneuerungsgesuche "
-					+ "can be reverted");
+				throw new EbeguRuntimeException(
+					KibonLogLevel.WARN,
+					"antragZurueckziehen",
+					"Only Online Erst-/Erneuerungsgesuche "
+						+ "can be reverted");
 			}
 
 			LOG.info("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
@@ -1064,7 +1092,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleGemeindeOrTS() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
+		if (user.getRole().isRoleGemeindeOrTS() && (gesuch.getDossier().getVerantwortlicherTS() == null
+			|| !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
 			}
@@ -1193,13 +1222,19 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private void ensureUniqueErstgesuchProDossierAndGesuchsperiode(@Nonnull Gesuch gesuchToPersist) {
 		if (gesuchToPersist.getTyp() != AntragTyp.MUTATION) {
 			// Von allem ausser MUTATION darf es pro Dossier und Gesuchsperiode nur einen Antrag geben
-			List<Gesuch> existingGesuch = findExistingGesuch(gesuchToPersist.getDossier(), gesuchToPersist.getGesuchsperiode(), gesuchToPersist.getTyp());
+			List<Gesuch> existingGesuch = findExistingGesuch(gesuchToPersist.getDossier(),
+				gesuchToPersist.getGesuchsperiode(),
+				gesuchToPersist.getTyp());
 			if (!existingGesuch.isEmpty()) {
-				String message = MessageFormat.format("Es gibt schon ein Gesuch dieses Typs fuer die Gesuchsperiode {0} und Dossier {1} / {2}: ",
+				String message = MessageFormat.format(
+					"Es gibt schon ein Gesuch dieses Typs fuer die Gesuchsperiode {0} und Dossier {1} / {2}: ",
 					gesuchToPersist.getGesuchsperiode().getGesuchsperiodeString(),
 					String.valueOf(gesuchToPersist.getDossier().getFall().getFallNummer()),
 					gesuchToPersist.getDossier().getGemeinde().getName());
-				throw new EbeguRuntimeException("ensureUniqueErstgesuchProDossierAndGesuchsperiode", message, ErrorCodeEnum.ERROR_ERSTGESUCH_ALREADY_EXISTS);
+				throw new EbeguRuntimeException(
+					"ensureUniqueErstgesuchProDossierAndGesuchsperiode",
+					message,
+					ErrorCodeEnum.ERROR_ERSTGESUCH_ALREADY_EXISTS);
 			}
 		}
 	}
@@ -1528,7 +1563,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(e,
+				logExceptionAccordingToEnvironment(
+					e,
 					"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch",
 					gesuch.getId());
 				anzahl--;
@@ -1579,7 +1615,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(e,
+				logExceptionAccordingToEnvironment(
+					e,
 					"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch",
 					gesuch.getId());
 				anzahl--;
@@ -1606,7 +1643,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				self.removeGesuchAndPersist(gesuch, typ);
 				mailService.sendInfoGesuchGeloescht(gesuch);
 			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(e,
+				logExceptionAccordingToEnvironment(
+					e,
 					"Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch",
 					gesuch.getId());
 			}
@@ -1616,7 +1654,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void removeGesuchAndPersist(Gesuch gesuch,GesuchDeletionCause typ){
+	public void removeGesuchAndPersist(Gesuch gesuch, GesuchDeletionCause typ) {
 		removeGesuch(gesuch.getId(), typ);
 	}
 
@@ -1713,7 +1751,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	/**
-	 * Takes all Betreuungsmitteilungen and Abweichungen of the given Gesuch and links them to the previous corresponding Betreuung
+	 * Takes all Betreuungsmitteilungen and Abweichungen of the given Gesuch and links them to the previous
+	 * corresponding Betreuung
 	 * (vorgaengerId),
 	 * so that the mitteilungen don't get lost.
 	 */
@@ -1730,7 +1769,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 							betreuung.getVorgaengerId()));
 
-					// Diese Methode wird gebraucht, um eine OnlineMutation des GS zu loeschen. Fuer diese ist nie jemand
+					// Diese Methode wird gebraucht, um eine OnlineMutation des GS zu loeschen. Fuer diese ist nie
+					// jemand
 					// regulaer berechtigt. Wir pruefen daher, ob wir fuer den Vorgaenger, auf die wir kopieren wollen,
 					// berechtigt sind.
 					authorizer.checkWriteAuthorization(vorgaengerBetreuung);
@@ -1793,7 +1833,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// Gesuchsteller:
 			// Antrag muss Online sein, und darf noch nicht freigegeben sein
 			if (gesuch.getEingangsart().isPapierGesuch()) {
-				throw new EbeguRuntimeException("removeGesuchstellerAntrag",
+				throw new EbeguRuntimeException(
+					"removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_GS);
 			}
 			if (gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
@@ -1910,11 +1951,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
 			GemeindeStammdaten gemeindeStammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId())
-				.orElseThrow(() -> new EbeguRuntimeException("postGesuchVerfuegen",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					gesuch.extractGemeinde().getId()));
+					.orElseThrow(() -> new EbeguRuntimeException(
+						"postGesuchVerfuegen",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						gesuch.extractGemeinde().getId()));
 
-			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG ist
+			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG
+			// ist
 			// und falls Einstellung gesetzt ist
 			if (gemeindeStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen()
 				&& verantwortlicherTS != null
@@ -2138,13 +2181,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
 
-		Join<Gesuch, AntragStatusHistory> antragStatusHistoryJoin = root.join(Gesuch_.antragStatusHistories,
+		Join<Gesuch, AntragStatusHistory> antragStatusHistoryJoin = root.join(
+			Gesuch_.antragStatusHistories,
 			JoinType.LEFT);
 		Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.LEFT);
 		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
 
 		// Prepare TypedParameters
-		ParameterExpression<Gesuchsperiode> gesuchsperiodeIdParam = cb.parameter(Gesuchsperiode.class,
+		ParameterExpression<Gesuchsperiode> gesuchsperiodeIdParam = cb.parameter(
+			Gesuchsperiode.class,
 			"gesuchsperiode");
 		ParameterExpression<LocalDateTime> datumVonParam = cb.parameter(LocalDateTime.class, "datumVon");
 		ParameterExpression<LocalDateTime> datumBisParam = cb.parameter(LocalDateTime.class, "datumBis");
@@ -2218,7 +2263,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateStatus = getStatusFromEingangsartPredicate(cb, root, papierParam, onlineParam,
 			geprueftParam, freigegebenParam);
 		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierParam);
-		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id),
+		Predicate predicateGesuchsperiode = cb.equal(
+			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id),
 			gesuchsperiodeParam);
 
 		query.where(predicateStatus, predicateGesuchsperiode, predicateFall);
@@ -2336,7 +2382,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		TypedQuery<String> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(dossierIdParam, gesuch.getDossier().getId());
-		typedQuery.setParameter(gesuchsperiodeGueltigAbParam,
+		typedQuery.setParameter(
+			gesuchsperiodeGueltigAbParam,
 			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(freigegebenParam, AntragStatus.getAllFreigegebeneStatus());
 
@@ -2374,7 +2421,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		zuMutierendeAnmeldungenAbschliessen(gesuch);
 
 		// Die Mutation erstellen
-		Gesuch mutation = gesuch.copyForMutation(new Gesuch(), Eingangsart.PAPIER);
+		Gesuch mutation = gesuch.copyForMutation(new Gesuch(),
+			Eingangsart.PAPIER,
+			gesuch.getRegelStartDatum() != null ? gesuch.getRegelStartDatum() : LocalDate.now());
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setEingangsdatum(LocalDate.now());
 		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -2390,7 +2439,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Die Betreuungen werden defaultmaessig mit BESTAETIGT uebernommen.
 		// Damit eine Ueberpruefung der Angaben erwzungen werden kann, wird
 		// hier eine neue Platzbestaetigung ausgeloest.
-		persistedGesuch.extractAllBetreuungen().forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
+		persistedGesuch.extractAllBetreuungen()
+			.forEach(betreuung -> betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN));
 	}
 
 	@Override
