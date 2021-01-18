@@ -73,7 +73,7 @@ public class SozialdienstStammdaten extends AbstractEntity {
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
 	private String telefon;
 
-	@Nullable @Nonnull
+	@Nullable
 	@Pattern(regexp = Constants.REGEX_URL, message = "{validator.constraints.url.message}")
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String webseite;
