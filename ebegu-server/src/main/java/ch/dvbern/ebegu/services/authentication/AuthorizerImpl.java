@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -1578,10 +1579,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationLastenausgleichTagesschuleAngabenInstitution(@Nonnull String gemeindeAntragId) {
+	public void checkReadAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId) {
 		Objects.requireNonNull(gemeindeAntragId);
-		Optional<LastenausgleichTagesschuleAngabenInstitutionContainer> antrag =
-			(Optional<LastenausgleichTagesschuleAngabenInstitutionContainer>) gemeindeAntragService.findGemeindeAntrag(
+		Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> antrag =
+			(Optional<LastenausgleichTagesschuleAngabenGemeindeContainer>) gemeindeAntragService.findGemeindeAntrag(
 				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
 				gemeindeAntragId);
 		if (!antrag.isEmpty()) {
@@ -1589,18 +1590,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			if (principalBean.isCallerInAnyOfRole(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE)
-				&& !principalBean.belongsToGemeinde(antrag.get().getGemeinde())) {
-				throwViolation(antrag.get());
+				&& principalBean.belongsToGemeinde(antrag.get().getGemeinde())) {
+				return;
 			}
-
-			if (principalBean.isCallerInAnyOfRole(ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)
-				&& !institutionService.getInstitutionenReadableForCurrentBenutzer(false)
-				.stream()
-				.filter(institution -> institution.getId() == antrag.get().getInstitution().getId())
-				.findAny()
-				.isPresent()){
-				throwViolation(antrag.get());
-			}
+			throwViolation(antrag.get());
 		}
 	}
 

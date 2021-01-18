@@ -31,7 +31,7 @@ const LOG = LogFactory.createLog('LastenausgleichTSComponent');
     selector: 'dv-lastenausgleich-ts',
     templateUrl: './lastenausgleich-ts.component.html',
     styleUrls: ['./lastenausgleich-ts.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class LastenausgleichTSComponent implements OnInit, OnDestroy {
 
