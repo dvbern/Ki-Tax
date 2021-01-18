@@ -22,7 +22,8 @@ export class TagesschuleAngabenRS {
     public getAllVisibleTagesschulenAngabenForTSLastenausgleich(lastenausgleichId: string): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer[]> {
         return this.http.get<TSLastenausgleichTagesschuleAngabenInstitution[]>(`${this.apiUrl}/${lastenausgleichId}/tagesschulenantraege`)
             .pipe(
-                map(lastenausgleichAngabenList => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(lastenausgleichAngabenList))
+                map(lastenausgleichAngabenList => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(
+                    lastenausgleichAngabenList)),
             );
     }
 }

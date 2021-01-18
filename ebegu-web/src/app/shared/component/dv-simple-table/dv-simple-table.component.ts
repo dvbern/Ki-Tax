@@ -1,20 +1,22 @@
 import {
-    Component,
-    OnInit,
     ChangeDetectionStrategy,
-    Input,
-    SimpleChanges,
-    OnChanges,
-    Output,
+    Component,
     EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewEncapsulation,
 } from '@angular/core';
+import {Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
     selector: 'dv-simple-table',
     templateUrl: './dv-simple-table.component.html',
     styleUrls: ['./dv-simple-table.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class DvSimpleTableComponent implements OnInit, OnChanges {
 
@@ -30,13 +32,15 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes.data && !this.columns) {
-            console.error('data can not be used without specifying the columns. Use the columns input');
+        // tslint:disable-next-line:early-exit
+        if (changes.data) {
+            if (!this.columns) {
+                console.error('data can not be used without specifying the columns. Use the columns input');
+                return;
+            }
+            this.datasource = new MatTableDataSource<any>(this.data);
         }
 
-        if (changes.data && !changes.data.isFirstChange()) {
-            this.datasource = new MatTableDataSource<any>(changes.data.currentValue);
-        }
     }
 
     public onRowClicked(element: any, $event: MouseEvent): void {
@@ -45,5 +49,16 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
 
     public getColumnsAttributeName(): string[] {
         return this.columns.map(column => column.attributeName);
+    }
+
+    public sortData(sortEvent: Sort): void {
+        if (sortEvent.direction === '') {
+            this.datasource.data = this.data;
+            return;
+        }
+        // copy so we don't manipulate the original input array
+        this.datasource.data = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
+            a[sortEvent.active].localeCompare(b[sortEvent.active]) :
+            b[sortEvent.active].localeCompare(a[sortEvent.active])));
     }
 }
