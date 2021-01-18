@@ -43,14 +43,14 @@ public class GesuchCopyForMutationTest {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		Testfall01_WaeltiDagmar testfall01_waeltiDagmar =
 			new Testfall01_WaeltiDagmar(gesuchsperiode, instStammdaten);
-
-		testfall01_waeltiDagmar.createGesuch(LocalDate.now());
+		LocalDate eingangsdatum = LocalDate.now();
+		testfall01_waeltiDagmar.createGesuch(eingangsdatum);
 		Gesuch gesuch = testfall01_waeltiDagmar.getGesuch();
-		Gesuch mutation = gesuch.copyForMutation(new Gesuch(), Eingangsart.PAPIER);
+		Gesuch mutation = gesuch.copyForMutation(new Gesuch(), Eingangsart.PAPIER, eingangsdatum);
 		Assert.assertEquals(Eingangsart.PAPIER, mutation.getEingangsart());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, mutation.getStatus());
 
-		Gesuch mutation2 = gesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
+		Gesuch mutation2 = gesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE, eingangsdatum);
 		Assert.assertEquals(Eingangsart.ONLINE, mutation2.getEingangsart());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, mutation2.getStatus());
 

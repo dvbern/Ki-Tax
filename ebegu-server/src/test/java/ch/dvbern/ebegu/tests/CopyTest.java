@@ -117,10 +117,10 @@ public class CopyTest {
 		Dossier folgeDossier = TestDataUtil.createDefaultDossier();
 		folgeDossier.setFall(erstgesuch.getFall());
 
-		mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
-		erneuerung = erstgesuch.copyForErneuerung(new Gesuch(), folgeperiode, Eingangsart.ONLINE);
+		mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE, erstgesuch.getEingangsdatum());
+		erneuerung = erstgesuch.copyForErneuerung(new Gesuch(), folgeperiode, Eingangsart.ONLINE, erstgesuch.getEingangsdatum());
 		mutationNeuesDossier = erstgesuch.copyForMutationNeuesDossier(new Gesuch(), Eingangsart.ONLINE, folgeDossier);
-		erneuerungNeuesDossier = erstgesuch.copyForErneuerungsgesuchNeuesDossier(new Gesuch(), Eingangsart.ONLINE, folgeDossier, folgeperiode);
+		erneuerungNeuesDossier = erstgesuch.copyForErneuerungsgesuchNeuesDossier(new Gesuch(), Eingangsart.ONLINE, folgeDossier, folgeperiode, erstgesuch.getEingangsdatum());
 	}
 
 	@Test

@@ -844,8 +844,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nonnull
-	public Gesuch copyGesuch(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, @Nonnull Eingangsart targetEingangsart, @Nonnull AntragTyp targetTyp,
-			@Nonnull Dossier targetDossier, @Nonnull Gesuchsperiode targetGesuchsperiode) {
+	public Gesuch copyGesuch(
+		@Nonnull Gesuch target,
+		@Nonnull AntragCopyType copyType,
+		@Nonnull Eingangsart targetEingangsart,
+		@Nonnull AntragTyp targetTyp,
+		@Nonnull Dossier targetDossier,
+		@Nonnull Gesuchsperiode targetGesuchsperiode,
+		@Nonnull LocalDate regelStartDatum) {
 		super.copyAbstractEntity(target, copyType);
 		target.setEingangsart(targetEingangsart);
 		target.setTyp(targetTyp);
@@ -868,7 +874,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		copyFamiliensituation(target, copyType, this.isMutation());
 		copyGesuchsteller1(target, copyType);
 
-		copyKindContainer(target, copyType, target.getRegelStartDatum() != null ? target.getRegelStartDatum() : LocalDate.now());
+		copyKindContainer(target, copyType, regelStartDatum);
 
 		switch (copyType) {
 		case MUTATION:
@@ -970,27 +976,30 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Nonnull
 	public Gesuch copyForMutation(
-			@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget) {
-		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsartOfTarget, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode());
+		@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull LocalDate regelStartDatum) {
+		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsartOfTarget, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode(), regelStartDatum);
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerung(
-			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull Eingangsart eingangsartOfTarget) {
-		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsartOfTarget, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiodeOfTarget);
+			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull LocalDate regelStartDatum) {
+		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsartOfTarget, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiodeOfTarget,
+			regelStartDatum);
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerungsgesuchNeuesDossier(
 			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget,
-			@Nonnull Dossier dossierOfTarget, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget) {
-		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, gesuchsperiodeOfTarget);
+			@Nonnull Dossier dossierOfTarget, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull LocalDate regelStartDatum) {
+		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, gesuchsperiodeOfTarget,
+			regelStartDatum);
 	}
 
 	@Nonnull
 	public Gesuch copyForMutationNeuesDossier(
 			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull Dossier dossierOfTarget) {
-		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, this.getGesuchsperiode());
+		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, this.getGesuchsperiode(),
+			this.getRegelStartDatum() != null ? this.getRegelStartDatum() : LocalDate.now());
 	}
 
 	@Nonnull
