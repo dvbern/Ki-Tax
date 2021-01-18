@@ -21,15 +21,18 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -88,5 +91,19 @@ public class GemeindeAntragResource {
 
 		final List<GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
 		return converter.gemeindeAntragListToJax(gemeindeAntragList);
+	}
+
+	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
+	@GET
+	@Path("")
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
+		@Nullable @QueryParam("gemeinde") String gemeinde,
+		@Nullable @QueryParam("periode") String periode,
+		@Nullable @QueryParam("typ") String typ,
+		@Nullable @QueryParam("status") String status
+	) {
+		return converter.gemeindeAntragListToJax(
+			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(gemeinde, periode, typ, status));
 	}
 }

@@ -17,26 +17,47 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 
@@ -45,7 +66,8 @@ import com.google.common.base.Preconditions;
  */
 @Stateless
 @Local(LastenausgleichTagesschuleAngabenGemeindeService.class)
-public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService implements LastenausgleichTagesschuleAngabenGemeindeService {
+public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
+	implements LastenausgleichTagesschuleAngabenGemeindeService {
 
 	@Inject
 	private Persistence persistence;
@@ -57,11 +79,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	private GemeindeService gemeindeService;
 
 	@Inject
+	private PrincipalBean principal;
+
+	@Inject
 	private LastenausgleichTagesschuleAngabenInstitutionService angabenInstitutionService;
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
-
 
 	@Override
 	@Nonnull
@@ -73,13 +97,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		List<GemeindeAntrag> result = new ArrayList<>();
 		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
 		for (Gemeinde gemeinde : aktiveGemeinden) {
-			LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer = new LastenausgleichTagesschuleAngabenGemeindeContainer();
+			LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer =
+				new LastenausgleichTagesschuleAngabenGemeindeContainer();
 			fallContainer.setGesuchsperiode(gesuchsperiode);
 			fallContainer.setGemeinde(gemeinde);
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
-			fallContainer.setAngabenKorrektur(null); 	// Wird erst mit den Daten initialisiert, da alles zwingend
-			fallContainer.setAngabenDeklaration(null); 	// Wird bei Freigabe rueberkopiert
-			final LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
+			fallContainer.setAngabenKorrektur(null);    // Wird erst mit den Daten initialisiert, da alles zwingend
+			fallContainer.setAngabenDeklaration(null);    // Wird bei Freigabe rueberkopiert
+			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+				saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(saved);
 			result.add(saved);
 		}
@@ -93,7 +119,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 
-		LastenausgleichTagesschuleAngabenGemeindeContainer container = persistence.find(LastenausgleichTagesschuleAngabenGemeindeContainer.class, id);
+		LastenausgleichTagesschuleAngabenGemeindeContainer container =
+			persistence.find(LastenausgleichTagesschuleAngabenGemeindeContainer.class, id);
 		return Optional.ofNullable(container);
 	}
 
@@ -159,6 +186,84 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		fallContainer.copyForFreigabe();
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
+	}
+
+	@Nonnull
+	@Override
+	public List<LastenausgleichTagesschuleAngabenGemeindeContainer> getAllLastenausgleicheTagesschulen() {
+		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query =
+			cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
+			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+
+		if (!principal.isCallerInAnyOfRole(
+			UserRole.SUPER_ADMIN,
+			UserRole.ADMIN_MANDANT,
+			UserRole.SACHBEARBEITER_MANDANT)) {
+			Predicate gemeindeIn =
+				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
+			query.where(gemeindeIn);
+		}
+
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Nullable
+	@Override
+	public List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulen(
+		@Nullable String gemeinde,
+		@Nullable String periode,
+		@Nullable String status
+	) {
+		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query =
+			cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
+			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+
+		if (!principal.isCallerInAnyOfRole(
+			UserRole.SUPER_ADMIN,
+			UserRole.ADMIN_MANDANT,
+			UserRole.SACHBEARBEITER_MANDANT)) {
+			Predicate gemeindeIn =
+				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
+			query.where(gemeindeIn);
+		}
+
+		if (gemeinde != null) {
+			query.where(
+				cb.equal(
+					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).get(Gemeinde_.name),
+					gemeinde)
+			);
+		}
+		if (periode != null) {
+			String[] years = Arrays.stream(periode.split("/"))
+					.map(year -> year.length() == 4 ? year : "20".concat(year))
+					.collect(Collectors.toList())
+					.toArray(String[]::new);
+			Path<DateRange> dateRangePath =
+				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER)
+					.get(AbstractDateRangedEntity_.gueltigkeit);
+			query.where(
+				cb.and(
+					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
+					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
+				)
+			);
+		}
+		if (status != null) {
+			query.where(
+				cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status), LastenausgleichTagesschuleAngabenGemeindeStatus.valueOf(status))
+			);
+		}
+
+		return persistence.getCriteriaResults(query);
 	}
 }
 

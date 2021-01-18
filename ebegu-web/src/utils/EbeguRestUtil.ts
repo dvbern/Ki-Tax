@@ -140,6 +140,7 @@ import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
+import {TSWizardStepX} from '../models/TSWizardStepX';
 import {TSWorkJob} from '../models/TSWorkJob';
 import {TSZahlung} from '../models/TSZahlung';
 import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
@@ -4640,5 +4641,21 @@ export class EbeguRestUtil {
             return restAngabenInstitution;
         }
         return undefined;
+    }
+
+    public parseWizardStepXList(data: any): TSWizardStepX[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseWizardStepX(item))
+            : [this.parseWizardStepX(data)];
+    }
+
+    public parseWizardStepX(data: any): TSWizardStepX {
+        const wizardStep = new TSWizardStepX();
+        wizardStep.stepName = data.stepName;
+        wizardStep.wizardTyp = data.wizardTyp;
+        return wizardStep;
     }
 }

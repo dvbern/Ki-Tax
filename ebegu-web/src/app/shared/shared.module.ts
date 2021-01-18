@@ -40,8 +40,11 @@ import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/d
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
+import {NewUserSelectDirective} from '../core/new-antrag-list/new-user-select.directive';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
@@ -122,6 +125,10 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe
+        DvMonthPickerComponent,
+        NewAntragListComponent,
+        NewUserSelectDirective,
+        DvLoadingButtonXDirective
     ],
     exports: [
         CommonModule,
@@ -163,6 +170,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe,
+        NewAntragListComponent,
+        DvLoadingButtonXDirective,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

@@ -25,6 +25,7 @@ import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
+import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
@@ -344,6 +345,17 @@ export const uploadRSProvider = {
     deps: ['$injector'],
 };
 
+// SearchRS
+export function searchRSServiceFactory(i: IInjectorService): SearchRS {
+    return i.get('SearchRS');
+}
+
+export const searchRSProvider = {
+    provide: SearchRS,
+    useFactory: searchRSServiceFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -369,5 +381,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     supportRSProvider,
     mandantRSProvider,
     uploadRSProvider,
-    notrechtRSProvider
+    notrechtRSProvider,
+    searchRSProvider
 ];

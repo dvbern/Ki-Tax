@@ -1,0 +1,299 @@
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.faelle-tabelle {
+    table {
+        width: 100%;
+    }
+
+    tr.mat-header-row {
+        height: 4rem;
+    }
+
+    mat-form-field {
+        position: relative;
+        width: 100%;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+        width: auto !important;
+    }
+
+    .fa-undo {
+        &:hover {
+            color: @primary;
+            cursor: pointer;
+        }
+    }
+
+    #titleText {
+        display: inline-block;
+    }
+
+    #refreshIcon {
+        display: inline-block;
+        margin-left: 1rem;
+    }
+
+    .mat-sort-header-arrow[style] {
+
+        // Hide default arrow stem
+        .mat-sort-header-stem {
+            display: none;
+        }
+
+        .mat-sort-header-indicator {
+            color: black;
+            font-weight: bold;
+            opacity: 1;
+
+            // Hide default arrow as its composed of left, right and middle
+            .mat-sort-header-pointer-left, .mat-sort-header-pointer-right, .mat-sort-header-pointer-middle {
+                display: none;
+            }
+        }
+    }
+
+    // custom ascending arrow
+    [aria-sort='ascending'] {
+        .mat-sort-header-arrow {
+            .mat-sort-header-indicator {
+                &::before {
+                    content: '\f0de';
+                    font-family: FontAwesome, sans-serif;
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: 0.1em;
+                }
+            }
+        }
+    }
+
+    // custom descending arrow
+    [aria-sort='descending'] {
+        .mat-sort-header-arrow {
+            .mat-sort-header-indicator {
+                &::before {
+                    content: '\f0dd';
+                    font-family: FontAwesome, sans-serif;
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: -1em;
+                }
+            }
+        }
+    }
+
+    // custom no-sort arrows
+    [aria-sort='none'] {
+        .mat-sort-header-arrow {
+            // we need the important to overwrite material element styles
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+
+            .mat-sort-header-indicator {
+                transform: translateY(0) !important;
+
+                &::before {
+                    content: '\f0dc';
+                    font-family: FontAwesome, sans-serif;
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: 0;
+                }
+            }
+        }
+    }
+
+    .mat-select-panel1 {
+        .ebeguLabel();
+        background: #e5e5e5;
+        color: black !important;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-size: 1.6rem !important;
+        font-weight: 700;
+        letter-spacing: normal;
+    }
+
+    .select-background {
+        background: #e5e5e5;
+        height: 4rem;
+        position: absolute;
+        top: -0.2rem;
+        width: 100%;
+    }
+
+    .mat-form-field {
+        .ebeguLabel();
+        color: black !important;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-size: 1.6rem !important;
+        font-weight: 700;
+        line-height: normal;
+    }
+
+    .mat-autocomplete-panel {
+        .ebeguLabel();
+        background: #e5e5e5;
+        color: black !important;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-size: 1.4rem !important;
+        font-weight: 700;
+        letter-spacing: normal;
+    }
+
+    .mat-option {
+        font-size: 1.6rem;
+
+        .mat-option-text {
+            font-weight: normal;
+        }
+    }
+
+    .dv-select-style {
+        background: #e5e5e5;
+
+        & > select {
+            background: #e5e5e5;
+        }
+    }
+
+    mat-cell {
+        .ebeguH3();
+        color: @contrast-darkest;
+        // we need to declare this additionally in important because there is a global style that would otherwise overwrite
+        // this and I don't konw where the global is applied and if we could remove it instead
+        font-size: 1.4rem !important;
+        height: 6rem;
+        line-height: 3rem;
+        margin: 0;
+        overflow: hidden;
+        padding: 0 0.25rem 0;
+        position: relative;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+
+        span:first-child {
+            margin: 0 calc(0.8rem - 0.25rem) 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    mat-cell.mat-cell, mat-header-cell.mat-header-cell, mat-footer-cell {
+        flex: 2;
+    }
+
+    @column-widths: {
+        antragTyp: 5rem;
+        fallNummer: 0 0 8rem;
+        familienName: 5rem;
+        gemeinde: 5rem;
+        kinder: 5rem;
+        periode: 5rem;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-fallNummer, .mat-column-fallNummer-filter {
+        flex: 0 0 8rem !important;
+        min-width: 8rem !important;
+    }
+
+    .mat-column-status, .mat-column-status-filter {
+        flex: 3 1 !important;
+        min-width: 0 !important;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-dokumenteHochgeladen, .mat-column-dokumenteHochgeladen-filter {
+        flex: 0 0 8rem !important;
+        min-width: 8rem !important;
+    }
+
+    .mat-column-institutionen, .mat-column-institutionen-filter {
+        flex: 4 1 !important;
+        min-width: 0 !important;
+    }
+
+    .mat-column-angebote, .mat-column-angebote-filter {
+        flex: 4 1 !important;
+        min-width: 0 !important;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-verantwortlicheTS, .mat-column-verantwortlicheTS-filter {
+        flex: 3 1 !important;
+        min-width: 0 !important;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-verantwortlicheBG, .mat-column-verantwortlicheBG-filter {
+        flex: 3 1 !important;
+        min-width: 0 !important;
+    }
+
+    mat-cell.mat-cell:last-of-type {
+        padding-right: 6px;
+    }
+
+    [dvNewUserSelect] {
+        width: 100%;
+    }
+
+    mat-row.mat-row {
+        min-height: auto;
+    }
+
+    span.no-padding-left {
+        padding-left: 0 !important;
+    }
+
+    span > label > mat-label {
+        padding-left: 1rem;
+    }
+
+    mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-form-field-wrapper > div.mat-form-field-flex > .mat-form-field-infix input {
+        padding-left: 5px;
+
+        + span > label {
+            padding-left: 5px;
+            top: 2.8rem;
+        }
+    }
+
+    .mat-form-field-wrapper {
+        padding-bottom: 0;
+    }
+
+    .bottom-pagination {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .pointer-cursor {
+        cursor: pointer;
+    }
+
+    mat-row mat-cell:first-of-type {
+        padding-left: 0.8rem;
+    }
+
+    .mat-select-value {
+        padding-left: 5px;
+    }
+
+    .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+        color: rgba(0, 0, 0, 0.54);
+    }
+
+    .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: rgba(0, 0, 0, 0.87);
+    }
+
+    .mat-focused .mat-form-field-label {
+        color: rgba(0, 0, 0, 0.54);
+    }
+}
