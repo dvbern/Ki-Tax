@@ -29,7 +29,7 @@
                     <!-- Selbstbehalt pro 100% Platz -->
                     <div class="col-md-3">
 
-                        <div class="asd">
+                        <div>
                             <label class="md-no-float required"
                                    for="gemeindeantragtyp"
                                    translate>TYP</label>
@@ -53,7 +53,7 @@
                          layout-align="center center"
                          id="actions">
                         <div dvLoadingButtonX
-                             aria-label="{{'LASTENAUSGLEICH_ERSTELLEN' | translate}}"
+                             [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate"
                              type="submit"
                              (buttonClick)="createAntrag()">
                             <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
@@ -69,6 +69,7 @@
                         (rowClicked)="navigate($event.antrag, $event.event)"
                         [disablePagination]="true"
                         (filterChange)="onFilterChange($event)"
+                        (sortChange)="onSortChange($event)"
                         [filterStateList]="getStateFilter()"
                         [filterTypeList]="gemeindeAntragService.getTypes()"
                         [totalItems]="totalItems"></dv-new-antrag-list>

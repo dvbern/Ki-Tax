@@ -1,12 +1,10 @@
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
-import {
-    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
-} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -45,6 +43,11 @@ export class GemeindeAntraegeComponent implements OnInit {
     private readonly filterDebounceSubject: BehaviorSubject<DVAntragListFilter> =
         new BehaviorSubject<DVAntragListFilter>({});
 
+    private readonly sortDebounceSubject: BehaviorSubject<{
+        predicate?: string,
+        reverse?: boolean
+    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
+
     public constructor(
         public readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
@@ -65,8 +68,8 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private loadData(): void {
-        this.antragList$ = this.filterDebounceSubject.pipe(
-            mergeMap(emittedFilter => this.gemeindeAntragService.getAllGemeindeAntraege(emittedFilter)
+        this.antragList$ = combineLatest([this.filterDebounceSubject, this.sortDebounceSubject]).pipe(
+            mergeMap(filterAndSort => this.gemeindeAntragService.getGemeindeAntraege(filterAndSort[0], filterAndSort[1])
                 .pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                     tap(msg => this.errorService.addMesageAsError(msg)),
                     mergeMap(() => of([] as TSGemeindeAntrag[])),
@@ -83,7 +86,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                 });
             }),
             tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
-
         );
     }
 
@@ -100,7 +102,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    private navigate(antrag: DVAntragListItem, event: MouseEvent): void {
+    public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
         const path = 'LASTENAUSGLEICH_TS';
         const navObj = {
             id: antrag.antragId,
@@ -119,5 +121,9 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public getStateFilter(): string[] {
         return Object.keys(TSLastenausgleichTagesschuleAngabenGemeindeStatus);
+    }
+
+    public onSortChange(sortChange: { predicate?: string; reverse?: boolean }): void {
+        this.sortDebounceSubject.next(sortChange);
     }
 }

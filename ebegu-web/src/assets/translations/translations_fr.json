@@ -2196,6 +2196,9 @@
     "FERIENBETREUUNG": "Ferienbetreuung",
     "CREATE_ANTRAG_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
     "DATA_RETRIEVAL_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
+    "IN_BEARBEITUNG_GEMEINDE": "In Bearbeitung Gemeinde",
+    "IN_PRUEFUNG_KANTON": "In Prüfung Kanton",
+    "ZWEITPRUEFUNG": "Zweitprüfung",
     "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Attention: la date de naissance de votre enfant se trouve dans le future. Cette demande devra être changée après la naissance de votre enfant.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

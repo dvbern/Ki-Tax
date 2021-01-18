@@ -94,6 +94,17 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     @Output() public readonly filterChange: EventEmitter<DVAntragListFilter> = new EventEmitter<DVAntragListFilter>();
 
     /**
+     * Emits any time the sort changes. Only emits when the data$ input is provided.
+     */
+    @Output() public readonly sortChange: EventEmitter<{
+        predicate?: string,
+        reverse?: boolean
+    }> = new EventEmitter<{
+        predicate?: string,
+        reverse?: boolean
+    }>();
+
+    /**
      * Emits any time the user clicks on the pagination navigation. Omly emits when the data$ input is provided.
      */
     @Output() public readonly paginationEvent: EventEmitter<DVPaginationEvent> = new EventEmitter<DVPaginationEvent>();
@@ -422,10 +433,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     public sortData(sortEvent: Sort): void {
         this.sort.predicate = sortEvent.direction.length > 0 ? sortEvent.active : null;
         this.sort.reverse = sortEvent.direction === 'asc';
-        this.loadData();
+        if (this.customData) {
+            this.sortChange.emit(this.sort);
+        } else {
+            this.loadData();
+        }
     }
 
-    private onEditClicked(antrag: TSAntragDTO, event: MouseEvent): void {
+    public onEditClicked(antrag: TSAntragDTO, event: MouseEvent): void {
         this.rowClicked.emit({antrag, event});
     }
 
