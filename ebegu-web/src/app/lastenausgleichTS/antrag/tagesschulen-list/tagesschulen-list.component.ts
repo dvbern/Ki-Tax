@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
 
 @Component({
     selector: 'dv-tagesschulen-list',
     templateUrl: './tagesschulen-list.component.html',
-    styleUrls: ['./tagesschulen-list.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagesschulenListComponent implements OnInit {
 
@@ -18,8 +19,10 @@ export class TagesschulenListComponent implements OnInit {
     ];
 
     public constructor(
-        private tagesschuleAngabenService: TagesschuleAngabenRS,
-        private cd: ChangeDetectorRef
+        private readonly tagesschuleAngabenService: TagesschuleAngabenRS,
+        private readonly cd: ChangeDetectorRef,
+        private readonly translate: TranslateService,
+        private readonly errorService: ErrorService,
     ) {
     }
 
@@ -31,9 +34,13 @@ export class TagesschulenListComponent implements OnInit {
                             institutionName: latsInstitutionContainer.institution.name,
                             status: `LATS_STATUS_${latsInstitutionContainer.status}`,
                         };
-                    }
+                    },
                 );
                 this.cd.markForCheck();
+            }, () => {
+                this.translate.get('DATA_RETRIEVAL_ERROR')
+                    .subscribe(msg => this.errorService.addMesageAsError(msg),
+                        err => console.error('Error loading translation', err));
             });
     }
 }

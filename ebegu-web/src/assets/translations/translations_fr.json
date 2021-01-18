@@ -2203,5 +2203,6 @@
     "LATS_STATUS_OFFEN": "Offen",
     "LATS_STATUS_GEPRUEFT": "Geprüft",
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
+    "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

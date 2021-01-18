@@ -12,11 +12,11 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 })
 export class TagesschuleAngabenRS {
 
-    private ebeguRestUtils = new EbeguRestUtil();
+    private readonly ebeguRestUtils = new EbeguRestUtil();
 
-    private apiUrl = `${CONSTANTS.REST_API}gemeindeantrag`;
+    private readonly apiUrl = `${CONSTANTS.REST_API}gemeindeantrag`;
 
-    public constructor(private http: HttpClient) {
+    public constructor(private readonly http: HttpClient) {
     }
 
     public getAllVisibleTagesschulenAngabenForTSLastenausgleich(lastenausgleichId: string): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer[]> {

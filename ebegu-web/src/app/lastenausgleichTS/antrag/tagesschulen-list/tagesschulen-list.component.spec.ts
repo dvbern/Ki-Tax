@@ -1,25 +1,38 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {HttpClientModule} from '@angular/common/http';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {TranslateModule} from '@ngx-translate/core';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {SharedModule} from '../../../shared/shared.module';
 
-import { TagesschulenListComponent } from './tagesschulen-list.component';
+import {TagesschulenListComponent} from './tagesschulen-list.component';
 
 describe('TagesschulenListComponent', () => {
-  let component: TagesschulenListComponent;
-  let fixture: ComponentFixture<TagesschulenListComponent>;
+    let component: TagesschulenListComponent;
+    let fixture: ComponentFixture<TagesschulenListComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TagesschulenListComponent ]
-    })
-    .compileComponents();
-  });
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TagesschulenListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [HttpClientModule, TranslateModule.forRoot()],
+            providers: [
+                {
+                    provide: ErrorService,
+                    useValue: errorServiceSpy
+                }
+            ],
+            declarations: [TagesschulenListComponent],
+        })
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TagesschulenListComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -49,7 +49,7 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     }
 
     public getColumnsAttributeName(): string[] {
-        return this.columns.map(column => column.attributeName);
+        return this.columns?.map(column => column.attributeName);
     }
 
     public sortData(sortEvent: Sort): void {

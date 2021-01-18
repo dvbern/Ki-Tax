@@ -2199,9 +2199,10 @@
     "IN_BEARBEITUNG_GEMEINDE": "In Bearbeitung Gemeinde",
     "IN_PRUEFUNG_KANTON": "In Prüfung Kanton",
     "ZWEITPRUEFUNG": "Zweitprüfung",
+    "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
     "LATS_STATUS_OFFEN": "Offen",
     "LATS_STATUS_GEPRUEFT": "Geprüft",
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
-    "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
+    "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
