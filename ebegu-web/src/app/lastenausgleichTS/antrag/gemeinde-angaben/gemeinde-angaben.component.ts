@@ -47,7 +47,7 @@ export class GemeindeAngabenComponent implements OnInit {
             .subscribe(container => {
                 this.lATSAngabenGemeindeContainer = container;
                 this.initForm();
-                this.ref.detectChanges();
+                this.ref.markForCheck();
             }, err => LOG.error(err));
     }
 

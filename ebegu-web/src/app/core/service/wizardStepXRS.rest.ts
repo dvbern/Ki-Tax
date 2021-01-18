@@ -19,6 +19,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
@@ -44,7 +45,7 @@ export class WizardStepXRS {
         return 'WizardStepXRS';
     }
 
-    public updateSteps(wizardStepTyp: string, id: string): void {
+    public updateSteps(wizardStepTyp: TSWizardStepXTyp, id: string): void {
         this.http.get(`${this.serviceURL}/getAllSteps/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepXList(response);
@@ -58,14 +59,14 @@ export class WizardStepXRS {
         return this.wizardSteps.asObservable();
     }
 
-    public initFirstStep(wizardStepTyp: string, id: string): Observable<TSWizardStepX> {
+    public initFirstStep(wizardStepTyp: TSWizardStepXTyp, id: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/initFirstStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseWizardStepX(response);
             }));
     }
 
-    public getNextStep(wizardStepTyp: string, wizardStep: string, id: string): Observable<TSWizardStepX> {
+    public getNextStep(wizardStepTyp: TSWizardStepXTyp, wizardStep: string, id: string): Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/getNextStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(
             wizardStep)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {
@@ -73,7 +74,8 @@ export class WizardStepXRS {
             }));
     }
 
-    public getPreviousStep(wizardStepTyp: string, wizardStep: string, id: string): Observable<TSWizardStepX> {
+    public getPreviousStep(wizardStepTyp: TSWizardStepXTyp, wizardStep: string, id: string):
+        Observable<TSWizardStepX> {
         return this.http.get(`${this.serviceURL}/getPreviousStep/${encodeURIComponent(wizardStepTyp)}/${encodeURIComponent(
             wizardStep)}/${encodeURIComponent(id)}`)
             .pipe(map((response: any) => {

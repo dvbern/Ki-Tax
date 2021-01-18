@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -41,7 +42,7 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     public wizardSteps$: Observable<TSWizardStepX[]>;
-    public wizardTyp = 'LASTENAUSGLEICH_TS';
+    public wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TS;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
