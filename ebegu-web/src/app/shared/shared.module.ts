@@ -124,7 +124,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
-        EbeguDatePipe
+        EbeguDatePipe,
         DvMonthPickerComponent,
         NewAntragListComponent,
         NewUserSelectDirective,
