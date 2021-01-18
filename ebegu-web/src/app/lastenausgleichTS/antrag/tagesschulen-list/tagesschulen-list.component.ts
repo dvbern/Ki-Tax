@@ -29,7 +29,7 @@ export class TagesschulenListComponent implements OnInit {
                 this.data = data.map(latsInstitutionContainer => {
                         return {
                             institutionName: latsInstitutionContainer.institution.name,
-                            status: latsInstitutionContainer.status,
+                            status: `LATS_STATUS_${latsInstitutionContainer.status}`,
                         };
                     }
                 );

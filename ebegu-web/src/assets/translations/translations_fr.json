@@ -2200,5 +2200,8 @@
     "IN_PRUEFUNG_KANTON": "In Prüfung Kanton",
     "ZWEITPRUEFUNG": "Zweitprüfung",
     "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Attention: la date de naissance de votre enfant se trouve dans le future. Cette demande devra être changée après la naissance de votre enfant.",
+    "LATS_STATUS_OFFEN": "Offen",
+    "LATS_STATUS_GEPRUEFT": "Geprüft",
+    "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

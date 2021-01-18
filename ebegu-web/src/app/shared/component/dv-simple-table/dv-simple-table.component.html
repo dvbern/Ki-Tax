@@ -7,7 +7,7 @@
                     <span>{{column.displayedName | translate}}</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element[column.attributeName]">{{element[column.attributeName]}}</span>
+                    <span [title]="element[column.attributeName]">{{element[column.attributeName] | translate}}</span>
                 </mat-cell>
             </ng-container>
 
