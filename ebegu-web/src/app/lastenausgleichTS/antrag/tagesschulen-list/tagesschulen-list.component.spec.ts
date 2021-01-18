@@ -2,7 +2,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
-import {SharedModule} from '../../../shared/shared.module';
 
 import {TagesschulenListComponent} from './tagesschulen-list.component';
 

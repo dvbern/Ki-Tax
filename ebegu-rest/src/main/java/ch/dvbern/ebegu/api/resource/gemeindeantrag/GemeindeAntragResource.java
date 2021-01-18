@@ -56,8 +56,10 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -89,13 +91,13 @@ public class GemeindeAntragResource {
 	private Authorizer authorizer;
 
 	@Inject
-	InstitutionService institutionService;
+	private InstitutionService institutionService;
 
 	@ApiOperation(
 		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
 	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public List<JaxGemeindeAntrag> createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
@@ -120,7 +122,7 @@ public class GemeindeAntragResource {
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
 	@GET
 	@Path("")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
@@ -134,11 +136,11 @@ public class GemeindeAntragResource {
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")
 	@GET
 	@Path("{gemeindeAntragId}/tagesschulenantraege")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public List<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> getTagesschuleAntraegeFuerGemeinedAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragId") String gemeindeAntragId
 	) {
-		authorizer.checkReadAuthorizationLastenausgleichTagesschuleAngabenInstitution(gemeindeAntragId);
+		authorizer.checkReadAuthorizationLATSGemeindeAntrag(gemeindeAntragId);
 
 		return angabenInstitutionService.findLastenausgleichTagesschuleAngabenInstitutionByGemeindeAntragId(
 			gemeindeAntragId)
@@ -149,8 +151,8 @@ public class GemeindeAntragResource {
 				false).stream()
 				.filter(institution -> institution.getId()
 					.equals(lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getId()))
-				.findAny()
-				.isEmpty())
+				.findFirst()
+				.isPresent())
 			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> {
 				switch (lastenausgleichTagesschuleAngabenInstitutionContainer.getStatus()) {
 				case OFFEN:
