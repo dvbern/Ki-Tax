@@ -149,10 +149,8 @@ public class GemeindeAntragResource {
 			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())
 				|| institutionService.getInstitutionenReadableForCurrentBenutzer(
 				false).stream()
-				.filter(institution -> institution.getId()
-					.equals(lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getId()))
-				.findFirst()
-				.isPresent())
+				.anyMatch(institution -> institution.getId()
+					.equals(lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getId())))
 			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> {
 				switch (lastenausgleichTagesschuleAngabenInstitutionContainer.getStatus()) {
 				case OFFEN:
