@@ -1,14 +1,9 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
-import {TSGemeinde} from '../../../models/TSGemeinde';
-import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
-import {TSDateRange} from '../../../models/types/TSDateRange';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
