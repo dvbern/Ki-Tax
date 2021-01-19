@@ -1590,11 +1590,38 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return;
 		}
-		if (principalBean.isCallerInAnyOfRole(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE)
+		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
 			&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
 			return;
 		}
 		throwViolation(antrag);
+	}
+
+	@Override
+	public void checkWriteAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId) {
+		Objects.requireNonNull(gemeindeAntragId);
+		LastenausgleichTagesschuleAngabenGemeindeContainer antrag =
+			(LastenausgleichTagesschuleAngabenGemeindeContainer) gemeindeAntragService.findGemeindeAntrag(
+				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+				gemeindeAntragId
+			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
+
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+
+		switch (antrag.getStatus()) {
+		case NEU: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+				&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
+				return;
+			} else {
+				throwViolation(antrag);
+			}
+		} default: {
+			throwViolation(antrag);
+		}
+		}
 	}
 
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {
