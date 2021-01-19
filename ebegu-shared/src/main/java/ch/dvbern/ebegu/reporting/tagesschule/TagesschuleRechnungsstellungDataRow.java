@@ -334,6 +334,9 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 
 	@Override
 	public int compareTo(@Nonnull TagesschuleRechnungsstellungDataRow o) {
+		if (this.equals(o)) {
+			return 0;
+		}
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getReferenznummer(), o.getReferenznummer());
 		builder.append(this.getDatumAb(), o.getDatumAb());
