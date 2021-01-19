@@ -70,4 +70,12 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 	public void setGeburtsdatum(LocalDate geburtsdatum) {
 		this.geburtsdatum = geburtsdatum;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }
