@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.reporting.ErklaerungEinkommen;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.builder.CompareToBuilder;
 
@@ -334,12 +335,20 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 
 	@Override
 	public int compareTo(@Nonnull TagesschuleRechnungsstellungDataRow o) {
-		if (this.equals(o)) {
-			return 0;
-		}
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getReferenznummer(), o.getReferenznummer());
 		builder.append(this.getDatumAb(), o.getDatumAb());
-		return builder.toComparison();
+		int compare = builder.toComparison();
+		if (compare == 0) {
+			if (this.equals(o)) {
+				return 0;
+			} else {
+				throw new EbeguRuntimeException(
+					"compareTo", "Es existieren zwei TagesschuleRechnungsstellungDataRows mit Referenznummer "
+					+ this.getReferenznummer() + " und Startdatum " + this.getDatumAb()
+				);
+			}
+		}
+		return compare;
 	}
 }
