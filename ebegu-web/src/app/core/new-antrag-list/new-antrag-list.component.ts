@@ -425,7 +425,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.loadData();
     }
 
-    private onEditClicked(antrag: TSAntragDTO, event: MouseEvent): void {
+    public onEditClicked(antrag: TSAntragDTO, event: MouseEvent): void {
         this.rowClicked.emit({antrag, event});
     }
 

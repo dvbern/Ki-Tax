@@ -1,5 +1,5 @@
 import {HttpErrorResponse} from '@angular/common/http';
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -54,6 +54,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -94,6 +95,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         }
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadData();
+            this.cd.markForCheck();
         }, (error: HttpErrorResponse) => {
             const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
                 this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
@@ -104,7 +106,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    private navigate(antrag: DVAntragListItem, event: MouseEvent): void {
+    public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
         const path = 'LASTENAUSGLEICH_TS';
         const navObj = {
             id: antrag.antragId,

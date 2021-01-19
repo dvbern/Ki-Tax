@@ -53,7 +53,7 @@
                          layout-align="center center"
                          id="actions">
                         <div dvLoadingButtonX
-                             aria-label="{{'LASTENAUSGLEICH_ERSTELLEN' | translate}}"
+                             [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate"
                              type="submit"
                              (buttonClick)="createAntrag()">
                             <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
