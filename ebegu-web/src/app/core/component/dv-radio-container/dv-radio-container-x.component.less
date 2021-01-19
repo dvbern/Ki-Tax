@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-@import (reference) '../variables.less';
-@import (reference) '../mixins.less';
+@import (reference) '../../../../style/variables.less';
+@import (reference) '../../../../style/mixins.less';
 
 .dv-input-container-question {
     .dv-mat-radio-group {
@@ -23,7 +23,7 @@
     }
 }
 
-.dv-mat-radio-group {
+dv-radio-container-x {
 
     label.ebegu-h1 {
         line-height: 2.4rem;
@@ -31,7 +31,7 @@
         .ebeguH1()
     }
 
-    > mat-radio-group {
+    > .form-group > mat-radio-group {
         display: flex;
         flex-wrap: wrap;
 
