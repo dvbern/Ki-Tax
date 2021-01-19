@@ -62,7 +62,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -72,6 +71,7 @@ import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -1581,20 +1581,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkReadAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId) {
 		Objects.requireNonNull(gemeindeAntragId);
-		Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> antrag =
-			(Optional<LastenausgleichTagesschuleAngabenGemeindeContainer>) gemeindeAntragService.findGemeindeAntrag(
+		LastenausgleichTagesschuleAngabenGemeindeContainer antrag =
+			(LastenausgleichTagesschuleAngabenGemeindeContainer) gemeindeAntragService.findGemeindeAntrag(
 				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
-				gemeindeAntragId);
-		if (!antrag.isEmpty()) {
-			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
-				return;
-			}
-			if (principalBean.isCallerInAnyOfRole(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE)
-				&& principalBean.belongsToGemeinde(antrag.get().getGemeinde())) {
-				return;
-			}
-			throwViolation(antrag.get());
+				gemeindeAntragId
+			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
+
+		if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			return;
 		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE)
+			&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
+			return;
+		}
+		throwViolation(antrag);
 	}
 
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {
