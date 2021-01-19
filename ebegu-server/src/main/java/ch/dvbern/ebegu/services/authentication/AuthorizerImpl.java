@@ -1587,7 +1587,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				gemeindeAntragId
 			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
 
-		if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			return;
 		}
 		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
