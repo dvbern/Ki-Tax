@@ -133,6 +133,7 @@ public class LastenausgleichResource {
 	@Path("/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@TransactionTimeout(value = Constants.MAX_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	public JaxLastenausgleich createLastenausgleich(
 		@QueryParam("jahr") String sJahr,
 		@QueryParam("selbstbehaltPro100ProzentPlatz") String sSelbstbehaltPro100ProzentPlatz
