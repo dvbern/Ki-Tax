@@ -85,14 +85,24 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			betreuung.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
 			betreuungService.saveBetreuung(betreuung, false);
 		}
+		if(betreuung.getVorgaengerId() != null && isMutationsMitteilungStatus(betreuung.getBetreuungsstatus())){
+			//if Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
+
+		}
 		else{
 			return Processing.failure("Die Betreuung befindet sich in einen Status wo eine Stornierung nicht erlaubt ist.");
 		}
 
 		//if Betreuung in Status Warten und erstAntrag ablehnen ?:
 
-		//if Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen ?
+
 
 		return Processing.success();
+	}
+
+	protected boolean isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
+		return status == Betreuungsstatus.VERFUEGT
+			|| status == Betreuungsstatus.BESTAETIGT
+			|| status == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG;
 	}
 }
