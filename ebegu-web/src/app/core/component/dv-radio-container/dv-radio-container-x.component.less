@@ -26,9 +26,9 @@
 dv-radio-container-x {
 
     label.ebegu-h1 {
-        line-height: 2.4rem;
+        .ebeguH1();
         color: rgba(0, 0, 0, 0.87);
-        .ebeguH1()
+        line-height: 2.4rem;
     }
 
     > .form-group > mat-radio-group {
@@ -36,21 +36,21 @@ dv-radio-container-x {
         flex-wrap: wrap;
 
         > mat-radio-button {
-            width: 100%;
             height: auto;
             margin: 0 0 0.2rem;
             min-height: 1.5rem;
+            width: 100%;
             .mat-radio-label-content {
                 .ebeguSemi-bold();
                 .ebeguFont-family();
             }
 
             .mat-radio-container {
-                width: 1.5rem;
                 height: 1.5rem;
+                width: 1.5rem;
                 .mat-radio-outer-circle, .mat-radio-inner-circle {
-                    width: 1.5rem;
                     height: 1.5rem;
+                    width: 1.5rem;
                 }
                 .mat-radio-outer-circle {
                     border-width: 1.5px;
@@ -61,9 +61,9 @@ dv-radio-container-x {
                     transform: scale(0.35);
                 }
                 .mat-ripple {
+                    height: 20px;
                     left: calc(50% - 10px);
                     top: calc(50% - 10px);
-                    height: 20px;
                     width: 20px;
                 }
                 &.cdk-focused {

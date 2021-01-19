@@ -9,11 +9,14 @@ import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
+
+const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
 
 @Component({
     selector: 'dv-gemeinde-antraege',
@@ -118,7 +121,9 @@ export class GemeindeAntraegeComponent implements OnInit {
                     window.open(url, '_blank');
                 } else {
                     this.$state.go(pathName, navObj);
-                };
+                }
+            }, error => {
+                LOG.error(error);
             });
     }
 
