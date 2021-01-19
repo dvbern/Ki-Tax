@@ -73,9 +73,6 @@ public class GemeindeAntragResource {
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
-	private GemeindeService gemeindeService;
-
-	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(
@@ -104,7 +101,7 @@ public class GemeindeAntragResource {
 				gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
 			return converter.gemeindeAntragListToJax(gemeindeAntragList);
 		} catch (EntityExistsException e) {
-			throw new WebApplicationException(e.getMessage() + ' ' + e.getArgs().toString(), Status.CONFLICT);
+			throw new WebApplicationException(e, Status.CONFLICT);
 		}
 	}
 
