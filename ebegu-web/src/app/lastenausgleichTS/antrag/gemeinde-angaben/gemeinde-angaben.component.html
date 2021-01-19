@@ -15,7 +15,7 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form [formGroup]="formGroup">
+<form *ngIf="formGroup" [formGroup]="formGroup">
     <mat-form-field>
         <input matInput formControlName="angebotVerfuegbarFuerAlleSchulstufen">
     </mat-form-field>
