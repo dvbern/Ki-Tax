@@ -28,6 +28,8 @@ import ch.dvbern.ebegu.enums.SozialdienstStatus;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxSozialdienst extends JaxAbstractDTO {
 
+	private static final long serialVersionUID = 7980933741587944444L;
+
 	@NotNull
 	private String name;
 

@@ -33,6 +33,8 @@ import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxSozialdienstFall extends JaxAbstractDTO {
 
+	private static final long serialVersionUID = 2183212900252723745L;
+
 	@NotNull
 	private String name;
 
