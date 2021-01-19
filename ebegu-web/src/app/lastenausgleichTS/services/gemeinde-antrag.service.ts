@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -111,7 +112,9 @@ export class GemeindeAntragService {
     // tslint:disable-next-line:max-line-length
     public getGemeindeAngabenFor(lastenausgleichID: string): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         // tslint:disable-next-line:no-object-literal-type-assertion
-        return of({angabenDeklaration: {}} as TSLastenausgleichTagesschuleAngabenGemeindeContainer) ;
+        const dummy = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
+        dummy.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        return of(dummy) ;
         return this.http.get(`${this.API_BASE_URL}/${lastenausgleichID}/gemeindeangaben`).pipe(
             map(jaxAngabenGemeindeContainer =>
                 this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(

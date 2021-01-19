@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 
 @Component({
     selector: 'dv-input-container',
@@ -23,4 +23,9 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 })
 export class DVInputContainerComponent {
 
+    @Input() public ng2: boolean = false;
+
+    ngOnInit() {
+        console.log(this.ng2)
+    }
 }

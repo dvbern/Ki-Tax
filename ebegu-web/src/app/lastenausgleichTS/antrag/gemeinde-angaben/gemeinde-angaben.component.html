@@ -16,8 +16,11 @@
   -->
 
 <form *ngIf="formGroup" [formGroup]="formGroup">
-    <mat-form-field>
-        <input matInput formControlName="angebotVerfuegbarFuerAlleSchulstufen">
-    </mat-form-field>
+    <dv-input-container [ng2]="true">
+        <mat-form-field>
+            <mat-label>GELEISTETE_BETREUUNGSSTEUNDEN_SCHULJAHR</mat-label>
+            <input matInput formControlName="angebotVerfuegbarFuerAlleSchulstufen" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container>
 
 </form>

@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
@@ -34,7 +34,8 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public constructor(
         private readonly fb: FormBuilder,
-        private readonly gemeindeAntraegeService: GemeindeAntragService
+        private readonly gemeindeAntraegeService: GemeindeAntragService,
+        private readonly cd: ChangeDetectorRef
         ,
     ) {
     }
@@ -43,7 +44,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.gemeindeAntraegeService.getGemeindeAngabenFor(this.lastenausgleichID)
             .subscribe((gemeindeAngabenContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer) => {
                 const gemeindeAngaben = gemeindeAngabenContainer.angabenDeklaration;
-                this.fb.group({
+                this.formGroup = this.fb.group({
                     // A
                     alleFaelleInKibon: [''],
                     angebotVerfuegbarFuerAlleSchulstufen: [gemeindeAngaben.angebotVerfuegbarFuerAlleSchulstufen],
@@ -81,6 +82,7 @@ export class GemeindeAngabenComponent implements OnInit {
                     bemerkungen: [gemeindeAngaben.bemerkungen],
 
                 });
+                this.cd.markForCheck();
             });
     }
 
