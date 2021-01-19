@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import * as moment from 'moment';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -110,6 +110,8 @@ export class GemeindeAntragService {
 
     // tslint:disable-next-line:max-line-length
     public getGemeindeAngabenFor(lastenausgleichID: string): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        // tslint:disable-next-line:no-object-literal-type-assertion
+        return of({angabenDeklaration: {}} as TSLastenausgleichTagesschuleAngabenGemeindeContainer) ;
         return this.http.get(`${this.API_BASE_URL}/${lastenausgleichID}/gemeindeangaben`).pipe(
             map(jaxAngabenGemeindeContainer =>
                 this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(

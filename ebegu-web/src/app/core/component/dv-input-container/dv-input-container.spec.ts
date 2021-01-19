@@ -13,33 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentControllerService, IScope} from 'angular';
-import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import {DvInputContainerComponentConfig} from './dv-input-container';
-import IInjectorService = angular.auto.IInjectorService;
+import { ComponentFixture, TestBed} from '@angular/core/testing';
+import {DVInputContainerComponent} from './dv-input-container';
 
-describe('dvInputContainer', () => {
+describe('GemeindeAngabenComponent', () => {
+    let component: DVInputContainerComponent;
+    let fixture: ComponentFixture<DVInputContainerComponent>;
 
-    beforeEach(angular.mock.module('ebeguWeb.core'));
+    beforeEach(async() => {
+        await TestBed.configureTestingModule({
+            declarations: [ DVInputContainerComponent ]
+        })
+            .compileComponents();
+    });
 
-    beforeEach(angular.mock.module(ngServicesMock));
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DVInputContainerComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-    let component: DvInputContainerComponentConfig;
-    let scope: IScope;
-    let $componentController: IComponentControllerService;
-
-    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
-        $componentController = $injector.get('$componentController');
-        scope = $injector.get('$rootScope').$new();
-    }));
-
-    it('should be defined', () => {
-        /*
-         To initialise your component controller you have to setup your (mock) bindings and
-         pass them to $componentController.
-         */
-        const bindings = {};
-        component = $componentController('dvInputContainer', {$scope: scope}, bindings);
-        expect(component).toBeDefined();
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 });

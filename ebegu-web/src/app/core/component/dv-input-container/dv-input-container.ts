@@ -13,16 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
-export class DvInputContainerComponentConfig implements IComponentOptions {
-    public transclude = true;
-    public template = require('./dv-input-container.html');
-    public controller = DvInputContainerController;
-    public controllerAs = 'vm';
-}
+@Component({
+    selector: 'dv-input-container',
+    templateUrl: './dv-input-container.html',
+    styleUrls: ['./dv-input-container.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class DVInputContainerComponent {
 
-export class DvInputContainerController {
-
-    public static $inject: ReadonlyArray<string> = [];
 }

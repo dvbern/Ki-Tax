@@ -83,7 +83,9 @@ import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-er
 import {DvFooterComponentConfig} from './component/dv-footer/dv-footer';
 import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
-import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
+import {
+    DVInputContainerComponent,
+} from './component/dv-input-container/dv-input-container';
 import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
 import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
@@ -276,7 +278,7 @@ export const CORE_JS_MODULE = angular
     .component('dvLanguageSelector', new DvLanguageSelectorComponentConfig())
     .component('dvErrorMessages', new DvErrorMessagesComponentConfig())
     .component('dvErwerbspensumList', new DVErwerbspensumListConfig())
-    .component('dvInputContainer', new DvInputContainerComponentConfig())
+    .component('dvInputContainer', downgradeComponent({component: DVInputContainerComponent}))
     .component('dvRadioContainer', new DvRadioContainerComponentConfig())
     .component('dvTooltip', new DvTooltipComponentConfig())
     .component('dvPulldownUserMenu', new DvPulldownUserMenuComponentConfig())
