@@ -15,16 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Directive, ElementRef, Injector} from '@angular/core';
-import {UpgradeComponent} from '@angular/upgrade/static';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
-@Directive({
-    selector: '[dvInputContainerRetiredX]'
+@Component({
+    selector: 'dv-input-container-x',
+    templateUrl: './dv-input-container-x.component.html',
+    styleUrls: ['./dv-input-container.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DvInputContainerRetiredX extends UpgradeComponent {
-    public constructor(elementRef: ElementRef, injector: Injector) {
-        super('dvInputContainerRetired', elementRef, injector);
-
-    }
+export class DVInputContainerXComponent {
 
 }

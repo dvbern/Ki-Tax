@@ -14,21 +14,21 @@
  */
 
 import { ComponentFixture, TestBed} from '@angular/core/testing';
-import {DVInputContainerComponent} from './dv-input-container';
+import {DVInputContainerXComponent} from './dv-input-container-x.component';
 
 describe('GemeindeAngabenComponent', () => {
-    let component: DVInputContainerComponent;
-    let fixture: ComponentFixture<DVInputContainerComponent>;
+    let component: DVInputContainerXComponent;
+    let fixture: ComponentFixture<DVInputContainerXComponent>;
 
     beforeEach(async() => {
         await TestBed.configureTestingModule({
-            declarations: [ DVInputContainerComponent ]
+            declarations: [ DVInputContainerXComponent ]
         })
             .compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DVInputContainerComponent);
+        fixture = TestBed.createComponent(DVInputContainerXComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

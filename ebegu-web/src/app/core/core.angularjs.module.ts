@@ -86,7 +86,7 @@ import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {
     DVInputContainerComponent,
 } from './component/dv-input-container/dv-input-container';
-import {DvInputContainerRetiredComponentConfig} from './component/dv-input-container/dv-input-container-retired';
+import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
 import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
 import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
@@ -300,8 +300,7 @@ export const CORE_JS_MODULE = angular
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
-    .component('dvInputContainerRetired', new DvInputContainerRetiredComponentConfig())
-    .directive('dvInputContainer', downgradeComponent({component: DVInputContainerComponent}))
+    .component('dvInputContainer', new DvInputContainerComponentConfig())
     .directive('dvNewAntragList', downgradeComponent({component: NewAntragListComponent}))
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvMitteilungDelegation', downgradeComponent({component: DvMitteilungDelegationComponent}))
