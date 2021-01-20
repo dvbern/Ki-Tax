@@ -96,6 +96,7 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
+            einnahmenElterngebuehrenPercentual: [{value: '', disabled: true}],
         });
     }
 
@@ -148,5 +149,14 @@ export class GemeindeAngabenComponent implements OnInit {
         ).subscribe(value => this.formGroup.get('normlohnkostenBetreuungBerechnet')
             .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
         );
+
+        combineLatest(
+            [
+                this.formGroup.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
+                this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+            ],
+        ).subscribe(values => this.formGroup.get('einnahmenElterngebuehrenPercentual')
+            // TODO: clean up
+            .setValue((values[0] === 0 ? 0 : values[1] / values[0] * 100).toFixed(2) + '%'));
     }
 }

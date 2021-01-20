@@ -72,11 +72,19 @@
     <mat-divider></mat-divider>
 
     <dv-input-container-x>
-        <!--TODO: use config param -->
         <label>{{'NORMLOHNKOSTEN_BETREUUNG' | translate}}</label>
         <mat-form-field></mat-form-field>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+    <dv-input-container-x>
+        <label>{{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}</label>
+        <mat-form-field>
+            <input matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input">
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input">
         </mat-form-field>
     </dv-input-container-x>
 
