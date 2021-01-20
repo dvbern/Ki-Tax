@@ -2208,5 +2208,7 @@
     "NORMLOHNKOSTEN_BETREUUNG": "Normlohnkosten für die Betreuung",
     "TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN": "./. tatsächliche Einnahmen aus Elterngebühren Schuljahr 2018/19 (ohne Einnahmen für Verpflegung)",
     "LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR": "Lastenausgleichsberechtigter Betrag Schuljahr 2018/19",
+    "ERSTE_RATE_AUSBEZAHLT": "./. erste Rate, ausbezahlt Dezember 2018  ",
+    "ZWEITE_RATE": "Zweite Rate Dezember 2019",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

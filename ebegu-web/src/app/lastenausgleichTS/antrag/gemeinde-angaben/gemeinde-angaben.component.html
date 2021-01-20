@@ -99,4 +99,22 @@
         </mat-form-field>
     </dv-input-container-x>
 
+    <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
+        <label>{{'ERSTE_RATE_AUSBEZAHLT' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="ersteRateAusbezahlt" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
+        <label>{{'ZWEITE_RATE' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="zweiteRate" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
 </form>

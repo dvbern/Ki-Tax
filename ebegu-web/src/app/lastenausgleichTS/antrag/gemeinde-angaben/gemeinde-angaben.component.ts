@@ -73,6 +73,8 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
                 [initialGemeindeAngaben.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
             einnahmenElterngebuehren: [initialGemeindeAngaben.einnahmenElterngebuehren],
+            // TODO: get this from somwhere in kibon
+            ersteRateAusbezahlt: [],
             // C
             gesamtKostenTagesschule: [initialGemeindeAngaben.gesamtKostenTagesschule],
             einnnahmenVerpflegung: [initialGemeindeAngaben.einnnahmenVerpflegung],
@@ -97,7 +99,8 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
             einnahmenElterngebuehrenPercentual: [{value: '', disabled: true}],
-            lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}]
+            lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
+            zweiteRate: [{value: '', disabled: true}]
         });
     }
 
@@ -161,6 +164,13 @@ export class GemeindeAngabenComponent implements OnInit {
                 // TODO: clean up
                 .setValue((values[0] === 0 ? 0 : values[1] / values[0] * 100).toFixed(2) + '%');
             this.formGroup.get('lastenausgleichsberechtigerBetrag').setValue(values[0] - values[1]);
+        });
+
+        combineLatest([
+            this.formGroup.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.formGroup.get('ersteRateAusbezahlt').valueChanges.pipe(startWith(0))
+        ]).subscribe(values => {
+            this.formGroup.get('zweiteRate').setValue(values[0] - values[1]);
         });
     }
 }
