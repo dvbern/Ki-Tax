@@ -34,6 +34,15 @@
         <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
+    <dv-input-container-x *ngIf="inMandantRoles()">
+        <label>{{'ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN' | translate}}</label>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="anteilZusaetzlichVerrechneterStunden" class="form-control dv-input">
+        </mat-form-field>
+        <mat-form-field></mat-form-field>
+    </dv-input-container-x>
+
     <mat-divider></mat-divider>
 
     <dv-input-container-x>

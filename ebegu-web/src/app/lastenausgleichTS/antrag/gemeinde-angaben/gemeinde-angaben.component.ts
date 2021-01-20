@@ -19,8 +19,10 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {combineLatest} from 'rxjs';
 import {startWith} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
 
 @Component({
@@ -38,8 +40,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public constructor(
         private readonly fb: FormBuilder,
         private readonly gemeindeAntraegeService: GemeindeAntragService,
-        private readonly cd: ChangeDetectorRef
-        ,
+        private readonly cd: ChangeDetectorRef,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -75,6 +77,8 @@ export class GemeindeAngabenComponent implements OnInit {
             einnahmenElterngebuehren: [initialGemeindeAngaben.einnahmenElterngebuehren],
             // TODO: get this from somwhere in kibon
             ersteRateAusbezahlt: [],
+            // TODO: get this from somewhere in kibon
+            anteilZusaetzlichVerrechneterStunden: [{value: '11.11%', disabled: true}],
             // C
             gesamtKostenTagesschule: [initialGemeindeAngaben.gesamtKostenTagesschule],
             einnnahmenVerpflegung: [initialGemeindeAngaben.einnnahmenVerpflegung],
@@ -172,5 +176,9 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(values => {
             this.formGroup.get('zweiteRate').setValue(values[0] - values[1]);
         });
+    }
+
+    public inMandantRoles(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }

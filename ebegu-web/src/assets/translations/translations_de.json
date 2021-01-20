@@ -2210,5 +2210,6 @@
     "LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR": "Lastenausgleichsberechtigter Betrag Schuljahr 2018/19",
     "ERSTE_RATE_AUSBEZAHLT": "./. erste Rate, ausbezahlt Dezember 2018  ",
     "ZWEITE_RATE": "Zweite Rate Dezember 2019",
+    "ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN": "Anteil zusätzlich verrechneter Betreuungsstunden aufgrund besonderer Betreuungsanforderungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
