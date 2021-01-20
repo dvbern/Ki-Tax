@@ -4,6 +4,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
 import {MatInputModule} from '@angular/material/input';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatRadioModule} from '@angular/material/radio';
@@ -24,7 +25,7 @@ const MATERIAL_MODULES = [
     // MatChipsModule,
     MatDatepickerModule,
     MatDialogModule,
-    // MatDividerModule,
+    MatDividerModule,
     // MatExpansionModule,
     // MatGridListModule,
     // MatIconModule,

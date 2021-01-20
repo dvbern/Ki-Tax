@@ -13,6 +13,53 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+@import (reference) './../../../../style/mixins.less';
+
 .dv-input-container {
     width: 100%;
+}
+
+dv-input-container-x {
+    .dv-input-container {
+        display: flex;
+        align-items: center;
+
+        label {
+            flex: 0 0 33%;
+            color: black;
+        }
+    }
+
+    mat-label {
+        .ebeguLabel();
+        color: @contrast-darkest;
+        display: block;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        &:after {
+            .ebeguLabel();
+            color: @contrast-darkest;
+            display: inline-block;
+        }
+    }
+
+
+
+    mat-form-field {
+        //space for outline
+        margin-left: 2px;
+    }
+
+    .mat-form-field-underline {
+        display: none;
+    }
+
+    .mat-form-field-wrapper {
+        padding-bottom: 0   ;
+    }
+
+    .mat-form-field-infix {
+        border-top: 0;
+    }
+
 }

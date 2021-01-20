@@ -23,6 +23,7 @@ md-input-container {
 
 .contrast {
     /*stylelint-disable*/
+
     .dv-datepicker, dv-timepicker {
         /*stylelint-enable*/
         background: @contrast-light;
@@ -34,7 +35,8 @@ md-input-container {
     .ebeguDisabledPlaceholder();
 }
 
-input[type='text'], input[type='number'], input[type='email'], textarea, textarea.md-input, .form-control, .dv-select-style select {
+input[type='text'], input[type='number'], input[type='email'], textarea, textarea.md-input, .form-control, .dv-select-style select,
+dv-input-container-x .form-control {
     .ebeguPlaceholder();
     .ebeguSemi-bold();
     .ebeguH1();
@@ -52,12 +54,15 @@ input[type='text'], input[type='number'], input[type='email'], textarea, textare
     padding: 0 0 0 1rem;
     transition: background 0.5s ease;
     width: 100%;
+
     &.dv-mat-datepicker {
         width: calc(100% - 30px);
     }
+
     .table &, &.contrast {
         background: @contrast-lighter;
     }
+
     &[disabled], &:disabled {
         .ebeguDisabledPlaceholder();
         .DisabledInput();
@@ -74,6 +79,7 @@ input[type='text'], input[type='number'], input[type='email'], textarea, textare
 
 input[type='number'] {
     -moz-appearance: textfield;
+
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -86,11 +92,13 @@ input[type='number'] {
     background: none;
     display: block;
     position: relative !important;
+
     &.dv-dialog-select {
         select {
             background: @contrast-lighter;
         }
     }
+
     select {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -98,13 +106,16 @@ input[type='number'] {
         margin: 0;
         outline: none;
         width: 100%;
+
         &[disabled], &:disabled {
             .DisabledInput();
         }
+
         &:hover {
             cursor: pointer;
         }
     }
+
     &::after {
         content: ' \F107';
         display: none;
@@ -199,6 +210,7 @@ input[type='number'] {
 textarea.md-input, textarea.form-control {
     .ebeguNormal();
     padding: 1rem;
+
     .md-input-focused & {
         padding: 1rem;
     }

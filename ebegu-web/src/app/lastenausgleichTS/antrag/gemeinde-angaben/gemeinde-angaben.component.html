@@ -17,9 +17,46 @@
 
 <form *ngIf="formGroup" [formGroup]="formGroup">
     <dv-input-container-x>
-        <mat-form-field>
-            <mat-label>GELEISTETE_BETREUUNGSSTEUNDEN_SCHULJAHR</mat-label>
-            <input matInput formControlName="angebotVerfuegbarFuerAlleSchulstufen" class="form-control dv-input">
+        <label translate>GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR</label>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label translate>BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN</label>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <mat-divider></mat-divider>
+
+    <dv-input-container-x>
+        <label translate>LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN</label>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="lastenausgleichberechtigteBetreuungsstunden" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <!--TODO: use config param -->
+        <label translate>DAVON_STUNDEN_NORM_MEHR_ALS_50</label>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <!--TODO: use config param -->
+        <label translate>DAVON_STUNDEN_NORM_WENIGER_ALS_50</label>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete" class="form-control dv-input">
         </mat-form-field>
     </dv-input-container-x>
 

@@ -83,9 +83,6 @@ import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-er
 import {DvFooterComponentConfig} from './component/dv-footer/dv-footer';
 import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
-import {
-    DVInputContainerComponent,
-} from './component/dv-input-container/dv-input-container';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
 import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
 import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';

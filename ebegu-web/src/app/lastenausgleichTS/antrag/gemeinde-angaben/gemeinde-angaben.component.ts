@@ -17,6 +17,8 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {combineLatest} from 'rxjs';
+import {startWith} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
 
@@ -80,8 +82,24 @@ export class GemeindeAngabenComponent implements OnInit {
                     ausbildungenMitarbeitendeBelegt: [gemeindeAngaben.ausbildungenMitarbeitendeBelegt],
                     // Bemerkungen
                     bemerkungen: [gemeindeAngaben.bemerkungen],
-
+                    // calculated values
+                    lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
                 });
+
+                combineLatest(
+                    [
+                        this.formGroup.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
+                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse)
+                        ),
+                        this.formGroup.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
+                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse)
+                        ),
+                    ],
+                ).subscribe(formValues => {
+                    this.formGroup.get('lastenausgleichberechtigteBetreuungsstunden')
+                        .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
+                });
+
                 this.cd.markForCheck();
             });
     }
