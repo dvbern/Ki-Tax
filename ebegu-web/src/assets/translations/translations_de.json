@@ -2197,6 +2197,6 @@
     "CREATE_ANTRAG_ERROR": "Beim Erstellen des Antrags gab es einen Fehler",
     "DATA_RETRIEVAL_ERROR": "Beim Laden der Daten gab es einen Fehler",
     "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
-    "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typen für diese Gesuchsperiode",
+    "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Gesuchsperiode",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
