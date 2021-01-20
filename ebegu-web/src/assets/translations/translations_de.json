@@ -2211,5 +2211,7 @@
     "ERSTE_RATE_AUSBEZAHLT": "./. erste Rate, ausbezahlt Dezember 2018  ",
     "ZWEITE_RATE": "Zweite Rate Dezember 2019",
     "ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN": "Anteil zusätzlich verrechneter Betreuungsstunden aufgrund besonderer Betreuungsanforderungen",
+    "ABRECHNUNG": "Abrechnung",
+    "EXPLANATION_SUB_HEADER_ABRECHNUNG": "Diese Angaben dienen der Auszahlung der Normlohnkosten aus dem Lastenausgleich für die geleisteten Betreuungsstunden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
