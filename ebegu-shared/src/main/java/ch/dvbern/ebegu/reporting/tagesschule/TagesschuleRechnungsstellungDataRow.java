@@ -358,4 +358,9 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		builder.append(this.getDatumAb(), o.getDatumAb());
 		return builder.toComparison();
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(referenznummer, datumAb);
+	}
 }
