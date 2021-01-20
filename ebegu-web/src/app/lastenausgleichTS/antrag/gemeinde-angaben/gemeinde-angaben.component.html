@@ -69,4 +69,15 @@
         </mat-form-field>
     </dv-input-container-x>
 
+    <mat-divider></mat-divider>
+
+    <dv-input-container-x>
+        <!--TODO: use config param -->
+        <label>{{'NORMLOHNKOSTEN_BETREUUNG' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
 </form>

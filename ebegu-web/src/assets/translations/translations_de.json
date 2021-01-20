@@ -2205,5 +2205,6 @@
     "LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN": "Lastenausgleichsberechtigte Betreuungsstunden",
     "DAVON_STUNDEN_NORM_MEHR_ALS_50": "Davon zu Normlohnkosten von Fr. 10.39 bei ≥ 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
     "DAVON_STUNDEN_NORM_WENIGER_ALS_50": "Davon zu Normlohnkosten von Fr. 5.20 bei < 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
+    "NORMLOHNKOSTEN_BETREUUNG": "Normlohnkosten für die Betreuung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
