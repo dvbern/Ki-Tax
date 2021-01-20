@@ -78,13 +78,24 @@
             <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input">
         </mat-form-field>
     </dv-input-container-x>
+
     <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
         <label>{{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}</label>
         <mat-form-field>
             <input matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input">
         </mat-form-field>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
+        <label>{{'LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input">
         </mat-form-field>
     </dv-input-container-x>
 
