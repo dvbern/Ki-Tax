@@ -17,6 +17,7 @@
 
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {TranslateModule} from '@ngx-translate/core';
 import {of} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -24,7 +25,7 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    []);
+    ['getLATSAngabenGemeindeContainer']);
 
 describe('GemeindeAngabenComponent', () => {
     let component: GemeindeAngabenComponent;
@@ -32,7 +33,10 @@ describe('GemeindeAngabenComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientModule],
+            imports: [
+                HttpClientModule,
+                TranslateModule.forRoot()
+            ],
             declarations: [GemeindeAngabenComponent],
             providers: [{provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy}]
         })
@@ -40,7 +44,7 @@ describe('GemeindeAngabenComponent', () => {
     }));
 
     beforeEach(() => {
-        spyOn(lastenausgleichTSServiceSpy, 'getLATSAngabenGemeindeContainer').and.returnValue(
+        lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
         );
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
