@@ -21,40 +21,40 @@
 
     <dv-input-container-x>
         <label>{{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}</label>
+        <mat-form-field></mat-form-field>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input">
         </mat-form-field>
-        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate}}</label>
+        <mat-form-field></mat-form-field>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse" class="form-control dv-input">
         </mat-form-field>
-        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x *ngIf="inMandantRoles()">
         <label>{{'ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN' | translate}}</label>
+        <mat-form-field></mat-form-field>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="anteilZusaetzlichVerrechneterStunden" class="form-control dv-input">
         </mat-form-field>
-        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <mat-divider></mat-divider>
 
     <dv-input-container-x>
         <label>{{'LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}</label>
+        <mat-form-field></mat-form-field>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="lastenausgleichberechtigteBetreuungsstunden" class="form-control dv-input">
         </mat-form-field>
-        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
@@ -95,7 +95,7 @@
         <!-- TODO: add year translation parameter -->
         <label>{{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}</label>
         <mat-form-field>
-            <input matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input">
+            <input *ngIf="false" matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input">
         </mat-form-field>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input">
