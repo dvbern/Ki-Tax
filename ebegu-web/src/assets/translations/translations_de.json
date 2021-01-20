@@ -2220,5 +2220,7 @@
     "EINNAHMEN_ELTERNGEBUEHREN": "./. Einnahmen aus Elterngebühren (ohne Einnahmen für Verpflegung) ",
     "EINNAHMEN_VERPFLEGUNG": "./. Einnahmen für die Verpflegung ",
     "EINNAHMEN_SUBVENTIONEN_DRITTER": "./. evtl. Einnahmen aus Subventionen Dritter (Anstossfinanzierung des Bundes und weitere Einnahmen, z. B. Sponsoring)",
+    "KOSTENBEITRAG_GEMEINDE": "Kostenbeitrag der Gemeinde",
+    "KOSTENUEBERSCHUSS_GEMEINDE": "Ertragsüberschuss der Gemeinde",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

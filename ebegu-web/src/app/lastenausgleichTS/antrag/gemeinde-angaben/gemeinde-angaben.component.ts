@@ -105,7 +105,9 @@ export class GemeindeAngabenComponent implements OnInit {
             einnahmenElterngebuehrenPercentual: [{value: '', disabled: true}],
             einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
             lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
-            zweiteRate: [{value: '', disabled: true}]
+            zweiteRate: [{value: '', disabled: true}],
+            kostenbeitragGemeinde: [{value: '', disabled: true}],
+            kostenueberschussGemeinde: [{value: '', disabled: true}],
         });
     }
 
@@ -173,7 +175,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
         combineLatest([
             this.formGroup.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
-            this.formGroup.get('ersteRateAusbezahlt').valueChanges.pipe(startWith(0))
+            this.formGroup.get('ersteRateAusbezahlt').valueChanges.pipe(startWith(0)),
         ]).subscribe(values => {
             this.formGroup.get('zweiteRate').setValue(values[0] - values[1]);
         });
@@ -181,6 +183,29 @@ export class GemeindeAngabenComponent implements OnInit {
         // TODO: merge with other einnahmenElterngebuehren observable
         this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0))
             .subscribe(value => this.formGroup.get('einnahmenElterngebuehrenRO').setValue(value));
+
+        // TODO: merge with existing observables
+        combineLatest([
+            this.formGroup.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
+            this.formGroup.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+            this.formGroup.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
+            this.formGroup.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
+        ]).subscribe(values => {
+            const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
+            if (gemeindeBeitragOderUeberschuss < 0) {
+                this.formGroup.get('kostenueberschussGemeinde')
+                    .setValue(gemeindeBeitragOderUeberschuss);
+                this.formGroup.get('kostenbeitragGemeinde')
+                    .setValue('');
+            } else {
+                this.formGroup.get('kostenbeitragGemeinde')
+                    .setValue(gemeindeBeitragOderUeberschuss);
+                this.formGroup.get('kostenueberschussGemeinde')
+                    .setValue('');
+            }
+        });
+
     }
 
     public inMandantRoles(): boolean {
