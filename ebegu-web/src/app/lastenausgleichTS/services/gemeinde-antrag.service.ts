@@ -40,7 +40,7 @@ export class GemeindeAntragService {
             params
         }).pipe(
             map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)),
-            map(antraege => this.sortAntraege(antraege, sort)));
+            map(antraege => this.sortAntraege(antraege, sort))
         );
     }
 
