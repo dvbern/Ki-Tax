@@ -2223,5 +2223,7 @@
     "KOSTENBEITRAG_GEMEINDE": "Kostenbeitrag der Gemeinde",
     "KOSTENUEBERSCHUSS_GEMEINDE": "Ertragsüberschuss der Gemeinde",
     "ERWARTETER_KOSTENBEITRAG_GEMEINDE": "Erwarteter Kostenbeitrag der Gemeinde (20 % der Gesamtkosten; Infrastrukturkosten)",
+    "ANGABEN_WEITERE_KOSTEN_ERTRAEGE": "D) Angaben zu weiteren Kosten und Erträgen",
+    "BEMERKUNG_WIETER_KOSTEN_ERTRAEGE": "Bemerkungen zu weiteren Kosten und Erträgen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
