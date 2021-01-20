@@ -37,7 +37,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -47,21 +46,17 @@ import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -76,9 +71,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
-import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @ApplicationScoped
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
@@ -118,15 +111,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private GemeindeService gemeindeService;
 
 	@Inject
-	private BenutzerService benutzerService;
-
-	@Inject
-	private ExternalClientService externalClientService;
+	private BetreuungEventHelper betreuungEventHelper;
 
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
+		@Nonnull String key,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull String clientName) {
 
@@ -176,38 +167,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
 		}
 
-		return getExternalClient(clientName, betreuung)
+		return betreuungEventHelper.getExternalClient(clientName, betreuung)
 			.map(externalClient -> processEventForExternalClient(dto, betreuung, externalClient.getGueltigkeit()))
-			.orElseGet(() -> clientNotFoundFailure(clientName, betreuung));
+			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(clientName, betreuung));
 	}
 
 	private boolean hasZeitabschnittWithPensumUnit(@Nonnull BetreuungEventDTO dto, @Nonnull Zeiteinheit zeiteinheit) {
 		return dto.getZeitabschnitte().stream().anyMatch(z -> z.getPensumUnit() == zeiteinheit);
-	}
-
-	@Nonnull
-	private Optional<InstitutionExternalClient> getExternalClient(
-		@Nonnull String clientName,
-		@Nonnull Betreuung betreuung) {
-
-		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
-		Collection<InstitutionExternalClient> institutionExternalClients =
-			externalClientService.getInstitutionExternalClientForInstitution(institution);
-
-		return institutionExternalClients.stream()
-			.filter(iec -> iec.getExternalClient().getClientName().equals(clientName))
-			.findAny();
-	}
-
-	@Nonnull
-	private Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull Betreuung betreuung) {
-		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
-
-		return Processing.failure(String.format(
-			"Kein InstitutionExternalClient Namens >>%s<< ist der Institution %s/%s zugewiesen",
-			clientName,
-			institution.getName(),
-			institution.getId()));
 	}
 
 	@Nonnull
@@ -381,7 +347,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
 		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-		betreuungsmitteilung.setSender(getMutationsmeldungBenutzer());
+		betreuungsmitteilung.setSender(betreuungEventHelper.getMutationsmeldungBenutzer());
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
@@ -407,12 +373,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.thenComparing(AbstractEntity::getId);
 
 		return open.stream().max(bySentDateTime);
-	}
-
-	@Nonnull
-	private Benutzer getMutationsmeldungBenutzer() {
-		return benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, TECHNICAL_BENUTZER_ID));
 	}
 
 	@Nonnull

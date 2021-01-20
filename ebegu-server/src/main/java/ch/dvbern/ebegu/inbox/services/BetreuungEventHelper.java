@@ -17,25 +17,35 @@
 
 package ch.dvbern.ebegu.inbox.services;
 
+import java.util.Collection;
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.inbox.handler.Processing;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.ExternalClientService;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Stateless
-public class BetreuungEventService {
+public class BetreuungEventHelper {
 
 	static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
 
 	@Inject
 	private BenutzerService benutzerService;
 
+	@Inject
+	private ExternalClientService externalClientService;
 
 	@Nonnull
 	public Benutzer getMutationsmeldungBenutzer() {
@@ -43,4 +53,28 @@ public class BetreuungEventService {
 			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, TECHNICAL_BENUTZER_ID));
 	}
 
+	@Nonnull
+	public Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull Betreuung betreuung) {
+		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+
+		return Processing.failure(String.format(
+			"Kein InstitutionExternalClient Namens >>%s<< ist der Institution %s/%s zugewiesen",
+			clientName,
+			institution.getName(),
+			institution.getId()));
+	}
+
+	@Nonnull
+	public Optional<InstitutionExternalClient> getExternalClient(
+		@Nonnull String clientName,
+		@Nonnull Betreuung betreuung) {
+
+		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+		Collection<InstitutionExternalClient> institutionExternalClients =
+			externalClientService.getInstitutionExternalClientForInstitution(institution);
+
+		return institutionExternalClients.stream()
+			.filter(iec -> iec.getExternalClient().getClientName().equals(clientName))
+			.findAny();
+	}
 }
