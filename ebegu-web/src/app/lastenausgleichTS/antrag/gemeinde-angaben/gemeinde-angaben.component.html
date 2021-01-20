@@ -18,6 +18,7 @@
 <form *ngIf="formGroup" [formGroup]="formGroup">
     <h2>{{'ABRECHNUNG' | translate}}</h2>
     <p class="sub-header-explanation">{{'EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
+
     <dv-input-container-x>
         <label>{{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}</label>
         <mat-form-field floatLabel="always">
@@ -126,10 +127,21 @@
         <mat-form-field floatLabel="always">
             <input matInput formControlName="zweiteRate" class="form-control dv-input">
         </mat-form-field>
-    </dv-input-container-x>
 
+    </dv-input-container-x>
     <mat-divider></mat-divider>
 
-    
+    <h2>{{'KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h2>
+    <p class="sub-header-explanation">{{'EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
+
+
+    <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
+        <label>{{'GESAMTKOSTEN_TAGESSCHULE' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="gesamtKostenTagesschule" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
 
 </form>
