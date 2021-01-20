@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {combineLatest} from 'rxjs';
 import {startWith} from 'rxjs/operators';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
 
@@ -46,94 +47,106 @@ export class GemeindeAngabenComponent implements OnInit {
         this.gemeindeAntraegeService.getGemeindeAngabenFor(this.lastenausgleichID)
             .subscribe((gemeindeAngabenContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer) => {
                 const gemeindeAngaben = gemeindeAngabenContainer.angabenDeklaration;
-                this.formGroup = this.fb.group({
-                    // A
-                    alleFaelleInKibon: [''],
-                    angebotVerfuegbarFuerAlleSchulstufen: [gemeindeAngaben.angebotVerfuegbarFuerAlleSchulstufen],
-                    begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen:
-                        [gemeindeAngaben.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen],
-                    bedarfBeiElternAbgeklaert: [gemeindeAngaben.bedarfBeiElternAbgeklaert],
-                    angebotFuerFerienbetreuungVorhanden: [gemeindeAngaben.angebotFuerFerienbetreuungVorhanden],
-                    // B
-                    geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
-                        [gemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse],
-                    geleisteteBetreuungsstundenBesondereBeduerfnisse:
-                        [gemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse],
-                    davonStundenZuNormlohnMehrAls50ProzentAusgebildete:
-                        [gemeindeAngaben.davonStundenZuNormlohnMehrAls50ProzentAusgebildete],
-                    davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
-                        [gemeindeAngaben.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
-                    einnahmenElterngebuehren: [gemeindeAngaben.einnahmenElterngebuehren],
-                    // C
-                    gesamtKostenTagesschule: [gemeindeAngaben.gesamtKostenTagesschule],
-                    einnnahmenVerpflegung: [gemeindeAngaben.einnnahmenVerpflegung],
-                    einnahmenSubventionenDritter: [gemeindeAngaben.einnahmenSubventionenDritter],
-                    // D
-                    bemerkungenWeitereKostenUndErtraege: [gemeindeAngaben.bemerkungenWeitereKostenUndErtraege],
-                    // E
-                    betreuungsstundenDokumentiertUndUeberprueft:
-                        [gemeindeAngaben.betreuungsstundenDokumentiertUndUeberprueft],
-                    elterngebuehrenGemaessVerordnungBerechnet:
-                        [gemeindeAngaben.elterngebuehrenGemaessVerordnungBerechnet],
-                    einkommenElternBelegt: [gemeindeAngaben.einkommenElternBelegt],
-                    maximalTarif: [gemeindeAngaben.maximalTarif],
-                    mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal:
-                        [gemeindeAngaben.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal],
-                    ausbildungenMitarbeitendeBelegt: [gemeindeAngaben.ausbildungenMitarbeitendeBelegt],
-                    // Bemerkungen
-                    bemerkungen: [gemeindeAngaben.bemerkungen],
-                    // calculated values
-                    lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
-                    davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
-                    davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
-                    normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
-                });
-
-                combineLatest(
-                    [
-                        this.formGroup.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
-                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse),
-                        ),
-                        this.formGroup.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
-                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse),
-                        ),
-                    ],
-                ).subscribe(formValues => {
-                    this.formGroup.get('lastenausgleichberechtigteBetreuungsstunden')
-                        .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
-                });
-
-                this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-                    .valueChanges
-                    .subscribe(value => {
-                        // TODO: replace with config param
-                        this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
-                            .setValue(value ? value * 5.25 : 0);
-                    });
-
-                this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
-                    .valueChanges
-                    .subscribe(value => {
-                        // TODO: replace with config param
-                        this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
-                            .setValue(value ? value * 10.39 : 0);
-                    });
-
-                combineLatest(
-                    [
-                        this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
-                            .valueChanges
-                            .pipe(startWith(0)),
-                        this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
-                            .valueChanges
-                            .pipe(startWith(0)),
-                    ],
-                ).subscribe(value => this.formGroup.get('normlohnkostenBetreuungBerechnet')
-                    .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
-                );
+                this.setupForm(gemeindeAngaben);
+                this.setupCalculcations(gemeindeAngaben);
 
                 this.cd.markForCheck();
             });
     }
 
+    private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
+        this.formGroup = this.fb.group({
+            // A
+            alleFaelleInKibon: [''],
+            angebotVerfuegbarFuerAlleSchulstufen: [initialGemeindeAngaben.angebotVerfuegbarFuerAlleSchulstufen],
+            begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen:
+                [initialGemeindeAngaben.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen],
+            bedarfBeiElternAbgeklaert: [initialGemeindeAngaben.bedarfBeiElternAbgeklaert],
+            angebotFuerFerienbetreuungVorhanden: [initialGemeindeAngaben.angebotFuerFerienbetreuungVorhanden],
+            // B
+            geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
+                [initialGemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse],
+            geleisteteBetreuungsstundenBesondereBeduerfnisse:
+                [initialGemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse],
+            davonStundenZuNormlohnMehrAls50ProzentAusgebildete:
+                [initialGemeindeAngaben.davonStundenZuNormlohnMehrAls50ProzentAusgebildete],
+            davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
+                [initialGemeindeAngaben.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
+            einnahmenElterngebuehren: [initialGemeindeAngaben.einnahmenElterngebuehren],
+            // C
+            gesamtKostenTagesschule: [initialGemeindeAngaben.gesamtKostenTagesschule],
+            einnnahmenVerpflegung: [initialGemeindeAngaben.einnnahmenVerpflegung],
+            einnahmenSubventionenDritter: [initialGemeindeAngaben.einnahmenSubventionenDritter],
+            // D
+            bemerkungenWeitereKostenUndErtraege: [initialGemeindeAngaben.bemerkungenWeitereKostenUndErtraege],
+            // E
+            betreuungsstundenDokumentiertUndUeberprueft:
+                [initialGemeindeAngaben.betreuungsstundenDokumentiertUndUeberprueft],
+            elterngebuehrenGemaessVerordnungBerechnet:
+                [initialGemeindeAngaben.elterngebuehrenGemaessVerordnungBerechnet],
+            einkommenElternBelegt: [initialGemeindeAngaben.einkommenElternBelegt],
+            maximalTarif: [initialGemeindeAngaben.maximalTarif],
+            mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal:
+                [initialGemeindeAngaben.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal],
+            ausbildungenMitarbeitendeBelegt: [initialGemeindeAngaben.ausbildungenMitarbeitendeBelegt],
+            // Bemerkungen
+            bemerkungen: [initialGemeindeAngaben.bemerkungen],
+            // calculated values
+            lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
+            davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
+            davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
+            normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
+        });
+    }
+
+    /**
+     * Sets up form obervers that calculate intermediate results of the form that are presented to the user each
+     * time the inputs change
+     *
+     * @param gemeindeAngabenFromServer existing data, used for initiating some calculations
+     */
+    private setupCalculcations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
+        combineLatest(
+            [
+                this.formGroup.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
+                    startWith(gemeindeAngabenFromServer.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse),
+                ),
+                this.formGroup.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
+                    startWith(gemeindeAngabenFromServer.geleisteteBetreuungsstundenBesondereBeduerfnisse),
+                ),
+            ],
+        ).subscribe(formValues => {
+            this.formGroup.get('lastenausgleichberechtigteBetreuungsstunden')
+                .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
+        });
+
+        this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
+            .valueChanges
+            .subscribe(value => {
+                // TODO: replace with config param
+                this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                    .setValue(value ? value * 5.25 : 0);
+            });
+
+        this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
+            .valueChanges
+            .subscribe(value => {
+                // TODO: replace with config param
+                this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                    .setValue(value ? value * 10.39 : 0);
+            });
+
+        combineLatest(
+            [
+                this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                    .valueChanges
+                    .pipe(startWith(0)),
+                this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                    .valueChanges
+                    .pipe(startWith(0)),
+            ],
+        ).subscribe(value => this.formGroup.get('normlohnkostenBetreuungBerechnet')
+            .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
+        );
+    }
 }
