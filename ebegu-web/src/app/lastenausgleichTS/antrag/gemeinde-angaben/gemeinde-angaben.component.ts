@@ -15,19 +15,67 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {LogFactory} from '../../../core/logging/LogFactory';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('GemeindeAngabenComponent');
 
 @Component({
-  selector: 'dv-gemeinde-angaben',
-  templateUrl: './gemeinde-angaben.component.html',
-  styleUrls: ['./gemeinde-angaben.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-gemeinde-angaben',
+    templateUrl: './gemeinde-angaben.component.html',
+    styleUrls: ['./gemeinde-angaben.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeAngabenComponent implements OnInit {
 
-  public constructor() { }
+    public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    public form: FormGroup;
+    private subscription: Subscription;
 
-  public ngOnInit(): void {
-  }
+    public constructor(
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private readonly ref: ChangeDetectorRef
+    ) {}
 
+    public ngOnInit(): void {
+        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .subscribe(container => {
+                this.lATSAngabenGemeindeContainer = container;
+                this.initForm();
+                this.ref.markForCheck();
+            }, err => LOG.error(err));
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    public onSubmit(): void {
+        if (this.form.valid) {
+            this.lATSAngabenGemeindeFuerInstitutionenFreigeben();
+        }
+    }
+
+    private initForm(): void {
+        this.form = new FormGroup({
+            alleAngabenInKibonErfasst: new FormControl(
+                this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                Validators.required
+            )
+        });
+    }
+
+    private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.form.get('alleAngabenInKibonErfasst').value;
+        this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
+    }
+
+    public showAntragErstellen(): boolean {
+        return this.lATSAngabenGemeindeContainer?.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
+    }
 }

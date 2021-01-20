@@ -15,28 +15,44 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {HttpClientModule} from '@angular/common/http';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {TranslateModule} from '@ngx-translate/core';
+import {of} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
+const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
+    ['getLATSAngabenGemeindeContainer']);
+
 describe('GemeindeAngabenComponent', () => {
-  let component: GemeindeAngabenComponent;
-  let fixture: ComponentFixture<GemeindeAngabenComponent>;
+    let component: GemeindeAngabenComponent;
+    let fixture: ComponentFixture<GemeindeAngabenComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GemeindeAngabenComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientModule,
+                TranslateModule.forRoot()
+            ],
+            declarations: [GemeindeAngabenComponent],
+            providers: [{provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy}]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GemeindeAngabenComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
+            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
+        );
+        fixture = TestBed.createComponent(GemeindeAngabenComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

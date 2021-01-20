@@ -30,15 +30,16 @@ export class WizardSideNavComponent implements OnInit {
 
     @Input() public readonly id: string;
     @Input() public readonly wizardTyp: string;
+    @Input() public readonly status: string;
 
     public wizardSteps$: Observable<TSWizardStepX[]>;
-    public readonly status = 'Status';
 
-    public constructor(private readonly wizardSTepXRS: WizardStepXRS) {
-    }
+    public constructor(
+        private readonly wizardStepXRS: WizardStepXRS
+    ) {}
 
     public ngOnInit(): void {
-        this.wizardSteps$ = this.wizardSTepXRS.getAllSteps(this.wizardTyp);
+        this.wizardSteps$ = this.wizardStepXRS.getAllSteps();
     }
 
 }

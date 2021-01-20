@@ -23,32 +23,40 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class Lastenausgleich implements WizardStep<TagesschuleWizard> {
+public class Freigabe implements WizardStep<TagesschuleWizard> {
 
 	@Override
-	public void next(@Nonnull TagesschuleWizard wizard) {
-		//Last Step nothing to do
+	public void next(@Nonnull TagesschuleWizard tagesschuleWizard) {
+		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS()
+			|| tagesschuleWizard.getRole().isRoleMandant()
+			|| tagesschuleWizard.getRole().isSuperadmin()) {
+			tagesschuleWizard.setStep(new Lastenausgleich());
+		}
 	}
 
 	@Override
-	public void prev(@Nonnull TagesschuleWizard wizard) {
-		wizard.setStep(new AngabenTagesschule());
+	public void prev(@Nonnull TagesschuleWizard tagesschuleWizard) {
+		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS()
+			|| tagesschuleWizard.getRole().isRoleMandant()
+			|| tagesschuleWizard.getRole().isSuperadmin()) {
+			tagesschuleWizard.setStep(new AngabenTagesschule());
+		}
 	}
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
+		// IF ALL DATA Filled RETURN OK
+		// IF NOT KO
 		return WizardStateEnum.OK;
 	}
 
 	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.LASTENAUSGLEICH.name();
+		return TagesschuleWizardStepsEnum.FREIGABE.name();
 	}
 
 	@Override
-	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		return true;
-	}
+	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) { return true; }
 
 	@Override
 	public WizardTyp getWizardTyp() {

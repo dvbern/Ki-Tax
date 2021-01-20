@@ -267,4 +267,6 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer);
 
 	void checkReadAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId);
+
+	void checkWriteAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId);
 }

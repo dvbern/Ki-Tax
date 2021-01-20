@@ -5,13 +5,18 @@ import {StateService} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
+import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
+
+const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
 
 @Component({
     selector: 'dv-gemeinde-antraege',
@@ -55,6 +60,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
+        private readonly wizardStepXRS: WizardStepXRS
     ) {
     }
 
@@ -103,16 +109,22 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
-        const path = 'LASTENAUSGLEICH_TS';
-        const navObj = {
-            id: antrag.antragId,
-        };
-        if (event.ctrlKey) {
-            const url = this.$state.href(path, navObj);
-            window.open(url, '_blank');
-        } else {
-            this.$state.go(path, navObj);
-        }
+        const wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TS;
+        this.wizardStepXRS.initFirstStep(wizardTyp, antrag.antragId)
+            .subscribe(step => {
+                const pathName = `${step.wizardTyp}.${step.stepName}`;
+                const navObj = {
+                    id: antrag.antragId,
+                };
+                if (event.ctrlKey) {
+                    const url = this.$state.href(pathName, navObj);
+                    window.open(url, '_blank');
+                } else {
+                    this.$state.go(pathName, navObj);
+                }
+            }, error => {
+                LOG.error(error);
+            });
     }
 
     public onFilterChange(filterChange: DVAntragListFilter): void {
