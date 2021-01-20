@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.converter;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
@@ -28,10 +29,8 @@ import ch.dvbern.ebegu.services.SozialdienstService;
 
 import static java.util.Objects.requireNonNull;
 
+@RequestScoped
 public class JaxSozialdienstConverter extends AbstractConverter {
-
-	@Inject
-	private JaxBConverter converter;
 
 	@Inject
 	private SozialdienstService sozialdienstService;
@@ -69,7 +68,7 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		sozialdienstService.findSozialdienst(jaxStammdaten.getSozialdienst().getId())
 			.ifPresent(stammdaten::setSozialdienst);
 
-		converter.adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
 
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
@@ -88,7 +87,7 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		jaxStammdaten.setAdresse(converter.adresseToJAX(stammdaten.getAdresse()));
+		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 
 		return jaxStammdaten;
 	}

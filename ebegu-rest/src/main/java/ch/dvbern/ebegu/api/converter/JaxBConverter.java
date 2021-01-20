@@ -312,7 +312,7 @@ import static java.util.Objects.requireNonNull;
 
 @Dependent
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
-public class JaxBConverter extends AbstractConverter {
+public class JaxBConverter extends JaxSozialdienstConverter {
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -379,8 +379,6 @@ public class JaxBConverter extends AbstractConverter {
 	private ExternalClientService externalClientService;
 	@Inject
 	private SozialdienstService sozialdienstService;
-	@Inject
-	private JaxSozialdienstConverter sozialdienstConverter;
 
 	public JaxBConverter() {
 		//nop
@@ -505,44 +503,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAdresse.setAdresseTyp(gesuchstellerAdresse.getAdresseTyp());
 		jaxAdresse.setNichtInGemeinde(gesuchstellerAdresse.isNichtInGemeinde());
 
-		return jaxAdresse;
-	}
-
-	@Nonnull
-	@CanIgnoreReturnValue
-	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
-		requireNonNull(adresse);
-		requireNonNull(jaxAdresse);
-		convertAbstractDateRangedFieldsToEntity(jaxAdresse, adresse);
-		adresse.setStrasse(jaxAdresse.getStrasse());
-		adresse.setHausnummer(jaxAdresse.getHausnummer());
-		adresse.setZusatzzeile(jaxAdresse.getZusatzzeile());
-		adresse.setPlz(jaxAdresse.getPlz());
-		adresse.setOrt(jaxAdresse.getOrt());
-		// Gemeinde ist read-only und wird nicht gesetzt
-		adresse.setLand(jaxAdresse.getLand());
-		adresse.setOrganisation(jaxAdresse.getOrganisation());
-		//adresse gilt per default von start of time an
-		adresse.getGueltigkeit().setGueltigAb(jaxAdresse.getGueltigAb() == null ?
-			Constants.START_OF_TIME :
-			jaxAdresse.getGueltigAb());
-
-		return adresse;
-	}
-
-	@Nonnull
-	public JaxAdresse adresseToJAX(@Nonnull final Adresse adresse) {
-		final JaxAdresse jaxAdresse = new JaxAdresse();
-		convertAbstractDateRangedFieldsToJAX(adresse, jaxAdresse);
-		jaxAdresse.setStrasse(adresse.getStrasse());
-		jaxAdresse.setHausnummer(adresse.getHausnummer());
-		jaxAdresse.setZusatzzeile(adresse.getZusatzzeile());
-		jaxAdresse.setPlz(adresse.getPlz());
-		jaxAdresse.setOrt(adresse.getOrt());
-		jaxAdresse.setGemeinde(adresse.getGemeinde());
-		jaxAdresse.setBfsNummer(adresse.getBfsNummer());
-		jaxAdresse.setLand(adresse.getLand());
-		jaxAdresse.setOrganisation(adresse.getOrganisation());
 		return jaxAdresse;
 	}
 
@@ -4004,7 +3964,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
 		}
 		if (berechtigung.getSozialdienst() != null){
-			jaxBerechtigung.setSozialdienst(sozialdienstConverter.sozialdienstToJAX(berechtigung.getSozialdienst()));
+			jaxBerechtigung.setSozialdienst(sozialdienstToJAX(berechtigung.getSozialdienst()));
 		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
@@ -4029,7 +3989,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
 		}
 		if (history.getSozialdienst() != null){
-			jaxHistory.setSozialdienst(sozialdienstConverter.sozialdienstToJAX(history.getSozialdienst()));
+			jaxHistory.setSozialdienst(sozialdienstToJAX(history.getSozialdienst()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setStatus(history.getStatus());
