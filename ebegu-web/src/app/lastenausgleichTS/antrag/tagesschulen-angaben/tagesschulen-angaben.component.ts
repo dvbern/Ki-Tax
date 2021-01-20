@@ -15,19 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
-  selector: 'dv-tagesschulen-angaben',
-  templateUrl: './tagesschulen-angaben.component.html',
-  styleUrls: ['./tagesschulen-angaben.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-tagesschulen-angaben',
+    templateUrl: './tagesschulen-angaben.component.html',
+    styleUrls: ['./tagesschulen-angaben.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TagesschulenAngabenComponent implements OnInit {
-
-  public constructor() { }
-
-  public ngOnInit(): void {
-  }
+export class TagesschulenAngabenComponent {
 
 }

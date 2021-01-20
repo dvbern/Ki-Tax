@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,17 +40,26 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -69,13 +79,25 @@ public class GemeindeAntragResource {
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
+	private LastenausgleichTagesschuleAngabenInstitutionService angabenInstitutionService;
+
+	@Inject
 	private JaxBConverter converter;
 
+	@Inject
+	private PrincipalBean principal;
 
-	@ApiOperation("Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
+	@Inject
+	private Authorizer authorizer;
+
+	@Inject
+	private InstitutionService institutionService;
+
+	@ApiOperation(
+		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
 	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxGemeindeAntrag> createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
@@ -87,16 +109,20 @@ public class GemeindeAntragResource {
 
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException("createGemeindeAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId));
+			orElseThrow(() -> new EbeguEntityNotFoundException(
+				"createGemeindeAntrag",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId));
 
-		final List<GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
+		final List<GemeindeAntrag> gemeindeAntragList =
+			gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
 		return converter.gemeindeAntragListToJax(gemeindeAntragList);
 	}
 
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
 	@GET
 	@Path("")
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
@@ -105,5 +131,41 @@ public class GemeindeAntragResource {
 	) {
 		return converter.gemeindeAntragListToJax(
 			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(gemeinde, periode, typ, status));
+	}
+
+	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")
+	@GET
+	@Path("{gemeindeAntragId}/tagesschulenantraege")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public List<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> getTagesschuleAntraegeFuerGemeinedAntrag(
+		@Nonnull @Valid @PathParam("gemeindeAntragId") String gemeindeAntragId
+	) {
+		authorizer.checkReadAuthorizationLATSGemeindeAntrag(gemeindeAntragId);
+
+		return angabenInstitutionService.findLastenausgleichTagesschuleAngabenInstitutionByGemeindeAntragId(
+			gemeindeAntragId)
+			.stream()
+			// does user belong to institution or is mandant
+			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())
+				|| institutionService.getInstitutionenReadableForCurrentBenutzer(
+				false).stream()
+				.anyMatch(institution -> institution.getId()
+					.equals(lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getId())))
+			.filter(lastenausgleichTagesschuleAngabenInstitutionContainer -> {
+				switch (lastenausgleichTagesschuleAngabenInstitutionContainer.getStatus()) {
+				case OFFEN:
+				case IN_PRUEFUNG_GEMEINDE:
+					return principal.isCallerInAnyOfRole(
+						UserRole.SUPER_ADMIN,
+						UserRole.ADMIN_GEMEINDE,
+						UserRole.SACHBEARBEITER_GEMEINDE,
+						UserRole.ADMIN_INSTITUTION,
+						UserRole.SACHBEARBEITER_INSTITUTION);
+				}
+				return true;
+			})
+			.map(l -> converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(l))
+			.collect(Collectors.toList());
+
 	}
 }

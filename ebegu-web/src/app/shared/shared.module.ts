@@ -65,6 +65,7 @@ import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padd
 import {MaterialModule} from './material.module';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {UiViewComponent} from './ui-view/ui-view.component';
+import { DvSimpleTableComponent } from './component/dv-simple-table/dv-simple-table.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
@@ -128,7 +129,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvMonthPickerComponent,
         NewAntragListComponent,
         NewUserSelectDirective,
-        DvLoadingButtonXDirective
+        DvLoadingButtonXDirective,
+        DvSimpleTableComponent,
     ],
     exports: [
         CommonModule,
@@ -172,6 +174,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         EbeguDatePipe,
         NewAntragListComponent,
         DvLoadingButtonXDirective,
+        DvSimpleTableComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
