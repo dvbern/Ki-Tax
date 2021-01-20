@@ -108,6 +108,7 @@ export class GemeindeAngabenComponent implements OnInit {
             zweiteRate: [{value: '', disabled: true}],
             kostenbeitragGemeinde: [{value: '', disabled: true}],
             kostenueberschussGemeinde: [{value: '', disabled: true}],
+            erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
     }
 
@@ -204,6 +205,11 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.formGroup.get('kostenueberschussGemeinde')
                     .setValue('');
             }
+        });
+
+        // TODO: merge with existing observables
+        this.formGroup.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)).subscribe(value => {
+            this.formGroup.get('erwarteterKostenbeitragGemeinde').setValue(value * 0.2);
         });
 
     }
