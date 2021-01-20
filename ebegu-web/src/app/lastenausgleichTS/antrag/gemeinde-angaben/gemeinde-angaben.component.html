@@ -144,4 +144,20 @@
         </mat-form-field>
     </dv-input-container-x>
 
+    <dv-input-container-x>
+        <label>{{'EINNAHMEN_LASTENAUSGLEICH' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label>{{'EINNAHMEN_ELTERNGEBUEHREN' | translate}}</label>
+        <mat-form-field></mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input">
+        </mat-form-field>
+    </dv-input-container-x>
+
 </form>

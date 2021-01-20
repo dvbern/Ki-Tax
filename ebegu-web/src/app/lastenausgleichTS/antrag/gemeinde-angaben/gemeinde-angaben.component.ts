@@ -103,6 +103,7 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
             einnahmenElterngebuehrenPercentual: [{value: '', disabled: true}],
+            einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
             lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
             zweiteRate: [{value: '', disabled: true}]
         });
@@ -176,6 +177,10 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(values => {
             this.formGroup.get('zweiteRate').setValue(values[0] - values[1]);
         });
+
+        // TODO: merge with other einnahmenElterngebuehren observable
+        this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0))
+            .subscribe(value => this.formGroup.get('einnahmenElterngebuehrenRO').setValue(value));
     }
 
     public inMandantRoles(): boolean {

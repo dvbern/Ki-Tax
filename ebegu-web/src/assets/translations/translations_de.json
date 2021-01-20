@@ -2216,5 +2216,7 @@
     "KOSTENBETEILIGUNG_GEMEINDE": "Kostenbeteiligung Gemeinde",
     "EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE": "Diese Angaben dienen der Statistik und der Überprüfung der kantonalen Kalkulation der Normkosten.",
     "GESAMTKOSTEN_TAGESSCHULE": "Gesamtkosten der Tagesschule gemäss Jahresrechnung Gemeinde, berechnet für das Schuljahr 2018/19",
+    "EINNAHMEN_LASTENAUSGLEICH": "./. Einnahmen aus Lastenausgleich",
+    "EINNAHMEN_ELTERNGEBUEHREN": "./. Einnahmen aus Elterngebühren (ohne Einnahmen für Verpflegung) ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
