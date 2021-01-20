@@ -17,46 +17,55 @@
 
 <form *ngIf="formGroup" [formGroup]="formGroup">
     <dv-input-container-x>
-        <label translate>GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR</label>
+        <label>{{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}</label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input">
         </mat-form-field>
+        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label translate>BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN</label>
+        <label>{{'BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate}}</label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse" class="form-control dv-input">
         </mat-form-field>
+        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <mat-divider></mat-divider>
 
     <dv-input-container-x>
-        <label translate>LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN</label>
+        <label>{{'LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}</label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="lastenausgleichberechtigteBetreuungsstunden" class="form-control dv-input">
         </mat-form-field>
+        <mat-form-field></mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!--TODO: use config param -->
-        <label translate>DAVON_STUNDEN_NORM_MEHR_ALS_50</label>
+        <label>{{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate}}</label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete" class="form-control dv-input">
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet" class="form-control dv-input">
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!--TODO: use config param -->
-        <label translate>DAVON_STUNDEN_NORM_WENIGER_ALS_50</label>
+        <label>{{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate}}</label>
         <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
             <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete" class="form-control dv-input">
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet" class="form-control dv-input">
         </mat-form-field>
     </dv-input-container-x>
 

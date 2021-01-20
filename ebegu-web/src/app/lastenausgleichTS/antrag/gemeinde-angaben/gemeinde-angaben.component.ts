@@ -84,21 +84,39 @@ export class GemeindeAngabenComponent implements OnInit {
                     bemerkungen: [gemeindeAngaben.bemerkungen],
                     // calculated values
                     lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
+                    davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
+                    davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
                 });
 
                 combineLatest(
                     [
                         this.formGroup.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
-                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse)
+                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse),
                         ),
                         this.formGroup.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
-                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse)
+                            startWith(gemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse),
                         ),
                     ],
                 ).subscribe(formValues => {
                     this.formGroup.get('lastenausgleichberechtigteBetreuungsstunden')
                         .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
                 });
+
+                this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
+                    .valueChanges
+                    .subscribe(value => {
+                        // TODO: replace with config param
+                        this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                            .setValue(value ? value * 5.25 : 0);
+                    });
+
+                this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
+                    .valueChanges
+                    .subscribe(value => {
+                        // TODO: replace with config param
+                        this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                            .setValue(value ? value * 10.39 : 0);
+                    });
 
                 this.cd.markForCheck();
             });
