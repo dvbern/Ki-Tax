@@ -87,7 +87,7 @@ public class BetreuungStornierenEventKafkaConsumer {
 
 	}
 
-	@Schedule(info = "consume kafka events", second = "*/10", minute = "*", hour = "*", persistent = false)
+	@Schedule(info = "consume kafka events", second = "*/15", minute = "*", hour = "*", persistent = false)
 	public void runBetreuungStornierenConsumer() {
 		try {
 			if (consumer == null) {

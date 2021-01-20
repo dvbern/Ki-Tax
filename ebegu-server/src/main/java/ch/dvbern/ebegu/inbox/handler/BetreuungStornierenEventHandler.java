@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -112,6 +113,12 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		Betreuung betreuung,
 		DateRange clientGueltigkeit,
 		String refNummer) {
+		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
+		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
+		if (overlap.isEmpty()) {
+			return Processing.failure("Der Client hat innerhalb der Periode keinen Berechtigung.");
+		}
+
 		//Betreuung in Status Warten, entweder stornieren oder abweisen:
 		if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
 			return handleStatusAenderung(betreuung, refNummer);
@@ -119,14 +126,13 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 		if (isMutationsMitteilungStatus(betreuung.getBetreuungsstatus())) {
 			//Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
-			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung);
+			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refNummer);
 			mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
 			LOG.info("Mutationsmeldung erstellt für stornieren die Betreuung mit RefNr: {}", refNummer);
 			return Processing.success();
 		}
 		return Processing.failure(
 			"Die Betreuung befindet sich in einen Status wo eine Stornierung nicht erlaubt ist.");
-
 	}
 
 	@Nonnull
@@ -157,7 +163,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	private Betreuungsmitteilung createBetreuungsStornierenMitteilung(
-		@Nonnull Betreuung betreuung) {
+		@Nonnull Betreuung betreuung, String refNummer) {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
@@ -179,7 +185,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			.collect(Collectors.toList());
 		betreuungsmitteilung.getBetreuungspensen().addAll(betreuungsMitteilungPensen);
 		betreuungsmitteilung.getBetreuungspensen().forEach(p -> p.setBetreuungsmitteilung(betreuungsmitteilung));
-		betreuungsmitteilung.setMessage(MESSAGE_KEY);
+		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale, refNummer));
 
 		return betreuungsmitteilung;
 	}
