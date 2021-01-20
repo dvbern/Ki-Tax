@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
@@ -46,6 +47,13 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	@Nonnull
 	Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> findLastenausgleichTagesschuleAngabenGemeindeContainer(
 		@Nonnull String id);
+
+	/**
+	 * Sucht den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen gemeinde und gesuchsperiode
+	 */
+	@Nonnull
+	Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> findLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Speichert den LastenausgleichTagesschule, ohne Eintrag in die StatusHistory-Tabelle

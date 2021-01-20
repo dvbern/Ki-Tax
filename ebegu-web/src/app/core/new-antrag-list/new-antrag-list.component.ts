@@ -302,7 +302,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
             this.paginationItems = [];
-            for (let i = 1; i <= Math.ceil(this.totalItems / this.pageSize); i++) {
+            for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItems / this.pageSize),
+                this.page + 5); i++) {
                 this.paginationItems.push(i);
             }
             // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
