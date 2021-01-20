@@ -2218,5 +2218,7 @@
     "GESAMTKOSTEN_TAGESSCHULE": "Gesamtkosten der Tagesschule gemäss Jahresrechnung Gemeinde, berechnet für das Schuljahr 2018/19",
     "EINNAHMEN_LASTENAUSGLEICH": "./. Einnahmen aus Lastenausgleich",
     "EINNAHMEN_ELTERNGEBUEHREN": "./. Einnahmen aus Elterngebühren (ohne Einnahmen für Verpflegung) ",
+    "EINNAHMEN_VERPFLEGUNG": "./. Einnahmen für die Verpflegung ",
+    "EINNAHMEN_SUBVENTIONEN_DRITTER": "./. evtl. Einnahmen aus Subventionen Dritter (Anstossfinanzierung des Bundes und weitere Einnahmen, z. B. Sponsoring)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
