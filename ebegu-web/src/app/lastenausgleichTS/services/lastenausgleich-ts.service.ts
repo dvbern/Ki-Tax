@@ -59,7 +59,8 @@ export class LastenausgleichTSService {
     }
 
     public emptyStore(): void {
-        this.lATSAngabenGemeindeContainerStore = new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
+        this.lATSAngabenGemeindeContainerStore =
+            new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
     }
 
     private next(result: any): void {

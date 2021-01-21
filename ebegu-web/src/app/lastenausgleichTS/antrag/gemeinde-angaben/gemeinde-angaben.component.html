@@ -54,6 +54,31 @@
 </div>
 
 <form *ngIf="formGroup" [formGroup]="formGroup">
+
+    <h2 translate>ALLGEMEINE_ANGABEN</h2>
+
+    <dv-input-container-x>
+        <label required id="bedarfBeiElternAbgeklaert-radio-group">
+            {{'BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="bedarfBeiElternAbgeklaert-radio-group"
+                class=""
+                name="bedarfBeiElternAbgeklaert"
+                horizontal
+                formControlName="bedarfBeiElternAbgeklaert">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+
+
     <h2>{{'ABRECHNUNG' | translate}}</h2>
     <p class="sub-header-explanation">{{'EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
 
