@@ -132,6 +132,8 @@
         </mat-form-field>
     </dv-input-container-x>
 
+    <mat-divider></mat-divider>
+
 
     <h2>{{'ABRECHNUNG' | translate}}</h2>
     <p class="sub-header-explanation">{{'EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
@@ -342,6 +344,139 @@
                       class="form-control dv-input"></textarea>
         </mat-form-field>
     </dv-input-container-x>
+
+    <mat-divider></mat-divider>
+
+    <h2 translate>LATS_KONTROLLFRAGEN_GEMEINDE_ANGABEN</h2>
+
+    <dv-input-container-x>
+        <label required id="betreuungsstundenDokumentiertUndUeberprueft-radio-group">
+            {{'LATS_BETREUUNGSSTUNDEN_DOKUMENTIERT_UEBERPRUEFT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="betreuungsstundenDokumentiertUndUeberprueft-radio-group"
+                class=""
+                name="betreuungsstundenDokumentiertUndUeberprueft"
+                horizontal
+                formControlName="betreuungsstundenDokumentiertUndUeberprueft">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label required id="elterngebuehrenGemaessVerordnungBerechnet-radio-group">
+            {{'LATS_ELTERNGEBUEHREN_VERORDNUNG_BERECHNET' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="elterngebuehrenGemaessVerordnungBerechnet-radio-group"
+                class=""
+                name="elterngebuehrenGemaessVerordnungBerechnet"
+                horizontal
+                formControlName="elterngebuehrenGemaessVerordnungBerechnet">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <mat-divider></mat-divider>
+
+    <dv-input-container-x>
+        <label translate>LATS_EINKOMMEN_ELTERN_EINLEITUNG</label>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label required id="einkommenElternBelegt-radio-group">
+            {{'LATS_EINKOMMEN_ELTERN_BELEGT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="einkommenElternBelegt-radio-group"
+                class=""
+                name="einkommenElternBelegt"
+                horizontal
+                formControlName="einkommenElternBelegt">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label required id="maximalTarif-radio-group">
+            {{'LATS_EINKOMMEN_ELTERN_MAXIMALTARIF' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="maximalTarif-radio-group"
+                class=""
+                name="maximalTarif"
+                horizontal
+                formControlName="maximalTarif">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <mat-divider></mat-divider>
+
+    <dv-input-container-x>
+        <label required id="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal-radio-group">
+            {{'LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal-radio-group"
+                class=""
+                name="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal"
+                horizontal
+                formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label required id="ausbildungenMitarbeitendeBelegt-radio-group">
+            {{'LATS_AUSBILDUNG_MITARBEITENDE_BELEGT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="ausbildungenMitarbeitendeBelegt-radio-group"
+                class=""
+                name="ausbildungenMitarbeitendeBelegt"
+                horizontal
+                formControlName="ausbildungenMitarbeitendeBelegt">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
 
 
 </form>

@@ -2239,5 +2239,12 @@
     "LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN": "Besteht im laufenden Schuljahr 2019/20 in der Gemeinde ein Angebot für die Betreuung von Schulkindern während der Schulferien?",
     "LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN": "Das Tagesschulangebot steht allen Volksschülerinnen und -schülern der Gemeinde offen (Kindergarten bis Sekundarstufe I).",
     "LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG": "Begründung",
+    "LATS_BETREUUNGSSTUNDEN_DOKUMENTIERT_UEBERPRUEFT": "Sind die geleisteten Betreuungsstunden dokumentiert und überprüft worden (TSV Art. 9 Abs. 2)?",
+    "LATS_ELTERNGEBUEHREN_VERORDNUNG_BERECHNET": "Wurden die Elterngebühren gemäss Tagesschulverordnung berechnet (TSV Art. 10 - 17)?",
+    "LATS_EINKOMMEN_ELTERN_BELEGT": "a) Belege eingereicht oder die Erlaubnis erteilt, in die Steuerdaten Einsicht zu nehmen (TSV Art. 13 Abs. 1)?",
+    "LATS_EINKOMMEN_ELTERN_MAXIMALTARIF": "b) falls Frage a) mit «nein» beantwortet: Wurde der Maximaltarif angewendet (TSV Art. 13 Abs. 2)?",
+    "LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL": "Wurde an jedem Standort mindestens die Hälfte der Betreuungszeit (inklusive Leitungsprozente) von pädagogisch oder sozialpädagogisch ausgebildetem Personal geleistet (TSV Art. 4)?",
+    "LATS_AUSBILDUNG_MITARBEITENDE_BELEGT": "Sind die pädagogischen oder sozialpädagogischen Ausbildungen der Mitarbeitenden mit anerkannten Ausbildungszertifikaten belegt?",
+    "LATS_EINKOMMEN_ELTERN_EINLEITUNG": "Haben die Eltern zur Kontrolle der Einkommens- und Vermögensverhältnisse",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
