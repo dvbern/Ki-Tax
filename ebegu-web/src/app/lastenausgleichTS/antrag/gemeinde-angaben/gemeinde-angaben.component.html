@@ -45,7 +45,10 @@
         </div>
 
         <div class="actions">
-            <dv-loading-button *ngIf="showAntragErstellen()" type="button" [buttonDisabled]="!form?.valid" (buttonClick)="onSubmit()">
+            <dv-loading-button *ngIf="showAntragErstellen()"
+                               type="button"
+                               [buttonDisabled]="!form?.valid"
+                               (buttonClick)="onSubmit()">
                 <span translate>LATS_ANTRAG_ERSTELLEN</span>
             </dv-loading-button>
         </div>
@@ -122,11 +125,12 @@
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <textarea matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input">
+            <textarea matInput
+                      formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
+                      class="form-control dv-input">
             </textarea>
         </mat-form-field>
     </dv-input-container-x>
-
 
 
     <h2>{{'ABRECHNUNG' | translate}}</h2>
@@ -137,7 +141,9 @@
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
+                   class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -146,7 +152,9 @@
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse"
+                   class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -166,7 +174,9 @@
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="lastenausgleichberechtigteBetreuungsstunden" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="lastenausgleichberechtigteBetreuungsstunden"
+                   class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -175,11 +185,15 @@
         <label>{{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate}}</label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
+                   class="form-control dv-input"/>
         </mat-form-field>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet"
+                   class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -187,10 +201,14 @@
         <!--TODO: use config param -->
         <label>{{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate}}</label>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
+                   class="form-control dv-input"/>
         </mat-form-field>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet" class="form-control dv-input"/>
+            <input matInput
+                   formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet"
+                   class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -208,7 +226,7 @@
         <!-- TODO: add year translation parameter -->
         <label>{{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}</label>
         <mat-form-field>
-            <input  matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input"/>
+            <input matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input"/>
         </mat-form-field>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
@@ -319,7 +337,9 @@
 
     <dv-input-container-x>
         <mat-form-field floatLabel="always" class="no-margin-left">
-            <textarea matInput formControlName="bemerkungenWeitereKostenUndErtraege" class="form-control dv-input"></textarea>
+            <textarea matInput
+                      formControlName="bemerkungenWeitereKostenUndErtraege"
+                      class="form-control dv-input"></textarea>
         </mat-form-field>
     </dv-input-container-x>
 
