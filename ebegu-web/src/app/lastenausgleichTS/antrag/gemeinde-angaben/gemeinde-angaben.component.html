@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="lATSAngabenGemeindeContainer" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="lATSAngabenGemeindeContainer && form" [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="row">
             <div class="col-xs-12 dv-input-container-question">
                 <dv-radio-container-x>
@@ -59,28 +59,28 @@
 
     <dv-input-container-x>
         <label>{{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input">
+            <input matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse" class="form-control dv-input">
+            <input matInput formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x *ngIf="inMandantRoles()">
         <label>{{'ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="anteilZusaetzlichVerrechneterStunden" class="form-control dv-input">
+            <input matInput formControlName="anteilZusaetzlichVerrechneterStunden" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -88,10 +88,10 @@
 
     <dv-input-container-x>
         <label>{{'LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="lastenausgleichberechtigteBetreuungsstunden" class="form-control dv-input">
+            <input matInput formControlName="lastenausgleichberechtigteBetreuungsstunden" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -100,11 +100,11 @@
         <label>{{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate}}</label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete" class="form-control dv-input">
+            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete" class="form-control dv-input"/>
         </mat-form-field>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
-            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet" class="form-control dv-input">
+            <input matInput formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -112,10 +112,10 @@
         <!--TODO: use config param -->
         <label>{{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate}}</label>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete" class="form-control dv-input">
+            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete" class="form-control dv-input"/>
         </mat-form-field>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet" class="form-control dv-input">
+            <input matInput formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -123,9 +123,9 @@
 
     <dv-input-container-x>
         <label>{{'NORMLOHNKOSTEN_BETREUUNG' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input">
+            <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -133,37 +133,37 @@
         <!-- TODO: add year translation parameter -->
         <label>{{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}</label>
         <mat-form-field>
-            <input *ngIf="false" matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input">
+            <input  matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input"/>
         </mat-form-field>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input">
+            <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label>{{'LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input">
+            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label>{{'ERSTE_RATE_AUSBEZAHLT' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="ersteRateAusbezahlt" class="form-control dv-input">
+            <input matInput formControlName="ersteRateAusbezahlt" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label>{{'ZWEITE_RATE' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="zweiteRate" class="form-control dv-input">
+            <input matInput formControlName="zweiteRate" class="form-control dv-input"/>
         </mat-form-field>
 
     </dv-input-container-x>
@@ -175,65 +175,65 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label>{{'GESAMTKOSTEN_TAGESSCHULE' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="gesamtKostenTagesschule" class="form-control dv-input">
+            <input matInput formControlName="gesamtKostenTagesschule" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'EINNAHMEN_LASTENAUSGLEICH' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input">
+            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'EINNAHMEN_ELTERNGEBUEHREN' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input">
+            <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'EINNAHMEN_VERPFLEGUNG' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="einnnahmenVerpflegung" class="form-control dv-input">
+            <input matInput formControlName="einnnahmenVerpflegung" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="einnahmenSubventionenDritter" class="form-control dv-input">
+            <input matInput formControlName="einnahmenSubventionenDritter" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'KOSTENBEITRAG_GEMEINDE' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input">
+            <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'KOSTENUEBERSCHUSS_GEMEINDE' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input">
+            <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label>{{'ERWARTETER_KOSTENBEITRAG_GEMEINDE' | translate}}</label>
-        <mat-form-field></mat-form-field>
+        <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
-            <input matInput formControlName="erwarteterKostenbeitragGemeinde" class="form-control dv-input">
+            <input matInput formControlName="erwarteterKostenbeitragGemeinde" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 

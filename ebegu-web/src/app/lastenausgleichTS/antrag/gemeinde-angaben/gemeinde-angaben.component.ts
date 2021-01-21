@@ -16,13 +16,12 @@
  */
 
 import {FormControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {Subscription, combineLatest} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {LogFactory} from '../../../core/logging/LogFactory';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
-
-const LOG = LogFactory.createLog('GemeindeAngabenComponent');
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -51,6 +50,8 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly authServiceRS: AuthServiceRS,
         private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private readonly errorService: ErrorService,
+        private readonly translateService: TranslateService
     ) {
     }
 
@@ -58,17 +59,14 @@ export class GemeindeAngabenComponent implements OnInit {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
             .subscribe(container => {
                 this.lATSAngabenGemeindeContainer = container;
-                this.initForm();
+                if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
+                    const gemeindeAngaben = container.angabenDeklaration;
+                    this.setupForm(gemeindeAngaben);
+                    this.setupCalculcations(gemeindeAngaben);
+                }
+                this.initLATSGemeindeInitializationForm();
                 this.cd.markForCheck();
-            }, err => LOG.error(err));
-        this.gemeindeAntraegeService.getGemeindeAngabenFor(this.lastenausgleichID)
-            .subscribe((gemeindeAngabenContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer) => {
-                const gemeindeAngaben = gemeindeAngabenContainer.angabenDeklaration;
-                this.setupForm(gemeindeAngaben);
-                this.setupCalculcations(gemeindeAngaben);
-
-                this.cd.markForCheck();
-            });
+            }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
     }
 
     public ngOnDestroy(): void {
@@ -81,56 +79,56 @@ export class GemeindeAngabenComponent implements OnInit {
         }
     }
 
-    private initForm(): void {
+    private initLATSGemeindeInitializationForm(): void {
         this.form = new FormGroup({
             alleAngabenInKibonErfasst: new FormControl(
                 this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
-                Validators.required
-            )
+                Validators.required,
+            ),
         });
     }
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         this.formGroup = this.fb.group({
             // A
-            alleFaelleInKibon: [''],
-            angebotVerfuegbarFuerAlleSchulstufen: [initialGemeindeAngaben.angebotVerfuegbarFuerAlleSchulstufen],
+            alleFaelleInKibon: [{value: this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst, disabled: true}],
+            angebotVerfuegbarFuerAlleSchulstufen: [initialGemeindeAngaben?.angebotVerfuegbarFuerAlleSchulstufen],
             begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen:
-                [initialGemeindeAngaben.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen],
-            bedarfBeiElternAbgeklaert: [initialGemeindeAngaben.bedarfBeiElternAbgeklaert],
-            angebotFuerFerienbetreuungVorhanden: [initialGemeindeAngaben.angebotFuerFerienbetreuungVorhanden],
+                [initialGemeindeAngaben?.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen],
+            bedarfBeiElternAbgeklaert: [initialGemeindeAngaben?.bedarfBeiElternAbgeklaert],
+            angebotFuerFerienbetreuungVorhanden: [initialGemeindeAngaben?.angebotFuerFerienbetreuungVorhanden],
             // B
             geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
-                [initialGemeindeAngaben.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse],
+                [initialGemeindeAngaben?.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse],
             geleisteteBetreuungsstundenBesondereBeduerfnisse:
-                [initialGemeindeAngaben.geleisteteBetreuungsstundenBesondereBeduerfnisse],
+                [initialGemeindeAngaben?.geleisteteBetreuungsstundenBesondereBeduerfnisse],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildete:
-                [initialGemeindeAngaben.davonStundenZuNormlohnMehrAls50ProzentAusgebildete],
+                [initialGemeindeAngaben?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
-                [initialGemeindeAngaben.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
-            einnahmenElterngebuehren: [initialGemeindeAngaben.einnahmenElterngebuehren],
+                [initialGemeindeAngaben?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
+            einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren],
             // TODO: get this from somwhere in kibon
             ersteRateAusbezahlt: [],
             // TODO: get this from somewhere in kibon
             anteilZusaetzlichVerrechneterStunden: [{value: '11.11%', disabled: true}],
             // C
-            gesamtKostenTagesschule: [initialGemeindeAngaben.gesamtKostenTagesschule],
-            einnnahmenVerpflegung: [initialGemeindeAngaben.einnnahmenVerpflegung],
-            einnahmenSubventionenDritter: [initialGemeindeAngaben.einnahmenSubventionenDritter],
+            gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule],
+            einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung],
+            einnahmenSubventionenDritter: [initialGemeindeAngaben?.einnahmenSubventionenDritter],
             // D
-            bemerkungenWeitereKostenUndErtraege: [initialGemeindeAngaben.bemerkungenWeitereKostenUndErtraege],
+            bemerkungenWeitereKostenUndErtraege: [initialGemeindeAngaben?.bemerkungenWeitereKostenUndErtraege],
             // E
             betreuungsstundenDokumentiertUndUeberprueft:
-                [initialGemeindeAngaben.betreuungsstundenDokumentiertUndUeberprueft],
+                [initialGemeindeAngaben?.betreuungsstundenDokumentiertUndUeberprueft],
             elterngebuehrenGemaessVerordnungBerechnet:
-                [initialGemeindeAngaben.elterngebuehrenGemaessVerordnungBerechnet],
-            einkommenElternBelegt: [initialGemeindeAngaben.einkommenElternBelegt],
-            maximalTarif: [initialGemeindeAngaben.maximalTarif],
+                [initialGemeindeAngaben?.elterngebuehrenGemaessVerordnungBerechnet],
+            einkommenElternBelegt: [initialGemeindeAngaben?.einkommenElternBelegt],
+            maximalTarif: [initialGemeindeAngaben?.maximalTarif],
             mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal:
-                [initialGemeindeAngaben.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal],
-            ausbildungenMitarbeitendeBelegt: [initialGemeindeAngaben.ausbildungenMitarbeitendeBelegt],
+                [initialGemeindeAngaben?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal],
+            ausbildungenMitarbeitendeBelegt: [initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegt],
             // Bemerkungen
-            bemerkungen: [initialGemeindeAngaben.bemerkungen],
+            bemerkungen: [initialGemeindeAngaben?.bemerkungen],
             // calculated values
             lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
@@ -156,10 +154,10 @@ export class GemeindeAngabenComponent implements OnInit {
         combineLatest(
             [
                 this.formGroup.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
-                    startWith(gemeindeAngabenFromServer.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse),
+                    startWith(gemeindeAngabenFromServer?.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse),
                 ),
                 this.formGroup.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
-                    startWith(gemeindeAngabenFromServer.geleisteteBetreuungsstundenBesondereBeduerfnisse),
+                    startWith(gemeindeAngabenFromServer?.geleisteteBetreuungsstundenBesondereBeduerfnisse),
                 ),
             ],
         ).subscribe(formValues => {
@@ -256,6 +254,7 @@ export class GemeindeAngabenComponent implements OnInit {
     public showAntragErstellen(): boolean {
         return this.lATSAngabenGemeindeContainer?.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
     }
+
     public inMandantRoles(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
