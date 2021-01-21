@@ -117,6 +117,16 @@
         </dv-radio-container-x>
     </dv-input-container-x>
 
+    <dv-input-container-x *ngIf="formGroup.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
+        <label>{{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}</label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <mat-label translate></mat-label>
+            <textarea matInput formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse" class="form-control dv-input">
+            </textarea>
+        </mat-form-field>
+    </dv-input-container-x>
+
 
 
     <h2>{{'ABRECHNUNG' | translate}}</h2>

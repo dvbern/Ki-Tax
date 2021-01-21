@@ -2238,5 +2238,6 @@
     "BEDARF_BEI_ELTERN_ABGEKLAERT": "Wurde der Bedarf an Tagesschulangeboten bei allen Eltern für alle Module an allen Wochentagen abgeklärt (Bedarfsumfrage oder Versand der Anmeldeunterlagen, Tagesschulverordnung TSV Art. 2)?",
     "LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN": "Besteht im laufenden Schuljahr 2019/20 in der Gemeinde ein Angebot für die Betreuung von Schulkindern während der Schulferien?",
     "LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN": "Das Tagesschulangebot steht allen Volksschülerinnen und -schülern der Gemeinde offen (Kindergarten bis Sekundarstufe I).",
+    "LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG": "Begründung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
