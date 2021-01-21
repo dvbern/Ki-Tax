@@ -2236,5 +2236,6 @@
     "BEMERKUNG_WIETER_KOSTEN_ERTRAEGE": "Bemerkungen zu weiteren Kosten und Erträgen",
     "ALLGEMEINE_ANGABEN": "Allgemeinde Angaben",
     "BEDARF_BEI_ELTERN_ABGEKLAERT": "Wurde der Bedarf an Tagesschulangeboten bei allen Eltern für alle Module an allen Wochentagen abgeklärt (Bedarfsumfrage oder Versand der Anmeldeunterlagen, Tagesschulverordnung TSV Art. 2)?",
+    "LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN": "Besteht im laufenden Schuljahr 2019/20 in der Gemeinde ein Angebot für die Betreuung von Schulkindern während der Schulferien?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

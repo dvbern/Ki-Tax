@@ -77,6 +77,26 @@
         </dv-radio-container-x>
     </dv-input-container-x>
 
+    <dv-input-container-x>
+        <label required id="angebotFuerFerienbetreuungVorhanden-radio-group">
+            {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="angebotFuerFerienbetreuungVorhanden-radio-group"
+                class=""
+                name="bedarfBeiElternAbgeklaert"
+                horizontal
+                formControlName="angebotFuerFerienbetreuungVorhanden">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
 
 
     <h2>{{'ABRECHNUNG' | translate}}</h2>
