@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-
-@Component({
-    selector: 'dv-tagesschulen-angaben',
-    templateUrl: './tagesschulen-angaben.component.html',
-    styleUrls: ['./tagesschulen-angaben.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class TagesschulenAngabenComponent {
-
+export enum TSWizardStepXTyp {
+    LASTENAUSGLEICH_TS= 'LASTENAUSGLEICH_TS'
 }

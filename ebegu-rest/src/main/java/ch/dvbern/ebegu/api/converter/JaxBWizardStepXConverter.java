@@ -17,9 +17,12 @@
 
 package ch.dvbern.ebegu.api.converter;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenGemeinde;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenTagesschule;
@@ -29,14 +32,17 @@ import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizardSteps
 @RequestScoped
 public class JaxBWizardStepXConverter {
 
-	public JaxWizardStepX convertStepToJax(WizardStep step) {
+	public JaxWizardStepX convertStepToJax(WizardStep step, Wizard wizard) {
 		JaxWizardStepX wizardStepX = new JaxWizardStepX();
 		wizardStepX.setStepName(step.getWizardStepName());
 		wizardStepX.setWizardTyp(step.getWizardTyp().name());
+		wizardStepX.setDisabled(step.isDisabled(wizard));
 		return wizardStepX;
 	}
 
-	public WizardStep convertTagesschuleWizardStepJaxToSTep(String step) {
+	public WizardStep convertTagesschuleWizardStepJaxToStep(
+		String step
+	) {
 		switch (TagesschuleWizardStepsEnum.valueOf(step)) {
 		case ANGABEN_GEMEINDE:
 			return new AngabenGemeinde();

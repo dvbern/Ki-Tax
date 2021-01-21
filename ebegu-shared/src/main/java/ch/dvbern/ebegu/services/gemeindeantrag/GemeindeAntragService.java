@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,4 +60,7 @@ public interface GemeindeAntragService {
 
 	@Nonnull
 	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
+
+	@Nonnull
+	Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId);
 }

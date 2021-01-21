@@ -15,10 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSWizardStepXTyp} from './enums/TSWizardStepXTyp';
+
 export class TSWizardStepX {
 
-    public wizardTyp: string;
+    public wizardTyp: TSWizardStepXTyp;
 
     public stepName: string;
+    public disabled: boolean;
 
 }

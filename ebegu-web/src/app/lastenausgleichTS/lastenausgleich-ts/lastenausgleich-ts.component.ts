@@ -15,24 +15,54 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Observable, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {LogFactory} from '../../core/logging/LogFactory';
+import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
+import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('LastenausgleichTSComponent');
 
 @Component({
     selector: 'dv-lastenausgleich-ts',
     templateUrl: './lastenausgleich-ts.component.html',
     styleUrls: ['./lastenausgleich-ts.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default
 })
-export class LastenausgleichTSComponent implements OnInit {
+export class LastenausgleichTSComponent implements OnInit, OnDestroy {
+
+    @Input() public  lastenausgleichId: string;
+
+    private lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private subscription: Subscription;
+
+    public wizardSteps$: Observable<TSWizardStepX[]>;
+    public wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TS;
 
     public constructor(
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private readonly wizardStepXRS: WizardStepXRS
     ) {
     }
 
     public ngOnInit(): void {
+        this.lastenausgleichTSService.updateLATSAngabenGemeindeContainer(this.lastenausgleichId);
+        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .subscribe(container => {
+                this.lATSAngabenGemeindeContainer = container;
+                // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
+                this.wizardStepXRS.updateSteps(this.wizardTyp, this.lastenausgleichId);
+            }, err => LOG.error(err));
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     public showToolbar(): boolean {

@@ -15,14 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {FormControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription, combineLatest} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../../core/logging/LogFactory';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('GemeindeAngabenComponent');
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {combineLatest} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
 
 @Component({
@@ -36,16 +41,26 @@ export class GemeindeAngabenComponent implements OnInit {
     @Input() public lastenausgleichID: string;
 
     public formGroup: FormGroup;
+    public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    public form: FormGroup;
+    private subscription: Subscription;
 
     public constructor(
         private readonly fb: FormBuilder,
         private readonly gemeindeAntraegeService: GemeindeAntragService,
         private readonly cd: ChangeDetectorRef,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
     ) {
     }
 
     public ngOnInit(): void {
+        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .subscribe(container => {
+                this.lATSAngabenGemeindeContainer = container;
+                this.initForm();
+                this.cd.markForCheck();
+            }, err => LOG.error(err));
         this.gemeindeAntraegeService.getGemeindeAngabenFor(this.lastenausgleichID)
             .subscribe((gemeindeAngabenContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer) => {
                 const gemeindeAngaben = gemeindeAngabenContainer.angabenDeklaration;
@@ -54,6 +69,25 @@ export class GemeindeAngabenComponent implements OnInit {
 
                 this.cd.markForCheck();
             });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    public onSubmit(): void {
+        if (this.form.valid) {
+            this.lATSAngabenGemeindeFuerInstitutionenFreigeben();
+        }
+    }
+
+    private initForm(): void {
+        this.form = new FormGroup({
+            alleAngabenInKibonErfasst: new FormControl(
+                this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                Validators.required
+            )
+        });
     }
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
@@ -214,6 +248,14 @@ export class GemeindeAngabenComponent implements OnInit {
 
     }
 
+    private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.form.get('alleAngabenInKibonErfasst').value;
+        this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
+    }
+
+    public showAntragErstellen(): boolean {
+        return this.lATSAngabenGemeindeContainer?.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
+    }
     public inMandantRoles(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }

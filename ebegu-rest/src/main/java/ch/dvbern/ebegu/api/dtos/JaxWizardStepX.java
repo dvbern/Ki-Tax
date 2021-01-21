@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 public class JaxWizardStepX {
@@ -26,6 +27,9 @@ public class JaxWizardStepX {
 
 	@NotNull
 	private String stepName;
+
+	@Nonnull
+	private Boolean disabled;
 
 	public String getWizardTyp() {
 		return wizardTyp;
@@ -41,5 +45,14 @@ public class JaxWizardStepX {
 
 	public void setStepName(String stepName) {
 		this.stepName = stepName;
+	}
+
+	@Nonnull
+	public Boolean getDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(@Nonnull Boolean disabled) {
+		this.disabled = disabled;
 	}
 }
