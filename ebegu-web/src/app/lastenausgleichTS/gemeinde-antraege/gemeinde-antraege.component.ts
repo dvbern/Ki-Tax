@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -8,6 +9,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
@@ -60,6 +62,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
+        private readonly cd: ChangeDetectorRef,
         private readonly wizardStepXRS: WizardStepXRS
     ) {
     }
@@ -101,8 +104,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         }
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadData();
-        }, error => {
-            this.translate.get('CREATE_ANTRAG_ERROR', error).subscribe(message => {
+            this.cd.markForCheck();
+        }, (error: HttpErrorResponse) => {
+            const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
+                this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
+
+            errorMessage$.subscribe(message => {
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could no translate', translateError));
         });

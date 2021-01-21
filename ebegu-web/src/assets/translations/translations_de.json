@@ -2208,6 +2208,7 @@
     "LATS_STATUS_GEPRUEFT": "Geprüft",
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
     "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
+    "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Gesuchsperiode",
     "GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR": "Geleistete Betreuungsstunden Schuljahr 2018/19 ohne Betreuungsstunden für Kinder mit besonderen Betreuungsanforderungen",
     "BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN": "Betreuungsstunden Schuljahr 2018/19 für Kinder mit besonderen Betreuungsanforderungen (gemäss TSV Art. 8 Abs. 2)",
     "LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN": "Lastenausgleichsberechtigte Betreuungsstunden",

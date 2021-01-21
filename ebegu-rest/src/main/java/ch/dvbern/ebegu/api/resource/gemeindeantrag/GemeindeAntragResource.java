@@ -34,7 +34,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -48,6 +50,8 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -114,9 +118,13 @@ public class GemeindeAntragResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeId));
 
-		final List<GemeindeAntrag> gemeindeAntragList =
-			gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
-		return converter.gemeindeAntragListToJax(gemeindeAntragList);
+		try {
+			final List<GemeindeAntrag> gemeindeAntragList =
+				gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
+			return converter.gemeindeAntragListToJax(gemeindeAntragList);
+		} catch (EntityExistsException e) {
+			throw new WebApplicationException(e, Status.CONFLICT);
+		}
 	}
 
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
