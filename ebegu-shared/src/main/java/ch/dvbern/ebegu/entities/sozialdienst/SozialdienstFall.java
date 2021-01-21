@@ -44,7 +44,7 @@ import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.ONE_MB;
+import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
 @Audited
 @Entity
@@ -83,7 +83,7 @@ public class SozialdienstFall extends AbstractEntity {
 	private LocalDate geburtsdatum;
 
 	@Nullable
-	@Column(nullable = true, length = ONE_MB) // 1 megabytes
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	private byte[] vollmacht;
 

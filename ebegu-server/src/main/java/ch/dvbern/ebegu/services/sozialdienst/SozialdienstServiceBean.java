@@ -77,7 +77,7 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 				Sozialdienst.class,
 				"name",
 				sozialdienst.getName(),
-				ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_NAME);
+				ErrorCodeEnum.ERROR_DUPLICATE_SOZIALDIENST_NAME);
 		}
 
 		return saveSozialdienst(sozialdienst);

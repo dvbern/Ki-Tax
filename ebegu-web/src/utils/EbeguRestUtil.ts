@@ -4655,7 +4655,7 @@ export class EbeguRestUtil {
     public sozialdienstStammdatenToRestObject(
         restStammdaten: any,
         stammdaten: TSSozialdienstStammdaten,
-    ): TSSozialdienstStammdaten {
+    ): TSSozialdienstStammdaten | undefined {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
 
@@ -4672,7 +4672,7 @@ export class EbeguRestUtil {
     public parseSozialdienstStammdaten(
         stammdatenTS: TSSozialdienstStammdaten,
         stammdatenFromServer: any,
-    ): TSSozialdienstStammdaten {
+    ): TSSozialdienstStammdaten | undefined {
         if (stammdatenFromServer) {
             this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
             stammdatenTS.sozialdienst = this.parseSozialdienst(new TSSozialdienst(), stammdatenFromServer.sozialdienst);
