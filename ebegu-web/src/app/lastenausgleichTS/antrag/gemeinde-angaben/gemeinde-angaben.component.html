@@ -489,5 +489,14 @@
         </mat-form-field>
     </dv-input-container-x>
 
+    <div class="actions">
+        <dv-loading-button
+                           type="button"
+                           [buttonDisabled]="!angabenForm?.valid"
+                           (buttonClick)="onAngabenFormSubmit()">
+            <span translate>SAVE</span>
+        </dv-loading-button>
+    </div>
+
 </form>
 

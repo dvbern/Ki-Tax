@@ -250,7 +250,8 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
-        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.formularInitForm.get('alleAngabenInKibonErfasst').value;
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst =
+            this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
     }
 
@@ -263,6 +264,10 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onAngabenFormSubmit(): void {
+        if (this.angabenForm.valid) {
+            this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+            this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
+        }
 
     }
 }
