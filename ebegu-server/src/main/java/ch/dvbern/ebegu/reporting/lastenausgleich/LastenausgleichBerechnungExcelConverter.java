@@ -97,8 +97,8 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 			MergeFieldLastenausgleichBerechnung.totalGutscheineTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_totalGutscheineTitel", locale));
 		excelMerger.addValue(
-			MergeFieldLastenausgleichBerechnung.belegungenMitSelbstbehaltTitel.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_belegungenMitSelbstbehaltTitel", locale));
+			MergeFieldLastenausgleichBerechnung.bgMitSelbstbehaltTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_bgMitSelbstbehaltTitel", locale));
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.kostenProPlatzTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_kostenProPlatzTitel", locale));
@@ -112,8 +112,8 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 			MergeFieldLastenausgleichBerechnung.korrekturTitle.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_korrekturTitle", locale));
 		excelMerger.addValue(
-			MergeFieldLastenausgleichBerechnung.belegungenOhneSelbstbehaltTitel.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_belegungenOhneSelbstbehaltTitel", locale));
+			MergeFieldLastenausgleichBerechnung.bgOhneSelbstbehaltTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_bgOhneSelbstbehaltTitel", locale));
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.totalGutscheineEingabeLastTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_totalGutscheineEingabeLastTitel", locale));
