@@ -51,7 +51,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly errorService: ErrorService,
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
     ) {
     }
 
@@ -82,7 +82,10 @@ export class GemeindeAngabenComponent implements OnInit {
     private initLATSGemeindeInitializationForm(): void {
         this.form = new FormGroup({
             alleAngabenInKibonErfasst: new FormControl(
-                this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                {
+                    value: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                    disabled: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null,
+                },
                 Validators.required,
             ),
         });

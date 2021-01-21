@@ -18,13 +18,13 @@ export class LastenausgleichTSService {
     private readonly API_BASE_URL = `${CONSTANTS.REST_API}lats/gemeinde`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
     // return last item but don't provide initial value like BehaviourSubject does
-    private readonly lATSAngabenGemeindeContainer =
+    private lATSAngabenGemeindeContainerStore =
         new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
 
     public constructor(private readonly http: HttpClient) {
     }
 
-    public updateLATSAngabenGemeindeContainer(id: string): void {
+    public updateLATSAngabenGemeindeContainerStore(id: string): void {
         const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
         this.http.get<TSLastenausgleichTagesschuleAngabenGemeinde[]>(url)
             .pipe(map(container => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
@@ -37,7 +37,7 @@ export class LastenausgleichTSService {
     }
 
     public getLATSAngabenGemeindeContainer(): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
-        return this.lATSAngabenGemeindeContainer.asObservable();
+        return this.lATSAngabenGemeindeContainerStore.asObservable();
     }
 
     public lATSAngabenGemeindeFuerInstitutionenFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
@@ -58,11 +58,15 @@ export class LastenausgleichTSService {
         }, error => LOG.error(error));
     }
 
+    public emptyStore(): void {
+        this.lATSAngabenGemeindeContainerStore = new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
+    }
+
     private next(result: any): void {
         const savedContainer = this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
             new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
             result
         );
-        this.lATSAngabenGemeindeContainer.next(savedContainer);
+        this.lATSAngabenGemeindeContainerStore.next(savedContainer);
     }
 }
