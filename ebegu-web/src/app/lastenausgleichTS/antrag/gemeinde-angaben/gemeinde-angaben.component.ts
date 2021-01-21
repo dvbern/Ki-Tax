@@ -39,9 +39,9 @@ export class GemeindeAngabenComponent implements OnInit {
 
     @Input() public lastenausgleichID: string;
 
-    public formGroup: FormGroup;
+    public angabenForm: FormGroup;
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
-    public form: FormGroup;
+    public formularInitForm: FormGroup;
     private subscription: Subscription;
 
     public constructor(
@@ -73,14 +73,14 @@ export class GemeindeAngabenComponent implements OnInit {
         this.subscription.unsubscribe();
     }
 
-    public onSubmit(): void {
-        if (this.form.valid) {
+    public onInitFormSubmit(): void {
+        if (this.formularInitForm.valid) {
             this.lATSAngabenGemeindeFuerInstitutionenFreigeben();
         }
     }
 
     private initLATSGemeindeInitializationForm(): void {
-        this.form = new FormGroup({
+        this.formularInitForm = new FormGroup({
             alleAngabenInKibonErfasst: new FormControl(
                 {
                     value: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
@@ -92,7 +92,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
-        this.formGroup = this.fb.group({
+        this.angabenForm = this.fb.group({
             // A
             alleFaelleInKibon: [{value: this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst, disabled: true}],
             angebotVerfuegbarFuerAlleSchulstufen: [initialGemeindeAngaben?.angebotVerfuegbarFuerAlleSchulstufen],
@@ -156,101 +156,101 @@ export class GemeindeAngabenComponent implements OnInit {
     private setupCalculcations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest(
             [
-                this.formGroup.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
+                this.angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').valueChanges.pipe(
                     startWith(gemeindeAngabenFromServer?.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse),
                 ),
-                this.formGroup.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
+                this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
                     startWith(gemeindeAngabenFromServer?.geleisteteBetreuungsstundenBesondereBeduerfnisse),
                 ),
             ],
         ).subscribe(formValues => {
-            this.formGroup.get('lastenausgleichberechtigteBetreuungsstunden')
+            this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
                 .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
         });
 
-        this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
+        this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
             .valueChanges
             .subscribe(value => {
                 // TODO: replace with config param
-                this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                     .setValue(value ? value * 5.25 : 0);
             });
 
-        this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
+        this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
             .valueChanges
             .subscribe(value => {
                 // TODO: replace with config param
-                this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                     .setValue(value ? value * 10.39 : 0);
             });
 
         combineLatest(
             [
-                this.formGroup.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                     .valueChanges
                     .pipe(startWith(0)),
-                this.formGroup.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                     .valueChanges
                     .pipe(startWith(0)),
             ],
-        ).subscribe(value => this.formGroup.get('normlohnkostenBetreuungBerechnet')
+        ).subscribe(value => this.angabenForm.get('normlohnkostenBetreuungBerechnet')
             .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
         );
 
         combineLatest(
             [
-                this.formGroup.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
-                this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+                this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
+                this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
             ],
         ).subscribe(values => {
-            this.formGroup.get('einnahmenElterngebuehrenPercentual')
+            this.angabenForm.get('einnahmenElterngebuehrenPercentual')
                 // TODO: clean up
                 .setValue((values[0] === 0 ? 0 : values[1] / values[0] * 100).toFixed(2) + '%');
-            this.formGroup.get('lastenausgleichsberechtigerBetrag').setValue(values[0] - values[1]);
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(values[0] - values[1]);
         });
 
         combineLatest([
-            this.formGroup.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
-            this.formGroup.get('ersteRateAusbezahlt').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('ersteRateAusbezahlt').valueChanges.pipe(startWith(0)),
         ]).subscribe(values => {
-            this.formGroup.get('zweiteRate').setValue(values[0] - values[1]);
+            this.angabenForm.get('zweiteRate').setValue(values[0] - values[1]);
         });
 
         // TODO: merge with other einnahmenElterngebuehren observable
-        this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0))
-            .subscribe(value => this.formGroup.get('einnahmenElterngebuehrenRO').setValue(value));
+        this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0))
+            .subscribe(value => this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(value));
 
         // TODO: merge with existing observables
         combineLatest([
-            this.formGroup.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
-            this.formGroup.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
-            this.formGroup.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
-            this.formGroup.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
-            this.formGroup.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
         ]).subscribe(values => {
             const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
             if (gemeindeBeitragOderUeberschuss < 0) {
-                this.formGroup.get('kostenueberschussGemeinde')
+                this.angabenForm.get('kostenueberschussGemeinde')
                     .setValue(gemeindeBeitragOderUeberschuss);
-                this.formGroup.get('kostenbeitragGemeinde')
+                this.angabenForm.get('kostenbeitragGemeinde')
                     .setValue('');
             } else {
-                this.formGroup.get('kostenbeitragGemeinde')
+                this.angabenForm.get('kostenbeitragGemeinde')
                     .setValue(gemeindeBeitragOderUeberschuss);
-                this.formGroup.get('kostenueberschussGemeinde')
+                this.angabenForm.get('kostenueberschussGemeinde')
                     .setValue('');
             }
         });
 
         // TODO: merge with existing observables
-        this.formGroup.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)).subscribe(value => {
-            this.formGroup.get('erwarteterKostenbeitragGemeinde').setValue(value * 0.2);
+        this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)).subscribe(value => {
+            this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(value * 0.2);
         });
 
     }
 
     private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
-        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.form.get('alleAngabenInKibonErfasst').value;
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
     }
 
@@ -260,5 +260,9 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public inMandantRoles(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public onAngabenFormSubmit(): void {
+
     }
 }

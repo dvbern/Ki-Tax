@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="lATSAngabenGemeindeContainer && form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="lATSAngabenGemeindeContainer && formularInitForm" [formGroup]="formularInitForm" (ngSubmit)="onInitFormSubmit()">
         <div class="row">
             <div class="col-xs-12 dv-input-container-question">
                 <dv-radio-container-x>
@@ -47,8 +47,8 @@
         <div class="actions">
             <dv-loading-button *ngIf="showAntragErstellen()"
                                type="button"
-                               [buttonDisabled]="!form?.valid"
-                               (buttonClick)="onSubmit()">
+                               [buttonDisabled]="!formularInitForm?.valid"
+                               (buttonClick)="onInitFormSubmit()">
                 <span translate>LATS_ANTRAG_ERSTELLEN</span>
             </dv-loading-button>
         </div>
@@ -56,7 +56,7 @@
 
 </div>
 
-<form *ngIf="formGroup" [formGroup]="formGroup">
+<form *ngIf="angabenForm" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
 
     <h2 translate>ALLGEMEINE_ANGABEN</h2>
 
@@ -120,7 +120,7 @@
         </dv-radio-container-x>
     </dv-input-container-x>
 
-    <dv-input-container-x *ngIf="formGroup.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
+    <dv-input-container-x *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
         <label>{{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}</label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
