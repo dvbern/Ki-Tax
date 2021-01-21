@@ -2246,5 +2246,6 @@
     "LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL": "Wurde an jedem Standort mindestens die Hälfte der Betreuungszeit (inklusive Leitungsprozente) von pädagogisch oder sozialpädagogisch ausgebildetem Personal geleistet (TSV Art. 4)?",
     "LATS_AUSBILDUNG_MITARBEITENDE_BELEGT": "Sind die pädagogischen oder sozialpädagogischen Ausbildungen der Mitarbeitenden mit anerkannten Ausbildungszertifikaten belegt?",
     "LATS_EINKOMMEN_ELTERN_EINLEITUNG": "Haben die Eltern zur Kontrolle der Einkommens- und Vermögensverhältnisse",
+    "LATS_ANGABEN_GEMEINDE_BEMERKUNGEN": "Bemerkungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

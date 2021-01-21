@@ -477,7 +477,17 @@
         </dv-radio-container-x>
     </dv-input-container-x>
 
+    <mat-divider></mat-divider>
 
+    <h2>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h2>
+
+    <dv-input-container-x>
+        <mat-form-field floatLabel="always" class="no-margin-left">
+            <textarea matInput
+                      formControlName="bemerkungen"
+                      class="form-control dv-input"></textarea>
+        </mat-form-field>
+    </dv-input-container-x>
 
 </form>
 
