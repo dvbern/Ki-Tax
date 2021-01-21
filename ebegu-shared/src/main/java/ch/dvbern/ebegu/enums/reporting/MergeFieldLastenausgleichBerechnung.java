@@ -66,6 +66,26 @@ public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 	totalGutscheineOhneSelbstbehalt(new SimpleMergeField<>("totalGutscheineOhneSelbstbehalt", BIGDECIMAL_CONVERTER)),
 	kostenFuerSelbstbehalt(new SimpleMergeField<>("kostenFuerSelbstbehalt", BIGDECIMAL_CONVERTER)),
 
+	//Erläuterungen
+	erlaeuterungZ1(new SimpleMergeField<>("erlaeuterungZ1", STRING_CONVERTER)),
+	erlaeuterungZ2(new SimpleMergeField<>("erlaeuterungZ1", STRING_CONVERTER)),
+	erlaeuterungZ3(new SimpleMergeField<>("erlaeuterungZ1", STRING_CONVERTER)),
+	erlaeuterungZ4(new SimpleMergeField<>("erlaeuterungZ1", STRING_CONVERTER)),
+	erlaeuterungZ5_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ6_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ7_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ8_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ9_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ10_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ11_1(new SimpleMergeField<>("erlaeuterungZ1_1", STRING_CONVERTER)),
+	erlaeuterungZ5_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+	erlaeuterungZ6_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+	erlaeuterungZ7_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+	erlaeuterungZ8_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+	erlaeuterungZ9_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+	erlaeuterungZ10_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+	erlaeuterungZ11_2(new SimpleMergeField<>("erlaeuterungZ1_2", STRING_CONVERTER)),
+
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 
 	@Nonnull
