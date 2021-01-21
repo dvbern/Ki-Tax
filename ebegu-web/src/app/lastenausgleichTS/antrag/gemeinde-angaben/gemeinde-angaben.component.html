@@ -88,9 +88,29 @@
             <mat-radio-group
                 aria-labelledby="angebotFuerFerienbetreuungVorhanden-radio-group"
                 class=""
-                name="bedarfBeiElternAbgeklaert"
+                name="angebotFuerFerienbetreuungVorhanden"
                 horizontal
                 formControlName="angebotFuerFerienbetreuungVorhanden">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label required id="angebotVerfuegbarFuerAlleSchulstufen-radio-group">
+            {{'LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+
+            <mat-radio-group
+                aria-labelledby="angebotVerfuegbarFuerAlleSchulstufen-radio-group"
+                class=""
+                name="angebotVerfuegbarFuerAlleSchulstufen"
+                horizontal
+                formControlName="angebotVerfuegbarFuerAlleSchulstufen">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
