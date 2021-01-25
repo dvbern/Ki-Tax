@@ -120,5 +120,59 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.kostenFuerSelbstbehaltTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_kostenFuerSelbstbehaltTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ3.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ3", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ4.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ4", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ5_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ5_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ6_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ6_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ7_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ7_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ8_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ8_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ9_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ9_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ10_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ10_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ11_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ11_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ5_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ5_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ6_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ6_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ7_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ7_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ8_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ8_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ9_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ9_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ10_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ10_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ11_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ11_2", locale));
 	}
 }
