@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,11 +41,12 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.reporting.ErklaerungEinkommen;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.builder.CompareToBuilder;
 
 /**
  * DTO fuer die TagesschuleStatistik
  */
-public class TagesschuleRechnungsstellungDataRow {
+public class TagesschuleRechnungsstellungDataRow implements Comparable<TagesschuleRechnungsstellungDataRow> {
 
 	private @Nullable String tagesschule;
 	private @Nullable String nachnameKind;
@@ -230,7 +232,8 @@ public class TagesschuleRechnungsstellungDataRow {
 		// Der Zeitabschnitt einer Tagesschule-Verfuegung enthaelt mehrere Monate!
 		Collection<TagesschuleRechnungsstellungDataRow> dataRows = new ArrayList<>();
 		LocalDate monatsStart = zeitabschnitt.getGueltigkeit().getGueltigAb();
-		while (!monatsStart.isAfter(stichtag)) {
+		LocalDate monatsEnd = zeitabschnitt.getGueltigkeit().getGueltigBis();
+		while (!monatsStart.isAfter(stichtag) && monatsStart.isBefore(monatsEnd)) {
 			dataRows.add(createRow(zeitabschnitt, monatsStart));
 			monatsStart = monatsStart.plusMonths(1);
 		}
@@ -328,5 +331,36 @@ public class TagesschuleRechnungsstellungDataRow {
 		}
 		// 4)
 		return ErklaerungEinkommen.KEINE_ERKLAERUNG;
+	}
+
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof TagesschuleRechnungsstellungDataRow)) {
+			return false;
+		}
+
+		TagesschuleRechnungsstellungDataRow that = (TagesschuleRechnungsstellungDataRow) o;
+		return Objects.equals(getReferenznummer(), that.getReferenznummer())
+			&& Objects.equals(getDatumAb(), that.getDatumAb());
+	}
+
+	@Override
+	public int compareTo(@Nonnull TagesschuleRechnungsstellungDataRow o) {
+		if (this.equals(o)) {
+			return 0;
+		}
+		CompareToBuilder builder = new CompareToBuilder();
+		builder.append(this.getReferenznummer(), o.getReferenznummer());
+		builder.append(this.getDatumAb(), o.getDatumAb());
+		return builder.toComparison();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(referenznummer, datumAb);
 	}
 }
