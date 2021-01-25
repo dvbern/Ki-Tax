@@ -90,12 +90,15 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	}
 
 	/**
-	 * Sucht in der GeoAdmin API Wohnadressen, die mit strasse, nr und plz übereinstimmen. Liefert die Resultate absteigend
-	 * nach Relevanz geordnet.
+	 * Sucht in der GeoAdmin API Wohnadressen, die mit strasse, nr und plz übereinstimmen. Liefert die Resultate
+	 * absteigend nach Relevanz geordnet.
 	 */
 	@Override
 	@Nonnull
-	public List<JaxWohnadresse> findWohnadressenByStrasseAndPlz(@Nonnull String strasse, @Nullable String nr, @Nonnull String plz) {
+	public List<JaxWohnadresse> findWohnadressenByStrasseAndPlz(
+		@Nonnull String strasse,
+		@Nullable String nr,
+		@Nonnull String plz) {
 		String nrStr = "";
 		if (nr != null) {
 			nrStr = nr + " ";
@@ -131,25 +134,28 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	}
 
 	/**
-	 * Ziel ist die Feature Search <a href="https://api3.geo.admin.ch/services/sdiservices.html#search">Search
-	 * Resource</a> mit dem feature {@link #API_LAYERBODID_WOHNUNGSREGISTER}.
-	 * Das Ergebnis dieser Resource liefert uns Suchergebnisse mit origin=feature aus dem
+	 * Ziel ist die <a href="https://api3.geo.admin.ch/services/sdiservices.html#search">Search Resource</a> vom type
+	 * &quot;locations&quot;
+	 * Das Ergebnis dieser Resource mit origins=address (i.E.: Adress-Suche) liefert uns ein Suchergebnis aus dem
 	 * {@link #API_LAYERBODID_WOHNUNGSREGISTER}.
 	 */
 	@Nonnull
-	private WebTarget getFeatureSearchTarget(
-		@Nonnull String escapedSearchString, int limit) {
+	private WebTarget getLocationsSearchTarget(
+		@Nonnull String escapedSearchString,
+		int limit) {
 
 		if (limit > SEARCHSERVICE_MAX_RESULTS) {
-			throw new EbeguRuntimeException("getFeatureSearchTarget",
+			throw new EbeguRuntimeException(
+				"getLocationsSearchTarget",
 				"limit " + limit + "higher than SEARCH_SERVICE_MAX_RESULTS (" + SEARCHSERVICE_MAX_RESULTS + ")");
 		}
 
 		String searchserverURI = config.getEbeguGeoadminSearchServerUrl();
 
 		return client.target(searchserverURI)
-			.queryParam("features", API_LAYERBODID_WOHNUNGSREGISTER)
-			.queryParam("type", "featuresearch")
+			.queryParam("type", "locations")
+			.queryParam("origins", "address")
+			.queryParam("returnGeometry", false)
 			.queryParam("limit", limit)
 			.queryParam("searchText", escapedSearchString);
 	}
@@ -168,8 +174,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 			return new JaxGeoadminSearchResult();
 		}
 
-
-		WebTarget target = getFeatureSearchTarget(searchText, limit);
+		WebTarget target = getLocationsSearchTarget(searchText, limit);
 
 		try {
 			JaxGeoadminSearchResult geoadminSearchResult = target
@@ -192,14 +197,13 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	 * Ziel ist die <a href="https://api3.geo.admin.ch/services/sdiservices.html#feature-resource">Feature Resource</a>
 	 */
 	@Nonnull
-	private WebTarget getFeatureTarget(@Nonnull String layerBodId, @Nonnull String featureId) {
-		checkNotNull(layerBodId);
+	private WebTarget getFeatureTarget(@Nonnull String featureId) {
 		checkNotNull(featureId);
 
 		String mapserverURI = config.getEbeguGeoadminMapServerUrl();
 
 		return client.target(mapserverURI)
-			.path(layerBodId)
+			.path(GeoadminSearchServiceBean.API_LAYERBODID_WOHNUNGSREGISTER)
 			.path(featureId)
 			.queryParam("returnGeometry", false);
 	}
@@ -210,7 +214,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 		@Nonnull String featureId) {
 		checkNotNull(featureId);
 
-		WebTarget target = getFeatureTarget(API_LAYERBODID_WOHNUNGSREGISTER, featureId);
+		WebTarget target = getFeatureTarget(featureId);
 
 		try {
 			JaxGeoadminFeatureResult featureResult = target
