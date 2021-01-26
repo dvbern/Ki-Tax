@@ -70,7 +70,8 @@ public final class PensumMappingUtil {
 				copy.getGueltigkeit().setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
 
 				return copy;
-			});
+			})
+			.filter(copy -> betreuung.extractGesuchsperiode().getGueltigkeit().intersects(copy.getGueltigkeit()));
 
 		GueltigkeitsUtil.findFirst(containersToUpdate)
 			.filter(first -> first.getGueltigkeit().startsBefore(gueltigkeit))
@@ -169,7 +170,8 @@ public final class PensumMappingUtil {
 					copy.getGueltigkeit().setGueltigAb(mutationRangeBis.plusDays(1));
 
 					return copy;
-				});
+				})
+			.filter(copy -> ctx.getBetreuung().extractGesuchsperiode().getGueltigkeit().intersects(copy.getGueltigkeit()));
 
 		GueltigkeitsUtil.findAnyAtStichtag(existing, mutationRangeAb)
 			.filter(overlappingAb -> overlappingAb.getGueltigkeit().startsBefore(mutationRange))
