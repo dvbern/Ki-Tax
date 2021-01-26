@@ -170,7 +170,8 @@ public final class PensumMappingUtil {
 					copy.getGueltigkeit().setGueltigAb(mutationRangeBis.plusDays(1));
 
 					return copy;
-				});
+				})
+			.filter(copy -> ctx.getBetreuung().extractGesuchsperiode().getGueltigkeit().intersects(copy.getGueltigkeit()));
 
 		GueltigkeitsUtil.findAnyAtStichtag(existing, mutationRangeAb)
 			.filter(overlappingAb -> overlappingAb.getGueltigkeit().startsBefore(mutationRange))
