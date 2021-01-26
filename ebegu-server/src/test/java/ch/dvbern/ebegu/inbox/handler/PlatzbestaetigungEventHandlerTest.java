@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -554,6 +555,52 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			void splitDtoZeitabschnitteWithClientGueltigkeit() {
 				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31));
 
+				// ZeitabschnittDTO's must be distinct, otherwise they get merged together to one large Zeitabschnitt.
+				// -> set distinct Betreuungsosten
+				// see also test #mergesIdenticalZeitabschnitte()
+				AtomicInteger betreuungsKosten = new AtomicInteger(1234);
+
+				ZeitabschnittDTO beforeGueltigAb =
+					createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30));
+				beforeGueltigAb.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO overlapGueltigAb =
+					createZeitabschnittDTO(LocalDate.of(2020, 12, 1), LocalDate.of(2021, 1, 31));
+				overlapGueltigAb.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO containedInGueltigkeit =
+					createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31));
+				containedInGueltigkeit.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO overlapGueltigBis =
+					createZeitabschnittDTO(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+				overlapGueltigBis.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO afterGueltigBis =
+					createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31));
+				afterGueltigBis.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				dto.setZeitabschnitte(Arrays.asList(
+					beforeGueltigAb,
+					overlapGueltigAb,
+					containedInGueltigkeit,
+					overlapGueltigBis,
+					afterGueltigBis));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(overlapGueltigAb, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 1, 31))),
+					container(matches(containedInGueltigkeit)),
+					container(matches(overlapGueltigBis, LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31)))
+				));
+			}
+
+			@Test
+			void mergesIdenticalZeitabschnitte() {
+				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31));
+
 				ZeitabschnittDTO beforeGueltigAb =
 					createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30));
 
@@ -580,9 +627,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
-					container(matches(overlapGueltigAb, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 1, 31))),
-					container(matches(containedInGueltigkeit)),
-					container(matches(overlapGueltigBis, LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31)))
+					container(matches(containedInGueltigkeit, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31)))
 				));
 			}
 
