@@ -70,7 +70,8 @@ public final class PensumMappingUtil {
 				copy.getGueltigkeit().setGueltigAb(gueltigkeit.getGueltigBis().plusDays(1));
 
 				return copy;
-			});
+			})
+			.filter(copy -> betreuung.extractGesuchsperiode().getGueltigkeit().intersects(copy.getGueltigkeit()));
 
 		GueltigkeitsUtil.findFirst(containersToUpdate)
 			.filter(first -> first.getGueltigkeit().startsBefore(gueltigkeit))
