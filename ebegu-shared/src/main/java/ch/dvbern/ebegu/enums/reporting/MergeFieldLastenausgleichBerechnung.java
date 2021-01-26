@@ -76,15 +76,15 @@ public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 	erlaeuterungZ7_1(new SimpleMergeField<>("erlaeuterungZ7_1", STRING_CONVERTER)),
 	erlaeuterungZ8_1(new SimpleMergeField<>("erlaeuterungZ8_1", STRING_CONVERTER)),
 	erlaeuterungZ9_1(new SimpleMergeField<>("erlaeuterungZ9_1", STRING_CONVERTER)),
-	erlaeuterungZ10_1(new SimpleMergeField<>("erlaeuterungZ10_1", STRING_CONVERTER)),
-	erlaeuterungZ11_1(new SimpleMergeField<>("erlaeuterungZ11_1", STRING_CONVERTER)),
+	erlaeuterungZ10_1(new SimpleMergeField<>("erlaeuterungZ11_1", STRING_CONVERTER)),
+	erlaeuterungZ11_1(new SimpleMergeField<>("erlaeuterungZ12_1", STRING_CONVERTER)),
 	erlaeuterungZ5_2(new SimpleMergeField<>("erlaeuterungZ5_2", STRING_CONVERTER)),
 	erlaeuterungZ6_2(new SimpleMergeField<>("erlaeuterungZ6_2", STRING_CONVERTER)),
 	erlaeuterungZ7_2(new SimpleMergeField<>("erlaeuterungZ7_2", STRING_CONVERTER)),
 	erlaeuterungZ8_2(new SimpleMergeField<>("erlaeuterungZ8_2", STRING_CONVERTER)),
 	erlaeuterungZ9_2(new SimpleMergeField<>("erlaeuterungZ9_2", STRING_CONVERTER)),
-	erlaeuterungZ10_2(new SimpleMergeField<>("erlaeuterungZ10_2", STRING_CONVERTER)),
-	erlaeuterungZ11_2(new SimpleMergeField<>("erlaeuterungZ11_2", STRING_CONVERTER)),
+	erlaeuterungZ10_2(new SimpleMergeField<>("erlaeuterungZ11_2", STRING_CONVERTER)),
+	erlaeuterungZ11_2(new SimpleMergeField<>("erlaeuterungZ12_2", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 
