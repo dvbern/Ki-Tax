@@ -651,14 +651,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			}
 
 			@Test
-			void doesNotGeneratedCompletelyOutOfPeridZeitabschnitt() {
+			void doesNotGeneratedCompletelyOutOfPeriodZeitabschnitt() {
 				addCompleteContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
 				clientGueltigkeit = new DateRange(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
 				DateRange gueltigkeit = betreuung.extractGesuchsperiode().getGueltigkeit();
 				ZeitabschnittDTO z = createZeitabschnittDTO(gueltigkeit);
 				dto.setZeitabschnitte(Collections.singletonList(z));
+
 				expectHumanConfirmation();
 				testProcessingSuccess();
+
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
 					container(matches(z, gueltigkeit))
 				));
