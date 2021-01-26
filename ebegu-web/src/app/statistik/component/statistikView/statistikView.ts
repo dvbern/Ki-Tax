@@ -91,6 +91,7 @@ export class StatistikViewController implements IController {
     public institutionStammdatenList: TSInstitutionStammdaten[];
     private showMahlzeitenStatistik: boolean = false;
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
+    private flagShowErrorNoGesuchSelected: boolean = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -248,6 +249,9 @@ export class StatistikViewController implements IController {
                 }
                 return;
             case TSStatistikParameterType.MASSENVERSAND:
+                if (!this.isMassenversandValid()) {
+                    return;
+                }
                 if (this.statistikParameter.text) {
                     this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
                         title: this.$translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
@@ -413,5 +417,19 @@ export class StatistikViewController implements IController {
             }
             this.gemeindenMahlzeitenverguenstigungen = value;
         });
+    }
+
+    private isMassenversandValid(): boolean {
+        // simulate a click in the checkboxes of Verantwortlichkeit
+        this.gesuchTypeClicked();
+        return !this.flagShowErrorNoGesuchSelected;
+
+    }
+
+    public gesuchTypeClicked(): void {
+        this.flagShowErrorNoGesuchSelected =
+            !this.statistikParameter.bgGesuche
+            && !this.statistikParameter.mischGesuche
+            && !this.statistikParameter.tsGesuche;
     }
 }
