@@ -560,7 +560,9 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float" data-translate="MASSENVERSAND_GESUCHE"></label>
+                                            <label class="md-no-float">
+                                                <span data-translate="MASSENVERSAND_GESUCHE"></span> *
+                                            </label>
                                             <md-checkbox name="bgGesuche"
                                                          ng-model="vm.statistikParameter.bgGesuche"
                                                          ng-change="vm.gesuchTypeClicked()"
@@ -583,7 +585,7 @@
                                                 <span data-translate="MASSENVERSAND_TS_GESUCHE"></span>
                                             </md-checkbox>
                                         </dv-input-container>
-                                        <div class="dv-error-messages">
+                                        <div class="dv-error-messages" id="massenversand-no-selection-err">
                                             <span data-translate="MASSENVERSAND_ERROR_NICHTS_AUSGEWAEHLT"
                                                   ng-show="vm.flagShowErrorNoGesuchSelected"></span>
                                         </div>

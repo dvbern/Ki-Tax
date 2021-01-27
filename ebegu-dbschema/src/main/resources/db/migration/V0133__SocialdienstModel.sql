@@ -149,6 +149,8 @@ REFERENCES adresse(id);
 
 ALTER TABLE fall ADD COLUMN sozialdienst_fall_id BINARY(16);
 
+ALTER TABLE fall_aud ADD COLUMN sozialdienst_fall_id BINARY(16);
+
 ALTER TABLE fall
 	ADD CONSTRAINT UK_fall_sozialdienst_fall_id UNIQUE (sozialdienst_fall_id);
 
