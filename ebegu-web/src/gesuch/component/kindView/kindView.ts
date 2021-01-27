@@ -419,7 +419,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private isGeburtsdatumInZunkunft(): boolean {
-        return this.getModel().geburtsdatum.isAfter(moment());
+        return EbeguUtil.isNotNullOrUndefined(this.getModel().geburtsdatum) &&
+            this.getModel().geburtsdatum.isAfter(moment());
     }
 
     public showGeburtsdatumWarning(): boolean {

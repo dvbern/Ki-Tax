@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFall;
+
 /**
  * DTO fuer Faelle
  */
@@ -35,6 +37,8 @@ public class JaxFall extends JaxAbstractDTO {
 	private Integer nextNumberKind = 1;
 
 	private JaxBenutzer besitzer;
+
+	private JaxSozialdienstFall sozialdienstFall;
 
 	public long getFallNummer() {
 		return fallNummer;
@@ -59,4 +63,13 @@ public class JaxFall extends JaxAbstractDTO {
 	public JaxBenutzer getBesitzer() {
 		return besitzer;
 	}
+
+	public JaxSozialdienstFall getSozialdienstFall() {
+		return sozialdienstFall;
+	}
+
+	public void setSozialdienstFall(JaxSozialdienstFall sozialdienstFall) {
+		this.sozialdienstFall = sozialdienstFall;
+	}
+
 }

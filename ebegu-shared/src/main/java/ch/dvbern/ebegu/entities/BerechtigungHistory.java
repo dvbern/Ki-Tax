@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.Constants;
@@ -63,6 +64,11 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 	private Traegerschaft traegerschaft = null;
 
 	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_history_sozialdienst_id"))
+	private Sozialdienst sozialdienst = null;
+
+	@Nullable
 	@Column
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String gemeinden = null;
@@ -88,6 +94,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		this.institution = berechtigung.getInstitution();
 		this.traegerschaft = berechtigung.getTraegerschaft();
 		this.gemeinden = berechtigung.extractGemeindenForBerechtigungAsString();
+		this.sozialdienst = berechtigung.getSozialdienst();
 
 		Benutzer benutzer = berechtigung.getBenutzer();
 		this.username = benutzer.getUsername();
@@ -151,6 +158,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		cb.append(this.getGemeinden(), other.getGemeinden());
 		cb.append(this.getStatus(), other.getStatus());
 		cb.append(this.getGeloescht(), other.getGeloescht());
+		cb.append(this.getSozialdienst(), other.getSozialdienst());
 		return cb.toComparison() == 0;
 	}
 
@@ -162,9 +170,19 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 			.append("gueltigkeit", getGueltigkeit())
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
+			.append("sozialdienst", sozialdienst)
 			.append("gemeinden", gemeinden)
 			.append("status", status)
 			.append("geloescht", geloescht)
 			.toString();
+	}
+
+	@Nullable
+	public Sozialdienst getSozialdienst() {
+		return sozialdienst;
+	}
+
+	public void setSozialdienst(@Nullable Sozialdienst sozialdienst) {
+		this.sozialdienst = sozialdienst;
 	}
 }

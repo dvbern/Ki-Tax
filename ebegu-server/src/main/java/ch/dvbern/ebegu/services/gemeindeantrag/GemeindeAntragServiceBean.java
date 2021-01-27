@@ -20,8 +20,10 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -42,17 +44,81 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService lastenausgleichTagesschuleAngabenGemeindeService;
 
-
 	@Override
 	@Nonnull
-	public List<GemeindeAntrag> createGemeindeAntrag(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ) {
+	public List<GemeindeAntrag> createGemeindeAntrag(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull GemeindeAntragTyp typ) {
 		switch (typ) {
 		case LASTENAUSGLEICH_TAGESSCHULEN:
-			return new ArrayList<>(lastenausgleichTagesschuleAngabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode));
+			return new ArrayList<>(lastenausgleichTagesschuleAngabenGemeindeService.createLastenausgleichTagesschuleGemeinde(
+				gesuchsperiode));
 		case FERIENBETREUUNG:
 			throw new NotImplementedException("Ferienbetreuung ist noch nicht umgesetzt");
 		}
 		return Collections.emptyList();
+	}
+
+	@Nonnull
+	@Override
+	public List<? extends GemeindeAntrag> getGemeindeAntraege() {
+		return lastenausgleichTagesschuleAngabenGemeindeService.getAllLastenausgleicheTagesschulen();
+	}
+
+	@Nonnull
+	@Override
+	public List<? extends GemeindeAntrag> getGemeindeAntraege(
+		@Nullable String gemeinde,
+		@Nullable String periode,
+		@Nullable String typ,
+		@Nullable String status) {
+
+		if (typ != null) {
+			switch (typ) {
+			case "LASTENAUSGLEICH_TAGESSCHULEN": {
+				return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
+					gemeinde, periode, status
+				);
+			}
+			default:
+				throw new NotImplementedException("Typ" + typ + "wurde noch nicht implementiert");
+			}
+		}
+		return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
+			gemeinde, periode, status
+		);
+
+	}
+
+	@Nonnull
+	@Override
+	public List<GemeindeAntrag> getGemeindeAntraege(
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		return Collections.emptyList();
+	}
+
+	@Nonnull
+	@Override
+	public List<GemeindeAntrag> getGemeindeAntraege(
+		@Nonnull GemeindeAntragTyp typ) {
+		return Collections.emptyList();
+	}
+
+	@Nonnull
+	@Override
+	public List<GemeindeAntrag> getGemeindeAntraege(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull GemeindeAntragTyp typ) {
+		return Collections.emptyList();
+	}
+
+	@Nonnull
+	public Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId) {
+		if(typ == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+			return lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeindeAntragId);
+		}
+
+		return Optional.empty();
 	}
 }
 

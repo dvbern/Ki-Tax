@@ -56,13 +56,13 @@ public class GesuchsperiodeEmailCandidate extends AbstractEntity {
 	@Nonnull
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_massenversand_gesuchsperiode_id"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_massenversand_last_gesuchsperiode_id"), nullable = false)
 	private Gesuchsperiode lastGesuchsperiode;
 
 	@Nonnull
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_massenversand_gesuchsperiode_id"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_massenversand_next_gesuchsperiode_id"), nullable = false)
 	private Gesuchsperiode nextGesuchsperiode;
 
 	@Nullable

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IDirective, IDirectiveFactory} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -24,13 +24,13 @@ import {BenutzerRS} from '../../service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('UserselectController');
 
-export class DVUserselect implements IDirective {
+export class DvUserSelectConfig implements IComponentOptions {
     public restrict = 'E';
     public require: any = {smartTable: '?^stTable'};
     public scope = {};
     public controller = UserselectController;
     public controllerAs = 'vm';
-    public bindToController = {
+    public bindings = {
         ngModel: '=',
         inputId: '@',
         dvUsersearch: '@',
@@ -41,16 +41,10 @@ export class DVUserselect implements IDirective {
         selectedUser: '=?',
         schulamt: '<',
         sachbearbeiterGemeinde: '=',
+        angular2: '='
         // initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
     };
     public template = require('./dv-userselect.html');
-
-    public static factory(): IDirectiveFactory {
-        const directive = () => new DVUserselect();
-        // @ts-ignore
-        directive.$inject = [];
-        return directive;
-    }
 }
 
 /**

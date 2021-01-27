@@ -240,6 +240,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -279,6 +280,7 @@ import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
+import ch.dvbern.ebegu.services.SozialdienstService;
 import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -310,7 +312,7 @@ import static java.util.Objects.requireNonNull;
 
 @Dependent
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
-public class JaxBConverter extends AbstractConverter {
+public class JaxBConverter extends JaxSozialdienstConverter {
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -375,6 +377,8 @@ public class JaxBConverter extends AbstractConverter {
 	private FerieninselStammdatenService ferieninselStammdatenService;
 	@Inject
 	private ExternalClientService externalClientService;
+	@Inject
+	private SozialdienstService sozialdienstService;
 
 	public JaxBConverter() {
 		//nop
@@ -499,44 +503,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAdresse.setAdresseTyp(gesuchstellerAdresse.getAdresseTyp());
 		jaxAdresse.setNichtInGemeinde(gesuchstellerAdresse.isNichtInGemeinde());
 
-		return jaxAdresse;
-	}
-
-	@Nonnull
-	@CanIgnoreReturnValue
-	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
-		requireNonNull(adresse);
-		requireNonNull(jaxAdresse);
-		convertAbstractDateRangedFieldsToEntity(jaxAdresse, adresse);
-		adresse.setStrasse(jaxAdresse.getStrasse());
-		adresse.setHausnummer(jaxAdresse.getHausnummer());
-		adresse.setZusatzzeile(jaxAdresse.getZusatzzeile());
-		adresse.setPlz(jaxAdresse.getPlz());
-		adresse.setOrt(jaxAdresse.getOrt());
-		// Gemeinde ist read-only und wird nicht gesetzt
-		adresse.setLand(jaxAdresse.getLand());
-		adresse.setOrganisation(jaxAdresse.getOrganisation());
-		//adresse gilt per default von start of time an
-		adresse.getGueltigkeit().setGueltigAb(jaxAdresse.getGueltigAb() == null ?
-			Constants.START_OF_TIME :
-			jaxAdresse.getGueltigAb());
-
-		return adresse;
-	}
-
-	@Nonnull
-	public JaxAdresse adresseToJAX(@Nonnull final Adresse adresse) {
-		final JaxAdresse jaxAdresse = new JaxAdresse();
-		convertAbstractDateRangedFieldsToJAX(adresse, jaxAdresse);
-		jaxAdresse.setStrasse(adresse.getStrasse());
-		jaxAdresse.setHausnummer(adresse.getHausnummer());
-		jaxAdresse.setZusatzzeile(adresse.getZusatzzeile());
-		jaxAdresse.setPlz(adresse.getPlz());
-		jaxAdresse.setOrt(adresse.getOrt());
-		jaxAdresse.setGemeinde(adresse.getGemeinde());
-		jaxAdresse.setBfsNummer(adresse.getBfsNummer());
-		jaxAdresse.setLand(adresse.getLand());
-		jaxAdresse.setOrganisation(adresse.getOrganisation());
 		return jaxAdresse;
 	}
 
@@ -3951,6 +3917,22 @@ public class JaxBConverter extends AbstractConverter {
 			berechtigung.setTraegerschaft(null);
 		}
 
+		if (jaxBerechtigung.getSozialdienst() != null && jaxBerechtigung.getSozialdienst().getId() != null) {
+			final Optional<Sozialdienst> sozialdienstFromDB =
+				sozialdienstService.findSozialdienst(jaxBerechtigung.getSozialdienst().getId());
+			if (sozialdienstFromDB.isPresent()) {
+				// Traegerschaft darf nicht vom Client ueberschrieben werden
+				berechtigung.setSozialdienst(sozialdienstFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException(
+					"berechtigungToEntity -> sozialdienst",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					jaxBerechtigung.getSozialdienst().getId());
+			}
+		} else {
+			berechtigung.setSozialdienst(null);
+		}
+
 		// Gemeinden: Duerfen nicht vom Frontend übernommen werden, sondern müssen aus der DB gelesen werden!
 		loadGemeindenFromJax(jaxBerechtigung, berechtigung);
 		return berechtigung;
@@ -3981,6 +3963,9 @@ public class JaxBConverter extends AbstractConverter {
 		if (berechtigung.getTraegerschaft() != null) {
 			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
 		}
+		if (berechtigung.getSozialdienst() != null){
+			jaxBerechtigung.setSozialdienst(sozialdienstToJAX(berechtigung.getSozialdienst()));
+		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
 			.map(this::gemeindeToJAX)
@@ -4002,6 +3987,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (history.getTraegerschaft() != null) {
 			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
+		}
+		if (history.getSozialdienst() != null){
+			jaxHistory.setSozialdienst(sozialdienstToJAX(history.getSozialdienst()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setStatus(history.getStatus());

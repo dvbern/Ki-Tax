@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -43,6 +44,9 @@ public class JaxBerechtigung extends JaxAbstractDateRangedDTO {
 
 	@Nullable
 	private JaxInstitution institution;
+
+	@Nullable
+	private JaxSozialdienst sozialdienst;
 
 	@Nonnull
 	private Set<JaxGemeinde> gemeindeList = new TreeSet<>();
@@ -141,5 +145,14 @@ public class JaxBerechtigung extends JaxAbstractDateRangedDTO {
 			return -1;
 		}
 		return super.compareTo(o);
+	}
+
+	@Nullable
+	public JaxSozialdienst getSozialdienst() {
+		return sozialdienst;
+	}
+
+	public void setSozialdienst(@Nullable JaxSozialdienst sozialdienst) {
+		this.sozialdienst = sozialdienst;
 	}
 }

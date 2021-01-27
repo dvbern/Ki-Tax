@@ -1,0 +1,120 @@
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.dv-table {
+    table {
+        width: 100%;
+    }
+
+    @column-widths: {
+        antragTyp: 5rem;
+        fallNummer: 0 0 8rem;
+        familienName: 5rem;
+        gemeinde: 5rem;
+        kinder: 5rem;
+        periode: 5rem;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-fallNummer, .mat-column-fallNummer-filter {
+        flex: 0 0 8rem !important;
+        min-width: 8rem !important;
+    }
+
+    .mat-column-status, .mat-column-status-filter {
+        flex: 3 1 !important;
+        min-width: 0 !important;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-dokumenteHochgeladen, .mat-column-dokumenteHochgeladen-filter {
+        flex: 0 0 8rem !important;
+        min-width: 8rem !important;
+    }
+
+    .mat-column-institutionen, .mat-column-institutionen-filter {
+        flex: 4 1 !important;
+        min-width: 0 !important;
+    }
+
+    .mat-column-angebote, .mat-column-angebote-filter {
+        flex: 4 1 !important;
+        min-width: 0 !important;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-verantwortlicheTS, .mat-column-verantwortlicheTS-filter {
+        flex: 3 1 !important;
+        min-width: 0 !important;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-verantwortlicheBG, .mat-column-verantwortlicheBG-filter {
+        flex: 3 1 !important;
+        min-width: 0 !important;
+    }
+
+    mat-cell.mat-cell:last-of-type {
+        padding-right: 6px;
+    }
+
+    [dvNewUserSelect] {
+        width: 100%;
+    }
+
+    mat-row.mat-row {
+        min-height: auto;
+    }
+
+    span.no-padding-left {
+        padding-left: 0 !important;
+    }
+
+    span > label > mat-label {
+        padding-left: 1rem;
+    }
+
+    mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-form-field-wrapper > div.mat-form-field-flex > .mat-form-field-infix input {
+        padding-left: 5px;
+
+        + span > label {
+            padding-left: 5px;
+            top: 2.8rem;
+        }
+    }
+
+    .mat-form-field-wrapper {
+        padding-bottom: 0;
+    }
+
+    .bottom-pagination {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .pointer-cursor {
+        cursor: pointer;
+    }
+
+    mat-row mat-cell:first-of-type {
+        padding-left: 0.8rem;
+    }
+
+    .mat-select-value {
+        padding-left: 5px;
+    }
+
+    .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+        color: rgba(0, 0, 0, 0.54);
+    }
+
+    .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: rgba(0, 0, 0, 0.87);
+    }
+
+    .mat-focused .mat-form-field-label {
+        color: rgba(0, 0, 0, 0.54);
+    }
+}

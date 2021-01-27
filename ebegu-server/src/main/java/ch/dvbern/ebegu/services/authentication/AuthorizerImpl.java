@@ -70,6 +70,8 @@ import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -78,6 +80,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -134,6 +137,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private InstitutionStammdatenService stammdatenService;
+
+	@Inject
+	GemeindeAntragService gemeindeAntragService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller need to
@@ -1570,6 +1576,52 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
 		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
 		checkReadAuthorization(latsInstitutionContainer);
+	}
+
+	@Override
+	public void checkReadAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId) {
+		Objects.requireNonNull(gemeindeAntragId);
+		LastenausgleichTagesschuleAngabenGemeindeContainer antrag =
+			(LastenausgleichTagesschuleAngabenGemeindeContainer) gemeindeAntragService.findGemeindeAntrag(
+				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+				gemeindeAntragId
+			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
+
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			return;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+			&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
+			return;
+		}
+		throwViolation(antrag);
+	}
+
+	@Override
+	public void checkWriteAuthorizationLATSGemeindeAntrag(@Nonnull String gemeindeAntragId) {
+		Objects.requireNonNull(gemeindeAntragId);
+		LastenausgleichTagesschuleAngabenGemeindeContainer antrag =
+			(LastenausgleichTagesschuleAngabenGemeindeContainer) gemeindeAntragService.findGemeindeAntrag(
+				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+				gemeindeAntragId
+			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
+
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+
+		switch (antrag.getStatus()) {
+		case NEU: {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+				&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
+				return;
+			} else {
+				throwViolation(antrag);
+			}
+		} default: {
+			throwViolation(antrag);
+		}
+		}
 	}
 
 	private boolean isNotSenderTypOrEmpfaengerTyp(@Nullable Mitteilung mitteilung, MitteilungTeilnehmerTyp typ) {

@@ -28,6 +28,8 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozaildienstStammdaten';
+import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -140,6 +142,7 @@ import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
+import {TSWizardStepX} from '../models/TSWizardStepX';
 import {TSWorkJob} from '../models/TSWorkJob';
 import {TSZahlung} from '../models/TSZahlung';
 import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
@@ -4498,8 +4501,15 @@ export class EbeguRestUtil {
             return [];
         }
         return Array.isArray(data)
-            ? data.map(item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), item))
-            : [this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), data)];
+            ?
+            data.map(
+                item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                    item))
+            :
+            [
+                this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                    data),
+            ];
     }
 
     public parseLastenausgleichTagesschuleAngabenInstitutionContainer(
@@ -4529,9 +4539,10 @@ export class EbeguRestUtil {
     ): Array<any> {
         return tsInstitutionContainerList
             ?
-            tsInstitutionContainerList.map(item => this.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
-                {},
-                item))
+            tsInstitutionContainerList.map(
+                item => this.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                    {},
+                    item))
             :
             [];
     }
@@ -4543,7 +4554,7 @@ export class EbeguRestUtil {
         if (tsInstitutionContainer) {
             this.abstractEntityToRestObject(restInstitutionContainer, tsInstitutionContainer);
             restInstitutionContainer.status = tsInstitutionContainer.status;
-            restInstitutionContainer.institution = tsInstitutionContainer.institution;
+            restInstitutionContainer.institution = this.institutionToRestObject({}, tsInstitutionContainer.institution);
             restInstitutionContainer.angabenDeklaration =
                 this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({},
                     tsInstitutionContainer.angabenDeklaration);
@@ -4640,5 +4651,92 @@ export class EbeguRestUtil {
             return restAngabenInstitution;
         }
         return undefined;
+    }
+
+    public parseWizardStepXList(data: any): TSWizardStepX[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseWizardStepX(item))
+            : [this.parseWizardStepX(data)];
+    }
+
+    public parseWizardStepX(data: any): TSWizardStepX {
+        const wizardStep = new TSWizardStepX();
+        wizardStep.stepName = data.stepName;
+        wizardStep.wizardTyp = data.wizardTyp;
+        wizardStep.disabled = data.disabled;
+        return wizardStep;
+    }
+
+    public sozialdienstStammdatenToRestObject(
+        restStammdaten: any,
+        stammdaten: TSSozialdienstStammdaten,
+    ): TSSozialdienstStammdaten | undefined {
+        if (stammdaten) {
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+
+            restStammdaten.sozialdienst = this.sozialdienstToRestObject({}, stammdaten.sozialdienst);
+            restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
+            restStammdaten.mail = stammdaten.mail;
+            restStammdaten.telefon = stammdaten.telefon;
+            restStammdaten.webseite = stammdaten.webseite;
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseSozialdienstStammdaten(
+        stammdatenTS: TSSozialdienstStammdaten,
+        stammdatenFromServer: any,
+    ): TSSozialdienstStammdaten | undefined {
+        if (stammdatenFromServer) {
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+            stammdatenTS.sozialdienst = this.parseSozialdienst(new TSSozialdienst(), stammdatenFromServer.sozialdienst);
+            stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
+            stammdatenTS.mail = stammdatenFromServer.mail;
+            stammdatenTS.telefon = stammdatenFromServer.telefon;
+            stammdatenTS.webseite = stammdatenFromServer.webseite;
+            return stammdatenTS;
+        }
+        return undefined;
+    }
+
+    public sozialdienstToRestObject(restSozialdienst: any, sozialdienst: TSSozialdienst): any {
+        if (sozialdienst) {
+            this.abstractEntityToRestObject(restSozialdienst, sozialdienst);
+            restSozialdienst.name = sozialdienst.name;
+            restSozialdienst.status = sozialdienst.status;
+            return restSozialdienst;
+        }
+        return undefined;
+    }
+
+    public parseSozialdienst(sozialdienstTS: TSSozialdienst, sozialdienstFromServer: any): TSSozialdienst | undefined {
+        if (sozialdienstFromServer) {
+            this.parseAbstractEntity(sozialdienstTS, sozialdienstFromServer);
+            sozialdienstTS.name = sozialdienstFromServer.name;
+            sozialdienstTS.status = sozialdienstFromServer.status;
+            return sozialdienstTS;
+        }
+        return undefined;
+    }
+
+    private sozialdienstListToRestObject(sozialdienstListTS: Array<TSSozialdienst>): Array<any> {
+        return sozialdienstListTS
+            ? sozialdienstListTS
+                .map(item => this.sozialdienstToRestObject({}, item))
+                .filter(szd => EbeguUtil.isNotNullOrUndefined(szd))
+            : [];
+    }
+
+    public parseSozialdienstList(data: any): TSSozialdienst[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseSozialdienst(new TSSozialdienst(), item))
+            : [this.parseSozialdienst(new TSSozialdienst(), data)];
     }
 }

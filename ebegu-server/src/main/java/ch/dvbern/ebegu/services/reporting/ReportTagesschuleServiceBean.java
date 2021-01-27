@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -351,6 +352,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			.stream()
 			.map(verfuegungZeitabschnitt -> TagesschuleRechnungsstellungDataRow.createRows(verfuegungZeitabschnitt, stichtag))
 			.forEach(dataRows::addAll);
-		return dataRows;
+		return dataRows.stream()
+			.sorted(Comparator.naturalOrder())
+			.collect(Collectors.toList());
 	}
 }

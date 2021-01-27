@@ -1,0 +1,20 @@
+<div class="dv-table dv-simple-table" *ngIf="datasource">
+    <div class="mat-elevation-z0">
+        <mat-table matSort [dataSource]="datasource" (matSortChange)="sortData($event)">
+
+            <ng-container *ngFor="let column of columns" [matColumnDef]="column.attributeName">
+                <mat-header-cell [mat-sort-header]="column.attributeName" *matHeaderCellDef class="ellipsis">
+                    <span>{{column.displayedName | translate}}</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element[column.attributeName]">{{element[column.attributeName] | translate}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
+            <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"
+                     (click)="onRowClicked(element, $event)"
+                     class="pointer-cursor"></mat-row>
+        </mat-table>
+    </div>
+</div>
