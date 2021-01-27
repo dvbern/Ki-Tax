@@ -216,9 +216,9 @@
                     </div>
                     <div ng-if="vm.isUmzug()">
                         <!--suppress XmlInvalidId -->
-                        <label class="md-no-float"
-                               data-translate="ADRESSE_UMZUG_GUELTIGAB"
-                               for="{{vm.prefix}}-gueltigAb">
+                        <label class="md-no-float" for="{{vm.prefix}}-gueltigAb" id="umzug-label">
+                            <span data-translate>ADRESSE_UMZUG_GUELTIGAB</span>
+                            <dv-tooltip input-id="umzug-label" text="'ADRESSE_UMZUG_GUELTIGAB_INFO' | translate"></dv-tooltip>
                         </label>
                         <dv-datepicker input-id="{{vm.prefix}}-gueltigAb" input-name="gueltigAb" name="gueltigAb"
                                        ng-model="vm.getModel().adresseJA.gueltigkeit.gueltigAb"
