@@ -542,8 +542,10 @@ public class ReportResourceAsync {
 		final boolean inklBgGesucheBoolean = Boolean.parseBoolean(inklBgGesuche);
 		final boolean inklMischGesucheBoolean = Boolean.parseBoolean(inklMischGesuche);
 		final boolean inklTsGesucheBoolean = Boolean.parseBoolean(inklTsGesuche);
-		Validate.isTrue(inklBgGesucheBoolean || inklMischGesucheBoolean || inklTsGesucheBoolean);
-
+		if(!(inklBgGesucheBoolean || inklMischGesucheBoolean || inklTsGesucheBoolean))
+		{
+			throw new EbeguRuntimeException(KibonLogLevel.DEBUG, "getMassenversandReportExcel", ErrorCodeEnum.ERROR_MASSENVERSAND_VERANTWORTLICHKEIT_FEHLT);
+		}
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
 		workJob = workjobService.createNewReporting(
