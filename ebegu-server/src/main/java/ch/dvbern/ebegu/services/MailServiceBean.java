@@ -715,6 +715,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Override
 	public void sendInfoLastenausgleichGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich) {
 		try {
+			LOG.info("Sende Mail für Gemeinde " + gemeinde.getName());
 			List<Sprache> sprachen =
 				EbeguUtil.extractGemeindeSprachen(gemeinde, gemeindeService);
 

@@ -38,8 +38,6 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail_;
@@ -126,6 +124,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
 		assertUnique(jahr);
 
+		LOG.info("Berechnung Lastenausgleich wird gestartet");
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("Erstelle Lastenausgleich für Jahr ").append(jahr)
 			.append(" bei einem Selbstbehalt pro 100% Platz von ").append(selbstbehaltPro100ProzentPlatz)
@@ -147,6 +147,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
+		int counter = 0;
 		for (Gemeinde gemeinde : aktiveGemeinden) {
 			LastenausgleichDetail detailErhebung =
 				createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenErhebungsjahr);
@@ -155,13 +156,19 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 				sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
 				sb.append(detailErhebung).append(NEWLINE);
 			}
+			if (counter % 10 == 0) {
+				LOG.info("LastenausgleichDetail für " + counter + " Gemeinden von " + aktiveGemeinden.size() + " berechnet");
+			}
+			counter++;
 		}
 		// Korrekturen frueherer Jahre: Wir gehen bis 10 Jahre retour
 		for (int i = 1; i < 10; i++) {
 			int korrekturJahr = jahr - i;
+			LOG.info("Berechne Korrekturen für Jahr " + korrekturJahr);
 			Optional<LastenausgleichGrundlagen> grundlagenKorrekturjahr = findLastenausgleichGrundlagen(korrekturJahr);
 			if (grundlagenKorrekturjahr.isPresent()) {
 				sb.append("Korrekturen für Jahr ").append(korrekturJahr).append(NEWLINE);
+				counter = 0;
 				for (Gemeinde gemeinde : aktiveGemeinden) {
 					handleKorrekturJahrFuerGemeinde(
 						korrekturJahr,
@@ -169,6 +176,10 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 						lastenausgleich,
 						grundlagenKorrekturjahr.get(),
 						sb);
+					if (counter % 10 == 0) {
+						LOG.info("Korrektur für " + counter + " Gemeinden von " + aktiveGemeinden.size() + " berechnet");
+					}
+					counter++;
 				}
 			}
 			// Wir loggen dies mit WARN, damit wir es im Sentry sehen
