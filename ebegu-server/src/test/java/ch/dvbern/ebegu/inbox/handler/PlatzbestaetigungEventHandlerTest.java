@@ -713,6 +713,23 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				));
 			}
 
+			@Test
+			void removesZeitabschnitteOutsidePeriode() {
+				addCompleteContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 7, 31));
+				addCompleteContainer(LocalDate.of(2021, 9, 1), Constants.END_OF_TIME);
+
+				DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 7, 31));
+				ZeitabschnittDTO z = createZeitabschnittDTO(gueltigkeit);
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(z, gueltigkeit))
+				));
+			}
+
 			/**
 			 * regression test: original implementation did set endOf 1st container to 2020-01-01 and created an
 			 * overlap at that day.
