@@ -2212,5 +2212,6 @@
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
     "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Periode",
+    "MENU_SOZIALDIENST": "Sozialdienste",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

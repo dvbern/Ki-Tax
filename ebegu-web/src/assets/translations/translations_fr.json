@@ -2212,5 +2212,6 @@
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "En traitement par la commune",
     "LATS_ANGABEN_TAGESSCHULEN": "Données pour les écoles à journée continue",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typen für diese Gesuchsperiode",
+    "MENU_SOZIALDIENST": "Service sociaux",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
