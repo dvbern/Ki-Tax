@@ -55,8 +55,8 @@
                     <i class="fa fa-desktop margin-ri" *ngIf="element.hasBesitzer?.call()"></i>
                     <i class="fa fa-file-text-o margin-ri" *ngIf="!element.hasBesitzer?.call()"></i>
                     <span class="margin-left-5"
-                          [title]="element.antragTyp | translate"
-                          translate>{{element.antragTyp}}</span></mat-cell>
+                          [title]="element.antragTyp | translate">
+                          {{getAntragTypBezeichnung(element)}}</span></mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="periode">
