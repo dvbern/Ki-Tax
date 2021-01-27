@@ -1935,7 +1935,7 @@
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Falls der Standardtext ausgewählt wird, wird am Ende der Verfügungen folgende Rechtsmittelbelehrung eingefügt: <br><br>Rechtsmittelbelehrung<br>Gegen diese Verfügung kann innert 30 Tagen Beschwerde erhoben werden. Die Beschwerdefrist kann nicht verlängert werden. Die Beschwerde ist an die Adresse <i>(Angegebene Adresse wird eingefügt)</i> zuzustellen. Sie muss (a) angeben, welche Entscheidung anstelle der angefochtenen Verfügung beantragt wird; (b) aus welchen Gründen diese andere Entscheidung verlangt wird, (c) die Unterschrift der beschwerdeführenden Partei oder der sie vertretenden Person enthalten. Der Beschwerdeschrift beizulegen sind die Beweismittel, soweit sie greifbar sind, und die angefochtene Verfügung.",
     "LASTENAUSGLEICH_JAHR": "Jahr",
     "LASTENAUSGLEICH_SELBSTBEHALT": "Selbstbehalt pro 100% Platz",
-    "LASTENAUSGLEICH_ERSTELLEN": "Lastenausgleich erstellen",
+    "LASTENAUSGLEICH_ERSTELLEN": "Antrag initialisieren",
     "ZEMIS_LISTE_HERUNTERLADEN": "Zemis Liste Herunterladen",
     "ZEMIS_LISTE_HOCHLADEN": "Zemis Liste Hochladen",
     "LASTENAUSGLEICH_LIST": "Definierte Lastenausgleiche",
