@@ -84,11 +84,11 @@
             <ng-container matColumnDef="dokumenteHochgeladen">
                 <mat-header-cell mat-sort-header="dokumenteHochgeladen" *matHeaderCellDef><span translate>DOKUMENTE_HOCHGELADEN_KURZ</span>
                 </mat-header-cell>
-                <mat-cell *matCellDef="let element"><span translate
-                                                          [title]="(element.dokumenteHochgeladen != null? element.dokumenteHochgeladen? 'LABEL_JA' : 'LABEL_NEIN' : '')  | translate">{{element.dokumenteHochgeladen
-                != null ?
-                    (element.dokumenteHochgeladen ? 'LABEL_JA' : 'LABEL_NEIN') :
-                    ''}}</span></mat-cell>
+                <mat-cell *matCellDef="let element">
+                    <span *ngIf="element.dokumenteHochgeladen" [title]="'DOKUMENTE_HOCHGELADEN' | translate">
+                        <i class="fa fa-file-o" aria-hidden="true" ng-show="row.dokumenteHochgeladen"></i>
+                    </span>
+                </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="angebote">
