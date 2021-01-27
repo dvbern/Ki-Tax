@@ -40,12 +40,12 @@ public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 	bfsNummerTitel(new SimpleMergeField<>("bfsNummerTitel", STRING_CONVERTER)),
 	totalBelegungTitel(new SimpleMergeField<>("totalBelegungTitel", STRING_CONVERTER)),
 	totalGutscheineTitel(new SimpleMergeField<>("totalGutscheineTitel", STRING_CONVERTER)),
-	belegungenMitSelbstbehaltTitel(new SimpleMergeField<>("belegungenMitSelbstbehaltTitel", STRING_CONVERTER)),
+	bgMitSelbstbehaltTitel(new SimpleMergeField<>("bgMitSelbstbehaltTitel", STRING_CONVERTER)),
 	kostenProPlatzTitel(new SimpleMergeField<>("kostenProPlatzTitel", STRING_CONVERTER)),
 	selbstbehaltGemeindeTitel(new SimpleMergeField<>("selbstbehaltGemeindeTitel", STRING_CONVERTER)),
 	eingabeLastenausgleichTitel(new SimpleMergeField<>("eingabeLastenausgleichTitel", STRING_CONVERTER)),
 	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
-	belegungenOhneSelbstbehaltTitel(new SimpleMergeField<>("belegungenOhneSelbstbehaltTitel", STRING_CONVERTER)),
+	bgOhneSelbstbehaltTitel(new SimpleMergeField<>("bgOhneSelbstbehaltTitel", STRING_CONVERTER)),
 	totalGutscheineEingabeLastTitel(new SimpleMergeField<>("totalGutscheineEingabeLastTitel", STRING_CONVERTER)),
 	kostenFuerSelbstbehaltTitel(new SimpleMergeField<>("kostenFuerSelbstbehaltTitel", STRING_CONVERTER)),
 
@@ -65,6 +65,26 @@ public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 	totalBelegungOhneSelbstbehalt(new SimpleMergeField<>("totalBelegungOhneSelbstbehalt", PERCENT_CONVERTER)),
 	totalGutscheineOhneSelbstbehalt(new SimpleMergeField<>("totalGutscheineOhneSelbstbehalt", BIGDECIMAL_CONVERTER)),
 	kostenFuerSelbstbehalt(new SimpleMergeField<>("kostenFuerSelbstbehalt", BIGDECIMAL_CONVERTER)),
+
+	//Erläuterungen
+	erlaeuterungZ1(new SimpleMergeField<>("erlaeuterungZ1", STRING_CONVERTER)),
+	erlaeuterungZ2(new SimpleMergeField<>("erlaeuterungZ2", STRING_CONVERTER)),
+	erlaeuterungZ3(new SimpleMergeField<>("erlaeuterungZ3", STRING_CONVERTER)),
+	erlaeuterungZ4(new SimpleMergeField<>("erlaeuterungZ4", STRING_CONVERTER)),
+	erlaeuterungZ5_1(new SimpleMergeField<>("erlaeuterungZ5_1", STRING_CONVERTER)),
+	erlaeuterungZ6_1(new SimpleMergeField<>("erlaeuterungZ6_1", STRING_CONVERTER)),
+	erlaeuterungZ7_1(new SimpleMergeField<>("erlaeuterungZ7_1", STRING_CONVERTER)),
+	erlaeuterungZ8_1(new SimpleMergeField<>("erlaeuterungZ8_1", STRING_CONVERTER)),
+	erlaeuterungZ9_1(new SimpleMergeField<>("erlaeuterungZ9_1", STRING_CONVERTER)),
+	erlaeuterungZ10_1(new SimpleMergeField<>("erlaeuterungZ11_1", STRING_CONVERTER)),
+	erlaeuterungZ11_1(new SimpleMergeField<>("erlaeuterungZ12_1", STRING_CONVERTER)),
+	erlaeuterungZ5_2(new SimpleMergeField<>("erlaeuterungZ5_2", STRING_CONVERTER)),
+	erlaeuterungZ6_2(new SimpleMergeField<>("erlaeuterungZ6_2", STRING_CONVERTER)),
+	erlaeuterungZ7_2(new SimpleMergeField<>("erlaeuterungZ7_2", STRING_CONVERTER)),
+	erlaeuterungZ8_2(new SimpleMergeField<>("erlaeuterungZ8_2", STRING_CONVERTER)),
+	erlaeuterungZ9_2(new SimpleMergeField<>("erlaeuterungZ9_2", STRING_CONVERTER)),
+	erlaeuterungZ10_2(new SimpleMergeField<>("erlaeuterungZ11_2", STRING_CONVERTER)),
+	erlaeuterungZ11_2(new SimpleMergeField<>("erlaeuterungZ12_2", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 
