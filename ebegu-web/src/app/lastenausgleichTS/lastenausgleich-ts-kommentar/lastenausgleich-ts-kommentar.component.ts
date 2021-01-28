@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {Subscription} from 'rxjs';
+import {ReplaySubject, Subscription} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
@@ -34,6 +34,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
 
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public form: FormGroup;
+    public saving$ = new ReplaySubject(1);
     private subscription: Subscription;
 
     public constructor(
@@ -49,6 +50,10 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
                 this.initForm();
                 this.ref.markForCheck();
             }, err => LOG.error(err));
+        this.saving$.next(true);
+        setTimeout(() => {
+            this.saving$.next(false);
+        }, 5000);
     }
 
     public ngOnDestroy(): void {
