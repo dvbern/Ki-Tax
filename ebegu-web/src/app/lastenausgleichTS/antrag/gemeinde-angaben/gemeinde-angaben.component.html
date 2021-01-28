@@ -35,6 +35,7 @@
                     <mat-radio-group
                         aria-labelledby="alle-angaben-radio-group"
                         class=""
+                        [disabled]="!showAntragErstellen()"
                         name="alleAngaben"
                         formControlName="alleAngabenInKibonErfasst">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
