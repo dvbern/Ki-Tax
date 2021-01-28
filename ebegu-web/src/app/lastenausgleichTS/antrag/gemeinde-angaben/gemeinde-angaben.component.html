@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="lATSAngabenGemeindeContainer && formularInitForm" [formGroup]="formularInitForm" (ngSubmit)="onInitFormSubmit()">
+    <form *ngIf="lATSAngabenGemeindeContainer && formularInitForm" [formGroup]="formularInitForm" (ngSubmit)="onInitFormSubmit()" class="margin-bottom-20">
         <div class="row">
             <div class="col-xs-12 dv-input-container-question">
                 <dv-radio-container-x>
@@ -55,6 +55,8 @@
     </form>
 
 </div>
+
+<mat-divider></mat-divider>
 
 <form *ngIf="angabenForm" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
 
