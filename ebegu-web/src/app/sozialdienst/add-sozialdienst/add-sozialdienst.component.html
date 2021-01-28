@@ -1,1 +1,79 @@
-<p>add-sozialdienst works!</p>
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-full-height-container>
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          (ngSubmit)="socialdienstEinladen()"
+          novalidate>
+
+        <div class="dv-content">
+
+            <h1 class="access-for-all-title" translate>AFA_SOZIALDIENSTVERWALTUNG</h1>
+            <div class="view-title">
+                <h2 translate>NEUE_SOZIALDIENST</h2>
+                <hr class="header">
+            </div>
+
+            <fieldset>
+                <!-- Sozialdienstname -->
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="sozialdienst_name_ID">SOZIALDIENST_NAME</label>
+                            <input id="sozialdienst_name_ID" type="text" name="sozialdienst_name"
+                                   [(ngModel)]="sozialdienst.name"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.sozialdienst_name?.errors"
+                                               input-id="sozialdienst_name_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Betreuungsgutscheine anbieten ab | Administrator - E-Mail Adresse -->
+                <div class="row">
+                    <!-- Administrator Email -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="admin_mail_ID">ADMIN_MAIL</label>
+                            <input id="admin_mail_ID" type="email" name="admin_mail"
+                                   [(ngModel)]="adminEmail"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
+                                               input-id="admin_mail_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <!-- Buttons -->
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>EINLADUNG_SENDEN</span>
+            </dv-loading-button>
+
+            <button type="button" class="dv-btn cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
+        </div>
+    </form>
+</dv-full-height-container>
