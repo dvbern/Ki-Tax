@@ -16,12 +16,18 @@
   -->
 
 <div class="kommentar-view">
-    <form role="form" name="vm.form" class="" novalidate layout="column">
+    <form *ngIf="form" role="form" [formGroup]="form" class="" layout="column">
         <div class="kommentar-padding">
             <div class="kommentarTop">
                 <div class="form-group kommentar-feld">
                     <label class="md-no-float" for="kommmentar" translate>BEMERKUNGEN_INTERN</label>
-                    <textarea class="form-control" rows="10" id="kommmentar" maxlength="4000"></textarea>
+                    <textarea
+                        class="form-control"
+                        rows="10"
+                        id="kommmentar"
+                        maxlength="4000"
+                        formControlName="kommentar"
+                    ></textarea>
                 </div>
             </div>
         </div>
