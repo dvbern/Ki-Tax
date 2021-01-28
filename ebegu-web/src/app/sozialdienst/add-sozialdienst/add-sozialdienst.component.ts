@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import {TSSozialdienstStatus} from '../../../models/enums/TSSozialdienstStatus';
 import {TSSozialdienst} from '../../../models/sozialdienst/TSSozialdienst';
 
 @Component({
@@ -33,6 +34,8 @@ export class AddSozialdienstComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.sozialdienst = new TSSozialdienst();
+        this.sozialdienst.status = TSSozialdienstStatus.EINGELADEN;
     }
 
     public socialdienstEinladen(): void {

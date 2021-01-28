@@ -1,0 +1,73 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+
+<div class="filter">
+    <input class="filter"
+           matInput
+           type="text"
+           (keyup)="doFilter($event.target.value)"
+           placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
+</div>
+
+<!--Tabelle zum anzeigen der berechtigten Entitaet -->
+<div class="table-responsive gemeinden-table">
+    <mat-table #table [dataSource]="dataSource" matSort>
+
+        <!-- Column Name -->
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{'TEST' | translate}}
+            </mat-header-cell>
+            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
+                      (click)="open(item.id)">
+                {{item.name}}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Column Status -->
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{'STATUS' | translate}}
+            </mat-header-cell>
+            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
+                      (click)="open(item.id)">
+                {{'TEST_STATUS_' + item.status | translate}}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Column detail -->
+        <ng-container matColumnDef="detail">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let item">
+                <button class="dv-btn dv-btn-sm"
+                        (click)="open(item.id)"
+                        *ngIf="canEdit(item.id)">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <div class="mat-row" *ngIf="showNoContentMessage()"
+         [textContent]="'TEST_NOCH_KEINE' | translate">
+
+    </div>
+</div>

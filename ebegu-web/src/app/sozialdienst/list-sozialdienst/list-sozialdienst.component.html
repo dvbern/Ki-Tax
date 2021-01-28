@@ -23,7 +23,10 @@
             <h2 translate>SOZIALDIENSTE</h2>
             <hr class="header">
         </div>
-
+        <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
+                        [data$]="antragList$"
+                        (openEvent)="open($event.id)"
+                        ></dv-search-list>
 
         <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
         <div *ngIf="hatBerechtigungHinzufuegen()"

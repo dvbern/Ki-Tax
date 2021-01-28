@@ -16,8 +16,11 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import {Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
+import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
     selector: 'dv-list-sozialdienst',
@@ -28,16 +31,10 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 export class ListSozialdienstComponent implements OnInit {
 
     public hiddenDVTableColumns = [
-        'fallNummer',
-        'familienName',
-        'kinder',
-        'aenderungsdatum',
-        'dokumenteHochgeladen',
-        'angebote',
-        'institutionen',
-        'verantwortlicheTS',
-        'verantwortlicheBG',
+        'type',
     ];
+
+    public antragList$: Observable<DVEntitaetListItem[]>;
 
     public constructor(private readonly $state: StateService, private authServiceRS: AuthServiceRS) {
     }
@@ -51,5 +48,9 @@ export class ListSozialdienstComponent implements OnInit {
 
     public addSozialdienst(): void {
         this.$state.go('sozialdienst.add');
+    }
+
+    public open(id: string): void {
+
     }
 }
