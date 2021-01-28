@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -55,6 +56,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.Constants;
@@ -107,6 +109,9 @@ public class ReportResourceAsync {
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuch-Stichtag'", response = JaxDownloadFile.class)
 	@Nonnull
@@ -537,8 +542,10 @@ public class ReportResourceAsync {
 		final boolean inklBgGesucheBoolean = Boolean.parseBoolean(inklBgGesuche);
 		final boolean inklMischGesucheBoolean = Boolean.parseBoolean(inklMischGesuche);
 		final boolean inklTsGesucheBoolean = Boolean.parseBoolean(inklTsGesuche);
-		Validate.isTrue(inklBgGesucheBoolean || inklMischGesucheBoolean || inklTsGesucheBoolean);
-
+		if(!(inklBgGesucheBoolean || inklMischGesucheBoolean || inklTsGesucheBoolean))
+		{
+			throw new EbeguRuntimeException(KibonLogLevel.DEBUG, "getMassenversandReportExcel", ErrorCodeEnum.ERROR_MASSENVERSAND_VERANTWORTLICHKEIT_FEHLT);
+		}
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
 		workJob = workjobService.createNewReporting(
@@ -551,7 +558,7 @@ public class ReportResourceAsync {
 			inklMischGesucheBoolean,
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
-			text,
+			null, text,
 			LocaleThreadLocal.get()
 		);
 
@@ -734,6 +741,7 @@ public class ReportResourceAsync {
 	public Response getMahlzeitenverguenstigungReportExcel(
 		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
+		@QueryParam("gemeindeId") @Nonnull String gemeindeId,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo)
 		throws EbeguRuntimeException {
@@ -742,6 +750,7 @@ public class ReportResourceAsync {
 
 		Objects.requireNonNull(auswertungVon);
 		Objects.requireNonNull(auswertungBis);
+		Objects.requireNonNull(gemeindeId);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -753,6 +762,10 @@ public class ReportResourceAsync {
 				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
 		}
 
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("getMahlzeitenverguenstigungReportExcel", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+		);
+
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
 		workJob = workjobService.createNewReporting(
@@ -760,6 +773,12 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG,
 			dateFrom,
 			dateTo,
+			null,
+			false,
+			false,
+			false,
+			false,
+			gemeinde,
 			null,
 			LocaleThreadLocal.get()
 		);

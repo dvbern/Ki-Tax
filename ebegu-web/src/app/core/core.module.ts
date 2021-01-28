@@ -16,6 +16,7 @@
  */
 
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {registerLocaleData} from '@angular/common';
 import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
@@ -27,9 +28,12 @@ import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {WindowRef} from './service/windowRef.service';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-
+// tslint:disable-next-line:match-default-export-name
+import deCH from '@angular/common/locales/de-CH';
 // sentry
 configureRaven();
+
+registerLocaleData(deCH);
 
 export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
     return new PaginatorI18n(translateService);
@@ -53,7 +57,7 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
         // This module should be used only to provide services
-    ],
+    ]
 })
 export class CoreModule {
 

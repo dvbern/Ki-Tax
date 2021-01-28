@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -554,6 +555,52 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			void splitDtoZeitabschnitteWithClientGueltigkeit() {
 				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31));
 
+				// ZeitabschnittDTO's must be distinct, otherwise they get merged together to one large Zeitabschnitt.
+				// -> set distinct Betreuungsosten
+				// see also test #mergesIdenticalZeitabschnitte()
+				AtomicInteger betreuungsKosten = new AtomicInteger(1234);
+
+				ZeitabschnittDTO beforeGueltigAb =
+					createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30));
+				beforeGueltigAb.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO overlapGueltigAb =
+					createZeitabschnittDTO(LocalDate.of(2020, 12, 1), LocalDate.of(2021, 1, 31));
+				overlapGueltigAb.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO containedInGueltigkeit =
+					createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31));
+				containedInGueltigkeit.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO overlapGueltigBis =
+					createZeitabschnittDTO(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+				overlapGueltigBis.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				ZeitabschnittDTO afterGueltigBis =
+					createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31));
+				afterGueltigBis.setBetreuungskosten(BigDecimal.valueOf(betreuungsKosten.incrementAndGet()));
+
+				dto.setZeitabschnitte(Arrays.asList(
+					beforeGueltigAb,
+					overlapGueltigAb,
+					containedInGueltigkeit,
+					overlapGueltigBis,
+					afterGueltigBis));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(overlapGueltigAb, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 1, 31))),
+					container(matches(containedInGueltigkeit)),
+					container(matches(overlapGueltigBis, LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31)))
+				));
+			}
+
+			@Test
+			void mergesIdenticalZeitabschnitte() {
+				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31));
+
 				ZeitabschnittDTO beforeGueltigAb =
 					createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30));
 
@@ -580,9 +627,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
-					container(matches(overlapGueltigAb, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 1, 31))),
-					container(matches(containedInGueltigkeit)),
-					container(matches(overlapGueltigBis, LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31)))
+					container(matches(containedInGueltigkeit, LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31)))
 				));
 			}
 
@@ -647,6 +692,41 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 					container(matches(original, LocalDate.of(2020, 8, 1), LocalDate.of(2020, 12, 31))),
 					container(matches(z, clientGueltigkeit)),
 					container(matches(original, LocalDate.of(2021, 5, 2), Constants.END_OF_TIME))
+				));
+			}
+
+			@Test
+			void doesNotGeneratedCompletelyOutOfPeriodZeitabschnitt() {
+				addCompleteContainer(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
+				clientGueltigkeit = new DateRange(LocalDate.of(2020, 8, 1), Constants.END_OF_TIME);
+
+				DateRange gueltigkeit = betreuung.extractGesuchsperiode().getGueltigkeit();
+				ZeitabschnittDTO z = createZeitabschnittDTO(gueltigkeit);
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(z, gueltigkeit))
+				));
+			}
+
+			@Test
+			void removesZeitabschnitteOutsidePeriode() {
+				addCompleteContainer(LocalDate.of(2020, 8, 1), LocalDate.of(2021, 7, 31));
+				addCompleteContainer(LocalDate.of(2021, 9, 1), Constants.END_OF_TIME);
+
+				DateRange gueltigkeit = new DateRange(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 7, 31));
+				ZeitabschnittDTO z = createZeitabschnittDTO(gueltigkeit);
+				dto.setZeitabschnitte(Collections.singletonList(z));
+
+				expectHumanConfirmation();
+				testProcessingSuccess();
+
+				assertThat(betreuung.getBetreuungspensumContainers(), contains(
+					container(matches(z, gueltigkeit))
 				));
 			}
 
@@ -817,8 +897,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			// ignoring the dates, because their formatting is not platform independent
 			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
 				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000\n",
-				"Pensum 3 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000"));
+				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000"));
 		}
 
 		@Test
@@ -832,21 +911,20 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000, "
 					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
 				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000, "
-					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
-				"Pensum 3 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000, "
 					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0"));
 		}
 
 		@Test
 		void preservesOriginalGueltigkeit() {
 			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+			clientGueltigkeit = new DateRange(Constants.START_OF_TIME, LocalDate.of(2021, 3, 31));
 
 			testProcessingSuccess();
 
 			assertThat(capture.getValue().getBetreuungspensen(), contains(
 				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
-				matches(zeitabschnittDTO),
-				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+				matches(zeitabschnittDTO, GO_LIVE, clientGueltigkeit.getGueltigBis()),
+				matches(betreuungspensum, clientGueltigkeit.getGueltigBis().plusDays(1), Constants.END_OF_TIME)
 			));
 		}
 
@@ -861,8 +939,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			assertThat(capture.getValue().getBetreuungspensen(), contains(
 				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
 				matches(zeitabschnittDTO)
-					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false)),
-				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false))
 			));
 		}
 
@@ -877,8 +954,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			assertThat(capture.getValue().getBetreuungspensen(), contains(
 				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
 				matches(zeitabschnittDTO)
-					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false)),
-				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false))
 			));
 		}
 
@@ -939,8 +1015,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			assertThat(capture.getValue().getBetreuungspensen(), contains(
 				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
-				matches(overlapGueltigAb, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
-				matches(betreuungspensum, LocalDate.of(2021, 8, 1), Constants.END_OF_TIME)
+				matches(overlapGueltigAb, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31))
 			));
 		}
 

@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichBerechnungService;
 import ch.dvbern.ebegu.services.LastenausgleichService;
@@ -133,6 +134,7 @@ public class LastenausgleichResource {
 	@Path("/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@TransactionTimeout(value = Constants.MAX_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	public JaxLastenausgleich createLastenausgleich(
 		@QueryParam("jahr") String sJahr,
 		@QueryParam("selbstbehaltPro100ProzentPlatz") String sSelbstbehaltPro100ProzentPlatz
@@ -167,7 +169,7 @@ public class LastenausgleichResource {
 		String lastenausgleichId = converter.toEntityId(jaxId);
 
 		UploadFileInfo uploadFileInfo =
-			reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, Locale.GERMAN);
+			reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, LocaleThreadLocal.get());
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);

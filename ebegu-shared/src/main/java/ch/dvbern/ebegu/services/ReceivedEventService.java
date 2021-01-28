@@ -18,17 +18,16 @@
 package ch.dvbern.ebegu.services;
 
 import javax.annotation.Nonnull;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
 
 public interface ReceivedEventService {
 
 	/**
-	 * Save der Received Event
-	 * Wenn schon exist, return false
-	 *
-	 * @param event
-	 * @return
+	 * @return TRUE, when ReceivedEvent already existed in database, FALSE otherwise
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	boolean saveReceivedEvent(@Nonnull ReceivedEvent event);
 }

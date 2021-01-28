@@ -60,7 +60,7 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal totalBelegungen = BigDecimal.ZERO;
+	private BigDecimal totalBelegungenMitSelbstbehalt = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -68,7 +68,7 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal totalBetragGutscheine = BigDecimal.ZERO;
+	private BigDecimal totalBetragGutscheineMitSelbstbehalt = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -77,6 +77,18 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private BigDecimal betragLastenausgleich = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal totalBelegungenOhneSelbstbehalt = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal totalBetragGutscheineOhneSelbstbehalt = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal kostenFuerSelbstbehalt = BigDecimal.ZERO;
 
 	@Column(nullable = false)
 	private boolean korrektur = false;
@@ -113,30 +125,12 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	}
 
 	@Nonnull
-	public BigDecimal getTotalBelegungen() {
-		return totalBelegungen;
-	}
-
-	public void setTotalBelegungen(@Nonnull BigDecimal totalBelegungen) {
-		this.totalBelegungen = totalBelegungen;
-	}
-
-	@Nonnull
 	public BigDecimal getTotalAnrechenbar() {
 		return totalAnrechenbar;
 	}
 
 	public void setTotalAnrechenbar(@Nonnull BigDecimal totalAnrechenbar) {
 		this.totalAnrechenbar = totalAnrechenbar;
-	}
-
-	@Nonnull
-	public BigDecimal getTotalBetragGutscheine() {
-		return totalBetragGutscheine;
-	}
-
-	public void setTotalBetragGutscheine(@Nonnull BigDecimal totalBetragGutscheine) {
-		this.totalBetragGutscheine = totalBetragGutscheine;
 	}
 
 	@Nonnull
@@ -163,6 +157,51 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	public void setKorrektur(boolean korrektur) {
 		this.korrektur = korrektur;
+	}
+
+	@Nonnull
+	public BigDecimal getTotalBelegungenMitSelbstbehalt() {
+		return totalBelegungenMitSelbstbehalt;
+	}
+
+	public void setTotalBelegungenMitSelbstbehalt(@Nonnull BigDecimal totalBelegungenMitSelbstbehalt) {
+		this.totalBelegungenMitSelbstbehalt = totalBelegungenMitSelbstbehalt;
+	}
+
+	@Nonnull
+	public BigDecimal getTotalBetragGutscheineMitSelbstbehalt() {
+		return totalBetragGutscheineMitSelbstbehalt;
+	}
+
+	public void setTotalBetragGutscheineMitSelbstbehalt(@Nonnull BigDecimal totalBetragGutscheineMitSelbstbehalt) {
+		this.totalBetragGutscheineMitSelbstbehalt = totalBetragGutscheineMitSelbstbehalt;
+	}
+
+	@Nonnull
+	public BigDecimal getTotalBelegungenOhneSelbstbehalt() {
+		return totalBelegungenOhneSelbstbehalt;
+	}
+
+	public void setTotalBelegungenOhneSelbstbehalt(@Nonnull BigDecimal totalBelegungenOhneSelbstbehalt) {
+		this.totalBelegungenOhneSelbstbehalt = totalBelegungenOhneSelbstbehalt;
+	}
+
+	@Nonnull
+	public BigDecimal getTotalBetragGutscheineOhneSelbstbehalt() {
+		return totalBetragGutscheineOhneSelbstbehalt;
+	}
+
+	public void setTotalBetragGutscheineOhneSelbstbehalt(@Nonnull BigDecimal totalBetragGutscheineOhneSelbstbehalt) {
+		this.totalBetragGutscheineOhneSelbstbehalt = totalBetragGutscheineOhneSelbstbehalt;
+	}
+
+	@Nonnull
+	public BigDecimal getKostenFuerSelbstbehalt() {
+		return kostenFuerSelbstbehalt;
+	}
+
+	public void setKostenFuerSelbstbehalt(@Nonnull BigDecimal kostenFuerSelbstbehalt) {
+		this.kostenFuerSelbstbehalt = kostenFuerSelbstbehalt;
 	}
 
 	@Override
@@ -197,11 +236,13 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		sb.append("lastenausgleich=").append(lastenausgleich.getJahr());
 		sb.append(", jahr=").append(jahr);
 		sb.append(", gemeinde=").append(gemeinde.getName());
-		sb.append(", totalBelegungen=").append(totalBelegungen);
-		sb.append(", totalBetragGutscheine=").append(totalBetragGutscheine);
+		sb.append(", totalBelegungenMitSelbstbehalt=").append(totalBelegungenMitSelbstbehalt);
+		sb.append(", totalBetragGutscheineMitSelbstbehalt=").append(totalBetragGutscheineMitSelbstbehalt);
 		sb.append(", selbstbehaltGemeinde=").append(selbstbehaltGemeinde);
 		sb.append(", betragLastenausgleich=").append(betragLastenausgleich);
 		sb.append(", korrektur=").append(korrektur);
+		sb.append(", totalBelegungenOhneSelbstbehalt=").append(totalBelegungenOhneSelbstbehalt);
+		sb.append(", totalBetragGutscheineOhneSelbstbehalt=").append(totalBetragGutscheineOhneSelbstbehalt);
 		sb.append('}');
 		return sb.toString();
 	}
@@ -210,13 +251,22 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		this.setGemeinde(other.getGemeinde());
 		this.setJahr(other.getJahr());
 		this.setLastenausgleich(other.getLastenausgleich());
-		this.setTotalBelegungen(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungen(), other.getTotalBelegungen()));
-		this.setTotalBetragGutscheine(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheine(), other.getTotalBetragGutscheine()));
+		this.setTotalBelegungenMitSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungenMitSelbstbehalt(), other.getTotalBelegungenMitSelbstbehalt()));
+		this.setTotalBetragGutscheineMitSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheineMitSelbstbehalt(), other.getTotalBetragGutscheineMitSelbstbehalt()));
 		this.setSelbstbehaltGemeinde(MathUtil.DEFAULT.addNullSafe(this.getSelbstbehaltGemeinde(), other.getSelbstbehaltGemeinde()));
 		this.setBetragLastenausgleich(MathUtil.DEFAULT.addNullSafe(this.getBetragLastenausgleich(), other.getBetragLastenausgleich()));
+		this.setTotalBelegungenOhneSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungenOhneSelbstbehalt(), other.getTotalBelegungenOhneSelbstbehalt()));
+		this.setTotalBetragGutscheineOhneSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheineOhneSelbstbehalt(), other.getTotalBetragGutscheineOhneSelbstbehalt()));
+		this.setKostenFuerSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getKostenFuerSelbstbehalt(), other.getKostenFuerSelbstbehalt()));
 	}
 
+	/**
+	 * Prüft, ob sich der Lastenausgleich verändert hat. Dazu wird für die "Belegungen mit Selbstbehalt für Gemeinde"
+	 * auf den BetragLastenausgleich geschaut und für die "Belegungen ohne Selbstbehalt für Gemeinde" auf den
+	 * totalBetragGutscheineOhneSelbstbehalt
+	 */
 	public boolean hasChanged(@Nonnull LastenausgleichDetail detail) {
-		return this.getBetragLastenausgleich().compareTo(detail.getBetragLastenausgleich()) != 0;
+		return this.getBetragLastenausgleich().compareTo(detail.getBetragLastenausgleich()) != 0
+			|| this.getTotalBetragGutscheineOhneSelbstbehalt().compareTo(detail.getTotalBetragGutscheineOhneSelbstbehalt()) != 0;
 	}
 }

@@ -34,8 +34,8 @@ public class ReportMahlzeitenverguenstigungServiceMock extends ReportMahlzeitenS
 	@Override
 	public List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis
-	) {
+		@Nonnull LocalDate datumBis,
+		@Nonnull String gemeindeId) {
 
 		List<MahlzeitenverguenstigungDataRow> dataRows = new ArrayList<>();
 		dataRows.add(createDataRow("John", "20.007569.002.1.1", BetreuungsangebotTyp.KITA));

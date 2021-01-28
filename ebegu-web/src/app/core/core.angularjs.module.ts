@@ -117,12 +117,13 @@ import {DVSTResetSearch} from './directive/dv-st-reset-search/dv-st-reset-search
 import {DVSuppressFormSubmitOnEnter} from './directive/dv-suppress-form-submit-on-enter/dv-suppress-form-submit-on-enter';
 import {DVTimepicker} from './directive/dv-timepicker/dv-timepicker';
 import {DVTrimEmpty} from './directive/dv-trim-empty/dv-trim-empty';
-import {DVUserselect} from './directive/dv-userselect/dv-userselect';
+import {DvUserSelectConfig} from './directive/dv-userselect/dv-userselect';
 import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {ERRORS_JS_MODULE} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
+import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -153,6 +154,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
+import {WizardStepXRS} from './service/wizardStepXRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
 
 const dependencies = [
@@ -245,7 +247,6 @@ export const CORE_JS_MODULE = angular
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
     .directive('dvValueinput', DVValueinput.factory())
-    .directive('dvUserselect', DVUserselect.factory())
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
     .directive('dvNavigation', DVNavigation.factory())
     .directive('dvLoading', DVLoading.factory())
@@ -268,6 +269,7 @@ export const CORE_JS_MODULE = angular
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .service('applicationPropertyRS', ApplicationPropertyRS)
+    .factory('WizardStepXRS', downgradeInjectable(WizardStepXRS) as any)
     .controller('DVElementController', DVRoleElementController)
     .component('dvLoadingButton', new DVLoadingButton())
     .component('dvAdresse', new AdresseComponentConfig())
@@ -282,6 +284,7 @@ export const CORE_JS_MODULE = angular
     .component('dvHomeIcon', new DvHomeIconComponentConfig())
     .component('dvSkiplinks', new DvSkiplinksComponentConfig())
     .component('dvCountdown', new DvCountdownComponentConfig())
+    .component('dvUserselect', new DvUserSelectConfig())
     .component('dvBisher', new DvBisherComponentConfig())
     .component('dvDokumenteList', new DVDokumenteListConfig())
     .component('dvAntragList', new DVAntragListConfig())
@@ -295,6 +298,7 @@ export const CORE_JS_MODULE = angular
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
+    .directive('dvNewAntragList', downgradeComponent({component: NewAntragListComponent}))
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvMitteilungDelegation', downgradeComponent({component: DvMitteilungDelegationComponent}))
     .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))

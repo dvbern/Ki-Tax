@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractIntegerPensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractPersonDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractIntegerPensum;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
@@ -44,6 +46,7 @@ import ch.dvbern.ebegu.util.Constants;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 @RequestScoped
 public class AbstractConverter {
@@ -282,4 +285,41 @@ public class AbstractConverter {
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}
 
+	@Nonnull
+	@CanIgnoreReturnValue
+	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
+		requireNonNull(adresse);
+		requireNonNull(jaxAdresse);
+		convertAbstractDateRangedFieldsToEntity(jaxAdresse, adresse);
+		adresse.setStrasse(jaxAdresse.getStrasse());
+		adresse.setHausnummer(jaxAdresse.getHausnummer());
+		adresse.setZusatzzeile(jaxAdresse.getZusatzzeile());
+		adresse.setPlz(jaxAdresse.getPlz());
+		adresse.setOrt(jaxAdresse.getOrt());
+		// Gemeinde ist read-only und wird nicht gesetzt
+		adresse.setLand(jaxAdresse.getLand());
+		adresse.setOrganisation(jaxAdresse.getOrganisation());
+		//adresse gilt per default von start of time an
+		adresse.getGueltigkeit().setGueltigAb(jaxAdresse.getGueltigAb() == null ?
+			Constants.START_OF_TIME :
+			jaxAdresse.getGueltigAb());
+
+		return adresse;
+	}
+
+	@Nonnull
+	public JaxAdresse adresseToJAX(@Nonnull final Adresse adresse) {
+		final JaxAdresse jaxAdresse = new JaxAdresse();
+		convertAbstractDateRangedFieldsToJAX(adresse, jaxAdresse);
+		jaxAdresse.setStrasse(adresse.getStrasse());
+		jaxAdresse.setHausnummer(adresse.getHausnummer());
+		jaxAdresse.setZusatzzeile(adresse.getZusatzzeile());
+		jaxAdresse.setPlz(adresse.getPlz());
+		jaxAdresse.setOrt(adresse.getOrt());
+		jaxAdresse.setGemeinde(adresse.getGemeinde());
+		jaxAdresse.setBfsNummer(adresse.getBfsNummer());
+		jaxAdresse.setLand(adresse.getLand());
+		jaxAdresse.setOrganisation(adresse.getOrganisation());
+		return jaxAdresse;
+	}
 }

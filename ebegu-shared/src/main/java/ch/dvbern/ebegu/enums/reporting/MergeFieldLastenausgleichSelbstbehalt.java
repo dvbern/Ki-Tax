@@ -48,6 +48,7 @@ public enum MergeFieldLastenausgleichSelbstbehalt implements MergeFieldProvider 
 	tarif(new SimpleMergeField<>("tarif", STRING_CONVERTER)),
 	zusatz(new SimpleMergeField<>("zusatz", BOOLEAN_X_CONVERTER)),
 	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER)),
+	keinSelbstbehaltDurchGemeinde(new SimpleMergeField<>("keinSelbstbehaltDurchGemeinde", BOOLEAN_X_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 

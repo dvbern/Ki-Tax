@@ -39,14 +39,19 @@ import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
+import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
+import {NewUserSelectDirective} from '../core/new-antrag-list/new-user-select.directive';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
+import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {FileUploadComponent} from './component/file-upload/file-upload.component';
@@ -121,7 +126,15 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
-        EbeguDatePipe
+        EbeguDatePipe,
+        DvMonthPickerComponent,
+        NewAntragListComponent,
+        NewUserSelectDirective,
+        DvLoadingButtonXDirective,
+        EbeguDatePipe,
+        DvLoadingButtonXDirective,
+        DvSimpleTableComponent,
+        DvRadioContainerXComponent,
     ],
     exports: [
         CommonModule,
@@ -163,6 +176,11 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe,
+        NewAntragListComponent,
+        DvLoadingButtonXDirective,
+        EbeguDatePipe,
+        DvSimpleTableComponent,
+        DvRadioContainerXComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

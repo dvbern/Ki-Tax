@@ -413,13 +413,18 @@
             "check-type"
         ],
         "rxjs-finnish": {
+            "options": [{
+                "functions": false,
+                "methods": false,
+                "properties": false
+            }],
             "severity": "error"
         },
         "rxjs-no-create": {
             "severity": "error"
         },
         "rxjs-no-do": {
-            "severity": "error"
+            "severity": "warning"
         },
         "rxjs-no-ignored-error": {
             "severity": "error"

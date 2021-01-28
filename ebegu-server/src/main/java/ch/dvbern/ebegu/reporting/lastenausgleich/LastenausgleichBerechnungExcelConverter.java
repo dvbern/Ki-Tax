@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichBerechnung;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,19 +49,130 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldLastenausgleichBerechnung.berechnungsjahr, ""+year);
 		excelMerger.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltProHundertProzentPlatz, selbstbehaltPro100ProzentPlatz);
 
+		//Titel
+		this.setHeaders(excelMerger, locale);
+
 		data.forEach(dataRow -> {
 			ExcelMergerDTO rowGroup = excelMerger.createGroup(MergeFieldLastenausgleichBerechnung.repeatRow);
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.gemeinde, dataRow.getGemeinde());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.bfsNummer, dataRow.getBfsNummer());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.verrechnungsjahr, dataRow.getVerrechnungsjahr());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegung, dataRow.getTotalBelegung());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheine, dataRow.getTotalGutscheine());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegung, dataRow.getTotalBelegungMitSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheine, dataRow.getTotalGutscheineMitSelbstbehalt());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenProHundertProzentPlatz, dataRow.getKostenPro100ProzentPlatz());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltGemeinde, dataRow.getSelbstbehaltGemeinde());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.eingabeLastenausgleich, dataRow.getEingabeLastenausgleich());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.korrektur, dataRow.isKorrektur());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegungOhneSelbstbehalt, dataRow.getTotalBelegungOhneSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheineOhneSelbstbehalt, dataRow.getTotalGutscheineOhneSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenFuerSelbstbehalt, dataRow.getKostenFuerSelbstbehalt());
 		});
 
 		return excelMerger;
+	}
+
+	private void setHeaders(ExcelMergerDTO excelMerger, Locale locale) {
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.lastenausgleichTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_lastenausgleichTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.parameterTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.jahrTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_jahrTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.selbstbehaltProHundertProzentPlatzTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_selbstbehaltProHundertProzentPlatzTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.gemeindeTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.bfsNummerTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.totalBelegungTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_totalBelegungTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.totalGutscheineTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_totalGutscheineTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.bgMitSelbstbehaltTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_bgMitSelbstbehaltTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.kostenProPlatzTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_kostenProPlatzTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.selbstbehaltGemeindeTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_selbstbehaltGemeindeTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.eingabeLastenausgleichTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_eingabeLastenausgleichTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.korrekturTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_korrekturTitle", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.bgOhneSelbstbehaltTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_bgOhneSelbstbehaltTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.totalGutscheineEingabeLastTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_totalGutscheineEingabeLastTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.kostenFuerSelbstbehaltTitel.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_kostenFuerSelbstbehaltTitel", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ3.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ3", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ4.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ4", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ5_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ5_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ6_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ6_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ7_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ7_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ8_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ8_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ9_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ9_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ10_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ10_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ11_1.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ11_1", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ5_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ5_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ6_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ6_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ7_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ7_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ8_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ8_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ9_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ9_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ10_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ10_2", locale));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.erlaeuterungZ11_2.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_erlaeuterungZ11_2", locale));
 	}
 }

@@ -82,16 +82,20 @@ td, th {
             background: #fafafa;
             color: @contrast-darkest;
         }
+
         &:focus {
             outline: 2px solid @contrast-darkest;
             outline-offset: 0;
         }
+
         &.disabled-row, &.disabled-row:hover {
             background: @contrast;
             cursor: default;
+
             &:focus {
                 outline: none;
             }
+
             & > td {
                 border-color: @contrast-dark;
             }
@@ -99,7 +103,7 @@ td, th {
     }
 }
 
-table, .table > tbody, .table > thead, .table > thead:first-child {
+table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat-table {
     & > tr {
         & > td {
             .ebeguH3();
@@ -115,9 +119,11 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             text-overflow: ellipsis;
             vertical-align: middle;
             white-space: nowrap;
+
             .dvb-loading-button {
                 text-align: end;
             }
+
             &.empty-table {
                 .ebeguItalic();
             }
@@ -136,12 +142,14 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             padding: 0 0.25rem 0;
             text-overflow: ellipsis;
             vertical-align: middle;
+
             span {
                 .ebeguP();
                 line-height: 0;
             }
         }
     }
+
     & > tr:first-child {
         & > th, & > th:empty {
             .ebeguLabel();
@@ -153,16 +161,91 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             height: 4rem;
             padding: 0 0.8rem 0;
             vertical-align: middle;
+
             span {
                 .ebeguP();
                 line-height: 0;
             }
         }
+
         & > th:first-child {
             padding-left: 0;
         }
+
         .text-right {
             text-align: right;
+        }
+    }
+
+    & > mat-header-row {
+        min-height: auto;
+
+        &:first-of-type.mat-header-row {
+            border-bottom-color: black;
+            border-top: 1px solid black;
+        }
+
+        & > mat-header-cell:first-of-type {
+            padding-left: 0;
+        }
+
+        &:first-of-type > mat-header-cell {
+            .ebeguLabel();
+            color: black;
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+            height: calc(4rem - 2px);
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            vertical-align: middle;
+
+            div > .mat-sort-header-content > span {
+                color: black;
+                font-size: 1.4rem;
+                font-weight: 400;
+                letter-spacing: 0.1rem;
+                padding-left: 5px;
+                text-align: left;
+                text-transform: uppercase;
+            }
+        }
+
+        &:nth-of-type(2) > mat-header-cell {
+            .ebeguLabel();
+            color: black;
+            height: calc(5rem - 1px);
+            overflow: hidden;
+            padding: 0 0.25rem 0;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+
+            & > mat-form-field {
+                height: 5rem;
+
+                & > .mat-form-field-wrapper {
+                    & > div.mat-form-field-flex {
+
+                        align-items: center;
+                        height: 5rem;
+
+                        & > .mat-form-field-infix {
+                            border: 0;
+
+                            & > input {
+                                background: #e5e5e5;
+                                caret-color: black;
+                                font-size: 1.6rem;
+                                font-weight: 700;
+                                height: 4rem;
+                            }
+                        }
+                    }
+                    & > div.mat-form-field-underline {
+                        display: none;
+                    }
+                }
+            }
         }
     }
 }
@@ -171,6 +254,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
     table {
         min-width: 100%;
     }
+
     .table > tbody {
         & > tr, & > tr:first-child {
             &:hover {
@@ -178,6 +262,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
             }
         }
     }
+
     table, .table > tbody, .table > thead, .table > thead:first-child {
         & > tr, & > tr:first-child {
             & > td {
@@ -190,6 +275,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
                 padding: 0 0.8rem 0;
                 vertical-align: middle;
             }
+
             & > th, & > th:empty {
                 .ebeguH3();
                 border: 1px solid @contrast-lightest;
@@ -201,6 +287,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
                 padding: 0 0.8rem 0;
                 position: relative;
                 vertical-align: middle;
+
                 span {
                     .ebeguP();
                     line-height: 0;
@@ -217,3 +304,250 @@ table, .table > tbody, .table > thead, .table > thead:first-child {
 .table-fixed {
     table-layout: fixed;
 }
+
+.dv-table {
+    table {
+        width: 100%;
+    }
+
+    .mat-table {
+        font-family:Open Sans,Arial,Helvetica,sans-serif;
+    }
+
+    tr.mat-header-row {
+        height: 4rem;
+    }
+
+    mat-form-field {
+        position: relative;
+        width: 100%;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+        width: auto !important;
+    }
+
+    .fa-undo {
+        &:hover {
+            color: @primary;
+            cursor: pointer;
+        }
+    }
+
+    #titleText {
+        display: inline-block;
+    }
+
+    #refreshIcon {
+        display: inline-block;
+        margin-left: 1rem;
+    }
+
+    .mat-sort-header-arrow[style] {
+
+        // Hide default arrow stem
+        .mat-sort-header-stem {
+            display: none;
+        }
+
+        .mat-sort-header-indicator {
+            color: black;
+            font-weight: bold;
+            opacity: 1;
+
+            // Hide default arrow as its composed of left, right and middle
+            .mat-sort-header-pointer-left, .mat-sort-header-pointer-right, .mat-sort-header-pointer-middle {
+                display: none;
+            }
+        }
+    }
+
+    // custom ascending arrow
+    [aria-sort='ascending'] {
+        .mat-sort-header-arrow {
+            .mat-sort-header-indicator {
+                &::before {
+                    content: '\f0de';
+                    font-family: FontAwesome, sans-serif;
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: 0.1em;
+                }
+            }
+        }
+    }
+
+    // custom descending arrow
+    [aria-sort='descending'] {
+        .mat-sort-header-arrow {
+            .mat-sort-header-indicator {
+                &::before {
+                    content: '\f0dd';
+                    font-family: FontAwesome, sans-serif;
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: -1em;
+                }
+            }
+        }
+    }
+
+    // custom no-sort arrows
+    [aria-sort='none'] {
+        .mat-sort-header-arrow {
+            // we need the important to overwrite material element styles
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+
+            .mat-sort-header-indicator {
+                transform: translateY(0) !important;
+
+                &::before {
+                    content: '\f0dc';
+                    font-family: FontAwesome, sans-serif;
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: 0;
+                }
+            }
+        }
+    }
+
+    .mat-select-panel1 {
+        .ebeguLabel();
+        background: #e5e5e5;
+        color: black !important;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-size: 1.6rem !important;
+        font-weight: 700;
+        letter-spacing: normal;
+    }
+
+    .select-background {
+        background: #e5e5e5;
+        height: 4rem;
+        position: absolute;
+        top: -0.2rem;
+        width: 100%;
+    }
+
+    .mat-form-field {
+        .ebeguLabel();
+        color: black !important;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-size: 1.6rem !important;
+        font-weight: 700;
+        line-height: normal;
+    }
+
+    .mat-autocomplete-panel {
+        .ebeguLabel();
+        background: #e5e5e5;
+        color: black !important;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-size: 1.4rem !important;
+        font-weight: 700;
+        letter-spacing: normal;
+    }
+
+    .mat-option {
+        font-size: 1.6rem;
+
+        .mat-option-text {
+            font-weight: normal;
+        }
+    }
+
+    .dv-select-style {
+        background: #e5e5e5;
+
+        & > select {
+            background: #e5e5e5;
+        }
+    }
+
+    mat-cell {
+        .ebeguH3();
+        color: @contrast-darkest;
+        // we need to declare this additionally in important because there is a global style that would otherwise overwrite
+        // this and I don't konw where the global is applied and if we could remove it instead
+        font-size: 1.4rem !important;
+        height: 6rem;
+        line-height: 3rem;
+        margin: 0;
+        overflow: hidden;
+        padding: 0 0.25rem 0;
+        position: relative;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+
+        span:first-child {
+            margin: 0 calc(0.8rem - 0.25rem) 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    mat-cell.mat-cell, mat-header-cell.mat-header-cell, mat-footer-cell {
+        flex: 2;
+    }
+
+    mat-cell.mat-cell:last-of-type {
+        padding-right: 6px;
+    }
+
+    [dvNewUserSelect] {
+        width: 100%;
+    }
+
+    mat-row.mat-row {
+        min-height: auto;
+    }
+
+    span.no-padding-left {
+        padding-left: 0 !important;
+    }
+
+    span > label > mat-label {
+        padding-left: 1rem;
+    }
+
+    mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-form-field-wrapper > div.mat-form-field-flex > .mat-form-field-infix input {
+        padding-left: 5px;
+
+        + span > label {
+            padding-left: 5px;
+            top: 2.8rem;
+        }
+    }
+
+    .mat-form-field-wrapper {
+        padding-bottom: 0;
+    }
+
+    .pointer-cursor {
+        cursor: pointer;
+    }
+
+    mat-row mat-cell:first-of-type {
+        padding-left: 0.8rem;
+    }
+
+    .mat-select-value {
+        padding-left: 5px;
+    }
+
+    .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+        color: rgba(0, 0, 0, 0.54);
+    }
+
+    .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: rgba(0, 0, 0, 0.87);
+    }
+
+    .mat-focused .mat-form-field-label {
+        color: rgba(0, 0, 0, 0.54);
+    }
+}
+

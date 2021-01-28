@@ -28,12 +28,15 @@ public class LastenausgleichBerechnungDataRow {
 	private String bfsNummer;
 	private String verrechnungsjahr;
 
-	private BigDecimal totalBelegung;
-	private BigDecimal totalGutscheine;
+	private BigDecimal totalBelegungMitSelbstbehalt;
+	private BigDecimal totalGutscheineMitSelbstbehalt;
 	private BigDecimal totalAnrechenbar;
 	private BigDecimal kostenPro100ProzentPlatz;
 	private BigDecimal selbstbehaltGemeinde;
 	private BigDecimal eingabeLastenausgleich;
+	private BigDecimal totalBelegungOhneSelbstbehalt;
+	private BigDecimal totalGutscheineOhneSelbstbehalt;
+	private BigDecimal kostenFuerSelbstbehalt;
 	private boolean korrektur;
 
 	public LastenausgleichBerechnungDataRow() {}
@@ -42,12 +45,15 @@ public class LastenausgleichBerechnungDataRow {
 		this.gemeinde = row.getGemeinde();
 		this.bfsNummer = row.getBfsNummer();
 		this.verrechnungsjahr = row.getVerrechnungsjahr();
-		this.totalBelegung = row.getTotalBelegung();
-		this.totalGutscheine = row.getTotalGutscheine();
+		this.totalBelegungMitSelbstbehalt = row.getTotalBelegungMitSelbstbehalt();
+		this.totalGutscheineMitSelbstbehalt = row.getTotalGutscheineMitSelbstbehalt();
 		this.totalAnrechenbar = row.getTotalAnrechenbar();
 		this.kostenPro100ProzentPlatz = row.getKostenPro100ProzentPlatz();
 		this.selbstbehaltGemeinde = row.getSelbstbehaltGemeinde();
 		this.eingabeLastenausgleich = row.getEingabeLastenausgleich();
+		this.totalBelegungOhneSelbstbehalt = row.getTotalBelegungOhneSelbstbehalt();
+		this.totalGutscheineOhneSelbstbehalt = row.getTotalGutscheineOhneSelbstbehalt();
+		this.kostenFuerSelbstbehalt = row.getKostenFuerSelbstbehalt();
 		this.korrektur = row.isKorrektur();
 	}
 
@@ -73,22 +79,6 @@ public class LastenausgleichBerechnungDataRow {
 
 	public void setVerrechnungsjahr(String verrechnungsjahr) {
 		this.verrechnungsjahr = verrechnungsjahr;
-	}
-
-	public BigDecimal getTotalBelegung() {
-		return totalBelegung;
-	}
-
-	public void setTotalBelegung(BigDecimal totalBelegung) {
-		this.totalBelegung = totalBelegung;
-	}
-
-	public BigDecimal getTotalGutscheine() {
-		return totalGutscheine;
-	}
-
-	public void setTotalGutscheine(BigDecimal totalGutscheine) {
-		this.totalGutscheine = totalGutscheine;
 	}
 
 	public BigDecimal getTotalAnrechenbar() {
@@ -129,5 +119,45 @@ public class LastenausgleichBerechnungDataRow {
 
 	public void setKorrektur(boolean korrektur) {
 		this.korrektur = korrektur;
+	}
+
+	public BigDecimal getTotalBelegungMitSelbstbehalt() {
+		return totalBelegungMitSelbstbehalt;
+	}
+
+	public void setTotalBelegungMitSelbstbehalt(BigDecimal totalBelegungMitSelbstbehalt) {
+		this.totalBelegungMitSelbstbehalt = totalBelegungMitSelbstbehalt;
+	}
+
+	public BigDecimal getTotalGutscheineMitSelbstbehalt() {
+		return totalGutscheineMitSelbstbehalt;
+	}
+
+	public void setTotalGutscheineMitSelbstbehalt(BigDecimal totalGutscheineMitSelbstbehalt) {
+		this.totalGutscheineMitSelbstbehalt = totalGutscheineMitSelbstbehalt;
+	}
+
+	public BigDecimal getTotalBelegungOhneSelbstbehalt() {
+		return totalBelegungOhneSelbstbehalt;
+	}
+
+	public void setTotalBelegungOhneSelbstbehalt(BigDecimal totalBelegungOhneSelbstbehalt) {
+		this.totalBelegungOhneSelbstbehalt = totalBelegungOhneSelbstbehalt;
+	}
+
+	public BigDecimal getTotalGutscheineOhneSelbstbehalt() {
+		return totalGutscheineOhneSelbstbehalt;
+	}
+
+	public void setTotalGutscheineOhneSelbstbehalt(BigDecimal totalGutscheineOhneSelbstbehalt) {
+		this.totalGutscheineOhneSelbstbehalt = totalGutscheineOhneSelbstbehalt;
+	}
+
+	public BigDecimal getKostenFuerSelbstbehalt() {
+		return kostenFuerSelbstbehalt;
+	}
+
+	public void setKostenFuerSelbstbehalt(BigDecimal kostenFuerSelbstbehalt) {
+		this.kostenFuerSelbstbehalt = kostenFuerSelbstbehalt;
 	}
 }

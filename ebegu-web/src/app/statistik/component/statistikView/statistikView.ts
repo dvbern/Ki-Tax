@@ -21,6 +21,7 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../../models/enums/TSStatistikParameterType';
 import {TSBatchJobInformation} from '../../../../models/TSBatchJobInformation';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {TSInstitutionStammdaten} from '../../../../models/TSInstitutionStammdaten';
 import {TSStatistikParameter} from '../../../../models/TSStatistikParameter';
@@ -89,6 +90,8 @@ export class StatistikViewController implements IController {
     public years: string[];
     public institutionStammdatenList: TSInstitutionStammdaten[];
     private showMahlzeitenStatistik: boolean = false;
+    public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
+    private flagShowErrorNoGesuchSelected: boolean = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -246,6 +249,9 @@ export class StatistikViewController implements IController {
                 }
                 return;
             case TSStatistikParameterType.MASSENVERSAND:
+                if (!this.isMassenversandValid()) {
+                    return;
+                }
                 if (this.statistikParameter.text) {
                     this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
                         title: this.$translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
@@ -302,7 +308,8 @@ export class StatistikViewController implements IController {
             case TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG:
                 this.reportAsyncRS.getMahlzeitenverguenstigungReportExcel(
                     this._statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
+                    this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
+                    this._statistikParameter.gemeindeMahlzeitenverguenstigungen)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
@@ -393,7 +400,7 @@ export class StatistikViewController implements IController {
     }
 
     public showMahlzeitenverguenstigungStatistik(): boolean {
-        return this.showMahlzeitenStatistik;
+        return this.gemeindenMahlzeitenverguenstigungen && this.gemeindenMahlzeitenverguenstigungen.length > 0;
     }
 
     private updateShowMahlzeitenStatistik(): void {
@@ -404,11 +411,25 @@ export class StatistikViewController implements IController {
         }
         // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
         this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
-            if (value.length > 0) {
-                // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
-                // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
-                this.showMahlzeitenStatistik = true;
+            // falls es nur eine Gemeinde gibt, wird dropdown nicht angezeigt
+            if (value.length === 1) {
+                this.statistikParameter.gemeindeMahlzeitenverguenstigungen = value[0];
             }
+            this.gemeindenMahlzeitenverguenstigungen = value;
         });
+    }
+
+    private isMassenversandValid(): boolean {
+        // simulate a click in the checkboxes of Verantwortlichkeit
+        this.gesuchTypeClicked();
+        return !this.flagShowErrorNoGesuchSelected;
+
+    }
+
+    public gesuchTypeClicked(): void {
+        this.flagShowErrorNoGesuchSelected =
+            !this.statistikParameter.bgGesuche
+            && !this.statistikParameter.mischGesuche
+            && !this.statistikParameter.tsGesuche;
     }
 }

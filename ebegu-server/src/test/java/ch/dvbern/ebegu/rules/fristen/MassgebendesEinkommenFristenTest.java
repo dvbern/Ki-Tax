@@ -638,7 +638,7 @@ public class MassgebendesEinkommenFristenTest {
 			calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(calculate);
-		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
+		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE, eingangsdatum);
 		addBetreuung(mutation.getKindContainers().iterator().next());
 		mutation.extractAllBetreuungen().get(0).initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutation.setRegelnGueltigAb(eingangsdatum);
@@ -652,7 +652,7 @@ public class MassgebendesEinkommenFristenTest {
 			calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(calculate);
-		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
+		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE, eingangsdatum);
 		mutation.extractAllBetreuungen().get(0).initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutation.setRegelnGueltigAb(eingangsdatum);
 		return mutation.extractAllBetreuungen().get(0);

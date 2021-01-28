@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAnga
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,6 +75,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Inject
 	private JaxBConverter converter;
 
+	@Inject
+	private AuthorizerImpl authorizer;
+
 	@ApiOperation(
 		value = "Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen Id zurueck",
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
@@ -89,6 +93,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	) {
 		Objects.requireNonNull(latsGemeindeAngabenJaxId);
 		Objects.requireNonNull(latsGemeindeAngabenJaxId.getId());
+
+		authorizer.checkReadAuthorizationLATSGemeindeAntrag(latsGemeindeAngabenJaxId.getId());
 
 		final Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> latsGemeindeContainerOptional =
 			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(converter.toEntityId(latsGemeindeAngabenJaxId));
@@ -114,6 +120,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
@@ -138,6 +149,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
@@ -162,6 +178,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
@@ -177,6 +198,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	) {
 		Objects.requireNonNull(latsGemeindeContainerJax);
 		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkReadAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
 
 		// Das Objekt muss in der DB schon vorhanden sein, da die Erstellung immer ueber den GemeindeAntragService geschieht
 		final LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =

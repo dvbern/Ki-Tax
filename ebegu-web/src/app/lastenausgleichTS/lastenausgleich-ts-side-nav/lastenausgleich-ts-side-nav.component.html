@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div id="sidenavContainer">
+    <div class="mobile-sidenav-scroll">
+        <div class="sidenav gesuch-status">
+            <h2 class="access-for-all-title">{{'AFA_GESUCHSTATUS' | translate}}</h2>
+            <span class="status">{{status}}</span>
+        </div>
+        <ul class="sidenav gesuch-menu">
+            <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
+
+            <li class="row" uiSref="LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE"
+                uiSrefActive="active-element"
+                [uiParams]="{ id: lastenausgleichTsId }">
+                <button class="col-xs-10">
+                    <span translate>LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE</span>
+                </button>
+            </li>
+            <li class="row"
+                uiSref="LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN"
+                uiSrefActive="active-element"
+                [uiParams]="{ id: lastenausgleichTsId }">
+                <button class="col-xs-10">
+                    <span translate>LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN</span>
+                </button>
+            </li>
+            <li class="row"
+                uiSref="LASTENAUSGLEICH_TS.FREIGABE"
+                uiSrefActive="active-element"
+                [uiParams]="{ id: lastenausgleichTsId }">
+                <button class="col-xs-10">
+                    <span translate>LASTENAUSGLEICH_TS_FREIGABE</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
