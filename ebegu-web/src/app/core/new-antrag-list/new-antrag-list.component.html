@@ -1,3 +1,19 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
 <div class="dv-table">
     <div class="row">
         <div class="col-md-10">
@@ -248,10 +264,10 @@
                     </mat-form-field>
 
                     <mat-autocomplete #auto="matAutocomplete"
-                                      (optionSelected)="filterInstitution($event.option.value)"
-                                      [classList]="'mat-select-panel1'">
+                                      (optionSelected)="filterInstitution($event.option.value)">
                         <mat-option *ngFor="let institution of institutionenList$ | async"
-                                    [value]="institution.name">{{institution.name}}</mat-option>
+                                    [value]="institution.name" style="font-size: 1.6rem;">
+                            {{institution.name}}</mat-option>
                     </mat-autocomplete>
                 </mat-header-cell>
             </ng-container>
@@ -262,7 +278,7 @@
                          [showSelectionAll]="true"
                          [angular2]="true"
                          [initialAll]="true"
-                         (userChanged)="filterVerantwortlicheTS($event.user)"
+                         (onUserChanged)="filterVerantwortlicheTS($event.user)"
                          [schulamt]="true"></div>
                 </mat-header-cell>
             </ng-container>
@@ -273,7 +289,7 @@
                          [showSelectionAll]="true"
                          [angular2]="true"
                          [initialAll]="true"
-                         (userChanged)="filterVerantwortlicheBG($event.user)"
+                         (onUserChanged)="filterVerantwortlicheBG($event.user)"
                          [sachbearbeiterGemeinde]="true"></div>
                 </mat-header-cell>
             </ng-container>
