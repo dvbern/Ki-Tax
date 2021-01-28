@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 @Audited
 @Entity
@@ -127,7 +128,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	// Bemerkungen
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String internerKommentar;
 

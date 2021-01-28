@@ -1,0 +1,2 @@
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde MODIFY interner_kommentar TEXT;
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_aud MODIFY interner_kommentar TEXT;
