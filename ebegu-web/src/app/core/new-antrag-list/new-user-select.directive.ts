@@ -48,7 +48,7 @@ export class NewUserSelectDirective extends UpgradeComponent {
     public schulamt: boolean;
 
     @Output()
-    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
+    public readonly onUserChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
 
     public constructor(elementRef: ElementRef, injector: Injector) {
       super('dvUserselect', elementRef, injector);
