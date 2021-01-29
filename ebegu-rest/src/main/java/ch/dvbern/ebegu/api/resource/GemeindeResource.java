@@ -145,7 +145,7 @@ public class GemeindeResource {
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
 
-	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
+	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxGemeinde.class)
 	@Nullable
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -165,7 +165,7 @@ public class GemeindeResource {
 		UserRole roleOfAdmin = getUserRoleForGemeindeAdmin(persistedGemeinde);
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, roleOfAdmin, persistedGemeinde));
-
+		//This line is weird I think its already done in the create methods
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 
 		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde));
