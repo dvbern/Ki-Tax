@@ -14,9 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ViewChild} from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ChangeDetectionStrategy,
+    Output,
+    EventEmitter,
+    ViewChild,
+    Input,
+    SimpleChanges, OnChanges,
+} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {Observable} from 'rxjs';
+import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
@@ -25,24 +36,34 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     styleUrls: ['./dv-search-list.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DvSearchListComponent implements OnInit {
-
+export class DvSearchListComponent implements OnInit, OnChanges {
 
     /**
      * Emits when the user clicks on a row
      */
     @Output() public readonly openEvent: EventEmitter<string> = new EventEmitter<any>();
 
+    @Input() public hiddenColumns: string[] = [];
+
+    @Input() public data$: Observable<DVAntragListItem[]>;
+
     public displayedColumns: string[] = ['name', 'status', 'detail'];
+    private readonly allColumns =  ['name', 'status', 'detail'];
     public dataSource: MatTableDataSource<DVEntitaetListItem>;
 
-    @ViewChild(MatSort, { static: true }) public sort: MatSort;
+    @ViewChild(MatSort, {static: true}) public sort: MatSort;
 
     public constructor() {
     }
 
     public ngOnInit(): void {
         this.sortTable();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.hiddenColumns) {
+            this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+        }
     }
 
     public showNoContentMessage(): boolean {
@@ -53,12 +74,8 @@ export class DvSearchListComponent implements OnInit {
         this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 
-    public open(id: string): void  {
+    public open(id: string): void {
         this.openEvent.emit(id);
-    }
-
-    public canEdit(id: string): boolean {
-        return true;
     }
 
     /**

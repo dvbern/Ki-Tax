@@ -56,14 +56,14 @@
             <mat-cell *matCellDef="let item">
                 <button class="dv-btn dv-btn-sm"
                         (click)="open(item.id)"
-                        *ngIf="canEdit(item.id)">
+                        *ngIf="item.canEdit">
                     <i class="fa fa-eye"></i>
                 </button>
             </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="open(row.id)" class="pointer-cursor"></mat-row>
     </mat-table>
 
     <div class="mat-row" *ngIf="showNoContentMessage()"

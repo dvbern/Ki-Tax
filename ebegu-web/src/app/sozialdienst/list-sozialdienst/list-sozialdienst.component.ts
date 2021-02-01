@@ -19,7 +19,6 @@ import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
@@ -50,7 +49,10 @@ export class ListSozialdienstComponent implements OnInit {
         this.$state.go('sozialdienst.add');
     }
 
+    /**
+     * Route not yet implemented as it's gonna be part of another story
+     */
     public open(id: string): void {
-
+        this.$state.go('sozialdienst.edit', {sozialDienstId: id});
     }
 }

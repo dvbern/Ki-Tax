@@ -22,4 +22,5 @@ export interface DVEntitaetListItem {
     name?: string;
     status?: string;
     angebote?: TSBetreuungsangebotTyp[];
+    canEdit?: boolean;
 }
