@@ -25,7 +25,6 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../mod
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -364,14 +363,6 @@ export class GemeindeAngabenComponent implements OnInit {
             }
         }
         this.angabenForm.updateValueAndValidity();
-        if (this.angabenForm.valid) {
-            this.latsGemeindeAngabenFreigeben();
-        }
-
     }
 
-    public latsGemeindeAngabenFreigeben(): void {
-        this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
-        this.lastenausgleichTSService.lATSAngabenGemeindeFuerInstitutionenFreigeben(this.lATSAngabenGemeindeContainer);
-    }
 }
