@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
@@ -25,6 +25,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../mod
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -189,21 +190,27 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
                     .setValidators(null);
             }
-        })
+        });
 
         // B
         this.angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse')
-            .setValidators([Validators.required]);
-        this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').setValidators([Validators.required]);
-        this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').setValidators([Validators.required]);
+            .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
+            .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
+            .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-            .setValidators([Validators.required]);
-        this.angabenForm.get('einnahmenElterngebuehren').setValidators([Validators.required]);
+            .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('einnahmenElterngebuehren')
+            .setValidators([Validators.required, this.numberValidator()]);
 
         // C
-        this.angabenForm.get('gesamtKostenTagesschule').setValidators([Validators.required]);
-        this.angabenForm.get('einnnahmenVerpflegung').setValidators([Validators.required]);
-        this.angabenForm.get('einnahmenSubventionenDritter').setValidators([Validators.required]);
+        this.angabenForm.get('gesamtKostenTagesschule')
+            .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('einnnahmenVerpflegung')
+            .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('einnahmenSubventionenDritter')
+            .setValidators([Validators.required, this.numberValidator()]);
 
         // E
         this.angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').setValidators([Validators.required]);
@@ -213,6 +220,14 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal')
             .setValidators([Validators.required]);
         this.angabenForm.get('ausbildungenMitarbeitendeBelegt').setValidators([Validators.required]);
+    }
+
+    private numberValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            return isNaN(control.value) ? {
+                noNumberError: control.value,
+            } : null;
+        };
     }
 
     /**
@@ -344,6 +359,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.enableFormValidation();
         for (const key in this.angabenForm.controls) {
             if (this.angabenForm.get(key) !== null) {
+                this.angabenForm.get(key).markAsTouched();
                 this.angabenForm.get(key).updateValueAndValidity();
             }
         }
