@@ -80,15 +80,24 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private initLATSGemeindeInitializationForm(): void {
-        this.formularInitForm = new FormGroup({
-            alleAngabenInKibonErfasst: new FormControl(
-                {
-                    value: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
-                    disabled: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null,
-                },
-                Validators.required,
-            ),
-        });
+        if (this.formularInitForm) {
+            this.formularInitForm.patchValue({
+                alleAngabenInKibonErfasst: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+            });
+            if (this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null) {
+                this.formularInitForm.get('alleAngabenInKibonErfasst').disable()
+            }
+        } else {
+            this.formularInitForm = new FormGroup({
+                alleAngabenInKibonErfasst: new FormControl(
+                    {
+                        value: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                        disabled: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null,
+                    },
+                    Validators.required,
+                ),
+            });
+        }
     }
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
