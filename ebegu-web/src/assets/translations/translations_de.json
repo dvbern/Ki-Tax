@@ -2212,7 +2212,7 @@
     "GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR": "Geleistete Betreuungsstunden Schuljahr 2018/19 ohne Betreuungsstunden für Kinder mit besonderen Betreuungsanforderungen",
     "BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN": "Betreuungsstunden Schuljahr 2018/19 für Kinder mit besonderen Betreuungsanforderungen (gemäss TSV Art. 8 Abs. 2)",
     "LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN": "Lastenausgleichsberechtigte Betreuungsstunden",
-    "DAVON_STUNDEN_NORM_MEHR_ALS_50": "Davon zu Normlohnkosten von Fr. 10.39 bei ≥ 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
+    "DAVON_STUNDEN_NORM_MEHR_ALS_50": "Davon zu Normlohnkosten von Fr. {{lohnkosten}} bei ≥ 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
     "DAVON_STUNDEN_NORM_WENIGER_ALS_50": "Davon zu Normlohnkosten von Fr. 5.20 bei < 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
     "NORMLOHNKOSTEN_BETREUUNG": "Normlohnkosten für die Betreuung",
     "TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN": "./. tatsächliche Einnahmen aus Elterngebühren Schuljahr 2018/19 (ohne Einnahmen für Verpflegung)",
@@ -2247,5 +2247,6 @@
     "LATS_AUSBILDUNG_MITARBEITENDE_BELEGT": "Sind die pädagogischen oder sozialpädagogischen Ausbildungen der Mitarbeitenden mit anerkannten Ausbildungszertifikaten belegt?",
     "LATS_EINKOMMEN_ELTERN_EINLEITUNG": "Haben die Eltern zur Kontrolle der Einkommens- und Vermögensverhältnisse",
     "LATS_ANGABEN_GEMEINDE_BEMERKUNGEN": "Bemerkungen",
+    "LATS_LOHNNORMKOSTEN": "Lohnnormkosten",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -229,8 +229,9 @@
 
     <dv-input-container-x>
         <!--TODO: use config param -->
-        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}">
-            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate}}
+        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
+               >
+            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSetting$ | async)?.value} }}
             <span>&nbsp;*</span>
         </label>
         <mat-form-field floatLabel="always">

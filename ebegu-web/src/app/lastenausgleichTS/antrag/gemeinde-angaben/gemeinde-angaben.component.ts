@@ -18,12 +18,16 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {combineLatest, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
+import {fromPromise} from 'rxjs/internal/observable/fromPromise';
 import {startWith} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {GemeindeAntragService} from '../../services/gemeinde-antrag.service';
@@ -44,6 +48,7 @@ export class GemeindeAngabenComponent implements OnInit {
     public formularInitForm: FormGroup;
     private subscription: Subscription;
     public formFreigebenTriggered = false;
+    public lohnnormkostenSetting$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -53,6 +58,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly errorService: ErrorService,
         private readonly translateService: TranslateService,
+        private readonly settings: EinstellungRS,
     ) {
     }
 
@@ -66,8 +72,13 @@ export class GemeindeAngabenComponent implements OnInit {
                     this.setupCalculcations(gemeindeAngaben);
                 }
                 this.initLATSGemeindeInitializationForm();
+                this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
+                    this.lATSAngabenGemeindeContainer.gemeinde.id,
+                    this.lATSAngabenGemeindeContainer.gesuchsperiode.id)
+                    .then(setting => this.lohnnormkostenSetting$.next(setting));
                 this.cd.markForCheck();
             }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
+
     }
 
     public ngOnDestroy(): void {
@@ -258,13 +269,17 @@ export class GemeindeAngabenComponent implements OnInit {
                     .setValue(value ? value * 5.25 : 0);
             });
 
-        this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
-            .valueChanges
-            .subscribe(value => {
-                // TODO: replace with config param
-                this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
-                    .setValue(value ? value * 10.39 : 0);
-            });
+        combineLatest([
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
+                .valueChanges,
+            this.lohnnormkostenSetting$,
+        ]).subscribe(valueAndParameter => {
+            const value = valueAndParameter[0];
+            const lohnkostenParam = parseFloat(valueAndParameter[1].value);
+            // TODO: replace with config param
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
+        });
 
         combineLatest(
             [
