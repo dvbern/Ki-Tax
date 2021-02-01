@@ -627,6 +627,7 @@
         </dv-loading-button>
         <dv-loading-button
             type="button"
+            [buttonDisabled]="formFreigebenTriggered && !angabenForm.valid"
             (buttonClick)="onFormFreigebenSubmit()">
             <span translate>FREIGEBEN</span>
         </dv-loading-button>
