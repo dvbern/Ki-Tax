@@ -70,6 +70,7 @@
                                 <dv-radio-container name="steuererklaerung" class="input-element"
                                                     ng-model="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt"
                                                     ng-required="true" class="radio"
+                                                    ng-change="vm.steuererklaerungClicked()"
                                                     dv-enable-element
                                                     false-option-label="{{'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN' | translate}}"
                                                     dv-enable-allowed-roles="vm.allowedRoles"

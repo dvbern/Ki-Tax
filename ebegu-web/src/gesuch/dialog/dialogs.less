@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 @import (reference) '../../style/variables.less';
+@import (reference) '../../style/mixins.less';
 @import '../../style/atoms/checkbox.less';
 @import '../../style/atoms/radio.less';
 
@@ -53,6 +54,13 @@
 #input-year-dialog {
     .contrast-input:not(.ng-touched) {
         background-color: @contrast-lighter;
+    }
+}
+
+.long-text-dialog {
+    p {
+        .ebeguP();
+        font-size: 1.6rem;
     }
 }
 
