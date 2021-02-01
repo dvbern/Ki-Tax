@@ -135,7 +135,9 @@
         <label [ngClass]="{'label-required-error': formFreigebenTriggered &&
                                                     angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
                                                     angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
-            {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}</label>
+            {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
@@ -154,7 +156,9 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
-            {{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}</label>
+            {{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
@@ -172,7 +176,9 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
-            {{'BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate}}</label>
+            {{'BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
@@ -190,7 +196,9 @@
 
     <dv-input-container-x *ngIf="inMandantRoles()">
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('anteilZusaetzlichVerrechneterStunden').errors}">
-            {{'ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN' | translate}}</label>
+            {{'ANTEIL_ZUSAETZLICHER_VERRECHNETER_BETREUUNGSSTUNDEN' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
@@ -208,26 +216,23 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors}">
-            {{'LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}</label>
+            {{'LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput
                    formControlName="lastenausgleichberechtigteBetreuungsstunden"
                    class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!--TODO: use config param -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}">
-            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate}}</label>
+            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <mat-form-field floatLabel="always">
             <mat-label translate></mat-label>
             <input matInput
@@ -251,7 +256,9 @@
     <dv-input-container-x>
         <!--TODO: use config param -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
-            {{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate}}</label>
+            {{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <mat-form-field floatLabel="always">
             <input matInput
                    formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
@@ -274,7 +281,8 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('normlohnkostenBetreuungBerechnet').errors}">
-            {{'NORMLOHNKOSTEN_BETREUUNG' | translate}}</label>
+            {{'NORMLOHNKOSTEN_BETREUUNG' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input"/>
@@ -284,7 +292,9 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
-            {{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}</label>
+            {{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <mat-form-field>
             <input matInput formControlName="einnahmenElterngebuehrenPercentual" class="form-control dv-input"/>
         </mat-form-field>
@@ -302,23 +312,20 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
-            {{'LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate}}</label>
+            {{'LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('ersteRateAusbezahlt').errors}">
-            {{'ERSTE_RATE_AUSBEZAHLT' | translate}}</label>
+            {{'ERSTE_RATE_AUSBEZAHLT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="ersteRateAusbezahlt" class="form-control dv-input"/>
@@ -334,16 +341,11 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('zweiteRate').errors}">
-            {{'ZWEITE_RATE' | translate}}</label>
+            {{'ZWEITE_RATE' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="zweiteRate" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('zweiteRate').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('zweiteRate').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
 
     </dv-input-container-x>
@@ -355,7 +357,9 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors}">
-            {{'GESAMTKOSTEN_TAGESSCHULE' | translate}}</label>
+            {{'GESAMTKOSTEN_TAGESSCHULE' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="gesamtKostenTagesschule" class="form-control dv-input"/>
@@ -369,38 +373,30 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
-            {{'EINNAHMEN_LASTENAUSGLEICH' | translate}}</label>
+        <label>
+            {{'EINNAHMEN_LASTENAUSGLEICH' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehrenRO').errors}">
-            {{'EINNAHMEN_ELTERNGEBUEHREN' | translate}}</label>
+        <label>
+            {{'EINNAHMEN_ELTERNGEBUEHREN' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehrenRO').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehrenRO').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors}">
-            {{'EINNAHMEN_VERPFLEGUNG' | translate}}</label>
+            {{'EINNAHMEN_VERPFLEGUNG' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="einnnahmenVerpflegung" class="form-control dv-input"/>
@@ -415,7 +411,9 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors}">
-            {{'EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}</label>
+            {{'EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
+            <span>&nbsp;*</span>
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="einnahmenSubventionenDritter" class="form-control dv-input"/>
@@ -429,47 +427,32 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('kostenbeitragGemeinde').errors}">
-            {{'KOSTENBEITRAG_GEMEINDE' | translate}}</label>
+        <label>
+            {{'KOSTENBEITRAG_GEMEINDE' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('kostenbeitragGemeinde').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('kostenbeitragGemeinde').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('kostenueberschussGemeinde').errors}">
-            {{'KOSTENUEBERSCHUSS_GEMEINDE' | translate}}</label>
+        <label>
+            {{'KOSTENUEBERSCHUSS_GEMEINDE' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('kostenueberschussGemeinde').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('kostenueberschussGemeinde').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('erwarteterKostenbeitragGemeinde').errors}">
-            {{'ERWARTETER_KOSTENBEITRAG_GEMEINDE' | translate}}</label>
+        <label>
+            {{'ERWARTETER_KOSTENBEITRAG_GEMEINDE' | translate}}
+        </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
             <input matInput formControlName="erwarteterKostenbeitragGemeinde" class="form-control dv-input"/>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('erwarteterKostenbeitragGemeinde').errors?.required"
-                       translate>ERROR_REQUIRED
-            </mat-error>
-            <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('erwarteterKostenbeitragGemeinde').errors?.noNumberError"
-                       translate>ERROR_NUMBER
-            </mat-error>
         </mat-form-field>
     </dv-input-container-x>
 
