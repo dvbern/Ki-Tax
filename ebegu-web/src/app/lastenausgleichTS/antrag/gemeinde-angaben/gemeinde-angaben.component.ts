@@ -143,8 +143,6 @@ export class GemeindeAngabenComponent implements OnInit {
             einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren],
             // TODO: get this from somwhere in kibon
             ersteRateAusbezahlt: [],
-            // TODO: get this from somewhere in kibon
-            anteilZusaetzlichVerrechneterStunden: [{value: '11.11%', disabled: true}],
             // C
             gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule],
             einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung],
@@ -171,8 +169,6 @@ export class GemeindeAngabenComponent implements OnInit {
             lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
-            normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
-            einnahmenElterngebuehrenPercentual: [{value: '', disabled: true}],
             einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
             lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
             zweiteRate: [{value: '', disabled: true}],
@@ -286,31 +282,6 @@ export class GemeindeAngabenComponent implements OnInit {
             // TODO: replace with config param
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-        });
-
-        combineLatest(
-            [
-                this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
-                    .valueChanges
-                    .pipe(startWith(0)),
-                this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
-                    .valueChanges
-                    .pipe(startWith(0)),
-            ],
-        ).subscribe(value => this.angabenForm.get('normlohnkostenBetreuungBerechnet')
-            .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
-        );
-
-        combineLatest(
-            [
-                this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
-                this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
-            ],
-        ).subscribe(values => {
-            this.angabenForm.get('einnahmenElterngebuehrenPercentual')
-                // TODO: clean up
-                .setValue((values[0] === 0 ? 0 : values[1] / values[0] * 100).toFixed(2) + '%');
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(values[0] - values[1]);
         });
 
         combineLatest([
