@@ -228,10 +228,9 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <!--TODO: use config param -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
                >
-            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSetting$ | async)?.value} }}
+            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
             <span>&nbsp;*</span>
         </label>
         <mat-form-field floatLabel="always">
@@ -255,9 +254,8 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <!--TODO: use config param -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
-            {{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate}}
+            {{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
             <span>&nbsp;*</span>
         </label>
         <mat-form-field floatLabel="always">
@@ -491,6 +489,7 @@
                 horizontal
                 formControlName="betreuungsstundenDokumentiertUndUeberprueft">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
         </dv-radio-container-x>
     </dv-input-container-x>
@@ -512,6 +511,7 @@
                 horizontal
                 formControlName="elterngebuehrenGemaessVerordnungBerechnet">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
         </dv-radio-container-x>
     </dv-input-container-x>
@@ -539,6 +539,7 @@
                 horizontal
                 formControlName="einkommenElternBelegt">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
         </dv-radio-container-x>
     </dv-input-container-x>
@@ -560,6 +561,7 @@
                 horizontal
                 formControlName="maximalTarif">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
         </dv-radio-container-x>
     </dv-input-container-x>
@@ -583,6 +585,7 @@
                 horizontal
                 formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
         </dv-radio-container-x>
     </dv-input-container-x>
@@ -604,6 +607,7 @@
                 horizontal
                 formControlName="ausbildungenMitarbeitendeBelegt">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
             </mat-radio-group>
         </dv-radio-container-x>
     </dv-input-container-x>

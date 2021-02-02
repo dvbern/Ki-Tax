@@ -168,7 +168,8 @@ public enum EinstellungKey {
 	MIN_TARIF,
 
 	//LATS
-	LATS_LOHNNORMKOSTEN;
+	LATS_LOHNNORMKOSTEN,
+	LATS_LOHNNORMKOSTEN_LESS_THAN_50;
 
 
 	private EinstellungTyp typ;

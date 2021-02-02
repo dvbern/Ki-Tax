@@ -82,6 +82,7 @@ export enum TSEinstellungKey {
     FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION = 'FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION' as any,
     ERWERBSPENSUM_ZUSCHLAG = 'ERWERBSPENSUM_ZUSCHLAG' as any,
     LATS_LOHNNORMKOSTEN = 'LATS_LOHNNORMKOSTEN' as any,
+    LATS_LOHNNORMKOSTEN_LESS_THAN_50 = 'LATS_LOHNNORMKOSTEN_LESS_THAN_50' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -145,5 +146,6 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
         TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG,
         TSEinstellungKey.LATS_LOHNNORMKOSTEN,
+        TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
     ];
 }

@@ -18,8 +18,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
-import {fromPromise} from 'rxjs/internal/observable/fromPromise';
+import {combineLatest, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -48,7 +47,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public formularInitForm: FormGroup;
     private subscription: Subscription;
     public formFreigebenTriggered = false;
-    public lohnnormkostenSetting$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
+    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
+    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -75,7 +75,11 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
                     this.lATSAngabenGemeindeContainer.gemeinde.id,
                     this.lATSAngabenGemeindeContainer.gesuchsperiode.id)
-                    .then(setting => this.lohnnormkostenSetting$.next(setting));
+                    .then(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting));
+                this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+                    this.lATSAngabenGemeindeContainer.gemeinde.id,
+                    this.lATSAngabenGemeindeContainer.gesuchsperiode.id)
+                    .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
                 this.cd.markForCheck();
             }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
 
@@ -261,18 +265,21 @@ export class GemeindeAngabenComponent implements OnInit {
                 .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
         });
 
-        this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-            .valueChanges
-            .subscribe(value => {
-                // TODO: replace with config param
+        combineLatest([
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
+                .valueChanges,
+            this.lohnnormkostenSettingLessThanFifty$
+        ]).subscribe(valueAndParamter => {
+                const value = valueAndParamter[0];
+                const lohnkostenParam = parseFloat(valueAndParamter[1].value);
                 this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
-                    .setValue(value ? value * 5.25 : 0);
+                    .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
             });
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
                 .valueChanges,
-            this.lohnnormkostenSetting$,
+            this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
             const value = valueAndParameter[0];
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
