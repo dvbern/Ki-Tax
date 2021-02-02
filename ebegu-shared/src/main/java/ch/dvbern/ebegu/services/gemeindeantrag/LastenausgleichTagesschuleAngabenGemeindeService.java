@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 
 /**
@@ -94,4 +93,12 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String status);
+
+	/**
+	 * Speichert interne Kommentare in einem LastenausgleichTagesschuleAngabeGemeindeContainer
+	 */
+	void saveKommentar(
+		@Nonnull String containerId,
+		@Nonnull String kommentar
+	);
 }

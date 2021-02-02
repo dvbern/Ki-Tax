@@ -27,6 +27,7 @@
                         id="kommmentar"
                         maxlength="4000"
                         formControlName="kommentar"
+                        (blur)="saveKommentar()"
                     ></textarea>
                     <dv-saving-info [saving$]="saving$"></dv-saving-info>
                 </div>
