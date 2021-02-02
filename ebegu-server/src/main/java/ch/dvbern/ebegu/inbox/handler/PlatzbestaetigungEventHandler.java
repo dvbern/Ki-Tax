@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -389,6 +390,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setBetreuung(betreuung);
 
 		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung);
+
+		betreuungsmitteilung.getBetreuungspensen().stream()
+			.filter(p -> betreuung.getBetreuungsstatus() == Betreuungsstatus.STORNIERT && p.getPensum().compareTo(
+				BigDecimal.ZERO) == 0)
+			.forEach(p -> p.setVollstaendig(false));
 
 		BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper = ctx.isMahlzeitVerguenstigungEnabled() ?
 			mahlzeitenMessage(locale) :
