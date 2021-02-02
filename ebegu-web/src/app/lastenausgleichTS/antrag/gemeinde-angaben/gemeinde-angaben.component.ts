@@ -141,8 +141,6 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
                 [initialGemeindeAngaben?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
             einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren],
-            // TODO: get this from somwhere in kibon
-            ersteRateAusbezahlt: [],
             // C
             gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule],
             einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung],
@@ -170,8 +168,6 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
-            lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
-            zweiteRate: [{value: '', disabled: true}],
             kostenbeitragGemeinde: [{value: '', disabled: true}],
             kostenueberschussGemeinde: [{value: '', disabled: true}],
             erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
@@ -284,13 +280,6 @@ export class GemeindeAngabenComponent implements OnInit {
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
         });
 
-        combineLatest([
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('ersteRateAusbezahlt').valueChanges.pipe(startWith(0)),
-        ]).subscribe(values => {
-            this.angabenForm.get('zweiteRate').setValue(values[0] - values[1]);
-        });
-
         // TODO: merge with other einnahmenElterngebuehren observable
         this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0))
             .subscribe(value => this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(value));
@@ -298,12 +287,11 @@ export class GemeindeAngabenComponent implements OnInit {
         // TODO: merge with existing observables
         combineLatest([
             this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
             this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
             this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
             this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
         ]).subscribe(values => {
-            const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
+            const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3];
             if (gemeindeBeitragOderUeberschuss < 0) {
                 this.angabenForm.get('kostenueberschussGemeinde')
                     .setValue(gemeindeBeitragOderUeberschuss);
