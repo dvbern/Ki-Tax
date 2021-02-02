@@ -218,10 +218,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@ApiOperation(
 		value = "Speichert die Kommentare eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
 		response = Void.class)
-	@Nonnull
 	@PUT
 	@Path("/saveKommentar/{containerId}")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void saveLATSKommentar(
 		@Nonnull String kommentar,
