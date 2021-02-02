@@ -34,6 +34,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
 
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public form: FormGroup;
+    private kommentarControl: FormControl;
     public saving$ = new ReplaySubject(1);
     private subscription: Subscription;
 
@@ -50,24 +51,31 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
                 this.initForm();
                 this.ref.markForCheck();
             }, err => LOG.error(err));
-        this.saving$.next(true);
-        setTimeout(() => {
-            this.saving$.next(false);
-        }, 5000);
     }
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 
+    public saveKommentar(): void {
+        if (!this.kommentarControl.valid) {
+            return;
+        }
+        this.saving$.next(true);
+        this.lastenausgleichTSService.saveLATSKommentar(
+            this.lATSAngabenGemeindeContainer.id,
+            this.kommentarControl.value
+        ).subscribe(() => {
+            this.saving$.next(false);
+        }, error => LOG.error(error));
+    }
+
     private initForm(): void {
+        this.kommentarControl = new FormControl(
+            this.lATSAngabenGemeindeContainer?.internerKommentar,
+        );
         this.form = new FormGroup({
-            kommentar: new FormControl(
-                'Dies ist eine Bemerkung der Gemeinde'
-            )
-            // kommentar: new FormControl(
-            //     this.lATSAngabenGemeindeContainer?.angabenKorrektur?.internerKommentar,
-            // )
+            kommentar: this.kommentarControl
         });
     }
 

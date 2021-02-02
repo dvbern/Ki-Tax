@@ -2260,7 +2260,6 @@ public final class TestDataUtil {
 		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(true);
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(true);
 		// Bemerkungen
-		angabenGemeinde.setInternerKommentar(null);
 		angabenGemeinde.setBemerkungen(null);
 		return angabenGemeinde;
 	}
