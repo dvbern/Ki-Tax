@@ -154,6 +154,8 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			// betreuung.setGrundAblehnung(??????);
 			//this.betreuungService.betreuungPlatzAbweisen(betreuung);
 			//LOG.info("Betreuung mit RefNr: {} automatisch abgewiesen", refNummer);
+			LOG.info("Die Betreuung befindet sich in einen Status wo es sollte abgewiesen sein. Dieser Use-case ist noch "
+				+ "nicht gedeckt.");
 			return Processing.failure(
 				"Die Betreuung befindet sich in einen Status wo es sollte abgewiesen sein. Dieser Use-case ist noch "
 					+ "nicht gedeckt.");

@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -86,7 +86,7 @@ public class Betreuungsmitteilung extends Mitteilung {
 		return betreuungStornieren;
 	}
 
-	public void setBetreuungStornieren(boolean betreuungStornieren) {
+	public void setBetreuungStornieren(@Nonnull boolean betreuungStornieren) {
 		this.betreuungStornieren = betreuungStornieren;
 	}
 }
