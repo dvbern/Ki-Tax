@@ -17,6 +17,9 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
+import {LogFactory} from '../../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('SavingInfo');
 
 @Component({
     selector: 'dv-saving-info',
@@ -28,7 +31,7 @@ export class SavingInfo implements OnInit {
 
     private static readonly HIDE_SAVED_AFTER_MS = 3000;
 
-    @Input() private saving$: Observable<boolean>;
+    @Input() private readonly saving$: Observable<boolean>;
     public showSaving: boolean;
     public showSaved: boolean;
     private subscription: Subscription;
@@ -46,7 +49,7 @@ export class SavingInfo implements OnInit {
                 this.hideSavingInfo();
             }
             this.ref.markForCheck();
-        });
+        }, error => LOG.error(error));
     }
 
     private showSavingInfo(): void {
