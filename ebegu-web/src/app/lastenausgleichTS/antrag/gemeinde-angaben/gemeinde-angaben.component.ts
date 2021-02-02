@@ -167,10 +167,6 @@ export class GemeindeAngabenComponent implements OnInit {
             lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
-            einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
-            kostenbeitragGemeinde: [{value: '', disabled: true}],
-            kostenueberschussGemeinde: [{value: '', disabled: true}],
-            erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
 
         // tslint:disable-next-line:max-line-length
@@ -278,36 +274,6 @@ export class GemeindeAngabenComponent implements OnInit {
             // TODO: replace with config param
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-        });
-
-        // TODO: merge with other einnahmenElterngebuehren observable
-        this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0))
-            .subscribe(value => this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(value));
-
-        // TODO: merge with existing observables
-        combineLatest([
-            this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
-        ]).subscribe(values => {
-            const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3];
-            if (gemeindeBeitragOderUeberschuss < 0) {
-                this.angabenForm.get('kostenueberschussGemeinde')
-                    .setValue(gemeindeBeitragOderUeberschuss);
-                this.angabenForm.get('kostenbeitragGemeinde')
-                    .setValue('');
-            } else {
-                this.angabenForm.get('kostenbeitragGemeinde')
-                    .setValue(gemeindeBeitragOderUeberschuss);
-                this.angabenForm.get('kostenueberschussGemeinde')
-                    .setValue('');
-            }
-        });
-
-        // TODO: merge with existing observables
-        this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)).subscribe(value => {
-            this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(value * 0.2);
         });
 
     }

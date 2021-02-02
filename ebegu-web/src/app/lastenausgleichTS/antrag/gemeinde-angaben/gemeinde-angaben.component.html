@@ -298,16 +298,6 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label>
-            {{'EINNAHMEN_ELTERNGEBUEHREN' | translate}}
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors}">
             {{'EINNAHMEN_VERPFLEGUNG' | translate}}
             <span>&nbsp;*</span>
@@ -338,36 +328,6 @@
             <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
                        translate>ERROR_NUMBER
             </mat-error>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
-        <label>
-            {{'KOSTENBEITRAG_GEMEINDE' | translate}}
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
-        <label>
-            {{'KOSTENUEBERSCHUSS_GEMEINDE' | translate}}
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
-        <label>
-            {{'ERWARTETER_KOSTENBEITRAG_GEMEINDE' | translate}}
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <input matInput formControlName="erwarteterKostenbeitragGemeinde" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
