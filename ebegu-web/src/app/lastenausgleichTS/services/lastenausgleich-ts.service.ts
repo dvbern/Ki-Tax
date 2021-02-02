@@ -27,10 +27,6 @@ export class LastenausgleichTSService {
     public updateLATSAngabenGemeindeContainerStore(id: string): void {
         const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
         this.http.get<TSLastenausgleichTagesschuleAngabenGemeinde[]>(url)
-            .pipe(map(container => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
-                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
-                container
-            )))
             .subscribe(container => {
                 this.next(container);
             }, error => LOG.error(error));

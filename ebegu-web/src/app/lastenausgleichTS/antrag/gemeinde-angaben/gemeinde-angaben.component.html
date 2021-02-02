@@ -69,7 +69,7 @@
         <label required
                [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
                id="bedarfBeiElternAbgeklaert-radio-group">
-            {{'BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}
+            {{'LATS_BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -91,7 +91,7 @@
         <label required
                [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
                id="angebotFuerFerienbetreuungVorhanden-radio-group">
-            {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate}}
+            {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -151,12 +151,12 @@
     <mat-divider></mat-divider>
 
 
-    <h2>{{'ABRECHNUNG' | translate}}</h2>
-    <p class="sub-header-explanation">{{'EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
+    <h2>{{'LATS_ABRECHNUNG' | translate}}</h2>
+    <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
-            {{'GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}}
+            {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -176,7 +176,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
-            {{'BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate}}
+            {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -196,7 +196,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors}">
-            {{'LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}
+            {{'LATS_LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}
         </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
@@ -210,7 +210,7 @@
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
                >
-            {{'DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
+            {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
             <span>&nbsp;*</span>
         </label>
         <mat-form-field floatLabel="always">
@@ -235,7 +235,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
-            {{'DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
+            {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
             <span>&nbsp;*</span>
         </label>
         <mat-form-field floatLabel="always">
@@ -257,9 +257,8 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
-            {{'TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate}}
+            {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -276,13 +275,12 @@
 
     <mat-divider></mat-divider>
 
-    <h2>{{'KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h2>
-    <p class="sub-header-explanation">{{'EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
+    <h2>{{'LATS_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h2>
+    <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
 
     <dv-input-container-x>
-        <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors}">
-            {{'GESAMTKOSTEN_TAGESSCHULE' | translate}}
+            {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -299,7 +297,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors}">
-            {{'EINNAHMEN_VERPFLEGUNG' | translate}}
+            {{'LATS_EINNAHMEN_VERPFLEGUNG' | translate}}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -316,7 +314,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors}">
-            {{'EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
+            {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -333,8 +331,8 @@
 
     <mat-divider></mat-divider>
 
-    <h2>{{'ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h2>
-    <p class="sub-header-explanation">{{'BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}</p>
+    <h2>{{'LATS_ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h2>
+    <p class="sub-header-explanation">{{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}</p>
 
     <dv-input-container-x>
         <mat-form-field floatLabel="always" class="no-margin-left">

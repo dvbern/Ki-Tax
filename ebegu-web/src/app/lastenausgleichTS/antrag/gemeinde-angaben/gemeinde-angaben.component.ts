@@ -271,7 +271,6 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(valueAndParameter => {
             const value = valueAndParameter[0];
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
-            // TODO: replace with config param
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
         });
