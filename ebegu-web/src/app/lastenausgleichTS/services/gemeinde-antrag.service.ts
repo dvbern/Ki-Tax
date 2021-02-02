@@ -1,11 +1,9 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
-import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -39,10 +37,10 @@ export class GemeindeAntragService {
             params = params.append('status', filter.status);
         }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
-            params
+            params,
         }).pipe(
             map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)),
-            map(antraege => this.sortAntraege(antraege, sort))
+            map(antraege => this.sortAntraege(antraege, sort)),
         );
     }
 
@@ -83,19 +81,5 @@ export class GemeindeAntragService {
             default:
                 return antraege;
         }
-    }
-
-    // tslint:disable-next-line:max-line-length
-    public getGemeindeAngabenFor(lastenausgleichID: string): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
-        // tslint:disable-next-line:no-object-literal-type-assertion
-        const dummy = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
-        dummy.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-        return of(dummy) ;
-        return this.http.get(`${this.API_BASE_URL}/${lastenausgleichID}/gemeindeangaben`).pipe(
-            map(jaxAngabenGemeindeContainer =>
-                this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
-                    new TSLastenausgleichTagesschuleAngabenGemeindeContainer(), jaxAngabenGemeindeContainer,
-                )),
-        );
     }
 }

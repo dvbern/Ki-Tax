@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
@@ -33,7 +33,7 @@ describe('LastenausgleichTSComponent', () => {
     let fixture: ComponentFixture<LastenausgleichTSComponent>;
     const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
                 WindowRef,

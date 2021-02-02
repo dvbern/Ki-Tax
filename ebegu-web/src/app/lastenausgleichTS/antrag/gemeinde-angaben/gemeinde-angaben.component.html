@@ -91,7 +91,7 @@
         <label required
                [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
                id="angebotFuerFerienbetreuungVorhanden-radio-group">
-            {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
+            {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -156,7 +156,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
-            {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
+            {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -176,7 +176,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
-            {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
+            {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -258,7 +258,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
-            {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
+            {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -280,7 +280,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors}">
-            {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString} }}
+            {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>

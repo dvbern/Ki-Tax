@@ -192,7 +192,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
                     .setValidators(null);
             }
-        });
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         // B
         this.angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse')
@@ -225,7 +225,8 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private numberValidator(): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } | null => {
+        // tslint:disable-next-line:no-unnecessary-type-annotation
+        return (control: AbstractControl): {} | null => {
             return isNaN(control.value) ? {
                 noNumberError: control.value,
             } : null;
@@ -251,7 +252,7 @@ export class GemeindeAngabenComponent implements OnInit {
         ).subscribe(formValues => {
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
                 .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
-        });
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
@@ -262,7 +263,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 const lohnkostenParam = parseFloat(valueAndParamter[1].value);
                 this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                     .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-            });
+            }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
@@ -273,7 +274,7 @@ export class GemeindeAngabenComponent implements OnInit {
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-        });
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
     }
 

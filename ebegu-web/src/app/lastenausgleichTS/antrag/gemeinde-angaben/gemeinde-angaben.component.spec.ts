@@ -18,7 +18,12 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {MaterialModule} from '../../../shared/material.module';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {of} from 'rxjs';
@@ -28,6 +33,9 @@ import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getLATSAngabenGemeindeContainer']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
 
 describe('GemeindeAngabenComponent', () => {
     let component: GemeindeAngabenComponent;
@@ -35,9 +43,21 @@ describe('GemeindeAngabenComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [FormsModule, TranslateModule.forRoot(), ReactiveFormsModule, HttpClientModule],
+            imports: [
+                FormsModule,
+                TranslateModule.forRoot(),
+                ReactiveFormsModule,
+                HttpClientModule,
+                MaterialModule,
+                BrowserAnimationsModule,
+            ],
             declarations: [GemeindeAngabenComponent],
-            providers: [{provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy}],
+            providers: [
+                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungServiceSpy},
+            ],
 
         })
             .compileComponents();
@@ -45,7 +65,7 @@ describe('GemeindeAngabenComponent', () => {
 
     beforeEach(() => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
+            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
         );
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
