@@ -52,13 +52,13 @@ ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde
 	MODIFY elterngebuehren_gemaess_verordnung_berechnet BIT NULL;
 
 ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde
-	MODIFY geleistete_betreuungsstunden_besondere_beduerfnisse BIT NULL;
+	MODIFY geleistete_betreuungsstunden_besondere_beduerfnisse DECIMAL(19,2) NULL;
 
 ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde
-	MODIFY geleistete_betreuungsstunden_ohne_besondere_beduerfnisse BIT NULL;
+	MODIFY geleistete_betreuungsstunden_ohne_besondere_beduerfnisse DECIMAL(19,2) NULL;
 
 ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde
-	MODIFY gesamt_kosten_tagesschule BIT NULL;
+	MODIFY gesamt_kosten_tagesschule DECIMAL(19,2) NULL;
 
 ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde
 	MODIFY maximal_tarif BIT NULL;
