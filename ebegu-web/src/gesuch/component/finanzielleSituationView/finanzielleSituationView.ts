@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -22,6 +23,7 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSWizardSubStepName} from '../../../models/enums/TSWizardSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
+import {OkDialogLongTextController} from '../../dialog/OkDialogLongTextController';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -32,6 +34,8 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const okDialogLongTextTemplate = require('../../dialog/okDialogLongTextTemplate.html');
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -52,6 +56,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         '$scope',
         '$translate',
         '$timeout',
+        'DvDialog',
     ];
 
     public showSelbstaendig: boolean;
@@ -68,6 +73,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         $scope: IScope,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
+        private readonly dvDialog: DvDialog
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -198,5 +204,15 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.gesuchModelManager.gesuchstellerNumber === 2 ?
             TSWizardSubStepName.FINANZIELLE_SITUATON_GS2 :
             TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
+    }
+
+    public steuererklaerungClicked(): void {
+        if (this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt) {
+            return;
+        }
+        this.dvDialog.showDialog(okDialogLongTextTemplate, OkDialogLongTextController, {
+            title: '',
+            body: 'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING',
+        });
     }
 }
