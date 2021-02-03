@@ -2213,5 +2213,7 @@
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "En traitement par la commune",
     "LATS_ANGABEN_TAGESSCHULEN": "Données pour les écoles à journée continue",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typen für diese Gesuchsperiode",
+    "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
+    "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Korrigieren Sie Ihre Eingaben.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
