@@ -15,28 +15,48 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {Component} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {BehaviorSubject} from 'rxjs';
 
 import {SavingInfo} from './saving-info.component';
 
 describe('SaveInputInfoComponent', () => {
-  let component: SavingInfo;
-  let fixture: ComponentFixture<SavingInfo>;
+    let component: TestHostComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SavingInfo ]
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [SavingInfo, TestHostComponent]
+        })
+            .compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TestHostComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should show saving', () => {
+        expect(fixture.nativeElement.querySelector('span').innerText).toEqual('SAVE');
+    });
+
+    it('should show saved', () => {
+        component.input.next(false);
+        fixture.changeDetectorRef.detectChanges();
+        expect(fixture.nativeElement.querySelector('span').innerText).toEqual('SAVED');
+    });
+
+    @Component({
+        selector: `host-component`,
+        template: `<dv-saving-info [saving$]="input"></dv-saving-info>`
     })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SavingInfo);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    class TestHostComponent {
+        public input = new BehaviorSubject(true);
+    }
 });
