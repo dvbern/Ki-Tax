@@ -56,7 +56,7 @@ public abstract class BaseEventHandler<T> {
 			dto.getClass().getSimpleName(), key, eventType);
 
 		EventType.of(eventType).ifPresentOrElse(
-			type -> processEvent(eventTime, type, dto, clientName),
+			type -> processEvent(eventTime, type, key, dto, clientName),
 			() -> LOG.warn("Unknown event type '{}'", eventType)
 		);
 	}
@@ -64,6 +64,7 @@ public abstract class BaseEventHandler<T> {
 	protected abstract void processEvent(
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
+		@Nonnull String key,
 		@Nonnull T dto,
 		@Nonnull String clientName);
 }

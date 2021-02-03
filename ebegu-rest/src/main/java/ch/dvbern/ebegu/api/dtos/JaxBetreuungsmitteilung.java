@@ -40,6 +40,9 @@ public class JaxBetreuungsmitteilung extends JaxMitteilung {
 	@NotNull
 	private Boolean applied = false;
 
+	@NotNull
+	private Boolean betreuungStornieren = false;
+
 	public List<JaxBetreuungsmitteilungPensum> getBetreuungspensen() {
 		return betreuungspensen;
 	}
@@ -54,5 +57,13 @@ public class JaxBetreuungsmitteilung extends JaxMitteilung {
 
 	public void setApplied(Boolean applied) {
 		this.applied = applied;
+	}
+
+	public Boolean getBetreuungStornieren() {
+		return betreuungStornieren;
+	}
+
+	public void setBetreuungStornieren(Boolean betreuungStornieren) {
+		this.betreuungStornieren = betreuungStornieren;
 	}
 }

@@ -1168,7 +1168,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT wenn Vollstaendig,
 			// sonst warten
-			if (betreuungsMitteilungVollstaendig) {
+			if (mitteilung.isBetreuungStornieren()) {
+				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
+			} else if (betreuungsMitteilungVollstaendig) {
 				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			} else {
 				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
