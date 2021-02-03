@@ -603,7 +603,7 @@
     "EINGANGSDATUM": "{{typ}} inkl. aller Belege vollständig eingereicht am",
     "MUTATION_AUSWAHL_TEXT_1": "Um Ihren Antrag zu bearbeiten, klicken Sie bitte die Punkte an, die Sie ändern möchten.",
     "MUTATION_AUSWAHL_TEXT_2": "Navigieren Sie zum Abschnitt, den Sie bearbeiten möchten. Sie können sich Schritt für Schritt durch Ihren Antrag klicken, um Ihre Angaben zu prüfen oder anzupassen.",
-    "MUTATION_AUSWAHL_TEXT_3": "Punkte, die Sie ändern, werden grün markiert. Alle anderen Punkte bleiben gespeichert. Bitte klicken Sie nach den erfolgten Änderungen auf Freigabe.",
+    "MUTATION_AUSWAHL_TEXT_3": "Punkte, die Sie ändern, werden grün markiert. Alle anderen Punkte bleiben gespeichert. <b>Bitte geben Sie nach den erfolgten Änderungen die Mutation frei.</b> Navigieren Sie dazu auf den Menupunkt \"Freigabe\".",
     "PENSUM": "Pensum",
     "LABEL_FREIGEBEN": "Freigeben",
     "LABEL_JA": "Ja",

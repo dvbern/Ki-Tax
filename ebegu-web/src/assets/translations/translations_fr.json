@@ -603,7 +603,7 @@
     "EINGANGSDATUM": "{{typ}} et justificatifs remis le ",
     "MUTATION_AUSWAHL_TEXT_1": "Pour traiter votre demande, veuillez cliquer sur les points que vous souhaitez modifier. ",
     "MUTATION_AUSWAHL_TEXT_2": "Vous pouvez passer au paragraphe que vous souhaitez modifier. Vous pouvez cliquer dans votre demande pour vérifier ou modifier vos données.",
-    "MUTATION_AUSWAHL_TEXT_3": "Les points que vous souhaitez modifier sont marqués en vert. Tous les autres points restent enregistrés.  Une fois les modifications effectuées, cliquez sur valider. ",
+    "MUTATION_AUSWAHL_TEXT_3": "Les points que vous souhaitez modifier sont marqués en vert. Tous les autres points restent enregistrés. <b>Bitte geben Sie nach den erfolgten Änderungen die Mutation frei.</b> Navigieren Sie dazu auf den Menupunkt \"Freigabe\".",
     "PENSUM": "Taux",
     "LABEL_FREIGEBEN": "Valider",
     "LABEL_JA": "Oui",
