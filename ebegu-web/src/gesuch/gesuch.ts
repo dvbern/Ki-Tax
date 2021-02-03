@@ -127,6 +127,7 @@ export class GesuchRouteController implements IController {
         this.$mdSidenav(componentId).close();
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public getIcon(stepName: TSWizardStepName): string {
         const step = this.wizardStepManager.getStepByName(stepName);
         if (!step || !this.getGesuch()) {
@@ -139,12 +140,24 @@ export class GesuchRouteController implements IController {
                 return 'fa-circle green';
             case TSWizardStepStatus.OK:
                 if (this.getGesuch().isMutation()) {
-                    return step.wizardStepName === TSWizardStepName.VERFUEGEN ? 'fa-check green' : '';
+                    if (step.wizardStepName === TSWizardStepName.FREIGABE) {
+                        // tslint:disable-next-line:no-duplicate-string
+                        return 'fa-pencil black';
+                    }
+                    if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
+                        return 'fa-check green';
+                    }
+                    return '';
                 }
                 return 'fa-check green';
             case TSWizardStepStatus.NOK:
                 return 'fa-close red';
             case TSWizardStepStatus.IN_BEARBEITUNG:
+                if (this.getGesuch().isMutation()) {
+                    return [TSWizardStepName.DOKUMENTE].includes(step.wizardStepName) ?
+                        '' :
+                        'fa-pencil black';
+                }
                 return [TSWizardStepName.DOKUMENTE, TSWizardStepName.FREIGABE].includes(step.wizardStepName) ?
                     '' :
                     'fa-pencil black';
