@@ -128,10 +128,9 @@
             <dv-loading-button class="uppercase"
                                type="submit"
                                button-click="vm.gesuchEinreichen()"
-                               aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
+                               aria-label="vm.getButtonLabel()"
                                button-disabled="!vm.canBeFreigegeben()">
-				<span data-translate="ANTRAG_EINREICHEN">
-				</span>
+				<span ng-bind="vm.getButtonLabel()"></span>
             </dv-loading-button>
         </span>
         <span>

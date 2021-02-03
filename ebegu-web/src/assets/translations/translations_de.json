@@ -1063,6 +1063,7 @@
     "GS_MUTIEREN": "Antrag mutieren",
     "GS_BEANTRAGEN": "Antrag stellen",
     "ANTRAG_EINREICHEN": "Antrag Einreichen",
+    "MUTATION_FREIGEBEN": "Mutation freigeben",
     "ANTRAG_FREIGEBEN_SIMULIEREN": "Interner Test-Button: Freigabeqittung einlesen simulieren",
     "FREIGABEQUITTUNG_DRUCKEN_TITLE": "Freigabequittung",
     "FREIGABEQUITTUNG_DRUCKEN_TEXT": "<b>Bitte senden Sie uns die unterschriebene Freigabequittung nach der Einreichung des Antrags umgehend per Post.</b> Andernfalls gilt Ihr Antrag als nicht eingereicht und kann durch die Gemeinde nicht weiter bearbeitet werden.<br>",

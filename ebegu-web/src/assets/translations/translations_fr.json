@@ -1063,6 +1063,7 @@
     "GS_MUTIEREN": "Modifier la demande",
     "GS_BEANTRAGEN": "Faire une demande",
     "ANTRAG_EINREICHEN": "Déposer une demande",
+    "MUTATION_FREIGEBEN": "Mutation freigeben",
     "ANTRAG_FREIGEBEN_SIMULIEREN": "Bouton \"test\" interne : simuler la lecture de la confirmation des données",
     "FREIGABEQUITTUNG_DRUCKEN_TITLE": "Confirmation des données",
     "FREIGABEQUITTUNG_DRUCKEN_TEXT": "<b>Veuillez nous envoyer la confirmation des données signée par courrier postal après le dépôt de la demande.</b> Sinon, votre demande ne sera pas valable et la commune ne pourra pas continuer à la traiter.<br/>",
