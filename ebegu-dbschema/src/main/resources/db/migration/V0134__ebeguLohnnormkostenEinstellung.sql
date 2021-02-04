@@ -17,3 +17,6 @@
 
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gesuchsperiode_id)
  ( SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id, NOW() as timestamp_erstellt, NOW() as timestamp_mutiert, 'ebegu' as user_erstellt, 'ebegu' as user_mutiert, '0' as version, 'LATS_LOHNNORMKOSTEN' as einstellungkey, 10.39 as value, id as gesuchsperiode_id FROM gesuchsperiode);
+
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gesuchsperiode_id)
+	( SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id, NOW() as timestamp_erstellt, NOW() as timestamp_mutiert, 'ebegu' as user_erstellt, 'ebegu' as user_mutiert, '0' as version, 'LATS_LOHNNORMKOSTEN_LESS_THAN_50' as einstellungkey, 5.2 as value, id as gesuchsperiode_id FROM gesuchsperiode);
