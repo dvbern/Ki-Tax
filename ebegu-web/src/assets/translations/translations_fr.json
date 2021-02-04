@@ -115,6 +115,7 @@
     "FINANZIELLE_SITUATION_EINKOMMENSVERSCHLECHTERUNG": "Voulez-vous faire valoir une détérioration du revenu ? ",
     "GEANDERT": "Modifié",
     "SAVE": "Enregistrer ",
+    "SAVED": "Gespeichert ",
     "DELETE": "Supprimer ",
     "PROPERTY_NAME": "Nom",
     "PROPERTY_VALUE": "Valeur",
@@ -2213,5 +2214,6 @@
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "En traitement par la commune",
     "LATS_ANGABEN_TAGESSCHULEN": "Données pour les écoles à journée continue",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typen für diese Gesuchsperiode",
+    "ERROR_LATS_KOMMENTAR_SAVE": "Es gab ein Problem beim Speichern des Kommentars",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

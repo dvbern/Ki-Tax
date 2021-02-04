@@ -34,6 +34,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -43,6 +44,8 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGem
 import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 @Audited
 @Entity
@@ -69,6 +72,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@Nullable // Muss leider nullable sein, da der Container schon "leer" gespeichert werden muss
 	@Column(nullable = true)
 	private Boolean alleAngabenInKibonErfasst;
+
+	@Nullable
+	@Size(max = DB_TEXTAREA_LENGTH)
+	@Column(nullable = true)
+	private String internerKommentar;
 
 	@Nullable
 	@Valid
@@ -124,6 +132,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void setAlleAngabenInKibonErfasst(@Nullable Boolean alleAngabenInKibonErfasst) {
 		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
+	}
+
+	@Nullable
+	public String getInternerKommentar() {
+		return internerKommentar;
+	}
+
+	public void setInternerKommentar(@Nullable String internerKommentar) {
+		this.internerKommentar = internerKommentar;
 	}
 
 	@Nullable

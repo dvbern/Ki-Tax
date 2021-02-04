@@ -294,7 +294,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.common.base.Strings;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -5698,6 +5697,7 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 		jaxGemeindeContainer.setGemeinde(gemeindeToJAX(gemeindeContainer.getGemeinde()));
 		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
+		jaxGemeindeContainer.setInternerKommentar(gemeindeContainer.getInternerKommentar());
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
 		}
@@ -5729,6 +5729,7 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 			.ifPresent(gemeindeContainer::setGesuchsperiode);
 
 		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
+		gemeindeContainer.setInternerKommentar(jaxGemeindeContainer.getInternerKommentar());
 
 		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {
 			if (gemeindeContainer.getAngabenDeklaration() != null) {
@@ -5789,7 +5790,6 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 		jaxAngabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
 		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
 		// Bemerkungen
-		jaxAngabenGemeinde.setInternerKommentar(angabenGemeinde.getInternerKommentar());
 		jaxAngabenGemeinde.setBemerkungen(angabenGemeinde.getBemerkungen());
 
 		return jaxAngabenGemeinde;
@@ -5827,7 +5827,6 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(jaxAngabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegt());
 		// Bemerkungen
-		angabenGemeinde.setInternerKommentar(jaxAngabenGemeinde.getInternerKommentar());
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
 
 		return angabenGemeinde;

@@ -74,6 +74,13 @@ export class LastenausgleichTSService {
         }, error => LOG.error(error));
     }
 
+    public saveLATSKommentar(containerId: string, kommentar: string): Observable<void> {
+        return this.http.put<void>(
+            `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
+            kommentar
+        );
+    }
+
     private next(result: any): void {
         const savedContainer = this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
             new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),

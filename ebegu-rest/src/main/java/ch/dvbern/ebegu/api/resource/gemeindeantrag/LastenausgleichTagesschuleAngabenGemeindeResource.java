@@ -214,4 +214,23 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			converter.lastenausgleichTagesschuleAngabenGemeindeContainerToEntity(latsGemeindeContainerJax, latsGemeindeContainer);
 		return converted;
 	}
+
+	@ApiOperation(
+		value = "Speichert die Kommentare eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveKommentar/{containerId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSKommentar(
+		@Nonnull String kommentar,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(kommentar);
+
+		angabenGemeindeService.saveKommentar(containerId.getId(), kommentar);
+	}
 }

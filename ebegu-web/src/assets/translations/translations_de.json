@@ -115,6 +115,7 @@
     "FINANZIELLE_SITUATION_EINKOMMENSVERSCHLECHTERUNG": "Möchten Sie eine Einkommensverschlechterung geltend machen?",
     "GEANDERT": "Geändert",
     "SAVE": "Speichern ",
+    "SAVED": "Gespeichert ",
     "DELETE": "Löschen ",
     "PROPERTY_NAME": "Name",
     "PROPERTY_VALUE": "Wert",
@@ -2213,5 +2214,6 @@
     "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
     "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Periode",
+    "ERROR_LATS_KOMMENTAR_SAVE": "Es gab ein Problem beim Speichern des Kommentars",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

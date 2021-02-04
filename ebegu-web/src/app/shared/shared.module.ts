@@ -56,6 +56,7 @@ import {ExternalClientAssignmentComponent} from './component/external-client-ass
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {FileUploadComponent} from './component/file-upload/file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
+import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
@@ -135,6 +136,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvLoadingButtonXDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
+        SavingInfo,
     ],
     exports: [
         CommonModule,
@@ -181,6 +183,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
+        SavingInfo,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

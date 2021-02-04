@@ -46,6 +46,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	private Boolean alleAngabenInKibonErfasst;
 
 	@Nullable
+	private String internerKommentar;
+
+	@Nullable
 	private JaxLastenausgleichTagesschuleAngabenGemeinde angabenDeklaration;
 
 	@Nullable
@@ -89,6 +92,15 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 
 	public void setAlleAngabenInKibonErfasst(@Nonnull Boolean alleAngabenInKibonErfasst) {
 		this.alleAngabenInKibonErfasst = alleAngabenInKibonErfasst;
+	}
+
+	@Nullable
+	public String getInternerKommentar() {
+		return internerKommentar;
+	}
+
+	public void setInternerKommentar(@Nullable String internerKommentar) {
+		this.internerKommentar = internerKommentar;
 	}
 
 	@Nullable

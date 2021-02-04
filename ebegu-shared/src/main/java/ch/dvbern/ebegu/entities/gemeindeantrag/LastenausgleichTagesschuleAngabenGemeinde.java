@@ -129,11 +129,6 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
-	private String internerKommentar;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
 	private String bemerkungen;
 
 	public LastenausgleichTagesschuleAngabenGemeinde() {
@@ -166,7 +161,6 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal = source.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
 		this.ausbildungenMitarbeitendeBelegt = source.ausbildungenMitarbeitendeBelegt;
 		// Bemerkungen
-		this.internerKommentar = source.internerKommentar;
 		this.bemerkungen = source.bemerkungen;
 	}
 
@@ -339,15 +333,6 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	public void setAusbildungenMitarbeitendeBelegt(@Nonnull Boolean ausbildungenMitarbeitendeBelegt) {
 		this.ausbildungenMitarbeitendeBelegt = ausbildungenMitarbeitendeBelegt;
-	}
-
-	@Nullable
-	public String getInternerKommentar() {
-		return internerKommentar;
-	}
-
-	public void setInternerKommentar(@Nullable String internerKommentar) {
-		this.internerKommentar = internerKommentar;
 	}
 
 	@Nullable

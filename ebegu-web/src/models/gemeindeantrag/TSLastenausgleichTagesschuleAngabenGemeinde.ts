@@ -49,6 +49,5 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     public ausbildungenMitarbeitendeBelegt: boolean;
 
     // Bemerkungen
-    public internerKommentar: string;
     public bemerkungen: string;
 }
