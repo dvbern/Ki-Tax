@@ -140,7 +140,8 @@ export class GesuchRouteController implements IController {
                 return 'fa-circle green';
             case TSWizardStepStatus.OK:
                 if (this.getGesuch().isMutation()) {
-                    if (step.wizardStepName === TSWizardStepName.FREIGABE) {
+                    if (step.wizardStepName === TSWizardStepName.FREIGABE
+                        && this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_GS) {
                         // tslint:disable-next-line:no-duplicate-string
                         return 'fa-pencil black';
                     }

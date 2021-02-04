@@ -106,7 +106,7 @@
                         </h2>
                         <hr class="header"/>
                         <p ng-if="!vm.isMutation()" data-translate="FREIGABEQUITTUNG_DRUCKEN_TEXT"></p>
-                        <p ng-if="vm.isMutation()" data-translate="FREIGABEQUITTUNG_MUTATION_TEXT"></p>
+                        <p ng-if="vm.isMutation()" ng-bind-html="'FREIGABEQUITTUNG_MUTATION_TEXT' | translate"></p>
                     </div>
 
                 </div>
