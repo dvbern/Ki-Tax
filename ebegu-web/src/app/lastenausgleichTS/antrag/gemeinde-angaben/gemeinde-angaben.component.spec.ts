@@ -19,15 +19,17 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateModule} from '@ngx-translate/core';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
-import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {ErrorService} from '../../../core/errors/service/ErrorService';
-import {MaterialModule} from '../../../shared/material.module';
-import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {of} from 'rxjs';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {WindowRef} from '../../../core/service/windowRef.service';
+import {MaterialModule} from '../../../shared/material.module';
+import {SharedModule} from '../../../shared/shared.module';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
@@ -45,14 +47,15 @@ describe('GemeindeAngabenComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,
-                TranslateModule.forRoot(),
                 ReactiveFormsModule,
+                SharedModule,
                 HttpClientModule,
                 MaterialModule,
                 BrowserAnimationsModule,
             ],
             declarations: [GemeindeAngabenComponent],
             providers: [
+                WindowRef,
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
@@ -60,6 +63,7 @@ describe('GemeindeAngabenComponent', () => {
             ],
 
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 
