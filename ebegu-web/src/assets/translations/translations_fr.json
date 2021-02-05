@@ -76,6 +76,7 @@
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Avez-vous reçu votre avis de taxation fiscale pour l'année {{basisjahr}} ?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Avez-vous rempli votre déclaration d'impôt pour l'année {{basisjahr}} ?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Non, pas encore ou je suis imposé-e à la source",
+    "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING": "Veuillez si possible remplir la déclaration d’impôt avant de saisir les informations concernant votre situation financière. Vous pourrez en effet reprendre toutes les données nécessaires de la déclaration et les utiliser comme justificatifs dans la rubrique « Documents ».<br><br>Important : vos données peuvent être comparées avec les données fiscales, ce qui peut également être fait ultérieurement lorsque l’avis de taxation fiscale est disponible.",
     "FINANZIELLE_SITUATION_HINT1": "Les revenus et la fortune de l'année {{basisjahr}} sont déterminants.",
     "FINANZIELLE_SITUATION_NETTOLOHN": "Salaire net",
     "FINANZIELLE_SITUATION_NETTOLOHN_HELP": "Point 2.21 de la déclaration d'impôt (formulaire 2) ou point 11 du certificat de salaire.",

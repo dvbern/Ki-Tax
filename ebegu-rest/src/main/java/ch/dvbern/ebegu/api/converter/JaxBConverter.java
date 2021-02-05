@@ -4528,6 +4528,7 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 		mitteilungToEntity(mitteilungJAXP, betreuungsmitteilung);
 
 		betreuungsmitteilung.setApplied(mitteilungJAXP.getApplied());
+
 		if (mitteilungJAXP.getBetreuungspensen() != null) {
 			Set<BetreuungsmitteilungPensum> pensen = mitteilungJAXP.getBetreuungspensen().stream()
 				.map(jaxPensum -> toBetreuungsmitteilungPensum(jaxPensum, betreuungsmitteilung))
@@ -4555,6 +4556,7 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 		mitteilungToJAX(persistedMitteilung, jaxBetreuungsmitteilung);
 
 		jaxBetreuungsmitteilung.setApplied(persistedMitteilung.isApplied());
+		jaxBetreuungsmitteilung.setBetreuungStornieren(persistedMitteilung.isBetreuungStornieren());
 		if (persistedMitteilung.getBetreuungspensen() != null) {
 			List<JaxBetreuungsmitteilungPensum> pensen = persistedMitteilung.getBetreuungspensen().stream()
 				.map(this::betreuungsmitteilungPensumToJax)

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -43,6 +44,8 @@ public class Betreuungsmitteilung extends Mitteilung {
 	private Set<BetreuungsmitteilungPensum> betreuungspensen = new TreeSet<>();
 
 	private boolean applied;
+
+	private boolean betreuungStornieren = false;
 
 	public Set<BetreuungsmitteilungPensum> getBetreuungspensen() {
 		return betreuungspensen;
@@ -79,4 +82,11 @@ public class Betreuungsmitteilung extends Mitteilung {
 		return isApplied() == otherBetreuungsmitteilung.isApplied();
 	}
 
+	public boolean isBetreuungStornieren() {
+		return betreuungStornieren;
+	}
+
+	public void setBetreuungStornieren(@Nonnull boolean betreuungStornieren) {
+		this.betreuungStornieren = betreuungStornieren;
+	}
 }

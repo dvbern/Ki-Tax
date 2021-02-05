@@ -76,6 +76,7 @@
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",
+    "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING": "Bitte füllen Sie wenn möglich die Steuererklärung aus, bevor Sie die finanziellen Verhältnisse erfassen. Sie können alle notwendigen Angaben danach der Steuererklärung entnehmen und diese im Bereich «Dokumente» als Beleg für Ihre Angaben verwenden.<br><br>Wichtig: Ihre Angaben können mit den Steuerdaten abgeglichen werden; dies kann auch zu einem späteren Zeitpunkt bei Vorliegen der Steuerveranlagung geschehen.",
     "FINANZIELLE_SITUATION_HINT1": "Es sind die Einkommens- und Vermögensverhältnisse des Jahres {{basisjahr}} massgebend.",
     "FINANZIELLE_SITUATION_NETTOLOHN": "Nettolohn",
     "FINANZIELLE_SITUATION_NETTOLOHN_HELP": "Ziffer 2.21 der Steuererklärung (Formular 2) oder Lohnausweise Ziffer 11",

@@ -26,7 +26,8 @@ import javax.annotation.Nonnull;
  * All known event types.
  */
 public enum EventType {
-	PLATZBESTAETIGUNG_BETREUUNG("PlatzbestaetigungBetreuung");
+	PLATZBESTAETIGUNG_BETREUUNG("PlatzbestaetigungBetreuung"),
+	BETREUUNG_STORNIERUNG_ANFRAGE("BetreuungStornierungAnfrage");
 
 	private final String name;
 

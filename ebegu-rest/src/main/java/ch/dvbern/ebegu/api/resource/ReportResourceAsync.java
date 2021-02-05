@@ -604,6 +604,7 @@ public class ReportResourceAsync {
 	@Path("/excel/lastenausgleich")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getLastenausgleichKibonReportExcel(
 		@QueryParam("year") @Nonnull String yearString,
