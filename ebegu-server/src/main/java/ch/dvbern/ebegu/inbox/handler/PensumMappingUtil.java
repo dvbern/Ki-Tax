@@ -19,10 +19,12 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -83,8 +85,12 @@ public final class PensumMappingUtil {
 		List<BetreuungspensumContainer> toImport =
 			convertZeitabschnitte(ctx, gueltigkeit, z -> toBetreuungspensumContainer(z, ctx));
 
-		betreuung.getBetreuungspensumContainers().addAll(containersToUpdate);
-		betreuung.getBetreuungspensumContainers().addAll(toImport);
+		writeBack(
+			betreuung.getBetreuungspensumContainers(),
+			BetreuungspensumContainer::getBetreuungspensumJA,
+			ctx,
+			containersToUpdate,
+			toImport);
 	}
 
 	@Nonnull
@@ -135,8 +141,8 @@ public final class PensumMappingUtil {
 		List<BetreuungsmitteilungPensum> toImport =
 			convertZeitabschnitte(ctx, mutationRange, z -> toBetreuungsmitteilungPensum(z, ctx));
 
-		existing.addAll(toImport);
-		betreuungsmitteilung.getBetreuungspensen().addAll(extendGueltigkeit(existing));
+		writeBack(betreuungsmitteilung.getBetreuungspensen(), a -> a, ctx, existing, toImport);
+
 		betreuungsmitteilung.getBetreuungspensen().forEach(p -> p.setBetreuungsmitteilung(betreuungsmitteilung));
 	}
 
@@ -281,30 +287,50 @@ public final class PensumMappingUtil {
 		}
 	}
 
+	@SafeVarargs
+	private static <T extends Gueltigkeit> void writeBack(
+		@Nonnull Set<T> target,
+		@Nonnull Function<T, AbstractMahlzeitenPensum> mapper,
+		@Nonnull ProcessingContext ctx,
+		@Nonnull Collection<T>... remaining) {
+
+		DateRange periode = ctx.getBetreuung().extractGesuchsperiode().getGueltigkeit();
+
+		Set<T> tmp = Arrays.stream(remaining)
+			.flatMap(Collection::stream)
+			.collect(Collectors.toSet());
+
+		Collection<T> extended = extendGueltigkeit(tmp, mapper);
+
+		target.addAll(extended);
+		target.removeIf(z -> !periode.intersects(z.getGueltigkeit()));
+	}
+
 	/**
 	 * When adjacent pensen are comparable, merge them together to one pensum with extended Gueltigkeit
 	 */
 	@Nonnull
-	static Collection<BetreuungsmitteilungPensum> extendGueltigkeit(
-		@Nonnull Collection<BetreuungsmitteilungPensum> pensen) {
+	static <T extends Gueltigkeit> Collection<T> extendGueltigkeit(
+		@Nonnull Collection<T> pensen,
+		@Nonnull Function<T, AbstractMahlzeitenPensum> mapper) {
 
 		if (pensen.size() <= 1) {
 			return pensen;
 		}
 
-		List<BetreuungsmitteilungPensum> sorted = pensen.stream()
+		List<T> sorted = pensen.stream()
 			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR)
 			.collect(Collectors.toList());
 
-		List<BetreuungsmitteilungPensum> result = new ArrayList<>();
-		Iterator<BetreuungsmitteilungPensum> iter = sorted.iterator();
-		BetreuungsmitteilungPensum current = iter.next();
+		List<T> result = new ArrayList<>();
+		Iterator<T> iter = sorted.iterator();
+		T current = iter.next();
 		result.add(current);
 
 		while (iter.hasNext()) {
-			BetreuungsmitteilungPensum next = iter.next();
+			T next = iter.next();
 
-			if (areAdjacent(current, next) && areSame(current, next)) {
+			if (areAdjacent(current, next) && areSame(mapper.apply(current), mapper.apply(next))) {
 				// extend gueltigkeit of current
 				current.getGueltigkeit().setGueltigBis(next.getGueltigkeit().getGueltigBis());
 				continue;
@@ -322,8 +348,8 @@ public final class PensumMappingUtil {
 	}
 
 	private static boolean areSame(
-		@Nonnull BetreuungsmitteilungPensum current,
-		@Nonnull BetreuungsmitteilungPensum next) {
+		@Nonnull AbstractMahlzeitenPensum current,
+		@Nonnull AbstractMahlzeitenPensum next) {
 
 		return PlatzbestaetigungEventHandler.COMPARATOR.compare(current, next) == 0;
 	}

@@ -51,17 +51,21 @@ dv-radio-container-x {
                 color: black;
             }
 
-            .mat-radio-container {
-                height: 1.5rem;
-                width: 1.5rem;
-                .mat-radio-outer-circle, .mat-radio-inner-circle {
-                    height: 1.5rem;
-                    width: 1.5rem;
+            &.mat-radio-disabled {
+                .mat-radio-inner-circle {
+                    background-color: @dgrey;
                 }
                 .mat-radio-outer-circle {
-                    border-width: 1.5px;
+                    border-color: @dgrey;
+                }
+
+                &.mat-radio-checked {
+                    .mat-radio-outer-circle {
+                        border-color: @dgrey;
+                    }
                 }
             }
+
             &.mat-radio-checked {
                 .mat-radio-inner-circle {
                     transform: scale(0.35);
@@ -76,6 +80,18 @@ dv-radio-container-x {
                     .mat-radio-persistent-ripple {
                         opacity: 1;
                     }
+                }
+            }
+
+            .mat-radio-container {
+                height: 1.5rem;
+                width: 1.5rem;
+                .mat-radio-outer-circle, .mat-radio-inner-circle {
+                    height: 1.5rem;
+                    width: 1.5rem;
+                }
+                .mat-radio-outer-circle {
+                    border-width: 1.5px;
                 }
             }
         }

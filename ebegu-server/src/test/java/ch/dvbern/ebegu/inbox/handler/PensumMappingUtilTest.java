@@ -142,7 +142,7 @@ class PensumMappingUtilTest {
 			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
 
 			List<BetreuungsmitteilungPensum> pensen = Collections.singletonList(pensum1);
-			Collection<BetreuungsmitteilungPensum> result = PensumMappingUtil.extendGueltigkeit(pensen);
+			Collection<BetreuungsmitteilungPensum> result = extendGueltigkeit(pensen);
 
 			assertThat(result, contains(
 				matches(pensum1, range1)
@@ -156,8 +156,7 @@ class PensumMappingUtilTest {
 			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
 			BetreuungsmitteilungPensum pensum2 = createBetreuungsmitteilungPensum(range2);
 
-			Collection<BetreuungsmitteilungPensum> result =
-				PensumMappingUtil.extendGueltigkeit(Arrays.asList(pensum1, pensum2));
+			Collection<BetreuungsmitteilungPensum> result = extendGueltigkeit(Arrays.asList(pensum1, pensum2));
 
 			assertThat(result, contains(
 				matches(pensum1, range1.getGueltigAb(), range2.getGueltigBis())
@@ -173,8 +172,7 @@ class PensumMappingUtilTest {
 			// make them different
 			pensum2.setMonatlicheBetreuungskosten(BigDecimal.TEN);
 
-			Collection<BetreuungsmitteilungPensum> result =
-				PensumMappingUtil.extendGueltigkeit(Arrays.asList(pensum1, pensum2));
+			Collection<BetreuungsmitteilungPensum> result = extendGueltigkeit(Arrays.asList(pensum1, pensum2));
 
 			assertThat(result, contains(
 				matches(pensum1, range1),
@@ -189,8 +187,7 @@ class PensumMappingUtilTest {
 			BetreuungsmitteilungPensum pensum1 = createBetreuungsmitteilungPensum(range1);
 			BetreuungsmitteilungPensum pensum2 = createBetreuungsmitteilungPensum(range2);
 
-			Collection<BetreuungsmitteilungPensum> result =
-				PensumMappingUtil.extendGueltigkeit(Arrays.asList(pensum1, pensum2));
+			Collection<BetreuungsmitteilungPensum> result = extendGueltigkeit(Arrays.asList(pensum1, pensum2));
 
 			assertThat(result, contains(
 				matches(pensum1, range1),
@@ -214,13 +211,20 @@ class PensumMappingUtilTest {
 			BetreuungsmitteilungPensum pensum5 = createBetreuungsmitteilungPensum(range5);
 
 			List<BetreuungsmitteilungPensum> pensen = Arrays.asList(pensum1, pensum2, pensum3, pensum4, pensum5);
-			Collection<BetreuungsmitteilungPensum> result = PensumMappingUtil.extendGueltigkeit(pensen);
+			Collection<BetreuungsmitteilungPensum> result = extendGueltigkeit(pensen);
 
 			assertThat(result, contains(
 				matches(pensum1, range1.getGueltigAb(), range2.getGueltigBis()),
 				matches(pensum3, range3.getGueltigAb(), range4.getGueltigBis()),
 				matches(pensum5, range5)
 			));
+		}
+
+		@Nonnull
+		private Collection<BetreuungsmitteilungPensum> extendGueltigkeit(
+			@Nonnull Collection<BetreuungsmitteilungPensum> pensen) {
+
+			return PensumMappingUtil.extendGueltigkeit(pensen, a -> a);
 		}
 	}
 }

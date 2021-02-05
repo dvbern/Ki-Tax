@@ -286,6 +286,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                         status: antragDto.status,
                         familienName: antragDto.familienName,
                         kinder: antragDto.kinder,
+                        laufNummer: antragDto.laufnummer,
                         antragTyp: antragDto.antragTyp,
                         periode: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
@@ -456,5 +457,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         return forkJoin(angebote.map(angebot => this.translate.get(angebot)))
             .pipe(map(translatedAngebote => translatedAngebote.join(', '),
             ));
+    }
+
+    public getAntragTypBezeichnung(element: any): string {
+        let bezeichnung = this.translate.instant(element.antragTyp);
+        if (element?.laufNummer > 0) {
+            bezeichnung += ` ${element.laufNummer}`;
+        }
+
+        return bezeichnung;
     }
 }

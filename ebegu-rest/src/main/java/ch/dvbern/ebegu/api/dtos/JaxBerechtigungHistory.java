@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 
@@ -43,6 +44,9 @@ public class JaxBerechtigungHistory extends JaxAbstractDateRangedDTO {
 
 	@Nullable
 	private JaxInstitution institution;
+
+	@Nullable
+	private JaxSozialdienst sozialdienst;
 
 	@Nullable
 	private String gemeinden;
@@ -122,5 +126,14 @@ public class JaxBerechtigungHistory extends JaxAbstractDateRangedDTO {
 
 	public void setGeloescht(boolean geloescht) {
 		this.geloescht = geloescht;
+	}
+
+	@Nullable
+	public JaxSozialdienst getSozialdienst() {
+		return sozialdienst;
+	}
+
+	public void setSozialdienst(@Nullable JaxSozialdienst sozialdienst) {
+		this.sozialdienst = sozialdienst;
 	}
 }

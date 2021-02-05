@@ -710,6 +710,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private onlyZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitte: Array<TSVerfuegungZeitabschnitt>): Array<TSVerfuegungZeitabschnitt> {
+        if (!tagesschuleZeitabschnitte) {
+            return undefined;
+        }
         return tagesschuleZeitabschnitte.filter(this.fullZeitAbschnittBeforeEntryTagesschule.bind(this))
             .map(this.mapPartialZeitabschnitteSinceEntryTagesschule.bind(this));
     }
