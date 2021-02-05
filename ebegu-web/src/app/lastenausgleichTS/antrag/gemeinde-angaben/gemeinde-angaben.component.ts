@@ -50,6 +50,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
+    private readonly kostenbeitragGemeinde = 0.2;
+
     public constructor(
         private readonly fb: FormBuilder,
         private readonly gemeindeAntraegeService: GemeindeAntragService,
@@ -168,6 +170,11 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
+            lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
+            einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
+            kostenbeitragGemeinde: [{value: '', disabled: true}],
+            kostenueberschussGemeinde: [{value: '', disabled: true}],
+            erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
 
         // tslint:disable-next-line:max-line-length
@@ -289,6 +296,40 @@ export class GemeindeAngabenComponent implements OnInit {
         ).subscribe(value => this.angabenForm.get('normlohnkostenBetreuungBerechnet')
             .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
         );
+
+        combineLatest([
+            this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
+        ]).subscribe(values => {
+            const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
+            if (gemeindeBeitragOderUeberschuss < 0) {
+                this.angabenForm.get('kostenueberschussGemeinde')
+                    .setValue(gemeindeBeitragOderUeberschuss);
+                this.angabenForm.get('kostenbeitragGemeinde')
+                    .setValue('');
+            } else {
+                this.angabenForm.get('kostenbeitragGemeinde')
+                    .setValue(gemeindeBeitragOderUeberschuss);
+                this.angabenForm.get('kostenueberschussGemeinde')
+                    .setValue('');
+            }
+
+            this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(values[0] * this.kostenbeitragGemeinde);
+            this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
+        });
+
+        combineLatest([
+            this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+        ]).subscribe(values => {
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
+                // round to 0.2
+                Math.round((values[0] - values[1]) / 5) * 5
+            );
+        });
 
     }
 

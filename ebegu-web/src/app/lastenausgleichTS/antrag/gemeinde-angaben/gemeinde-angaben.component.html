@@ -285,6 +285,16 @@
 
     <mat-divider></mat-divider>
 
+    <dv-input-container-x>
+        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
+            {{'LATS_LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
+        </mat-form-field>
+    </dv-input-container-x>
+
     <h2>{{'LATS_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h2>
     <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
 
@@ -302,6 +312,16 @@
             <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError"
                        translate>ERROR_NUMBER
             </mat-error>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label>
+            {{'LATS_EINNAHMEN_ELTERNGEBUEHREN' | translate}}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
@@ -336,6 +356,38 @@
             <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
                        translate>ERROR_NUMBER
             </mat-error>
+        </mat-form-field>
+    </dv-input-container-x>
+
+
+
+    <dv-input-container-x>
+        <label>
+            {{'LATS_KOSTENBEITRAG_GEMEINDE' | translate}}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input"/>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label>
+            {{'LATS_KOSTENUEBERSCHUSS_GEMEINDE' | translate}}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input"/>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label>
+            {{'LATS_ERWARTETER_KOSTENBEITRAG_GEMEINDE' | translate}}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="erwarteterKostenbeitragGemeinde" class="form-control dv-input"/>
         </mat-form-field>
     </dv-input-container-x>
 
