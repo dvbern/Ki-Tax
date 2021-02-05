@@ -293,8 +293,11 @@ export class GemeindeAngabenComponent implements OnInit {
                     .valueChanges
                     .pipe(startWith(0)),
             ],
-        ).subscribe(value => this.angabenForm.get('normlohnkostenBetreuungBerechnet')
-            .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
+        ).subscribe(value => {
+            this.angabenForm.get('normlohnkostenBetreuungBerechnet')
+                    .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0));
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
         );
 
         combineLatest([
@@ -319,7 +322,9 @@ export class GemeindeAngabenComponent implements OnInit {
 
             this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(values[0] * this.kostenbeitragGemeinde);
             this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
-        });
+        },
+            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
+        );
 
         combineLatest([
             this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
@@ -329,7 +334,9 @@ export class GemeindeAngabenComponent implements OnInit {
                 // round to 0.2
                 Math.round((values[0] - values[1]) / 5) * 5
             );
-        });
+        },
+            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
+        );
 
     }
 
