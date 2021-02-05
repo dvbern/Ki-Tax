@@ -28,22 +28,31 @@
           [formGroup]="formularInitForm"
           (ngSubmit)="onInitFormSubmit()"
           class="margin-bottom-20">
+
         <div class="row">
-            <div class="col-xs-12 dv-input-container-question">
-                <dv-radio-container-x>
-                    <label class="ebegu-h1" required id="alle-angaben-radio-group" translate>
+            <div class="col-xs-12">
+                <dv-input-container-x>
+                    <label required
+                           [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
+                           id="alle-angaben-radio-group">
                         {{'LATS_ANGABEN_GEMEINDE_FRAGE_1' | translate}}
                         <span>&nbsp;*</span>
                     </label>
-                    <mat-radio-group
-                        aria-labelledby="alle-angaben-radio-group"
-                        class=""
-                        name="alleAngaben"
-                        formControlName="alleAngabenInKibonErfasst">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                </dv-radio-container-x>
+                    <div class="flex-whitespace-item"></div>
+                    <dv-radio-container-x>
+
+                        <mat-radio-group
+                            aria-labelledby="alle-angaben-radio-group"
+                            class=""
+                            name="alleAngaben"
+                            horizontal
+                            [disabled]="!showAntragErstellen()"
+                            formControlName="alleAngabenInKibonErfasst">
+                            <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                            <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                        </mat-radio-group>
+                    </dv-radio-container-x>
+                </dv-input-container-x>
             </div>
         </div>
 
@@ -59,7 +68,7 @@
 
 </div>
 
-<mat-divider></mat-divider>
+<mat-divider *ngIf="angabenForm"></mat-divider>
 
 <form *ngIf="angabenForm" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
 
