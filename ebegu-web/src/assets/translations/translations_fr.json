@@ -2214,6 +2214,7 @@
     "LATS_LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN": "Lastenausgleichsberechtigte Betreuungsstunden",
     "LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50": "Davon zu Normlohnkosten von Fr. {{lohnkosten}} bei ≥ 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
     "LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50": "Davon zu Normlohnkosten von Fr. {{lohnkosten}} bei < 50 % pädagogisch oder sozialpädagogisch ausgebildetem Personal",
+    "LATS_NORMLOHNKOSTEN_BETREUUNG": "Normlohnkosten für die Betreuung",
     "LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN": "./. tatsächliche Einnahmen aus Elterngebühren Schuljahr {{jahr}} (ohne Einnahmen für Verpflegung)",
     "LATS_ABRECHNUNG": "Abrechnung",
     "LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG": "Diese Angaben dienen der Auszahlung der Normlohnkosten aus dem Lastenausgleich für die geleisteten Betreuungsstunden",

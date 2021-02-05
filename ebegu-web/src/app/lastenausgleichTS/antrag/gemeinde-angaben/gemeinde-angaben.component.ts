@@ -167,6 +167,7 @@ export class GemeindeAngabenComponent implements OnInit {
             lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
+            normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
         });
 
         // tslint:disable-next-line:max-line-length
@@ -275,6 +276,19 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
+
+        combineLatest(
+            [
+                this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                    .valueChanges
+                    .pipe(startWith(0)),
+                this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
+                    .valueChanges
+                    .pipe(startWith(0)),
+            ],
+        ).subscribe(value => this.angabenForm.get('normlohnkostenBetreuungBerechnet')
+            .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)),
+        );
 
     }
 

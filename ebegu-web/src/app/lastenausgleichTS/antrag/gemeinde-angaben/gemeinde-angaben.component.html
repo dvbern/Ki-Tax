@@ -257,6 +257,16 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
+        <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('normlohnkostenBetreuungBerechnet').errors}">
+            {{'LATS_NORMLOHNKOSTEN_BETREUUNG' | translate}}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input"/>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
         <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
             {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
