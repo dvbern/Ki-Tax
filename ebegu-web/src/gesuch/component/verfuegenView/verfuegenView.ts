@@ -50,7 +50,6 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-const okDialogTempl = require('../../dialog/okDialogTemplate.html');
 const stepDialogTempl = require('../../dialog/stepDialog.html');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
