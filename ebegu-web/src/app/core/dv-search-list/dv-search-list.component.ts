@@ -22,7 +22,7 @@ import {
     EventEmitter,
     ViewChild,
     Input,
-    SimpleChanges, OnChanges,
+    SimpleChanges, OnChanges, ChangeDetectorRef,
 } from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -47,16 +47,19 @@ export class DvSearchListComponent implements OnInit, OnChanges {
 
     @Input() public data$: Observable<DVAntragListItem[]>;
 
+    @Input() public statusPrefix: string;
+
     public displayedColumns: string[] = ['name', 'status', 'detail'];
-    private readonly allColumns =  ['name', 'status', 'detail'];
+    private readonly allColumns = ['name', 'status', 'detail'];
     public dataSource: MatTableDataSource<DVEntitaetListItem>;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
 
-    public constructor() {
+    public constructor(private readonly changeDetectorRef: ChangeDetectorRef) {
     }
 
     public ngOnInit(): void {
+        this.initTable();
         this.sortTable();
     }
 
@@ -76,6 +79,18 @@ export class DvSearchListComponent implements OnInit, OnChanges {
 
     public open(id: string): void {
         this.openEvent.emit(id);
+    }
+
+    private initTable(): void {
+        this.dataSource = new MatTableDataSource<DVAntragListItem>([]);
+        this.loadData();
+    }
+
+    private loadData(): void {
+        this.data$.subscribe((result: DVAntragListItem[]) => {
+            this.dataSource.data = result;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     /**

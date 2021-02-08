@@ -17,9 +17,13 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -90,5 +95,17 @@ public class SozialdienstResource {
 		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst));
 
 		return jaxSozialdienstConverter.sozialdienstToJAX(persistedSozialdienst);
+	}
+
+	@ApiOperation(value = "Returns all Sozialdienst", responseContainer = "Collection", response = JaxSozialdienst.class)
+	@Nullable
+	@GET
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
+	public List<JaxSozialdienst> getAllSozialdienst() {
+		return sozialdienstService.getAllSozialdienste().stream()
+			.map(sozialdienst -> jaxSozialdienstConverter.sozialdienstToJAX(sozialdienst))
+			.collect(Collectors.toList());
 	}
 }

@@ -46,7 +46,7 @@
             </mat-header-cell>
             <mat-cell class="mat-cell-clickable" *matCellDef="let item"
                       (click)="open(item.id)">
-                {{'TEST_STATUS_' + item.status | translate}}
+                {{statusPrefix + '_' + item.status | translate}}
             </mat-cell>
         </ng-container>
 

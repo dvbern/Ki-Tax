@@ -26,6 +26,7 @@
         <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
                         [data$]="antragList$"
                         (openEvent)="open($event.id)"
+                        [statusPrefix]="'SOZIALDIENST_STATUS'"
                         ></dv-search-list>
 
         <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->

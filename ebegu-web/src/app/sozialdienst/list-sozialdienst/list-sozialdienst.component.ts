@@ -16,9 +16,10 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {Observable} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
@@ -35,10 +36,13 @@ export class ListSozialdienstComponent implements OnInit {
 
     public antragList$: Observable<DVEntitaetListItem[]>;
 
-    public constructor(private readonly $state: StateService, private authServiceRS: AuthServiceRS) {
+    public constructor(private readonly $state: StateService, private authServiceRS: AuthServiceRS,
+                       private readonly sozialdienstRS: SozialdienstRS,
+    ) {
     }
 
     public ngOnInit(): void {
+        this.loadData();
     }
 
     public hatBerechtigungHinzufuegen(): boolean {
@@ -54,5 +58,25 @@ export class ListSozialdienstComponent implements OnInit {
      */
     public open(id: string): void {
         this.$state.go('sozialdienst.edit', {sozialDienstId: id});
+    }
+
+    private loadData(): void {
+        // For now only SuperAdmin
+        const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+        this.antragList$ = from(this.sozialdienstRS.getSozialdienstList().then(sozialdienstList => {
+            const entitaetListItems: DVEntitaetListItem[] = [];
+            sozialdienstList.forEach(
+                sozialdienst => {
+                    const dvListItem = {
+                        id: sozialdienst.id,
+                        name: sozialdienst.name,
+                        status: sozialdienst.status.toString(),
+                        canEdit: editPossible,
+                    };
+                    entitaetListItems.push(dvListItem);
+                },
+            );
+            return entitaetListItems;
+        }));
     }
 }
