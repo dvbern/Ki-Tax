@@ -2254,5 +2254,7 @@
     "LATS_LOHNNORMKOSTEN_LESS_THAN_50": "Lohnnormkosten bei < 50%",
     "LATS_KONTROLLFRAGEN_GEMEINDE_ANGABEN": "Kontrollfragen",
     "LATS_CALCULATION_ERROR": "Etwas ist während der Berechnung schiefgegangen. Prüfen Sie die eingegebenen Werte",
+    "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
+    "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Bitte korrigieren Sie Ihre Eingaben.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
