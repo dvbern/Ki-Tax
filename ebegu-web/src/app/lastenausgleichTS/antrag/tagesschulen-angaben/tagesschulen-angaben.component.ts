@@ -22,6 +22,7 @@ import {startWith} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
 
 @Component({
     selector: 'dv-tagesschulen-angaben',
@@ -36,11 +37,12 @@ export class TagesschulenAngabenComponent {
     public form: FormGroup;
 
     private subscription: Subscription;
-    public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer;
     public angabenAusKibon: boolean;
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private readonly tagesschulenAngabenRS: TagesschuleAngabenRS,
         private readonly fb: FormBuilder,
         private cd: ChangeDetectorRef,
     ) {
@@ -103,6 +105,10 @@ export class TagesschulenAngabenComponent {
     }
 
     public onFormSubmit(): void {
+        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
+        this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
+            this.form = this.setupForm(result.angabenDeklaration);
+        });
     }
 }

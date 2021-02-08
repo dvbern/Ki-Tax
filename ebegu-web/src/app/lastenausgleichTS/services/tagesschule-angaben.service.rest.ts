@@ -42,4 +42,13 @@ export class TagesschuleAngabenRS {
                     lastenausgleichAngabenList)),
             );
     }
+
+    public saveTagesschuleAngaben(latsInstitutionAngabenContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
+        return this.http.put(`${CONSTANTS.REST_API}/lats/institution/save`,
+            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
+                latsInstitutionAngabenContainer)).pipe(
+            map(latsAngabenInstitutionContainer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainer)),
+        )
+    }
 }
