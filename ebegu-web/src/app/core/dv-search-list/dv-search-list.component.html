@@ -39,6 +39,17 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Institution Count -->
+        <ng-container matColumnDef="institutionCount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{'INSTITUTIONEN' | translate}}
+            </mat-header-cell>
+            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
+                      (click)="open(item.id)">
+                {{item.institutionCount}}
+            </mat-cell>
+        </ng-container>
+
         <!-- Column Type -->
         <ng-container matColumnDef="type">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -89,7 +100,7 @@
     </mat-table>
     <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
     <div class="mat-row" *ngIf="showNoContentMessage()"
-         [textContent]="'TEST_NOCH_KEINE' | translate">
+         [textContent]="columnName + '_NOCH_KEINE' | translate">
 
     </div>
 </div>

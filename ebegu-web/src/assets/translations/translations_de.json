@@ -529,7 +529,7 @@
     "INSTITUTION_STAMMDATEN_DELETE_FAILED": "Die Institutionsstammdaten konnten nicht gelöscht werden, da bereits Anträge verknüpft sind",
     "INSTITUTION_HINZUFUEGEN": "Institution hinzufügen",
     "INSTITUTION_SPEICHERN": "Institution speichern",
-    "INSTITUTIONEN_NOCH_KEINE": "Noch keine Institutionen",
+    "INSTITUTION_NOCH_KEINE": "Noch keine Institutionen",
     "NEUE_INSTITUTION": "Neue Institution",
     "SEND_TO_STV": "Prüfung durch Steuerbüro der Gemeinde",
     "SEND_TO_STV_CONFIRMATION": "Frage an Steuerbüro",
@@ -830,8 +830,8 @@
     "EKVI_ABLEHNEN": "Einkommensverschlechterung annulliert",
     "EVK_EINKOMMEN_JAHR": "Einkommen {{basisjahr}}",
     "EVK_IN_PROZENT": "Einkommensverschlechterung in %",
-    "TRAEGERSCHAFTEN_NOCH_KEINE": "Noch keine Trägerschaften",
-    "GEMEINDEN_NOCH_KEINE": "Noch keine Gemeinden",
+    "TRAEGERSCHAFT_NOCH_KEINE": "Noch keine Trägerschaften",
+    "GEMEINDE_NOCH_KEINE": "Noch keine Gemeinden",
     "TRAEGERSCHAFT_HINZUFUEGEN": "Trägerschaft hinzufügen",
     "GESUCHSPERIODE_HINZUFUEGEN": "Periode hinzufügen",
     "DOK_HINT_DOKUMENTE": "Bitte reichen Sie der Gemeinde die ausstehenden Dokumente online oder per Post nach.",
@@ -2214,5 +2214,6 @@
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Periode",
     "MENU_SOZIALDIENST": "Sozialdienste",
     "SOZIALDIENST_STATUS_EINGELADEN": "Eingeladen",
+    "SOZIALDIENST_NOCH_KEINE": "Noch keine Sozialdienst",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

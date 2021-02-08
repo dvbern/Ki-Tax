@@ -31,6 +31,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 export class ListSozialdienstComponent implements OnInit {
 
     public hiddenDVTableColumns = [
+        'institutionCount',
         'type',
         'remove',
     ];

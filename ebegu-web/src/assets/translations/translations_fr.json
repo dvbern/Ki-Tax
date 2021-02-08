@@ -529,7 +529,7 @@
     "INSTITUTION_STAMMDATEN_DELETE_FAILED": "Les données de base de l'institution n'ont pas pu être supprimées étant donné que des demandes y sont liées.",
     "INSTITUTION_HINZUFUEGEN": "Ajouter une institution",
     "INSTITUTION_SPEICHERN": "Enregistrer l'institution",
-    "INSTITUTIONEN_NOCH_KEINE": "Aucune institution",
+    "INSTITUTION_NOCH_KEINE": "Aucune institution",
     "NEUE_INSTITUTION": "Nouvelle institution",
     "SEND_TO_STV": "VÉRIFIÉ PAR LE BUREAU DES IMPÔTS DE LA COMMUNE",
     "SEND_TO_STV_CONFIRMATION": "Question au bureau des impôts de la commune",
@@ -830,8 +830,8 @@
     "EKVI_ABLEHNEN": "Annuler la détérioration du revenu",
     "EVK_EINKOMMEN_JAHR": "Revenu {{basisjahr}}",
     "EVK_IN_PROZENT": "Détérioration du revenu en %",
-    "TRAEGERSCHAFTEN_NOCH_KEINE": "Aucun organisme responsable",
-    "GEMEINDEN_NOCH_KEINE": "Aucune commune",
+    "TRAEGERSCHAFT_NOCH_KEINE": "Aucun organisme responsable",
+    "GEMEINDE_NOCH_KEINE": "Aucune commune",
     "TRAEGERSCHAFT_HINZUFUEGEN": "Ajouter un organisme responsable",
     "GESUCHSPERIODE_HINZUFUEGEN": "Ajouter une période couverte par la demande",
     "DOK_HINT_DOKUMENTE": "Veuillez transmettre à la commune les documents manquants en ligne ou par courrier postal.",
@@ -2214,5 +2214,6 @@
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typen für diese Gesuchsperiode",
     "MENU_SOZIALDIENST": "Service sociaux",
     "SOZIALDIENST_STATUS_EINGELADEN": "Invité",
+    "SOZIALDIENST_NOCH_KEINE": "Aucun service sociaux",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -42,6 +42,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 })
 export class GemeindeListComponent extends AbstractAdminViewController implements OnInit {
     public hiddenDVTableColumns = [
+        'institutionCount',
         'type',
         'remove',
     ];

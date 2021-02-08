@@ -195,8 +195,8 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     private setHiddenColumns(): void {
         this.hiddenDVTableColumns = this.isDeleteAllowed()
-            ? ['']
-            : ['remove'];
+            ? ['institutionCount']
+            : ['institutionCount', 'remove'];
     }
 
     public isSuperAdmin(): boolean {
