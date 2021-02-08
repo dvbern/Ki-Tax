@@ -49,6 +49,8 @@ export class DvSearchListComponent implements OnInit, OnChanges {
 
     @Input() public statusPrefix: string;
 
+    @Input() public columnName: string;
+
     public displayedColumns: string[] = ['name', 'status', 'detail'];
     private readonly allColumns = ['name', 'status', 'detail'];
     public dataSource: MatTableDataSource<DVEntitaetListItem>;

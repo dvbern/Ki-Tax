@@ -31,7 +31,7 @@
         <!-- Column Name -->
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{'TEST' | translate}}
+                {{columnName | translate}}
             </mat-header-cell>
             <mat-cell class="mat-cell-clickable" *matCellDef="let item"
                       (click)="open(item.id)">
