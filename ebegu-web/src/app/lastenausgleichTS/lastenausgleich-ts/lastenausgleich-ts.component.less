@@ -44,6 +44,9 @@
     .antrag {
         box-sizing: border-box;
         flex-grow: 1;
-        padding: 5rem 2.5rem 10rem 5rem;
+
+        ::ng-deep ui-view > * {
+            padding: 5rem 2.5rem 10rem 5rem;
+        }
     }
 }
