@@ -45,7 +45,7 @@
 
     <h3 class="uppercase">{{'LATS_QUANTITATIVE_ANGABEN' | translate}}</h3>
 
-    <div *ngIf="angabenAusKibon">
+    <div *ngIf="!angabenAusKibon">
         <dv-input-container-x>
             <label>
                 {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate}}
@@ -101,6 +101,20 @@
                        class="form-control dv-input"/>
             </mat-form-field>
         </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="anzahlEingeschriebeneKinderSekundarstufe"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
     </div>
 
     <dv-input-container-x>
@@ -117,7 +131,7 @@
         </mat-form-field>
     </dv-input-container-x>
 
-    <div *ngIf="angabenAusKibon">
+    <div *ngIf="!angabenAusKibon">
 
         <mat-divider></mat-divider>
 

@@ -17,7 +17,8 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Subscription} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
+import {startWith} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -41,7 +42,7 @@ export class TagesschulenAngabenComponent {
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly fb: FormBuilder,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
     ) {
     }
 
@@ -51,12 +52,14 @@ export class TagesschulenAngabenComponent {
                 return institutionContainer.id === this.institutionContainerId;
             });
             this.form = this.setupForm(this.latsAngabenInstitutionContainer.angabenDeklaration);
+            this.setupCalculation();
+            this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.cd.markForCheck();
         });
     }
 
     private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
-        return this.fb.group({
+        const form = this.fb.group({
             // A
             isLehrbetrieb: latsAngabenInstiution?.isLehrbetrieb,
             // B
@@ -76,7 +79,26 @@ export class TagesschulenAngabenComponent {
             betreuungsverhaeltnisEingehalten: latsAngabenInstiution?.betreuungsverhaeltnisEingehalten,
             ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution?.ernaehrungsGrundsaetzeEingehalten,
             // Bemerkungen
-            bemerkungen: latsAngabenInstiution?.bemerkungen
+            bemerkungen: latsAngabenInstiution?.bemerkungen,
+            // Calculations
+            anzahlEingeschriebeneKinderSekundarstufe: '',
+        });
+        form.get('anzahlEingeschriebeneKinderSekundarstufe').disable();
+
+        return form;
+    }
+
+    private setupCalculation(): void {
+        combineLatest(
+            [
+                this.form.get('anzahlEingeschriebeneKinder').valueChanges.pipe(startWith(0)),
+                this.form.get('anzahlEingeschriebeneKinderKindergarten').valueChanges.pipe(startWith(0)),
+                this.form.get('anzahlEingeschriebeneKinderBasisstufe').valueChanges.pipe(startWith(0)),
+                this.form.get('anzahlEingeschriebeneKinderPrimarstufe').valueChanges.pipe(startWith(0)),
+            ],
+        ).subscribe(values => {
+            this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
+                .setValue(values[0] - values[1] - values[2] - values[3]);
         });
     }
 
