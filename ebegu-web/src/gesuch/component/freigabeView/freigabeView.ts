@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TranslateService} from '@ngx-translate/core';
 import {IComponentOptions, IPromise} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -55,6 +56,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         'ApplicationPropertyRS',
         'AuthServiceRS',
         '$timeout',
+        '$translate',
     ];
 
     public isFreigebenClicked: boolean = false;
@@ -71,6 +73,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
+        private readonly $translate: TranslateService
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
@@ -213,5 +216,12 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     public $postLink(): void {
         // tslint:disable-next-line:no-magic-numbers
         this.doPostLinkActions(500);
+    }
+
+    public getButtonLabel(): string {
+        if (this.isMutation()) {
+            return this.$translate.instant('MUTATION_FREIGEBEN');
+        }
+        return this.$translate.instant('ANTRAG_EINREICHEN');
     }
 }

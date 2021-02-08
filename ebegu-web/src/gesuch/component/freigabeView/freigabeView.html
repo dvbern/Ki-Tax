@@ -106,7 +106,7 @@
                         </h2>
                         <hr class="header"/>
                         <p ng-if="!vm.isMutation()" data-translate="FREIGABEQUITTUNG_DRUCKEN_TEXT"></p>
-                        <p ng-if="vm.isMutation()" data-translate="FREIGABEQUITTUNG_MUTATION_TEXT"></p>
+                        <p ng-if="vm.isMutation()" ng-bind-html="'FREIGABEQUITTUNG_MUTATION_TEXT' | translate"></p>
                     </div>
 
                 </div>
@@ -128,10 +128,9 @@
             <dv-loading-button class="uppercase"
                                type="submit"
                                button-click="vm.gesuchEinreichen()"
-                               aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
+                               aria-label="vm.getButtonLabel()"
                                button-disabled="!vm.canBeFreigegeben()">
-				<span data-translate="ANTRAG_EINREICHEN">
-				</span>
+				<span ng-bind="vm.getButtonLabel()"></span>
             </dv-loading-button>
         </span>
         <span>

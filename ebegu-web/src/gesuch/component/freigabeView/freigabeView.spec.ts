@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TranslateService} from '@ngx-translate/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -44,6 +45,7 @@ describe('freigabeView', () => {
     let authServiceRS: AuthServiceRS;
     let $timeout: ITimeoutService;
     let dossier: TSDossier;
+    let $translate: TranslateService;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -62,6 +64,7 @@ describe('freigabeView', () => {
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');
         authServiceRS = $injector.get('AuthServiceRS');
         $timeout = $injector.get('$timeout');
+        $translate = $injector.get('$translate');
 
         spyOn(applicationPropertyRS, 'isDevMode').and.returnValue($q.when(false));
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
@@ -72,7 +75,7 @@ describe('freigabeView', () => {
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
 
         controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
-            wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout);
+            wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout, $translate);
 
         controller.form = {} as any;
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
