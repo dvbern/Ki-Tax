@@ -29,6 +29,7 @@ import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
+import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
@@ -137,6 +138,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         SavingInfo,
+        DVInputContainerXComponent
     ],
     exports: [
         CommonModule,
@@ -184,6 +186,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         SavingInfo,
+        DVInputContainerXComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

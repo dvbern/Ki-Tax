@@ -23,7 +23,6 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
-import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {SharedModule} from '../shared/shared.module';
 import {WizardstepXModule} from '../wizardstepX/wizardstep-x.module';
@@ -56,7 +55,6 @@ import { TagesschulenListComponent } from './antrag/tagesschulen-list/tagesschul
         CommonModule,
         LastenausgleichTsRoutingModule,
         MatToolbarModule,
-        TranslateModule,
         MatSidenavModule,
         RouterModule,
         UIRouterModule,

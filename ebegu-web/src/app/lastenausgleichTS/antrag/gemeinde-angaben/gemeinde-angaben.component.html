@@ -24,31 +24,558 @@
         </div>
     </div>
 
-    <form *ngIf="lATSAngabenGemeindeContainer" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="lATSAngabenGemeindeContainer && formularInitForm"
+          [formGroup]="formularInitForm"
+          (ngSubmit)="onInitFormSubmit()"
+          class="margin-bottom-20">
+
         <div class="row">
-            <div class="col-xs-12 dv-input-container-question">
-                <dv-radio-container-x>
-                    <label class="ebegu-h1" required id="alle-angaben-radio-group" translate>
-                        LATS_ANGABEN_GEMEINDE_FRAGE_1
+            <div class="col-xs-12">
+                <dv-input-container-x>
+                    <label required
+                           [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
+                           id="alle-angaben-radio-group">
+                        {{'LATS_ANGABEN_GEMEINDE_FRAGE_1' | translate}}
                         <span>&nbsp;*</span>
                     </label>
-                    <mat-radio-group
-                        aria-labelledby="alle-angaben-radio-group"
-                        class=""
-                        name="alleAngaben"
-                        formControlName="alleAngabenInKibonErfasst">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                </dv-radio-container-x>
+                    <div class="flex-whitespace-item"></div>
+                    <dv-radio-container-x>
+
+                        <mat-radio-group
+                            aria-labelledby="alle-angaben-radio-group"
+                            class=""
+                            name="alleAngaben"
+                            horizontal
+                            [disabled]="!showAntragErstellen()"
+                            formControlName="alleAngabenInKibonErfasst">
+                            <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                            <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                        </mat-radio-group>
+                    </dv-radio-container-x>
+                </dv-input-container-x>
             </div>
         </div>
 
         <div class="actions">
-            <dv-loading-button *ngIf="showAntragErstellen()" type="button" [buttonDisabled]="!form?.valid" (buttonClick)="onSubmit()">
+            <dv-loading-button *ngIf="showAntragErstellen()"
+                               type="button"
+                               [buttonDisabled]="!formularInitForm?.valid"
+                               (buttonClick)="onInitFormSubmit()">
                 <span translate>LATS_ANTRAG_ERSTELLEN</span>
             </dv-loading-button>
         </div>
     </form>
 
+<mat-divider *ngIf="angabenForm"></mat-divider>
+
+<form *ngIf="angabenForm" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
+
+        <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
+                   id="bedarfBeiElternAbgeklaert-radio-group">
+                {{'LATS_BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="bedarfBeiElternAbgeklaert-radio-group"
+                    class=""
+                    name="bedarfBeiElternAbgeklaert"
+                    horizontal
+                    formControlName="bedarfBeiElternAbgeklaert">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
+                   id="angebotFuerFerienbetreuungVorhanden-radio-group">
+                {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="angebotFuerFerienbetreuungVorhanden-radio-group"
+                    class=""
+                    name="angebotFuerFerienbetreuungVorhanden"
+                    horizontal
+                    formControlName="angebotFuerFerienbetreuungVorhanden">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').errors}"
+                   id="angebotVerfuegbarFuerAlleSchulstufen-radio-group">
+                {{'LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="angebotVerfuegbarFuerAlleSchulstufen-radio-group"
+                    class=""
+                    name="angebotVerfuegbarFuerAlleSchulstufen"
+                    horizontal
+                    formControlName="angebotVerfuegbarFuerAlleSchulstufen">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered &&
+                                                        angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
+                                                        angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
+                {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <textarea matInput
+                          formControlName="begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen"
+                          class="form-control dv-input">
+                </textarea>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+
+        <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
+        <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
+                {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
+                {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors}">
+                {{'LATS_LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="lastenausgleichberechtigteBetreuungsstunden"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
+                   >
+                {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
+                <span>&nbsp;*</span>
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
+                {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
+                <span>&nbsp;*</span>
+            </label>
+            <mat-form-field floatLabel="always">
+                <input matInput
+                       formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field floatLabel="always">
+                <input matInput
+                       formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('normlohnkostenBetreuungBerechnet').errors}">
+                {{'LATS_NORMLOHNKOSTEN_BETREUUNG' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="normlohnkostenBetreuungBerechnet" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
+                {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
+                {{'LATS_LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <h3 class="uppercase">{{'LATS_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h3>
+        <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors}">
+                {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="gesamtKostenTagesschule" class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_EINNAHMEN_ELTERNGEBUEHREN' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors}">
+                {{'LATS_EINNAHMEN_VERPFLEGUNG' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="einnnahmenVerpflegung" class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors}">
+                {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="einnahmenSubventionenDritter" class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_KOSTENBEITRAG_GEMEINDE' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_KOSTENUEBERSCHUSS_GEMEINDE' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_ERWARTETER_KOSTENBEITRAG_GEMEINDE' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="erwarteterKostenbeitragGemeinde" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <h3 class="uppercase">{{'LATS_ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h3>
+        <p class="sub-header-explanation">{{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}</p>
+
+        <dv-input-container-x>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          formControlName="bemerkungenWeitereKostenUndErtraege"
+                          class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <h3 class="uppercase" translate>LATS_KONTROLLFRAGEN_GEMEINDE_ANGABEN</h3>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').errors}"
+                   id="betreuungsstundenDokumentiertUndUeberprueft-radio-group">
+                {{'LATS_BETREUUNGSSTUNDEN_DOKUMENTIERT_UEBERPRUEFT' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="betreuungsstundenDokumentiertUndUeberprueft-radio-group"
+                    class=""
+                    name="betreuungsstundenDokumentiertUndUeberprueft"
+                    horizontal
+                    formControlName="betreuungsstundenDokumentiertUndUeberprueft">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').errors}"
+                   id="elterngebuehrenGemaessVerordnungBerechnet-radio-group">
+                {{'LATS_ELTERNGEBUEHREN_VERORDNUNG_BERECHNET' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="elterngebuehrenGemaessVerordnungBerechnet-radio-group"
+                    class=""
+                    name="elterngebuehrenGemaessVerordnungBerechnet"
+                    horizontal
+                    formControlName="elterngebuehrenGemaessVerordnungBerechnet">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <dv-input-container-x>
+            <label translate>LATS_EINKOMMEN_ELTERN_EINLEITUNG</label>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einkommenElternBelegt').errors}"
+                   id="einkommenElternBelegt-radio-group">
+                {{'LATS_EINKOMMEN_ELTERN_BELEGT' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="einkommenElternBelegt-radio-group"
+                    class=""
+                    name="einkommenElternBelegt"
+                    horizontal
+                    formControlName="einkommenElternBelegt">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('maximalTarif').errors}"
+                   id="maximalTarif-radio-group">
+                {{'LATS_EINKOMMEN_ELTERN_MAXIMALTARIF' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="maximalTarif-radio-group"
+                    class=""
+                    name="maximalTarif"
+                    horizontal
+                    formControlName="maximalTarif">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').errors}"
+                   id="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal-radio-group">
+                {{'LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal-radio-group"
+                    class=""
+                    name="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal"
+                    horizontal
+                    formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('ausbildungenMitarbeitendeBelegt').errors}"
+                   id="ausbildungenMitarbeitendeBelegt-radio-group">
+                {{'LATS_AUSBILDUNG_MITARBEITENDE_BELEGT' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="ausbildungenMitarbeitendeBelegt-radio-group"
+                    class=""
+                    name="ausbildungenMitarbeitendeBelegt"
+                    horizontal
+                    formControlName="ausbildungenMitarbeitendeBelegt">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+        <dv-input-container-x>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          formControlName="bemerkungen"
+                          class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <div class="actions">
+            <dv-loading-button
+                type="button"
+                (buttonClick)="onAngabenFormSubmit()">
+                <span translate>SAVE</span>
+            </dv-loading-button>
+        </div>
+
+    </form>
+
 </div>
+

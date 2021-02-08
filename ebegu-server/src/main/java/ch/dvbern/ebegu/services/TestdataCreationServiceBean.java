@@ -106,6 +106,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -571,6 +573,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED, "false", gesuchsperiode);
 		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
 		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
+		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39",	gesuchsperiode);
+		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {
