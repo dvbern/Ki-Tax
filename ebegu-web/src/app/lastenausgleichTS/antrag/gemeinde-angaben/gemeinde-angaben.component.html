@@ -35,8 +35,7 @@
                     <label required
                            [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
                            id="alle-angaben-radio-group">
-                        {{'LATS_ANGABEN_GEMEINDE_FRAGE_1' | translate}}
-                        <span>&nbsp;*</span>
+                        {{'LATS_ANGABEN_GEMEINDE_FRAGE_1' | translate}}&nbsp;*
                     </label>
                     <div class="flex-whitespace-item"></div>
                     <dv-radio-container-x>
@@ -76,8 +75,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
                    id="bedarfBeiElternAbgeklaert-radio-group">
-                {{'LATS_BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -98,8 +96,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
                    id="angebotFuerFerienbetreuungVorhanden-radio-group">
-                {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <span>&nbsp;*</span>
+                {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -120,8 +117,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').errors}"
                    id="angebotVerfuegbarFuerAlleSchulstufen-radio-group">
-                {{'LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -141,12 +137,11 @@
 
         <div *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
             <dv-input-container-x>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+                <mat-form-field floatLabel="always" class="no-margin-left" required>
                     <label [ngClass]="{'label-required-error': formFreigebenTriggered &&
                                                         angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
                                                         angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
-                        {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}
-                        <span>&nbsp;*</span>
+                        {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}&nbsp;*
                     </label>
                     <textarea matInput
                               formControlName="begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen"
@@ -163,8 +158,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
-                {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <span>&nbsp;*</span>
+                {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -183,8 +177,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
-                {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <span>&nbsp;*</span>
+                {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -217,8 +210,7 @@
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
                    >
-                {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
-                <span>&nbsp;*</span>
+                {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}&nbsp;*
             </label>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
@@ -242,8 +234,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
-                {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
-                <span>&nbsp;*</span>
+                {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}&nbsp;*
             </label>
             <mat-form-field floatLabel="always">
                 <input matInput
@@ -275,8 +266,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
-                {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <span>&nbsp;*</span>
+                {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -307,8 +297,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors}">
-                {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <span>&nbsp;*</span>
+                {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -334,8 +323,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors}">
-                {{'LATS_EINNAHMEN_VERPFLEGUNG' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_EINNAHMEN_VERPFLEGUNG' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -351,8 +339,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors}">
-                {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -419,8 +406,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').errors}"
                    id="betreuungsstundenDokumentiertUndUeberprueft-radio-group">
-                {{'LATS_BETREUUNGSSTUNDEN_DOKUMENTIERT_UEBERPRUEFT' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_BETREUUNGSSTUNDEN_DOKUMENTIERT_UEBERPRUEFT' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -441,8 +427,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').errors}"
                    id="elterngebuehrenGemaessVerordnungBerechnet-radio-group">
-                {{'LATS_ELTERNGEBUEHREN_VERORDNUNG_BERECHNET' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_ELTERNGEBUEHREN_VERORDNUNG_BERECHNET' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -469,8 +454,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einkommenElternBelegt').errors}"
                    id="einkommenElternBelegt-radio-group">
-                {{'LATS_EINKOMMEN_ELTERN_BELEGT' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_EINKOMMEN_ELTERN_BELEGT' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -491,8 +475,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('maximalTarif').errors}"
                    id="maximalTarif-radio-group">
-                {{'LATS_EINKOMMEN_ELTERN_MAXIMALTARIF' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_EINKOMMEN_ELTERN_MAXIMALTARIF' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -515,8 +498,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').errors}"
                    id="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal-radio-group">
-                {{'LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
@@ -537,8 +519,7 @@
             <label required
                    [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('ausbildungenMitarbeitendeBelegt').errors}"
                    id="ausbildungenMitarbeitendeBelegt-radio-group">
-                {{'LATS_AUSBILDUNG_MITARBEITENDE_BELEGT' | translate}}
-                <span>&nbsp;*</span>
+                {{'LATS_AUSBILDUNG_MITARBEITENDE_BELEGT' | translate}}&nbsp;*
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
