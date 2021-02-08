@@ -15,7 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-tagesschulen-angaben',
@@ -24,5 +27,23 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagesschulenAngabenComponent {
+
+    @Input() public institutionContainerId: string;
+
+    private subscription: Subscription;
+    public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+
+    public constructor(
+        private readonly lastenausgleichTSService: LastenausgleichTSService
+    ) {
+    }
+
+    public ngOnInit(): void {
+        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
+            this.latsAngabenInstitutionContainer = container.angabenInstitutionContainers.find(institutionContainer => {
+               return institutionContainer.id === this.institutionContainerId;
+            })
+        })
+    }
 
 }

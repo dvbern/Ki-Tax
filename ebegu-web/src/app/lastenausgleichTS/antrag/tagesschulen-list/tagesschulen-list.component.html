@@ -22,4 +22,4 @@
     </div>
 </div>
 
-<dv-simple-table [data]="data" [columns]="tableColumns"></dv-simple-table>
+<dv-simple-table [data]="data" [columns]="tableColumns" (rowClicked)="navigate($event)"></dv-simple-table>

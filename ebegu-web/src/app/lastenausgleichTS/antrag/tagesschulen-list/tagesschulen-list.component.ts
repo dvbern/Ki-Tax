@@ -16,6 +16,7 @@
  */
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
 
@@ -39,6 +40,7 @@ export class TagesschulenListComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
+        private readonly $state: StateService
     ) {
     }
 
@@ -47,6 +49,7 @@ export class TagesschulenListComponent implements OnInit {
             .subscribe(data => {
                 this.data = data.map(latsInstitutionContainer => {
                         return {
+                            id: latsInstitutionContainer.id,
                             institutionName: latsInstitutionContainer.institution.name,
                             status: `LATS_STATUS_${latsInstitutionContainer.status}`,
                         };
@@ -58,5 +61,9 @@ export class TagesschulenListComponent implements OnInit {
                     .subscribe(msg => this.errorService.addMesageAsError(msg),
                         err => console.error('Error loading translation', err));
             });
+    }
+
+    public navigate($event: any): void {
+        this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN_DETAIL', {institutionId: $event.element.id});
     }
 }
