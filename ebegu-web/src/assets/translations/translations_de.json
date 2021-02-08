@@ -2193,7 +2193,6 @@
     "KEIN_SELBSTBEHALT_DURCH_GEMEINDE": "Kein Selbstbehalt durch die Gemeinde",
     "ZEMIS_UPLOAD_STARTED": "Die Verarbeitung des ZEMIS Excels wurde gestartet. Sie werden per Email benachrichtigt, sobald der Prozess abgeschlossen wurde.",
     "ZEMIS_UPLOAD_FINISHED": "Die Vearbeitung wurde erfolgreich abgeschlossen",
-    "VERFUEGUNG_JSON_DEPRECATED": "Achtung: Der JSON Export der Verfügung ist veraltet und wird in einigen Monaten entfernt. Bitte melden Sie sich beim kiBon Support, falls Sie diese Funktion noch verwenden",
     "GEMEINDE_GUELTIG_BIS": "Gemeinde gültig bis",
     "LASTENAUSGLEICH_TS_ANGABEN_GEMEINDE": "Angaben Gemeinde",
     "LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN": "Angaben Tagesschulen",
