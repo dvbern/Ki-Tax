@@ -32,6 +32,7 @@ export class ListSozialdienstComponent implements OnInit {
 
     public hiddenDVTableColumns = [
         'type',
+        'remove',
     ];
 
     public antragList$: Observable<DVEntitaetListItem[]>;
@@ -72,6 +73,7 @@ export class ListSozialdienstComponent implements OnInit {
                         name: sozialdienst.name,
                         status: sozialdienst.status.toString(),
                         canEdit: editPossible,
+                        canRemove: false,
                     };
                     entitaetListItems.push(dvListItem);
                 },

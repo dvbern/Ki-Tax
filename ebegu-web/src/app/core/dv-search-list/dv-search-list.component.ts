@@ -24,6 +24,7 @@ import {
     Input,
     SimpleChanges, OnChanges, ChangeDetectorRef,
 } from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Observable} from 'rxjs';
@@ -43,6 +44,8 @@ export class DvSearchListComponent implements OnInit, OnChanges {
      */
     @Output() public readonly openEvent: EventEmitter<string> = new EventEmitter<any>();
 
+    @Output() public readonly removeEvent: EventEmitter<string> = new EventEmitter<any>();
+
     @Input() public hiddenColumns: string[] = [];
 
     @Input() public data$: Observable<DVAntragListItem[]>;
@@ -51,11 +54,12 @@ export class DvSearchListComponent implements OnInit, OnChanges {
 
     @Input() public columnName: string;
 
-    public displayedColumns: string[] = ['name', 'status', 'detail'];
-    private readonly allColumns = ['name', 'status', 'detail'];
+    public displayedColumns: string[] = ['name', 'status', 'type', 'detail', 'remove'];
+    private readonly allColumns = ['name', 'status', 'type', 'detail', 'remove'];
     public dataSource: MatTableDataSource<DVEntitaetListItem>;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
+    @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
 
     public constructor(private readonly changeDetectorRef: ChangeDetectorRef) {
     }
@@ -68,6 +72,10 @@ export class DvSearchListComponent implements OnInit, OnChanges {
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.hiddenColumns) {
             this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+        }
+        // tslint:disable-next-line:early-exit
+        if (changes.data$ && !changes.data$.firstChange) {
+            this.loadData();
         }
     }
 
@@ -83,6 +91,10 @@ export class DvSearchListComponent implements OnInit, OnChanges {
         this.openEvent.emit(id);
     }
 
+    public remove(id: string): void {
+        this.removeEvent.emit(id);
+    }
+
     private initTable(): void {
         this.dataSource = new MatTableDataSource<DVAntragListItem>([]);
         this.loadData();
@@ -91,6 +103,7 @@ export class DvSearchListComponent implements OnInit, OnChanges {
     private loadData(): void {
         this.data$.subscribe((result: DVAntragListItem[]) => {
             this.dataSource.data = result;
+            this.dataSource.paginator = this.paginator;
             this.changeDetectorRef.markForCheck();
         });
     }

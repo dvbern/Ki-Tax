@@ -27,7 +27,7 @@
 
         <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
                         [data$]="antragList$"
-                        (openEvent)="openGemeinde($event.id)"
+                        (openEvent)="openGemeinde($event)"
                         [statusPrefix]="'GEMEINDE_STATUS'"
                         [columnName]="'GEMEINDE'"
         ></dv-search-list>

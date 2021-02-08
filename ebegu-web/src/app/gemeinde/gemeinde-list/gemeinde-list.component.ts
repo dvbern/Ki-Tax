@@ -33,7 +33,6 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {LogFactory} from '../../core/logging/LogFactory';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
@@ -44,6 +43,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 export class GemeindeListComponent extends AbstractAdminViewController implements OnInit {
     public hiddenDVTableColumns = [
         'type',
+        'remove',
     ];
 
     public antragList$: Observable<DVEntitaetListItem[]>;
@@ -84,8 +84,8 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
             }));
     }
 
-    public openGemeinde(eventId: string): void {
-        this.$state.go('gemeinde.edit', {gemeindeId: eventId});
+    public openGemeinde(id: string): void {
+        this.$state.go('gemeinde.edit', {gemeindeId: id});
         return;
     }
 

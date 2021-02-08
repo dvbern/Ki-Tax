@@ -39,6 +39,17 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Column Type -->
+        <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{'TYP' | translate}}
+            </mat-header-cell>
+            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
+                      (click)="open(item.id)">
+                {{item.type.toString() | translate}}
+            </mat-cell>
+        </ng-container>
+
         <!-- Column Status -->
         <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -62,10 +73,21 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Column remove -->
+        <ng-container matColumnDef="remove" >
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let item">
+                <dv-loading-button buttonClass="dv-btn-sm"
+                                   (buttonClick)="remove(item.id)" *ngIf="item.canRemove">
+                    <i class="fa fa-trash"></i>
+                </dv-loading-button>
+            </mat-cell>
+        </ng-container>
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="open(row.id)" class="pointer-cursor"></mat-row>
     </mat-table>
-
+    <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
     <div class="mat-row" *ngIf="showNoContentMessage()"
          [textContent]="'TEST_NOCH_KEINE' | translate">
 
