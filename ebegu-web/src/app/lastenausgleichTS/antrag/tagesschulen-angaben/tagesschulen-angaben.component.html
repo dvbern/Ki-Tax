@@ -45,61 +45,63 @@
 
     <h3 class="uppercase">{{'LATS_QUANTITATIVE_ANGABEN' | translate}}</h3>
 
-    <dv-input-container-x>
-        <label>
-            {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="anzahlEingeschriebeneKinder"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
+    <div *ngIf="angabenAusKibon">
+        <dv-input-container-x>
+            <label>
+                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="anzahlEingeschriebeneKinder"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
 
-    <dv-input-container-x>
-        <label>
-            {{'LATS_DAVON_KINDERGARTEN' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="anzahlEingeschriebeneKinderKindergarten"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
+        <dv-input-container-x>
+            <label>
+                {{'LATS_DAVON_KINDERGARTEN' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="anzahlEingeschriebeneKinderKindergarten"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
 
-    <dv-input-container-x>
-        <label>
-            {{'LATS_DAVON_BASISSTUFE' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="anzahlEingeschriebeneKinderBasisstufe"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
+        <dv-input-container-x>
+            <label>
+                {{'LATS_DAVON_BASISSTUFE' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="anzahlEingeschriebeneKinderBasisstufe"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
 
-    <dv-input-container-x>
-        <label>
-            {{'LATS_DAVON_PRIMARSTUFE' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="anzahlEingeschriebeneKinderPrimarstufe"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
+        <dv-input-container-x>
+            <label>
+                {{'LATS_DAVON_PRIMARSTUFE' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="anzahlEingeschriebeneKinderPrimarstufe"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+    </div>
 
     <dv-input-container-x>
         <label>
@@ -115,63 +117,68 @@
         </mat-form-field>
     </dv-input-container-x>
 
+    <div *ngIf="angabenAusKibon">
+
+        <mat-divider></mat-divider>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="durchschnittKinderProTagFruehbetreuung"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_ANZAHL_IN_MITTAGSBETREUUNG' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="durchschnittKinderProTagMittag"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="durchschnittKinderProTagNachmittag1"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="durchschnittKinderProTagNachmittag2"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+    </div>
+
     <mat-divider></mat-divider>
-
-    <dv-input-container-x>
-        <label>
-            {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="durchschnittKinderProTagFruehbetreuung"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
-        <label>
-            {{'LATS_ANZAHL_IN_MITTAGSBETREUUNG' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="durchschnittKinderProTagMittag"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
-        <label>
-            {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="durchschnittKinderProTagNachmittag1"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
-
-    <dv-input-container-x>
-        <label>
-            {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
-            <span>&nbsp;*</span>
-        </label>
-        <div class="flex-whitespace-item"></div>
-        <mat-form-field floatLabel="always">
-            <mat-label translate></mat-label>
-            <input matInput
-                   formControlName="durchschnittKinderProTagNachmittag2"
-                   class="form-control dv-input"/>
-        </mat-form-field>
-    </dv-input-container-x>
 
     <h3 translate class="uppercase">QUALITATIVE_VORGABEN_TAGESSCHULVERORDNUNG</h3>
 

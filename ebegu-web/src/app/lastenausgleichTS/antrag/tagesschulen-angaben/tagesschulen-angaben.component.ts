@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
@@ -36,10 +36,12 @@ export class TagesschulenAngabenComponent {
 
     private subscription: Subscription;
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    public angabenAusKibon: boolean;
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
-        private fb: FormBuilder,
+        private readonly fb: FormBuilder,
+        private cd: ChangeDetectorRef
     ) {
     }
 
@@ -49,32 +51,33 @@ export class TagesschulenAngabenComponent {
                 return institutionContainer.id === this.institutionContainerId;
             });
             this.form = this.setupForm(this.latsAngabenInstitutionContainer.angabenDeklaration);
-        })
+            this.cd.markForCheck();
+        });
     }
 
     private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
         return this.fb.group({
             // A
-            isLehrbetrieb: latsAngabenInstiution.isLehrbetrieb,
+            isLehrbetrieb: latsAngabenInstiution?.isLehrbetrieb,
             // B
-            anzahlEingeschriebeneKinder: latsAngabenInstiution.anzahlEingeschriebeneKinder,
-            anzahlEingeschriebeneKinderKindergarten: latsAngabenInstiution.anzahlEingeschriebeneKinderKindergarten,
-            anzahlEingeschriebeneKinderBasisstufe: latsAngabenInstiution.anzahlEingeschriebeneKinderBasisstufe,
-            anzahlEingeschriebeneKinderPrimarstufe: latsAngabenInstiution.anzahlEingeschriebeneKinderPrimarstufe,
-            anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: latsAngabenInstiution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
-            durchschnittKinderProTagFruehbetreuung: latsAngabenInstiution.durchschnittKinderProTagFruehbetreuung,
-            durchschnittKinderProTagMittag: latsAngabenInstiution.durchschnittKinderProTagMittag,
-            durchschnittKinderProTagNachmittag1: latsAngabenInstiution.durchschnittKinderProTagNachmittag1,
-            durchschnittKinderProTagNachmittag2: latsAngabenInstiution.durchschnittKinderProTagNachmittag2,
+            anzahlEingeschriebeneKinder: latsAngabenInstiution?.anzahlEingeschriebeneKinder,
+            anzahlEingeschriebeneKinderKindergarten: latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
+            anzahlEingeschriebeneKinderBasisstufe: latsAngabenInstiution?.anzahlEingeschriebeneKinderBasisstufe,
+            anzahlEingeschriebeneKinderPrimarstufe: latsAngabenInstiution?.anzahlEingeschriebeneKinderPrimarstufe,
+            anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: latsAngabenInstiution?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
+            durchschnittKinderProTagFruehbetreuung: latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
+            durchschnittKinderProTagMittag: latsAngabenInstiution?.durchschnittKinderProTagMittag,
+            durchschnittKinderProTagNachmittag1: latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
+            durchschnittKinderProTagNachmittag2: latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
             // C
-            schuleAufBasisOrganisatorischesKonzept: latsAngabenInstiution.schuleAufBasisOrganisatorischesKonzept,
-            schuleAufBasisPaedagogischesKonzept: latsAngabenInstiution.schuleAufBasisPaedagogischesKonzept,
-            raeumlicheVoraussetzungenEingehalten: latsAngabenInstiution.raeumlicheVoraussetzungenEingehalten,
-            betreuungsverhaeltnisEingehalten: latsAngabenInstiution.betreuungsverhaeltnisEingehalten,
-            ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution.ernaehrungsGrundsaetzeEingehalten,
+            schuleAufBasisOrganisatorischesKonzept: latsAngabenInstiution?.schuleAufBasisOrganisatorischesKonzept,
+            schuleAufBasisPaedagogischesKonzept: latsAngabenInstiution?.schuleAufBasisPaedagogischesKonzept,
+            raeumlicheVoraussetzungenEingehalten: latsAngabenInstiution?.raeumlicheVoraussetzungenEingehalten,
+            betreuungsverhaeltnisEingehalten: latsAngabenInstiution?.betreuungsverhaeltnisEingehalten,
+            ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution?.ernaehrungsGrundsaetzeEingehalten,
             // Bemerkungen
-            bemerkungen: latsAngabenInstiution.bemerkungen
-        })
+            bemerkungen: latsAngabenInstiution?.bemerkungen
+        });
     }
 
     public onFormSubmit(): void {
