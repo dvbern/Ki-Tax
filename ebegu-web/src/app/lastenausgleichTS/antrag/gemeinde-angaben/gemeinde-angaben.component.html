@@ -131,7 +131,8 @@
                     class=""
                     name="angebotVerfuegbarFuerAlleSchulstufen"
                     horizontal
-                    formControlName="angebotVerfuegbarFuerAlleSchulstufen">
+                    formControlName="angebotVerfuegbarFuerAlleSchulstufen"
+                    (change)="deleteBegruendung($event)">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
