@@ -138,22 +138,21 @@
             </dv-radio-container-x>
         </dv-input-container-x>
 
-        <dv-input-container-x *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered &&
+        <div *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
+            <dv-input-container-x>
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                    <label [ngClass]="{'label-required-error': formFreigebenTriggered &&
                                                         angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
                                                         angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
-                {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}
-                <span>&nbsp;*</span>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <textarea matInput
-                          formControlName="begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen"
-                          class="form-control dv-input">
-                </textarea>
-            </mat-form-field>
-        </dv-input-container-x>
+                        {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}
+                        <span>&nbsp;*</span>
+                    </label>
+                    <textarea matInput
+                              formControlName="begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen"
+                              class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
 
         <mat-divider></mat-divider>
 
