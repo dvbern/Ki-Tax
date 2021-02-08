@@ -16,7 +16,9 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
@@ -30,20 +32,52 @@ export class TagesschulenAngabenComponent {
 
     @Input() public institutionContainerId: string;
 
+    public form: FormGroup;
+
     private subscription: Subscription;
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
 
     public constructor(
-        private readonly lastenausgleichTSService: LastenausgleichTSService
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
+        private fb: FormBuilder,
     ) {
     }
 
     public ngOnInit(): void {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
             this.latsAngabenInstitutionContainer = container.angabenInstitutionContainers.find(institutionContainer => {
-               return institutionContainer.id === this.institutionContainerId;
-            })
+                return institutionContainer.id === this.institutionContainerId;
+            });
+            this.form = this.setupForm(this.latsAngabenInstitutionContainer.angabenDeklaration);
         })
     }
 
+    private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
+        return this.fb.group({
+            // A
+            isLehrbetrieb: latsAngabenInstiution.isLehrbetrieb,
+            // B
+            anzahlEingeschriebeneKinder: latsAngabenInstiution.anzahlEingeschriebeneKinder,
+            anzahlEingeschriebeneKinderKindergarten: latsAngabenInstiution.anzahlEingeschriebeneKinderKindergarten,
+            anzahlEingeschriebeneKinderBasisstufe: latsAngabenInstiution.anzahlEingeschriebeneKinderBasisstufe,
+            anzahlEingeschriebeneKinderPrimarstufe: latsAngabenInstiution.anzahlEingeschriebeneKinderPrimarstufe,
+            anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: latsAngabenInstiution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
+            durchschnittKinderProTagFruehbetreuung: latsAngabenInstiution.durchschnittKinderProTagFruehbetreuung,
+            durchschnittKinderProTagMittag: latsAngabenInstiution.durchschnittKinderProTagMittag,
+            durchschnittKinderProTagNachmittag1: latsAngabenInstiution.durchschnittKinderProTagNachmittag1,
+            durchschnittKinderProTagNachmittag2: latsAngabenInstiution.durchschnittKinderProTagNachmittag2,
+            // C
+            schuleAufBasisOrganisatorischesKonzept: latsAngabenInstiution.schuleAufBasisOrganisatorischesKonzept,
+            schuleAufBasisPaedagogischesKonzept: latsAngabenInstiution.schuleAufBasisPaedagogischesKonzept,
+            raeumlicheVoraussetzungenEingehalten: latsAngabenInstiution.raeumlicheVoraussetzungenEingehalten,
+            betreuungsverhaeltnisEingehalten: latsAngabenInstiution.betreuungsverhaeltnisEingehalten,
+            ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution.ernaehrungsGrundsaetzeEingehalten,
+            // Bemerkungen
+            bemerkungen: latsAngabenInstiution.bemerkungen
+        })
+    }
+
+    public onFormSubmit(): void {
+
+    }
 }
