@@ -35,6 +35,15 @@ dv-input-container-x {
             font-family: Open Sans, Arial, Helvetica, sans-serif;
         }
 
+        label[required]:after {
+            content: "*";
+            //add negative margin to compensate width and
+            //prevent asterisk from wrapping to next line
+            margin-right: -10px;
+            padding-left: 0.3rem;
+            color: black;
+        }
+
         textarea {
             padding: 1rem;
         }
