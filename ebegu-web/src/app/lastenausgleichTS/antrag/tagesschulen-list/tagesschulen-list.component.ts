@@ -64,6 +64,6 @@ export class TagesschulenListComponent implements OnInit {
     }
 
     public navigate($event: any): void {
-        this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN_DETAIL', {institutionId: $event.element.id});
+        this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.DETAIL', {institutionId: $event.element.id});
     }
 }
