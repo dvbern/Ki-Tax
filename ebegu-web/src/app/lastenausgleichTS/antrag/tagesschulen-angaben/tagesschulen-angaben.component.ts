@@ -51,7 +51,7 @@ export class TagesschulenAngabenComponent {
         private readonly fb: FormBuilder,
         private readonly cd: ChangeDetectorRef,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -65,6 +65,8 @@ export class TagesschulenAngabenComponent {
             this.setupCalculation();
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.cd.markForCheck();
+        }, () => {
+            this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
         });
     }
 
@@ -109,6 +111,8 @@ export class TagesschulenAngabenComponent {
         ).subscribe(values => {
             this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                 .setValue(values[0] - values[1] - values[2] - values[3]);
+        }, () => {
+            this.errorService.addMesageAsError('BAD_NUMBER_ERROR');
         });
     }
 
@@ -118,7 +122,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.form = this.setupForm(result.angabenDeklaration);
         }, error => {
-            if(error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
+            if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
             }
         });

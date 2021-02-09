@@ -4,7 +4,6 @@ import {StateService, TransitionService} from '@uirouter/core';
 @Component({
     selector: 'dv-tagesschulen-ui-view',
     templateUrl: './tagesschulen-ui-view.component.html',
-    styleUrls: ['./tagesschulen-ui-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagesschulenUiViewComponent implements OnInit {

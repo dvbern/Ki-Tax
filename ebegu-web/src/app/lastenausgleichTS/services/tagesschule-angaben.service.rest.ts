@@ -49,6 +49,6 @@ export class TagesschuleAngabenRS {
                 latsInstitutionAngabenContainer)).pipe(
             map(latsAngabenInstitutionContainer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
                 new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainer)),
-        )
+        );
     }
 }

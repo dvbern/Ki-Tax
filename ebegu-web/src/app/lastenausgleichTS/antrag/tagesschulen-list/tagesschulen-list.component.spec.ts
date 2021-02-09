@@ -17,15 +17,19 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
+import {StateService} from '@uirouter/angular';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 
 import {TagesschulenListComponent} from './tagesschulen-list.component';
 
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+    ['go']);
+
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
-
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -33,8 +37,12 @@ describe('TagesschulenListComponent', () => {
             providers: [
                 {
                     provide: ErrorService,
-                    useValue: errorServiceSpy
-                }
+                    useValue: errorServiceSpy,
+                },
+                {
+                    provide: StateService,
+                    useValue: stateServiceSpy,
+                },
             ],
             declarations: [TagesschulenListComponent],
         })
