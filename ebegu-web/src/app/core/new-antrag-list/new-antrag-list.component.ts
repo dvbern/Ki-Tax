@@ -203,6 +203,15 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     private readonly unsubscribe$ = new Subject<void>();
 
+    /**
+     * Filter change should not be triggered when user is still typing. Filter change is triggered
+     * after user stopped typing for timeoutMS milliseconds
+     * We use 700ms because community proposes 500ms as a starting value
+     * and we add some more extra for slow typers
+     */
+    private keyupTimeout: NodeJS.Timeout;
+    private readonly timeoutMS = 700;
+
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
@@ -333,12 +342,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         });
     }
 
+    /**
+     * Filter is applied only if user stopped typing for timeoutMS Milliseconds. Otherwise
+     * previous event is canceled
+     */
     private applyFilter(): void {
-        if (this.customData) {
-            this.filterChange.emit(this.filterPredicate);
-        } else {
-            this.loadData();
-        }
+        clearTimeout(this.keyupTimeout);
+        this.keyupTimeout = setTimeout(() => {
+            if (this.customData) {
+                this.filterChange.emit(this.filterPredicate);
+            } else {
+                this.loadData();
+            }
+        }, this.timeoutMS);
     }
 
     public handlePagination(pageEvent: Partial<PageEvent>): void {
