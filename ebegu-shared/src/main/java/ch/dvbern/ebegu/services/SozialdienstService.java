@@ -61,11 +61,11 @@ public interface SozialdienstService {
 	 * Gibt die Stammdaten von dieser Sozialdienst zurück
 	 */
 	@Nonnull
-	public Optional<SozialdienstStammdaten> getSozialdienstStammdatenBySozialdienstId(@Nonnull String sozialdienstId);
+	Optional<SozialdienstStammdaten> getSozialdienstStammdatenBySozialdienstId(@Nonnull String sozialdienstId);
 
 	/**
 	 * Speichert die Stammdaten
 	 */
 	@Nonnull
-	public SozialdienstStammdaten saveSozialdienstStammdaten(@Nonnull SozialdienstStammdaten stammdaten);
+	SozialdienstStammdaten saveSozialdienstStammdaten(@Nonnull SozialdienstStammdaten stammdaten);
 }

@@ -14,28 +14,48 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {UpgradeModule} from '@angular/upgrade/static';
+import {TranslateModule} from '@ngx-translate/core';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {MaterialModule} from '../../shared/material.module';
+import {SharedModule} from '../../shared/shared.module';
+import {of} from 'rxjs';
 
-import { DvSearchListComponent } from './dv-search-list.component';
+import {DvSearchListComponent} from './dv-search-list.component';
 
 describe('DvSearchListComponent', () => {
-  let component: DvSearchListComponent;
-  let fixture: ComponentFixture<DvSearchListComponent>;
+    let component: DvSearchListComponent;
+    let fixture: ComponentFixture<DvSearchListComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DvSearchListComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DvSearchListComponent],
+            imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
+            providers: [],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+        ).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DvSearchListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DvSearchListComponent);
+        component = fixture.componentInstance;
+        const item = {
+            id: 'test',
+            name: 'test',
+            status: 'test',
+            type: TSBetreuungsangebotTyp.KITA,
+            canEdit: false,
+            canRemove: false,
+        };
+        component.data$ = of([item]);
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+})
+;

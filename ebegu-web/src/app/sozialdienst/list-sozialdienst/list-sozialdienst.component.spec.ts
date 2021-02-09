@@ -14,28 +14,52 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {StateService} from '@uirouter/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {MaterialModule} from '../../shared/material.module';
+import {SharedModule} from '../../shared/shared.module';
 
-import { ListSozialdienstComponent } from './list-sozialdienst.component';
+import {ListSozialdienstComponent} from './list-sozialdienst.component';
 
 describe('ListSozialdienstComponent', () => {
-  let component: ListSozialdienstComponent;
-  let fixture: ComponentFixture<ListSozialdienstComponent>;
+    let component: ListSozialdienstComponent;
+    let fixture: ComponentFixture<ListSozialdienstComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ListSozialdienstComponent ]
-    })
-    .compileComponents();
-  });
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+        ['getSozialdienstList']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ListSozialdienstComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [ListSozialdienstComponent],
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                MaterialModule,
+            ],
+            providers: [
+                WindowRef,
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
+            ],
+        })
+            .compileComponents();
+        sozialdienstRSSpy.getSozialdienstList.and.resolveTo([]);
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ListSozialdienstComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

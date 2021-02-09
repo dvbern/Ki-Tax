@@ -14,28 +14,56 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {StateService} from '@uirouter/core';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {ErrorService} from '../../core/errors/service/ErrorService';
+import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {MaterialModule} from '../../shared/material.module';
+import {SharedModule} from '../../shared/shared.module';
 
-import { AddSozialdienstComponent } from './add-sozialdienst.component';
+import {AddSozialdienstComponent} from './add-sozialdienst.component';
 
 describe('AddSozialdienstComponent', () => {
-  let component: AddSozialdienstComponent;
-  let fixture: ComponentFixture<AddSozialdienstComponent>;
+    let component: AddSozialdienstComponent;
+    let fixture: ComponentFixture<AddSozialdienstComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AddSozialdienstComponent ]
-    })
-    .compileComponents();
-  });
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['removeBenutzer']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+        ['createSozialdienst']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AddSozialdienstComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [AddSozialdienstComponent],
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                MaterialModule,
+            ],
+            providers: [
+                WindowRef,
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: BenutzerRS, useValue: benutzerServiceSpy},
+            ],
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AddSozialdienstComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

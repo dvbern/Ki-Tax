@@ -14,28 +14,51 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {StateService, Transition} from '@uirouter/core';
+import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
+import {MaterialModule} from '../../shared/material.module';
+import {SharedModule} from '../../shared/shared.module';
+import {WindowRef} from '../../core/service/windowRef.service';
 
-import { EditSozialdienstComponent } from './edit-sozialdienst.component';
+import {EditSozialdienstComponent} from './edit-sozialdienst.component';
 
 describe('EditSozialdienstComponent', () => {
-  let component: EditSozialdienstComponent;
-  let fixture: ComponentFixture<EditSozialdienstComponent>;
+    let component: EditSozialdienstComponent;
+    let fixture: ComponentFixture<EditSozialdienstComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ EditSozialdienstComponent ]
-    })
-    .compileComponents();
-  });
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+        ['getSozialdienstStammdaten']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditSozialdienstComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [EditSozialdienstComponent],
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                MaterialModule,
+            ],
+            providers: [
+                WindowRef,
+                {provide: Transition, useValue: transitionSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
+            ],
+        })
+            .compileComponents();
+        transitionSpy.params.and.returnValue({});
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(EditSozialdienstComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
