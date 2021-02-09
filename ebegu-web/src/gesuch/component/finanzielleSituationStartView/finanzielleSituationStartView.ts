@@ -27,7 +27,6 @@ import {TSGesuch} from '../../../models/TSGesuch';
 import {TSLand} from '../../../models/types/TSLand';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {OkDialogLongTextController} from '../../dialog/OkDialogLongTextController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -39,7 +38,6 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
-const okDialogLongTextTemplate = require('../../dialog/okDialogLongTextTemplate.html');
 
 export class FinanzielleSituationStartViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -263,10 +261,6 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         if (this.getFinanzielleSituationGS1().steuererklaerungAusgefuellt) {
             return;
         }
-        this.dvDialog.showDialog(okDialogLongTextTemplate, OkDialogLongTextController, {
-            title: '',
-            body: 'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING',
-        });
     }
 
     public is2GSRequired(): boolean {
