@@ -21,6 +21,7 @@ import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
 
@@ -39,6 +40,7 @@ export class TagesschulenAngabenComponent {
     private subscription: Subscription;
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer;
     public angabenAusKibon: boolean;
+    public gesuchsPeriode: TSGesuchsperiode;
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
@@ -53,6 +55,7 @@ export class TagesschulenAngabenComponent {
             this.latsAngabenInstitutionContainer = container.angabenInstitutionContainers.find(institutionContainer => {
                 return institutionContainer.id === this.institutionContainerId;
             });
+            this.gesuchsPeriode = container.gesuchsperiode;
             this.form = this.setupForm(this.latsAngabenInstitutionContainer.angabenDeklaration);
             this.setupCalculation();
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;

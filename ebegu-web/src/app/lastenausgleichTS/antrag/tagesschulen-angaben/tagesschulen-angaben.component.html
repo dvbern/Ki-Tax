@@ -23,7 +23,7 @@
     <dv-input-container-x>
         <label required
                id="isLehrbetrieb-radio-group">
-            {{'LATS_IST_LEHRBETRIEB' | translate}}
+            {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -48,7 +48,7 @@
     <div *ngIf="!angabenAusKibon">
         <dv-input-container-x>
             <label>
-                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate}}
+                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode.gueltigkeit.gueltigAb.year()} }}
                 <span>&nbsp;*</span>
             </label>
             <div class="flex-whitespace-item"></div>
@@ -134,6 +134,10 @@
     <div *ngIf="!angabenAusKibon">
 
         <mat-divider></mat-divider>
+
+        <dv-input-container-x>
+            <label>{{'LATS_IN_BETREUUNG_EINLEITUNG' | translate:{jahr: gesuchsPeriode.gueltigkeit.gueltigAb.year()} }}</label>
+        </dv-input-container-x>
 
         <dv-input-container-x>
             <label>
