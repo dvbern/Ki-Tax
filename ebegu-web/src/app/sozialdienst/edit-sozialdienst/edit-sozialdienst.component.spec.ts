@@ -14,20 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../shared/shared.module';
-import {ListSozialdienstComponent} from './list-sozialdienst/list-sozialdienst.component';
-import {AddSozialdienstComponent} from './add-sozialdienst/add-sozialdienst.component';
-import {SozialdienstRoutingModule} from './sozialdienst-routing/sozialdienst-routing.module';
-import { EditSozialdienstComponent } from './edit-sozialdienst/edit-sozialdienst.component';
+import { EditSozialdienstComponent } from './edit-sozialdienst.component';
 
-@NgModule({
-    declarations: [ListSozialdienstComponent, AddSozialdienstComponent, EditSozialdienstComponent],
-    imports: [
-        SharedModule,
-        SozialdienstRoutingModule,
-    ],
-})
-export class SozialdienstModule {
-}
+describe('EditSozialdienstComponent', () => {
+  let component: EditSozialdienstComponent;
+  let fixture: ComponentFixture<EditSozialdienstComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ EditSozialdienstComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(EditSozialdienstComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

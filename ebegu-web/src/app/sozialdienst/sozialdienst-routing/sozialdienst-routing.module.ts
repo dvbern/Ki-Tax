@@ -20,6 +20,7 @@ import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddSozialdienstComponent} from '../add-sozialdienst/add-sozialdienst.component';
+import {EditSozialdienstComponent} from '../edit-sozialdienst/edit-sozialdienst.component';
 import {ListSozialdienstComponent} from '../list-sozialdienst/list-sozialdienst.component';
 
 const states: NgHybridStateDeclaration[] = [
@@ -42,6 +43,14 @@ const states: NgHybridStateDeclaration[] = [
         name: 'sozialdienst.add',
         url: '/add',
         component: AddSozialdienstComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        },
+    },
+    {
+        name: 'sozialdienst.edit',
+        url: '/edit/:sozialdienstId',
+        component: EditSozialdienstComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
         },

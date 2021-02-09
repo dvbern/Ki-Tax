@@ -25,7 +25,7 @@
         </div>
         <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
                         [data$]="antragList$"
-                        (openEvent)="open($event.id)"
+                        (openEvent)="open($event)"
                         [statusPrefix]="'SOZIALDIENST_STATUS'"
                         [columnName]="'SOZIALDIENST'"
                         ></dv-search-list>

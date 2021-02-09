@@ -102,10 +102,12 @@ export class DvSearchListComponent implements OnInit, OnChanges {
 
     private loadData(): void {
         this.data$.subscribe((result: DVAntragListItem[]) => {
-            this.dataSource.data = result;
-            this.dataSource.paginator = this.paginator;
-            this.changeDetectorRef.markForCheck();
-        });
+                this.dataSource.data = result;
+                this.dataSource.paginator = this.paginator;
+                this.changeDetectorRef.markForCheck();
+            },
+            () => {
+            });
     }
 
     /**

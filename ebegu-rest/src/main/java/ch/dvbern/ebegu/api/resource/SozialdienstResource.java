@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -33,7 +34,9 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -41,18 +44,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
-import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstStammdaten;
 import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
-import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
+import ch.dvbern.ebegu.enums.SozialdienstStatus;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.SozialdienstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -72,6 +78,9 @@ public class SozialdienstResource {
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private Authorizer authorizer;
 
 	@ApiOperation(value = "Erstellt eine neue Sozialdienst in der Datenbank", response = JaxSozialdienst.class)
 	@Nullable
@@ -104,8 +113,78 @@ public class SozialdienstResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxSozialdienst> getAllSozialdienst() {
+
 		return sozialdienstService.getAllSozialdienste().stream()
 			.map(sozialdienst -> jaxSozialdienstConverter.sozialdienstToJAX(sozialdienst))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns the SozialdienstStammdaten with the given SozialdienstId.",
+		response = JaxSozialdienstStammdaten.class)
+	@Nullable
+	@GET
+	@Path("/stammdaten/{sozialdienstId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxSozialdienstStammdaten getSozialdienstStammdaten(
+		@Nonnull @NotNull @PathParam("sozialdienstId") JaxId sozialdienstJaxId) {
+
+		String sozialdienstId = jaxSozialdienstConverter.toEntityId(sozialdienstJaxId);
+
+		Optional<SozialdienstStammdaten> stammdatenFromDB = sozialdienstService.getSozialdienstStammdatenBySozialdienstId(sozialdienstId);
+		if (!stammdatenFromDB.isPresent()) {
+			stammdatenFromDB = initSozialdienstStammdaten(sozialdienstId);
+		}
+
+		authorizer.checkReadAuthorization(stammdatenFromDB.get().getSozialdienst());
+
+		return stammdatenFromDB
+			.map(stammdaten -> jaxSozialdienstConverter.sozialdienstStammdatenToJAX(stammdaten))
+			.orElse(null);
+	}
+
+	private Optional<SozialdienstStammdaten> initSozialdienstStammdaten(String sozialdienstId) {
+		SozialdienstStammdaten stammdaten = new SozialdienstStammdaten();
+		Optional<Sozialdienst> sozialdienst = sozialdienstService.findSozialdienst(sozialdienstId);
+		stammdaten.setSozialdienst(sozialdienst.orElse(new Sozialdienst()));
+		stammdaten.setAdresse(new Adresse());
+		return Optional.of(stammdaten);
+	}
+
+	@ApiOperation(value = "Speichert die SozialdienstStammdaten", response = JaxSozialdienstStammdaten.class)
+	@Nullable
+	@PUT
+	@Path("/stammdaten")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxSozialdienstStammdaten saveSozialdienstStammdaten(
+		@Nonnull @NotNull @Valid JaxSozialdienstStammdaten jaxStammdaten,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		SozialdienstStammdaten stammdaten;
+		if (jaxStammdaten.getId() != null) {
+			Optional<SozialdienstStammdaten> optional = sozialdienstService.getSozialdienstStammdaten(jaxStammdaten.getId());
+			stammdaten = optional.orElse(new SozialdienstStammdaten());
+		} else {
+			stammdaten = new SozialdienstStammdaten();
+		}
+		if (stammdaten.isNew()) {
+			stammdaten.setAdresse(new Adresse());
+		}
+		SozialdienstStammdaten convertedStammdaten = jaxSozialdienstConverter.sozialdienstStammdatenToEntity(jaxStammdaten, stammdaten);
+
+		// Statuswechsel
+		if (convertedStammdaten.getSozialdienst().getStatus() == SozialdienstStatus.EINGELADEN) {
+			convertedStammdaten.getSozialdienst().setStatus(SozialdienstStatus.AKTIV);
+		}
+
+		authorizer.checkWriteAuthorization(convertedStammdaten.getSozialdienst());
+
+		SozialdienstStammdaten persistedStammdaten = sozialdienstService.saveSozialdienstStammdaten(convertedStammdaten);
+
+		return jaxSozialdienstConverter.sozialdienstStammdatenToJAX(persistedStammdaten);
 	}
 }

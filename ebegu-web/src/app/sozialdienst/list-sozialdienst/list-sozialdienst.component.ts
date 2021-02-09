@@ -38,7 +38,7 @@ export class ListSozialdienstComponent implements OnInit {
 
     public antragList$: Observable<DVEntitaetListItem[]>;
 
-    public constructor(private readonly $state: StateService, private authServiceRS: AuthServiceRS,
+    public constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
                        private readonly sozialdienstRS: SozialdienstRS,
     ) {
     }
@@ -59,7 +59,7 @@ export class ListSozialdienstComponent implements OnInit {
      * Route not yet implemented as it's gonna be part of another story
      */
     public open(id: string): void {
-        this.$state.go('sozialdienst.edit', {sozialDienstId: id});
+        this.$state.go('sozialdienst.edit', {sozialdienstId: id});
     }
 
     private loadData(): void {

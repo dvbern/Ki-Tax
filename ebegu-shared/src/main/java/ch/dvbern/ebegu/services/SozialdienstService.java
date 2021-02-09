@@ -23,12 +23,12 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 
 public interface SozialdienstService {
 
 	/**
 	 * Speichert die Sozialdienst neu in der DB falls der Key noch nicht existiert.
-	 *
 	 */
 	@Nonnull
 	Sozialdienst saveSozialdienst(@Nonnull Sozialdienst sozialdienst);
@@ -50,4 +50,22 @@ public interface SozialdienstService {
 	 */
 	@Nonnull
 	Collection<Sozialdienst> getAllSozialdienste();
+
+	/**
+	 * Gibt die Stammdaten zurück
+	 */
+	@Nonnull
+	Optional<SozialdienstStammdaten> getSozialdienstStammdaten(String id);
+
+	/**
+	 * Gibt die Stammdaten von dieser Sozialdienst zurück
+	 */
+	@Nonnull
+	public Optional<SozialdienstStammdaten> getSozialdienstStammdatenBySozialdienstId(@Nonnull String sozialdienstId);
+
+	/**
+	 * Speichert die Stammdaten
+	 */
+	@Nonnull
+	public SozialdienstStammdaten saveSozialdienstStammdaten(@Nonnull SozialdienstStammdaten stammdaten);
 }
