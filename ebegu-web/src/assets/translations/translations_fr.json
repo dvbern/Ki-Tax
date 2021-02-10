@@ -9,7 +9,7 @@
     "DEBUGGING": "Déboguage",
     "TESTDATEN": "Données de test",
     "DURCH_GEMEINDE_ERFASST": "Entrée saisie par la commune",
-    "BISHER_GS": "A l'origine :",
+    "DV_BISHER_TEXT": "A l'origine :",
     "CANCEL": "Interrompre",
     "ADD_TAETIGKEIT": "Ajouter activité",
     "ERROR_LENGTH": "Le texte est trop long",

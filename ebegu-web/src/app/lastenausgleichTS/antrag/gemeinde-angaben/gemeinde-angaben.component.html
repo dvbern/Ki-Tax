@@ -231,6 +231,10 @@
                 <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
+                <dv-bisher-x
+                    [deklaration]="10"
+                    [korrektur]="angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')">
+                </dv-bisher-x>
             </mat-form-field>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>

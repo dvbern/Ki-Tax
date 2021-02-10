@@ -9,7 +9,7 @@
     "DEBUGGING": "Debug",
     "TESTDATEN": "Testdaten",
     "DURCH_GEMEINDE_ERFASST": "Durch die Gemeinde erfasster Eintrag",
-    "BISHER_GS": "ursprünglich:",
+    "DV_BISHER_TEXT": "ursprünglich:",
     "CANCEL": "Abbrechen",
     "ADD_TAETIGKEIT": "Tätigkeit hinzufügen",
     "ERROR_LENGTH": "Text ist zu lang",
