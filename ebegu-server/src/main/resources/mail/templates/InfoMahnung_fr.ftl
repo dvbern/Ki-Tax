@@ -26,7 +26,7 @@ ${templateConfiguration.mailCss}
 	<p>
 		Vous avez déposé une demande via kiBon le ${gesuch.getEingangsdatumFormated()}.
 		Malheureusement, le dossier est incomplet. Vous voudrez bien nous faire parvenir les documents manquants.
-		Vous recevrez prochainement une lettre par courrier postal. Elle peut également être consultée
+		Notre lettre peut être consultée
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
 	</p>
 	<p>
