@@ -109,6 +109,7 @@ import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 /**
  * Authorizer Implementation
  */
+@SuppressWarnings("PMD.NcssTypeCount")
 @RequestScoped
 @SuppressFBWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
 public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
