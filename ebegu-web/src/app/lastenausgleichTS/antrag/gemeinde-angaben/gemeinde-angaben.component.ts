@@ -69,7 +69,7 @@ export class GemeindeAngabenComponent implements OnInit {
             .subscribe(container => {
                 this.lATSAngabenGemeindeContainer = container;
                 if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
-                    const gemeindeAngaben = this.getAngabenToWorkWith(container);
+                    const gemeindeAngaben = container.getAngabenToWorkWith();
                     this.setupForm(gemeindeAngaben);
                     this.setupCalculcations(gemeindeAngaben);
                 }
@@ -85,20 +85,6 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.cd.markForCheck();
             }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
 
-    }
-
-    /**
-     * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
-     */
-    private getAngabenToWorkWith(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
-        TSLastenausgleichTagesschuleAngabenGemeinde {
-        if ([
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
-        ].includes(container.status)) {
-            return container.angabenDeklaration;
-        }
-        return container.angabenKorrektur;
     }
 
     public ngOnDestroy(): void {

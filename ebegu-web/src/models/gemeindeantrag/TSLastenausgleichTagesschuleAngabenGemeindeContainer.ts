@@ -31,4 +31,21 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;
+
+    /**
+     * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
+     */
+    public getAngabenToWorkWith(): TSLastenausgleichTagesschuleAngabenGemeinde {
+        if (this.isInGemeindeBearbeitung()) {
+            return this.angabenDeklaration;
+        }
+        return this.angabenKorrektur;
+    }
+
+    public isInGemeindeBearbeitung(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+        ].includes(this.status);
+    }
 }
