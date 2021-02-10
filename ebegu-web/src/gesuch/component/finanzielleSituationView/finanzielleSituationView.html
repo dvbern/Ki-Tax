@@ -84,6 +84,11 @@
                         </div>
                     </div>
 
+                    <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
+                    </div>
+
                     <!-- Infotext -->
                     <p class="inline-hint margin-bottom-30" data-translate="FINANZIELLE_SITUATION_HINT1"
                        translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></p>
