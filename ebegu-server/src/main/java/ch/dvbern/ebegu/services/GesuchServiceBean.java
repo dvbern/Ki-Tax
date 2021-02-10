@@ -1821,6 +1821,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED,
 				gesuch.getStatus());
 		}
+
+		if (gesuch.isMutation()) {
+			moveBetreuungmitteilungenAndAbweichungenToPreviousAntrag(gesuch);
+		}
 		removeGesuch(gesuch.getId(), GesuchDeletionCause.SUPERADMIN);
 	}
 
