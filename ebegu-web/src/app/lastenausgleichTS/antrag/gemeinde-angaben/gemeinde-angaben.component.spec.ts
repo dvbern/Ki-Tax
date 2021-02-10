@@ -25,6 +25,7 @@ import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {MaterialModule} from '../../../shared/material.module';
@@ -37,7 +38,7 @@ const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSServic
     ['getLATSAngabenGemeindeContainer']);
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
+const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
 
 describe('GemeindeAngabenComponent', () => {
     let component: GemeindeAngabenComponent;
@@ -71,6 +72,7 @@ describe('GemeindeAngabenComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
         );
+        einstellungServiceSpy.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

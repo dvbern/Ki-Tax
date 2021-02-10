@@ -21,10 +21,10 @@ import {StateService, TransitionService} from '@uirouter/angular';
 import {TagesschulenUiViewComponent} from './tagesschulen-ui-view.component';
 
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
+    ['go', 'is']);
 
 const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
-    ['onSuccess']);
+    ['onFinish']);
 
 describe('TagesschulenUiViewComponent', () => {
     let component: TagesschulenUiViewComponent;

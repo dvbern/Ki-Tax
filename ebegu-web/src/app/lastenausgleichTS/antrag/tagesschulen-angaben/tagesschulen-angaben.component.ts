@@ -57,11 +57,11 @@ export class TagesschulenAngabenComponent {
 
     public ngOnInit(): void {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
-            this.latsAngabenInstitutionContainer = container.angabenInstitutionContainers.find(institutionContainer => {
+            this.latsAngabenInstitutionContainer = container.angabenInstitutionContainers?.find(institutionContainer => {
                 return institutionContainer.id === this.institutionContainerId;
             });
             this.gesuchsPeriode = container.gesuchsperiode;
-            this.form = this.setupForm(this.latsAngabenInstitutionContainer.angabenDeklaration);
+            this.form = this.setupForm(this.latsAngabenInstitutionContainer?.angabenDeklaration);
             this.setupCalculation();
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.cd.markForCheck();

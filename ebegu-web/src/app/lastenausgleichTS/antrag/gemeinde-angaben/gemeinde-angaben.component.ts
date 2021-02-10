@@ -75,12 +75,12 @@ export class GemeindeAngabenComponent implements OnInit {
                 }
                 this.initLATSGemeindeInitializationForm();
                 this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
-                    this.lATSAngabenGemeindeContainer.gemeinde.id,
-                    this.lATSAngabenGemeindeContainer.gesuchsperiode.id)
+                    this.lATSAngabenGemeindeContainer.gemeinde?.id,
+                    this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                     .then(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting));
                 this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
-                    this.lATSAngabenGemeindeContainer.gemeinde.id,
-                    this.lATSAngabenGemeindeContainer.gesuchsperiode.id)
+                    this.lATSAngabenGemeindeContainer.gemeinde?.id,
+                    this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                     .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
                 this.cd.markForCheck();
             }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
