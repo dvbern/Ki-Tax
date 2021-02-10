@@ -19,14 +19,178 @@
           #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="stammdaten$ | async as stammdaten"
-          (ngSubmit)="onSubmit()"
+          (ngSubmit)="onSubmit(stammdaten)"
           novalidate>
+        <div class="dv-content">
+            <fieldset *ngIf="editMode; else showViewMode">
+                <div class="view-sub-title">
+                    <h3 translate>SOZIALDIENST_STAMMDATEN</h3>
+                    <hr class="header">
+                </div>
+                <div class="row">
+                    <!-- Anschrift -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 class="required" translate for="name_id">NAME</h3>
+                            <input id="name_id" type="text" name="name_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.sozialdienst.name"
+                                   [maxlength]="255" class="form-control"
+                                   required>
+                            <dv-error-messages [errorObject]="form.controls.name_id?.errors"
+                                               inputId="name_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="title">
+                    <h3 translate>KONTAKTADRESSE</h3>
+                </div>
+                <div class="row">
+                    <!-- Anschrift -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="required" translate for="anschrift_id">ADRESSE_ANSCHRIFT</label>
+                            <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.organisation"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors"
+                                               inputId="anschrift_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- E-Mail -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="required" translate for="e_mail_id">EMAIL</label>
+                            <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.mail"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors"
+                                               inputId="e_mail_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Strasse -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label class="required" translate for="strasse_id">ADRESSE_STRASSE</label>
+                            <input id="strasse_id" type="text" name="strasse_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.strasse"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.strasse_id?.errors"
+                                               inputId="strasse_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Hausnummer -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="hausnummer_id">ADRESSE_NUMMER</label>
+                            <input id="hausnummer_id" type="text" name="hausnummer_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.hausnummer"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.hausnummer_id?.errors"
+                                               inputId="hausnummer_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Telefon -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="required" translate for="telefon_id">TELEFON</label>
+                            <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.telefon"
+                                   [maxlength]="255" class="form-control"
+                                   [pattern]="CONSTANTS.PATTERN_PHONE"
+                                   required
+                            >
+                            <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
+                                               inputId="telefon_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- PLZ -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label class="required" translate for="plz_id">ADRESSE_PLZ</label>
+                            <input id="plz_id" type="text" name="plz_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.plz"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.plz_id?.errors"
+                                               inputId="plz_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Ort -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label class="required" translate for="ort_id">ADRESSE_ORT</label>
+                            <input id="ort_id" type="text" name="ort_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.ort"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.ort_id?.errors"
+                                               inputId="ort_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Webseite -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="required" translate for="webseite_id">WEBSEITE</label>
+                            <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.webseite"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
+                                               inputId="webseite_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
 
+            <ng-template #showViewMode>
+                <fieldset>
+                    <div class="view-sub-title">
+                        <h3 translate>SOZIALDIENST_STAMMDATEN</h3>
+                        <hr class="header">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3>{{stammdaten.sozialdienst.name}}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Kontaktadresse -->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <h3 translate>KONTAKTADRESSE</h3>
+                                <p>{{stammdaten.adresse.organisation}}</p>
+                                <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                                <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+                                <p *ngIf="stammdaten.adresse.gemeinde">
+                                    <span translate>GEMEINDE</span>
+                                    {{stammdaten.adresse.gemeinde}} (
+                                    <span translate>GEMEINDE_BFS_NR</span>
+                                    {{stammdaten.adresse.bfsNummer}})
+                                </p>
+                            </div>
+                        </div>
+                        <!-- E-Mail, Telefon, Webseite -->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <h3>&nbsp;</h3>
+                                <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
+                                <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
+                                <p><a href="{{ebeguUtil.formatHrefUrl(stammdaten.webseite)}}"
+                                      target="tah">{{stammdaten.webseite}}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </ng-template>
+        </div>
 
         <!-- Buttons -->
         <div class="dv-footer">
             <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button">
-                <span translate>SOZAILDIENST_SPEICHERN</span>
+                {{submitButtonLabel()}}
             </button>
             <button type="button" class="dv-btn cancel-button"
                     (click)="navigateBack()"

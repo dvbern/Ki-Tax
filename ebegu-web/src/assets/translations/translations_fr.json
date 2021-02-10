@@ -2214,6 +2214,12 @@
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typen für diese Gesuchsperiode",
     "MENU_SOZIALDIENST": "Service sociaux",
     "SOZIALDIENST_STATUS_EINGELADEN": "Invité",
+    "SOZIALDIENST_STATUS_AKTIV": "Actif",
     "SOZIALDIENST_NOCH_KEINE": "Aucun service sociaux",
+    "SOZIALDIENST_HINZUFUEGEN": "Ajouter un service social",
+    "NEUE_SOZIALDIENST": "Nouveau service social",
+    "SOZIALDIENST_STAMMDATEN": "Donnnée de base du service social",
+    "SOZIALDIENST_EDIT": "Modifier le service social",
+    "SOZIALDIENST_SPEICHERN": "Enregistrer le service social",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

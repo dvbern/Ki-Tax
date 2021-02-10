@@ -14,11 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList, ChangeDetectorRef} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {from, Observable} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-edit-sozialdienst',
@@ -27,12 +33,22 @@ import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditSozialdienstComponent implements OnInit {
+    public readonly CONSTANTS: any = CONSTANTS;
+
+    @ViewChildren(NgForm) public forms: QueryList<NgForm>;
 
     public stammdaten$: Observable<TSSozialdienstStammdaten>;
     public sozialdienstId: string;
+    public editMode: boolean;
+    public ebeguUtil = EbeguUtil;
 
-    public constructor(private readonly $transition$: Transition, private readonly $state: StateService,
-                       private readonly sozialdienstRS: SozialdienstRS,
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly $state: StateService,
+        private readonly sozialdienstRS: SozialdienstRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly translate: TranslateService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
     }
 
@@ -42,10 +58,15 @@ export class EditSozialdienstComponent implements OnInit {
             return;
         }
         this.loadStammdaten();
+        this.editMode = false;
     }
 
-    public onSubmit(): void {
-
+    public onSubmit(stammdaten: TSSozialdienstStammdaten): void {
+        if (this.editMode) {
+            this.persistStammdaten(stammdaten);
+            return;
+        }
+        this.editMode = true;
     }
 
     public navigateBack(): void {
@@ -53,7 +74,7 @@ export class EditSozialdienstComponent implements OnInit {
     }
 
     public isStammdatenEditable(): boolean {
-        return false;
+        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_SOZIALDIENST]);
     }
 
     private loadStammdaten(): void {
@@ -61,5 +82,32 @@ export class EditSozialdienstComponent implements OnInit {
             this.sozialdienstRS.getSozialdienstStammdaten(this.sozialdienstId).then(stammdaten => {
                 return stammdaten;
             }));
+    }
+
+    private persistStammdaten(stammdaten: TSSozialdienstStammdaten): void {
+        let valid = true;
+        this.forms.forEach(form => {
+            if (!form.valid) {
+                valid = false;
+            }
+        });
+
+        if (!valid) {
+            EbeguUtil.selectFirstInvalid();
+            return;
+        }
+        this.sozialdienstRS.saveSozialdienstStammdaten(stammdaten)
+            .then(stammdatenSaved => {
+                this.editMode = false;
+                this.stammdaten$ = of(stammdatenSaved);
+                this.changeDetectorRef.markForCheck();
+            });
+    }
+
+    public submitButtonLabel(): string {
+        if (this.editMode) {
+            return this.translate.instant('SOZIALDIENST_SPEICHERN');
+        }
+        return this.translate.instant('SOZIALDIENST_EDIT');
     }
 }

@@ -2214,6 +2214,12 @@
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Periode",
     "MENU_SOZIALDIENST": "Sozialdienste",
     "SOZIALDIENST_STATUS_EINGELADEN": "Eingeladen",
+    "SOZIALDIENST_STATUS_AKTIV": "Aktiv",
     "SOZIALDIENST_NOCH_KEINE": "Noch keine Sozialdienst",
+    "SOZIALDIENST_HINZUFUEGEN": "Sozialdienst hinzufügen",
+    "NEUE_SOZIALDIENST": "Neue Sozialdienst",
+    "SOZIALDIENST_STAMMDATEN": "Sozialdienst Stammdaten",
+    "SOZIALDIENST_EDIT": "Sozialdienst bearbeiten",
+    "SOZIALDIENST_SPEICHERN": "Sozialdienst speichern",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

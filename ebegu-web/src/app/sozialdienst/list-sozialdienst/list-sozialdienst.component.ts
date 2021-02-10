@@ -64,7 +64,7 @@ export class ListSozialdienstComponent implements OnInit {
 
     private loadData(): void {
         // For now only SuperAdmin
-        const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+        const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForSozialdienst());
         this.antragList$ = from(this.sozialdienstRS.getSozialdienstList().then(sozialdienstList => {
             const entitaetListItems: DVEntitaetListItem[] = [];
             sozialdienstList.forEach(
