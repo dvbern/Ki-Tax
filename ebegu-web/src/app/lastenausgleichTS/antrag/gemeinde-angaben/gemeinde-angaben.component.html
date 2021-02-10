@@ -31,7 +31,7 @@
 
         <div class="row">
             <div class="col-xs-12">
-                <dv-input-container-x>
+                <dv-input-container-x [disabled]="true">
                     <label required
                            [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
                            id="alle-angaben-radio-group">
@@ -78,7 +78,6 @@
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
-
                 <mat-radio-group
                     aria-labelledby="bedarfBeiElternAbgeklaert-radio-group"
                     class=""

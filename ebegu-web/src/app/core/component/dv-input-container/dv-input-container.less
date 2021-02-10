@@ -92,4 +92,13 @@ dv-input-container-x {
 
 .dv-input-container {
     width: 100%;
+
+    &.disabled {
+        label, mat-label > .mat-label-content {
+            color: @dgrey;
+        }
+        label[required]:after {
+            color: @dgrey;
+        }
+    }
 }
