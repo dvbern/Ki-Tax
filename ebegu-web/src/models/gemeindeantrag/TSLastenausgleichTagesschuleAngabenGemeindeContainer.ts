@@ -27,6 +27,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public gemeinde: TSGemeinde;
     public gesuchsperiode: TSGesuchsperiode;
     public alleAngabenInKibonErfasst: boolean;
+    public internerKommentar: string;
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;

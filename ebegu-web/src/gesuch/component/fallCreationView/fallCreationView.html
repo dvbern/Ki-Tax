@@ -51,12 +51,13 @@
                     </div>
 
                     <!--Mutationelemente auswaehlen. Nur fuer Mutationen-->
-                    <div ng-if="!vm.gesuchModelManager.isGesuch()">
+                    <div ng-if="!vm.gesuchModelManager.isGesuch()" class="margin-bottom-20">
 
                         <h3 class="ebegu-h2" data-translate="MUTATION_AUSWAHL_TEXT_1"></h3>
                         <br>
                         <p>
-                            {{"MUTATION_AUSWAHL_TEXT_2"|translate}} {{"MUTATION_AUSWAHL_TEXT_3"|translate}}
+                            <span ng-bind-html="'MUTATION_AUSWAHL_TEXT_2' | translate"></span>
+                            <span ng-bind-html="'MUTATION_AUSWAHL_TEXT_3' | translate"></span>
                         </p>
 
                     </div>

@@ -13,6 +13,92 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+@import (reference) './../../../../style/mixins.less';
+@import (reference) './../../../../style/variables.less';
+
+dv-input-container-x {
+    .dv-input-container {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2.3rem;
+        width: 100%;
+
+        input, textarea {
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+        }
+
+        label {
+            color: black;
+            flex: 0 0 33%;
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+        }
+
+        label[required]:after {
+            color: black;
+            content: '*';
+            //add negative margin to compensate width and
+            //prevent asterisk from wrapping to next line
+            margin-right: -10px;
+            padding-left: 0.3rem;
+        }
+
+        textarea {
+            padding: 1rem;
+        }
+
+    }
+
+    mat-label {
+        .ebeguLabel();
+        color: @contrast-darkest;
+        display: block;
+        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        &:after {
+            .ebeguLabel();
+            color: @contrast-darkest;
+            display: inline-block;
+        }
+    }
+
+
+
+    dv-radio-container-x, mat-form-field, .flex-whitespace-item {
+        //space for outline
+        flex: 1 1 30%;
+        margin: 0 5%;
+    }
+
+
+
+    .mat-form-field-underline {
+        display: none;
+    }
+
+    .mat-form-field-wrapper {
+        padding-bottom: 0   ;
+    }
+
+    .mat-form-field-infix {
+        border-top: 0;
+    }
+
+    .mat-form-field-subscript-wrapper {
+        top: calc(100% - 0.9em);
+    }
+
+}
+
 .dv-input-container {
     width: 100%;
+
+    &.disabled {
+        label, mat-label > .mat-label-content {
+            color: @dgrey;
+        }
+        label[required]:after {
+            color: @dgrey;
+        }
+    }
 }

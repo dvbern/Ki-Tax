@@ -258,6 +258,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
                 this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt;
         }
+        if (this.getFinanzielleSituationGS1().steuererklaerungAusgefuellt) {
+            return;
+        }
     }
 
     public is2GSRequired(): boolean {

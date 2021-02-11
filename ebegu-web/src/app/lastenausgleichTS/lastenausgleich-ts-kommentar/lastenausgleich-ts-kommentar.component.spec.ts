@@ -15,28 +15,59 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {ErrorService} from '../../core/errors/service/ErrorService';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {SharedModule} from '../../shared/shared.module';
+import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommentar.component';
 
+const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
+    ['getLATSAngabenGemeindeContainer']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+
 describe('LastenausgleichTsKommentarComponent', () => {
-  let component: LastenausgleichTsKommentarComponent;
-  let fixture: ComponentFixture<LastenausgleichTsKommentarComponent>;
+    let component: LastenausgleichTsKommentarComponent;
+    let fixture: ComponentFixture<LastenausgleichTsKommentarComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LastenausgleichTsKommentarComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientModule,
+                SharedModule,
+                BrowserAnimationsModule,
+                FormsModule,
+                ReactiveFormsModule
+            ],
+            declarations: [
+                LastenausgleichTsKommentarComponent
+            ],
+            providers: [
+                WindowRef,
+                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LastenausgleichTsKommentarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
+            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
+        );
+        fixture = TestBed.createComponent(LastenausgleichTsKommentarComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
 });

@@ -53,10 +53,10 @@ export class GemeindeAntragService {
             params = params.append('status', filter.status);
         }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
-            params
+            params,
         }).pipe(
             map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)),
-            map(antraege => this.sortAntraege(antraege, sort))
+            map(antraege => this.sortAntraege(antraege, sort)),
         );
     }
 

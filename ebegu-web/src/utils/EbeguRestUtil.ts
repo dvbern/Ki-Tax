@@ -4338,6 +4338,7 @@ export class EbeguRestUtil {
             gemeindeContainerTS.gemeinde =
                 this.parseGemeinde(new TSGemeinde(), gemeindeContainerFromServer.gemeinde);
             gemeindeContainerTS.alleAngabenInKibonErfasst = gemeindeContainerFromServer.alleAngabenInKibonErfasst;
+            gemeindeContainerTS.internerKommentar = gemeindeContainerFromServer.internerKommentar;
             gemeindeContainerTS.angabenDeklaration =
                 this.parseLastenausgleichTagesschuleAngabenGemeinde(
                     new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenDeklaration);
@@ -4363,6 +4364,7 @@ export class EbeguRestUtil {
             restGemeindeContainer.gemeinde =
                 this.gemeindeToRestObject({}, tsGemeindeContainer.gemeinde);
             restGemeindeContainer.alleAngabenInKibonErfasst = tsGemeindeContainer.alleAngabenInKibonErfasst;
+            restGemeindeContainer.internerKommentar = tsGemeindeContainer.internerKommentar;
             restGemeindeContainer.angabenDeklaration =
                 this.lastenausgleichTagesschuleAngabenGemeindeToRestObject(
                     {}, tsGemeindeContainer.angabenDeklaration);
@@ -4427,8 +4429,6 @@ export class EbeguRestUtil {
             gemeindeTS.ausbildungenMitarbeitendeBelegt =
                 gemeindeFromServer.ausbildungenMitarbeitendeBelegt;
             // Bemerkungen
-            gemeindeTS.internerKommentar =
-                gemeindeFromServer.internerKommentar;
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
             return gemeindeTS;
@@ -4487,8 +4487,6 @@ export class EbeguRestUtil {
             restAngabenGemeinde.ausbildungenMitarbeitendeBelegt =
                 tsAngabenGemeinde.ausbildungenMitarbeitendeBelegt;
             // Bemerkungen
-            restAngabenGemeinde.internerKommentar =
-                tsAngabenGemeinde.internerKommentar;
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
             return restAngabenGemeinde;
@@ -4554,7 +4552,8 @@ export class EbeguRestUtil {
         if (tsInstitutionContainer) {
             this.abstractEntityToRestObject(restInstitutionContainer, tsInstitutionContainer);
             restInstitutionContainer.status = tsInstitutionContainer.status;
-            restInstitutionContainer.institution = this.institutionToRestObject({}, tsInstitutionContainer.institution);
+            restInstitutionContainer.institution =
+                this.institutionToRestObject({}, tsInstitutionContainer.institution);
             restInstitutionContainer.angabenDeklaration =
                 this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({},
                     tsInstitutionContainer.angabenDeklaration);

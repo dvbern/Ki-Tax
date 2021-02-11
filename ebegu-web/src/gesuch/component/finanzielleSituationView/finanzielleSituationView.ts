@@ -52,6 +52,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         '$scope',
         '$translate',
         '$timeout',
+        'DvDialog',
     ];
 
     public showSelbstaendig: boolean;
@@ -198,5 +199,11 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.gesuchModelManager.gesuchstellerNumber === 2 ?
             TSWizardSubStepName.FINANZIELLE_SITUATON_GS2 :
             TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
+    }
+
+    public steuererklaerungClicked(): void {
+        if (this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt) {
+            return;
+        }
     }
 }

@@ -41,11 +41,9 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -53,10 +51,9 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -86,7 +83,6 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.TECHNICAL_BENUTZER_ID;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
@@ -97,6 +93,7 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -134,11 +131,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
-	private BenutzerService benutzerService;
-
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
-	@Mock
-	private ExternalClientService externalClientService;
+	private BetreuungEventHelper betreuungEventHelper;
 
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
@@ -273,9 +266,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
 				.andReturn(Optional.of(betreuung));
-			Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
-			expect(externalClientService.getInstitutionExternalClientForInstitution(institution))
-				.andReturn(Collections.emptySet());
+			expect(betreuungEventHelper.getExternalClient(CLIENT_NAME, betreuung))
+				.andReturn(Optional.empty());
+			expect(betreuungEventHelper.clientNotFoundFailure(CLIENT_NAME, betreuung))
+				.andReturn(Processing.failure("Kein InstitutionExternalClient Namens ist der Institution zugewiesen"));
 
 			replayAll();
 
@@ -1194,8 +1188,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			mockClient(clientGueltigkeit);
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
 
-			expect(benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID))
-				.andReturn(Optional.of(new Benutzer()));
+			expect(betreuungEventHelper.getMutationsmeldungBenutzer()).andReturn(new Benutzer());
 
 			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 				.andReturn(Arrays.asList(existing));
@@ -1217,16 +1210,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
-		ExternalClient externalClient = mock(ExternalClient.class);
 
-		expect(externalClientService.getInstitutionExternalClientForInstitution(anyObject()))
-			.andReturn(Collections.singleton(institutionExternalClient));
+		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), anyObject()))
+			.andReturn(Optional.of(institutionExternalClient));
 
-		expect(institutionExternalClient.getExternalClient())
-			.andReturn(externalClient);
-
-		expect(externalClient.getClientName())
-			.andReturn(CLIENT_NAME);
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andReturn(clientGueltigkeit);

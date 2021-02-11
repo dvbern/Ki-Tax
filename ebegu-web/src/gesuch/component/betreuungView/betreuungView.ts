@@ -986,6 +986,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
+        for (const pensum of this.getBetreuungspensen()) {
+            const container = pensum.betreuungspensumJA || pensum.betreuungspensumGS;
+            if (container.gueltigkeit.gueltigAb.isAfter(this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
+                this.errorService.addMesageAsError(this.$translate.instant('PENSUM_AFTER_PERIODE'));
+                return;
+            }
+        }
+
         if (this.showExistingBetreuungsmitteilungInfoBox()) {
             this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
@@ -1017,6 +1025,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isMutationsmeldungStatus = false;
             this.mutationsmeldungModel = undefined;
             this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        }).catch(() => {
+            // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a general message
+            this.errorService.addMesageAsError(this.$translate.instant('ERROR_COULD_NOT_SAVE'));
         });
     }
 

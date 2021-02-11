@@ -38,7 +38,7 @@
                                     [value]="periode.id">{{periode.gesuchsperiodeString}}</option>
                         </select>
                         <div class="dv-error-messages">
-                            <div *ngIf="formGroup?.get('periode')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
+                            <div *ngIf="(formGroup?.get('periode').touched || triedSending) && formGroup?.get('periode')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
                         </div>
                     </div>
 
@@ -57,7 +57,7 @@
                                         [value]="typ" translate>{{typ}}</option>
                             </select>
                             <div class="dv-error-messages">
-                                <div *ngIf="formGroup?.get('antragTyp')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
+                                <div *ngIf="(formGroup?.get('antragTyp').touched || triedSending) && formGroup?.get('antragTyp')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
                             </div>
                         </div>
 

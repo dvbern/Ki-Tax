@@ -34,24 +34,20 @@
             position: static;
         }
 
-        textarea {
+        textarea.form-control {
+            .ebeguP();
+            background-color: @contrast-lightest;
             border: 1px solid @blue;
             margin-top: 0.5rem;
+            padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+
+            &[disabled] {
+                background-color: @contrast;
+            }
 
             &:focus {
                 outline: 0;
             }
-        }
-    }
-
-    #kommentar {
-        .ebeguP();
-        background-color: @contrast-lightest;
-        border: 1px @secondary solid;
-        padding: 0.5rem 0.5rem 0.5rem 1.5rem;
-
-        &[disabled] {
-            background-color: @contrast;
         }
     }
 

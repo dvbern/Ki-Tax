@@ -13,7 +13,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="finanzielleSituation gesuch-modul">
+<div class="finanzielle-situation gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
@@ -70,6 +70,7 @@
                                 <dv-radio-container name="steuererklaerung" class="input-element"
                                                     ng-model="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt"
                                                     ng-required="true" class="radio"
+                                                    ng-change="vm.steuererklaerungClicked()"
                                                     dv-enable-element
                                                     false-option-label="{{'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN' | translate}}"
                                                     dv-enable-allowed-roles="vm.allowedRoles"
@@ -81,6 +82,11 @@
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
+                    </div>
+
+                    <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                     </div>
 
                     <!-- Infotext -->
