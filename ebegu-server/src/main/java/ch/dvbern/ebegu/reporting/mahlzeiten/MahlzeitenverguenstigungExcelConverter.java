@@ -77,6 +77,11 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.gs1Vorname, dataRow.getGs1Vorname());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.gs2Name, dataRow.getGs2Name());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.gs2Vorname, dataRow.getGs2Vorname());
+			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.sozialhilfebezueger, dataRow.getSozialhilfeBezueger());
+			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.iban, dataRow.getIban());
+			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenVorFamAbzug, dataRow.getMassgebendesEinkommenVorFamAbzug());
+			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.famGroesse, dataRow.getFamGroesse());
+			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenNachFamAbzug, dataRow.getMassgebendesEinkommenNachFamAbzug());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.zeitabschnittVon, dataRow.getZeitabschnittVon());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.zeitabschnittBis, dataRow.getZeitabschnittBis());
 
@@ -151,7 +156,7 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_massEinkommenTitle", locale));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenVorFamAbzugTitle.getMergeField(),

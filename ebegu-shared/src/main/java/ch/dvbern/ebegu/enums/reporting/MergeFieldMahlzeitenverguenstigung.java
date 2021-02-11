@@ -25,6 +25,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
@@ -42,6 +43,12 @@ public enum MergeFieldMahlzeitenverguenstigung implements MergeFieldProvider {
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
 	gesuchsteller1Title(new SimpleMergeField<>("gesuchsteller1Title", STRING_CONVERTER)),
 	gesuchsteller2Title(new SimpleMergeField<>("gesuchsteller2Title", STRING_CONVERTER)),
+	sozialhilfebezuegerTitle(new SimpleMergeField<>("sozialhilfebezuegerTitle", STRING_CONVERTER)),
+	ibanTitle(new SimpleMergeField<>("ibanTitle", STRING_CONVERTER)),
+	massgebendesEinkommenTitle(new SimpleMergeField<>("massgebendesEinkommenTitle", STRING_CONVERTER)),
+	massgebendesEinkommenVorFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenVorFamAbzugTitle", STRING_CONVERTER)),
+	famGroesseTitle(new SimpleMergeField<>("famGroesseTitle", STRING_CONVERTER)),
+	massgebendesEinkommenNachFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzugTitle", STRING_CONVERTER)),
 	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
 	betreuungTitle(new SimpleMergeField<>("betreuungTitle", STRING_CONVERTER)),
 	betreuungVonTitle(new SimpleMergeField<>("betreuungVonTitle", STRING_CONVERTER)),
@@ -68,12 +75,11 @@ public enum MergeFieldMahlzeitenverguenstigung implements MergeFieldProvider {
 	gs1Vorname(new SimpleMergeField<>("gs1Vorname", STRING_CONVERTER)),
 	gs2Name(new SimpleMergeField<>("gs2Name", STRING_CONVERTER)),
 	gs2Vorname(new SimpleMergeField<>("gs2Vorname", STRING_CONVERTER)),
-	sozialhilfebezuegerTitle(new SimpleMergeField<>("sozialhilfebezuegerTitle", STRING_CONVERTER)),
-	ibanTitle(new SimpleMergeField<>("ibanTitle", STRING_CONVERTER)),
-	massgebendesEinkommenTitle(new SimpleMergeField<>("massgebendesEinkommenTitle", STRING_CONVERTER)),
-	massgebendesEinkommenVorFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenVorFamAbzugTitle", STRING_CONVERTER)),
-	famGroesseTitle(new SimpleMergeField<>("famGroesseTitle", STRING_CONVERTER)),
-	massgebendesEinkommenNachFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzugTitle", STRING_CONVERTER)),
+	sozialhilfebezueger(new SimpleMergeField<>("sozialhilfebezueger", BOOLEAN_X_CONVERTER)),
+	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
+	massgebendesEinkommenVorFamAbzug(new SimpleMergeField<>("massgebendesEinkommenVorFamAbzug", BIGDECIMAL_CONVERTER)),
+	famGroesse(new SimpleMergeField<>("famGroesse", BIGDECIMAL_CONVERTER)),
+	massgebendesEinkommenNachFamAbzug(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzug", BIGDECIMAL_CONVERTER)),
 	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
 	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
 	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),

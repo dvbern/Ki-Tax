@@ -1592,7 +1592,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return row;
 	}
 
-	private boolean isSozialhilfeBezueger(
+	@Override
+	public boolean isSozialhilfeBezueger(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull FamiliensituationContainer familiensituationContainer,
 		@Nonnull Familiensituation familiensituation
