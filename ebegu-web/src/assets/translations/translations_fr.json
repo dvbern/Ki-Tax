@@ -2208,7 +2208,6 @@
     "IN_BEARBEITUNG_GEMEINDE": "En traitement par la commune",
     "IN_PRUEFUNG_KANTON": "En examen canton",
     "ZWEITPRUEFUNG": "Deuxième contrôle",
-    "VERFUEGUNG_JSON_DEPRECATED": "Attention: l'exportation de la décision sous format JSON eset obsolète et sera supprimé dans quelques mois. Veuillez vous adresser au support de kiBon si vous utilisé encore cette fonctionnalitée",
     "GEMEINDE_GUELTIG_BIS": "Fin de validitée de la commune",
     "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Attention: la date de naissance de votre enfant se trouve dans le future. Cette demande devra être changée après la naissance de votre enfant.",
     "LATS_STATUS_OFFEN": "Ouvert",
