@@ -26,8 +26,6 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
 public class CheckIBANUppercaseValidator implements ConstraintValidator<CheckIBANUppercase, IBAN> {
 
-	private static final Pattern PATTERN = Pattern.compile("[A-Z0-9 ]*");
-
 	@Override
 	public void initialize(CheckIBANUppercase constraintAnnotation) {
 		// nop
@@ -35,6 +33,13 @@ public class CheckIBANUppercaseValidator implements ConstraintValidator<CheckIBA
 
 	@Override
 	public boolean isValid(IBAN iban, ConstraintValidatorContext constraintValidatorContext) {
-		return PATTERN.matcher(iban.getIban()).matches();
+		String ibanString = iban.getIban();
+		for(int i = 0; i < iban.getIban().length(); i++) {
+			char current = ibanString.charAt(i);
+			if(Character.isLetter(current) && Character.isLowerCase(current)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

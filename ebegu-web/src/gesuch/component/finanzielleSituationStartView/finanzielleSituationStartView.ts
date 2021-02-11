@@ -299,7 +299,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
 
             properties.keineMahlzeitenverguenstigungBeantragt = this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
-            properties.iban = this.model.zahlungsinformationen.iban.toLocaleUpperCase();
+            properties.iban = this.model.zahlungsinformationen.iban?.toLocaleUpperCase();
             properties.kontoinhaber = this.model.zahlungsinformationen.kontoinhaber;
             properties.abweichendeZahlungsadresse = this.model.zahlungsinformationen.abweichendeZahlungsadresse;
             properties.zahlungsadresse =

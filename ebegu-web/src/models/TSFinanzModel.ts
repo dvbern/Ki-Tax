@@ -201,7 +201,7 @@ export class TSFinanzModel {
         this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
 
         familiensituation.kontoinhaber = this.zahlungsinformationen.kontoinhaber;
-        familiensituation.iban = this.zahlungsinformationen.iban.toLocaleUpperCase();
+        familiensituation.iban = this.zahlungsinformationen.iban?.toLocaleUpperCase();
         familiensituation.abweichendeZahlungsadresse =
             this.zahlungsinformationen.abweichendeZahlungsadresse;
         familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;

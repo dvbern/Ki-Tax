@@ -288,7 +288,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private updateInstitution(updateModel: TSInstitutionUpdate): void {
         this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban =
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban.toLocaleUpperCase();
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban?.toLocaleUpperCase();
         if (!this.isSameInstitutionClient(this.externalClients.assignedClients,
             this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
             let drittanwendungen = '';
