@@ -47,7 +47,7 @@ import {CONSTANTS} from '../../constants/CONSTANTS';
     selector: 'dv-bisher-x',
     templateUrl: './dv-bisher-x.component.html',
     styleUrls: ['./dv-bisher-x.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class DvBisherXComponent implements OnInit {
 
@@ -136,7 +136,12 @@ export class DvBisherXComponent implements OnInit {
             return (EbeguUtil.isNotNullOrUndefined(deklaration) && EbeguUtil.isNotNullOrUndefined(korrektur))
                 || (EbeguUtil.isNullOrUndefined(deklaration) && EbeguUtil.isNullOrUndefined(korrektur));
         }
-        return deklaration === korrektur || (this.isEmpty(deklaration) && this.isEmpty(korrektur)); // either they are equal or both are a form of empty
+        // either they are equal
+        return deklaration === korrektur
+            // or both are a form of empty
+            || (this.isEmpty(deklaration) && this.isEmpty(korrektur))
+            // or one is a string and the other one of another type with the same string representation
+            || deklaration.toString() === korrektur.toString();
     }
 
     private isEmpty(val: any): boolean {

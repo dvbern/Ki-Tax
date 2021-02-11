@@ -232,8 +232,8 @@
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
-                    [deklaration]="10"
-                    [korrektur]="angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')"
+                    [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
+                    [korrektur]="angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
