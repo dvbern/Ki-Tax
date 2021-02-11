@@ -177,9 +177,7 @@ export class GemeindeAngabenComponent implements OnInit {
             erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
 
-        // tslint:disable-next-line:max-line-length
-        if (this.lATSAngabenGemeindeContainer.status !== TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE &&
-            this.lATSAngabenGemeindeContainer.status !== TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
+        if (!this.lATSAngabenGemeindeContainer.isInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
             this.angabenForm.disable();
         }
     }
