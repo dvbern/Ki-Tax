@@ -94,6 +94,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.bedarfBeiElternAbgeklaert"
                     [korrektur]="angabenForm.get('bedarfBeiElternAbgeklaert').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -121,6 +122,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.angebotFuerFerienbetreuungVorhanden"
                     [korrektur]="angabenForm.get('angebotFuerFerienbetreuungVorhanden').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -148,6 +150,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.angebotVerfuegbarFuerAlleSchulstufen"
                     [korrektur]="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -170,6 +173,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen"
                     [korrektur]="angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -201,6 +205,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
                     [korrektur]="angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -226,6 +231,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.geleisteteBetreuungsstundenBesondereBeduerfnisse"
                     [korrektur]="angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -264,6 +270,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
                     [korrektur]="angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -293,6 +300,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
                     [korrektur]="angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -330,6 +338,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.einnahmenElterngebuehren"
                     [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -367,6 +376,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.gesamtKostenTagesschule"
                     [korrektur]="angabenForm.get('gesamtKostenTagesschule').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -399,6 +409,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.einnnahmenVerpflegung"
                     [korrektur]="angabenForm.get('einnnahmenVerpflegung').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -421,6 +432,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.einnahmenSubventionenDritter"
                     [korrektur]="angabenForm.get('einnahmenSubventionenDritter').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -471,6 +483,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.bemerkungenWeitereKostenUndErtraege"
                     [korrektur]="angabenForm.get('bemerkungenWeitereKostenUndErtraege').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -502,6 +515,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.betreuungsstundenDokumentiertUndUeberprueft"
                     [korrektur]="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -529,6 +543,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.elterngebuehrenGemaessVerordnungBerechnet"
                     [korrektur]="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -562,6 +577,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.einkommenElternBelegt"
                     [korrektur]="angabenForm.get('einkommenElternBelegt').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -589,6 +605,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.maximalTarif"
                     [korrektur]="angabenForm.get('maximalTarif').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -618,6 +635,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal"
                     [korrektur]="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -645,6 +663,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.ausbildungenMitarbeitendeBelegt"
                     [korrektur]="angabenForm.get('ausbildungenMitarbeitendeBelegt').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -662,6 +681,7 @@
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer.angabenDeklaration.bemerkungen"
                     [korrektur]="angabenForm.get('bemerkungen').value"
+                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>

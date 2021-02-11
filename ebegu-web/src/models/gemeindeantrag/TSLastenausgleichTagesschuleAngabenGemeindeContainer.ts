@@ -57,6 +57,10 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         ].includes(this.status);
     }
 
+    public isAtLeastInBearbeitungKanton(): boolean {
+        return !this.isInBearbeitungGemeinde();
+    }
+
     public isInBearbeitungForRole(role: TSRole): boolean {
         switch (role) {
             case TSRole.SUPER_ADMIN:
