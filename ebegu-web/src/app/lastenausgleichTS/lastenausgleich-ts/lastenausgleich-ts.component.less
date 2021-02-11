@@ -24,26 +24,32 @@
     flex-direction: column;
     height: 100%;
 
-    .flex-container {
+    .antrag-container {
         display: flex;
-        height: 100%;
-        width: 100%;
-    }
-    dv-lastenausgleich-ts-side-nav, dv-wizard-side-nav {
-        background-color: @contrast-lightest;
-        display: flex;
-        flex-direction: column;
-        width: 35.5rem;
-    }
-
-    dv-lastenausgleich-ts-kommentar {
-        background-color: @contrast-lightest;
-        width: 45rem;
-    }
-
-    .antrag {
-        box-sizing: border-box;
         flex-grow: 1;
-        padding: 5rem 2.5rem 10rem 5rem;
+        flex: auto;
+        overflow: auto;
+
+        dv-lastenausgleich-ts-side-nav, dv-wizard-side-nav {
+            background-color: @contrast-lightest;
+            display: flex;
+            flex-direction: column;
+            width: 35.5rem;
+        }
+
+        .antrag {
+            box-sizing: border-box;
+            flex-grow: 1;
+            flex-basis: 0;
+
+            ::ng-deep ui-view > * {
+                padding: 5rem 2.5rem 10rem 5rem;
+            }
+        }
+
+        dv-lastenausgleich-ts-kommentar {
+            background-color: @contrast-lightest;
+            width: 45rem;
+        }
     }
 }

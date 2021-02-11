@@ -2229,7 +2229,7 @@
     "LATS_KOSTENBETEILIGUNG_GEMEINDE": "Kostenbeteiligung Gemeinde",
     "LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE": "Diese Angaben dienen der Statistik und der Überprüfung der kantonalen Kalkulation der Normkosten.",
     "LATS_GESAMTKOSTEN_TAGESSCHULE": "Gesamtkosten der Tagesschule gemäss Jahresrechnung Gemeinde, berechnet für das Schuljahr {{jahr}}",
-    "LATS_EINNAHMEN_VERPFLEGUNG": "./. Einnahmen für die Verpflegung ",
+    "LATS_EINNAHMEN_VERPFLEGUNG": "./. Einnahmen für die Verpflegung",
     "LATS_EINNAHMEN_SUBVENTIONEN_DRITTER": "./. evtl. Einnahmen aus Subventionen Dritter (Anstossfinanzierung des Bundes und weitere Einnahmen, z. B. Sponsoring)",
     "LATS_LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR": "Lastenausgleichsberechtigter Betrag Schuljahr {{jahr}}",
     "LATS_EINNAHMEN_ELTERNGEBUEHREN": "./. Einnahmen aus Elterngebühren (ohne Einnahmen für Verpflegung) ",
