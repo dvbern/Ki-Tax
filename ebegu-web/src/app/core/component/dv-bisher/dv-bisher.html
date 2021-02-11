@@ -16,7 +16,7 @@
 <!--suppress Annotator -->
 <div ng-form="bisherForm">
     <div class="dv-bisher" ng-if="vm.showBisher() && !vm.equals(vm.gs, vm.ja)">
-        <span data-translate="DV_BISHER_TEXT"></span>
+        <span data-translate="DV_BISHER_LABEL"></span>
         <span ng-repeat="line in vm.getBisher() track by $index" class="dv-bisher-content-row">{{line}}</span>
     </div>
 </div>

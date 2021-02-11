@@ -17,7 +17,7 @@
 
 <div>
     <div class="dv-bisher" *ngIf="showBisher && !equals(deklaration, korrektur)">
-        <span translate="DV_BISHER_TEXT"></span>
+        <span>{{getBisherLabel()}}</span>
         <span *ngFor="let line of getBisher()" class="dv-bisher-content-row">{{line}}</span>
     </div>
 </div>

@@ -23,6 +23,7 @@
  * Attribute fuer Eingaben-Blocks (zusammengehoerende Felder):
  * - specificBisherText: Falls einfach der GS-Wert als Bisher angezeigt werden soll. Z.B. Checkbox "Fachstelle": Wir
  *      wollen als Bisher-Text nicht "Ja", sondern "Fachstelle X, mit 50%, vom 01.01.2015 bis 31.12.2015"
+ * - specificBisherLabel: soll ein spezielles Label gezeigt werden? Default ist "ursprünglich:". Z.B. "ursprünglich: 10"
  * - blockExisted: Gibt an, ob der Block ueberhaupt vom GS ausgefuellt wurde. Falls nein, muss *jede* Eingabe des JA
  *      als Korrektur angezeigt werden
  * - showIfBisherNone: Zeigt, ob "Keine Eingabe" angezeigt werden soll, wenn es keinen Bisher-Wert
@@ -71,6 +72,10 @@ export class DvBisherXComponent implements OnInit {
      * Soll der bisherText angezeigt werden, falls keine Angabe in der Deklaration gemacht wurde?
      */
     @Input() public showSpecificBisherTextIfBisherNone = false;
+    /**
+     * soll ein spezielles Label gezeigt werden? Default ist "ursprünglich:". Z.B. "ursprünglich: 10"
+     */
+    @Input() public specificBisherLabel: string;
     /**
      * Wenn das Flag auf false gesetzt wird, wird dv-bisher nie angezeigt
      */
@@ -138,4 +143,10 @@ export class DvBisherXComponent implements OnInit {
         return val === undefined || val === null || val === '';
     }
 
+    public getBisherLabel(): string {
+        if (this.specificBisherLabel) {
+            return this.specificBisherLabel;
+        }
+        return this.$translate.instant('DV_BISHER_TEXT');
+    }
 }
