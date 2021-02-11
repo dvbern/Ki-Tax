@@ -1,6 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
-import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../shared.module';
 
 import {DvSimpleTableComponent} from './dv-simple-table.component';
