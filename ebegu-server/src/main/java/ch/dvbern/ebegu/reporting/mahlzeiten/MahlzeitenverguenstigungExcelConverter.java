@@ -142,6 +142,30 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 			ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
 
 		mergerDTO.addValue(
+			MergeFieldMahlzeitenverguenstigung.sozialhilfebezuegerTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_sozialhilfebezuegerTitle", locale));
+
+		mergerDTO.addValue(
+			MergeFieldMahlzeitenverguenstigung.ibanTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_ibanTitle", locale));
+
+		mergerDTO.addValue(
+			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenTitle", locale));
+
+		mergerDTO.addValue(
+			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenVorFamAbzugTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenVorFamAbzugTitle", locale));
+
+		mergerDTO.addValue(
+			MergeFieldMahlzeitenverguenstigung.famGroesseTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_famGroesseTitle", locale));
+
+		mergerDTO.addValue(
+			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenNachFamAbzugTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenNachFamAbzugTitle", locale));
+
+		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.geburtsdatumTitle.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
 
