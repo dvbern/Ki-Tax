@@ -15,6 +15,7 @@
 
 
 @import (reference) './../../../../style/mixins.less';
+@import (reference) './../../../../style/variables.less';
 
 dv-input-container-x {
     .dv-input-container {
@@ -24,9 +25,27 @@ dv-input-container-x {
         margin-bottom: 2.3rem;
         width: 100%;
 
+        input, textarea {
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+        }
+
         label {
             color: black;
             flex: 0 0 33%;
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+        }
+
+        label[required]:after {
+            color: black;
+            content: '*';
+            //add negative margin to compensate width and
+            //prevent asterisk from wrapping to next line
+            margin-right: -10px;
+            padding-left: 0.3rem;
+        }
+
+        textarea {
+            padding: 1rem;
         }
 
     }
@@ -45,7 +64,7 @@ dv-input-container-x {
 
 
 
-    mat-radio-group, dv-radio-container-x, mat-form-field, .flex-whitespace-item {
+    dv-radio-container-x, mat-form-field, .flex-whitespace-item {
         //space for outline
         flex: 1 1 30%;
         margin: 0 5%;
@@ -73,4 +92,13 @@ dv-input-container-x {
 
 .dv-input-container {
     width: 100%;
+
+    &.disabled {
+        label, mat-label > .mat-label-content {
+            color: @dgrey;
+        }
+        label[required]:after {
+            color: @dgrey;
+        }
+    }
 }

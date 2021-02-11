@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
@@ -370,6 +371,15 @@ export class GemeindeAngabenComponent implements OnInit {
             }
         }
         this.angabenForm.updateValueAndValidity();
+    }
+
+    /**
+     * Begruendung value should be deleted when hidden
+     */
+    public deleteBegruendung($event: MatRadioChange): void {
+        if ($event.value === true) {
+            this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').setValue(null);
+        }
     }
 
 }
