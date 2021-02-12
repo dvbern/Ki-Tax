@@ -33,6 +33,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {MaterialModule} from '../../../shared/material.module';
 import {SharedModule} from '../../../shared/shared.module';
+import {WizardstepXModule} from '../../../wizardstepX/wizardstep-x.module';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
@@ -59,6 +60,7 @@ describe('GemeindeAngabenComponent', () => {
                 HttpClientModule,
                 MaterialModule,
                 BrowserAnimationsModule,
+                WizardstepXModule,
             ],
             declarations: [GemeindeAngabenComponent],
             providers: [
