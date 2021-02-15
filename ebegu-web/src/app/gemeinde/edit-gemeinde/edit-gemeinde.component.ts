@@ -226,7 +226,7 @@ export class EditGemeindeComponent implements OnInit {
 
         this.errorService.clearAll();
         this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
-        //stammdaten.iban = stammdaten.iban?.toLocaleUpperCase();
+        stammdaten.iban = stammdaten.iban?.toLocaleUpperCase();
         stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
         stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
             ? undefined
