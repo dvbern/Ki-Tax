@@ -150,7 +150,6 @@ import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
-import {SozialdienstRS} from './service/SozialdienstRS.rest';
 import {SozialhilfeZeitraumRS} from './service/sozialhilfeZeitraumRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
@@ -241,7 +240,6 @@ export const CORE_JS_MODULE = angular
     .service('NotrechtRS', NotrechtRS)
     .service('EinstellungRS', EinstellungRS)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
-    .service('SozialdienstRS', SozialdienstRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)

@@ -2215,5 +2215,6 @@
     "MENU_SOZIALDIENST": "Service sociaux",
     "SOZIALDIENST_STATUS_EINGELADEN": "Invité",
     "SOZIALDIENST_NOCH_KEINE": "Aucun service sociaux",
+    "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

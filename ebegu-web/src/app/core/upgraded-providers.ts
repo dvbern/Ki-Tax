@@ -41,7 +41,6 @@ import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
-import {SozialdienstRS} from './service/SozialdienstRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
@@ -357,17 +356,6 @@ export const searchRSProvider = {
     deps: ['$injector'],
 };
 
-// sozialdienstRS
-export function sozialdienstRSProviderServiceFactory(i: IInjectorService): SozialdienstRS {
-    return i.get('SozialdienstRS');
-}
-
-export const sozialdienstRSProvider = {
-    provide: SozialdienstRS,
-    useFactory: sozialdienstRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -395,5 +383,4 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     uploadRSProvider,
     notrechtRSProvider,
     searchRSProvider,
-    sozialdienstRSProvider
 ];

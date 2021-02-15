@@ -16,7 +16,7 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService, Transition} from '@uirouter/core';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 
@@ -57,9 +57,6 @@ export class EditSozialdienstComponent implements OnInit {
     }
 
     private loadStammdaten(): void {
-        this.stammdaten$ = from(
-            this.sozialdienstRS.getSozialdienstStammdaten(this.sozialdienstId).then(stammdaten => {
-                return stammdaten;
-            }));
+        this.stammdaten$ = this.sozialdienstRS.getSozialdienstStammdaten(this.sozialdienstId);
     }
 }
