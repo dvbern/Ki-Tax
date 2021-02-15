@@ -928,7 +928,7 @@
                 <configuration>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <!--port offset fuer embedded wildfly -->
-                    <argLine>-Djboss.socket.binding.port-offset=10000</argLine>
+                    <argLine>-Djboss.socket.binding.port-offset=10000 --illegal-access=permit</argLine>
                     <environmentVariables>
                         <!--suppress UnresolvedMavenProperty -->
                         <JBOSS_HOME>${jbossHome}</JBOSS_HOME>
