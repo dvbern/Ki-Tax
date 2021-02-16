@@ -2382,8 +2382,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(fallPredicate, gesuchsperiodePredicate, freigegebenPredicate);
 
-		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
-
 		TypedQuery<String> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(dossierIdParam, gesuch.getDossier().getId());
 		typedQuery.setParameter(

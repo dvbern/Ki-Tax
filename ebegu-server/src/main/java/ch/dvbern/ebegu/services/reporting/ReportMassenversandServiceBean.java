@@ -199,6 +199,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			.map(gesuch -> {
 				MassenversandDataRow row = new MassenversandDataRow();
 
+				row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
 				row.setGesuchsperiode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 				row.setFall(gesuch.getFall().getPaddedFallnummer());
 
