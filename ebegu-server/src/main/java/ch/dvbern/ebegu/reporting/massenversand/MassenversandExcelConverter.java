@@ -93,7 +93,6 @@ public class MassenversandExcelConverter implements ExcelConverter {
 				fallRowGroup.addValue(MergeFieldMassenversand.kindName, kindCol.getKindName());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindVorname, kindCol.getKindVorname());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindGeburtsdatum, kindCol.getKindGeburtsdatum());
-				fallRowGroup.addValue(MergeFieldMassenversand.kindDubletten, kindCol.getKindDubletten());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionKita, kindCol.getKindInstitutionKita());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTagesfamilie, kindCol.getKindInstitutionTagesfamilie());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTagesschule, kindCol.getKindInstitutionTagesschule());
@@ -125,7 +124,6 @@ public class MassenversandExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldMassenversand.emailTitle, ServerMessageUtil.getMessage("Reports_emailTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.postanschriftTitle, ServerMessageUtil.getMessage("Reports_postanschriftTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
-		excelMerger.addValue(MergeFieldMassenversand.dublettenTitle, ServerMessageUtil.getMessage("Reports_dublettenTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.kindTitle, ServerMessageUtil.getMessage("Reports_kindTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.betreuungsartInstitutionenTitle, ServerMessageUtil.getMessage("Reports_betreuungsartInstitutionenTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.kitaTitel, ServerMessageUtil.getMessage("Reports_kitaTitel", locale));

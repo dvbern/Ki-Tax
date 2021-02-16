@@ -258,7 +258,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	}
 
 	private void setKinderData(Gesuch gesuch, MassenversandDataRow row) {
-		final Set<KindDubletteDTO> kindDubletten = kindService.getKindDubletten(gesuch.getId());
 		row.setKinderCols(
 			gesuch.getKindContainers().stream()
 				.filter(kindContainer -> kindContainer.getKindJA() != null
@@ -269,7 +268,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 					kindCol.setKindName(kind.getNachname());
 					kindCol.setKindVorname(kind.getVorname());
 					kindCol.setKindGeburtsdatum(kind.getGeburtsdatum());
-					setDubletten(kindCol, kindContainer, kindDubletten);
 
 					kindContainer.getBetreuungen().stream()
 						.map(Betreuung::getInstitutionStammdaten)
@@ -279,18 +277,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 				})
 				.collect(Collectors.toList())
 		);
-	}
-
-	private void setDubletten(
-		@Nonnull MassenversandRepeatKindDataCol kindCol,
-		@Nonnull KindContainer kindContainer,
-		@Nonnull Set<KindDubletteDTO> kindDubletten
-	) {
-		kindDubletten.stream()
-			.filter(kindDubletteDTO -> kindDubletteDTO.getKindNummerOriginal().equals(kindContainer.getKindNummer()))
-			.forEach(kindDubletteDTO ->
-				kindCol.addKindDubletten(EbeguUtil.getPaddedFallnummer(kindDubletteDTO.getFallNummer())
-			));
 	}
 
 	private void setInstitutionName(
