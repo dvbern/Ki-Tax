@@ -48,7 +48,6 @@ describe('BenutzerEinladenComponent', () => {
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
 
-
     beforeEach(waitForAsync(() => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
