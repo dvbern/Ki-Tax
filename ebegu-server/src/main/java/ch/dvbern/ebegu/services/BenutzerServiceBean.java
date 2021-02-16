@@ -80,6 +80,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.EinladungTyp;
@@ -214,6 +215,19 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			b -> b.setTraegerschaft(traegerschaft));
 
 		return admin;
+	}
+
+	@Nonnull
+	@Override
+	public Benutzer createAdminSozialdienstByEmail(
+		@Nonnull String adminMail, @Nonnull Sozialdienst sozialdienst
+	) {
+		requireNonNull(sozialdienst);
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_SOZIALDIENST,
+			sozialdienst,
+			b -> b.setSozialdienst(sozialdienst));
 	}
 
 	@Nonnull
@@ -770,6 +784,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			benutzer.setRole(UserRole.SUPER_ADMIN);
 			benutzer.setInstitution(null);
 			benutzer.setTraegerschaft(null);
+			benutzer.setSozialdienst(null);
 			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
 		}
 	}

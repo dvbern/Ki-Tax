@@ -120,6 +120,7 @@ import {DVTrimEmpty} from './directive/dv-trim-empty/dv-trim-empty';
 import {DvUserSelectConfig} from './directive/dv-userselect/dv-userselect';
 import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
+import {DvSearchListComponent} from './dv-search-list/dv-search-list.component';
 import {ERRORS_JS_MODULE} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
@@ -149,6 +150,7 @@ import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
+import {SozialdienstRS} from './service/SozialdienstRS.rest';
 import {SozialhilfeZeitraumRS} from './service/sozialhilfeZeitraumRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
@@ -239,6 +241,7 @@ export const CORE_JS_MODULE = angular
     .service('NotrechtRS', NotrechtRS)
     .service('EinstellungRS', EinstellungRS)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
+    .service('SozialdienstRS', SozialdienstRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
@@ -304,6 +307,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
+    .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)

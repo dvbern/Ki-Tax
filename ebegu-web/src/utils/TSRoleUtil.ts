@@ -242,7 +242,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
+            TSRole.SACHBEARBEITER_MANDANT,
         ];
     }
 
@@ -578,6 +578,10 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT].includes(role);
     }
 
+    public static isSozialdienstRole(role: TSRole): boolean {
+        return PERMISSIONS[Permission.ROLE_SOZIALDIENST].includes(role);
+    }
+
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }
@@ -590,7 +594,17 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+        ];
+    }
+
+    public static getAllRolesForSozialdienst(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
         ];
     }
 }

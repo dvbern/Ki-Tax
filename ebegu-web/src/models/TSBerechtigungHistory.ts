@@ -16,6 +16,7 @@
 import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSRole} from './enums/TSRole';
+import {TSSozialdienst} from './sozialdienst/TSSozialdienst';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSInstitution} from './TSInstitution';
 import {TSTraegerschaft} from './TSTraegerschaft';
@@ -30,6 +31,7 @@ export class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
     private _gemeinden: string;
     private _status: TSBenutzerStatus;
     private _geloescht: boolean;
+    private _sozialdienst: TSSozialdienst;
 
     public get userErstellt(): string {
         return this._userErstellt;
@@ -93,6 +95,14 @@ export class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
 
     public set geloescht(value: boolean) {
         this._geloescht = value;
+    }
+
+    public get sozialdienst(): TSSozialdienst {
+        return this._sozialdienst;
+    }
+
+    public set sozialdienst(value: TSSozialdienst) {
+        this._sozialdienst = value;
     }
 
     public getDescription(): string | null {
