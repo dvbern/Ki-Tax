@@ -21,12 +21,14 @@ import {from, Observable, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 import {TSBerechtigung} from '../../../../models/TSBerechtigung';
 import {TSInstitution} from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {SozialdienstRS} from '../../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {Displayable} from '../../interfaces/displayable';
 
@@ -51,9 +53,11 @@ export class BerechtigungComponent {
     public readonly rolleId: string;
     public readonly institutionId: string;
     public readonly traegerschaftId: string;
+    public readonly sozialdienstId: string;
 
     public readonly institutionen$: Observable<TSInstitution[]>;
     public readonly traegerschaften$: Observable<TSTraegerschaft[]>;
+    public readonly sozialdienste$: Observable<TSSozialdienst[]>;
 
     public readonly compareById = EbeguUtil.compareById;
 
@@ -61,16 +65,21 @@ export class BerechtigungComponent {
         public readonly form: NgForm,
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftenRS: TraegerschaftRS,
+        private readonly sozialdienstRS: SozialdienstRS,
         private readonly authServiceRS: AuthServiceRS,
     ) {
         this.rolleId = 'rolle-' + this.inputId;
         this.institutionId = 'institution-' + this.inputId;
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
+        this.sozialdienstId = 'sozialdiesnt-' + this.inputId;
 
         this.institutionen$ = from(this.institutionRS.getInstitutionenEditableForCurrentBenutzer())
             .pipe(map(BerechtigungComponent.sortByName));
 
         this.traegerschaften$ = this.traegerschaftenForPrincipal$();
+
+        this.sozialdienste$ =
+            from(this.sozialdienstRS.getSozialdienstList()).pipe(map(BerechtigungComponent.sortByName));
     }
 
     private static sortByName<T extends Displayable>(arr: T[]): T[] {

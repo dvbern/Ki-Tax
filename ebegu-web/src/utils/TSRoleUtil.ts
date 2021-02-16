@@ -578,6 +578,10 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT].includes(role);
     }
 
+    public static isSozialdienstRole(role: TSRole): boolean {
+        return PERMISSIONS[Permission.ROLE_SOZIALDIENST].includes(role);
+    }
+
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }

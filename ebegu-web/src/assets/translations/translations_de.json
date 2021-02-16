@@ -787,6 +787,8 @@
     "TSRole_REVISOR": "Revisor/in",
     "TSRole_STEUERAMT": "Sachbearbeiter/in Steueramt",
     "TSRole_NONE": "Keine Rolle (Antragsteller/in)",
+    "TSRole_ADMIN_SOZIALDIENST": "Administrator/in Sozialdienst",
+    "TSRole_SACHBEARBEITER_SOZIALDIENST": "Sachbearbeiter/in Sozialdienst",
     "PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG": "Minimale Einkommenveschlechterung (%)",
     "VORJAHR": "Vorjahr",
     "JANUARY": "Januar",

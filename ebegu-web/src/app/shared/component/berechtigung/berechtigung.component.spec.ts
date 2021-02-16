@@ -25,6 +25,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../../models/TSBerechtigung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {SozialdienstRS} from '../../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared.module';
@@ -43,6 +44,8 @@ describe('BerechtigungComponent', () => {
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const sozialdienstSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+        ['getSozialdienstList']);
 
     const inputSelector = '.dv-input-container-medium';
 
@@ -53,6 +56,7 @@ describe('BerechtigungComponent', () => {
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
+        sozialdienstSpy.getSozialdienstList.and.resolveTo([]);
 
         TestBed.configureTestingModule({
             imports: [
@@ -62,6 +66,7 @@ describe('BerechtigungComponent', () => {
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: GemeindeRS, useValue: gemeindeSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
@@ -125,5 +130,31 @@ describe('BerechtigungComponent', () => {
         expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('[id^=treagerschaft-]'))).toBeTruthy();
+    });
+
+    it('should display sozialdienst when sozialdienst dependent role', () => {
+        component.berechtigung.role = TSRole.ADMIN_SOZIALDIENST;
+        expect(component.berechtigung.hasSozialdienstRole()).toBe(true);
+        fixture.detectChanges();
+
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
+        expect(debugElements.length).toBe(0);
+
+        expect(fixture.debugElement.query(By.css('[id^=sozialdienst-]'))).toBeTruthy();
+
+        expect(sozialdienstSpy.getSozialdienstList).toHaveBeenCalled();
+    });
+
+    it('should display sozialdienst when sozialdienst dependent role', () => {
+        component.berechtigung.role = TSRole.SACHBEARBEITER_SOZIALDIENST;
+        expect(component.berechtigung.hasSozialdienstRole()).toBe(true);
+        fixture.detectChanges();
+
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
+        expect(debugElements.length).toBe(0);
+
+        expect(fixture.debugElement.query(By.css('[id^=sozialdienst-]'))).toBeTruthy();
+
+        expect(sozialdienstSpy.getSozialdienstList).toHaveBeenCalled();
     });
 });

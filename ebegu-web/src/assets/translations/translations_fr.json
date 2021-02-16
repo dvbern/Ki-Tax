@@ -787,6 +787,8 @@
     "TSRole_REVISOR": "Réviseur/-euse",
     "TSRole_STEUERAMT": "Collaborateur/-trice spécialisé-e bureau des impôts",
     "TSRole_NONE": "Aucun rôle (auteur-e de la demande)",
+    "TSRole_ADMIN_SOZIALDIENST": "Administrateur/-trice service social",
+    "TSRole_SACHBEARBEITER_SOZIALDIENST": "Collaborateur/-trice spécialisé-e service social",
     "PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG": "Détérioration minimale du revenu (%)",
     "VORJAHR": "Année précédente",
     "JANUARY": "Janvier",

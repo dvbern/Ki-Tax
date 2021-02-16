@@ -2785,6 +2785,7 @@ export class EbeguRestUtil {
             berechtigung.institution = this.institutionToRestObject({}, berechtigungTS.institution);
             // Gemeinden
             berechtigung.gemeindeList = this.gemeindeListToRestObject(berechtigungTS.gemeindeList);
+            berechtigung.sozialdienst = this.sozialdienstToRestObject({}, berechtigungTS.sozialdienst);
             return berechtigung;
         }
         return undefined;
@@ -2799,6 +2800,8 @@ export class EbeguRestUtil {
             berechtigungTS.institution = this.parseInstitution(new TSInstitution(), berechtigungFromServer.institution);
             // Gemeinden
             berechtigungTS.gemeindeList = this.parseGemeindeList(berechtigungFromServer.gemeindeList);
+            berechtigungTS.sozialdienst =
+                this.parseSozialdienst(new TSSozialdienst(), berechtigungFromServer.sozialdienst);
             return berechtigungTS;
         }
         return undefined;
@@ -2815,6 +2818,7 @@ export class EbeguRestUtil {
             historyTS.gemeinden = historyFromServer.gemeinden;
             historyTS.status = historyFromServer.status;
             historyTS.geloescht = historyFromServer.geloescht;
+            historyTS.sozialdienst = this.parseSozialdienst(new TSSozialdienst(), historyFromServer.sozialdienst);
             return historyTS;
         }
         return undefined;
