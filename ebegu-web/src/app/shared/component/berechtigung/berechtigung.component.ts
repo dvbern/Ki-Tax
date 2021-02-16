@@ -71,7 +71,7 @@ export class BerechtigungComponent {
         this.rolleId = 'rolle-' + this.inputId;
         this.institutionId = 'institution-' + this.inputId;
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
-        this.sozialdienstId = 'sozialdiesnt-' + this.inputId;
+        this.sozialdienstId = 'sozialdienst-' + this.inputId;
 
         this.institutionen$ = from(this.institutionRS.getInstitutionenEditableForCurrentBenutzer())
             .pipe(map(BerechtigungComponent.sortByName));

@@ -141,20 +141,5 @@ describe('BerechtigungComponent', () => {
         expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('[id^=sozialdienst-]'))).toBeTruthy();
-
-        expect(sozialdienstSpy.getSozialdienstList).toHaveBeenCalled();
-    });
-
-    it('should display sozialdienst when sozialdienst dependent role', () => {
-        component.berechtigung.role = TSRole.SACHBEARBEITER_SOZIALDIENST;
-        expect(component.berechtigung.hasSozialdienstRole()).toBe(true);
-        fixture.detectChanges();
-
-        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(0);
-
-        expect(fixture.debugElement.query(By.css('[id^=sozialdienst-]'))).toBeTruthy();
-
-        expect(sozialdienstSpy.getSozialdienstList).toHaveBeenCalled();
     });
 });
