@@ -2216,6 +2216,7 @@
     "SOZIALDIENST_STATUS_EINGELADEN": "Invité",
     "SOZIALDIENST_STATUS_AKTIV": "Actif",
     "SOZIALDIENST_NOCH_KEINE": "Aucun service sociaux",
+    "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "SOZIALDIENST_HINZUFUEGEN": "Ajouter un service social",
     "NEUE_SOZIALDIENST": "Nouveau service social",
     "SOZIALDIENST_STAMMDATEN": "Donnnée de base du service social",

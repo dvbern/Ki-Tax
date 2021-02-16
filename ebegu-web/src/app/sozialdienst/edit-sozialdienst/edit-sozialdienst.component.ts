@@ -18,11 +18,13 @@ import {Component, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList, Cha
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {from, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
@@ -49,6 +51,7 @@ export class EditSozialdienstComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly translate: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly errorService: ErrorService,
     ) {
     }
 
@@ -78,10 +81,7 @@ export class EditSozialdienstComponent implements OnInit {
     }
 
     private loadStammdaten(): void {
-        this.stammdaten$ = from(
-            this.sozialdienstRS.getSozialdienstStammdaten(this.sozialdienstId).then(stammdaten => {
-                return stammdaten;
-            }));
+        this.stammdaten$ = this.sozialdienstRS.getSozialdienstStammdaten(this.sozialdienstId);
     }
 
     private persistStammdaten(stammdaten: TSSozialdienstStammdaten): void {
@@ -96,12 +96,11 @@ export class EditSozialdienstComponent implements OnInit {
             EbeguUtil.selectFirstInvalid();
             return;
         }
-        this.sozialdienstRS.saveSozialdienstStammdaten(stammdaten)
-            .then(stammdatenSaved => {
+        this.stammdaten$ = this.sozialdienstRS.saveSozialdienstStammdaten(stammdaten)
+            .pipe(tap(() => {
                 this.editMode = false;
-                this.stammdaten$ = of(stammdatenSaved);
-                this.changeDetectorRef.markForCheck();
-            });
+            }));
+        this.changeDetectorRef.markForCheck();
     }
 
     public submitButtonLabel(): string {

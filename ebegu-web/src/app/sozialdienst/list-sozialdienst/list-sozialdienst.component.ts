@@ -16,7 +16,8 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
@@ -65,21 +66,23 @@ export class ListSozialdienstComponent implements OnInit {
     private loadData(): void {
         // For now only SuperAdmin
         const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForSozialdienst());
-        this.antragList$ = from(this.sozialdienstRS.getSozialdienstList().then(sozialdienstList => {
-            const entitaetListItems: DVEntitaetListItem[] = [];
-            sozialdienstList.forEach(
-                sozialdienst => {
-                    const dvListItem = {
-                        id: sozialdienst.id,
-                        name: sozialdienst.name,
-                        status: sozialdienst.status.toString(),
-                        canEdit: editPossible,
-                        canRemove: false,
-                    };
-                    entitaetListItems.push(dvListItem);
-                },
-            );
-            return entitaetListItems;
-        }));
+        this.antragList$ = this.sozialdienstRS.getSozialdienstList().pipe(
+            map(sozialdienstList => {
+                const entitaetListItems: DVEntitaetListItem[] = [];
+                sozialdienstList.forEach(
+                    sozialdienst => {
+                        const dvListItem = {
+                            id: sozialdienst.id,
+                            name: sozialdienst.name,
+                            status: sozialdienst.status.toString(),
+                            canEdit: editPossible,
+                            canRemove: false,
+                        };
+                        entitaetListItems.push(dvListItem);
+                    },
+                );
+                return entitaetListItems;
+            }),
+        );
     }
 }

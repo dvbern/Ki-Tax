@@ -17,6 +17,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -50,7 +51,7 @@ describe('ListSozialdienstComponent', () => {
             ],
         })
             .compileComponents();
-        sozialdienstRSSpy.getSozialdienstList.and.resolveTo([]);
+        sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
     });
 
     beforeEach(() => {
