@@ -926,8 +926,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
-                    <forkCount>0</forkCount>
-                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <!--port offset fuer embedded wildfly -->
                     <argLine>-Djboss.socket.binding.port-offset=10000</argLine>
