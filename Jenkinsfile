@@ -30,7 +30,7 @@ pipeline {
 						spotbugsPublisher(disabled: true),
 						artifactsPublisher(disabled: true)
 				]) {
-					sh 'mvn -B -U -T 1C ' +
+					sh 'mvn -B -U ' +
 							'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
 				}
 			}
