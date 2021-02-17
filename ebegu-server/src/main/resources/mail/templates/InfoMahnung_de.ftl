@@ -26,7 +26,7 @@ ${templateConfiguration.mailCss}
 	<p>
 		Am ${gesuch.getEingangsdatumFormated()} haben Sie ein Gesuch via kiBon eingereicht.
 		Leider sind die eingereichten Unterlagen unvollständig. Die fehlenden Dokumente
-		müssen nachgereicht werden. Unser Schreiben erhalten Sie per Post und kann
+		müssen nachgereicht werden. Unser Schreiben kann
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
 		eingesehen werden.
 	</p>

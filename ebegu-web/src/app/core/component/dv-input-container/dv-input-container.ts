@@ -1,5 +1,5 @@
 /*
-Copyright (C) $today.year DV Bern AG, Switzerland
+Copyright (C) 2021 DV Bern AG, Switzerland
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

@@ -16,25 +16,34 @@
  */
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/angular';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {WindowRef} from '../../../core/service/windowRef.service';
+import {SharedModule} from '../../../shared/shared.module';
 
 import {TagesschulenListComponent} from './tagesschulen-list.component';
 
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'getErrors',
+    'addMesageAsError'
+]);
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [HttpClientModule, TranslateModule.forRoot()],
+            imports: [
+                HttpClientModule,
+                SharedModule,
+                BrowserAnimationsModule
+            ],
             providers: [
+                WindowRef,
                 {
                     provide: ErrorService,
                     useValue: errorServiceSpy,

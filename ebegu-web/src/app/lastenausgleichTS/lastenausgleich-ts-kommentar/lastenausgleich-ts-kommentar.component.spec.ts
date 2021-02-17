@@ -16,6 +16,7 @@
  */
 
 import {HttpClientModule} from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
@@ -23,6 +24,7 @@ import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {WindowRef} from '../../core/service/windowRef.service';
 import {SharedModule} from '../../shared/shared.module';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
@@ -40,15 +42,17 @@ describe('LastenausgleichTsKommentarComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientModule,
+                SharedModule,
+                BrowserAnimationsModule,
                 FormsModule,
                 ReactiveFormsModule,
-                TranslateModule.forRoot(),
-                SharedModule
+                TranslateModule.forRoot()
             ],
             declarations: [
                 LastenausgleichTsKommentarComponent
             ],
             providers: [
+                WindowRef,
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
             ]
