@@ -17,7 +17,7 @@ pipeline {
 	stages {
 		stage("Test") {
 			agent {
-			label 'jenkins-linux1'
+				label 'jenkins-linux1'
 				docker {
 					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:jdk11"
 					args "--privileged"
