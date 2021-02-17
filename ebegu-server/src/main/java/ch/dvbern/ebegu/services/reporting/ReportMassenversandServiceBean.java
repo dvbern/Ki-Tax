@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -87,6 +88,9 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 	@Inject
 	private KindService kindService;
+
+	@Inject
+	private MassenversandService massenversandService;
 
 
 	@Nonnull
@@ -348,6 +352,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			+ ohneErneuerungsgesuch + SEPARATOR;
 		massenversand.setEinstellungen(einstellungen);
 		massenversand.setGesuche(gesuche);
-		gesuchService.createMassenversand(massenversand);
+		massenversandService.createMassenversand(massenversand);
 	}
 }
