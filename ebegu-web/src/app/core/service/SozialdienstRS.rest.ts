@@ -76,4 +76,13 @@ export class SozialdienstRS {
                 return this.ebeguRestUtil.parseSozialdienstStammdaten(new TSSozialdienstStammdaten(), response);
             }));
     }
+
+    public saveSozialdienstStammdaten(stammdaten: TSSozialdienstStammdaten): Observable<TSSozialdienstStammdaten> {
+        let restStammdaten = {};
+        restStammdaten = this.ebeguRestUtil.sozialdienstStammdatenToRestObject(restStammdaten, stammdaten);
+        return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).pipe(map((response: any) => {
+            LOG.debug('PARSING Sozialdienst Stammdaten object ', response);
+            return this.ebeguRestUtil.parseSozialdienstStammdaten(new TSSozialdienstStammdaten(), response);
+        }));
+    }
 }
