@@ -958,6 +958,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
 		zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
+		zahlungAuftragTotalsExcelConverter.hideAntragstellerColumnsIfNecessary(sheetTotals, zahlungenBerechtigt);
 
 		byte[] bytes = createWorkbook(workbook);
 

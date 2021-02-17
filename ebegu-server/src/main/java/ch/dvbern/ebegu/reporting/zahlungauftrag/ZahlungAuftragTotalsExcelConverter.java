@@ -53,14 +53,16 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		sheet.autoSizeColumn(1); // idInstitution
 		sheet.autoSizeColumn(2); // angebot
 		sheet.autoSizeColumn(3); // traegerschaft
-		sheet.autoSizeColumn(4); // betrag
-		sheet.autoSizeColumn(5); // iban
-		sheet.autoSizeColumn(6); // kontoinhaber
-		sheet.autoSizeColumn(7); // anschrift
-		sheet.autoSizeColumn(8); // strasse
-		sheet.autoSizeColumn(9); // hausnummer
-		sheet.autoSizeColumn(10); // plz
-		sheet.autoSizeColumn(11); // ort
+		sheet.autoSizeColumn(4); // antragsteller 1
+		sheet.autoSizeColumn(5); // antragsteller 2
+		sheet.autoSizeColumn(6); // betrag
+		sheet.autoSizeColumn(7); // iban
+		sheet.autoSizeColumn(8); // kontoinhaber
+		sheet.autoSizeColumn(9); // anschrift
+		sheet.autoSizeColumn(10); //strasse
+		sheet.autoSizeColumn(11); //hausnummer
+		sheet.autoSizeColumn(12); // plz
+		sheet.autoSizeColumn(13); // ort
 	}
 
 	@Nonnull
@@ -76,17 +78,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		// ColRepeat: Falls das Feld darunter leer ist, wird die Spalte ausgeblendet
-		excelMerger.addValue(MergeFieldZahlungAuftrag.repeatAntragsteller, EMPTY_STRING);
-		excelMerger.addValue(MergeFieldZahlungAuftrag.repeatAntragsteller2, EMPTY_STRING);
-
-		// Fuer die Titel brauchen wir den ZahlungslaufTyp. Dieser muss ja fuer alle Zahlungen gleich sein,
-		// also nehmen wir einfach die erste Zahlung
-		ZahlungslaufTyp zahlungslaufTyp = ZahlungslaufTyp.GEMEINDE_INSTITUTION; // default
-		final Optional<ZahlungDataRow> firstZahlungsposition = zahlungenBerechtigt.stream().findFirst();
-		if (firstZahlungsposition.isPresent()) {
-			zahlungslaufTyp = firstZahlungsposition.get().getZahlung().getZahlungsauftrag().getZahlungslaufTyp();
-		}
+		ZahlungslaufTyp zahlungslaufTyp = extractZahlungslaufTyp(zahlungenBerechtigt);
 		addHeaders(excelMerger, zahlungslaufTyp, locale);
 
 		excelMerger.addValue(MergeFieldZahlungAuftrag.beschrieb, beschrieb);
@@ -156,5 +148,23 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle",
 			locale).toUpperCase(locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale));
+	}
+
+	private ZahlungslaufTyp extractZahlungslaufTyp(@Nonnull List<ZahlungDataRow> zahlungenBerechtigt) {
+		// Fuer die Titel brauchen wir den ZahlungslaufTyp. Dieser muss ja fuer alle Zahlungen gleich sein,
+		// also nehmen wir einfach die erste Zahlung
+		ZahlungslaufTyp zahlungslaufTyp = ZahlungslaufTyp.GEMEINDE_INSTITUTION; // default
+		final Optional<ZahlungDataRow> firstZahlungsposition = zahlungenBerechtigt.stream().findFirst();
+		if (firstZahlungsposition.isPresent()) {
+			zahlungslaufTyp = firstZahlungsposition.get().getZahlung().getZahlungsauftrag().getZahlungslaufTyp();
+		}
+		return zahlungslaufTyp;
+	}
+
+	public void hideAntragstellerColumnsIfNecessary(@Nonnull Sheet sheet, List<ZahlungDataRow> zahlungen) {
+		if (extractZahlungslaufTyp(zahlungen) == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+			sheet.setColumnHidden(4, true); // column Antragsteller 1
+			sheet.setColumnHidden(5, true); // column Antragsteller 2
+		}
 	}
 }
