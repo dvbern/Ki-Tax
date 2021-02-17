@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,51 +19,51 @@ import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
-import {TraegerschaftAddComponent} from '../traegerschaft-add/traegerschaft-add.component';
-import {TraegerschaftEditComponent} from '../traegerschaft-edit/traegerschaft-edit.component';
-import {TraegerschaftListComponent} from '../traegerschaft-list/traegerschaft-list.component';
+import {AddSozialdienstComponent} from '../add-sozialdienst/add-sozialdienst.component';
+import {EditSozialdienstComponent} from '../edit-sozialdienst/edit-sozialdienst.component';
+import {ListSozialdienstComponent} from '../list-sozialdienst/list-sozialdienst.component';
 
-export const STATES: NgHybridStateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        name: 'traegerschaft',
+        name: 'sozialdienst',
         abstract: true,
-        url: '/traegerschaft',
+        url: '/sozialdienst',
         component: UiViewComponent,
     },
     {
-        name: 'traegerschaft.list',
+        name: 'sozialdienst.list',
         url: '/list',
-        component: TraegerschaftListComponent,
+        component: ListSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {
-        name: 'traegerschaft.edit',
-        url: '/edit/:traegerschaftId',
-        component: TraegerschaftEditComponent,
-        data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
-    },
-    {
-        name: 'traegerschaft.add',
+        name: 'sozialdienst.add',
         url: '/add',
-        component: TraegerschaftAddComponent,
+        component: AddSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        },
+    },
+    {
+        name: 'sozialdienst.edit',
+        url: '/edit/:sozialdienstId',
+        component: EditSozialdienstComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: STATES}),
+        UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
         UIRouterUpgradeModule,
     ],
 })
-export class TraegerschaftRoutingModule {
+export class SozialdienstRoutingModule {
 }
