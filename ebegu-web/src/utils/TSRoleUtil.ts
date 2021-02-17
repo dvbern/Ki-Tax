@@ -242,7 +242,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
+            TSRole.SACHBEARBEITER_MANDANT,
         ];
     }
 
@@ -590,7 +590,17 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+        ];
+    }
+
+    public static getAllRolesForSozialdienst(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
         ];
     }
 }
