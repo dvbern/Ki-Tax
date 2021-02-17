@@ -382,5 +382,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     mandantRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
-    searchRSProvider
+    searchRSProvider,
 ];

@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -108,6 +109,7 @@ import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 /**
  * Authorizer Implementation
  */
+@SuppressWarnings("PMD.NcssTypeCount")
 @RequestScoped
 @SuppressFBWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
 public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
@@ -1713,5 +1715,31 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		// Der Benutzer muss zumindest fuer das dazugehoerige Dossier grundsaetzlich zustaendig sein
 		checkReadAuthorizationDossier(gesuch.getDossier());
+	}
+
+	/**
+	 * For now only admin and mandant allowed
+	 * @param sozialdienst
+	 */
+	@Override
+	public void checkReadAuthorization(@Nullable Sozialdienst sozialdienst) {
+		this.checkWriteAuthorization(sozialdienst);
+	}
+
+	/**
+	 * For now only admin and mandant allowed
+	 * @param sozialdienst
+	 */
+	@Override
+	public void checkWriteAuthorization(@Nullable Sozialdienst sozialdienst) {
+		if (sozialdienst != null) {
+			boolean allSozialdienstAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			if (allSozialdienstAllowed) {
+				return;
+			}
+			else {
+				throwViolation(sozialdienst);
+			}
+		}
 	}
 }
