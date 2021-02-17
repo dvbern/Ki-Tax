@@ -4552,7 +4552,8 @@ export class EbeguRestUtil {
         if (tsInstitutionContainer) {
             this.abstractEntityToRestObject(restInstitutionContainer, tsInstitutionContainer);
             restInstitutionContainer.status = tsInstitutionContainer.status;
-            restInstitutionContainer.institution = this.institutionToRestObject({}, tsInstitutionContainer.institution);
+            restInstitutionContainer.institution =
+                this.institutionToRestObject({}, tsInstitutionContainer.institution);
             restInstitutionContainer.angabenDeklaration =
                 this.lastenausgleichTagesschuleAngabenInstitutionToRestObject({},
                     tsInstitutionContainer.angabenDeklaration);

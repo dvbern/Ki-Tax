@@ -52,7 +52,7 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.lastenausgleichTSService.updateLATSAngabenGemeindeContainer(this.lastenausgleichId);
+        this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichId);
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
             .subscribe(container => {
                 this.lATSAngabenGemeindeContainer = container;
@@ -63,6 +63,7 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
+        this.lastenausgleichTSService.emptyStore();
     }
 
     public showToolbar(): boolean {

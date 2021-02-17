@@ -41,9 +41,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -71,6 +73,7 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
@@ -124,6 +127,9 @@ public class MitteilungResource {
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private GesuchService gesuchService;
 
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
@@ -187,6 +193,19 @@ public class MitteilungResource {
 			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
+
+		gesuchService.findGesuch(Objects.requireNonNull(betreuung.getOwningGesuchId())).ifPresent(gesuch -> {
+			if (betreuungsmitteilung.getBetreuungspensen()
+				.stream()
+				.anyMatch(betreuungsmitteilungPensum -> betreuungsmitteilungPensum.getGueltigkeit()
+					.getGueltigAb()
+					.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()))) {
+
+				throw new WebApplicationException("BETREUUNG_STARTS_AFTER_GESUCHSPERIODE", Status.BAD_REQUEST);
+
+			}
+		});
+
 		betreuungsmitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
 			betreuungsmitteilung.getBetreuungspensen(),
 			mahlzeitenverguenstigungEnabled, locale));

@@ -13,13 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.finanzielle-situation {
-    .minus-margin {
-        margin-left: -5rem;
-        margin-right: -2.5rem;
-    }
-}
+import { ComponentFixture, TestBed} from '@angular/core/testing';
+import {DVInputContainerXComponent} from './dv-input-container-x.component';
 
-#iban {
-    text-transform: uppercase;
-}
+describe('GemeindeAngabenComponent', () => {
+    let component: DVInputContainerXComponent;
+    let fixture: ComponentFixture<DVInputContainerXComponent>;
+
+    beforeEach(async() => {
+        await TestBed.configureTestingModule({
+            declarations: [ DVInputContainerXComponent ]
+        })
+            .compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DVInputContainerXComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});

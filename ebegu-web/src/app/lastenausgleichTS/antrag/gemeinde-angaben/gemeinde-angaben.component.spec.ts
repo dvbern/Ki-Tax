@@ -17,15 +17,34 @@
 
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 import {of} from 'rxjs';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSEinstellung} from '../../../../models/TSEinstellung';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {WindowRef} from '../../../core/service/windowRef.service';
+import {MaterialModule} from '../../../shared/material.module';
+import {SharedModule} from '../../../shared/shared.module';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getLATSAngabenGemeindeContainer']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, [
+    'saveEinstellung',
+    'findEinstellung'
+]);
 
 describe('GemeindeAngabenComponent', () => {
     let component: GemeindeAngabenComponent;
@@ -34,18 +53,38 @@ describe('GemeindeAngabenComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
+                FormsModule,
+                ReactiveFormsModule,
+                SharedModule,
                 HttpClientModule,
-                TranslateModule.forRoot()
+                MaterialModule,
+                BrowserAnimationsModule,
             ],
             declarations: [GemeindeAngabenComponent],
-            providers: [{provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy}]
+            providers: [
+                WindowRef,
+                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungServiceSpy},
+            ],
+
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 
     beforeEach(() => {
+        const container = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
+        container.gemeinde = new TSGemeinde();
+        container.gesuchsperiode = new TSGesuchsperiode();
+        container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
+            of(container),
+        );
+        einstellungServiceSpy.findEinstellung.and.returnValue(
+            of(new TSEinstellung()).toPromise(),
         );
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
