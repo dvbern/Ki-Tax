@@ -123,6 +123,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div ng-if="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt === false"
+                             class="well well-status-warten minus-margin">
+                            <p class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
+                        </div>
                     </div>
                 </div>
 

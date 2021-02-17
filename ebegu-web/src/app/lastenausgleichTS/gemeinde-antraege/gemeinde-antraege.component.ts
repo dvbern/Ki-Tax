@@ -70,6 +70,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         predicate?: string,
         reverse?: boolean
     }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
+    public triedSending: boolean = false;
 
     public constructor(
         public readonly gemeindeAntragService: GemeindeAntragService,
@@ -116,6 +117,7 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public createAntrag(): void {
         if (!this.formGroup.valid) {
+            this.triedSending = true;
             return;
         }
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
