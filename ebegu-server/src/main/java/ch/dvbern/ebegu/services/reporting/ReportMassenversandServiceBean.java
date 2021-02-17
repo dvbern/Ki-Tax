@@ -87,9 +87,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	private GesuchService gesuchService;
 
 	@Inject
-	private KindService kindService;
-
-	@Inject
 	private MassenversandService massenversandService;
 
 
