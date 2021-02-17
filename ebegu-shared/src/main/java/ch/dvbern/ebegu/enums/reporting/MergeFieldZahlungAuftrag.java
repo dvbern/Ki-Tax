@@ -70,10 +70,12 @@ public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 
 	// Zusaetzliche Felder fuer die Totals-Page
 	repeatAntragsteller(new RepeatColMergeField<>("repeatAntragsteller", STRING_CONVERTER)),
+	repeatAntragsteller2(new RepeatColMergeField<>("repeatAntragsteller2", STRING_CONVERTER)),
 
 	institutionIdTitle(new SimpleMergeField<>("institutionIdTitle", STRING_CONVERTER)),
 	traegerschaftTitle(new SimpleMergeField<>("traegerschaftTitle", STRING_CONVERTER)),
 	antragstellerTitle(new RepeatValMergeField<>("antragstellerTitle", STRING_CONVERTER)),
+	antragsteller2Title(new RepeatValMergeField<>("antragsteller2Title", STRING_CONVERTER)),
 	auszahlungTitle(new SimpleMergeField<>("auszahlungTitle", STRING_CONVERTER)),
 	betragAusbezahltTitle(new SimpleMergeField<>("betragAusbezahltTitle", STRING_CONVERTER)),
 	ibanTitle(new SimpleMergeField<>("ibanTitle", STRING_CONVERTER)),
@@ -88,6 +90,7 @@ public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 	institutionId(new SimpleMergeField<>("institutionId", STRING_CONVERTER)),
 	traegerschaft(new SimpleMergeField<>("traegerschaft", STRING_CONVERTER)),
 	antragsteller(new RepeatValMergeField<>("antragsteller", STRING_CONVERTER)),
+	antragsteller2(new RepeatValMergeField<>("antragsteller2", STRING_CONVERTER)),
 	betragAusbezahlt(new SimpleMergeField<>("betragAusbezahlt", BIGDECIMAL_CONVERTER)),
 	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
 	kontoinhaber(new SimpleMergeField<>("kontoinhaber", STRING_CONVERTER)),

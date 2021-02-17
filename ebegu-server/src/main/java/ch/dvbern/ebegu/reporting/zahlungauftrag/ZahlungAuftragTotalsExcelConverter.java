@@ -78,6 +78,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 
 		// ColRepeat: Falls das Feld darunter leer ist, wird die Spalte ausgeblendet
 		excelMerger.addValue(MergeFieldZahlungAuftrag.repeatAntragsteller, EMPTY_STRING);
+		excelMerger.addValue(MergeFieldZahlungAuftrag.repeatAntragsteller2, EMPTY_STRING);
 
 		// Fuer die Titel brauchen wir den ZahlungslaufTyp. Dieser muss ja fuer alle Zahlungen gleich sein,
 		// also nehmen wir einfach die erste Zahlung
@@ -112,6 +113,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				}
 				if (zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
 					excelRowGroup.addValue(MergeFieldZahlungAuftrag.antragsteller, zahlung.getEmpfaengerName());
+					excelRowGroup.addValue(MergeFieldZahlungAuftrag.antragsteller2, zahlung.getEmpfaenger2Name());
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
@@ -142,6 +144,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
 		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
 			excelMerger.addValue(MergeFieldZahlungAuftrag.antragstellerTitle, ServerMessageUtil.getMessage("Reports_antragstellerTitle", locale));
+			excelMerger.addValue(MergeFieldZahlungAuftrag.antragsteller2Title, ServerMessageUtil.getMessage("Reports_antragsteller2Title", locale));
 		}
 		excelMerger.addValue(MergeFieldZahlungAuftrag.auszahlungTitle, ServerMessageUtil.getMessage("Reports_auszahlungTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.betragAusbezahltTitle, ServerMessageUtil.getMessage("Reports_betragAusbezahltTitle", locale));

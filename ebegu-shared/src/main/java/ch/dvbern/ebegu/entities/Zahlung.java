@@ -73,6 +73,11 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	private String empfaengerName; 	// Kann fuer verschiedene Zahlungslauftypen etwas unterschiedliches bedeuten
 
+	@Nullable
+	@Column(nullable = false, name = "empfaenger_2_name")
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	private String empfaenger2Name; 	// Kann fuer verschiedene Zahlungslauftypen etwas unterschiedliches bedeuten
+
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -124,6 +129,15 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 
 	public void setEmpfaengerName(@Nonnull String institutionName) {
 		this.empfaengerName = institutionName;
+	}
+
+	@Nullable
+	public String getEmpfaenger2Name() {
+		return empfaenger2Name;
+	}
+
+	public void setEmpfaenger2Name(@Nonnull String empfaenger2Name) {
+		this.empfaenger2Name = empfaenger2Name;
 	}
 
 	@Nonnull
