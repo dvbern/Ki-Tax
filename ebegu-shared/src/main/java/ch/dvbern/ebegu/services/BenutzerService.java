@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -80,6 +81,15 @@ public interface BenutzerService {
 	 * "UNKNOWN"
 	 */
 	Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft);
+
+	/**
+	 * Creates a new user of Role ADMIN_SOZIALDIENST with the given adminMail as email and as username and the given
+	 * Sozialdienst as the only Sozialdienst in the current Berechtigung, which will be valid from today on. Name
+	 * and Vorname will be set to "UNKNOWN"
+	 */
+	@Nonnull
+	Benutzer createAdminSozialdienstByEmail(@Nonnull String adminMail, @Nonnull Sozialdienst sozialdienst);
+
 
 	/**
 	 * Saves the given Benutzer and sends him an Einladungsemail

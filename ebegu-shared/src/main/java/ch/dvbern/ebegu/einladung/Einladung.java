@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Displayable;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -115,6 +116,11 @@ public class Einladung {
 	@Nonnull
 	public static Einladung forTraegerschaft(@Nonnull Benutzer eingeladener, @Nonnull Traegerschaft traegerschaft) {
 		return new Einladung(EinladungTyp.TRAEGERSCHAFT, eingeladener, traegerschaft);
+	}
+
+	@Nonnull
+	public static Einladung forSozialdienst(@Nonnull Benutzer eingeladener, @Nonnull Sozialdienst sozialdienst) {
+		return new Einladung(EinladungTyp.SOZIALDIENST, eingeladener, sozialdienst);
 	}
 
 	@Nonnull

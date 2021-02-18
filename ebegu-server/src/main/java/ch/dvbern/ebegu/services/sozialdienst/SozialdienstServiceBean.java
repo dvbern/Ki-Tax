@@ -24,9 +24,16 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EntityExistsException;
@@ -95,5 +102,33 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 	@Override
 	public Collection<Sozialdienst> getAllSozialdienste() {
 		return criteriaQueryHelper.getAllOrdered(Sozialdienst.class, Sozialdienst_.name);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<SozialdienstStammdaten> getSozialdienstStammdaten(String id) {
+		requireNonNull(id, "Sozialdienst Stammdaten id muss gesetzt sein");
+		SozialdienstStammdaten stammdaten = persistence.find(SozialdienstStammdaten.class, id);
+		return Optional.ofNullable(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<SozialdienstStammdaten> getSozialdienstStammdatenBySozialdienstId(@Nonnull String sozialdienstId) {
+		requireNonNull(sozialdienstId, "Gemeinde id muss gesetzt sein");
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<SozialdienstStammdaten> query = cb.createQuery(SozialdienstStammdaten.class);
+		Root<SozialdienstStammdaten> root = query.from(SozialdienstStammdaten.class);
+		Predicate predicate = cb.equal(root.get(SozialdienstStammdaten_.sozialdienst).get(AbstractEntity_.id), sozialdienstId);
+		query.where(predicate);
+		SozialdienstStammdaten stammdaten = persistence.getCriteriaSingleResult(query);
+		return Optional.ofNullable(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public SozialdienstStammdaten saveSozialdienstStammdaten(@Nonnull SozialdienstStammdaten stammdaten) {
+		requireNonNull(stammdaten);
+		return persistence.merge(stammdaten);
 	}
 }
