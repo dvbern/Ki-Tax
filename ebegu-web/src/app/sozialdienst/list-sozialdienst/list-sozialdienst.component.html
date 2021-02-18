@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -14,32 +14,30 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-
-<div class="traegerschaftView admin-modul" flex="auto">
+<div class="admin-modul" flex="auto">
 
     <div class="col-md-8 col-md-offset-2">
 
-        <h1 class="access-for-all-title" translate>AFA_TRAEGERSCHAFTVERWALTUNG</h1>
+        <h1 class="access-for-all-title" translate>AFA_SOZIALDIENSTEVERWALTUNG</h1>
         <div class="view-title">
-            <h2 translate>TRAEGERSCHAFTEN</h2>
+            <h2 translate>SOZIALDIENSTE</h2>
             <hr class="header">
         </div>
         <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
                         [data$]="antragList$"
-                        (openEvent)="openTraegerschaft($event)"
-                        (removeEvent)="removeTraegerschaft($event)"
-                        [statusPrefix]="'TRAEGERSCHAFT_STATUS'"
-                        [columnName]="'TRAEGERSCHAFT'"
-        ></dv-search-list>
+                        (openEvent)="open($event)"
+                        [statusPrefix]="'SOZIALDIENST_STATUS'"
+                        [columnName]="'SOZIALDIENST'"
+                        ></dv-search-list>
 
-        <div class="margin-top-50 row">
+        <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
+        <div *ngIf="hatBerechtigungHinzufuegen()"
+             class="margin-top-50 row">
             <div class="col-md-3">
-                <!-- Knopf unterhalb der Tabelle zum hinzufügen einer neuen Traegerschaft -->
-                <dv-loading-button (buttonClick)="addTraegerschaft();">
-                    <span translate>TRAEGERSCHAFT_HINZUFUEGEN</span>
+                <dv-loading-button (buttonClick)="addSozialdienst();">
+                    <span translate>SOZIALDIENST_HINZUFUEGEN</span>
                 </dv-loading-button>
             </div>
         </div>
-
     </div>
 </div>

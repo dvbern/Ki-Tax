@@ -120,6 +120,7 @@ import {DVTrimEmpty} from './directive/dv-trim-empty/dv-trim-empty';
 import {DvUserSelectConfig} from './directive/dv-userselect/dv-userselect';
 import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
+import {DvSearchListComponent} from './dv-search-list/dv-search-list.component';
 import {ERRORS_JS_MODULE} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
@@ -304,6 +305,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
+    .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)

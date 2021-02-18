@@ -32,6 +32,7 @@ import {NotrechtModule} from './notrecht/notrecht.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
+import {SozialdienstModule} from './sozialdienst/sozialdienst.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 import {WelcomeModule} from './welcome/welcome.module';
 import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
@@ -60,7 +61,8 @@ import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
         WelcomeModule,
         NotrechtModule,
         LastenausgleichTSModule,
-        WizardstepXModule
+        WizardstepXModule,
+        SozialdienstModule
     ],
 })
 

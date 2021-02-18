@@ -15,14 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import {TranslateService} from '@ngx-translate/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
 import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -30,27 +27,26 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../models/TSBerechtigung';
 import {TSInstitution} from '../../../models/TSInstitution';
-import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
     selector: 'dv-institution-list',
     templateUrl: './institution-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
+export class InstitutionListComponent extends AbstractAdminViewController implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
 
-    public displayedColumns: string[] = [];
-    public dataSource: MatTableDataSource<TSInstitutionListDTO>;
+    public hiddenDVTableColumns = [''];
+
+    public antragList$: Observable<DVEntitaetListItem[]>;
 
     @ViewChild(NgForm) public form: NgForm;
-    @ViewChild(MatSort, { static: true }) public sort: MatSort;
-    @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -58,45 +54,42 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
-        private readonly translate: TranslateService,
+        private readonly cd: ChangeDetectorRef,
     ) {
         super(authServiceRS);
     }
 
     public ngOnInit(): void {
-        this.updateInstitutionenList();
-        this.sortTable();
-        this.setDisplayedColumns();
+        this.setHiddenColumns();
+        this.loadData();
     }
 
-    public ngAfterViewInit(): void {
-        if (!this.dataSource) {
-            return;
-        }
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+    public loadData(): void {
+        const deleteAllowed = this.isDeleteAllowed();
+        this.antragList$ = from(this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
+            .then(institutionList => {
+                const entitaetListItems: DVEntitaetListItem[] = [];
+                institutionList.forEach(
+                    institution => {
+                        const dvListItem = {
+                            id: institution.id,
+                            name: institution.name,
+                            status: institution.stammdatenCheckRequired
+                                ? 'CHECK_REQUIRED'
+                                : institution.status.toString(),
+                            type: institution.betreuungsangebotTyp,
+                            canEdit: this.hatBerechtigungEditieren(institution),
+                            canRemove: deleteAllowed,
+                        };
+                        entitaetListItems.push(dvListItem);
+                    },
+                );
+                this.cd.markForCheck();
+                return entitaetListItems;
+            }));
     }
 
-    public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
-            .then(insti => {
-                this.dataSource = new MatTableDataSource(insti);
-                this.dataSource.paginator = this.paginator;
-                this.changeDetectorRef.markForCheck();
-                this.dataSource.sort = this.sort;
-            });
-    }
-
-    private sortTable(): void {
-        this.sort.sort({
-                id: 'name',
-                start: 'asc',
-                disableClear: false,
-            },
-        );
-    }
-
-    public removeInstitution(institution: any): void {
+    public removeInstitution(institutionEventId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE',
@@ -107,13 +100,13 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                     if (!userAccepted) {
                         return;
                     }
-                    this.institutionRS.removeInstitution(institution.id).then(() => {
-                        this.updateInstitutionenList();
+                    this.institutionRS.removeInstitution(institutionEventId).then(() => {
+                        this.loadData();
                     });
                 },
                 () => {
                     this.log.error('error in observable. removeInstitution');
-                }
+                },
             );
     }
 
@@ -124,14 +117,14 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     public createInstitutionTS(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
-            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE]
+            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
         });
     }
 
     public createInstitutionFI(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.FERIENINSEL,
-            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL]
+            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL],
         });
     }
 
@@ -143,13 +136,10 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
      * Institutions in status EINGELADEN cannot be opened from the list. Only Exception: the InstitutionsAdmin for the
      * Institution in question can always open the Institution.
      */
-    public openInstitution(institution: TSInstitution): void {
-        if (this.hatBerechtigungEditieren(institution)) {
-            this.$state.go('institution.edit', {
-                institutionId: institution.id,
-            });
-        }
-        return;
+    public openInstitution(institutionEventId: string): void {
+        this.$state.go('institution.edit', {
+            institutionId: institutionEventId,
+        });
     }
 
     public hatBerechtigungEditieren(institution: TSInstitution): boolean {
@@ -203,31 +193,13 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         return this.isSuperAdmin();
     }
 
-    public showNoContentMessage(): boolean {
-        return !this.dataSource || this.dataSource.data.length === 0;
-    }
-
-    private setDisplayedColumns(): void {
-        this.displayedColumns = this.isDeleteAllowed()
-            ? ['name', 'status', 'type', 'detail', 'remove']
-            : ['name', 'status', 'type', 'detail'];
+    private setHiddenColumns(): void {
+        this.hiddenDVTableColumns = this.isDeleteAllowed()
+            ? ['institutionCount']
+            : ['institutionCount', 'remove'];
     }
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
-    }
-
-    public doFilter = (value: string) => {
-        if (this.dataSource) {
-            this.dataSource.filter = value.trim().toLocaleLowerCase();
-        }
-    }
-
-    public translateStatus(institution: TSInstitutionListDTO): string {
-        const translatedStatus = this.translate.instant('INSTITUTION_STATUS_' + institution.status);
-        const translatedCheck = institution.stammdatenCheckRequired
-            ? this.translate.instant('INSTITUTION_STATUS_CHECK_REQUIRED')
-            : '';
-        return `${translatedStatus} ${translatedCheck}`;
     }
 }
