@@ -20,8 +20,10 @@
             <ul class="nav navbar-nav no-margin">
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <a id="tour_menu_pendenzen" uiSref="pendenzen.list-view" [textContent]="'MENU_PENDENZEN' | translate"></a>
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()">
+                    <a id="tour_menu_pendenzen"
+                       uiSref="pendenzen.list-view"
+                       [textContent]="'MENU_PENDENZEN' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
@@ -62,7 +64,7 @@
                 </li>
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()">
                     <dv-posteingang uiSref="posteingang.view"></dv-posteingang>
                 </li>
                 <li uiSrefActive="active"
@@ -76,10 +78,23 @@
 
         <div id="navbar_falleroeffnen" class="dv-ng-navbar-element-fall-eroeffnen" uiSrefActive="active">
             <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAmtOrSozialdienstRolle()">
                 <i class="fa fa-plus-square"></i>
                 <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
             </button>
+
+            <button mat-button [matMenuTriggerFor]="menu" class="dv-btn dv-ng-navbar-button" id="navbar_menufalleroeffnen"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getSuperAdminRoles()">
+                <i class="fa fa-plus-square"></i>
+            </button>
+            <mat-menu #menu="matMenu" class="user-menu" xPosition="before" tabindex="-1">
+                <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
+                    <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
+                </button>
+                <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
+                    <span [textContent]="'MENU_SOZIALDIENST_FALL_EROEFFNEN' | translate"></span>
+                </button>
+            </mat-menu>
         </div>
     </div>
 </nav>

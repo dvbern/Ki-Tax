@@ -62,6 +62,13 @@ export class SozialdienstRS {
         });
     }
 
+    public getSozialdienstForPrincipal(): IPromise<TSSozialdienst[]> {
+        return this.$http.get<any[]>(this.serviceURL + '/').then(response => {
+            this.$log.debug('PARSING Sozialdienst REST array object', response.data);
+            return this.ebeguRestUtil.parseSozialdienstList(response.data);
+        });
+    }
+
     public getSozialdienstStammdaten(sozialdienstId: string): IPromise<TSSozialdienstStammdaten> {
         return this.$http.get<any[]>(`${this.serviceURL}/stammdaten/${encodeURIComponent(sozialdienstId)}`)
             .then(response => {

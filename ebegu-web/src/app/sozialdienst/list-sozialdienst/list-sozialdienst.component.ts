@@ -16,8 +16,10 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSSozialdienst} from '../../../models/sozialdienst/TSSozialdienst';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
@@ -65,7 +67,8 @@ export class ListSozialdienstComponent implements OnInit {
     private loadData(): void {
         // For now only SuperAdmin
         const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForSozialdienst());
-        this.antragList$ = from(this.sozialdienstRS.getSozialdienstList().then(sozialdienstList => {
+
+        this.antragList$ = from(this.getSozialdienstForPrincipal().then(sozialdienstList => {
             const entitaetListItems: DVEntitaetListItem[] = [];
             sozialdienstList.forEach(
                 sozialdienst => {
@@ -81,5 +84,14 @@ export class ListSozialdienstComponent implements OnInit {
             );
             return entitaetListItems;
         }));
+    }
+
+    private getSozialdienstForPrincipal(): IPromise<TSSozialdienst[]> {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+            const sozialDienstList =
+                [this.authServiceRS.getPrincipal().currentBerechtigung.sozialdienst];
+            return Promise.resolve(sozialDienstList);
+        }
+        return this.sozialdienstRS.getSozialdienstList();
     }
 }

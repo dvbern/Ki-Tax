@@ -19,6 +19,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
@@ -92,6 +93,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
             },
         }),
         GuidedTourModule.forRoot(),
+        MatMenuModule,
     ],
     declarations: [
         AccordionDirective,
@@ -139,8 +141,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         SavingInfo,
-        DVInputContainerXComponent
-        DvSearchListComponent
+        DVInputContainerXComponent,
+        DvSearchListComponent,
     ],
     exports: [
         CommonModule,

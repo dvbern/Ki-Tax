@@ -135,9 +135,28 @@
     font-size: 1.6rem;
     height: 100%;
     letter-spacing: 0.116rem;
+
     .fa {
         margin-right: 1rem;
     }
+
+    &:focus {
+        outline: none;
+    }
+
+    &[disabled], &[disabled]:hover {
+        background: @contrast;
+        color: @contrast-lightest;
+    }
+
+    .md-button:not([disabled]):hover, &:focus {
+        background: @contrast;
+    }
+
+}
+
+::ng-deep .mat-button-focus-overlay {
+    background: @contrast;
 }
 
 .dv-navbar-header {
