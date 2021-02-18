@@ -45,6 +45,7 @@ import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {DvSearchListComponent} from '../core/dv-search-list/dv-search-list.component';
 import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
 import {NewUserSelectDirective} from '../core/new-antrag-list/new-user-select.directive';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
@@ -137,6 +138,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvLoadingButtonXDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
+        DvSearchListComponent,
         SavingInfo,
         DVInputContainerXComponent
     ],
@@ -185,6 +187,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
+        DvSearchListComponent,
         SavingInfo,
         DVInputContainerXComponent,
     ],

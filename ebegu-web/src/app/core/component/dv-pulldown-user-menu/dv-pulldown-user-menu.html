@@ -91,6 +91,13 @@
                 </md-button>
             </md-menu-item>
 
+            <!-- Sozialdienste -->
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                <md-button ui-sref-active="active" ui-sref="sozialdienst.list" aria-label="{{'MENU_SOZIALDIENST' | translate}}">
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="MENU_SOZIALDIENST" aria-hidden></a>
+                </md-button>
+            </md-menu-item>
+
             <!-- Notrecht -->
             <div ng-if="vm.notrechtVisible">
                 <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForNotrecht()">

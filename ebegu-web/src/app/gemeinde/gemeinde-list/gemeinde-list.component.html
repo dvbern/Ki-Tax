@@ -25,54 +25,12 @@
             <hr class="header">
         </div>
 
-        <div class="filter">
-            <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
-        </div>
-
-        <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
-        <div class="table-responsive gemeinden-table">
-            <mat-table #table [dataSource]="dataSource" matSort>
-
-                <!-- Column Name -->
-                <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'GEMEINDE' | translate}}
-                    </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let gemeinde"
-                              (click)="openGemeinde(gemeinde)">
-                        {{gemeinde.name}}
-                    </mat-cell>
-                </ng-container>
-
-                <!-- Column Status -->
-                <ng-container matColumnDef="status">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'STATUS' | translate}}
-                    </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let gemeinde"
-                              (click)="openGemeinde(gemeinde)">
-                        {{'GEMEINDE_STATUS_' + gemeinde.status | translate}}
-                    </mat-cell>
-                </ng-container>
-
-                <!-- Column detail -->
-                <ng-container matColumnDef="detail">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let gemeinde">
-                        <button class="dv-btn dv-btn-sm" (click)="openGemeinde(gemeinde)" *ngIf="hatBerechtigungEditieren(gemeinde)">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                    </mat-cell>
-                </ng-container>
-
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            </mat-table>
-
-            <div class="mat-row" *ngIf="showNoContentMessage()"
-                 [textContent]="'GEMEINDEN_NOCH_KEINE' | translate">
-            </div>
-        </div>
+        <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
+                        [data$]="antragList$"
+                        (openEvent)="openGemeinde($event)"
+                        [statusPrefix]="'GEMEINDE_STATUS'"
+                        [columnName]="'GEMEINDE'"
+        ></dv-search-list>
 
         <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
         <div *ngIf="hatBerechtigungHinzufuegen()"
