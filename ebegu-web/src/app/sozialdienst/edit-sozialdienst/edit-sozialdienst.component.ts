@@ -18,7 +18,7 @@ import {Component, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList, Cha
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
