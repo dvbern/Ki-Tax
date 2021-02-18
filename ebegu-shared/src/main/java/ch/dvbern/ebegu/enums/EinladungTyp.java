@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Displayable;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 
 /**
  * This Enum has values that indicate through which method the user is being invited to Kibon.
@@ -42,7 +43,10 @@ public enum EinladungTyp {
 	INSTITUTION(Institution.class),
 
 	// When a new Traegerschaft is created a user must be invited as the admin of this Traegerschaft
-	TRAEGERSCHAFT(Traegerschaft.class);
+	TRAEGERSCHAFT(Traegerschaft.class),
+
+	// When a new Sozialdienst is created a user must be invited as the admin of this Sozialdienst
+	SOZIALDIENST(Sozialdienst.class);
 
 	@Nullable
 	private final Class<? extends Displayable> associatedEntityClass;
