@@ -91,6 +91,6 @@ export class ListSozialdienstComponent implements OnInit {
                 [this.authServiceRS.getPrincipal().currentBerechtigung.sozialdienst];
             return Promise.resolve(sozialDienstList);
         }
-        return this.sozialdienstRS.getSozialdienstList();
+        return this.sozialdienstRS.getSozialdienstList().toPromise();
     }
 }
