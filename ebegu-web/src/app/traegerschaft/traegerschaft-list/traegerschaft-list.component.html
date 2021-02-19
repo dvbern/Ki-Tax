@@ -24,69 +24,13 @@
             <h2 translate>TRAEGERSCHAFTEN</h2>
             <hr class="header">
         </div>
-
-        <div class="filter">
-            <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
-        </div>
-
-        <!--Tabelle zum anzeigen aller Traegerschaften-->
-        <div class="table-responsive traegerschaft-table">
-
-            <mat-table #table [dataSource]="dataSource" matSort>
-                <!-- Column Name -->
-                <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'TRAEGERSCHAFT' | translate}}
-                    </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let traegerschaft"
-                              (click)="openTraegerschaft(traegerschaft)">
-                        {{traegerschaft.name}}
-                    </mat-cell>
-                </ng-container>
-
-                <!-- Institution Count -->
-                <ng-container matColumnDef="institutionCount">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'INSTITUTIONEN' | translate}}
-                    </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let traegerschaft"
-                              (click)="openTraegerschaft(traegerschaft)">
-                        {{traegerschaft.institutionCount}}
-                    </mat-cell>
-                </ng-container>
-
-                <!-- Column detail -->
-                <ng-container matColumnDef="detail">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let traegerschaft">
-                        <dv-loading-button buttonClass="dv-btn-sm"
-                                           (buttonClick)="openTraegerschaft(traegerschaft)">
-                            <i class="fa fa-eye"></i>
-                        </dv-loading-button>
-                    </mat-cell>
-                </ng-container>
-
-                <!-- Column remove -->
-                <ng-container matColumnDef="remove" *ngIf="isDeleteAllowed()">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let traegerschaft">
-                        <dv-loading-button buttonClass="dv-btn-sm"
-                                           (buttonClick)="removeTraegerschaft(traegerschaft)">
-                            <i class="fa fa-trash"></i>
-                        </dv-loading-button>
-                    </mat-cell>
-                </ng-container>
-
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            </mat-table>
-        </div>
-
-        <div class="mat-row" *ngIf="showNoContentMessage()"
-             [textContent]="'TRAEGERSCHAFTEN_NOCH_KEINE' | translate">
-        </div>
-
-
+        <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
+                        [data$]="antragList$"
+                        (openEvent)="openTraegerschaft($event)"
+                        (removeEvent)="removeTraegerschaft($event)"
+                        [statusPrefix]="'TRAEGERSCHAFT_STATUS'"
+                        [columnName]="'TRAEGERSCHAFT'"
+        ></dv-search-list>
 
         <div class="margin-top-50 row">
             <div class="col-md-3">

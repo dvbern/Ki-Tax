@@ -15,38 +15,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
 import {StateService} from '@uirouter/core';
-import * as angular from 'angular';
-import {Subject} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {LogFactory} from '../../core/logging/LogFactory';
-
-const LOG = LogFactory.createLog('GemeindeListComponent');
+import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
     selector: 'dv-gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GemeindeListComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
+export class GemeindeListComponent extends AbstractAdminViewController implements OnInit {
+    public hiddenDVTableColumns = [
+        'institutionCount',
+        'type',
+        'remove',
+    ];
 
-    public displayedColumns: string[] = ['name', 'status', 'detail'];
-    public gemeinde: TSGemeinde = undefined;
-    public dataSource: MatTableDataSource<TSGemeinde>;
-    private readonly unsubscribe$ = new Subject<void>();
+    public antragList$: Observable<DVEntitaetListItem[]>;
 
     @ViewChild(NgForm) public form: NgForm;
-    @ViewChild(MatSort, { static: true }) public sort: MatSort;
+    @ViewChild(MatSort, {static: true}) public sort: MatSort;
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -59,51 +63,30 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
 
     public ngOnInit(): void {
         this.updateGemeindenList();
-        this.sortTable();
-    }
-
-    public ngAfterViewInit(): void {
-        this.dataSource.sort = this.sort;
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     public updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
-            .pipe(map(gemeinden => {
-                    const dataSource = new MatTableDataSource(gemeinden);
-                    return dataSource;
-                }),
-                takeUntil(this.unsubscribe$),
-            )
-            .subscribe(dataSource => {
-                    this.dataSource = dataSource;
-                    this.changeDetectorRef.markForCheck();
-                },
-                err => LOG.error(err));
+        this.antragList$ = this.gemeindeRS.getGemeindenForPrincipal$().pipe(
+            map(
+            gemeindeList => {
+                const entitaetListItems: DVEntitaetListItem[] = [];
+                gemeindeList.forEach(
+                    gemeinde => {
+                        const dvListItem = {
+                            id: gemeinde.id,
+                            name: gemeinde.name,
+                            status: gemeinde.status.toString(),
+                            canEdit: this.hatBerechtigungEditieren(gemeinde),
+                        };
+                        entitaetListItems.push(dvListItem);
+                    },
+                );
+                return entitaetListItems;
+            }));
     }
 
-    /**
-     * It sorts the table by default using the variable sort.
-     */
-    private sortTable(): void {
-        this.sort.sort({
-                id: 'name',
-                start: 'asc',
-                disableClear: false,
-            },
-        );
-    }
-
-    public openGemeinde(selected: TSGemeinde): void {
-        if (!this.hatBerechtigungEditieren(selected)) {
-            return;
-        }
-        this.gemeinde = angular.copy(selected);
-        this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
+    public openGemeinde(id: string): void {
+        this.$state.go('gemeinde.edit', {gemeindeId: id});
         return;
     }
 
@@ -115,19 +98,11 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
-    public hatBerechtigungEditieren(selected: TSGemeinde): boolean {
+    public hatBerechtigungEditieren(gemeinde: TSGemeinde): boolean {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
-            return selected.status === TSGemeindeStatus.AKTIV;
+            return gemeinde.status === TSGemeindeStatus.AKTIV;
         }
         // Alle anderen Rollen, die die Institution sehen, duerfen sie oeffnen
         return true;
-    }
-
-    public showNoContentMessage(): boolean {
-        return !this.dataSource || this.dataSource.data.length === 0;
-    }
-
-    public doFilter(value: string): void {
-        this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 }

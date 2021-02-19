@@ -31,6 +31,9 @@ public interface ExportService {
 	 * @deprecated the classical file export as known from ki-tax will be discontinued. Instead, the
 	 * kibon-exchange-api should be used by certified applications to import Verfuegungen.
 	 * The entire dataexport.v1 package is deprecated.
+	 *
+	 * But we cannot remove this function for the moment, since one external application is still using
+	 * this export and we are obligated by the contract not to remove functions that used to exist.
 	 */
 	@Deprecated
 	UploadFileInfo exportVerfuegungOfBetreuungAsFile(String betreuungID);

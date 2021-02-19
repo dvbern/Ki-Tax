@@ -34,7 +34,7 @@ describe('TraegerschaftListComponent', () => {
 
   beforeEach(waitForAsync(() => {
       const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
-          ['createTraegerschaft']);
+          ['createTraegerschaft', 'getAllActiveTraegerschaften']);
       const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
       const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'isRole']);
       const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
@@ -59,6 +59,7 @@ describe('TraegerschaftListComponent', () => {
       })
           .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
           .compileComponents();
+      traegerschaftServiceSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
   }));
 
   beforeEach(() => {
