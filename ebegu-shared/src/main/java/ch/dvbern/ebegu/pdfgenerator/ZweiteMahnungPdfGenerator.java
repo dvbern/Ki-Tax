@@ -57,7 +57,12 @@ public class ZweiteMahnungPdfGenerator extends MahnungPdfGenerator {
 	@Override
 	protected void createSeite2(@Nonnull Document document, @Nonnull List<Element> seite2Paragraphs) {
 		seite2Paragraphs.add(PdfUtil.createParagraph(translate(ZWEITE_MAHNUNG_SEITE_2_PARAGRAPH_1)));
-		seite2Paragraphs.add(PdfUtil.createParagraph(translate(ZWEITE_MAHNUNG_SEITE_2_PARAGRAPH_2, gemeindeStammdaten.getTelefon(), gemeindeStammdaten.getMail())));
+		String paragraph2 = translate(
+			ZWEITE_MAHNUNG_SEITE_2_PARAGRAPH_2,
+			gemeindeStammdaten.getTelefonForGesuch(getGesuch()),
+			gemeindeStammdaten.getEmailForGesuch(getGesuch())
+		);
+		seite2Paragraphs.add(PdfUtil.createParagraph(paragraph2));
 	}
 
 	@Nonnull

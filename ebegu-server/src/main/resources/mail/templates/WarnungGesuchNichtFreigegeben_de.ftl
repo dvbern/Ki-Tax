@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="anzahlTage" type="java.lang.String" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
+<#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${gesuchsteller.mail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Gesuch nicht abgeschlossen</@base64Header>
@@ -32,9 +33,12 @@ ${templateConfiguration.mailCss}
 		dem Einsenden der Freigabequittung als eingereicht und kann zuvor durch die Gemeinde nicht bearbeitet werden.
         Ohne eine Freigabe innert ${anzahlTage} Tagen erfolgt eine automatische Löschung.
 	</p>
+	<#if tsOnlyAntrag==false>
+	<p>
         Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
         und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
 	</p>
+    </#if>
 	<p>
 		Freundliche Grüsse <br/>
 		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
