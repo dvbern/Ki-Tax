@@ -74,7 +74,7 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	private String empfaengerName; 	// Kann fuer verschiedene Zahlungslauftypen etwas unterschiedliches bedeuten
 
 	@Nullable
-	@Column(nullable = false, name = "empfaenger_2_name")
+	@Column(nullable = true, name = "empfaenger_2_name")
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	private String empfaenger2Name; 	// Kann fuer verschiedene Zahlungslauftypen etwas unterschiedliches bedeuten
 
