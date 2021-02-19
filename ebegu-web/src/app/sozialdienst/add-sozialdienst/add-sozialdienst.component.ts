@@ -64,10 +64,10 @@ export class AddSozialdienstComponent implements OnInit {
             this.sozialdienst,
             this.adminEmail,
         )
-            .then(neueSozialdienst => {
+            .subscribe(neueSozialdienst => {
                 this.sozialdienst = neueSozialdienst;
                 this.navigateBack();
-            }).catch((exception: TSExceptionReport[]) => {
+            }, (exception: TSExceptionReport[]) => {
             if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
                 const dialogConfig = new MatDialogConfig();
@@ -115,9 +115,9 @@ export class AddSozialdienstComponent implements OnInit {
             this.sozialdienst,
             this.adminEmail,
         )
-            .then(neueSozialdienst => {
+            .subscribe(neueSozialdienst => {
                 this.sozialdienst = neueSozialdienst;
                 this.navigateBack();
-            });
+            }, () => this.errorService.addMesageAsError('SOZIALDIENST_PERSIST_ERROR'));
     }
 }

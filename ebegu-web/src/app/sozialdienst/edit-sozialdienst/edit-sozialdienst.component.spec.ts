@@ -18,6 +18,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
@@ -34,6 +35,7 @@ describe('EditSozialdienstComponent', () => {
     const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
         ['getSozialdienstStammdaten']);
     const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -49,6 +51,7 @@ describe('EditSozialdienstComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy}
             ],
         })
             .compileComponents();

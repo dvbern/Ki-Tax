@@ -16,8 +16,8 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {IPromise} from 'angular';
 import {from, Observable} from 'rxjs';
+import {IPromise} from 'angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSSozialdienst} from '../../../models/sozialdienst/TSSozialdienst';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -67,7 +67,6 @@ export class ListSozialdienstComponent implements OnInit {
     private loadData(): void {
         // For now only SuperAdmin
         const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForSozialdienst());
-
         this.antragList$ = from(this.getSozialdienstForPrincipal().then(sozialdienstList => {
             const entitaetListItems: DVEntitaetListItem[] = [];
             sozialdienstList.forEach(

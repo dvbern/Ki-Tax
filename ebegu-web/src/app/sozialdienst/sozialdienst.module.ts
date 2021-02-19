@@ -27,7 +27,7 @@ import { EditSozialdienstComponent } from './edit-sozialdienst/edit-sozialdienst
     imports: [
         SharedModule,
         SozialdienstRoutingModule,
-    ],
+    ]
 })
 export class SozialdienstModule {
 }

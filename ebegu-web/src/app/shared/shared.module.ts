@@ -140,9 +140,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvLoadingButtonXDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
-        SavingInfo,
-        DVInputContainerXComponent,
         DvSearchListComponent,
+        SavingInfo,
+        DVInputContainerXComponent
     ],
     exports: [
         CommonModule,
@@ -189,9 +189,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
+        DvSearchListComponent,
         SavingInfo,
         DVInputContainerXComponent,
-        DvSearchListComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
