@@ -28,6 +28,7 @@ import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
@@ -142,7 +143,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvRadioContainerXComponent,
         DvSearchListComponent,
         SavingInfo,
-        DVInputContainerXComponent
+        DVInputContainerXComponent,
+        DvBisherXComponent,
     ],
     exports: [
         CommonModule,
@@ -192,6 +194,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvSearchListComponent,
         SavingInfo,
         DVInputContainerXComponent,
+        DvBisherXComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
