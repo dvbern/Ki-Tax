@@ -30,6 +30,7 @@ import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeinde
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozaildienstStammdaten';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
+import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -818,6 +819,7 @@ export class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restFall, fall);
             restFall.fallNummer = fall.fallNummer;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
+            restFall.sozialdienstFall = this.sozialdienstFallToRestObject({}, fall.sozialdienstFall);
             return restFall;
         }
         return undefined;
@@ -830,6 +832,8 @@ export class EbeguRestUtil {
             fallTS.fallNummer = fallFromServer.fallNummer;
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
             fallTS.besitzer = this.parseUser(new TSBenutzer(), fallFromServer.besitzer);
+            fallTS.sozialdienstFall =
+                this.parseSozialdienstFall(new TSSozialdienstFall(), fallFromServer.sozialdienstFall);
             return fallTS;
         }
         return undefined;
@@ -4676,7 +4680,7 @@ export class EbeguRestUtil {
     public sozialdienstStammdatenToRestObject(
         restStammdaten: any,
         stammdaten: TSSozialdienstStammdaten,
-    ): TSSozialdienstStammdaten | undefined {
+    ): any {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
 
@@ -4741,5 +4745,39 @@ export class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseSozialdienst(new TSSozialdienst(), item))
             : [this.parseSozialdienst(new TSSozialdienst(), data)];
+    }
+
+    public sozialdienstFallToRestObject(
+        restSozialdienstFall: any,
+        sozialdienstFall: TSSozialdienstFall,
+    ): any {
+        if (sozialdienstFall) {
+            this.abstractEntityToRestObject(restSozialdienstFall, sozialdienstFall);
+
+            restSozialdienstFall.sozialdienst = this.sozialdienstToRestObject({}, sozialdienstFall.sozialdienst);
+            restSozialdienstFall.adresse = this.adresseToRestObject({}, sozialdienstFall.adresse);
+            restSozialdienstFall.name = sozialdienstFall.name;
+            restSozialdienstFall.geburtsdatum = sozialdienstFall.geburtsdatum;
+            restSozialdienstFall.status = sozialdienstFall.status;
+            return restSozialdienstFall;
+        }
+        return undefined;
+    }
+
+    public parseSozialdienstFall(
+        sozialdienstFallTS: TSSozialdienstFall,
+        sozialdienstFallFromServer: any,
+    ): TSSozialdienstFall | undefined {
+        if (sozialdienstFallFromServer) {
+            this.parseAbstractEntity(sozialdienstFallTS, sozialdienstFallFromServer);
+            sozialdienstFallTS.sozialdienst =
+                this.parseSozialdienst(new TSSozialdienst(), sozialdienstFallFromServer.sozialdienst);
+            sozialdienstFallTS.adresse = this.parseAdresse(new TSAdresse(), sozialdienstFallFromServer.adresse);
+            sozialdienstFallTS.name = sozialdienstFallFromServer.name;
+            sozialdienstFallTS.geburtsdatum = sozialdienstFallFromServer.geburtsdatum;
+            sozialdienstFallTS.status = sozialdienstFallFromServer.status;
+            return sozialdienstFallTS;
+        }
+        return undefined;
     }
 }

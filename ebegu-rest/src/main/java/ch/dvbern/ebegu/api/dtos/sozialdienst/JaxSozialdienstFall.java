@@ -48,6 +48,9 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 	@NotNull
 	private JaxAdresse adresse;
 
+	@NotNull
+	private JaxSozialdienst sozialdienst;
+
 	public JaxAdresse getAdresse() {
 		return adresse;
 	}
@@ -79,5 +82,13 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public JaxSozialdienst getSozialdienst() {
+		return sozialdienst;
+	}
+
+	public void setSozialdienst(JaxSozialdienst jaxSozialdienst) {
+		this.sozialdienst = jaxSozialdienst;
 	}
 }

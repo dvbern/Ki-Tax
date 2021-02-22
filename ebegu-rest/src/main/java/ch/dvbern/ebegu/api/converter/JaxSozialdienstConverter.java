@@ -22,9 +22,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFall;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstStammdaten;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.SozialdienstService;
 
 import static java.util.Objects.requireNonNull;
@@ -36,7 +40,9 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 	private SozialdienstService sozialdienstService;
 
 	@Nonnull
-	public Sozialdienst sozialdienstToEntity(@Nonnull final JaxSozialdienst jaxSozialdienst, @Nonnull final Sozialdienst sozialdienst) {
+	public Sozialdienst sozialdienstToEntity(
+		@Nonnull final JaxSozialdienst jaxSozialdienst,
+		@Nonnull final Sozialdienst sozialdienst) {
 		convertAbstractFieldsToEntity(jaxSozialdienst, sozialdienst);
 		sozialdienst.setName(jaxSozialdienst.getName());
 		sozialdienst.setStatus(jaxSozialdienst.getStatus());
@@ -90,5 +96,35 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 
 		return jaxStammdaten;
+	}
+
+	@Nonnull
+	public SozialdienstFall sozialdienstFallToEntity(
+		@Nonnull final JaxSozialdienstFall jaxSozialdienstFall,
+		@Nonnull final SozialdienstFall sozialdienstFall) {
+		convertAbstractFieldsToEntity(jaxSozialdienstFall, sozialdienstFall);
+		sozialdienstFall.setName(jaxSozialdienstFall.getName());
+		sozialdienstFall.setStatus(jaxSozialdienstFall.getStatus());
+		adresseToEntity(jaxSozialdienstFall.getAdresse(), sozialdienstFall.getAdresse());
+		sozialdienstFall.setGeburtsdatum(jaxSozialdienstFall.getGeburtsdatum());
+		requireNonNull(jaxSozialdienstFall.getSozialdienst().getId());
+		Sozialdienst sozialdienst = sozialdienstService.findSozialdienst(jaxSozialdienstFall.getSozialdienst().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sozialdienstFallToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"sozialdienst: " + jaxSozialdienstFall.getSozialdienst().getId()));
+		sozialdienstFall.setSozialdienst(sozialdienst);
+		return sozialdienstFall;
+	}
+
+	public JaxSozialdienstFall sozialdienstFallToJAX(@Nonnull final SozialdienstFall persistedSozialdienstFall) {
+		final JaxSozialdienstFall jaxSozialdienstFall = new JaxSozialdienstFall();
+		convertAbstractFieldsToJAX(persistedSozialdienstFall, jaxSozialdienstFall);
+		jaxSozialdienstFall.setName(persistedSozialdienstFall.getName());
+		jaxSozialdienstFall.setStatus(persistedSozialdienstFall.getStatus());
+		jaxSozialdienstFall.setGeburtsdatum(persistedSozialdienstFall.getGeburtsdatum());
+		jaxSozialdienstFall.setAdresse(adresseToJAX(persistedSozialdienstFall.getAdresse()));
+		jaxSozialdienstFall.setSozialdienst(sozialdienstToJAX(persistedSozialdienstFall.getSozialdienst()));
+		return jaxSozialdienstFall;
 	}
 }

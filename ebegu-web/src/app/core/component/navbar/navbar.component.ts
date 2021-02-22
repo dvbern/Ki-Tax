@@ -101,6 +101,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                         dossierId: null,
                         gemeindeId,
                         eingangsart: TSEingangsart.PAPIER,
+                        sozialdienstId: null,
                     };
                     this.$state.go('gesuch.fallcreation', params);
                 }

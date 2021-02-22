@@ -753,6 +753,7 @@ export class INewFallStateParams {
     public gesuchId: string;
     public dossierId: string;
     public gemeindeId: string;
+    public sozialdienstId: string;
 }
 
 export class ITourParams {
