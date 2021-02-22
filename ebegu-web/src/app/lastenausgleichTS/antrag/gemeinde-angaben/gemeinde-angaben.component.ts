@@ -70,7 +70,7 @@ export class GemeindeAngabenComponent implements OnInit {
             .subscribe(container => {
                 this.lATSAngabenGemeindeContainer = container;
                 if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
-                    const gemeindeAngaben = container.angabenDeklaration;
+                    const gemeindeAngaben = container.getAngabenToWorkWith();
                     this.setupForm(gemeindeAngaben);
                     this.setupCalculcations(gemeindeAngaben);
                 }
@@ -178,9 +178,7 @@ export class GemeindeAngabenComponent implements OnInit {
             erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
 
-        // tslint:disable-next-line:max-line-length
-        if (this.lATSAngabenGemeindeContainer.status !== TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE &&
-            this.lATSAngabenGemeindeContainer.status !== TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
+        if (!this.lATSAngabenGemeindeContainer.isInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
             this.angabenForm.disable();
         }
     }
