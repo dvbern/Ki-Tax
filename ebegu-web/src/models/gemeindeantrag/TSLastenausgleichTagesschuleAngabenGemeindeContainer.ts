@@ -16,6 +16,7 @@
  */
 
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSRole} from '../enums/TSRole';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
@@ -31,4 +32,52 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;
+
+    /**
+     * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
+     */
+    public getAngabenToWorkWith(): TSLastenausgleichTagesschuleAngabenGemeinde {
+        if (this.isInBearbeitungGemeinde()) {
+            return this.angabenDeklaration;
+        }
+        return this.angabenKorrektur;
+    }
+
+    public isInBearbeitungGemeinde(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+        ].includes(this.status);
+    }
+
+    public isInBearbeitungKanton(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON
+        ].includes(this.status);
+    }
+
+    public isAtLeastInBearbeitungKanton(): boolean {
+        return ![
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+        ].includes(this.status);
+    }
+
+    public isInBearbeitungForRole(role: TSRole): boolean {
+        switch (role) {
+            case TSRole.SUPER_ADMIN:
+                return this.isInBearbeitungKanton() || this.isInBearbeitungGemeinde();
+            case TSRole.SACHBEARBEITER_MANDANT:
+            case TSRole.ADMIN_MANDANT:
+                return this.isInBearbeitungKanton();
+            case TSRole.ADMIN_TS:
+            case TSRole.SACHBEARBEITER_TS:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+                return this.isInBearbeitungGemeinde();
+            default:
+                return false;
+        }
+    }
 }

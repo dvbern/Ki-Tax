@@ -28,7 +28,6 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 
@@ -59,7 +58,12 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 	@Override
 	protected void createSeite2(@Nonnull Document document, @Nonnull List<Element> seite2Paragraphs) {
 		seite2Paragraphs.add(PdfUtil.createParagraph(translate(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_1, getFristdatum())));
-		seite2Paragraphs.add(PdfUtil.createParagraph(translate(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_2, gemeindeStammdaten.getTelefon(), gemeindeStammdaten.getMail())));
+		String paragraph2 = translate(
+			ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_2,
+			gemeindeStammdaten.getTelefonForGesuch(getGesuch()),
+			gemeindeStammdaten.getEmailForGesuch(getGesuch())
+		);
+		seite2Paragraphs.add(PdfUtil.createParagraph(paragraph2));
 	}
 
 	@Nonnull
