@@ -14,7 +14,7 @@
  */
 
 import {Component, Input, OnChanges} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {from as fromPromise, from, Observable, of} from 'rxjs';
@@ -71,7 +71,7 @@ export class FallToolbarComponent implements OnChanges {
         private readonly $state: StateService,
         private readonly gesuchRS: GesuchRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
@@ -202,7 +202,9 @@ export class FallToolbarComponent implements OnChanges {
             dossierId: null,
             gemeindeId: chosenGemeindeId,
             eingangsart: this.getEingangsArt(),
-            sozialdienstId: null,
+            sozialdienstId: this.selectedDossier.fall.sozialdienstFall ?
+                this.selectedDossier.fall.sozialdienstFall.id :
+                null,
         };
         this.$state.go('gesuch.fallcreation', params);
     }

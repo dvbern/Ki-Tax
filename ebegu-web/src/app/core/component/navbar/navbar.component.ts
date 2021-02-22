@@ -14,7 +14,7 @@
  */
 
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
@@ -25,13 +25,15 @@ import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
-import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {GUIDED_TOUR_SUPPORTED_ROLES, GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
+import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgSozialdienstDialogComponent} from '../dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
 
 const LOG = LogFactory.createLog('NavbarComponent');
 
@@ -56,6 +58,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly sozialdienstRS: SozialdienstRS,
     ) {
     }
 
@@ -86,7 +89,29 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         this.unsubscribe$.complete();
     }
 
-    public createNewFall(): void {
+    public startNewFall(): void {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+            this.createNewSozialdienstFall();
+        } else {
+            this.createNewFall(null);
+        }
+    }
+
+    public createNewSozialdienstFall(): void {
+        this.getSozialdienstIDFromUser$().pipe(
+            take(1),
+            filter(sozialdienstId => !!sozialdienstId),
+        )
+            .subscribe(
+                sozialdienstId => {
+                    this.createNewFall(sozialdienstId);
+                }
+                ,
+                err => LOG.error(err),
+            );
+    }
+
+    private createNewFall(sozialdienstId: string): void {
         this.getGemeindeIDFromUser$()
             .pipe(
                 take(1),
@@ -101,9 +126,13 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                         dossierId: null,
                         gemeindeId,
                         eingangsart: TSEingangsart.PAPIER,
-                        sozialdienstId: null,
+                        sozialdienstId,
                     };
-                    this.$state.go('gesuch.fallcreation', params);
+                    if (sozialdienstId) {
+                        this.$state.go('gesuch.sozialdienstfallcreation', params);
+                    } else {
+                        this.$state.go('gesuch.fallcreation', params);
+                    }
                 }
                 ,
                 err => LOG.error(err),
@@ -146,17 +175,42 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             );
     }
 
+    private getSozialdienstIDFromUser$(): Observable<string> {
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (principal && principal.currentBerechtigung.sozialdienst) {
+                        return of(principal.currentBerechtigung.sozialdienst.id);
+                    }
+
+                    return this.getListOfSozialdienst$()
+                        .pipe(
+                            switchMap(sozialdienstList => {
+                                const dialogConfig = new MatDialogConfig();
+                                dialogConfig.data = {sozialdienstList};
+
+                                return this.dialog.open(DvNgSozialdienstDialogComponent, dialogConfig).afterClosed();
+                            }),
+                        );
+                }),
+            );
+    }
+
     /**
      * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert
      * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
      */
     private getListOfGemeinden$(): Observable<TSGemeinde[]> {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrSozialdienstRolle())) {
             return fromPromise(this.gemeindeRS.getAktiveGemeinden());
         }
 
         return this.authServiceRS.principal$
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
+    }
+
+    private getListOfSozialdienst$(): Observable<TSSozialdienst[]> {
+        return this.sozialdienstRS.getSozialdienstList();
     }
 
     public isTagesschulangebotEnabled(): boolean {

@@ -1,0 +1,38 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<mat-dialog-content class="dv-dialog-content">
+    <p [textContent]="'SOZIALDIENST_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>
+
+    <div class="dv-select-style dv-dialog-select">
+        <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="sozialdienst"
+                id="sozialdienst"
+                [(ngModel)]="selectedSozialdienst"
+                class="form-control"
+                [required]="true">
+
+            <option *ngFor="let sozialdienst of sozialdienstList" [ngValue]="sozialdienst">{{sozialdienst.name}}</option>
+        </select>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="save()" [textContent]="'AUSWAEHLEN' | translate"></button>
+    </div>
+</mat-dialog-actions>

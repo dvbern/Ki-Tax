@@ -87,6 +87,38 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
     };
 }
 
+export class EbeguNewSozialdienstFallState implements Ng1StateDeclaration {
+    public name = 'gesuch.sozialdienstfallcreation';
+    public url =
+        '/fall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId/:sozialdienstId';
+    public params = {
+        creationAction: '',
+        eingangsart: '',
+        gesuchsperiodeId: '',
+        gesuchId: '',
+        dossierId: '',
+        gemeindeId: '',
+        sozialdienstId: '',
+    };
+
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: fallCreationView,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: reloadGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+    };
+}
+
 export class EbeguMutationState implements Ng1StateDeclaration {
     public name = 'gesuch.mutation';
     public url = '/mutation/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
