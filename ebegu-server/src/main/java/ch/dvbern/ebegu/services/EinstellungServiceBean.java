@@ -270,4 +270,31 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		einstellungenOfGP
 			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
 	}
+
+	@Nonnull
+	@Override
+	public List<Einstellung> findEinstellungen(
+		@Nonnull EinstellungKey key,
+		@Nullable Gesuchsperiode gesuchsperiode) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
+
+		Root<Einstellung> root = query.from(Einstellung.class);
+		List<Predicate> predicates = new ArrayList<>();
+		// Gesuchsperiode
+		if(gesuchsperiode != null){
+			final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
+			predicates.add(predicateGesuchsperiode);
+		}
+		// Gesuchsperiode
+		final Predicate predicateKey = cb.equal(root.get(Einstellung_.key), key);
+		predicates.add(predicateKey);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.select(root);
+		List<Einstellung> einstellungen = persistence.getCriteriaResults(query);
+		List<Einstellung> sorted = einstellungen.stream()
+			.sorted(Comparator.comparing(Einstellung::getKey))
+			.collect(Collectors.toCollection(ArrayList::new));
+		return sorted;
+	}
 }
