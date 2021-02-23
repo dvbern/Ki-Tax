@@ -103,6 +103,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.getAllAdminRoles;
+import static ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE;
 import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 
@@ -1616,14 +1617,16 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		switch (antrag.getStatus()) {
-		case NEU: {
+		case NEU:
+		case IN_BEARBEITUNG_GEMEINDE: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
 				&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
 				return;
-			} else {
-				throwViolation(antrag);
 			}
-		} default: {
+			throwViolation(antrag);
+			break;
+		}
+		default: {
 			throwViolation(antrag);
 		}
 		}
