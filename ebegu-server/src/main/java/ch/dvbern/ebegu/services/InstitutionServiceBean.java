@@ -464,10 +464,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		LocalDateTime timestampMutiert = instStammdaten.getTimestampMutiert();
 
-		LocalDateTime timestampInstiMutiert = instStammdaten.getInstitution().getTimestampMutiert();
+		LocalDateTime timestampInstStammdatenMutiert = instStammdaten.getInstitution().getTimestampMutiert();
 
-		return timestampMutiert != null && timestampInstiMutiert != null
+		return timestampMutiert != null && timestampInstStammdatenMutiert != null
 			&& timestampMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK))
-			&& timestampInstiMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
+			&& timestampInstStammdatenMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
 	}
 }
