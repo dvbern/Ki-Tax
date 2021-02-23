@@ -150,6 +150,7 @@ public class LastenausgleichResource {
 		return converter.lastenausgleichToJAX(lastenausgleich);
 	}
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlung'", response = JaxDownloadFile.class)
 	@Nonnull
 	@GET
