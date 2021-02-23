@@ -37,6 +37,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -47,6 +48,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
@@ -261,9 +263,22 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
 			UserRole.SACHBEARBEITER_MANDANT)) {
-			Predicate gemeindeIn =
-				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+
+			if (principal.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+				final SetJoin<LastenausgleichTagesschuleAngabenGemeindeContainer,
+					LastenausgleichTagesschuleAngabenInstitutionContainer>
+					join = root.join(
+					LastenausgleichTagesschuleAngabenGemeindeContainer_.angabenInstitutionContainers,
+					JoinType.LEFT);
+
+				Predicate institutionIn = join.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution).in(Objects.requireNonNull(principal.getBenutzer()
+					.getInstitution()));
+				query.where(institutionIn);
+			} else {
+				Predicate gemeindeIn =
+					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
+				query.where(gemeindeIn);
+			}
 		}
 
 		if (gemeinde != null) {
