@@ -31,8 +31,9 @@ public final class SearchUtil {
 
 	public static List<String> determineDistinctIdsToLoad(List<String> allIds, int startindex, int maxresults) {
 		List<String> uniqueGesuchIds = new ArrayList<>(new LinkedHashSet<>(allIds)); //keep order but remove duplicate ids
+		int firstIndex = Math.min(startindex, uniqueGesuchIds.size());
 		int lastindex = Math.min(startindex + maxresults, (uniqueGesuchIds.size()));
-		return uniqueGesuchIds.subList(startindex, lastindex);
+		return uniqueGesuchIds.subList(firstIndex, lastindex);
 	}
 
 	public static String withWildcards(String s) {
