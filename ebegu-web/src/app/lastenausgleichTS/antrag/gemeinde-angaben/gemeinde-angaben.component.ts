@@ -111,7 +111,8 @@ export class GemeindeAngabenComponent implements OnInit {
                 alleAngabenInKibonErfasst: new FormControl(
                     {
                         value: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
-                        disabled: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null,
+                        disabled: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null ||
+                            !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()),
                     },
                     Validators.required,
                 ),
