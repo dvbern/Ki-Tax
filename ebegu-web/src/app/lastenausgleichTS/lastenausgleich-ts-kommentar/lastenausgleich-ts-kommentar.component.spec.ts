@@ -16,10 +16,12 @@
  */
 
 import {HttpClientModule} from '@angular/common/http';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {TranslateModule} from '@ngx-translate/core';
 import {of} from 'rxjs';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -36,14 +38,15 @@ describe('LastenausgleichTsKommentarComponent', () => {
     let component: LastenausgleichTsKommentarComponent;
     let fixture: ComponentFixture<LastenausgleichTsKommentarComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientModule,
                 SharedModule,
                 BrowserAnimationsModule,
                 FormsModule,
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                TranslateModule.forRoot()
             ],
             declarations: [
                 LastenausgleichTsKommentarComponent
@@ -54,6 +57,7 @@ describe('LastenausgleichTsKommentarComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
             ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

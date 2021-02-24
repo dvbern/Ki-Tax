@@ -88,6 +88,7 @@ describe('GemeindeAngabenComponent', () => {
         einstellungServiceSpy.findEinstellung.and.returnValue(
             of(new TSEinstellung()).toPromise(),
         );
+        einstellungServiceSpy.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
