@@ -20,6 +20,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
@@ -57,12 +58,17 @@ export class TagesschulenAngabenComponent {
 
     public ngOnInit(): void {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
-            this.latsAngabenInstitutionContainer = container.angabenInstitutionContainers?.find(institutionContainer => {
-                return institutionContainer.id === this.institutionContainerId;
-            });
+            this.latsAngabenInstitutionContainer =
+                container.angabenInstitutionContainers?.find(institutionContainer => {
+                    return institutionContainer.id === this.institutionContainerId;
+                });
             this.gesuchsPeriode = container.gesuchsperiode;
             this.form = this.setupForm(this.latsAngabenInstitutionContainer?.angabenDeklaration);
-            this.setupCalculation();
+            if (container.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
+                this.form.disable();
+            } else {
+                this.setupCalculation();
+            }
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.cd.markForCheck();
         }, () => {
