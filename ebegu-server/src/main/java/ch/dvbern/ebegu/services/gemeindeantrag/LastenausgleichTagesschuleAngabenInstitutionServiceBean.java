@@ -123,7 +123,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			institutionContainer.getStatus() == LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN,
 			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
 
-		Objects.requireNonNull(institutionContainer.getAngabenKorrektur());
+		Objects.requireNonNull(institutionContainer.getAngabenDeklaration());
 
 		institutionContainer.copyForFreigabe();
 		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);

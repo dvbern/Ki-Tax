@@ -20,10 +20,13 @@ import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -47,8 +50,6 @@ export class TagesschulenAngabenComponent {
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;
 
-    private readonly ANY_POSITIVE_NUMBER_PATTERN = '[0-9]*';
-
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly tagesschulenAngabenRS: TagesschuleAngabenRS,
@@ -56,6 +57,7 @@ export class TagesschulenAngabenComponent {
         private readonly cd: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
@@ -66,8 +68,11 @@ export class TagesschulenAngabenComponent {
                     return institutionContainer.id === this.institutionContainerId;
                 });
             this.gesuchsPeriode = container.gesuchsperiode;
-            this.form = this.setupForm(this.latsAngabenInstitutionContainer?.angabenDeklaration);
-            if (container.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
+            this.form =
+                this.setupForm(this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
+                    this.latsAngabenInstitutionContainer?.angabenDeklaration :
+                    this.latsAngabenInstitutionContainer?.angabenKorrektur);
+            if (container.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU || !this.canEditForm()) {
                 this.form.disable();
             } else {
                 this.setupCalculation();
@@ -77,6 +82,15 @@ export class TagesschulenAngabenComponent {
         }, () => {
             this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
         });
+    }
+
+    private canEditForm(): boolean {
+        return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && (
+            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
+                this.latsAngabenInstitutionContainer.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
+            (this.authService.isOneOfRoles(TSRoleUtil.getInstitutionRoles()) &&
+                this.latsAngabenInstitutionContainer.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN)
+        );
     }
 
     private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
@@ -129,7 +143,8 @@ export class TagesschulenAngabenComponent {
         this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
-            this.form = this.setupForm(result.angabenDeklaration);
+            this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
+                result?.angabenDeklaration : result?.angabenKorrektur);
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
@@ -144,14 +159,15 @@ export class TagesschulenAngabenComponent {
         if (!this.form.valid) {
             return;
         }
-       /* this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
             .subscribe(() => {
                 this.form.disable();
+                this.cd.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
-            });*/
+            });
     }
 
     private enableFormValidation(): void {
@@ -205,5 +221,13 @@ export class TagesschulenAngabenComponent {
             }
         }
         this.form.updateValueAndValidity();
+    }
+
+    public actionButtonsDisabled(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles()) ||
+            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
+                this.latsAngabenInstitutionContainer.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
+            (this.authService.isOneOfRoles(TSRoleUtil.getInstitutionRoles()) &&
+                this.latsAngabenInstitutionContainer.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
     }
 }

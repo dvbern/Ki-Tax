@@ -5859,7 +5859,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstitutionContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenInstitutionToJax(institutionContainer.getAngabenDeklaration()));
 		}
 		if (institutionContainer.getAngabenKorrektur() != null) {
-			jaxInstitutionContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenInstitutionToJax(institutionContainer.getAngabenKorrektur()));
+			jaxInstitutionContainer.setAngabenKorrektur(lastenausgleichTagesschuleAngabenInstitutionToJax(institutionContainer.getAngabenKorrektur()));
 		}
 		return jaxInstitutionContainer;
 	}

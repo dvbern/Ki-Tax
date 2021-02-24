@@ -47,6 +47,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.isLehrbetrieb"
+                    [korrektur]="form.get('isLehrbetrieb').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -393,11 +399,13 @@
         <div class="actions">
             <dv-loading-button
                 type="button"
+                [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFormSubmit()">
                 <span translate>SAVE</span>
             </dv-loading-button>
             <dv-loading-button
                 type="button"
+                [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
             </dv-loading-button>
