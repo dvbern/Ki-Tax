@@ -78,9 +78,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 				new LastenausgleichTagesschuleAngabenInstitutionContainer();
 			institutionContainer.setInstitution(institutionStammdaten.getInstitution());
 			institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
-			institutionContainer.setAngabenKorrektur(null);        // Wird erst mit den Daten initialisiert, da alles
-			// zwingend
-			institutionContainer.setAngabenDeklaration(null);    // Wird bei Freigabe rueber kopiert
+			institutionContainer.setAngabenKorrektur(null); // Wird bei Freigabe rueber kopiert
+			institutionContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenInstitution());
 			institutionContainer.setAngabenGemeinde(gemeindeContainer);
 
 			final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
