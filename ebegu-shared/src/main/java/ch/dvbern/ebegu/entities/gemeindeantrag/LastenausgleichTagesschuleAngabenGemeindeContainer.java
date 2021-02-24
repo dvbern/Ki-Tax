@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
@@ -216,5 +218,71 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		institutionContainerToAdd.setAngabenGemeinde(this);
 		return !angabenInstitutionContainers.contains(institutionContainerToAdd)
 			&& angabenInstitutionContainers.add(institutionContainerToAdd);
+	}
+
+	public boolean allInstitutionenGeprueft() {
+		for (LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer :
+			this.getAngabenInstitutionContainers()) {
+			if (institutionContainer.getStatus() != LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean angabenDeklarationComplete() {
+		if(Objects.isNull(getAlleAngabenInKibonErfasst())) {
+			return false;
+		}
+		if(Objects.isNull(getAngabenDeklaration())) {
+			return false;
+		}
+		LastenausgleichTagesschuleAngabenGemeinde deklaration = getAngabenDeklaration();
+		if (Objects.isNull(deklaration.getBedarfBeiElternAbgeklaert())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getAngebotFuerFerienbetreuungVorhanden())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getAngebotVerfuegbarFuerAlleSchulstufen())) {
+			return false;
+		}
+		if (!deklaration.getAngebotVerfuegbarFuerAlleSchulstufen() && Objects.isNull(deklaration.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getGeleisteteBetreuungsstundenBesondereBeduerfnisse())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getEinnahmenElterngebuehren())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getBetreuungsstundenDokumentiertUndUeberprueft())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getElterngebuehrenGemaessVerordnungBerechnet())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getEinkommenElternBelegt())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getMaximalTarif())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal())) {
+			return false;
+		}
+		if (Objects.isNull(deklaration.getAusbildungenMitarbeitendeBelegt())) {
+			return false;
+		}
+		return true;
 	}
 }
