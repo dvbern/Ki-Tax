@@ -433,16 +433,6 @@ public interface GesuchService {
 	Gesuch stvPruefungAbschliessen(@Nonnull Gesuch gesuch);
 
 	/**
-	 * Speichert einen Massenversand in der Datenbank
-	 */
-	void createMassenversand(@Nonnull Massenversand massenversand);
-
-	/**
-	 * Gibt die Texte aller Massenversände zurück, welche zum übergebenen Gesuch verschickt wurden
-	 */
-	List<String> getMassenversandTexteForGesuch(@Nonnull String gesuchId);
-
-	/**
 	 * Returns all Gesuche that have been set as GEPRUEFT (for Papiergesuche) or as FREIGEGEBEN (for Onlinegesuche)
 	 * between the given dates and that belongs to the given period.
 	 */

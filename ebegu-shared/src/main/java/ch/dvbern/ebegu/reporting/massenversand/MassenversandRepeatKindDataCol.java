@@ -29,7 +29,6 @@ public class MassenversandRepeatKindDataCol {
 	private String kindName;
 	private String kindVorname;
 	private LocalDate kindGeburtsdatum;
-	private String kindDubletten;
 	private String kindInstitutionKita;
 	private String kindInstitutionTagesfamilie;
 	private String kindInstitutionTagesschule;
@@ -58,14 +57,6 @@ public class MassenversandRepeatKindDataCol {
 
 	public void setKindGeburtsdatum(LocalDate kindGeburtsdatum) {
 		this.kindGeburtsdatum = kindGeburtsdatum;
-	}
-
-	public String getKindDubletten() {
-		return kindDubletten;
-	}
-
-	public void setKindDubletten(String kindDubletten) {
-		this.kindDubletten = kindDubletten;
 	}
 
 	public String getKindInstitutionKita() {
@@ -106,14 +97,6 @@ public class MassenversandRepeatKindDataCol {
 
 	public void setKindInstitutionenWeitere(String kindInstitutionenWeitere) {
 		this.kindInstitutionenWeitere = kindInstitutionenWeitere;
-	}
-
-	public void addKindDubletten(@Nonnull String dublette) {
-		setKindDubletten(
-			Strings.isNullOrEmpty(getKindDubletten())
-				? dublette
-				: getKindDubletten() + ", " + dublette
-		);
 	}
 
 	private void addKindInstitutionenWeitere(@Nonnull String instName) {
