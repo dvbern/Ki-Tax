@@ -56,7 +56,7 @@ describe('BerechtigungComponent', () => {
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-        sozialdienstSpy.getSozialdienstList.and.resolveTo([]);
+        sozialdienstSpy.getSozialdienstList.and.returnValue(of([]));
 
         TestBed.configureTestingModule({
             imports: [

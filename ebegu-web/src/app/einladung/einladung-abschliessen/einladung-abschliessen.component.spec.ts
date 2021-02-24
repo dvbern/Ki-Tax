@@ -55,7 +55,7 @@ describe('EinladungAbschliessenComponent', () => {
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
-        sozialdienstRSSpy.getSozialdienstList.and.resolveTo([]);
+        sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
 
         TestBed.configureTestingModule({

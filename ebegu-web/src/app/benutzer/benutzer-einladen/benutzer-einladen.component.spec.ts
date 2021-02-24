@@ -55,7 +55,7 @@ describe('BenutzerEinladenComponent', () => {
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-        sozialdienstRSSpy.getSozialdienstList.and.resolveTo([]);
+        sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
