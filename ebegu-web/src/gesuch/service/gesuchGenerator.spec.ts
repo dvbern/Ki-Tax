@@ -102,7 +102,7 @@ describe('gesuchGenerator', () => {
 
     describe('initGesuch', () => {
         it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier, null)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -117,7 +117,7 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier, null)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -132,7 +132,7 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new Gesuch and Dossier linked to the existing fall', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, gpId, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, gpId, fall, dossier, null)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -144,7 +144,7 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new Gesuch linked to the existing fall and Dossier', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_GESUCH, gpId, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_GESUCH, gpId, fall, dossier, null)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);

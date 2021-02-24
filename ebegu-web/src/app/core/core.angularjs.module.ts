@@ -157,6 +157,7 @@ import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
+import { SozialdienstRS } from './service/SozialdienstRS.rest';
 
 const dependencies = [
     /* Angular modules */
@@ -244,6 +245,7 @@ export const CORE_JS_MODULE = angular
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
     .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
+    .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

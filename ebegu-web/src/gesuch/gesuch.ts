@@ -356,4 +356,8 @@ export class GesuchRouteController implements IController {
     public gemeindeHasKontingent(): boolean {
         return this.kontingentierungEnabled;
     }
+
+    public isSozialdienstFall(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getDossier().fall.sozialdienstFall);
+    }
 }

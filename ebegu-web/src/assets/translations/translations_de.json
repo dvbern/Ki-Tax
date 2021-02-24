@@ -2270,5 +2270,7 @@
     "SOZIALDIENST_SPEICHERN": "Sozialdienst speichern",
     "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Sozialdienste Fall eröffnen",
     "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
+    "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Sozialdienstfall",
+    "SOZIALDIENST_FALL_ERSTELLEN": "Sozialdienst Fall erstellen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

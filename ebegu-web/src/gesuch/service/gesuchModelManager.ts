@@ -171,7 +171,7 @@ export class GesuchModelManager {
                         this.initGemeindeKonfiguration();
                     }
                     return gesuch;
-                }))
+                })),
             );
     }
 
@@ -312,7 +312,8 @@ export class GesuchModelManager {
         if (!this.getGesuchsperiode()) {
             return;
         }
-        this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(this.getGesuchsperiode().id, this.getGemeinde().id)
+        this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(this.getGesuchsperiode().id,
+            this.getGemeinde().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenForGemeindeList = response;
             });
@@ -339,15 +340,19 @@ export class GesuchModelManager {
         gemeindeId: string,
         gesuchsperiodeId: string,
         creationAction: TSCreationAction,
+        sozialdienstId: string,
     ): IPromise<TSGesuch> {
 
         switch (creationAction) {
             case TSCreationAction.CREATE_NEW_FALL:
-                return this.gesuchGenerator.initFall(eingangsart, gemeindeId)
+                return this.gesuchGenerator.initFall(eingangsart, gemeindeId, sozialdienstId)
                     .then(gesuch => this.setGesuch(gesuch));
 
             case TSCreationAction.CREATE_NEW_DOSSIER:
-                return this.gesuchGenerator.initDossierForCurrentFall(eingangsart, gemeindeId, this.getFall())
+                return this.gesuchGenerator.initDossierForCurrentFall(eingangsart,
+                    gemeindeId,
+                    this.getFall(),
+                    null)
                     .then(gesuch => this.setGesuch(gesuch));
 
             case TSCreationAction.CREATE_NEW_GESUCH:
@@ -355,7 +360,8 @@ export class GesuchModelManager {
                     creationAction,
                     gesuchsperiodeId,
                     this.getFall(),
-                    this.getDossier())
+                    this.getDossier(),
+                    null)
                     .then(gesuch => this.setGesuch(gesuch));
 
             case TSCreationAction.CREATE_NEW_FOLGEGESUCH:
@@ -652,6 +658,9 @@ export class GesuchModelManager {
         }
     }
 
+    /**
+     * This method is only used and should be only used in karma test
+     */
     public initGesuch(
         eingangsart: TSEingangsart,
         creationAction: TSCreationAction,
@@ -661,7 +670,9 @@ export class GesuchModelManager {
             creationAction,
             gesuchsperiodeId,
             this.getFall(),
-            this.getDossier())
+            this.getDossier(),
+            null,
+            )
             .then(gesuch => {
                 this.gesuch = gesuch;
                 return this.gesuch;
@@ -1028,7 +1039,7 @@ export class GesuchModelManager {
     public removeBetreuung(): IPromise<void> {
         return this.betreuungRS.removeBetreuung(
             this.getBetreuungToWorkWith().id,
-            this.gesuch.id
+            this.gesuch.id,
         ).then(() => {
             this.removeBetreuungFromKind();
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
@@ -1176,21 +1187,25 @@ export class GesuchModelManager {
 
     }
 
-    public saveVerfuegung(ignorieren: boolean, ignorierenMahlzeiten: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
+    public saveVerfuegung(
+        ignorieren: boolean,
+        ignorierenMahlzeiten: boolean,
+        bemerkungen: string,
+    ): IPromise<TSVerfuegung> {
         const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
             manuelleBemerkungen,
             this.gesuch.id,
             this.getBetreuungToWorkWith().id,
             ignorieren,
-            ignorierenMahlzeiten
+            ignorierenMahlzeiten,
         ).then((response: TSVerfuegung) => {
-                this.setVerfuegenToWorkWith(response);
-                this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-                this.calculateGesuchStatusVerfuegt();
+            this.setVerfuegenToWorkWith(response);
+            this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
+            this.calculateGesuchStatusVerfuegt();
 
-                return this.getVerfuegenToWorkWith();
-            });
+            return this.getVerfuegenToWorkWith();
+        });
     }
 
     private calculateGesuchStatusVerfuegt(): void {

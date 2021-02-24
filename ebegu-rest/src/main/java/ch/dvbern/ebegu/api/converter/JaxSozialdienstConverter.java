@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFall;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstStammdaten;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
@@ -105,6 +106,9 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		convertAbstractFieldsToEntity(jaxSozialdienstFall, sozialdienstFall);
 		sozialdienstFall.setName(jaxSozialdienstFall.getName());
 		sozialdienstFall.setStatus(jaxSozialdienstFall.getStatus());
+		if(sozialdienstFall.isNew()) {
+			sozialdienstFall.setAdresse(new Adresse());
+		}
 		adresseToEntity(jaxSozialdienstFall.getAdresse(), sozialdienstFall.getAdresse());
 		sozialdienstFall.setGeburtsdatum(jaxSozialdienstFall.getGeburtsdatum());
 		requireNonNull(jaxSozialdienstFall.getSozialdienst().getId());

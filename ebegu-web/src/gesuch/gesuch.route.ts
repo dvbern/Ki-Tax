@@ -55,6 +55,8 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 const fallCreationView = '<fall-creation-view>';
 
+const sozialdienstfallCreationView = '<sozialdienst-fall-creation-view>';
+
 const kommentarView = '<kommentar-view>';
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
@@ -90,7 +92,7 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 export class EbeguNewSozialdienstFallState implements Ng1StateDeclaration {
     public name = 'gesuch.sozialdienstfallcreation';
     public url =
-        '/fall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId/:sozialdienstId';
+        '/sozialdienstfall/:creationAction/:eingangsart/:gesuchId/:dossierId/:gemeindeId/:sozialdienstId';
     public params = {
         creationAction: '',
         eingangsart: '',
@@ -103,7 +105,7 @@ export class EbeguNewSozialdienstFallState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: fallCreationView,
+            template: sozialdienstfallCreationView,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -743,6 +745,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguBetreuungAbweichungenState(),
     new EbeguAbwesenheitState(),
     new EbeguNewFallState(),
+    new EbeguNewSozialdienstFallState(),
     new EbeguMutationState(),
     new EbeguErneuerungsgesuchState(),
     new EbeguVerfuegenListState(),
@@ -879,7 +882,8 @@ export function reloadGesuchModelManager(
                 $stateParams.eingangsart,
                 $stateParams.gemeindeId,
                 $stateParams.gesuchsperiodeId,
-                $stateParams.creationAction);
+                $stateParams.creationAction,
+                $stateParams.sozialdienstId);
         }
 
         const gesuchIdParam = $stateParams.gesuchId;

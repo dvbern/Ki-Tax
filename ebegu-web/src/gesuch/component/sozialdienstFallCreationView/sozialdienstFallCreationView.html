@@ -20,7 +20,7 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span ng-bind="vm.getTitle()"></span>
+                <span data-translate="SOZIALDIENST_FALL_ERSTELLEN"></span>
             </h2>
             <hr class="header"/>
         </div>
@@ -28,132 +28,123 @@
     <div class="row">
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
-                <fieldset ng-disabled="vm.isGesuchReadonly()">
-
-                    <!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
-                    <div ng-if="vm.isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
-                        <p class="ebegu-h3" data-translate="GESUCHSPERIODE_INAKTIV_HINT">
-                        </p>
-                    </div>
-                    <!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
-                    <div dv-show-expression="vm.gesuchModelManager.getGesuch().isFolgegesuch()" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
-                         class="well well-status-warten">
-                        <p class="ebegu-h3" data-translate="FOLGEGESUCH_HINT">
-                        </p>
-                    </div>
-
-                    <!--Willkommnstext bei Erstgesuch-->
-                    <div ng-if="vm.gesuchModelManager.isGesuch()">
-
-                        <p>
-                            {{"ERSTGESUCH_WILLKOMMEN_TEXT_2"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
-                        </p>
-
-                    </div>
-
-                    <!--Mutationelemente auswaehlen. Nur fuer Mutationen-->
-                    <div ng-if="!vm.gesuchModelManager.isGesuch()" class="margin-bottom-20">
-
-                        <h3 class="ebegu-h2" data-translate="MUTATION_AUSWAHL_TEXT_1"></h3>
-                        <br>
-                        <p>
-                            <span ng-bind-html="'MUTATION_AUSWAHL_TEXT_2' | translate"></span>
-                            <span ng-bind-html="'MUTATION_AUSWAHL_TEXT_3' | translate"></span>
-                        </p>
-
-                    </div>
-
-                    <!--Eingangsdatum-->
-                    <div class="row margin-top-30" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
-                        <div class="col-sm-12 dv-input-container-medium">
+                <fieldset ng-disabled="vm.isSozialdienstFallReadOnly()">
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float"  for="eingangsdatum_ID">
-                                    <span data-translate="EINGANGSDATUM"
-                                          data-translate-value-typ="{{vm.getGesuchModel().typ | translate}}"></span>
-                                </label>
-                                <div class="dv-input-container-medium-label">
-                                    <dv-datepicker input-id="eingangsdatum_ID" name="eingangsdatum"
-                                                   ng-model="vm.getGesuchModel().eingangsdatum" ng-required="true"
-                                                   class="input-element">
-                                    </dv-datepicker>
-                                    <dv-error-messages input-id="eingangsdatum_ID" for="vm.form.eingangsdatum.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
+                                <label class="md-no-float" data-translate="NAME" for="name_ID"></label>
+                                <input aria-describedby="name_ID-error" id="name_ID" type="text" name="name"
+                                       ng-model="vm.sozialdienstFall.name"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
-
-                    <!-- Regeln gueltig ab (Datum) -->
-                    <div class="row" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
-                        <div class="col-sm-12 dv-input-container-medium">
+                    <div class="row">
+                        <!--Geburtsdatum-->
+                        <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="regelnGueltigAb_ID">
-                                    <span data-translate="REGELN_GUELTIG_AB"></span>
-                                    <dv-tooltip input-id="regelnGueltigAb_ID"
-                                                text="'REGELN_GUELTIG_AB_HELP' | translate"></dv-tooltip>
+                                <label class="md-no-float" data-translate="GEBURTSDATUM" for="geburtsdatum_ID">
                                 </label>
-                                <div class="dv-input-container-medium-label">
-                                    <dv-datepicker input-id="regelnGueltigAb_ID" name="regelnGueltigAb"
-                                                   ng-model="vm.getGesuchModel().regelnGueltigAb" ng-required="false"
-                                                   class="input-element">
-                                    </dv-datepicker>
-                                    <dv-error-messages input-id="regelnGueltigAb_ID" for="vm.form.regelnGueltigAb.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
+                                <dv-datepicker no-future="true"
+                                               input-id="geburtsdatum_ID" name="geburtsdatum"
+                                               ng-model="vm.sozialdienstFall.geburtsdatum" ng-required="true"
+                                               class="input-element">
+                                </dv-datepicker>
+                                <dv-error-messages input-id="geburtsdatum_ID" for="vm.form.geburtsdatum.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
-
-                    <!-- Gesuchsperiode: Auswahl -->
-                    <div ng-if="vm.canChangeGesuchsperiode()">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="dv-radio-container">
-                                        <md-radio-group name="gesuchsperioden" class="input-element radio"
-                                                        dv-suppress-form-submit-on-enter
-                                                        ng-model="vm.gesuchsperiodeId"
-                                                        ng-change="vm.setSelectedGesuchsperiode()"
-                                                        dv-show-element
-                                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
-                                                        ng-required="true">
-                                            <md-radio-button
-                                                ng-repeat="current in vm.getAllActiveGesuchsperioden()"
-                                                ng-value="current.id" aria-label="{{current.gesuchsperiodeString}}"
-                                                ng-disabled="vm.isGesuchReadonly()  || vm.isKorrekturModusJugendamt()"
-                                                aria-describedby="gesuchsperioden-error">
-                                                <span>{{current.gesuchsperiodeString}}</span>
-                                            </md-radio-button>
-                                        </md-radio-group>
-                                        <dv-error-messages input-id="gesuchsperioden"
-                                                           for="vm.form.gesuchsperioden.$error"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="ADRESSE_STRASSE" for="name_ID"></label>
+                                <input aria-describedby="strasse_ID-error" id="strasse_ID" type="text" name="strasse"
+                                       ng-model="vm.sozialdienstFall.adresse.strasse"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="strasse_ID" for="vm.form.strasse.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
                         </div>
-                    </div>
-                    <!-- Gesuchsperiode: Readonly -->
-                    <div class="row" ng-if="!vm.canChangeGesuchsperiode()">
-                        <div class="col-sm-12">
-                            <dv-input-container>
-                                <label class="md-no-float" data-translate="GESUCHSPERIODE"
-                                       data-translate-value-gesuchsperiode="{{vm.getGesuchModel().gesuchsperiode.gesuchsperiodeString}}">
-                                </label>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float"
+                                       data-translate="ADRESSE_HAUSNUMMER"
+                                       for="hausnummer_ID"></label>
+                                <input aria-describedby="hausnummer_ID-error"
+                                       id="hausnummer_ID"
+                                       type="text"
+                                       name="hausnummer"
+                                       ng-model="vm.sozialdienstFall.adresse.hausnummer"
+                                       dv-max-length
+                                       class="form-control"
+                                       required>
+                                <dv-error-messages input-id="hausnummer_ID" for="vm.form.hausnummer.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
-
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float"
+                                       data-translate="ADRESSE_ZUSATZZEILE"
+                                       for="zusatzzeile_ID"></label>
+                                <input aria-describedby="zusatzzeile_ID-error"
+                                       id="zusatzzeile_ID"
+                                       type="text"
+                                       name="zusatzzeile"
+                                       ng-model="vm.sozialdienstFall.adresse.zusatzzeile"
+                                       dv-max-length
+                                       class="form-control"
+                                       required>
+                                <dv-error-messages input-id="zusatzzeile_ID" for="vm.form.zusatzzeile.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="ADRESSE_PLZ" for="plz_ID"></label>
+                                <input aria-describedby="plz_ID-error" id="plz_ID" type="text" name="plz"
+                                       ng-model="vm.sozialdienstFall.adresse.plz"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="plz_ID" for="vm.form.plz.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="ADRESSE_ORT" for="ort_ID"></label>
+                                <input aria-describedby="ort_ID-error" id="ort_ID" type="text" name="ort"
+                                       ng-model="vm.sozialdienstFall.adresse.ort"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="ort_ID" for="vm.form.ort.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
                 </fieldset>
 
                 <!--Buttons-->
-                <dv-navigation dv-next="true"
-                               dv-translate-next="{{vm.getNextButtonText()}}"
-                               dv-save="vm.save()">
-                </dv-navigation>
-
+                <div class="dv-navigation dv-navigation-flex">
+                    <span class="ie11-fix">
+                    <dv-loading-button button-click="vm.save()" type="submit">
+                        <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
+                    </dv-loading-button>
+                    </span>
+                    <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
+                    <span class="ie11-fix" dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
+                          dv-show-expression="vm.isAktivierungMoeglich()">
+                        <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
+                            <span class="uppercase" data-translate="SOZIALDIENSTFALL_AKTIVIEREN"></span>
+                        </dv-loading-button>
+                    </span>
+                </div>
             </form>
         </div>
     </div>

@@ -18,12 +18,9 @@
 import {IQService, IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSGesuch} from '../../../models/TSGesuch';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {SozialdienstFallCreationViewController} from './sozialdienstFallCreationView';
-
 
 describe('sozialdienstFallCreationView', () => {
 
@@ -32,7 +29,6 @@ describe('sozialdienstFallCreationView', () => {
     let $q: IQService;
     let $rootScope: IScope;
     let form: any;
-    let gesuch: TSGesuch;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -55,40 +51,9 @@ describe('sozialdienstFallCreationView', () => {
             $q,
             $rootScope,
             $injector.get('AuthServiceRS'),
-            $injector.get('GesuchsperiodeRS'),
+            $injector.get('SozialdienstRS'),
             $injector.get('$timeout'));
         sozialdienstFallCreationView.form = form;
         spyOn(sozialdienstFallCreationView, 'isGesuchValid').and.callFake(() => form.$valid);
-        gesuch = new TSGesuch();
-        gesuch.typ = TSAntragTyp.ERSTGESUCH;
     }));
-
-    describe('nextStep', () => {
-        it('should not submit the form and not go to the next page because form is invalid', () => {
-            spyOn(gesuchModelManager, 'saveGesuchAndFall');
-            form.$valid = false;
-            sozialdienstFallCreationView.save();
-            expect(gesuchModelManager.saveGesuchAndFall).not.toHaveBeenCalled();
-        });
-    });
-    describe('getTitle', () => {
-        it('should return Änderung Ihrer Daten', () => {
-            spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
-            expect(sozialdienstFallCreationView.getTitle()).toBe('Änderung Ihrer Daten');
-        });
-        it('should return kiBon – Erstgesuch der Periode', () => {
-            const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
-            spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
-            spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
-            spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(sozialdienstFallCreationView.getTitle()).toBe('kiBon – Antrag der Periode 2016/17');
-        });
-        it('should return kiBon – Erstgesuch', () => {
-            spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
-            spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(sozialdienstFallCreationView.getTitle()).toBe('kiBon – Antrag');
-        });
-    });
 });

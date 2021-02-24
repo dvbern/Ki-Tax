@@ -35,28 +35,29 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 2183212900252723745L;
 
-	@NotNull
+	@Nonnull
 	private String name;
 
 	@Nonnull
-	private SozialdienstFallStatus status;
+	private SozialdienstFallStatus status = SozialdienstFallStatus.INAKTIV;
 
-	@NotNull
+	@Nonnull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate geburtsdatum;
 
-	@NotNull
+	@Nonnull
 	private JaxAdresse adresse;
 
-	@NotNull
+	@Nonnull
 	private JaxSozialdienst sozialdienst;
 
-	public JaxAdresse getAdresse() {
-		return adresse;
+	@Nonnull
+	public String getName() {
+		return name;
 	}
 
-	public void setAdresse(JaxAdresse adresse) {
-		this.adresse = adresse;
+	public void setName(@Nonnull String name) {
+		this.name = name;
 	}
 
 	@Nonnull
@@ -68,27 +69,30 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 		this.status = status;
 	}
 
+	@Nonnull
 	public LocalDate getGeburtsdatum() {
 		return geburtsdatum;
 	}
 
-	public void setGeburtsdatum(LocalDate geburtsdatum) {
+	public void setGeburtsdatum(@Nonnull LocalDate geburtsdatum) {
 		this.geburtsdatum = geburtsdatum;
 	}
 
-	public String getName() {
-		return name;
+	@Nonnull
+	public JaxAdresse getAdresse() {
+		return adresse;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setAdresse(@Nonnull JaxAdresse adresse) {
+		this.adresse = adresse;
 	}
 
+	@Nonnull
 	public JaxSozialdienst getSozialdienst() {
 		return sozialdienst;
 	}
 
-	public void setSozialdienst(JaxSozialdienst jaxSozialdienst) {
-		this.sozialdienst = jaxSozialdienst;
+	public void setSozialdienst(@Nonnull JaxSozialdienst sozialdienst) {
+		this.sozialdienst = sozialdienst;
 	}
 }

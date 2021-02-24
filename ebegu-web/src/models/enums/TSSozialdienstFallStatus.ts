@@ -15,16 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSSozialdienstFallStatus} from '../enums/TSSozialdienstFallStatus';
-import {TSAbstractEntity} from '../TSAbstractEntity';
-import {TSAdresse} from '../TSAdresse';
-import {TSSozialdienst} from './TSSozialdienst';
-
-export class TSSozialdienstFall extends TSAbstractEntity {
-    public name: string;
-    public status: TSSozialdienstFallStatus;
-    public adresse: TSAdresse;
-    public geburtsdatum: moment.Moment;
-    public sozialdienst: TSSozialdienst;
+export enum TSSozialdienstFallStatus {
+    AKTIV = 'AKTIV',
+    INAKTIV = 'INAKTIV'
 }
