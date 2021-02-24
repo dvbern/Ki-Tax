@@ -140,7 +140,11 @@ export class TagesschulenAngabenComponent {
     }
 
     public onFormSubmit(): void {
-        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        if (this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()) {
+            this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+        } else {
+            this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        }
 
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
@@ -159,9 +163,29 @@ export class TagesschulenAngabenComponent {
         if (!this.form.valid) {
             return;
         }
+
         this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
+            .subscribe(() => {
+                this.form.disable();
+                this.cd.markForCheck();
+            }, () => {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+            });
+    }
+
+    public onGeprueft(): void {
+        this.formFreigebenTriggered = true;
+        this.enableFormValidation();
+
+        if (!this.form.valid) {
+            return;
+        }
+
+        this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+
+        this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
             .subscribe(() => {
                 this.form.disable();
                 this.cd.markForCheck();
@@ -224,10 +248,10 @@ export class TagesschulenAngabenComponent {
     }
 
     public actionButtonsDisabled(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles()) ||
+        return this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
             (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
                 this.latsAngabenInstitutionContainer.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getInstitutionRoles()) &&
+            (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
                 this.latsAngabenInstitutionContainer.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
     }
 }

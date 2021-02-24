@@ -489,10 +489,17 @@
                 <span translate>SAVE</span>
             </dv-loading-button>
             <dv-loading-button
+                *ngIf="!latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
+            </dv-loading-button>
+            <dv-loading-button
+                type="button"
+                [buttonDisabled]="actionButtonsDisabled()"
+                (buttonClick)="onGeprueft()">
+                <span *ngIf="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()" translate>FREIGEBEN</span>
             </dv-loading-button>
         </div>
 
