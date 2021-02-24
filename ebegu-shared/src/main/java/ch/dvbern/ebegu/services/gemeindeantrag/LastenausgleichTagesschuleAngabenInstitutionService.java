@@ -23,7 +23,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 
 /**
@@ -53,11 +52,19 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer);
 
 	/**
-	 * Reicht den Lastenausgleich ein, inkl. kopieren der Daten vom Korrektur- in den Deklarations-Container,
-	 * falls die Vorbedingungen dazu erfuellt sind.
+	 * Reicht den Lastenausgleich zum Prüfen durch die Gemeinden ein, inkl. kopieren der Daten vom Deklaration- in den
+	 * Korrekturen-Container, falls die Vorbedingungen dazu erfuellt sind.
 	 */
 	@Nonnull
 	LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionFreigeben(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer);
+
+	/**
+	 * Gibt den Lastenausgleich zum Lesen für die Kantone frei, inkl. Setzen des Status auf "GEPRUEFT".
+	 * @return
+	 */
+	@Nonnull
+	LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionGeprueft(
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer);
 
 	/**

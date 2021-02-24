@@ -41,6 +41,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
@@ -84,7 +85,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Inject
 	private JaxBConverter converter;
 
-
 	@ApiOperation(
 		value = "Gibt den LastenausgleichTagesschuleAngabenInstitutionContainer mit der uebergebenen Id zurueck",
 		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class)
@@ -95,7 +95,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION})
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer findLastenausgleichTagesschuleAngabenInstitutionContainer(
 		@Nonnull @NotNull @PathParam("latsInstitutionAngabenJaxId") JaxId latsInstitutionAngabenJaxId
 	) {
@@ -130,8 +130,10 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
 
-		if(converted.getAngabenGemeinde().getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
-			throw new EbeguRuntimeException("saveLastenausgleichTagesschuleInstitution", ErrorCodeEnum.ERROR_GEMEINDE_ANTRAG_NEU);
+		if (converted.getAngabenGemeinde().getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
+			throw new EbeguRuntimeException(
+				"saveLastenausgleichTagesschuleInstitution",
+				ErrorCodeEnum.ERROR_GEMEINDE_ANTRAG_NEU);
 		}
 
 		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
@@ -141,7 +143,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	}
 
 	@ApiOperation(
-		value = "Gibt den LastenausgleichTagesschuleAngabenInstitutionContainer frei fuer die Bearbeitung durch die Institutionen",
+		value = "Gibt den LastenausgleichTagesschuleAngabenInstitutionContainer frei fuer die Bearbeitung durch die "
+			+ "Institutionen",
 		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class)
 	@Nonnull
 	@PUT
@@ -165,6 +168,30 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
 	}
 
+	@ApiOperation(
+		value = "Setzt den LastenausgleichTagesschuleAngabenInstitutionContainer frei für die Lesbarkeit durch die "
+			+ "Kantone",
+		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class
+	)
+	@Nonnull
+	@PUT
+	@Path("/geprueft")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionGeprueft(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
+	) {
+		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
+
+		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
+			angabenInstitutionService.lastenausgleichTagesschuleInstitutionGeprueft(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
+	}
+
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenInstitutionContainer getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(
 		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
@@ -172,16 +199,20 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 		Objects.requireNonNull(latsInstitutionContainerJax);
 		Objects.requireNonNull(latsInstitutionContainerJax.getId());
 
-		// Das Objekt muss in der DB schon vorhanden sein, da die Erstellung immer ueber den GemeindeAntragService geschieht
+		// Das Objekt muss in der DB schon vorhanden sein, da die Erstellung immer ueber den GemeindeAntragService
+		// geschieht
 		final LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer =
-			angabenInstitutionService.findLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax.getId())
+			angabenInstitutionService.findLastenausgleichTagesschuleAngabenInstitutionContainer(
+				latsInstitutionContainerJax.getId())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					latsInstitutionContainerJax.getId()));
 
 		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
-			converter.lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(latsInstitutionContainerJax, latsInstitutionContainer);
+			converter.lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
+				latsInstitutionContainerJax,
+				latsInstitutionContainer);
 		return converted;
 	}
 }

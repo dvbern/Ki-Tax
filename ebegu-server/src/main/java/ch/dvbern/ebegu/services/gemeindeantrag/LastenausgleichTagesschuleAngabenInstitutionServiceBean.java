@@ -130,6 +130,26 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		return persistence.merge(institutionContainer);
 	}
 
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionGeprueft(
+		@Nonnull
+			LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer) {
+		Objects.requireNonNull(institutionContainer);
+		authorizer.checkWriteAuthorization(institutionContainer);
+
+		// Nur moeglich, wenn freigegeben, aber noch nicht geprüft
+		Preconditions.checkState(
+			institutionContainer.getStatus() == LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE,
+			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
+
+		Objects.requireNonNull(institutionContainer.getAngabenKorrektur());
+
+		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT);
+		return persistence.merge(institutionContainer);
+
+	}
+
 	@Override
 	public List<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionByGemeindeAntragId(
 		String gemeindeAntragId) {
