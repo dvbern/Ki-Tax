@@ -146,7 +146,7 @@ public class GemeindeAntragResource {
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")
 	@GET
 	@Path("{gemeindeAntragId}/tagesschulenantraege")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_GEMEINDE,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_GEMEINDE,
 		SACHBEARBEITER_GEMEINDE })
 	public List<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> getTagesschuleAntraegeFuerGemeinedAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragId") String gemeindeAntragId

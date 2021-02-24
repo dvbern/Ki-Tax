@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,8 +43,10 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
@@ -80,6 +83,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Inject
 	private AuthorizerImpl authorizer;
 
+	@Inject
+	private PrincipalBean principal;
+
 	@ApiOperation(
 		value = "Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen Id zurueck",
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
@@ -103,7 +109,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		return latsGemeindeContainerOptional
 			.map(lastenausgleichTagesschuleAngabenGemeindeContainer ->
-				converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(lastenausgleichTagesschuleAngabenGemeindeContainer))
+				converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(
+					lastenausgleichTagesschuleAngabenGemeindeContainer))
+			// remove insti containers that the user is not allowed to read
+			.map(jaxLastenausgleichTagesschuleAngabenGemeindeContainer -> {
+				if (principal.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+					jaxLastenausgleichTagesschuleAngabenGemeindeContainer.setAngabenInstitutionContainers(
+						jaxLastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenInstitutionContainers()
+							.stream()
+							.filter(instiContainer -> Objects.requireNonNull(principal.getBenutzer().getInstitution())
+								.getId().equals(instiContainer.getInstitution().getId())
+							).collect(Collectors.toSet()));
+				}
+				return jaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+			})
 			.orElse(null);
 	}
 
