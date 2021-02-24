@@ -127,7 +127,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
 
 		Objects.requireNonNull(institutionContainer.getAngabenDeklaration());
-		checkInstitutionAngabenComplete(institutionContainer.getAngabenDeklaration());
+		checkInstitutionAngabenComplete(institutionContainer.getAngabenDeklaration(),
+			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
 
 		institutionContainer.copyForFreigabe();
 		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);
@@ -148,7 +149,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
 
 		Objects.requireNonNull(institutionContainer.getAngabenKorrektur());
-		checkInstitutionAngabenComplete(institutionContainer.getAngabenKorrektur());
+		checkInstitutionAngabenComplete(
+			institutionContainer.getAngabenKorrektur(),
+			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
 
 		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT);
 		return persistence.merge(institutionContainer);
@@ -164,7 +167,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		Root<LastenausgleichTagesschuleAngabenInstitutionContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenInstitutionContainer.class);
 
-
 		Predicate gemeindeAntrag =
 			cb.equal(root.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.angabenGemeinde).get(
 				LastenausgleichTagesschuleAngabenGemeindeContainer_.id), gemeindeAntragId);
@@ -175,52 +177,80 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status
-	private void checkInstitutionAngabenComplete(LastenausgleichTagesschuleAngabenInstitution institutionAngaben) {
-			if(Objects.isNull(institutionAngaben.getLehrbetrieb())) {
-				throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
-			}
-			if(Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
+	private void checkInstitutionAngabenComplete(
+		LastenausgleichTagesschuleAngabenInstitution institutionAngaben,
+		Boolean alleAngabenInKibonErfasst) {
+		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
+			throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
+		}
+		if(!alleAngabenInKibonErfasst) {
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
 				throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderBasisstufe())) {
-				throw new WebApplicationException("anzahlEingeschriebeneKinderBasisstufe must not be null", Status.BAD_REQUEST);
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderBasisstufe())) {
+				throw new WebApplicationException(
+					"anzahlEingeschriebeneKinderBasisstufe must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
-				throw new WebApplicationException("anzahlEingeschriebeneKinderKindergarten must not be null", Status.BAD_REQUEST);
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
+				throw new WebApplicationException(
+					"anzahlEingeschriebeneKinderKindergarten must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen())) {
-				throw new WebApplicationException("anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null", Status.BAD_REQUEST);
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
+				throw new WebApplicationException(
+					"anzahlEingeschriebeneKinderPrimarstufe must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
-				throw new WebApplicationException("anzahlEingeschriebeneKinderPrimarstufe must not be null", Status.BAD_REQUEST);
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagFruehbetreuung must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
-				throw new WebApplicationException("anzahlDurchschnittKinderProTagFruehbetreuung must not be null", Status.BAD_REQUEST);
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagMittag must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
-				throw new WebApplicationException("anzahlDurchschnittKinderProTagMittag must not be null", Status.BAD_REQUEST);
-			};
-			if(Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
-				throw new WebApplicationException("anzahlDurchschnittKinderProTagNachmittag1 must not be null", Status.BAD_REQUEST);
+			;
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagNachmittag1 must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
-				throw new WebApplicationException("anzahlDurchschnittKinderProTagNachmittag2 must not be null", Status.BAD_REQUEST);
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagNachmittag2 must not be null",
+					Status.BAD_REQUEST);
 			}
-			if(Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
-				throw new WebApplicationException("betreuungsverhaeltnisEingehalten must not be null", Status.BAD_REQUEST);
-			}
-			if(Objects.isNull(institutionAngaben.getErnaehrungsGrundsaetzeEingehalten())) {
-				throw new WebApplicationException("ernaehrungsGrundsaetzeEingehalten must not be null", Status.BAD_REQUEST);
-			}
-			if(Objects.isNull(institutionAngaben.getSchuleAufBasisOrganisatorischesKonzept())) {
-				throw new WebApplicationException("schuleAufBasisOrganisatorischesKonzepts must not be null", Status.BAD_REQUEST);
-			}
-			if(Objects.isNull(institutionAngaben.getRaeumlicheVoraussetzungenEingehalten())) {
-				throw new WebApplicationException("raeumlicheVoraussetungenEingehalten must not be null", Status.BAD_REQUEST);
-			}
-			if(Objects.isNull(institutionAngaben.getSchuleAufBasisPaedagogischesKonzept())) {
-				throw new WebApplicationException("schuleAufBasisPaedagogischesKonzepts must not be null", Status.BAD_REQUEST);
-			}
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen())) {
+			throw new WebApplicationException(
+				"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
+			throw new WebApplicationException("betreuungsverhaeltnisEingehalten must not be null", Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getErnaehrungsGrundsaetzeEingehalten())) {
+			throw new WebApplicationException("ernaehrungsGrundsaetzeEingehalten must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getSchuleAufBasisOrganisatorischesKonzept())) {
+			throw new WebApplicationException(
+				"schuleAufBasisOrganisatorischesKonzepts must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getRaeumlicheVoraussetzungenEingehalten())) {
+			throw new WebApplicationException(
+				"raeumlicheVoraussetungenEingehalten must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getSchuleAufBasisPaedagogischesKonzept())) {
+			throw new WebApplicationException(
+				"schuleAufBasisPaedagogischesKonzepts must not be null",
+				Status.BAD_REQUEST);
+		}
 	}
 }
 

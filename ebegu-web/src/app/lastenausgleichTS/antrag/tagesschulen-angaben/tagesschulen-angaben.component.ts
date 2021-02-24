@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
@@ -27,6 +28,7 @@ import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -58,6 +60,7 @@ export class TagesschulenAngabenComponent {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly authService: AuthServiceRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -156,14 +159,13 @@ export class TagesschulenAngabenComponent {
         });
     }
 
-    public onFreigeben(): void {
+    public async onFreigeben(): Promise<void> {
         this.formFreigebenTriggered = true;
         this.enableFormValidation();
 
-        if (!this.form.valid) {
+        if (!this.form.valid || !await this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_FREIGEBEN')) {
             return;
         }
-
         this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
@@ -175,11 +177,21 @@ export class TagesschulenAngabenComponent {
             });
     }
 
+    private confirmDialog(frageKey: string): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant(frageKey),
+        };
+        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
+    }
+
     public onGeprueft(): void {
         this.formFreigebenTriggered = true;
         this.enableFormValidation();
 
-        if (!this.form.valid) {
+        if (!this.form.valid || !this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT')) {
             return;
         }
 
