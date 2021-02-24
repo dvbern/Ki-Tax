@@ -187,11 +187,11 @@ export class TagesschulenAngabenComponent {
             .toPromise();
     }
 
-    public onGeprueft(): void {
+    public async onGeprueft(): Promise<void> {
         this.formFreigebenTriggered = true;
         this.enableFormValidation();
 
-        if (!this.form.valid || !this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT')) {
+        if (!this.form.valid || !await this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT')) {
             return;
         }
 
