@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
@@ -45,6 +45,9 @@ export class TagesschulenAngabenComponent {
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer;
     public angabenAusKibon: boolean;
     public gesuchsPeriode: TSGesuchsperiode;
+    public formFreigebenTriggered: boolean = false;
+
+    private readonly ANY_POSITIVE_NUMBER_PATTERN = '[0-9]*';
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
@@ -135,13 +138,72 @@ export class TagesschulenAngabenComponent {
     }
 
     public onFreigeben(): void {
-        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.formFreigebenTriggered = true;
+        this.enableFormValidation();
+
+        if (!this.form.valid) {
+            return;
+        }
+       /* this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
             .subscribe(() => {
                 this.form.disable();
-            }, error => {
+            }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
-            });
+            });*/
+    }
+
+    private enableFormValidation(): void {
+        // A
+        this.form.get('isLehrbetrieb').setValidators([Validators.required]);
+        // B
+        if (!this.angabenAusKibon) {
+            this.form.get('anzahlEingeschriebeneKinder')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('anzahlEingeschriebeneKinderKindergarten')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('durchschnittKinderProTagFruehbetreuung')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('durchschnittKinderProTagMittag')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('durchschnittKinderProTagNachmittag1')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('durchschnittKinderProTagNachmittag2')
+                .setValidators([Validators.required, this.numberValidator()]);
+        }
+        this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')
+            .setValidators([Validators.required, this.numberValidator()]);
+        // C
+        this.form.get('schuleAufBasisOrganisatorischesKonzept').setValidators([Validators.required]);
+        this.form.get('schuleAufBasisPaedagogischesKonzept').setValidators([Validators.required]);
+        this.form.get('raeumlicheVoraussetzungenEingehalten').setValidators([Validators.required]);
+        this.form.get('betreuungsverhaeltnisEingehalten').setValidators([Validators.required]);
+        this.form.get('ernaehrungsGrundsaetzeEingehalten').setValidators([Validators.required]);
+
+        this.triggerFormValidation();
+    }
+
+    private numberValidator(): ValidatorFn {
+        // tslint:disable-next-line:no-unnecessary-type-annotation
+        return (control: AbstractControl): {} | null => {
+            return isNaN(control.value) ? {
+                noNumberError: control.value,
+            } : null;
+        };
+    }
+
+    private triggerFormValidation(): void {
+        for (const key in this.form.controls) {
+            if (this.form.get(key) !== null) {
+                this.form.get(key).markAsTouched();
+                this.form.get(key).updateValueAndValidity();
+            }
+        }
+        this.form.updateValueAndValidity();
     }
 }

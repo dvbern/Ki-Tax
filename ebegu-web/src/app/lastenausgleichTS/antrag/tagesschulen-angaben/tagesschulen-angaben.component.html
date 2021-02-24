@@ -30,6 +30,7 @@
 
         <dv-input-container-x>
             <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('isLehrbetrieb').errors}"
                    id="isLehrbetrieb-radio-group">
                 {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode?.gesuchsperiodeString} }}
                 <span>&nbsp;*</span>
@@ -55,7 +56,7 @@
 
         <div *ngIf="!angabenAusKibon">
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
                     {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit.gueltigAb.year()} }}
                     <span>&nbsp;*</span>
                 </label>
@@ -65,11 +66,17 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinder"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors}">
                     {{'LATS_DAVON_KINDERGARTEN' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -79,11 +86,17 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinderKindergarten"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors}">
                     {{'LATS_DAVON_BASISSTUFE' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -93,11 +106,17 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinderBasisstufe"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors}">
                     {{'LATS_DAVON_PRIMARSTUFE' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -107,11 +126,17 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinderPrimarstufe"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}">
                     {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -121,12 +146,18 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinderSekundarstufe"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
         </div>
 
         <dv-input-container-x>
-            <label>
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors}">
                 {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}
                 <span>&nbsp;*</span>
             </label>
@@ -136,6 +167,12 @@
                 <input matInput
                        formControlName="anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
                        class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.noNumberError"
+                           translate>ERROR_NUMBER
+                </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 
@@ -148,7 +185,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors}">
                     {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -158,11 +195,17 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagFruehbetreuung"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors}">
                     {{'LATS_ANZAHL_IN_MITTAGSBETREUUNG' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -172,11 +215,17 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagMittag"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}">
                     {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -186,11 +235,17 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagNachmittag1"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}">
                     {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
                     <span>&nbsp;*</span>
                 </label>
@@ -200,6 +255,12 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagNachmittag2"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
         </div>
@@ -210,6 +271,7 @@
 
         <dv-input-container-x>
             <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisOrganisatorischesKonzept').errors}"
                    id="schuleAufBasisOrganisatorischesKonzept-radio-group">
                 {{'LATS_AUF_BASIS_ORG_KONZEPT' | translate}}
                 <span>&nbsp;*</span>
@@ -231,6 +293,7 @@
 
         <dv-input-container-x>
             <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisPaedagogischesKonzept').errors}"
                    id="schuleAufBasisPaedagogischesKonzept-radio-group">
                 {{'LATS_AUF_BASIS_PAEDAGOGISCH_KONZEPT' | translate}}
                 <span>&nbsp;*</span>
@@ -252,6 +315,7 @@
 
         <dv-input-container-x>
             <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('raeumlicheVoraussetzungenEingehalten').errors}"
                    id="raeumlicheVoraussetzungenEingehalten-radio-group">
                 {{'LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN' | translate}}
                 <span>&nbsp;*</span>
@@ -273,6 +337,7 @@
 
         <dv-input-container-x>
             <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsverhaeltnisEingehalten').errors}"
                    id="betreuungsverhaeltnisEingehalten-radio-group">
                 {{'LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN' | translate}}
                 <span>&nbsp;*</span>
@@ -294,6 +359,7 @@
 
         <dv-input-container-x>
             <label required
+                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('ernaehrungsGrundsaetzeEingehalten').errors}"
                    id="ernaehrungsGrundsaetzeEingehalten-radio-group">
                 {{'LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN' | translate}}
                 <span>&nbsp;*</span>
