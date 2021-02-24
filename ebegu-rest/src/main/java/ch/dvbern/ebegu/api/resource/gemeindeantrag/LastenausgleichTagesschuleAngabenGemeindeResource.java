@@ -105,7 +105,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		authorizer.checkReadAuthorizationLATSGemeindeAntrag(latsGemeindeAngabenJaxId.getId());
 
 		final Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> latsGemeindeContainerOptional =
-			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(converter.toEntityId(latsGemeindeAngabenJaxId));
+			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(converter.toEntityId(
+				latsGemeindeAngabenJaxId));
 
 		return latsGemeindeContainerOptional
 			.map(lastenausgleichTagesschuleAngabenGemeindeContainer ->
@@ -156,7 +157,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
-		value = "Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer frei fuer die Bearbeitung durch die Institutionen",
+		value = "Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer frei fuer die Bearbeitung durch die "
+			+ "Institutionen",
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
 	@Nonnull
 	@PUT
@@ -223,7 +225,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		authorizer.checkReadAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
 
-		// Das Objekt muss in der DB schon vorhanden sein, da die Erstellung immer ueber den GemeindeAntragService geschieht
+		// Das Objekt muss in der DB schon vorhanden sein, da die Erstellung immer ueber den GemeindeAntragService
+		// geschieht
 		final LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
 			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax.getId())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -232,7 +235,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 					latsGemeindeContainerJax.getId()));
 
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
-			converter.lastenausgleichTagesschuleAngabenGemeindeContainerToEntity(latsGemeindeContainerJax, latsGemeindeContainer);
+			converter.lastenausgleichTagesschuleAngabenGemeindeContainerToEntity(
+				latsGemeindeContainerJax,
+				latsGemeindeContainer);
 		return converted;
 	}
 
