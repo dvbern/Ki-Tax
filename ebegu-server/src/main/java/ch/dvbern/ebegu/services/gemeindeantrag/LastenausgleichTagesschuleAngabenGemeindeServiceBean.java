@@ -214,7 +214,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				.stream()
 				.allMatch(LastenausgleichTagesschuleAngabenInstitutionContainer::isAntragAbgeschlossen),
 			"Alle LastenausgleichAngabenInstitution muessen abgeschlossen sein");
-		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
+		Objects.requireNonNull(fallContainer.getAngabenDeklaration());
 
 		fallContainer.copyForFreigabe();
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);

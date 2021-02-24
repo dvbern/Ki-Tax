@@ -88,4 +88,13 @@ export class LastenausgleichTSService {
         );
         this.lATSAngabenGemeindeContainerStore.next(savedContainer);
     }
+
+    public latsGemeindeAntragFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        this.http.put(
+            `${this.API_BASE_URL}/einreichen`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
+        ).subscribe(result => {
+            this.next(result);
+        }, error => LOG.error(error));
+    }
 }

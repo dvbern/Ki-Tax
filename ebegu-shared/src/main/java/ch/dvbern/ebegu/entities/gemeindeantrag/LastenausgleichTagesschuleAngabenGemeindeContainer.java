@@ -191,8 +191,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
-		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE && angabenKorrektur != null) {
-			angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde(angabenKorrektur);
+		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE && angabenDeklaration != null) {
+			angabenKorrektur = new LastenausgleichTagesschuleAngabenGemeinde(angabenDeklaration);
 		}
 	}
 
