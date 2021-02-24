@@ -133,4 +133,15 @@ export class TagesschulenAngabenComponent {
             }
         });
     }
+
+    public onFreigeben(): void {
+        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+
+        this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
+            .subscribe(() => {
+                this.form.disable();
+            }, error => {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+            });
+    }
 }
