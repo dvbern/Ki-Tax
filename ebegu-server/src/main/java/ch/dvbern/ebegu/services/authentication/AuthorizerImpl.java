@@ -1571,6 +1571,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				}
 			} else if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
 				checkWriteAuthorizationInstitution(latsInstitutionContainer.getInstitution());
+				return;
 			}
 			// Alle anderen sind Stand heute nicht berechtigt
 			throwViolation(latsInstitutionContainer);
