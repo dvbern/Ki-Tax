@@ -72,12 +72,19 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinder"
                            class="form-control dv-input"/>
+
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinder"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinder').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -98,6 +105,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderKindergarten"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinderKindergarten').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -118,6 +131,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderBasisstufe"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinderBasisstufe').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -138,6 +157,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderPrimarstufe"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinderPrimarstufe').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -179,6 +204,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
+                    [korrektur]="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </mat-form-field>
         </dv-input-container-x>
 
@@ -207,6 +238,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagFruehbetreuung"
+                        [korrektur]="form.get('durchschnittKinderProTagFruehbetreuung').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -227,6 +264,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagMittag"
+                        [korrektur]="form.get('durchschnittKinderProTagMittag').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -247,6 +290,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag1"
+                        [korrektur]="form.get('durchschnittKinderProTagNachmittag1').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -267,6 +316,12 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag2"
+                        [korrektur]="form.get('durchschnittKinderProTagNachmittag2').value"
+                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
         </div>
@@ -294,6 +349,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisOrganisatorischesKonzept"
+                    [korrektur]="form.get('schuleAufBasisOrganisatorischesKonzept').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -316,6 +377,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisPaedagogischesKonzept"
+                    [korrektur]="form.get('schuleAufBasisPaedagogischesKonzept').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -338,6 +405,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.raeumlicheVoraussetzungenEingehalten"
+                    [korrektur]="form.get('raeumlicheVoraussetzungenEingehalten').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -360,6 +433,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsverhaeltnisEingehalten"
+                    [korrektur]="form.get('betreuungsverhaeltnisEingehalten').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -382,6 +461,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.ernaehrungsGrundsaetzeEingehalten"
+                    [korrektur]="form.get('ernaehrungsGrundsaetzeEingehalten').value"
+                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </dv-radio-container-x>
         </dv-input-container-x>
         <mat-divider></mat-divider>
