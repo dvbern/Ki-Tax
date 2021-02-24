@@ -42,9 +42,15 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguFingerWegException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -123,6 +129,10 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	) {
 		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
+
+		if(converted.getAngabenGemeinde().getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {
+			throw new EbeguRuntimeException("saveLastenausgleichTagesschuleInstitution", ErrorCodeEnum.ERROR_GEMEINDE_ANTRAG_NEU);
+		}
 
 		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
 			angabenInstitutionService.saveLastenausgleichTagesschuleInstitution(converted);
