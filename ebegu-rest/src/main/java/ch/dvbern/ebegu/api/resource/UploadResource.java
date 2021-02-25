@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
+import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -147,6 +148,9 @@ public class UploadResource {
 
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
+
+	@Inject
+	private FallService fallService;
 
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
@@ -526,4 +530,22 @@ public class UploadResource {
 		LOG.info("Add on {} file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());
 	}
 
+	@ApiOperation("Stores the Vollmacht zu einen gewissen SozialdienstFall und setzt der Fall als aktiv")
+	@POST
+	@Path("/sozialdienstfall/{fallid}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
+	public Response saveVollmachtDokument(
+		@Nonnull @NotNull @PathParam("fallid") String fallId,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+		Validate.notEmpty(fileList, "Need to upload something");
+
+		fallService.uploadSozialdienstVollmachtDokument(fallId,
+			fileList.get(0).getContent());
+
+		return Response.ok().build();
+	}
 }

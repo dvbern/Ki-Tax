@@ -416,6 +416,18 @@ export class GesuchModelManager {
     }
 
     /**
+     * Save the fall contained in the gesuch only
+     * the createNewFall call a save method at the end
+     */
+    public saveFall(): IPromise<TSFall> {
+        return this.gesuchGenerator.createNewFall(this.gesuch.dossier.fall)
+            .then((fallResponse: TSFall) => {
+                this.gesuch.dossier.fall = angular.copy(fallResponse);
+                return this.gesuch.dossier.fall;
+            });
+    }
+
+    /**
      * Creates and saves the fall contained in the gesuch object of the class
      */
     private createNewFall(): IPromise<TSGesuch> {
@@ -672,7 +684,7 @@ export class GesuchModelManager {
             this.getFall(),
             this.getDossier(),
             null,
-            )
+        )
             .then(gesuch => {
                 this.gesuch = gesuch;
                 return this.gesuch;

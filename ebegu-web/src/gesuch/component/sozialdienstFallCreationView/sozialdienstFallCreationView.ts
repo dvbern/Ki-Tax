@@ -22,6 +22,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
+import {TSFall} from '../../../models/TSFall';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {INewFallStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -95,7 +96,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public save(): IPromise<TSGesuch> {
+    public save(): IPromise<TSFall> {
         this.showError = true;
         if (!this.isGesuchValid()) {
             return undefined;
@@ -103,10 +104,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return this.$q.when(this.gesuchModelManager.getGesuch());
+            return this.$q.when(this.gesuchModelManager.getFall());
         }
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveGesuchAndFall();
+        return this.gesuchModelManager.saveFall();
     }
 
     public getGesuchModel(): TSGesuch {

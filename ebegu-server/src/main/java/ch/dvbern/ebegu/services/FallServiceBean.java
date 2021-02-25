@@ -51,11 +51,14 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Gesuchsteller_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Fall
@@ -237,4 +240,29 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 		return typedQuery.getSingleResult();
 	}
+
+	@Nonnull
+	@Override
+	public Fall uploadSozialdienstVollmachtDokument(
+		@Nonnull String fallId,
+		@Nonnull byte[] content) {
+		requireNonNull(fallId);
+		requireNonNull(content);
+		final Fall fall = findFall(fallId).orElseThrow(
+			() -> new EbeguEntityNotFoundException(
+				"uploadSozialdienstVollmachtDokument - findFall",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				fallId)
+		);
+		if(fall.getSozialdienstFall() == null) {
+			throw new EbeguEntityNotFoundException(
+				"uploadSozialdienstVollmachtDokument - getSozialdienstFall",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				fallId);
+		}
+		fall.getSozialdienstFall().setVollmacht(content);
+		fall.getSozialdienstFall().setStatus(SozialdienstFallStatus.AKTIV);
+		return saveFall(fall);
+	}
+
 }

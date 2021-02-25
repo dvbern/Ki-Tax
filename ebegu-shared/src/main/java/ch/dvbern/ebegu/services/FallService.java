@@ -98,4 +98,9 @@ public interface FallService {
 	 */
 	@Nonnull
 	Optional<String> getCurrentEmailAddress(@Nonnull String fallID);
+
+	@Nonnull
+	Fall uploadSozialdienstVollmachtDokument(
+		@Nonnull String fallId,
+		@Nonnull byte[] content);
 }
