@@ -356,13 +356,17 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public onAngabenFormSubmit(): void {
         if (this.angabenForm.valid) {
-            this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+            if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
+                this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
+            } else {
+                this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+            }
             this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
         }
 
     }
 
-    public onFormFreigebenSubmit(): void {
+    public triggerFormValidation(): void {
         this.formFreigebenTriggered = true;
         this.enableFormValidation();
         for (const key in this.angabenForm.controls) {
@@ -383,4 +387,9 @@ export class GemeindeAngabenComponent implements OnInit {
         }
     }
 
+    public inKantonPruefung(): boolean {
+        return this.lATSAngabenGemeindeContainer.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON &&
+            this.inMandantRoles();
+    }
 }

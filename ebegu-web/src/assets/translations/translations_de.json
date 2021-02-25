@@ -2259,6 +2259,7 @@
     "LATS_FRAGE_INSTITUTION_FORMULAR_FREIGEBEN": "Soll das Formular wirklich zur Prüfung durch die Gemeinde freigegeben werden?",
     "LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT": "Soll das Formular wirklich zur Prüfung durch den Kanton freigegeben werden?",
     "LATS_FREIGABE_PRUEFUNG_KANTON": "Freigeben zur Prüfung durch den Kanton",
+    "LATS_GEPRUEFT_KANTON": "Geprüft durch den Kanton",
     "LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE": "Wollen Sie das Formular wirklich zur Prüfung durch den Kanton freigeben?",
     "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
     "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Bitte korrigieren Sie Ihre Eingaben.",

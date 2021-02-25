@@ -18,7 +18,9 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {filter, mergeMap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {filter, map, mergeMap} from 'rxjs/operators';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
@@ -58,5 +60,33 @@ export class FreigabeComponent implements OnInit {
             .subscribe(container => {
                 this.latsService.latsGemeindeAntragFreigeben(container);
             });
+    }
+
+    public isInBearbeitungGemeinde(): Observable<boolean> {
+        return this.latsService.getLATSAngabenGemeindeContainer().pipe(
+            map(latsContainer => latsContainer.status ===
+                TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE),
+        );
+    }
+
+    public geprueft(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT')
+        };
+        this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed()
+            .pipe(
+                filter(result => !!result),
+                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer())
+            ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container));
+    }
+
+    public isInPruefungKanton(): Observable<boolean> {
+        return this.latsService.getLATSAngabenGemeindeContainer().pipe(
+            map(latsContainer => latsContainer.status ===
+                TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON),
+        );
+
     }
 }
