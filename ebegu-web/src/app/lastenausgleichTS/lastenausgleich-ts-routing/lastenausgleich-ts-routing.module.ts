@@ -43,7 +43,7 @@ const states: NgHybridStateDeclaration[] = [
         resolve: [
             {
                 token: 'lastenausgleichId',
-                deps: [Transition, GemeindeAntragService],
+                deps: [Transition],
                 resolveFn: (trans: Transition) =>
                     (trans.params().id),
             },
@@ -52,17 +52,25 @@ const states: NgHybridStateDeclaration[] = [
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
         url: '/angaben-gemeinde',
-        component: GemeindeAngabenComponent
+        component: GemeindeAngabenComponent,
+        resolve: [
+            {
+                token: 'triggerValidationOnInit',
+                deps: [Transition],
+                resolveFn: (trans: Transition) =>
+                    trans.params().triggerValidation,
+            },
+        ],
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN',
         url: '/angaben-tagesschulen',
-        component: TagesschulenUiViewComponent
+        component: TagesschulenUiViewComponent,
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST',
         url: '/list',
-        component: TagesschulenListComponent
+        component: TagesschulenListComponent,
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.DETAIL',
@@ -80,12 +88,12 @@ const states: NgHybridStateDeclaration[] = [
     {
         name: 'LASTENAUSGLEICH_TS.FREIGABE',
         url: '/freigabe',
-        component: FreigabeComponent
+        component: FreigabeComponent,
     },
     {
         name: 'lastenausgleich-ts.lastenausgleich',
         url: '/lastenausgleich',
-        component: LastenausgleichTsBerechnungComponent
+        component: LastenausgleichTsBerechnungComponent,
     },
 ];
 

@@ -18,11 +18,14 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {filter, map, mergeMap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {Log} from '../../../core/logging/LogFactory';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
@@ -33,6 +36,8 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 })
 export class FreigabeComponent implements OnInit {
 
+    private readonly ROUTING_DELAY = 3000; // ms
+
     @Input() public lastenausgleichID: string;
 
     public constructor(
@@ -40,6 +45,7 @@ export class FreigabeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly latsService: LastenausgleichTSService,
         private readonly dialog: MatDialog,
+        private readonly $state: StateService,
     ) {
     }
 
@@ -56,9 +62,17 @@ export class FreigabeComponent implements OnInit {
             .pipe(
                 filter(result => !!result),
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer()),
+                mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container)),
             )
-            .subscribe(container => {
-                this.latsService.latsGemeindeAntragFreigeben(container);
+            .subscribe(() => {}, error => {
+                // tslint:disable-next-line:early-exit
+                if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
+                    this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
+                    setTimeout(() => this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE', {triggerValidation: true}),
+                        this.ROUTING_DELAY);
+                } else {
+                    this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                }
             });
     }
 
@@ -72,13 +86,13 @@ export class FreigabeComponent implements OnInit {
     public geprueft(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT')
+            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT'),
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
                 filter(result => !!result),
-                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer())
+                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer()),
             ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container));
     }
 
