@@ -261,7 +261,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 				fallId);
 		}
 		fall.getSozialdienstFall().setVollmacht(content);
-		fall.getSozialdienstFall().setStatus(SozialdienstFallStatus.AKTIV);
 		return saveFall(fall);
 	}
 

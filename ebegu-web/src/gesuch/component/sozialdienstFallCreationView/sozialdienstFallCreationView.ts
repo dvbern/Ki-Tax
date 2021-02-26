@@ -15,15 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IPromise, IQService, IScope} from 'angular';
+import {StateService} from '@uirouter/core';
+import {IComponentOptions, IScope} from 'angular';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {SozialdienstRS} from '../../../app/core/service/SozialdienstRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
-import {TSFall} from '../../../models/TSFall';
-import {TSGesuch} from '../../../models/TSGesuch';
 import {INewFallStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -48,14 +47,15 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         '$stateParams',
         'WizardStepManager',
         '$translate',
-        '$q',
         '$scope',
         'AuthServiceRS',
         'SozialdienstRS',
+        '$state',
         '$timeout',
     ];
 
     private sozialdienstFall: TSSozialdienstFall;
+    private isVollmachtHochgeladet: boolean;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
@@ -68,10 +68,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         private readonly $stateParams: INewFallStateParams,
         wizardStepManager: WizardStepManager,
         private readonly $translate: ITranslateService,
-        private readonly $q: IQService,
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         private readonly sozialdienstRS: SozialdienstRS,
+        private readonly $state: StateService,
         $timeout: ITimeoutService,
     ) {
         super(gesuchModelManager,
@@ -93,10 +93,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     private initViewModel(): void {
         this.sozialdienstFall = this.gesuchModelManager.getFall().sozialdienstFall;
+        if (!this.sozialdienstFall.isNew()) {
+            // TODO check if Vollmacht vorhanden
+            this.isVollmachtHochgeladet = false;
+        }
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public save(): IPromise<TSFall> {
+    public save(): void {
         this.showError = true;
         if (!this.isGesuchValid()) {
             return undefined;
@@ -104,14 +108,24 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return this.$q.when(this.gesuchModelManager.getFall());
+            return;
         }
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveFall();
-    }
-
-    public getGesuchModel(): TSGesuch {
-        return this.gesuchModelManager.getGesuch();
+        this.gesuchModelManager.saveFall().then(
+            fall => {
+                const params: INewFallStateParams = {
+                    gesuchsperiodeId: null,
+                    creationAction: null,
+                    gesuchId: null,
+                    dossierId: null,
+                    gemeindeId: this.gesuchModelManager.getGemeinde().id,
+                    eingangsart: null,
+                    sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
+                    fallId: fall.id,
+                };
+                this.$state.go('gesuch.sozialdienstfallcreation', params);
+            },
+        );
     }
 
     public getNextButtonText(): string {
@@ -142,7 +156,8 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public isAktivierungMoeglich(): boolean {
-        if (this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.INAKTIV) {
+        if (this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.INAKTIV
+            && this.isVollmachtHochgeladet) {
             return true;
         }
         return false;

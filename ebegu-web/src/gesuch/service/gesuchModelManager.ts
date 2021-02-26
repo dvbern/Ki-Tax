@@ -1653,4 +1653,15 @@ export class GesuchModelManager {
     public isTagesschuleTagisEnabled(): boolean {
         return this.gemeindeKonfiguration.konfigTagesschuleTagisEnabled;
     }
+
+    public openSozialdienstFall(fallId: string, gemeindeId: string, gesuchId: string): IPromise<TSGesuch> {
+        return this.gesuchGenerator.initSozialdienstFall(fallId, gemeindeId, gesuchId).then(gesuch => {
+                this.setGesuchDaten(gesuch);
+                if (!gesuch.isNew()) {
+                    return gesuch;
+                }
+                return this.createNewDossierForCurrentFall();
+            },
+        );
+    }
 }

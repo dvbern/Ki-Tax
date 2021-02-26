@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -314,7 +315,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
-			SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
+			SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST,
+			SACHBEARBEITER_SOZIALDIENST };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -878,6 +880,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 			return institutions.stream()
 				.anyMatch(gesuch::hasBetreuungOfInstitution);  // irgend eine der betreuungen des gesuchs matched
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)) {
+			SozialdienstFall sozialdienstFall = gesuch.getDossier().getFall().getSozialdienstFall();
+			return sozialdienstFall != null && isAllowedAdminOrSachbearbeiter(sozialdienstFall.getSozialdienst());
 		}
 		if (isAllowedSchulamt(gesuch)) {
 			return true;
@@ -1785,5 +1791,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			throwViolation(sozialdienst);
 
 		}
+	}
+
+	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
+		return principalBean.belongsToSozialdienst(sozialdienst);
 	}
 }

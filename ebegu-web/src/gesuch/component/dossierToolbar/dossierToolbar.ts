@@ -748,4 +748,8 @@ export class DossierToolbarController implements IDVFocusableController {
     public getGesuchName(): string {
         return this.gesuchModelManager.getGesuchName();
     }
+
+    public showVerantwortlicher(): boolean {
+        return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+    }
 }

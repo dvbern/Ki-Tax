@@ -48,6 +48,8 @@ public final class AntragStatusConverterUtil {
 	@Nonnull
 	public static AntragStatusDTO convertStatusToDTO(Gesuch antrag, AntragStatus status) {
 		switch (status) {
+		case IN_BEARBEITUNG_SOZIALDIENST:
+			return AntragStatusDTO.IN_BEARBEITUNG_SOZIALDIENST;
 		case IN_BEARBEITUNG_GS:
 			return AntragStatusDTO.IN_BEARBEITUNG_GS;
 		case FREIGABEQUITTUNG:

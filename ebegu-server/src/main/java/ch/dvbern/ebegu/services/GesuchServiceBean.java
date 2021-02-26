@@ -207,6 +207,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Gemeinde gemeindeOfGesuchToCreate = gesuchToCreate.extractGemeinde();
 		Gesuchsperiode gesuchsperiodeOfGesuchToCreate = gesuchToCreate.getGesuchsperiode();
+		if(gesuchsperiodeOfGesuchToCreate == null && gesuchToCreate.getDossier().getFall().getSozialdienstFall() != null){
+			gesuchsperiodeOfGesuchToCreate = gesuchsperiodeService.findNewestGesuchsperiode().get();
+			gesuchToCreate.setGesuchsperiode(gesuchsperiodeOfGesuchToCreate);
+		}
 		AntragTyp typOfGesuchToCreate = gesuchToCreate.getTyp();
 		Eingangsart eingangsart = calculateEingangsart();
 		AntragStatus initialStatus = calculateInitialStatus();
@@ -1272,7 +1276,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		AntragStatus status;
 		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			status = AntragStatus.IN_BEARBEITUNG_GS;
-		} else {
+		} else if (this.principalBean.isCallerInAnyOfRole(UserRole.getAllSozialdienstRoles())){
+			status = AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
+		}
+		else {
 			status = AntragStatus.IN_BEARBEITUNG_JA;
 		}
 		return status;

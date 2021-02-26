@@ -155,7 +155,7 @@ export class GesuchGenerator {
             currentFall,
             currentDossier,
             sozialdienst);
-        gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
+        gesuch.status = getStartAntragStatusFromEingangsart(eingangsart, EbeguUtil.isNotNullOrUndefined(sozialdienst));
 
         if (gesuchsperiodeId) {
             return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
@@ -228,7 +228,8 @@ export class GesuchGenerator {
                 gesuch.dossier = foundDossier;
                 gesuch.id = gesuchID; // setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu
                                       // koennen
-                gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
+                gesuch.status = getStartAntragStatusFromEingangsart(eingangsart,
+                    EbeguUtil.isNotNullOrUndefined(currentFall.sozialdienstFall));
                 gesuch.emptyCopy = true;
                 return gesuch;
             });
@@ -299,5 +300,22 @@ export class GesuchGenerator {
                 gesuch.dossier.verantwortlicherTS = currentUser.toBenutzerNoDetails();
             }
         }, err => LOG.error(err));
+    }
+
+    public initSozialdienstFall(fallId: string, gemeindeId: string, gesuchId: string): IPromise<TSGesuch> {
+        return this.fallRS.findFall(fallId).then(
+            fall => {
+                if (!EbeguUtil.isEmptyStringNullOrUndefined(gesuchId)) {
+                    return this.gesuchRS.findGesuch(gesuchId);
+                }
+
+                return this.initDossier(TSEingangsart.PAPIER,
+                    gemeindeId,
+                    undefined,
+                    fall,
+                    new TSDossier(),
+                    undefined);
+            },
+        );
     }
 }

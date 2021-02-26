@@ -4384,6 +4384,8 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setGesuchBetreuungenStatus(gesuch.getGesuchBetreuungenStatus());
 		antrag.setDokumenteHochgeladen(gesuch.getDokumenteHochgeladen());
 		antrag.setFinSitStatus(gesuch.getFinSitStatus());
+		antrag.setFallId(gesuch.getFall().getId());
+		antrag.setGemeindeId(gesuch.getDossier().getGemeinde().getId());
 
 		return antrag;
 	}

@@ -203,6 +203,7 @@ export class FallToolbarComponent implements OnChanges {
             gemeindeId: chosenGemeindeId,
             eingangsart: this.getEingangsArt(),
             sozialdienstId: null,
+            fallId: null,
         };
         this.$state.go('gesuch.fallcreation', params);
     }

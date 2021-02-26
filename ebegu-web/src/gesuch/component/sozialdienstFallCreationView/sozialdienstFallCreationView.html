@@ -79,8 +79,7 @@
                                        name="hausnummer"
                                        ng-model="vm.sozialdienstFall.adresse.hausnummer"
                                        dv-max-length
-                                       class="form-control"
-                                       required>
+                                       class="form-control">
                                 <dv-error-messages input-id="hausnummer_ID" for="vm.form.hausnummer.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -132,7 +131,7 @@
                 <!--Buttons-->
                 <div class="dv-navigation dv-navigation-flex">
                     <span class="ie11-fix">
-                    <dv-loading-button button-click="vm.save()" type="submit">
+                    <dv-loading-button class="dv-navigation-item" button-click="vm.save()" type="submit">
                         <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
                     </dv-loading-button>
                     </span>
@@ -140,7 +139,7 @@
                     <span class="ie11-fix" dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
                           dv-show-expression="vm.isAktivierungMoeglich()">
-                        <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
+                        <dv-loading-button class="dv-navigation-item" button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_AKTIVIEREN"></span>
                         </dv-loading-button>
                     </span>

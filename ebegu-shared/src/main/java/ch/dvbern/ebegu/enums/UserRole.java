@@ -194,6 +194,10 @@ public enum UserRole {
 			.collect(Collectors.toList());
 	}
 
+	public static List<UserRole> getAllSozialdienstRoles() {
+		return Arrays.asList(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST);
+	}
+
 	public boolean isRoleGemeindeabhaengig(){
 		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.GEMEINDE;
 	}

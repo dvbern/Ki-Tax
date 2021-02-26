@@ -2556,6 +2556,8 @@ export class EbeguRestUtil {
         restPendenz.eingangsart = pendenz.eingangsart;
         restPendenz.besitzerUsername = pendenz.besitzerUsername;
         restPendenz.dokumenteHochgeladen = pendenz.dokumenteHochgeladen;
+        restPendenz.fallId = pendenz.fallId;
+        restPendenz.gemeindeId = pendenz.gemeindeId;
         return restPendenz;
     }
 
@@ -2587,6 +2589,8 @@ export class EbeguRestUtil {
         antragTS.besitzerUsername = antragFromServer.besitzerUsername;
         antragTS.dokumenteHochgeladen = antragFromServer.dokumenteHochgeladen;
         antragTS.gemeinde = antragFromServer.gemeinde;
+        antragTS.fallId = antragFromServer.fallId;
+        antragTS.gemeindeId = antragFromServer.gemeindeId;
         return antragTS;
     }
 
@@ -4774,7 +4778,7 @@ export class EbeguRestUtil {
                 this.parseSozialdienst(new TSSozialdienst(), sozialdienstFallFromServer.sozialdienst);
             sozialdienstFallTS.adresse = this.parseAdresse(new TSAdresse(), sozialdienstFallFromServer.adresse);
             sozialdienstFallTS.name = sozialdienstFallFromServer.name;
-            sozialdienstFallTS.geburtsdatum = sozialdienstFallFromServer.geburtsdatum;
+            sozialdienstFallTS.geburtsdatum = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatum);
             sozialdienstFallTS.status = sozialdienstFallFromServer.status;
             return sozialdienstFallTS;
         }

@@ -170,11 +170,12 @@
 
             <dv-verantwortlicherselect is-schulamt="true"
                                        gemeinde-id="vmx.gemeindeId"
-                                       ng-if="vmx.gesuchModelManager.isTagesschulangebotEnabled()">
+                                       ng-if="vmx.gesuchModelManager.isTagesschulangebotEnabled() && vmx.showVerantwortlicher()">
             </dv-verantwortlicherselect>
 
             <dv-verantwortlicherselect is-schulamt="false"
-                                       gemeinde-id="vmx.gemeindeId">
+                                       gemeinde-id="vmx.gemeindeId"
+                                       ng-if="vmx.showVerantwortlicher()">
             </dv-verantwortlicherselect>
 
         </md-menu-bar>
