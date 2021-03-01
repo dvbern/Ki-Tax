@@ -218,7 +218,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(converted);
 			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 		} catch (EJBTransactionRolledbackException e){
-			if(e.getMessage().equals("angabenDeklaration incomplete")) {
+			if(e.getCause() instanceof IllegalArgumentException && e.getMessage().equals("angabenDeklaration incomplete")) {
 				throw new WebApplicationException(e.getMessage(), Status.BAD_REQUEST);
 			}
 			throw new EJBTransactionRolledbackException(e.getMessage(), e);

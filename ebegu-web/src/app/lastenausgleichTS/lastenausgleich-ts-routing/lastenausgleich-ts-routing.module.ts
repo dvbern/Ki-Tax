@@ -51,7 +51,7 @@ const states: NgHybridStateDeclaration[] = [
     },
     {
         name: 'LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
-        url: '/angaben-gemeinde',
+        url: '/angaben-gemeinde?triggerValidation',
         component: GemeindeAngabenComponent,
         resolve: [
             {

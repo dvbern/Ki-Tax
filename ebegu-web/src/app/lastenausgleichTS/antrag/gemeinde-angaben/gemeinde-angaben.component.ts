@@ -42,6 +42,7 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 export class GemeindeAngabenComponent implements OnInit {
 
     @Input() public lastenausgleichID: string;
+    @Input() public triggerValidationOnInit = false;
 
     public angabenForm: FormGroup;
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -182,6 +183,10 @@ export class GemeindeAngabenComponent implements OnInit {
         if (!this.lATSAngabenGemeindeContainer.isInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
             this.angabenForm.disable();
         }
+
+        if (this.triggerValidationOnInit) {
+            this.triggerFormValidation();
+        }
     }
 
     private enableFormValidation(): void {
@@ -265,13 +270,13 @@ export class GemeindeAngabenComponent implements OnInit {
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
                 .valueChanges,
-            this.lohnnormkostenSettingLessThanFifty$
+            this.lohnnormkostenSettingLessThanFifty$,
         ]).subscribe(valueAndParamter => {
-                const value = valueAndParamter[0];
-                const lohnkostenParam = parseFloat(valueAndParamter[1].value);
-                this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
-                    .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-            }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
+            const value = valueAndParamter[0];
+            const lohnkostenParam = parseFloat(valueAndParamter[1].value);
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
+                .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
@@ -294,10 +299,10 @@ export class GemeindeAngabenComponent implements OnInit {
                     .pipe(startWith(0)),
             ],
         ).subscribe(value => {
-            this.angabenForm.get('normlohnkostenBetreuungBerechnet')
+                this.angabenForm.get('normlohnkostenBetreuungBerechnet')
                     .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0));
             },
-            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
+            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
 
         combineLatest([
@@ -307,35 +312,35 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
             this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
         ]).subscribe(values => {
-            const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
-            if (gemeindeBeitragOderUeberschuss < 0) {
-                this.angabenForm.get('kostenueberschussGemeinde')
-                    .setValue(gemeindeBeitragOderUeberschuss);
-                this.angabenForm.get('kostenbeitragGemeinde')
-                    .setValue('');
-            } else {
-                this.angabenForm.get('kostenbeitragGemeinde')
-                    .setValue(gemeindeBeitragOderUeberschuss);
-                this.angabenForm.get('kostenueberschussGemeinde')
-                    .setValue('');
-            }
+                const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
+                if (gemeindeBeitragOderUeberschuss < 0) {
+                    this.angabenForm.get('kostenueberschussGemeinde')
+                        .setValue(gemeindeBeitragOderUeberschuss);
+                    this.angabenForm.get('kostenbeitragGemeinde')
+                        .setValue('');
+                } else {
+                    this.angabenForm.get('kostenbeitragGemeinde')
+                        .setValue(gemeindeBeitragOderUeberschuss);
+                    this.angabenForm.get('kostenueberschussGemeinde')
+                        .setValue('');
+                }
 
-            this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(values[0] * this.kostenbeitragGemeinde);
-            this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
-        },
-            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
+                this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(values[0] * this.kostenbeitragGemeinde);
+                this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
 
         combineLatest([
             this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
             this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
         ]).subscribe(values => {
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
-                // round to 0.2
-                Math.round((values[0] - values[1]) / 5) * 5
-            );
-        },
-            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
+                this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
+                    // round to 0.2
+                    Math.round((values[0] - values[1]) / 5) * 5,
+                );
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
 
     }

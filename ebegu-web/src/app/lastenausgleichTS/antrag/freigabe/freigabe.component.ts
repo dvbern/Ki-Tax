@@ -25,7 +25,6 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../mod
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
-import {Log} from '../../../core/logging/LogFactory';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
@@ -64,11 +63,14 @@ export class FreigabeComponent implements OnInit {
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer()),
                 mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container)),
             )
-            .subscribe(() => {}, error => {
+            .subscribe(() => {
+            }, error => {
                 // tslint:disable-next-line:early-exit
                 if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                     this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
-                    setTimeout(() => this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE', {triggerValidation: true}),
+                    setTimeout(() => this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
+                        {triggerValidation: true},
+                        {}),
                         this.ROUTING_DELAY);
                 } else {
                     this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
