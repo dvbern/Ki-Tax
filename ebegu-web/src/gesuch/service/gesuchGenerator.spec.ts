@@ -19,6 +19,7 @@ import {waitForAsync, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {GesuchsperiodeRS} from '../../app/core/service/gesuchsperiodeRS.rest';
+import {SozialdienstRS} from '../../app/core/service/SozialdienstRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
@@ -82,6 +83,9 @@ describe('gesuchGenerator', () => {
 
         const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['createGesuch']);
 
+        const sozialdienstSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+            ['getSozialdienstStammdaten']);
+
         TestBed.configureTestingModule({
             imports: [],
             providers: [
@@ -93,6 +97,7 @@ describe('gesuchGenerator', () => {
                 {provide: WizardStepManager, useValue: wizardStepManagerSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: FallRS, useValue: fallServiceSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstSpy},
                 GesuchGenerator,
             ],
         });
@@ -101,38 +106,55 @@ describe('gesuchGenerator', () => {
     }));
 
     describe('initGesuch', () => {
-        it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier, null)
-                .then(gesuch => {
-                    expect(gesuch).toBeDefined();
-                    expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
-                    expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
-                    expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
-                    expect(gesuch.isNew()).toBe(true);
-                    expect(gesuch.dossier).toBeDefined();
-                    expect(gesuch.dossier).not.toBe(dossier);
-                    expect(gesuch.dossier.fall).toBeDefined();
-                    expect(gesuch.dossier.fall).not.toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
-                });
-        }));
-        it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier, null)
-                .then(gesuch => {
-                    expect(gesuch).toBeDefined();
-                    expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
-                    expect(gesuch.eingangsart).toBe(TSEingangsart.ONLINE);
-                    expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_GS);
-                    expect(gesuch.isNew()).toBe(true);
-                    expect(gesuch.dossier).toBeDefined();
-                    expect(gesuch.dossier).not.toBe(dossier);
-                    expect(gesuch.dossier.fall).toBeDefined();
-                    expect(gesuch.dossier.fall).not.toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
-                });
-        }));
+        it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored',
+            waitForAsync(() => {
+                gesuchGenerator.initGesuch(TSEingangsart.PAPIER,
+                    TSCreationAction.CREATE_NEW_FALL,
+                    gpId,
+                    fall,
+                    dossier,
+                    null)
+                    .then(gesuch => {
+                        expect(gesuch).toBeDefined();
+                        expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
+                        expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
+                        expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
+                        expect(gesuch.isNew()).toBe(true);
+                        expect(gesuch.dossier).toBeDefined();
+                        expect(gesuch.dossier).not.toBe(dossier);
+                        expect(gesuch.dossier.fall).toBeDefined();
+                        expect(gesuch.dossier.fall).not.toBe(fall);
+                        expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
+                    });
+            }));
+        it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored',
+            waitForAsync(() => {
+                gesuchGenerator.initGesuch(TSEingangsart.ONLINE,
+                    TSCreationAction.CREATE_NEW_FALL,
+                    gpId,
+                    fall,
+                    dossier,
+                    null)
+                    .then(gesuch => {
+                        expect(gesuch).toBeDefined();
+                        expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
+                        expect(gesuch.eingangsart).toBe(TSEingangsart.ONLINE);
+                        expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_GS);
+                        expect(gesuch.isNew()).toBe(true);
+                        expect(gesuch.dossier).toBeDefined();
+                        expect(gesuch.dossier).not.toBe(dossier);
+                        expect(gesuch.dossier.fall).toBeDefined();
+                        expect(gesuch.dossier.fall).not.toBe(fall);
+                        expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
+                    });
+            }));
         it('creates a new Gesuch and Dossier linked to the existing fall', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, gpId, fall, dossier, null)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_DOSSIER,
+                gpId,
+                fall,
+                dossier,
+                null)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -144,7 +166,12 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new Gesuch linked to the existing fall and Dossier', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_GESUCH, gpId, fall, dossier, null)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_GESUCH,
+                gpId,
+                fall,
+                dossier,
+                null)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);

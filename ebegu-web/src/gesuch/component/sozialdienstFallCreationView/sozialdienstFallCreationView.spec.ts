@@ -26,7 +26,6 @@ describe('sozialdienstFallCreationView', () => {
 
     let sozialdienstFallCreationView: SozialdienstFallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
-    let $q: IQService;
     let $rootScope: IScope;
     let form: any;
 
@@ -37,7 +36,6 @@ describe('sozialdienstFallCreationView', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockLazyGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         form = {};
         form.$valid = true;
@@ -48,10 +46,10 @@ describe('sozialdienstFallCreationView', () => {
             $injector.get('$stateParams'),
             $injector.get('WizardStepManager'),
             $injector.get('$translate'),
-            $q,
             $rootScope,
             $injector.get('AuthServiceRS'),
             $injector.get('SozialdienstRS'),
+            $injector.get('$state'),
             $injector.get('$timeout'));
         sozialdienstFallCreationView.form = form;
         spyOn(sozialdienstFallCreationView, 'isGesuchValid').and.callFake(() => form.$valid);
