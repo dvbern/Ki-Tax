@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
@@ -111,8 +112,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			fallContainer.setGesuchsperiode(gesuchsperiode);
 			fallContainer.setGemeinde(gemeinde);
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
-			fallContainer.setAngabenKorrektur(null);    // Wird erst mit den Daten initialisiert, da alles zwingend
-			fallContainer.setAngabenDeklaration(null);    // Wird bei Freigabe rueberkopiert
+			fallContainer.setAngabenKorrektur(null);    // Wird bei Freigabe rueberkopiert
+			fallContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenGemeinde());
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(saved);
