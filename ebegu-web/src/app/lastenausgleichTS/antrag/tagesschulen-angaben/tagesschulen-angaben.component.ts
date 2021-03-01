@@ -169,8 +169,11 @@ export class TagesschulenAngabenComponent {
         this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
-            .subscribe(() => {
-                this.form.disable();
+            .subscribe(freigegeben => {
+                this.latsAngabenInstitutionContainer = freigegeben;
+                if (!this.canEditForm()) {
+                    this.form.disable();
+                }
                 this.cd.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
@@ -198,7 +201,8 @@ export class TagesschulenAngabenComponent {
         this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
 
         this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
-            .subscribe(() => {
+            .subscribe(geprueft => {
+                this.latsAngabenInstitutionContainer = geprueft;
                 this.form.disable();
                 this.cd.markForCheck();
             }, () => {
