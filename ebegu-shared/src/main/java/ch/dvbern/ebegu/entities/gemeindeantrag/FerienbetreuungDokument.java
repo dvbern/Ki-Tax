@@ -17,5 +17,51 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
-public class FerienbetreuungDokument {
+import java.time.LocalDateTime;
+
+import javax.annotation.Nonnull;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import ch.dvbern.ebegu.entities.FileMetadata;
+import org.hibernate.envers.Audited;
+
+@Entity
+@Audited
+public class FerienbetreuungDokument extends FileMetadata {
+
+	private static final long serialVersionUID = -7562439691196495568L;
+
+	@NotNull
+	@Nonnull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuungDokument_ferienbetreuungAngabenContainer_id"), nullable = false)
+	private FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
+
+	@NotNull
+	@Column(nullable = false)
+	@Nonnull
+	private LocalDateTime timestampUpload;
+
+	@Nonnull
+	public FerienbetreuungAngabenContainer getFerienbetreuungAngabenContainer() {
+		return ferienbetreuungAngabenContainer;
+	}
+
+	public void setFerienbetreuungAngabenContainer(@Nonnull FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
+		this.ferienbetreuungAngabenContainer = ferienbetreuungAngabenContainer;
+	}
+
+	@Nonnull
+	public LocalDateTime getTimestampUpload() {
+		return timestampUpload;
+	}
+
+	public void setTimestampUpload(@Nonnull LocalDateTime timestampUpload) {
+		this.timestampUpload = timestampUpload;
+	}
 }

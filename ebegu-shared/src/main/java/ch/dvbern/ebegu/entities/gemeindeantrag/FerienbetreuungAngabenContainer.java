@@ -17,5 +17,126 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
-public class FerienbetreuungAngabenContainer {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
+
+@Entity
+@Audited
+public class FerienbetreuungAngabenContainer extends AbstractEntity {
+
+	private static final long serialVersionUID = -3872331984799085800L;
+
+	@NotNull
+	@Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungAngabenStatus status;
+
+	@NotNull
+	@Nonnull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_gemeinde_id"), nullable = false)
+	private Gemeinde gemeinde;
+
+	@NotNull
+	@Nonnull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_gesuchsperiode_id"), nullable = false)
+	private Gesuchsperiode gesuchsperiode;
+
+	@Nullable
+	@Valid
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_deklaration_id"), nullable = true)
+	private FerienbetreuungAngaben angabenDeklaration;
+
+	@Nullable
+	@Valid
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_korrektur_id"), nullable = true)
+	private FerienbetreuungAngaben angabenKorrektur;
+
+	@Nullable
+	@Size(max = DB_TEXTAREA_LENGTH)
+	@Column(nullable = true)
+	private String internerKommentar;
+
+	@Nonnull
+	public FerienbetreuungAngabenStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungAngabenStatus status) {
+		this.status = status;
+	}
+
+	@Nonnull
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
+	}
+
+	@Nonnull
+	public Gesuchsperiode getGesuchsperiode() {
+		return gesuchsperiode;
+	}
+
+	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	@Nullable
+	public FerienbetreuungAngaben getAngabenDeklaration() {
+		return angabenDeklaration;
+	}
+
+	public void setAngabenDeklaration(@Nullable FerienbetreuungAngaben angabenDeklaration) {
+		this.angabenDeklaration = angabenDeklaration;
+	}
+
+	@Nullable
+	public FerienbetreuungAngaben getAngabenKorrektur() {
+		return angabenKorrektur;
+	}
+
+	public void setAngabenKorrektur(@Nullable FerienbetreuungAngaben angabenKorrektur) {
+		this.angabenKorrektur = angabenKorrektur;
+	}
+
+	@Nullable
+	public String getInternerKommentar() {
+		return internerKommentar;
+	}
+
+	public void setInternerKommentar(@Nullable String internerKommentar) {
+		this.internerKommentar = internerKommentar;
+	}
+
+	@Override
+	public boolean isSame(AbstractEntity other) {
+		return getId().equals(other.getId());
+	}
 }
