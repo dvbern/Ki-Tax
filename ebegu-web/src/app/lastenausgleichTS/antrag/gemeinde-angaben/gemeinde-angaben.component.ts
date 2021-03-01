@@ -268,8 +268,9 @@ export class GemeindeAngabenComponent implements OnInit {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
-            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-                .valueChanges,
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').valueChanges.pipe(
+                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete)
+            ),
             this.lohnnormkostenSettingLessThanFifty$,
         ]).subscribe(valueAndParamter => {
             const value = valueAndParamter[0];
@@ -279,8 +280,9 @@ export class GemeindeAngabenComponent implements OnInit {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
-            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
-                .valueChanges,
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
+                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete)
+            ),
             this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
             const value = valueAndParameter[0];

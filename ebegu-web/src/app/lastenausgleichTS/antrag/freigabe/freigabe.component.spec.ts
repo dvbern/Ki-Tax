@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/angular';
 import {of} from 'rxjs';
@@ -41,7 +41,7 @@ describe('FreigabeComponent', () => {
         of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
     );
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [FreigabeComponent],
             imports: [MaterialModule],
