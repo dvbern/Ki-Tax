@@ -56,6 +56,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     private sozialdienstFall: TSSozialdienstFall;
     private isVollmachtHochgeladet: boolean;
+    private gesuchsperiodeId: string;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
@@ -84,7 +85,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public $onInit(): void {
         super.$onInit();
+        this.readStateParams();
         this.initViewModel();
+    }
+
+    private readStateParams(): void {
+        if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
+            this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
+        }
     }
 
     public setShowError(showError: boolean): void {
@@ -114,7 +122,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.gesuchModelManager.saveFall().then(
             fall => {
                 const params: INewFallStateParams = {
-                    gesuchsperiodeId: null,
+                    gesuchsperiodeId: this.gesuchsperiodeId,
                     creationAction: null,
                     gesuchId: null,
                     dossierId: null,

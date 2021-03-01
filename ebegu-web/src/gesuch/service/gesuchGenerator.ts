@@ -82,13 +82,15 @@ export class GesuchGenerator {
                         TSCreationAction.CREATE_NEW_FALL,
                         undefined,
                         undefined,
-                        sozialdienstStammdaten.sozialdienst);
+                        sozialdienstStammdaten.sozialdienst,
+                        undefined);
                 },
             );
         }
         return this.initDossier(eingangsart,
             gemeindeId,
             TSCreationAction.CREATE_NEW_FALL,
+            undefined,
             undefined,
             undefined,
             undefined);
@@ -109,7 +111,8 @@ export class GesuchGenerator {
             TSCreationAction.CREATE_NEW_DOSSIER,
             currentFall,
             null,
-            sozialdienst);
+            sozialdienst,
+            undefined);
     }
 
     /**
@@ -123,9 +126,10 @@ export class GesuchGenerator {
         currentFall: TSFall,
         currentDossier: TSDossier,
         sozialdienst: TSSozialdienst,
+        gesuchsperiodeId: string,
     ): IPromise<TSGesuch> {
 
-        return this.initGesuch(eingangsart, creationAction, undefined, currentFall, currentDossier, sozialdienst)
+        return this.initGesuch(eingangsart, creationAction, gesuchsperiodeId, currentFall, currentDossier, sozialdienst)
             .then(gesuch => {
                 return this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
                     gesuch.dossier.gemeinde = foundGemeinde;
@@ -302,7 +306,12 @@ export class GesuchGenerator {
         }, err => LOG.error(err));
     }
 
-    public initSozialdienstFall(fallId: string, gemeindeId: string, gesuchId: string): IPromise<TSGesuch> {
+    public initSozialdienstFall(
+        fallId: string,
+        gemeindeId: string,
+        gesuchId: string,
+        gesuchsperiodeId: string,
+    ): IPromise<TSGesuch> {
         return this.fallRS.findFall(fallId).then(
             fall => {
                 if (!EbeguUtil.isEmptyStringNullOrUndefined(gesuchId)) {
@@ -314,7 +323,8 @@ export class GesuchGenerator {
                     undefined,
                     fall,
                     new TSDossier(),
-                    undefined);
+                    undefined,
+                    gesuchsperiodeId);
             },
         );
     }

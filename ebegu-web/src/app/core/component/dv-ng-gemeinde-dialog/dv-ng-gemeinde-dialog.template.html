@@ -29,6 +29,21 @@
         </select>
     </div>
 
+    <div *ngIf="gesuchsperiodeList">
+        <p [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>
+        <div class="dv-select-style dv-dialog-select">
+            <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="gesuchsperiode"
+                    id="gesuchsperiode"
+                    [(ngModel)]="selectedGesuchsperiode"
+                    class="form-control"
+                    [required]="true">
+
+                <option *ngFor="let gesuchsperiode of gesuchsperiodeList"
+                        [ngValue]="gesuchsperiode">{{gesuchsperiode.gesuchsperiodeString}}</option>
+            </select>
+        </div>
+    </div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>

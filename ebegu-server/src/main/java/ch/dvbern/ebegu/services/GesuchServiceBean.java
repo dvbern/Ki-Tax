@@ -207,10 +207,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Gemeinde gemeindeOfGesuchToCreate = gesuchToCreate.extractGemeinde();
 		Gesuchsperiode gesuchsperiodeOfGesuchToCreate = gesuchToCreate.getGesuchsperiode();
-		if(gesuchsperiodeOfGesuchToCreate == null && gesuchToCreate.getDossier().getFall().getSozialdienstFall() != null){
-			gesuchsperiodeOfGesuchToCreate = gesuchsperiodeService.findNewestGesuchsperiode().get();
-			gesuchToCreate.setGesuchsperiode(gesuchsperiodeOfGesuchToCreate);
-		}
 		AntragTyp typOfGesuchToCreate = gesuchToCreate.getTyp();
 		Eingangsart eingangsart = calculateEingangsart();
 		AntragStatus initialStatus = calculateInitialStatus();

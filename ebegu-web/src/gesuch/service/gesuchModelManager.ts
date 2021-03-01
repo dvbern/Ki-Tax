@@ -1654,14 +1654,20 @@ export class GesuchModelManager {
         return this.gemeindeKonfiguration.konfigTagesschuleTagisEnabled;
     }
 
-    public openSozialdienstFall(fallId: string, gemeindeId: string, gesuchId: string): IPromise<TSGesuch> {
-        return this.gesuchGenerator.initSozialdienstFall(fallId, gemeindeId, gesuchId).then(gesuch => {
-                this.setGesuchDaten(gesuch);
-                if (!gesuch.isNew()) {
-                    return gesuch;
-                }
-                return this.createNewDossierForCurrentFall();
-            },
-        );
+    public openSozialdienstFall(
+        fallId: string,
+        gemeindeId: string,
+        gesuchId: string,
+        gesuchsperiodeId: string,
+    ): IPromise<TSGesuch> {
+        return this.gesuchGenerator.initSozialdienstFall(fallId, gemeindeId, gesuchId, gesuchsperiodeId)
+            .then(gesuch => {
+                    this.setGesuchDaten(gesuch);
+                    if (!gesuch.isNew()) {
+                        return gesuch;
+                    }
+                    return this.createNewDossierForCurrentFall();
+                },
+            );
     }
 }

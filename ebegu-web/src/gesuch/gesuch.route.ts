@@ -92,7 +92,7 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 export class EbeguNewSozialdienstFallState implements Ng1StateDeclaration {
     public name = 'gesuch.sozialdienstfallcreation';
     public url =
-        '/sozialdienstfall/:creationAction/:eingangsart/:gesuchId/:dossierId/:gemeindeId/:sozialdienstId/:fallId';
+        '/sozialdienstfall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId/:sozialdienstId/:fallId';
     public params = {
         creationAction: '',
         eingangsart: '',
@@ -891,7 +891,10 @@ export function reloadGesuchModelManager(
         const fallId = $stateParams.fallId;
         const gesuchIdParam = $stateParams.gesuchId;
         if (fallId) {
-            return gesuchModelManager.openSozialdienstFall(fallId, $stateParams.gemeindeId, gesuchIdParam);
+            return gesuchModelManager.openSozialdienstFall(fallId,
+                $stateParams.gemeindeId,
+                gesuchIdParam,
+                $stateParams.gesuchsperiodeId);
         }
 
         if (!gesuchIdParam) {
