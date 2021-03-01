@@ -64,10 +64,10 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private String bemerkungenOeffnungszeiten;
 
 	@Nullable
-	private String finanziellBeteiligteGemeinden;
+	private List<JaxGemeinde> finanziellBeteiligteGemeinden;
 
 	@Nullable
-	private List<JaxGemeinde> gemeindeFuehrtAngebotSelber;
+	private Boolean gemeindeFuehrtAngebotSelber;
 
 	@Nullable
 	private Boolean gemeindeBeauftragtExterneAnbieter;
@@ -208,20 +208,20 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public String getFinanziellBeteiligteGemeinden() {
+	public List<JaxGemeinde> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nullable String finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nullable List<JaxGemeinde> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 
 	@Nullable
-	public List<JaxGemeinde> getGemeindeFuehrtAngebotSelber() {
+	public Boolean getGemeindeFuehrtAngebotSelber() {
 		return gemeindeFuehrtAngebotSelber;
 	}
 
-	public void setGemeindeFuehrtAngebotSelber(@Nullable List<JaxGemeinde> gemeindeFuehrtAngebotSelber) {
+	public void setGemeindeFuehrtAngebotSelber(Boolean gemeindeFuehrtAngebotSelber) {
 		this.gemeindeFuehrtAngebotSelber = gemeindeFuehrtAngebotSelber;
 	}
 
