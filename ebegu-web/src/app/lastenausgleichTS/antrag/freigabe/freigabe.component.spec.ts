@@ -16,27 +16,52 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/angular';
+import {of} from 'rxjs';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {MaterialModule} from '../../../shared/material.module';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {FreigabeComponent} from './freigabe.component';
 
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
+const translateServiceSpy = jasmine.createSpyObj<TranslateService>(ErrorService.name, ['instant']);
+const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
+    ['getLATSAngabenGemeindeContainer']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+    ['go']);
+
 describe('FreigabeComponent', () => {
-  let component: FreigabeComponent;
-  let fixture: ComponentFixture<FreigabeComponent>;
+    let component: FreigabeComponent;
+    let fixture: ComponentFixture<FreigabeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ FreigabeComponent ]
-    })
-    .compileComponents();
-  }));
+    lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
+        of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
+    );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FreigabeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [FreigabeComponent],
+            imports: [MaterialModule],
+            providers: [
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: TranslateService, useValue: translateServiceSpy},
+                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+            ],
+        })
+            .compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FreigabeComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

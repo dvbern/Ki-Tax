@@ -49,7 +49,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.isLehrbetrieb"
                     [korrektur]="form.get('isLehrbetrieb').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -80,7 +80,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinder"
                         [korrektur]="form.get('anzahlEingeschriebeneKinder').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -105,7 +105,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderKindergarten"
                         [korrektur]="form.get('anzahlEingeschriebeneKinderKindergarten').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -130,7 +130,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderBasisstufe"
                         [korrektur]="form.get('anzahlEingeschriebeneKinderBasisstufe').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -155,7 +155,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderPrimarstufe"
                         [korrektur]="form.get('anzahlEingeschriebeneKinderPrimarstufe').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -201,7 +201,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
                     [korrektur]="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -234,7 +234,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagFruehbetreuung"
                         [korrektur]="form.get('durchschnittKinderProTagFruehbetreuung').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -259,7 +259,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagMittag"
                         [korrektur]="form.get('durchschnittKinderProTagMittag').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -284,7 +284,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag1"
                         [korrektur]="form.get('durchschnittKinderProTagNachmittag1').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -309,7 +309,7 @@
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag2"
                         [korrektur]="form.get('durchschnittKinderProTagNachmittag2').value"
-                        [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -341,7 +341,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisOrganisatorischesKonzept"
                     [korrektur]="form.get('schuleAufBasisOrganisatorischesKonzept').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -368,7 +368,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisPaedagogischesKonzept"
                     [korrektur]="form.get('schuleAufBasisPaedagogischesKonzept').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -395,7 +395,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.raeumlicheVoraussetzungenEingehalten"
                     [korrektur]="form.get('raeumlicheVoraussetzungenEingehalten').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -422,7 +422,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsverhaeltnisEingehalten"
                     [korrektur]="form.get('betreuungsverhaeltnisEingehalten').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>
@@ -449,7 +449,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.ernaehrungsGrundsaetzeEingehalten"
                     [korrektur]="form.get('ernaehrungsGrundsaetzeEingehalten').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                 </dv-bisher-x>
             </dv-radio-container-x>

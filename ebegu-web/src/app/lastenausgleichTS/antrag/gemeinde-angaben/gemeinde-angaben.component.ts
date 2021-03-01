@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService} from '@uirouter/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
@@ -63,7 +62,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly errorService: ErrorService,
         private readonly translateService: TranslateService,
-        private readonly settings: EinstellungRS
+        private readonly settings: EinstellungRS,
     ) {
     }
 
@@ -361,14 +360,16 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onAngabenFormSubmit(): void {
-        if (this.angabenForm.valid) {
-            if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
-                this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
-            } else {
-                this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
-            }
-            this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
+        if (!this.angabenForm.valid) {
+            return;
         }
+        // tslint:disable-next-line:max-line-length
+        if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
+            this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
+        } else {
+            this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+        }
+        this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
 
     }
 
@@ -401,6 +402,6 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public formularNotEditable(): boolean {
         return this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU ||
-        this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+            this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
     }
 }

@@ -103,7 +103,8 @@ export class FreigabeComponent implements OnInit {
             .pipe(
                 filter(result => !!result),
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
-            ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container));
+            ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container),
+            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 
     public isInPruefungKanton(): Observable<boolean> {
