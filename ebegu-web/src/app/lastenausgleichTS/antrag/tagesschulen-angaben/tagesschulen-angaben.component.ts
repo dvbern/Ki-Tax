@@ -42,6 +42,7 @@ import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.r
 })
 export class TagesschulenAngabenComponent {
 
+    @Input() public lastenausgleichID: string;
     @Input() public institutionContainerId: string;
 
     public form: FormGroup;
@@ -171,6 +172,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
             .subscribe(freigegeben => {
                 this.latsAngabenInstitutionContainer = freigegeben;
+                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichID);
                 if (!this.canEditForm()) {
                     this.form.disable();
                 }
@@ -203,6 +205,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
             .subscribe(geprueft => {
                 this.latsAngabenInstitutionContainer = geprueft;
+                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichID);
                 this.form.disable();
                 this.cd.markForCheck();
             }, () => {
