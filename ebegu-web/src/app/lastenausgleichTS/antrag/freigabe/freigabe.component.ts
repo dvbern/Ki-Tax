@@ -64,6 +64,7 @@ export class FreigabeComponent implements OnInit {
                 mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container)),
             )
             .subscribe(() => {
+                this.$state.go('GEMEINDE_ANTRAEGE');
             }, error => {
                 // tslint:disable-next-line:early-exit
                 if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {

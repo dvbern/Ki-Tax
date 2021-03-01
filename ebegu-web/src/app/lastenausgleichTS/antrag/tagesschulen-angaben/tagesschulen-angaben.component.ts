@@ -270,4 +270,17 @@ export class TagesschulenAngabenComponent {
             (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
                 this.latsAngabenInstitutionContainer.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
     }
+
+    public canSeeFreigebenButton(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) ||
+            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && !this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde());
+    }
+
+    public canSeeGeprueftButton(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde();
+    }
+
+    public canSeeSaveButton(): boolean {
+        return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+    }
 }

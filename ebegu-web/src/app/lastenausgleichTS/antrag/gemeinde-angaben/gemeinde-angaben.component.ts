@@ -397,4 +397,9 @@ export class GemeindeAngabenComponent implements OnInit {
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON &&
             this.inMandantRoles();
     }
+
+    public formularNotEditable(): boolean {
+        return this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU ||
+        this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+    }
 }

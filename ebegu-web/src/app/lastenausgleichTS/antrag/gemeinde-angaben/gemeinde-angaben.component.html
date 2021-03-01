@@ -668,6 +668,7 @@
         <div class="actions">
             <dv-loading-button
                 type="button"
+                [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
                 <span translate>SAVE</span>
             </dv-loading-button>

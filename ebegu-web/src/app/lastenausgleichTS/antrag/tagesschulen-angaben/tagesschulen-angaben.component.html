@@ -484,19 +484,20 @@
         <div class="actions">
             <dv-loading-button
                 type="button"
+                *ngIf="canSeeSaveButton()"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFormSubmit()">
                 <span translate>SAVE</span>
             </dv-loading-button>
             <dv-loading-button
-                *ngIf="!latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                *ngIf="canSeeFreigebenButton()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
             </dv-loading-button>
             <dv-loading-button
-                *ngIf="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                *ngIf="canSeeGeprueftButton()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onGeprueft()">
