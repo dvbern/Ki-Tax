@@ -59,7 +59,7 @@ public class Freigabe implements WizardStep<TagesschuleWizard> {
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
 		switch (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus()) {
 		case IN_BEARBEITUNG_GEMEINDE:
-			return !(wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
+			return false;
 		case NEU:
 		default:
 			return true;

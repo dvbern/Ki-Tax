@@ -2261,6 +2261,7 @@
     "LATS_FREIGABE_PRUEFUNG_KANTON": "Freigeben zur Prüfung durch den Kanton",
     "LATS_GEPRUEFT_KANTON": "Geprüft durch den Kanton",
     "LATS_GEMEINDE_ANGABEN_ERROR": "Es gibt Fehler im Gemeinde Angaben Formular",
+    "LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN": "Es sind noch nicht alle Institutionsangaben freigeben und geprüft",
     "LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE": "Wollen Sie das Formular wirklich zur Prüfung durch den Kanton freigeben?",
     "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
     "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Bitte korrigieren Sie Ihre Eingaben.",

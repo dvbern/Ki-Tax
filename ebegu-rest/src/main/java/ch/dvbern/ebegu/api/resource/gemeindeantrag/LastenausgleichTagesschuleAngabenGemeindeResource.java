@@ -41,6 +41,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -217,9 +218,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(converted);
 			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
-		} catch (EJBTransactionRolledbackException e){
-			if(e.getCause() instanceof IllegalArgumentException && e.getMessage().equals("angabenDeklaration incomplete")) {
-				throw new WebApplicationException(e.getMessage(), Status.BAD_REQUEST);
+		} catch (EJBTransactionRolledbackException e) {
+			if (e.getCause() instanceof IllegalArgumentException) {
+				throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build());
 			}
 			throw new EJBTransactionRolledbackException(e.getMessage(), e);
 		}
