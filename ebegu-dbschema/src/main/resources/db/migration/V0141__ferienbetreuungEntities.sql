@@ -15,61 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-# Ferienbetreuung Angaben Container
-
-CREATE TABLE ferienbetreuung_angaben_container (
-	id                     BINARY(16)   NOT NULL,
-	timestamp_erstellt     DATETIME     NOT NULL,
-	timestamp_mutiert      DATETIME     NOT NULL,
-	user_erstellt          VARCHAR(255) NOT NULL,
-	user_mutiert           VARCHAR(255) NOT NULL,
-	version                BIGINT       NOT NULL,
-	interner_kommentar     VARCHAR(255),
-	status                 VARCHAR(255) NOT NULL,
-	angaben_deklaration_id BINARY(16),
-	angaben_korrektur_id   BINARY(16),
-	gemeinde_id            BINARY(16)   NOT NULL,
-	gesuchsperiode_id      BINARY(16)   NOT NULL,
-	PRIMARY key (id)
-);
-
-CREATE TABLE ferienbetreuung_angaben_container_aud (
-	id                     BINARY(16) NOT NULL,
-	rev                    INTEGER    NOT NULL,
-	revtype                TINYINT,
-	timestamp_erstellt     DATETIME,
-	timestamp_mutiert      DATETIME,
-	user_erstellt          VARCHAR(255),
-	user_mutiert           VARCHAR(255),
-	interner_kommentar     VARCHAR(255),
-	status                 VARCHAR(255),
-	angaben_deklaration_id BINARY(16),
-	angaben_korrektur_id   BINARY(16),
-	gemeinde_id            BINARY(16),
-	gesuchsperiode_id      BINARY(16),
-	PRIMARY key (id, rev)
-);
-
-ALTER TABLE ferienbetreuung_angaben_container_aud
-	ADD CONSTRAINT FK_ferienbetreuung_angaben_container_aud
-		FOREIGN key (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ferienbetreuung_angaben_container
-	ADD CONSTRAINT FK_ferienbetreuung_container_deklaration_id
-		FOREIGN key (angaben_deklaration_id) REFERENCES ferienbetreuung_angaben(id);
-
-ALTER TABLE ferienbetreuung_angaben_container
-	ADD CONSTRAINT FK_ferienbetreuung_container_korrektur_id
-		FOREIGN key (angaben_korrektur_id) REFERENCES ferienbetreuung_angaben(id);
-
-ALTER TABLE ferienbetreuung_angaben_container
-	ADD CONSTRAINT FK_ferienbetreuung_container_gemeinde_id
-		FOREIGN key (gemeinde_id) REFERENCES gemeinde(id);
-
-ALTER TABLE ferienbetreuung_angaben_container
-	ADD CONSTRAINT FK_ferienbetreuung_container_gesuchsperiode_id
-		FOREIGN key (gesuchsperiode_id) REFERENCES gesuchsperiode(id);
-
  # Ferienbetreuung Angaben
 
 CREATE TABLE ferienbetreuung_angaben (
@@ -204,7 +149,7 @@ ALTER TABLE ferienbetreuung_angaben_aud
 		FOREIGN key (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ferienbetreuung_angaben
-	ADD CONSTRAINT FK_ferienbetreuung_angaben_adresse_id
+	ADD CONSTRAINT FK_ferienbetreuung_angebot_adresse_id
 		FOREIGN key (angebot_adresse_id) REFERENCES adresse(id);
 
 ALTER TABLE ferienbetreuung_angaben
@@ -212,8 +157,63 @@ ALTER TABLE ferienbetreuung_angaben
 		FOREIGN key (auszahlungsdaten_id) REFERENCES auszahlungsdaten(id);
 
 ALTER TABLE ferienbetreuung_angaben
-	ADD CONSTRAINT FK_ferienbetreuung_angaben_adresse_id
+	ADD CONSTRAINT FK_ferienbetreuung_stammdaten_adresse_id
 		FOREIGN key (stammdaten_adresse_id) REFERENCES adresse(id);
+
+# Ferienbetreuung Angaben Container
+
+CREATE TABLE ferienbetreuung_angaben_container (
+	id                     BINARY(16)   NOT NULL,
+	timestamp_erstellt     DATETIME     NOT NULL,
+	timestamp_mutiert      DATETIME     NOT NULL,
+	user_erstellt          VARCHAR(255) NOT NULL,
+	user_mutiert           VARCHAR(255) NOT NULL,
+	version                BIGINT       NOT NULL,
+	interner_kommentar     VARCHAR(255),
+	status                 VARCHAR(255) NOT NULL,
+	angaben_deklaration_id BINARY(16),
+	angaben_korrektur_id   BINARY(16),
+	gemeinde_id            BINARY(16)   NOT NULL,
+	gesuchsperiode_id      BINARY(16)   NOT NULL,
+	PRIMARY key (id)
+);
+
+CREATE TABLE ferienbetreuung_angaben_container_aud (
+	id                     BINARY(16) NOT NULL,
+	rev                    INTEGER    NOT NULL,
+	revtype                TINYINT,
+	timestamp_erstellt     DATETIME,
+	timestamp_mutiert      DATETIME,
+	user_erstellt          VARCHAR(255),
+	user_mutiert           VARCHAR(255),
+	interner_kommentar     VARCHAR(255),
+	status                 VARCHAR(255),
+	angaben_deklaration_id BINARY(16),
+	angaben_korrektur_id   BINARY(16),
+	gemeinde_id            BINARY(16),
+	gesuchsperiode_id      BINARY(16),
+	PRIMARY key (id, rev)
+);
+
+ALTER TABLE ferienbetreuung_angaben_container_aud
+	ADD CONSTRAINT FK_ferienbetreuung_angaben_container_aud
+		FOREIGN key (rev) REFERENCES revinfo(rev);
+
+ALTER TABLE ferienbetreuung_angaben_container
+	ADD CONSTRAINT FK_ferienbetreuung_container_deklaration_id
+		FOREIGN key (angaben_deklaration_id) REFERENCES ferienbetreuung_angaben(id);
+
+ALTER TABLE ferienbetreuung_angaben_container
+	ADD CONSTRAINT FK_ferienbetreuung_container_korrektur_id
+		FOREIGN key (angaben_korrektur_id) REFERENCES ferienbetreuung_angaben(id);
+
+ALTER TABLE ferienbetreuung_angaben_container
+	ADD CONSTRAINT FK_ferienbetreuung_container_gemeinde_id
+		FOREIGN key (gemeinde_id) REFERENCES gemeinde(id);
+
+ALTER TABLE ferienbetreuung_angaben_container
+	ADD CONSTRAINT FK_ferienbetreuung_container_gesuchsperiode_id
+		FOREIGN key (gesuchsperiode_id) REFERENCES gesuchsperiode(id);
 
 
 # Ferienbetreuung am Angebot beteiligte Gemeinden

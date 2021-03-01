@@ -79,7 +79,7 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_adresse_id"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_stammdaten_adresse_id"), nullable = false)
 	private Adresse stammdatenAdresse;
 
 	@Nullable
@@ -134,7 +134,7 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_adresse_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angebot_adresse_id"))
 	private Adresse angebotAdresse;
 
 	@Nullable
