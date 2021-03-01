@@ -36,13 +36,14 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 @Entity
 @Audited
-public class FerienbetreuungAngabenContainer extends AbstractEntity {
+public class FerienbetreuungAngabenContainer extends AbstractEntity implements GemeindeAntrag {
 
 	private static final long serialVersionUID = -3872331984799085800L;
 
@@ -91,6 +92,12 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity {
 	}
 
 	@Nonnull
+	@Override
+	public GemeindeAntragTyp getGemeindeAntragTyp() {
+		return GemeindeAntragTyp.FERIENBETREUUNG;
+	}
+
+	@Nonnull
 	public Gemeinde getGemeinde() {
 		return gemeinde;
 	}
@@ -102,6 +109,18 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity {
 	@Nonnull
 	public Gesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
+	}
+
+	@Nonnull
+	@Override
+	public String getStatusString() {
+		return status.toString();
+	}
+
+	@Override
+	public boolean isAntragAbgeschlossen() {
+		return status == FerienbetreuungAngabenStatus.VERFUEGT
+			|| status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
 	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {

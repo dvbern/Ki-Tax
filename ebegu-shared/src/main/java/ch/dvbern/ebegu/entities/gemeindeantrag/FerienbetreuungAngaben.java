@@ -169,7 +169,7 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	@Nonnull
 	@ManyToMany
 	@JoinTable(
-		name = "ferienbetreuung_finanziell_beteiligte_gemeinden"
+		name = "ferienbetreuung_finanziell_beteiligte_gemeinden",
 		joinColumns = @JoinColumn(name = "ferienbetreuung_angaben_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
 		foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_gemeinde_ferienbetreuung_angaben_id_2"),
