@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@ang
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -62,6 +63,7 @@ export class TagesschulenAngabenComponent {
         private readonly translate: TranslateService,
         private readonly authService: AuthServiceRS,
         private readonly dialog: MatDialog,
+        private readonly routerGlobals: UIRouterGlobals
     ) {
     }
 
@@ -172,7 +174,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
             .subscribe(freigegeben => {
                 this.latsAngabenInstitutionContainer = freigegeben;
-                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichID);
+                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
                 if (!this.canEditForm()) {
                     this.form.disable();
                 }
@@ -205,7 +207,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
             .subscribe(geprueft => {
                 this.latsAngabenInstitutionContainer = geprueft;
-                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichID);
+                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
                 this.form.disable();
                 this.cd.markForCheck();
             }, () => {
