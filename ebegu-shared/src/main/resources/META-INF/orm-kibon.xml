@@ -395,4 +395,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst"/>
 	<entity class="ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten"/>
 	<entity class="ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben"/>
+	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument"/>
 </entity-mappings>
