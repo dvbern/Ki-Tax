@@ -20,7 +20,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
-import {filter, map, mergeMap} from 'rxjs/operators';
+import {filter, first, map, mergeMap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
@@ -60,7 +60,7 @@ export class FreigabeComponent implements OnInit {
             .afterClosed()
             .pipe(
                 filter(result => !!result),
-                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer()),
+                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
                 mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container)),
             )
             .subscribe(() => {
@@ -101,7 +101,7 @@ export class FreigabeComponent implements OnInit {
             .afterClosed()
             .pipe(
                 filter(result => !!result),
-                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer()),
+                mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
             ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container));
     }
 

@@ -337,6 +337,23 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return persistence.getCriteriaResults(query);
 	}
 
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindePruefen(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
+		Objects.requireNonNull(fallContainer);
+		authorizer.checkWriteAuthorization(fallContainer);
+
+		// Nur moeglich, wenn noch nicht geprüft
+		Preconditions.checkState(
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+			"LastenausgleichAngabenGemeinde muss im Status IN_PRUEFUNG sein");
+		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
+
+		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
+		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
+	}
+
 	@Override
 	public void saveKommentar(@Nonnull String containerId, @Nonnull String kommentar) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsContainer =

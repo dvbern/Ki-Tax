@@ -220,10 +220,41 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 		} catch (EJBTransactionRolledbackException e) {
 			if (e.getCause() instanceof IllegalArgumentException) {
-				throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build());
+				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+					.entity(e.getMessage())
+					.type(MediaType.TEXT_PLAIN)
+					.build());
 			}
 			throw new EJBTransactionRolledbackException(e.getMessage(), e);
 		}
+	}
+
+	@ApiOperation(
+		value = "Bestätigt die Prüfung durch den Kanton",
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+	@Nonnull
+	@PUT
+	@Path("/geprueft")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindePruefen(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+			angabenGemeindeService.lastenausgleichTagesschuleGemeindePruefen(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 	}
 
 	@Nonnull
