@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -36,11 +38,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.services.FallService;
 import io.swagger.annotations.Api;
@@ -48,14 +53,17 @@ import io.swagger.annotations.ApiOperation;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Resource fuer Fall
@@ -114,5 +122,67 @@ public class FallResource {
 		}
 		Fall fallToReturn = fallOptional.get();
 		return converter.fallToJAX(fallToReturn);
+	}
+
+	@Nullable
+	@DELETE
+	@Path("/vollmachtDokument/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	public Response removeGesuchsperiodeDokument(
+		@Nonnull @PathParam("fallId") String fallId,
+		@Context HttpServletResponse response) {
+
+		requireNonNull(fallId);
+
+		fallService.removeVollmachtDokument(fallId);
+		return Response.ok().build();
+
+	}
+
+	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
+		response = boolean.class)
+	@GET
+	@Path("/existVollmachtDokument/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public boolean existDokument(
+		@Nonnull @PathParam("fallId") String fallId,
+		@Context HttpServletResponse response
+	) {
+		requireNonNull(fallId);
+		return fallService.existVollmachtDokument(fallId);
+	}
+
+	@ApiOperation("return the VerfuegungErlaeuterung for the given language")
+	@GET
+	@Path("/downloadVollmachtDokument/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public Response downloadGesuchsperiodeDokument(
+		@Nonnull @PathParam("fallId") String fallId,
+		@Context HttpServletResponse response
+	) {
+		requireNonNull(fallId);
+
+		final byte[] content = fallService.downloadVollmachtDokument(fallId);
+
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
+					"application/octet-stream", content);
+
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND)
+					.entity("Vollmacht Dokument fuer SozialdienstFall: "
+						+ fallId
+						+ " kann nicht gelesen werden")
+					.build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }

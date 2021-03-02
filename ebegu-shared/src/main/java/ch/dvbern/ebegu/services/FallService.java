@@ -103,4 +103,10 @@ public interface FallService {
 	Fall uploadSozialdienstVollmachtDokument(
 		@Nonnull String fallId,
 		@Nonnull byte[] content);
+
+	Fall removeVollmachtDokument(@Nonnull String sozialdienstFallId);
+
+	boolean existVollmachtDokument(@Nonnull String sozialdienstFallId);
+
+	byte[] downloadVollmachtDokument(@Nonnull String sozialdienstFallId);
 }

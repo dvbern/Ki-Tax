@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IQService, IScope} from 'angular';
+import {IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
@@ -48,8 +48,10 @@ describe('sozialdienstFallCreationView', () => {
             $injector.get('$translate'),
             $rootScope,
             $injector.get('AuthServiceRS'),
-            $injector.get('SozialdienstRS'),
             $injector.get('$state'),
+            $injector.get('UploadRS'),
+            $injector.get('FallRS'),
+            $injector.get('DownloadRS'),
             $injector.get('$timeout'));
         sozialdienstFallCreationView.form = form;
         spyOn(sozialdienstFallCreationView, 'isGesuchValid').and.callFake(() => form.$valid);
