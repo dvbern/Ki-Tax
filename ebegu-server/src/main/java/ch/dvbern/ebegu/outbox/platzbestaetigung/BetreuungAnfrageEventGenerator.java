@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
@@ -67,7 +68,7 @@ public class BetreuungAnfrageEventGenerator {
 	 * column event_published value and it is re-exported automatically during the following night
 	 */
 	@Schedule(info = "Migration-aid, pushes Betreuung waiting for Platzbestaetigung and not yet published",
-		hour = "4",
+		second = "59", minute = "*", hour = "*",
 		persistent = true)
 	public void publishWartendeBetreuung() {
 		if (!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
@@ -94,6 +95,12 @@ public class BetreuungAnfrageEventGenerator {
 		//Status muss warten sein
 		Predicate statusWarten = cb.equal(root.get(AbstractPlatz_.betreuungsstatus), Betreuungsstatus.WARTEN);
 		predicates.add(statusWarten);
+
+		//Keine unbekannte kitas/TFO
+		Predicate noUnbekannteKita = cb.not(institutionStammdatenJoin.get(InstitutionStammdaten_.id)
+			.in(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA,
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE));
+		predicates.add(noUnbekannteKita);
 
 		query.where(predicates.toArray(NEW));
 
