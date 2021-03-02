@@ -18,7 +18,10 @@ package ch.dvbern.ebegu.mail;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +30,21 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -51,6 +68,7 @@ public class MailTemplateConfiguration {
 	public static final String EMPFAENGER_MAIL = "empfaengerMail";
 	public static final String ANZAHL_TAGE = "anzahlTage";
 	public static final String DATUM_LOESCHUNG = "datumLoeschung";
+	public static final String TS_ONLY_ANTRAG = "tsOnlyAntrag";
 	public static final String GESUCHSTELLER = "gesuchsteller";
 	public static final String GESUCHSPERIODE = "gesuchsperiode";
 	public static final String START_DATUM = "startDatum";
@@ -273,6 +291,7 @@ public class MailTemplateConfiguration {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
+		paramMap.put(TS_ONLY_ANTRAG, gesuch.hasOnlyBetreuungenOfSchulamt());
 
 		return processTemplateGesuch(
 			MailTemplate.WarnungGesuchNichtFreigegeben,
@@ -299,6 +318,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(ADRESSE, stammdaten.getAdresseForGesuch(gesuch).getAddressAsStringInOneLine());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
+		paramMap.put(TS_ONLY_ANTRAG, gesuch.hasOnlyBetreuungenOfSchulamt());
 
 		return processTemplateGesuch(
 			MailTemplate.WarnungFreigabequittungFehlt,
