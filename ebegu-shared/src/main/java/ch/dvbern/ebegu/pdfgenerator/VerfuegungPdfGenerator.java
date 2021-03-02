@@ -300,8 +300,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	private Paragraph createInfoKontingentierung() {
 		String gemeinde = getGemeindeStammdaten().getGemeinde().getName();
-		String telefon = getGemeindeStammdaten().getTelefon();
-		String mail = getGemeindeStammdaten().getMail();
+		String telefon = getGemeindeStammdaten().getTelefonForGesuch(getGesuch());
+		String mail = getGemeindeStammdaten().getEmailForGesuch(getGesuch());
 		Object[] args = { gemeinde, telefon, mail };
 		return PdfUtil.createParagraph(translate(VERWEIS_KONTINGENTIERUNG, args), 0, fontRed);
 	}

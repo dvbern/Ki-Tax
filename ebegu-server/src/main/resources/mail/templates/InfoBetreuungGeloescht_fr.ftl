@@ -30,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Bonjour,
 	</p>
 	<p>
-		L'offre de prise en charge suivante a été supprimée:
+		La famille a décidé de supprimer l'offre de prise en charge suivante:
 	</p>
 	<table>
 		<tbody>
@@ -66,7 +66,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
-		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
+		kiBon
 	</p>
 	<p>
 		<#if configuration.isDevmode>

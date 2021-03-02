@@ -111,13 +111,13 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		gesuch_tagesschule.getDossier().setVerantwortlicherTS(defaultBenutzer);
 	}
 
-	@Test
-	public void freigabequittungTest() throws InvoiceGeneratorException, IOException {
-		createFreigabequittung(gesuch_alleinstehend, Sprache.DEUTSCH, "Freigabequittung_alleinstehend_de.pdf");
-		createFreigabequittung(gesuch_alleinstehend, Sprache.FRANZOESISCH, "Freigabequittung_alleinstehend_fr.pdf");
-		createFreigabequittung(gesuch_verheiratet, Sprache.DEUTSCH, "Freigabequittung_verheiratet_de.pdf");
-		createFreigabequittung(gesuch_verheiratet, Sprache.FRANZOESISCH, "Freigabequittung_verheiratet_fr.pdf");
-	}
+//	@Test
+//	public void freigabequittungTest() throws InvoiceGeneratorException, IOException {
+//		createFreigabequittung(gesuch_alleinstehend, Sprache.DEUTSCH, "Freigabequittung_alleinstehend_de.pdf");
+//		createFreigabequittung(gesuch_alleinstehend, Sprache.FRANZOESISCH, "Freigabequittung_alleinstehend_fr.pdf");
+//		createFreigabequittung(gesuch_verheiratet, Sprache.DEUTSCH, "Freigabequittung_verheiratet_de.pdf");
+//		createFreigabequittung(gesuch_verheiratet, Sprache.FRANZOESISCH, "Freigabequittung_verheiratet_fr.pdf");
+//	}
 
 	private void createFreigabequittung(@Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws InvoiceGeneratorException, IOException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
