@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.validators.CheckIBANUppercase;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
@@ -51,6 +52,7 @@ public class Auszahlungsdaten extends AbstractEntity {
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Embedded
+	@CheckIBANUppercase
 	@Valid
 	private IBAN iban;
 

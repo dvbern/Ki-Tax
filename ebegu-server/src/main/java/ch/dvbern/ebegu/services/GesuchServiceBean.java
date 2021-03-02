@@ -2113,32 +2113,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	public void createMassenversand(@Nonnull Massenversand massenversand) {
-		persistence.persist(massenversand);
-	}
-
-	@Override
-	public List<String> getMassenversandTexteForGesuch(@Nonnull String gesuchId) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Massenversand> query = cb.createQuery(Massenversand.class);
-
-		Root<Massenversand> root = query.from(Massenversand.class);
-		ListJoin<Massenversand, Gesuch> gesuche = root.join(Massenversand_.gesuche);
-
-		Predicate predicate = cb.equal(gesuche.get(AbstractEntity_.id), gesuchId);
-		query.where(predicate);
-		query.select(root);
-		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
-
-		List<Massenversand> massenversaende = persistence.getCriteriaResults(query);
-		List<String> result = massenversaende.stream()
-			.map(Massenversand::getDescription)
-			.collect(Collectors.toList());
-
-		return result;
-	}
-
-	@Override
 	@Nonnull
 	public List<Gesuch> getGepruefteFreigegebeneGesucheForGesuchsperiode(
 		@Nonnull LocalDate datumVon,
@@ -2384,8 +2358,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchsperiodeGueltigAbParam);
 
 		query.where(fallPredicate, gesuchsperiodePredicate, freigegebenPredicate);
-
-		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
 
 		TypedQuery<String> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(dossierIdParam, gesuch.getDossier().getId());

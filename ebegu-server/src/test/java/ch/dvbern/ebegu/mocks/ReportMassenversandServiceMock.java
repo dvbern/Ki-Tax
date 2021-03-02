@@ -83,7 +83,6 @@ public class ReportMassenversandServiceMock extends ReportMassenversandServiceBe
 		kind.setKindName(kindName);
 		kind.setKindVorname(kindVorname);
 		kind.setKindGeburtsdatum(LocalDate.now());
-		kind.setKindDubletten("100, 101, 102");
 		kind.setKindInstitutionKita("Brünnen");
 		kind.setKindInstitutionTagesfamilie("Aaregg");
 		kind.setKindInstitutionTagesschule("Tagesschule Manuel");

@@ -18,10 +18,12 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -81,9 +83,11 @@ public interface EinstellungService {
 	Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Es werden die Defaults des Mandanten zurückgegeben
+	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Es werden die Defaults des Mandanten
+	 * zurückgegeben
 	 * (falls vorhanden), sonst die System Defaults.
-	 * In der zurueckgegebenen Liste ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer
+	 * In der zurueckgegebenen Liste ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten
+	 * Wert fuer
 	 * den Mandanten. z.B. Key A als Mandanteinstellung, Key B als System Default, Key C als Mandanteinstellung
 	 */
 	@Nonnull
@@ -112,4 +116,11 @@ public interface EinstellungService {
 	 */
 	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
+	/**
+	 * Return alle Einstellungen für eine gegebene Key und eventuel Gesuchsperiode
+	 * @param key
+	 * @return
+	 */
+	@Nonnull
+	List<Einstellung> findEinstellungen(@Nonnull EinstellungKey key, @Nullable Gesuchsperiode gesuchsperiode);
 }

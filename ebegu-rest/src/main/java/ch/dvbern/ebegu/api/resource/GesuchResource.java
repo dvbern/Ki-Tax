@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PersonenSucheService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
@@ -138,6 +139,9 @@ public class GesuchResource {
 
 	@Inject
 	private PersonenSucheService personenSucheService;
+
+	@Inject
+	private MassenversandService massenversandService;
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
@@ -978,7 +982,7 @@ public class GesuchResource {
 	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public List<String> getMassenversandTexteForGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdJax) {
 		Validate.notNull(gesuchIdJax.getId());
-		return gesuchService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));
+		return massenversandService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));
 	}
 
 	@ApiOperation(value = "Setzt das gegebene Gesuch in den Status KEIN_KONTINGENT", response = JaxGesuch.class)

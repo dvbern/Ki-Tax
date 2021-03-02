@@ -88,6 +88,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	@Inject
 	private DossierService dossierService;
 
+	@Inject
+	private MassenversandService massenversandService;
+
 	@Nonnull
 	@Override
 	public Fall saveFall(@Nonnull Fall fall) {
@@ -164,6 +167,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		authorizer.checkWriteAuthorization(loadedFall);
 		// Remove all depending objects
 		mitteilungService.removeAllMitteilungenForFall(loadedFall);
+		massenversandService.removeMassenversandGesucheForFall(loadedFall);
 		// Alle Dossier des Falls loeschen (die entsprechenden Gesuchen werden damit auch geloescht
 		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
 		for (Dossier dossier : dossiersByFall) {

@@ -98,6 +98,7 @@ import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -160,14 +161,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
-		final Betreuung mergedBetreuung = persistence.merge(betreuung);
+		Betreuung mergedBetreuung = persistence.merge(betreuung);
 
-		// if isNew and Jugendamt -> generate Event for Kafka
+		// if isNew or not published and Jugendamt -> generate Event for Kafka when API enabled and institution bekannt
 		if (exportBetreuung(isNew, mergedBetreuung)) {
-			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
+			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()
+				&& !betreuung.getInstitutionStammdaten().getId().equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA)
+				&& !betreuung.getInstitutionStammdaten().getId().equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE)) {
 				BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent =
 					betreuungAnfrageEventConverter.of(mergedBetreuung);
 				this.event.fire(betreuungAnfrageAddedEvent);
+				mergedBetreuung.setEventPublished(true);
 			}
 			else {
 				mergedBetreuung.setEventPublished(false);
@@ -190,7 +194,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	private boolean exportBetreuung(boolean isNew, @Nonnull Betreuung mergedBetreuung) {
-		return isNew
+		return (isNew || !mergedBetreuung.isEventPublished())
 			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt();
 	}
 
