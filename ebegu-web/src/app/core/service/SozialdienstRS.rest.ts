@@ -17,7 +17,6 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {IPromise} from 'angular';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
@@ -70,11 +69,12 @@ export class SozialdienstRS {
         }));
     }
 
-    public getSozialdienstForPrincipal(): IPromise<TSSozialdienst[]> {
-        return this.$http.get<any[]>(this.serviceURL + '/').toPromise().then(response => {
-            LOG.debug('PARSING Sozialdienst REST array object', response);
-            return this.ebeguRestUtil.parseSozialdienstList(response);
-        });
+    public getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
+        return this.$http.get<any[]>(this.serviceURL + '/').pipe(
+            map(response => {
+                LOG.debug('PARSING Sozialdienst REST array object', response);
+                return this.ebeguRestUtil.parseSozialdienstList(response);
+            }));
     }
 
     public getSozialdienstStammdaten(sozialdienstId: string): Observable<TSSozialdienstStammdaten> {
