@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -169,7 +170,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 
 		// Die GeoAdmin API vergleicht case sensitive für den exakten match
 		String escapedSearchString =
-			ILLEGAL_SEARCH_CHARS.matcher(searchText).replaceAll(EMPTY_STRING).trim().toLowerCase();
+			ILLEGAL_SEARCH_CHARS.matcher(searchText).replaceAll(EMPTY_STRING).trim().toLowerCase(Locale.GERMAN);
 
 		if (escapedSearchString.isEmpty()) {
 			return new JaxGeoadminSearchResult();
