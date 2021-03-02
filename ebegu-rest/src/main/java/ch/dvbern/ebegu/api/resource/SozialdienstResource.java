@@ -61,7 +61,9 @@ import io.swagger.annotations.ApiOperation;
 
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("sozialdienst")
@@ -158,7 +160,7 @@ public class SozialdienstResource {
 	@Path("/stammdaten")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST })
 	public JaxSozialdienstStammdaten saveSozialdienstStammdaten(
 		@Nonnull @NotNull @Valid JaxSozialdienstStammdaten jaxStammdaten,
 		@Context UriInfo uriInfo,
