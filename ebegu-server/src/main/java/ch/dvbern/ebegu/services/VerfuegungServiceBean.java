@@ -695,11 +695,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.ifPresent(zeitabschnitte -> zeitabschnitte.forEach(zeitabschnitt -> {
 				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zahlungslaufHelper.getZahlungsstatus(zeitabschnitt);
 
-				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())
-					&& isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte, zahlungslaufHelper)) {
-					// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
-					// kein Vorgaenger
-					vorgaengerZeitabschnitte.add(zeitabschnitt);
+				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())){
+					if(isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte, zahlungslaufHelper)) {
+						// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
+						// kein Vorgaenger
+						vorgaengerZeitabschnitte.add(zeitabschnitt);
+					}
 				} else {
 					Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 					Objects.requireNonNull(vorgaengerBetreuung);

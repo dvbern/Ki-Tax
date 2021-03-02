@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -67,8 +68,8 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 
 	private static final String API_LAYERBODID_WOHNUNGSREGISTER = "ch.bfs.gebaeude_wohnungs_register";
 
-	// die 14 wurde nur durch Testen bestimmt, ist aber keine Garantie, das sie stimmt.
-	private static final Long EXACT_MATCH = (long) 14;    // highest weight
+	// Seit dem Release vom 24.02.21 gibt die GeoAdmin API einem exact match die weight 100
+	private static final Long EXACT_MATCH = (long) 100;    // highest weight
 	private static final int SEARCHSERVICE_MAX_RESULTS = 50; // Max fuer die Search API
 
 	private static final Pattern ILLEGAL_SEARCH_CHARS = Pattern.compile("[.]");
@@ -167,14 +168,15 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 	private JaxGeoadminSearchResult searchAddress(@Nonnull String searchText, int limit) {
 		checkNotNull(searchText);
 
+		// Die GeoAdmin API vergleicht case sensitive für den exakten match
 		String escapedSearchString =
-			ILLEGAL_SEARCH_CHARS.matcher(searchText).replaceAll(EMPTY_STRING).trim();
+			ILLEGAL_SEARCH_CHARS.matcher(searchText).replaceAll(EMPTY_STRING).trim().toLowerCase(Locale.GERMAN);
 
 		if (escapedSearchString.isEmpty()) {
 			return new JaxGeoadminSearchResult();
 		}
 
-		WebTarget target = getLocationsSearchTarget(searchText, limit);
+		WebTarget target = getLocationsSearchTarget(escapedSearchString, limit);
 
 		try {
 			JaxGeoadminSearchResult geoadminSearchResult = target
