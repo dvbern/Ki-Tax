@@ -65,9 +65,9 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_gesuchsperiode_id"), nullable = false)
 	private Gesuchsperiode gesuchsperiode;
 
-	@Nullable
+	@Nonnull
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_deklaration_id"), nullable = true)
 	private FerienbetreuungAngaben angabenDeklaration;
 
@@ -127,12 +127,12 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	@Nullable
+	@Nonnull
 	public FerienbetreuungAngaben getAngabenDeklaration() {
 		return angabenDeklaration;
 	}
 
-	public void setAngabenDeklaration(@Nullable FerienbetreuungAngaben angabenDeklaration) {
+	public void setAngabenDeklaration(@Nonnull FerienbetreuungAngaben angabenDeklaration) {
 		this.angabenDeklaration = angabenDeklaration;
 	}
 

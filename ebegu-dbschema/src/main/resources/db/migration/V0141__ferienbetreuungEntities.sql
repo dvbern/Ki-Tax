@@ -171,7 +171,7 @@ CREATE TABLE ferienbetreuung_angaben_container (
 	version                BIGINT       NOT NULL,
 	interner_kommentar     VARCHAR(255),
 	status                 VARCHAR(255) NOT NULL,
-	angaben_deklaration_id BINARY(16),
+	angaben_deklaration_id BINARY(16)   NOT NULL,
 	angaben_korrektur_id   BINARY(16),
 	gemeinde_id            BINARY(16)   NOT NULL,
 	gesuchsperiode_id      BINARY(16)   NOT NULL,

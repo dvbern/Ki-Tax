@@ -76,10 +76,10 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private Boolean angebotVereineUndPrivateIntegriert;
 
 	@Nullable
-	private Boolean bemerkungenKooperation;
+	private String bemerkungenKooperation;
 
 	@Nullable
-	private String leitungDurchPersonMitAusbildung;
+	private Boolean leitungDurchPersonMitAusbildung;
 
 	@Nullable
 	private BigDecimal aufwandBetreuungspersonal;
@@ -244,20 +244,20 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public Boolean getBemerkungenKooperation() {
+	public String getBemerkungenKooperation() {
 		return bemerkungenKooperation;
 	}
 
-	public void setBemerkungenKooperation(@Nullable Boolean bemerkungenKooperation) {
+	public void setBemerkungenKooperation(@Nullable String bemerkungenKooperation) {
 		this.bemerkungenKooperation = bemerkungenKooperation;
 	}
 
 	@Nullable
-	public String getLeitungDurchPersonMitAusbildung() {
+	public Boolean getLeitungDurchPersonMitAusbildung() {
 		return leitungDurchPersonMitAusbildung;
 	}
 
-	public void setLeitungDurchPersonMitAusbildung(@Nullable String leitungDurchPersonMitAusbildung) {
+	public void setLeitungDurchPersonMitAusbildung(@Nullable Boolean leitungDurchPersonMitAusbildung) {
 		this.leitungDurchPersonMitAusbildung = leitungDurchPersonMitAusbildung;
 	}
 
