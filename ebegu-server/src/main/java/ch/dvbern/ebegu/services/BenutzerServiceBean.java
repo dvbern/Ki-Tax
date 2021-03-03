@@ -159,7 +159,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private GesuchService gesuchService;
 
-
 	@Nonnull
 	@Override
 	public Benutzer saveBenutzerBerechtigungen(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged) {
@@ -340,12 +339,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Override
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	public void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer){
+	public void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer) {
 		// falls gesuchsteller, und darf einladen
-		if(!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER){
+		if (!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER) {
 			//check if Gesuch exist
 			Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
-			if (!fallOpt.isPresent()){
+			if (!fallOpt.isPresent()) {
 				//return error code keinen Gesusch, user can be deleted without warning
 				throw new BenutzerExistException(
 					KibonLogLevel.NONE,
@@ -370,12 +369,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				for (String id : gesuchIdList) {
 					Gesuch gs = gesuchService.findGesuch(id, false)
 						.orElseThrow(() -> new EbeguRuntimeException(
-						"checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch", "Gesuch nicht gefunden"));
-					if (gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
+							"checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch", "Gesuch nicht gefunden"));
+					if (gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
 						hasGesuchFreigegeben = true;
 						break;
 					}
-					}
+				}
 				if (hasGesuchFreigegeben) {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
@@ -717,7 +716,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				LOG.info("External User has new Username: ExternalUUID {}, old username {}, new username {}. "
 						+ "Updating and setting Bemerkung!",
 					benutzer.getExternalUUID(), foundUser.getUsername(), benutzer.getUsername());
-				foundUser.addBemerkung("External User has new Username: ExternalUUID: " + benutzer.getExternalUUID() + ", old username: " + foundUser.getUsername() + ", new username " + benutzer.getUsername());
+				foundUser.addBemerkung("External User has new Username: ExternalUUID: "
+					+ benutzer.getExternalUUID()
+					+ ", old username: "
+					+ foundUser.getUsername()
+					+ ", new username "
+					+ benutzer.getUsername());
 				foundUser.setUsername(benutzer.getUsername());
 			}
 			// den username ueberschreiben wir nicht!
@@ -740,7 +744,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// die wir uebernehmen wollen)
 			if (!foundUser.getNachname().equalsIgnoreCase(benutzer.getNachname())
 				|| !foundUser.getVorname().equalsIgnoreCase(benutzer.getVorname())
-			 	|| !foundUser.getEmail().equalsIgnoreCase(benutzer.getEmail())) {
+				|| !foundUser.getEmail().equalsIgnoreCase(benutzer.getEmail())) {
 				String message = String.format("External User has new User-Data: Username %s, "
 						+ "Nachname bisher %s, neu %s; "
 						+ "Vorname bisher %s, neu %s}; "
@@ -984,7 +988,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> instStammdatenTSJoin =
 				sqFrom.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.INNER);
 
-			subquery.where(stammdatenTSPredicate,
+			subquery.where(
+				stammdatenTSPredicate,
 				instStammdatenTSJoin.get(InstitutionStammdatenTagesschule_.gemeinde).in(userGemeinden));
 
 			subquery.select(sqFrom.get(InstitutionStammdaten_.institution).get(Institution_.id));
@@ -1013,7 +1018,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			setInstitutionFilterForCurrentUser(user, currentBerechtigungJoin, cb, predicates);
 		}
 
-		if(principalBean.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG)) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG)) {
 			setGemeindeFilterForCurrentFerienbetreuungUser(user, currentBerechtigungJoin, cb, predicates);
 		}
 
@@ -1080,7 +1085,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// institution
 			if (predicateObjectDto.getInstitution() != null) {
 				predicates.add(cb.equal(institutionJoin.get(Institution_.name), predicateObjectDto.getInstitution()));
-				predicatesTS.add(cb.equal(institutionJoin.get(Institution_.name), predicateObjectDto.getInstitution()));
+				predicatesTS.add(cb.equal(institutionJoin.get(Institution_.name),
+					predicateObjectDto.getInstitution()));
 			}
 			// traegerschaft
 			if (predicateObjectDto.getTraegerschaft() != null) {
