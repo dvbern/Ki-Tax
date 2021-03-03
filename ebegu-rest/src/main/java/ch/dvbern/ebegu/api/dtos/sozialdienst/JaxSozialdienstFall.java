@@ -39,6 +39,9 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 	private String name;
 
 	@Nonnull
+	private String vorname;
+
+	@Nonnull
 	private SozialdienstFallStatus status = SozialdienstFallStatus.INAKTIV;
 
 	@Nonnull
@@ -94,5 +97,14 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 
 	public void setSozialdienst(@Nonnull JaxSozialdienst sozialdienst) {
 		this.sozialdienst = sozialdienst;
+	}
+
+	@Nonnull
+	public String getVorname() {
+		return vorname;
+	}
+
+	public void setVorname(@Nonnull String vorname) {
+		this.vorname = vorname;
 	}
 }

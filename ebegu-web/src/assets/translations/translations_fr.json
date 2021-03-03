@@ -2271,7 +2271,8 @@
     "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Ouvrir un cas pour service social",
     "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "IN_BEARBEITUNG_SOZIALDIENST": "En traitement par le service social",
-    "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
-    "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
+    "VOLLMACHT_HOCHLADEN": "Télécharger la procuration",
+    "VOLLMACHT_DOKUMENT": "Document de procuration",
+    "SOZIALDIENSTFALL_AKTIVIEREN": "Activer",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

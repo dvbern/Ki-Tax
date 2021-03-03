@@ -23,6 +23,7 @@ import {TSSozialdienst} from './TSSozialdienst';
 
 export class TSSozialdienstFall extends TSAbstractEntity {
     public name: string;
+    public vorname: string;
     public status: TSSozialdienstFallStatus;
     public adresse: TSAdresse;
     public geburtsdatum: moment.Moment;

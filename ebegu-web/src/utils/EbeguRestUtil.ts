@@ -4761,6 +4761,7 @@ export class EbeguRestUtil {
             restSozialdienstFall.sozialdienst = this.sozialdienstToRestObject({}, sozialdienstFall.sozialdienst);
             restSozialdienstFall.adresse = this.adresseToRestObject({}, sozialdienstFall.adresse);
             restSozialdienstFall.name = sozialdienstFall.name;
+            restSozialdienstFall.vorname = sozialdienstFall.vorname;
             restSozialdienstFall.geburtsdatum = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatum);
             restSozialdienstFall.status = sozialdienstFall.status;
             return restSozialdienstFall;
@@ -4778,6 +4779,7 @@ export class EbeguRestUtil {
                 this.parseSozialdienst(new TSSozialdienst(), sozialdienstFallFromServer.sozialdienst);
             sozialdienstFallTS.adresse = this.parseAdresse(new TSAdresse(), sozialdienstFallFromServer.adresse);
             sozialdienstFallTS.name = sozialdienstFallFromServer.name;
+            sozialdienstFallTS.vorname = sozialdienstFallFromServer.vorname;
             sozialdienstFallTS.geburtsdatum = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatum);
             sozialdienstFallTS.status = sozialdienstFallFromServer.status;
             return sozialdienstFallTS;

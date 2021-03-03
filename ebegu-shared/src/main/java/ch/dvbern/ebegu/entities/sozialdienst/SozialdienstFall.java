@@ -73,6 +73,12 @@ public class SozialdienstFall extends AbstractEntity {
 	@Nonnull
 	private String name;
 
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = false)
+	@NotNull
+	@Nonnull
+	private String vorname;
+
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -148,6 +154,15 @@ public class SozialdienstFall extends AbstractEntity {
 		}
 	}
 
+	@Nonnull
+	public String getVorname() {
+		return vorname;
+	}
+
+	public void setVorname(@Nonnull String vorname) {
+		this.vorname = vorname;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -164,6 +179,7 @@ public class SozialdienstFall extends AbstractEntity {
 		return Objects.equals(this.getSozialdienst(), sozialdienstFall.getSozialdienst())
 			&& Objects.equals(this.getStatus(), sozialdienstFall.getStatus())
 			&& Objects.equals(this.getName(), sozialdienstFall.getName())
+			&& Objects.equals(this.getVorname(), sozialdienstFall.getVorname())
 			&& Objects.equals(this.getGeburtsdatum(), sozialdienstFall.getGeburtsdatum())
 			&& Objects.equals(this.getAdresse(), sozialdienstFall.getAdresse());
 	}

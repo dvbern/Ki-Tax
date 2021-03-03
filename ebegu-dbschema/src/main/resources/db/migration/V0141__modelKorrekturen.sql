@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ALTER TABLE sozialdienst_fall ADD vorname VARCHAR(255) not null;
+
 DROP TABLE sozialdienst_fall_aud;
 
 CREATE TABLE sozialdienst_fall_aud (
@@ -32,6 +34,7 @@ CREATE TABLE sozialdienst_fall_aud (
 	vollmacht longblob,
 	adresse_id BINARY(16),
 	sozialdienst_id BINARY(16),
+	vorname VARCHAR(255),
 	primary key (id, rev)
 );
 
@@ -39,3 +42,4 @@ ALTER TABLE sozialdienst_fall_aud
 	ADD CONSTRAINT FK_sozialdienst_fall_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
+

@@ -15,7 +15,7 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="gesuch-modul">
+<div class="sozialdienst-view gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
@@ -25,7 +25,7 @@
             <hr class="header"/>
         </div>
     </div>
-    <div class="row">
+    <div class="row margin-top-40">
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
                 <fieldset ng-disabled="vm.isSozialdienstFallReadOnly()">
@@ -37,6 +37,16 @@
                                        ng-model="vm.sozialdienstFall.name"
                                        dv-max-length class="form-control" required>
                                 <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="VORNAME" for="vorname_ID"></label>
+                                <input aria-describedby="vorname_ID-error" id="vorname_ID" type="text" name="vorname"
+                                       ng-model="vm.sozialdienstFall.vorname"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="vorname_ID" for="vm.form.vorname.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
@@ -130,7 +140,7 @@
 
                 <!-- Vollmacht Dokument hochladen -->
                 <div class="row view-title margin-top-30" ng-if="!vm.sozialdienstFall.isNew()">
-                    <div class="col-sm-12 dv-input-container-medium"">
+                    <div class="col-sm-12 dv-input-container-medium">
                         <h1>
                             <span data-translate="VOLLMACHT_HOCHLADEN"></span>
                         </h1>
@@ -147,6 +157,7 @@
                                         ngf-select="vm.uploadVollmachtDokument($files)"
                                         ngf-multiple="false"
                                         accept="application/pdf"
+                                        ng-disabled="vm.isSozialdienstFallReadOnly()"
                                         class="dv-btn fa fa-upload dv-btn-operation"
                                         title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                                         aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
@@ -169,7 +180,7 @@
                                     class="symbol"
                                     tabindex="-1">
                                     <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
-                                            ng-disabled="!vm.isVollmachtHochgeladet"
+                                            ng-disabled="!vm.isVollmachtHochgeladet || vm.isSozialdienstFallReadOnly()"
                                             class="dv-btn fa fa-trash dv-btn-operation"
                                             title="{{'DOKUMENT_DELETE' | translate}}"
                                             [attr.aria-label]="'DOKUMENT_DELETE' | translate"
@@ -185,16 +196,16 @@
 
                 <!--Buttons-->
                 <div class="dv-navigation dv-navigation-flex">
-                    <span class="ie11-fix">
-                    <dv-loading-button class="dv-navigation-item" button-click="vm.save()" type="submit">
-                        <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
-                    </dv-loading-button>
+                    <span>
+                        <dv-loading-button button-click="vm.save()" type="submit">
+                            <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
+                        </dv-loading-button>
                     </span>
-                    <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
-                    <span class="ie11-fix" dv-show-element
+                        <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
+                    <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
                           dv-show-expression="vm.isAktivierungMoeglich()">
-                        <dv-loading-button class="dv-navigation-item" button-click="vm.fallAktivieren()" type="submit">
+                        <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_AKTIVIEREN"></span>
                         </dv-loading-button>
                     </span>

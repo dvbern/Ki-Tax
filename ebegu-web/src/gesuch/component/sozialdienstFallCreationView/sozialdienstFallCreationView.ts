@@ -26,6 +26,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {INewFallStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -115,7 +116,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     private initViewModel(): void {
         this.sozialdienstFall = this.gesuchModelManager.getFall().sozialdienstFall;
         if (this.sozialdienstFall.isNew()) {
-           return;
+            return;
         }
         this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
             result => this.isVollmachtHochgeladet = result,
@@ -139,7 +140,9 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
                 const params: INewFallStateParams = {
                     gesuchsperiodeId: this.gesuchsperiodeId,
                     creationAction: null,
-                    gesuchId: null,
+                    gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
+                        this.gesuchModelManager.getGesuch().id :
+                        null,
                     dossierId: null,
                     gemeindeId: this.gesuchModelManager.getGemeinde().id,
                     eingangsart: null,
@@ -187,7 +190,9 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public fallAktivieren(): void {
-        // todo
+        this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
+        this.form.$dirty = true;
+        this.save();
     }
 
     public uploadVollmachtDokument(file: any[]): void {

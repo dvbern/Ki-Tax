@@ -105,6 +105,7 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		@Nonnull final SozialdienstFall sozialdienstFall) {
 		convertAbstractFieldsToEntity(jaxSozialdienstFall, sozialdienstFall);
 		sozialdienstFall.setName(jaxSozialdienstFall.getName());
+		sozialdienstFall.setVorname(jaxSozialdienstFall.getVorname());
 		sozialdienstFall.setStatus(jaxSozialdienstFall.getStatus());
 		if(sozialdienstFall.isNew()) {
 			sozialdienstFall.setAdresse(new Adresse());
@@ -125,6 +126,7 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		final JaxSozialdienstFall jaxSozialdienstFall = new JaxSozialdienstFall();
 		convertAbstractFieldsToJAX(persistedSozialdienstFall, jaxSozialdienstFall);
 		jaxSozialdienstFall.setName(persistedSozialdienstFall.getName());
+		jaxSozialdienstFall.setVorname(persistedSozialdienstFall.getVorname());
 		jaxSozialdienstFall.setStatus(persistedSozialdienstFall.getStatus());
 		jaxSozialdienstFall.setGeburtsdatum(persistedSozialdienstFall.getGeburtsdatum());
 		jaxSozialdienstFall.setAdresse(adresseToJAX(persistedSozialdienstFall.getAdresse()));

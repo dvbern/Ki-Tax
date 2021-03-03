@@ -52,6 +52,7 @@ describe('sozialdienstFallCreationView', () => {
             $injector.get('UploadRS'),
             $injector.get('FallRS'),
             $injector.get('DownloadRS'),
+            $injector.get('DvDialog'),
             $injector.get('$timeout'));
         sozialdienstFallCreationView.form = form;
         spyOn(sozialdienstFallCreationView, 'isGesuchValid').and.callFake(() => form.$valid);
