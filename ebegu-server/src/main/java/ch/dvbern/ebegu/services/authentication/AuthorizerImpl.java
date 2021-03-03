@@ -534,6 +534,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			return;
 		}
+		case ADMIN_FERIENBETREUUNG: {
+			if(!(benutzer.getRole().isRoleFerienbetreuung() && userHasSameGemeindeAsPrincipal(benutzer))) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
 		case GESUCHSTELLER: {
 			if (!hasPrincipalName(benutzer)) {
 				throwViolation(benutzer);

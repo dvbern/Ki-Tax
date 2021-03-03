@@ -342,7 +342,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG })
 	public JaxBenutzer inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
@@ -359,7 +359,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG })
 	public JaxBenutzer reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
@@ -376,7 +376,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG })
 	public JaxBenutzer saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
