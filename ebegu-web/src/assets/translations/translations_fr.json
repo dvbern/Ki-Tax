@@ -788,6 +788,8 @@
     "TSRole_JURIST": "Juriste",
     "TSRole_REVISOR": "Réviseur/-euse",
     "TSRole_STEUERAMT": "Collaborateur/-trice spécialisé-e bureau des impôts",
+    "TSRole_SACHBEARBEITER_FERIENBETREUUNG": "Sachbearbeiter/in Ferienbetreuung",
+    "TSRole_ADMIN_FERIENBETREUUNG": "Administrator/in Ferienbetreuung",
     "TSRole_NONE": "Aucun rôle (auteur-e de la demande)",
     "PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG": "Détérioration minimale du revenu (%)",
     "VORJAHR": "Année précédente",
