@@ -84,6 +84,10 @@ public enum UserRole {
 		return SUPER_ADMIN == this;
 	}
 
+	public boolean isRoleFerienbetreuung() {
+		return ADMIN_FERIENBETREUUNG == this || SACHBEARBEITER_FERIENBETREUUNG == this;
+	}
+
 	public boolean isRoleAdminTraegerschaftInstitution() {
 		return  getInstitutionTraegerschaftAdminRoles().contains(this);
 	}
@@ -95,7 +99,7 @@ public enum UserRole {
 
 	public static List<UserRole> getAllAdminRoles() {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_MANDANT, ADMIN_INSTITUTION,
-			ADMIN_TRAEGERSCHAFT);
+			ADMIN_TRAEGERSCHAFT, ADMIN_FERIENBETREUUNG);
 	}
 
 	/**

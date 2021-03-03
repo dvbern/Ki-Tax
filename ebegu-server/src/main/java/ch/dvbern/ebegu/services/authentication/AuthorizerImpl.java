@@ -87,6 +87,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.sentry.event.User;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
@@ -586,6 +587,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInRole(ADMIN_INSTITUTION) && benutzer.getInstitution() != null) {
 			return userBelongsToInstitutionOfPrincipal(benutzer);
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_FERIENBETREUUNG)) {
+			return benutzer.getRole().isRoleFerienbetreuung() &&
+				userHasSameGemeindeAsPrincipal(benutzer);
 		}
 
 		return false;

@@ -41,7 +41,7 @@ export class TSRoleUtil {
     }
 
     public static getAllRolesForMenuAlleFaelle(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
+        return TSRoleUtil.getAllRolesButAnonymousAndFerienbetreuung()
             .filter(element => element !== TSRole.GESUCHSTELLER && element !== TSRole.STEUERAMT);
     }
 
@@ -88,6 +88,15 @@ export class TSRoleUtil {
 
     public static getAllRolesButAnonymous(): ReadonlyArray<TSRole> {
         return getTSRoleValues().filter(role => role !== TSRole.ANONYMOUS);
+    }
+
+    public static getAllRolesButAnonymousAndFerienbetreuung(): ReadonlyArray<TSRole> {
+        return getTSRoleValues()
+            .filter(role => ![
+                TSRole.ANONYMOUS,
+                TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+                TSRole.ADMIN_FERIENBETREUUNG,
+            ].includes(role));
     }
 
     public static getSuperAdminRoles(): ReadonlyArray<TSRole> {
@@ -295,6 +304,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT,
             TSRole.ADMIN_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_FERIENBETREUUNG
         ];
     }
 
@@ -307,6 +317,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT,
             TSRole.ADMIN_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_FERIENBETREUUNG
         ];
     }
 

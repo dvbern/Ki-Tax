@@ -68,6 +68,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -120,6 +121,7 @@ public class BenutzerResource {
 		ADMIN_MANDANT,
 		ADMIN_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT,
+		ADMIN_FERIENBETREUUNG
 	})
 	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
@@ -282,7 +284,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_MANDANT, REVISOR })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, REVISOR })
 	public JaxBenutzerSearchresultDTO searchBenutzer(
 		@Nonnull @NotNull @Valid BenutzerTableFilterDTO benutzerSearch,
 		@Context UriInfo uriInfo,
@@ -438,7 +440,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, REVISOR })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, REVISOR })
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
