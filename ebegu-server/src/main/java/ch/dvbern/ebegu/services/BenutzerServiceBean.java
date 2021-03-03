@@ -111,6 +111,7 @@ import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentFerienbetreuungUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForCurrentUser;
@@ -1010,6 +1011,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		if (principalBean.isCallerInRole(UserRole.ADMIN_INSTITUTION)) {
 			setInstitutionFilterForCurrentUser(user, currentBerechtigungJoin, cb, predicates);
+		}
+
+		if(principalBean.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG)) {
+			setGemeindeFilterForCurrentFerienbetreuungUser(user, currentBerechtigungJoin, cb, predicates);
 		}
 
 		if (principalBean.isCallerInRole(UserRole.ADMIN_TRAEGERSCHAFT)) {
