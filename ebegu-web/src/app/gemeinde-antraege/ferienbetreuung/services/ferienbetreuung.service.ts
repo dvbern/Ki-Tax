@@ -16,11 +16,11 @@
  */
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
-import {LogFactory} from '../../../core/logging/LogFactory';
-
-const LOG = LogFactory.createLog('FerienbetreuungService');
 
 @Injectable({
     providedIn: 'root',
@@ -31,5 +31,16 @@ export class FerienbetreuungService {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(private readonly http: HttpClient) {
+    }
+
+    public findFerienbetreuungContainer(id: string): Observable<TSFerienbetreuungAngabenContainer> {
+        const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
+        return this.http.get<TSFerienbetreuungAngabenContainer>(url)
+            .pipe(
+                map(container => this.ebeguRestUtil.parseFerienbetreuungContainer(
+                    new TSFerienbetreuungAngabenContainer(),
+                    container
+                ))
+            );
     }
 }
