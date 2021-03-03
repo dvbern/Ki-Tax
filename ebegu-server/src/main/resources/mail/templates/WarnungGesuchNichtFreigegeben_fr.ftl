@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="anzahlTage" type="java.lang.String" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
+<#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${gesuchsteller.mail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Demande non confirmée</@base64Header>
@@ -31,10 +32,12 @@ ${templateConfiguration.mailCss}
 		avant le début de la prise en charge afin que vous ne perdiez pas votre droit. Si vous ne confirmez pas vos données au moyen du formulaire ad hoc dans
 		les ${anzahlTage} jours, votre requête sera automatiquement supprimée.
 	</p>
+    <#if tsOnlyAntrag==false>
 	<p>
 		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition que celle-ci soit assortie de tous les documents
 		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
 	</p>
+	</#if>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${gesuch.dossier.gemeinde.name}
