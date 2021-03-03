@@ -19,6 +19,7 @@
     <dv-lastenausgleich-ts-toolbar *ngIf="showToolbar()"></dv-lastenausgleich-ts-toolbar>
     <div class="antrag-container">
         <dv-wizard-side-nav
+            [status]="lATSAngabenGemeindeContainer.status | translate"
             [id]="lastenausgleichId"
             [wizardTyp]="wizardTyp">
         </dv-wizard-side-nav>

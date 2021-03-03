@@ -30,19 +30,17 @@ import {FreigabeComponent} from './antrag/freigabe/freigabe.component';
 import {GemeindeAngabenComponent} from './antrag/gemeinde-angaben/gemeinde-angaben.component';
 import {LastenausgleichTsBerechnungComponent} from './antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from './antrag/tagesschulen-angaben/tagesschulen-angaben.component';
+import {TagesschulenListComponent} from './antrag/tagesschulen-list/tagesschulen-list.component';
+import {TagesschulenUiViewComponent} from './antrag/tagesschulen-ui-view/tagesschulen-ui-view.component';
+import {GemeindeAntraegeComponent} from './gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
 import {LastenausgleichTsRoutingModule} from './lastenausgleich-ts-routing/lastenausgleich-ts-routing.module';
-import {LastenausgleichTsSideNavComponent} from './lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
 import {LastenausgleichTsToolbarComponent} from './lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';
 import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-ts.component';
-import { GemeindeAntraegeComponent } from './gemeinde-antraege/gemeinde-antraege.component';
-import { TagesschulenListComponent } from './antrag/tagesschulen-list/tagesschulen-list.component';
-import { TagesschulenUiViewComponent } from './antrag/tagesschulen-ui-view/tagesschulen-ui-view.component';
 
 @NgModule({
     declarations: [
         LastenausgleichTSComponent,
-        LastenausgleichTsSideNavComponent,
         LastenausgleichTsKommentarComponent,
         LastenausgleichTsToolbarComponent,
         GemeindeAngabenComponent,
