@@ -25,6 +25,7 @@ import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
@@ -137,6 +138,9 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.errorService.clearAll();
         this.gesuchModelManager.saveFall().then(
             fall => {
+                if (fall.sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV) {
+                    this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                }
                 const params: INewFallStateParams = {
                     gesuchsperiodeId: this.gesuchsperiodeId,
                     creationAction: null,
@@ -154,18 +158,28 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         );
     }
 
+    public weiter(): void {
+        const params: INewFallStateParams = {
+            gesuchsperiodeId: this.gesuchsperiodeId,
+            creationAction: null,
+            gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
+                this.gesuchModelManager.getGesuch().id :
+                null,
+            dossierId: null,
+            gemeindeId: this.gesuchModelManager.getGemeinde().id,
+            eingangsart: null,
+            sozialdienstId: null,
+            fallId: this.gesuchModelManager.getFall().id,
+        };
+        this.$state.go('gesuch.fallcreation', params);
+    }
+
     public getNextButtonText(): string {
         if (this.gesuchModelManager.getGesuch()) {
             if (this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
                 return this.$translate.instant('ERSTELLEN');
             }
-            if (this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV
-                || this.gesuchModelManager.isGesuchReadonly()) {
-                return this.$translate.instant('WEITER_ONLY');
-            }
-
             return this.$translate.instant('SPEICHERN');
-
         }
         return this.$translate.instant('WEITER');
     }

@@ -417,7 +417,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			allowedSteueramt = true;
 		}
 
-		if (!allowedJAORGS && !allowedSchulamt && !allowedSteueramt) {
+		boolean allowedSozialdienst = false;
+		if (!allowedJAORGS && !allowedSchulamt && !allowedSteueramt
+			&& principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)
+			&& AntragStatus.IN_BEARBEITUNG_SOZIALDIENST == gesuch.getStatus()) {
+			allowedSozialdienst = true;
+		}
+
+		if (!allowedJAORGS && !allowedSchulamt && !allowedSteueramt && !allowedSozialdienst) {
 			throwViolation(gesuch);
 		}
 	}

@@ -248,6 +248,18 @@ public enum AntragStatus {
 		// Status entfernt werden
 	);
 
+	public static final Set<AntragStatus> FOR_SOZIALDIENSTE_ROLE_WRITE = EnumSet.of(
+		IN_BEARBEITUNG_SOZIALDIENST,
+		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
+		FREIGABEQUITTUNG,
+		NUR_SCHULAMT, // damit eine Mutation erstellt werden kann
+		ERSTE_MAHNUNG,
+		ERSTE_MAHNUNG_ABGELAUFEN,
+		ZWEITE_MAHNUNG,
+		ZWEITE_MAHNUNG_ABGELAUFEN,
+		VERFUEGT // Damit eine Mutation erstellt werden kann
+	);
+
 	/**
 	 * Implementierung eines Berechtigungskonzepts fuer die Antragssuche.
 	 *
@@ -302,53 +314,56 @@ public enum AntragStatus {
 	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public static Set<AntragStatus> pendenzenForRole(UserRole userRole) {
 		switch (userRole) {
-			case SUPER_ADMIN:
-			case ADMIN_BG:
-            case JURIST:
-            case REVISOR:
-            case SACHBEARBEITER_BG:
-            case ADMIN_GEMEINDE:
-			case SACHBEARBEITER_GEMEINDE:
-			case ADMIN_MANDANT:
-			case SACHBEARBEITER_MANDANT:
-				return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
-			case SACHBEARBEITER_TS:
-			case ADMIN_TS:
-				return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
-			case ADMIN_SOZIALDIENST:
-			case SACHBEARBEITER_SOZIALDIENST:
-				return FOR_SOZIALDIENST_PENDENZEN;
-			case STEUERAMT:
-			case GESUCHSTELLER:
-			default:
-				return none;
+		case SUPER_ADMIN:
+		case ADMIN_BG:
+		case JURIST:
+		case REVISOR:
+		case SACHBEARBEITER_BG:
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
+			return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
+		case SACHBEARBEITER_TS:
+		case ADMIN_TS:
+			return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
+			return FOR_SOZIALDIENST_PENDENZEN;
+		case STEUERAMT:
+		case GESUCHSTELLER:
+		default:
+			return none;
 		}
 	}
 
 	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public static Set<AntragStatus> writeAllowedForRole(UserRole userRole) {
 		switch (userRole) {
-			case SUPER_ADMIN:
-				return  all;
-			case ADMIN_BG:
-			case SACHBEARBEITER_BG:
-			case ADMIN_GEMEINDE:
-			case SACHBEARBEITER_GEMEINDE:
-				return FOR_ADMIN_ROLE_WRITE;
-			case GESUCHSTELLER:
-				return FOR_GESUCHSTELLER_ROLE_WRITE;
-			case ADMIN_INSTITUTION:
-			case SACHBEARBEITER_INSTITUTION:
-			case ADMIN_TRAEGERSCHAFT:
-			case SACHBEARBEITER_TRAEGERSCHAFT:
-				return FOR_INSTITUTION_ROLE_WRITE;
-			case STEUERAMT:
-				return FOR_STEUERAMT_ROLE_WRITE;
-			case SACHBEARBEITER_TS:
-			case ADMIN_TS:
-				return FOR_ADMIN_ROLE_WRITE;
-			default:
-				return none;
+		case SUPER_ADMIN:
+			return all;
+		case ADMIN_BG:
+		case SACHBEARBEITER_BG:
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
+			return FOR_ADMIN_ROLE_WRITE;
+		case GESUCHSTELLER:
+			return FOR_GESUCHSTELLER_ROLE_WRITE;
+		case ADMIN_INSTITUTION:
+		case SACHBEARBEITER_INSTITUTION:
+		case ADMIN_TRAEGERSCHAFT:
+		case SACHBEARBEITER_TRAEGERSCHAFT:
+			return FOR_INSTITUTION_ROLE_WRITE;
+		case STEUERAMT:
+			return FOR_STEUERAMT_ROLE_WRITE;
+		case SACHBEARBEITER_TS:
+		case ADMIN_TS:
+			return FOR_ADMIN_ROLE_WRITE;
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
+			return FOR_SOZIALDIENSTE_ROLE_WRITE;
+		default:
+			return none;
 		}
 	}
 
@@ -400,6 +415,7 @@ public enum AntragStatus {
 			GEPRUEFT_STV
 		);
 	}
+
 	public static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
 		IN_BEARBEITUNG_SOZIALDIENST);
 
