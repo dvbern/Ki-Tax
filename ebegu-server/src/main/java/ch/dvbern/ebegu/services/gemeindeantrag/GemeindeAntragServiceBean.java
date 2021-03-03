@@ -44,6 +44,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService lastenausgleichTagesschuleAngabenGemeindeService;
 
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
+
 	@Override
 	@Nonnull
 	public List<GemeindeAntrag> createGemeindeAntrag(
@@ -54,8 +57,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			return new ArrayList<>(lastenausgleichTagesschuleAngabenGemeindeService.createLastenausgleichTagesschuleGemeinde(
 				gesuchsperiode));
 		case FERIENBETREUUNG:
-			// TODO
-			throw new NotImplementedException("Ferienbetreuung ist noch nicht umgesetzt");
+			throw new NotImplementedException("Masseninitialisierung für Ferienbetreuungen wird nicht umgesetzt");
 		}
 		return Collections.emptyList();
 	}
@@ -82,7 +84,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 					gemeinde, periode, status
 				);
 			}
-			// TODO
+			case "FERIENBETREUUNG": {
+				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status);
+			}
 			default:
 				throw new NotImplementedException("Typ" + typ + "wurde noch nicht implementiert");
 			}
@@ -117,10 +121,12 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	public Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId) {
-		if(typ == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+		if (typ == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
 			return lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeindeAntragId);
 		}
-		// TODO
+		if (typ == GemeindeAntragTyp.FERIENBETREUUNG) {
+			return ferienbetreuungService.findFerienbetreuungAngabenContainer(gemeindeAntragId);
+		}
 
 		return Optional.empty();
 	}

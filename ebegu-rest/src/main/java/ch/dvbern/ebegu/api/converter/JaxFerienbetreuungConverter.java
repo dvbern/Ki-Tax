@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
@@ -45,6 +46,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
+@RequestScoped
 public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	@Inject
