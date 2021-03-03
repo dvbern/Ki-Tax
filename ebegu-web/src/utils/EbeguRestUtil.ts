@@ -23,6 +23,13 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
+import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
+import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenKostenEinnahmen} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {TSFerienbetreuungAngabenNutzung} from '../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
+import {TSFerienbetreuungAngabenStammdaten} from '../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
+import {TSFerienbetreuungDokument} from '../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -4737,5 +4744,315 @@ export class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseSozialdienst(new TSSozialdienst(), item))
             : [this.parseSozialdienst(new TSSozialdienst(), data)];
+    }
+
+    public ferienbetreuungContainerToRestObject(
+        restContainer: any,
+        containerTS: TSFerienbetreuungAngabenContainer
+    ): any {
+        if (!containerTS) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(restContainer, containerTS);
+        restContainer.status = containerTS.status;
+        restContainer.gemeinde = this.gemeindeToRestObject({}, containerTS.gemeinde);
+        restContainer.gesuchsperiode = this.gesuchsperiodeToRestObject({}, containerTS.gesuchsperiode);
+        restContainer.angabenDeklaration = this.ferienbetreuungToRestObject({}, containerTS.angabenDeklaration);
+        restContainer.angabenKorrektur = this.ferienbetreuungToRestObject({}, containerTS.angabenKorrektur);
+        restContainer.internerKommentar = containerTS.internerKommentar;
+        return containerTS;
+    }
+
+    private ferienbetreuungToRestObject(restFerienbetreuung: any, ferienbetreuungTS: TSFerienbetreuungAngaben): any {
+        if (!ferienbetreuungTS) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(restFerienbetreuung, ferienbetreuungTS);
+        restFerienbetreuung.stammdaten =
+            this.ferienbetreuungStammdatenToRestObject({}, ferienbetreuungTS.stammdaten);
+        restFerienbetreuung.angebot = this.ferienbetreuungAngebotToRestObject({}, ferienbetreuungTS.angebot);
+        restFerienbetreuung.nutzung = this.ferienbetreuungNutzungToRestObject({}, ferienbetreuungTS.nutzung);
+        restFerienbetreuung.kostenEinnahmen =
+            this.ferienbetreuungKostenEinnahmenToRestObject({}, ferienbetreuungTS.kostenEinnahmen);
+        return ferienbetreuungTS;
+        // never send kantonsbeitrag and gemeindebeitrag to server
+    }
+
+    private ferienbetreuungStammdatenToRestObject(
+        restStammdaten: any,
+        stammdatenTS: TSFerienbetreuungAngabenStammdaten
+    ): any {
+        if (!stammdatenTS) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(restStammdaten, stammdatenTS);
+        restStammdaten.amAngebotBeteiligteGemeinden =
+            this.gemeindeListToRestObject(stammdatenTS.amAngebotBeteiligteGemeinden);
+        restStammdaten.traegerschaft = stammdatenTS.traegerschaft;
+        restStammdaten.stammdatenAdresse = this.adresseToRestObject({}, stammdatenTS.stammdatenAdresse);
+        restStammdaten.stammdatenKontaktpersonVorname = stammdatenTS.stammdatenKontaktpersonVorname;
+        restStammdaten.stammdatenKontaktpersonNachname = stammdatenTS.stammdatenKontaktpersonNachname;
+        restStammdaten.stammdatenKontaktpersonFunktion = stammdatenTS.stammdatenKontaktpersonFunktion;
+        restStammdaten.stammdatenKontaktpersonTelefon = stammdatenTS.stammdatenKontaktpersonTelefon;
+        restStammdaten.stammdatenKontaktpersonEmail = stammdatenTS.stammdatenKontaktpersonEmail;
+        restStammdaten.iban = stammdatenTS.iban;
+        restStammdaten.kontoinhaber = stammdatenTS.kontoinhaber;
+        restStammdaten.adresseKontoinhaber = this.adresseToRestObject({}, stammdatenTS.adresseKontoinhaber);
+        return stammdatenTS;
+    }
+
+    private ferienbetreuungAngebotToRestObject(restAngebot: any, angebotTS: TSFerienbetreuungAngabenAngebot): any {
+        if (!angebotTS) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(restAngebot, angebotTS);
+        restAngebot.angebot = angebotTS.angebot;
+        restAngebot.angebotKontaktpersonVorname = angebotTS.angebotKontaktpersonVorname;
+        restAngebot.angebotKontaktpersonNachname = angebotTS.angebotKontaktpersonNachname;
+        restAngebot.angebotAdresse = this.adresseToRestObject({}, angebotTS.angebotAdresse);
+        restAngebot.anzahlFerienwochenHerbstferien = angebotTS.anzahlFerienwochenHerbstferien;
+        restAngebot.anzahlFerienwochenWinterferien = angebotTS.anzahlFerienwochenWinterferien;
+        restAngebot.anzahlFerienwochenFruehlingsferien = angebotTS.anzahlFerienwochenFruehlingsferien;
+        restAngebot.anzahlFerienwochenSommerferien = angebotTS.anzahlFerienwochenSommerferien;
+        restAngebot.anzahlTage = angebotTS.anzahlTage;
+        restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
+        restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
+        restAngebot.finanziellBeteiligteGemeinden =
+            this.gemeindeListToRestObject(angebotTS.finanziellBeteiligteGemeinden);
+        restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
+        restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
+        restAngebot.angebotVereineUndPrivateIntegriert = angebotTS.angebotVereineUndPrivateIntegriert;
+        restAngebot.bemerkungenKooperation = angebotTS.bemerkungenKooperation;
+        restAngebot.leitungDurchPersonMitAusbildung = angebotTS.leitungDurchPersonMitAusbildung;
+        restAngebot.aufwandBetreuungspersonal = angebotTS.aufwandBetreuungspersonal;
+        restAngebot.zusaetzlicherAufwandLeitungAdmin = angebotTS.zusaetzlicherAufwandLeitungAdmin;
+        restAngebot.bemerkungenPersonal = angebotTS.bemerkungenPersonal;
+        restAngebot.fixerTarifKinderDerGemeinde = angebotTS.fixerTarifKinderDerGemeinde;
+        restAngebot.einkommensabhaengigerTarifKinderDerGemeinde =
+            angebotTS.einkommensabhaengigerTarifKinderDerGemeinde;
+        restAngebot.tagesschuleTarifGiltFuerFerienbetreuung = angebotTS.tagesschuleTarifGiltFuerFerienbetreuung;
+        restAngebot.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet =
+            angebotTS.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
+        restAngebot.kinderAusAnderenGemeindenZahlenAnderenTarif =
+            angebotTS.kinderAusAnderenGemeindenZahlenAnderenTarif;
+        restAngebot.bemerkungenTarifsystem = angebotTS.bemerkungenTarifsystem;
+        return angebotTS;
+    }
+
+    private ferienbetreuungNutzungToRestObject(restNutzung: any, nutzungTS: TSFerienbetreuungAngabenNutzung): any {
+        if (!nutzungTS) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(restNutzung, nutzungTS);
+        restNutzung.anzahlBetreuungstageKinderBern = nutzungTS.anzahlBetreuungstageKinderBern;
+        restNutzung.betreuungstageKinderDieserGemeinde = nutzungTS.betreuungstageKinderDieserGemeinde;
+        restNutzung.betreuungstageKinderDieserGemeindeSonderschueler =
+            nutzungTS.betreuungstageKinderDieserGemeindeSonderschueler;
+        restNutzung.davonBetreuungstageKinderAndererGemeinden = nutzungTS.davonBetreuungstageKinderAndererGemeinden;
+        restNutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler =
+            nutzungTS.davonBetreuungstageKinderAndererGemeindenSonderschueler;
+        restNutzung.anzahlBetreuteKinder = nutzungTS.anzahlBetreuteKinder;
+        restNutzung.anzahlBetreuteKinderSonderschueler = nutzungTS.anzahlBetreuteKinderSonderschueler;
+        restNutzung.anzahlBetreuteKinder1Zyklus = nutzungTS.anzahlBetreuteKinder1Zyklus;
+        restNutzung.anzahlBetreuteKinder2Zyklus = nutzungTS.anzahlBetreuteKinder2Zyklus;
+        restNutzung.anzahlBetreuteKinder3Zyklus = nutzungTS.anzahlBetreuteKinder3Zyklus;
+        return nutzungTS;
+    }
+
+    private ferienbetreuungKostenEinnahmenToRestObject(
+        restKostenEinnahmen: any,
+        kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen
+    ): any {
+        if (!kostenEinnahmenTS) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(restKostenEinnahmen, kostenEinnahmenTS);
+        restKostenEinnahmen.personalkosten = kostenEinnahmenTS.personalkosten;
+        restKostenEinnahmen.personalkostenLeitungAdmin = kostenEinnahmenTS.personalkostenLeitungAdmin;
+        restKostenEinnahmen.sachkosten = kostenEinnahmenTS.sachkosten;
+        restKostenEinnahmen.verpflegungskosten = kostenEinnahmenTS.verpflegungskosten;
+        restKostenEinnahmen.weitereKosten = kostenEinnahmenTS.weitereKosten;
+        restKostenEinnahmen.bemerkungenKosten = kostenEinnahmenTS.bemerkungenKosten;
+        restKostenEinnahmen.elterngebuehren = kostenEinnahmenTS.elterngebuehren;
+        restKostenEinnahmen.weitereEinnahmen = kostenEinnahmenTS.weitereEinnahmen;
+        return kostenEinnahmenTS;
+    }
+
+    public parseFerienbetreuungContainer(containerTS: TSFerienbetreuungAngabenContainer, containerFromServer: any):
+        TSFerienbetreuungAngabenContainer | undefined {
+
+        if (!containerFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(containerTS, containerFromServer);
+        containerTS.status = containerFromServer.status;
+        containerTS.gemeinde = this.parseGemeinde(new TSGemeinde(), containerFromServer.gemeinde);
+        containerTS.gesuchsperiode =
+            this.parseGesuchsperiode(new TSGesuchsperiode(), containerFromServer.gesuchsperiode);
+        containerTS.angabenDeklaration =
+            this.parseFerienbetreuung(new TSFerienbetreuungAngaben(), containerFromServer.angabenDeklaration);
+        containerTS.angabenKorrektur =
+            this.parseFerienbetreuung(new TSFerienbetreuungAngaben(), containerFromServer.angabenKorrektur);
+        containerTS.internerKommentar = containerFromServer.internerKommentar;
+        return containerTS;
+    }
+
+    private parseFerienbetreuung(ferienbetreuungTS: TSFerienbetreuungAngaben, ferienbetreuungFromServer: any):
+        TSFerienbetreuungAngaben | undefined {
+
+        if (!ferienbetreuungFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(ferienbetreuungTS, ferienbetreuungFromServer);
+        ferienbetreuungTS.stammdaten = this.parseFerienbetreuungStammdaten(
+            new TSFerienbetreuungAngabenStammdaten(),
+            ferienbetreuungFromServer.stammdaten
+        );
+        ferienbetreuungTS.angebot = this.parseFerienbetreuungAngebot(
+            new TSFerienbetreuungAngabenAngebot(),
+            ferienbetreuungFromServer.angebot
+        );
+        ferienbetreuungTS.nutzung = this.parseFerienbetreuungNutzung(
+            new TSFerienbetreuungAngabenNutzung(),
+            ferienbetreuungFromServer.nutzung
+        );
+        ferienbetreuungTS.kostenEinnahmen = this.parseFerienbetreuungKostenEinnahmen(
+            new TSFerienbetreuungAngabenKostenEinnahmen(),
+            ferienbetreuungFromServer.kostenEinnahmen
+        );
+        ferienbetreuungTS.kantonsbeitrag = ferienbetreuungFromServer.kantonsbeitrag;
+        ferienbetreuungTS.gemeindebeitrag = ferienbetreuungFromServer.gemeindebeitrag;
+        return ferienbetreuungTS;
+    }
+
+    private parseFerienbetreuungStammdaten(stammdatenTS: TSFerienbetreuungAngabenStammdaten, stammdatenFromServer: any):
+        TSFerienbetreuungAngabenStammdaten | undefined {
+
+        if (!stammdatenFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+        stammdatenTS.amAngebotBeteiligteGemeinden =
+            this.parseGemeindeList(stammdatenFromServer.amAngebotBeteiligteGemeinden);
+        stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
+        stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
+        stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
+        stammdatenTS.stammdatenKontaktpersonNachname = stammdatenFromServer.stammdatenKontaktpersonNachname;
+        stammdatenTS.stammdatenKontaktpersonFunktion = stammdatenFromServer.stammdatenKontaktpersonFunktion;
+        stammdatenTS.stammdatenKontaktpersonTelefon = stammdatenFromServer.stammdatenKontaktpersonTelefon;
+        stammdatenTS.stammdatenKontaktpersonEmail = stammdatenFromServer.stammdatenKontaktpersonEmail;
+        stammdatenTS.iban = stammdatenFromServer.iban;
+        stammdatenTS.kontoinhaber = stammdatenFromServer.kontoinhaber;
+        stammdatenTS.adresseKontoinhaber =
+            this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresseKontoinhaber);
+        return stammdatenTS;
+    }
+
+    private parseFerienbetreuungAngebot(angebotTS: TSFerienbetreuungAngabenAngebot, angebotFromServer: any):
+        TSFerienbetreuungAngabenAngebot | undefined {
+
+        if (!angebotFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(angebotTS, angebotFromServer);
+        angebotTS.angebot = angebotFromServer.angebot;
+        angebotTS.angebotKontaktpersonVorname = angebotFromServer.angebotKontaktpersonVorname;
+        angebotTS.angebotKontaktpersonNachname = angebotFromServer.angebotKontaktpersonNachname;
+        angebotTS.angebotAdresse = this.parseAdresse(new TSAdresse(), angebotFromServer.angebotAdresse);
+        angebotTS.anzahlFerienwochenHerbstferien = angebotFromServer.anzahlFerienwochenHerbstferien;
+        angebotTS.anzahlFerienwochenWinterferien = angebotFromServer.anzahlFerienwochenWinterferien;
+        angebotTS.anzahlFerienwochenFruehlingsferien = angebotFromServer.anzahlFerienwochenFruehlingsferien;
+        angebotTS.anzahlFerienwochenSommerferien = angebotFromServer.anzahlFerienwochenSommerferien;
+        angebotTS.anzahlTage = angebotFromServer.anzahlTage;
+        angebotTS.anzahlStundenProBetreuungstag = angebotFromServer.anzahlStundenProBetreuungstag;
+        angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;
+        angebotTS.finanziellBeteiligteGemeinden =
+            this.parseGemeindeList(angebotFromServer.finanziellBeteiligteGemeinden);
+        angebotTS.gemeindeFuehrtAngebotSelber = angebotFromServer.gemeindeFuehrtAngebotSelber;
+        angebotTS.gemeindeBeauftragtExterneAnbieter = angebotFromServer.gemeindeBeauftragtExterneAnbieter;
+        angebotTS.angebotVereineUndPrivateIntegriert = angebotFromServer.angebotVereineUndPrivateIntegriert;
+        angebotTS.bemerkungenKooperation = angebotFromServer.bemerkungenKooperation;
+        angebotTS.leitungDurchPersonMitAusbildung = angebotFromServer.leitungDurchPersonMitAusbildung;
+        angebotTS.aufwandBetreuungspersonal = angebotFromServer.aufwandBetreuungspersonal;
+        angebotTS.zusaetzlicherAufwandLeitungAdmin = angebotFromServer.zusaetzlicherAufwandLeitungAdmin;
+        angebotTS.bemerkungenPersonal = angebotFromServer.bemerkungenPersonal;
+        angebotTS.fixerTarifKinderDerGemeinde = angebotFromServer.fixerTarifKinderDerGemeinde;
+        angebotTS.einkommensabhaengigerTarifKinderDerGemeinde =
+            angebotFromServer.einkommensabhaengigerTarifKinderDerGemeinde;
+        angebotTS.tagesschuleTarifGiltFuerFerienbetreuung =
+            angebotFromServer.tagesschuleTarifGiltFuerFerienbetreuung;
+        angebotTS.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet =
+            angebotFromServer.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
+        angebotTS.kinderAusAnderenGemeindenZahlenAnderenTarif =
+            angebotFromServer.kinderAusAnderenGemeindenZahlenAnderenTarif;
+        angebotTS.bemerkungenTarifsystem = angebotFromServer.bemerkungenTarifsystem;
+        return angebotTS;
+    }
+
+    private parseFerienbetreuungNutzung(nutzungTS: TSFerienbetreuungAngabenNutzung, nutzungFromServer: any):
+        TSFerienbetreuungAngabenNutzung | undefined {
+
+        if (!nutzungFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(nutzungTS, nutzungFromServer);
+        nutzungTS.anzahlBetreuungstageKinderBern = nutzungFromServer.anzahlBetreuungstageKinderBern;
+        nutzungTS.betreuungstageKinderDieserGemeinde = nutzungFromServer.betreuungstageKinderDieserGemeinde;
+        nutzungTS.betreuungstageKinderDieserGemeindeSonderschueler =
+            nutzungFromServer.betreuungstageKinderDieserGemeindeSonderschueler;
+        nutzungTS.davonBetreuungstageKinderAndererGemeinden =
+            nutzungFromServer.davonBetreuungstageKinderAndererGemeinden;
+        nutzungTS.davonBetreuungstageKinderAndererGemeindenSonderschueler =
+            nutzungFromServer.davonBetreuungstageKinderAndererGemeindenSonderschueler;
+        nutzungTS.anzahlBetreuteKinder = nutzungFromServer.anzahlBetreuteKinder;
+        nutzungTS.anzahlBetreuteKinderSonderschueler = nutzungFromServer.anzahlBetreuteKinderSonderschueler;
+        nutzungTS.anzahlBetreuteKinder1Zyklus = nutzungFromServer.anzahlBetreuteKinder1Zyklus;
+        nutzungTS.anzahlBetreuteKinder2Zyklus = nutzungFromServer.anzahlBetreuteKinder2Zyklus;
+        nutzungTS.anzahlBetreuteKinder3Zyklus = nutzungFromServer.anzahlBetreuteKinder3Zyklus;
+        return nutzungTS;
+    }
+
+    private parseFerienbetreuungKostenEinnahmen(
+        kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen,
+        kostenEinnahmenFromServer: any
+    ): TSFerienbetreuungAngabenKostenEinnahmen | undefined {
+
+        if (!kostenEinnahmenFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(kostenEinnahmenTS, kostenEinnahmenFromServer);
+        kostenEinnahmenTS.personalkosten = kostenEinnahmenFromServer.personalkosten;
+        kostenEinnahmenTS.personalkostenLeitungAdmin = kostenEinnahmenFromServer.personalkostenLeitungAdmin;
+        kostenEinnahmenTS.sachkosten = kostenEinnahmenFromServer.sachkosten;
+        kostenEinnahmenTS.verpflegungskosten = kostenEinnahmenFromServer.verpflegungskosten;
+        kostenEinnahmenTS.weitereKosten = kostenEinnahmenFromServer.weitereKosten;
+        kostenEinnahmenTS.bemerkungenKosten = kostenEinnahmenFromServer.bemerkungenKosten;
+        kostenEinnahmenTS.elterngebuehren = kostenEinnahmenFromServer.elterngebuehren;
+        kostenEinnahmenTS.weitereEinnahmen = kostenEinnahmenFromServer.weitereEinnahmen;
+        return kostenEinnahmenTS;
+    }
+
+    public parseFerienbetreuungDokumente(data: any): TSFerienbetreuungDokument[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseFerienbetreuungDokument(new TSFerienbetreuungDokument(), item))
+            : [this.parseFerienbetreuungDokument(new TSFerienbetreuungDokument(), data)];
+    }
+
+    public parseFerienbetreuungDokument(
+        dokument: TSFerienbetreuungDokument,
+        dokumentFromServer: any,
+    ): TSFerienbetreuungDokument {
+        if (!dokumentFromServer) {
+            return undefined;
+        }
+        this.parseAbstractMutableEntity(dokument, dokumentFromServer);
+        dokument.filename = dokumentFromServer.filename;
+        dokument.filepfad = dokumentFromServer.filepfad;
+        dokument.filesize = dokumentFromServer.filesize;
+        dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+        return dokument;
     }
 }
