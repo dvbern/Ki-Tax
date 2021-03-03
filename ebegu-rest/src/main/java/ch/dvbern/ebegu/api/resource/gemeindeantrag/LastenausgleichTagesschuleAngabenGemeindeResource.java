@@ -191,6 +191,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 	}
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(
 		value = "Reicht den Lastenausgleich ein",
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
