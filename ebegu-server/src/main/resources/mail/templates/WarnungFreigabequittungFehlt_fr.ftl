@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="adresse" type="java.lang.String" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
+<#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${gesuchsteller.mail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Confirmation des données à remettre</@base64Header>
@@ -31,10 +32,12 @@ ${templateConfiguration.mailCss}
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>, est à remettre dûment signé et au plus vite par courrier postal à ${adresse} faute de quoi votre demande
 		sera considérée comme non valable. Elle ne pourra pas être traitée et sera automatiquement supprimée le ${datumLoeschung}.
 	</p>
-	<p>
-		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition que celle-ci soit assortie de tous les documents
-		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
-	</p>
+    <#if tsOnlyAntrag == false>
+		<p>
+			Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition que celle-ci soit assortie de tous les documents
+			requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
+		</p>
+	</#if>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${gesuch.dossier.gemeinde.name}

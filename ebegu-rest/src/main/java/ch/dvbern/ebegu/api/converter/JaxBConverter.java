@@ -311,7 +311,7 @@ import static java.util.Objects.requireNonNull;
 
 @Dependent
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
-public class JaxBConverter extends JaxSozialdienstConverter {
+public class JaxBConverter extends AbstractConverter {
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -378,6 +378,8 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 	private ExternalClientService externalClientService;
 	@Inject
 	private SozialdienstService sozialdienstService;
+	@Inject
+	private JaxSozialdienstConverter jaxSozialdienstConverter;
 
 	public JaxBConverter() {
 		//nop
@@ -3963,7 +3965,7 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
 		}
 		if (berechtigung.getSozialdienst() != null){
-			jaxBerechtigung.setSozialdienst(sozialdienstToJAX(berechtigung.getSozialdienst()));
+			jaxBerechtigung.setSozialdienst(jaxSozialdienstConverter.sozialdienstToJAX(berechtigung.getSozialdienst()));
 		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
@@ -3988,7 +3990,7 @@ public class JaxBConverter extends JaxSozialdienstConverter {
 			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
 		}
 		if (history.getSozialdienst() != null){
-			jaxHistory.setSozialdienst(sozialdienstToJAX(history.getSozialdienst()));
+			jaxHistory.setSozialdienst(jaxSozialdienstConverter.sozialdienstToJAX(history.getSozialdienst()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setStatus(history.getStatus());

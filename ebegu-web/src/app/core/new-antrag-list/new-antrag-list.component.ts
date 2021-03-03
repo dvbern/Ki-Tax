@@ -352,6 +352,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             if (this.customData) {
                 this.filterChange.emit(this.filterPredicate);
             } else {
+                this.page = 0;
                 this.loadData();
             }
         }, this.timeoutMS);

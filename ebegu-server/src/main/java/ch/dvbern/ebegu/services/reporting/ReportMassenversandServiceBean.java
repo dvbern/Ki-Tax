@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -86,7 +87,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	private GesuchService gesuchService;
 
 	@Inject
-	private KindService kindService;
+	private MassenversandService massenversandService;
 
 
 	@Nonnull
@@ -199,6 +200,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			.map(gesuch -> {
 				MassenversandDataRow row = new MassenversandDataRow();
 
+				row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
 				row.setGesuchsperiode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 				row.setFall(gesuch.getFall().getPaddedFallnummer());
 
@@ -257,7 +259,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	}
 
 	private void setKinderData(Gesuch gesuch, MassenversandDataRow row) {
-		final Set<KindDubletteDTO> kindDubletten = kindService.getKindDubletten(gesuch.getId());
 		row.setKinderCols(
 			gesuch.getKindContainers().stream()
 				.filter(kindContainer -> kindContainer.getKindJA() != null
@@ -268,7 +269,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 					kindCol.setKindName(kind.getNachname());
 					kindCol.setKindVorname(kind.getVorname());
 					kindCol.setKindGeburtsdatum(kind.getGeburtsdatum());
-					setDubletten(kindCol, kindContainer, kindDubletten);
 
 					kindContainer.getBetreuungen().stream()
 						.map(Betreuung::getInstitutionStammdaten)
@@ -278,18 +278,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 				})
 				.collect(Collectors.toList())
 		);
-	}
-
-	private void setDubletten(
-		@Nonnull MassenversandRepeatKindDataCol kindCol,
-		@Nonnull KindContainer kindContainer,
-		@Nonnull Set<KindDubletteDTO> kindDubletten
-	) {
-		kindDubletten.stream()
-			.filter(kindDubletteDTO -> kindDubletteDTO.getKindNummerOriginal().equals(kindContainer.getKindNummer()))
-			.forEach(kindDubletteDTO ->
-				kindCol.addKindDubletten(EbeguUtil.getPaddedFallnummer(kindDubletteDTO.getFallNummer())
-			));
 	}
 
 	private void setInstitutionName(
@@ -361,6 +349,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			+ ohneErneuerungsgesuch + SEPARATOR;
 		massenversand.setEinstellungen(einstellungen);
 		massenversand.setGesuche(gesuche);
-		gesuchService.createMassenversand(massenversand);
+		massenversandService.createMassenversand(massenversand);
 	}
 }

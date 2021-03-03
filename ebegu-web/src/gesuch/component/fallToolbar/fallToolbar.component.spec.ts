@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {waitForAsync, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import { MatDialogModule } from '@angular/material/dialog';
+import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
+import {MatDialogModule} from '@angular/material/dialog';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -55,6 +55,7 @@ describe('fallToolbar', () => {
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
             getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
+            getAktiveGueltigeGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
         });
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
             getPrincipalRole: TSRole.SUPER_ADMIN,

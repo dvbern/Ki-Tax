@@ -17,10 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {IPromise} from 'angular';
-import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {TraegerschaftAddComponent} from '../traegerschaft-add/traegerschaft-add.component';
 import {TraegerschaftEditComponent} from '../traegerschaft-edit/traegerschaft-edit.component';
@@ -38,13 +35,6 @@ export const STATES: NgHybridStateDeclaration[] = [
         name: 'traegerschaft.list',
         url: '/list',
         component: TraegerschaftListComponent,
-        resolve: [
-            {
-                token: 'traegerschaften',
-                deps: [TraegerschaftRS],
-                resolveFn: getTraegerschaften,
-            },
-        ],
         data: {
             roles: TSRoleUtil.getMandantRoles(),
         },
@@ -76,8 +66,4 @@ export const STATES: NgHybridStateDeclaration[] = [
     ],
 })
 export class TraegerschaftRoutingModule {
-}
-
-export function getTraegerschaften(traegerschaftRS: TraegerschaftRS): IPromise<TSTraegerschaft[]> {
-    return traegerschaftRS.getAllActiveTraegerschaften();
 }

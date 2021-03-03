@@ -323,7 +323,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		allInstitutionen
 			.forEach(institution -> {
 				final boolean isCheckRequired = calculateStammdatenCheckRequiredForInstitution(institution.getId());
-				updateStammdatenCheckRequired(institution.getId(), isCheckRequired);
+				updateStammdatenCheckRequired(
+					institution.getId(),
+					institution.isStammdatenCheckRequired() ? true : isCheckRequired);
 			});
 	}
 
@@ -404,9 +406,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 					newInstitutionExternalClients.add(institutionExternalClient);
 					//and delete it otherwise it will be seen as a new element later
 					institutionExternalClients.remove(existingInstitutionExternalClient);
-				}
-				else { //it means this client was removed
-					exportedEvent.fire(institutionClientEventConverter.clientRemovedEventOf(id, institutionExternalClient));
+				} else { //it means this client was removed
+					exportedEvent.fire(institutionClientEventConverter.clientRemovedEventOf(
+						id,
+						institutionExternalClient));
 				}
 			}
 		}
@@ -461,7 +464,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		LocalDateTime timestampMutiert = instStammdaten.getTimestampMutiert();
 
-		return timestampMutiert != null
-			&& timestampMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
+		LocalDateTime timestampInstiMutiert = instStammdaten.getInstitution().getTimestampMutiert();
+
+		return timestampMutiert != null && timestampInstiMutiert != null
+			&& timestampMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK))
+			&& timestampInstiMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
 	}
 }

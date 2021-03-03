@@ -211,7 +211,7 @@ public enum ReportVorlage {
 		}
 
 		if (UserRole.getInstitutionTraegerschaftRoles().contains(role)) {
-			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON;
+			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON  || vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
 		}
 
 		if (UserRole.getTsOnlyRoles().contains(role)) {
