@@ -276,6 +276,14 @@ export class GesuchRouteController implements IController {
         return (this.getGesuch() && this.getGesuch().dossier) ? this.getGesuch().dossier.id : '';
     }
 
+    public getGesuchsperiodeId(): string {
+        return this.gesuchModelManager.getGesuchsperiode() ? this.gesuchModelManager.getGesuchsperiode().id : '';
+    }
+
+    public getGemeindeId(): string {
+        return (this.getGesuch() && this.getGesuch().dossier) ? this.getGesuch().dossier.gemeinde.id : '';
+    }
+
     public getGesuchErstellenStepTitle(): string {
         const dateFromGesuch = this.getDateFromGesuch();
 

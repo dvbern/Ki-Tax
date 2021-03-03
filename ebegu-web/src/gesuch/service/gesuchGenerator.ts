@@ -73,6 +73,7 @@ export class GesuchGenerator {
         eingangsart: TSEingangsart,
         gemeindeId: string,
         sozialdienstId: string,
+        gesuchsperiodeId: string,
     ): IPromise<TSGesuch> {
         if (EbeguUtil.isNotNullOrUndefined(sozialdienstId)) {
             return this.sozialdienstRS.getSozialdienstStammdaten(sozialdienstId).toPromise().then(
@@ -83,7 +84,7 @@ export class GesuchGenerator {
                         undefined,
                         undefined,
                         sozialdienstStammdaten.sozialdienst,
-                        undefined);
+                        gesuchsperiodeId);
                 },
             );
         }

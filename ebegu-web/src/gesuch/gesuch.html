@@ -92,6 +92,8 @@
                     ui-sref-active="active" class="row"
                     ng-class="{'active-element': vm.isElementActive('SOZIALDIENSTFALL_ERSTELLEN')}">
                     <button ng-if="vm.isSozialdienstFall()" type="button" class="col-xs-10  btn-link"
+                            ui-sref="gesuch.sozialdienstfallcreation({gesuchsperiodeId: vm.getGesuchsperiodeId(),
+                            gesuchId: vm.getGesuchId(), fallId: vm.getFallId(), gemeindeId: vm.getGemeindeId()})"
                             ng-disabled="vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')"
                             aria-hidden="{{vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')}}"
                             ng-click="vm.closeSidenav('sidenav')">

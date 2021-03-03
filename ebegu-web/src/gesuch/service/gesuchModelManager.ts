@@ -345,7 +345,7 @@ export class GesuchModelManager {
 
         switch (creationAction) {
             case TSCreationAction.CREATE_NEW_FALL:
-                return this.gesuchGenerator.initFall(eingangsart, gemeindeId, sozialdienstId)
+                return this.gesuchGenerator.initFall(eingangsart, gemeindeId, sozialdienstId, gesuchsperiodeId)
                     .then(gesuch => this.setGesuch(gesuch));
 
             case TSCreationAction.CREATE_NEW_DOSSIER:
