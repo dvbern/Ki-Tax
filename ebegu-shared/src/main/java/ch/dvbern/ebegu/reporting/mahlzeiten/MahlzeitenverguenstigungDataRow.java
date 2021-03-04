@@ -37,6 +37,14 @@ public class MahlzeitenverguenstigungDataRow {
 	@Nullable private String gs2Name;
 	@Nullable private String gs2Vorname;
 
+	@Nullable private Boolean sozialhilfeBezueger;
+
+	@Nullable private String iban;
+
+	@Nullable private BigDecimal massgebendesEinkommenVorFamAbzug;
+	@Nullable private BigDecimal famGroesse;
+	@Nullable private BigDecimal massgebendesEinkommenNachFamAbzug;
+
 	@Nullable private String kindName;
 	@Nullable private String kindVorname;
 	@Nullable private LocalDate kindGeburtsdatum;
@@ -124,6 +132,51 @@ public class MahlzeitenverguenstigungDataRow {
 
 	public void setGs2Vorname(@Nullable String gs2Vorname) {
 		this.gs2Vorname = gs2Vorname;
+	}
+
+	@Nullable
+	public Boolean getSozialhilfeBezueger() {
+		return sozialhilfeBezueger;
+	}
+
+	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
+		this.sozialhilfeBezueger = sozialhilfeBezueger;
+	}
+
+	@Nullable
+	public String getIban() {
+		return iban;
+	}
+
+	public void setIban(@Nullable String iban) {
+		this.iban = iban;
+	}
+
+	@Nullable
+	public BigDecimal getMassgebendesEinkommenVorFamAbzug() {
+		return massgebendesEinkommenVorFamAbzug;
+	}
+
+	public void setMassgebendesEinkommenVorFamAbzug(@Nullable BigDecimal massgebendesEinkommenVorFamAbzug) {
+		this.massgebendesEinkommenVorFamAbzug = massgebendesEinkommenVorFamAbzug;
+	}
+
+	@Nullable
+	public BigDecimal getFamGroesse() {
+		return famGroesse;
+	}
+
+	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
+		this.famGroesse = famGroesse;
+	}
+
+	@Nullable
+	public BigDecimal getMassgebendesEinkommenNachFamAbzug() {
+		return massgebendesEinkommenNachFamAbzug;
+	}
+
+	public void setMassgebendesEinkommenNachFamAbzug(@Nullable BigDecimal massgebendesEinkommenNachFamAbzug) {
+		this.massgebendesEinkommenNachFamAbzug = massgebendesEinkommenNachFamAbzug;
 	}
 
 	@Nullable
