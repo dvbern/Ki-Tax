@@ -21,11 +21,11 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {filter, first, map, mergeMap} from 'rxjs/operators';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
-import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
-import {ErrorService} from '../../../core/errors/service/ErrorService';
-import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-freigabe',

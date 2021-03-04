@@ -22,18 +22,18 @@ import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
-import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
-import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
-import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
-import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
-import {ErrorService} from '../../../core/errors/service/ErrorService';
-import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
-import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
+import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
+import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
 
 @Component({
     selector: 'dv-tagesschulen-angaben',
