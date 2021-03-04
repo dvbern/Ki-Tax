@@ -118,13 +118,14 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBeanTest extends
 	public void lastenausgleichTagesschuleInstitutionFreigeben() {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
 			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
+		latsGemeindeContainer.setAlleAngabenInKibonErfasst(true);
 		latsGemeindeContainer = persistence.persist(latsGemeindeContainer);
 		angabenInstitutionService.createLastenausgleichTagesschuleInstitution(latsGemeindeContainer);
 		LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitution =
 			latsGemeindeContainer.getAngabenInstitutionContainers().stream().findFirst().get();
 
 		// Eingaben der Tagesschule
-		latsAngabenInstitution.setAngabenKorrektur(TestDataUtil.createLastenausgleichTagesschuleAngabenInstitution());
+		latsAngabenInstitution.setAngabenDeklaration(TestDataUtil.createLastenausgleichTagesschuleAngabenInstitution());
 		latsAngabenInstitution = angabenInstitutionService.saveLastenausgleichTagesschuleInstitution(latsAngabenInstitution);
 
 		Assert.assertEquals(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN, latsAngabenInstitution.getStatus());

@@ -17,6 +17,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
@@ -54,7 +55,7 @@ export class LastenausgleichTSService {
     public lATSAngabenGemeindeFuerInstitutionenFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         this.http.put(
             `${this.API_BASE_URL}/freigebenInstitution`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).subscribe(result => {
             this.next(result);
         }, err => LOG.error(err));
@@ -63,7 +64,7 @@ export class LastenausgleichTSService {
     public saveLATSAngabenGemeindeContainer(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         this.http.put(
             `${this.API_BASE_URL}/save`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).subscribe(result => {
             this.next(result);
         }, error => LOG.error(error));
@@ -72,7 +73,7 @@ export class LastenausgleichTSService {
     public saveLATSKommentar(containerId: string, kommentar: string): Observable<void> {
         return this.http.put<void>(
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
-            kommentar
+            kommentar,
         );
     }
 
@@ -84,8 +85,28 @@ export class LastenausgleichTSService {
     private next(result: any): void {
         const savedContainer = this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
             new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
-            result
+            result,
         );
         this.lATSAngabenGemeindeContainerStore.next(savedContainer);
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public latsGemeindeAntragFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<Object> {
+        return this.http.put(
+            `${this.API_BASE_URL}/einreichen`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(tap(result => {
+                this.next(result);
+            }, error => LOG.error(error)),
+        );
+    }
+
+    public latsGemeindeAntragGeprueft(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        this.http.put(
+            `${this.API_BASE_URL}/geprueft`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).subscribe(result => {
+            this.next(result);
+        }, error => LOG.error(error));
     }
 }

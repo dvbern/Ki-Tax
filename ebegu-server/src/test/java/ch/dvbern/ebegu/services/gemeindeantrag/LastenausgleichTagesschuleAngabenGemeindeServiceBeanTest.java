@@ -146,6 +146,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
 			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
 		latsGemeindeContainer.setAlleAngabenInKibonErfasst(true);
+		latsGemeindeContainer.setAngabenDeklaration(TestDataUtil.createLastenausgleichTagesschuleAngabenGemeinde());
 		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
 		latsGemeindeContainer = angabenGemeindeService.lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben(latsGemeindeContainer);
 

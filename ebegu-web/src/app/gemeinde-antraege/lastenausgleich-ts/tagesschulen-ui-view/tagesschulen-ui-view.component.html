@@ -15,17 +15,4 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="actions">
-    <dv-loading-button
-        *ngIf="isInBearbeitungGemeinde() | async"
-        (buttonClick)="freigeben()"
-        type="button">
-        <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
-    </dv-loading-button>
-    <dv-loading-button
-        *ngIf="isInPruefungKanton() | async"
-        type="button"
-        (buttonClick)="geprueft()">
-        <span translate>LATS_GEPRUEFT_KANTON</span>
-    </dv-loading-button>
-</div>
+<ui-view></ui-view>

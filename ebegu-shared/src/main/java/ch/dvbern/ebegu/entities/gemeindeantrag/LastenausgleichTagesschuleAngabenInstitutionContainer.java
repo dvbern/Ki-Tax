@@ -140,8 +140,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionContainer extends Abstr
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
-		if (status == LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN && angabenKorrektur != null) {
-			angabenDeklaration = new LastenausgleichTagesschuleAngabenInstitution(angabenKorrektur);
+		if (status == LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN && angabenDeklaration != null) {
+			angabenKorrektur = new LastenausgleichTagesschuleAngabenInstitution(angabenDeklaration);
 		}
 	}
 

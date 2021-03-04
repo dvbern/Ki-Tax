@@ -30,10 +30,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
@@ -75,9 +78,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 				new LastenausgleichTagesschuleAngabenInstitutionContainer();
 			institutionContainer.setInstitution(institutionStammdaten.getInstitution());
 			institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
-			institutionContainer.setAngabenKorrektur(null);        // Wird erst mit den Daten initialisiert, da alles
-			// zwingend
-			institutionContainer.setAngabenDeklaration(null);    // Wird bei Freigabe rueber kopiert
+			institutionContainer.setAngabenKorrektur(null); // Wird bei Freigabe rueber kopiert
+			institutionContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenInstitution());
 			institutionContainer.setAngabenGemeinde(gemeindeContainer);
 
 			final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
@@ -123,11 +125,36 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			institutionContainer.getStatus() == LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN,
 			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
 
-		Objects.requireNonNull(institutionContainer.getAngabenKorrektur());
+		Objects.requireNonNull(institutionContainer.getAngabenDeklaration());
+		checkInstitutionAngabenComplete(institutionContainer.getAngabenDeklaration(),
+			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
 
 		institutionContainer.copyForFreigabe();
 		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);
 		return persistence.merge(institutionContainer);
+	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionGeprueft(
+		@Nonnull
+			LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer) {
+		Objects.requireNonNull(institutionContainer);
+		authorizer.checkWriteAuthorization(institutionContainer);
+
+		// Nur moeglich, wenn freigegeben, aber noch nicht geprüft
+		Preconditions.checkState(
+			institutionContainer.getStatus() == LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE,
+			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
+
+		Objects.requireNonNull(institutionContainer.getAngabenKorrektur());
+		checkInstitutionAngabenComplete(
+			institutionContainer.getAngabenKorrektur(),
+			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
+
+		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT);
+		return persistence.merge(institutionContainer);
+
 	}
 
 	@Override
@@ -139,7 +166,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		Root<LastenausgleichTagesschuleAngabenInstitutionContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenInstitutionContainer.class);
 
-
 		Predicate gemeindeAntrag =
 			cb.equal(root.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.angabenGemeinde).get(
 				LastenausgleichTagesschuleAngabenGemeindeContainer_.id), gemeindeAntragId);
@@ -147,6 +173,83 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		query.where(gemeindeAntrag);
 
 		return persistence.getCriteriaResults(query);
+	}
+
+	// we check this since the attributes can be cached and can be null then, but must not be when changing status
+	private void checkInstitutionAngabenComplete(
+		LastenausgleichTagesschuleAngabenInstitution institutionAngaben,
+		Boolean alleAngabenInKibonErfasst) {
+		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
+			throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
+		}
+		if(!alleAngabenInKibonErfasst) {
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
+				throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
+			}
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderBasisstufe())) {
+				throw new WebApplicationException(
+					"anzahlEingeschriebeneKinderBasisstufe must not be null",
+					Status.BAD_REQUEST);
+			}
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
+				throw new WebApplicationException(
+					"anzahlEingeschriebeneKinderKindergarten must not be null",
+					Status.BAD_REQUEST);
+			}
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
+				throw new WebApplicationException(
+					"anzahlEingeschriebeneKinderPrimarstufe must not be null",
+					Status.BAD_REQUEST);
+			}
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagFruehbetreuung must not be null",
+					Status.BAD_REQUEST);
+			}
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagMittag must not be null",
+					Status.BAD_REQUEST);
+			}
+			;
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagNachmittag1 must not be null",
+					Status.BAD_REQUEST);
+			}
+			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
+				throw new WebApplicationException(
+					"anzahlDurchschnittKinderProTagNachmittag2 must not be null",
+					Status.BAD_REQUEST);
+			}
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen())) {
+			throw new WebApplicationException(
+				"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
+			throw new WebApplicationException("betreuungsverhaeltnisEingehalten must not be null", Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getErnaehrungsGrundsaetzeEingehalten())) {
+			throw new WebApplicationException("ernaehrungsGrundsaetzeEingehalten must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getSchuleAufBasisOrganisatorischesKonzept())) {
+			throw new WebApplicationException(
+				"schuleAufBasisOrganisatorischesKonzepts must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getRaeumlicheVoraussetzungenEingehalten())) {
+			throw new WebApplicationException(
+				"raeumlicheVoraussetungenEingehalten must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getSchuleAufBasisPaedagogischesKonzept())) {
+			throw new WebApplicationException(
+				"schuleAufBasisPaedagogischesKonzepts must not be null",
+				Status.BAD_REQUEST);
+		}
 	}
 }
 

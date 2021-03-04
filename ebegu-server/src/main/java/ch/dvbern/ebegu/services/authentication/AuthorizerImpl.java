@@ -1599,6 +1599,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				}
 			} else if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
 				checkWriteAuthorizationInstitution(latsInstitutionContainer.getInstitution());
+				return;
 			}
 			// Alle anderen sind Stand heute nicht berechtigt
 			throwViolation(latsInstitutionContainer);
@@ -1631,6 +1632,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
 			return;
 		}
+
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles()) &&
+			antrag.getAngabenInstitutionContainers()
+				.stream()
+				.anyMatch(container -> container.getInstitution().getId()
+					.equals(Objects.requireNonNull(principalBean.getBenutzer().getInstitution()).getId()))) {
+			return;
+		}
 		throwViolation(antrag);
 	}
 
@@ -1651,12 +1660,18 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		switch (antrag.getStatus()) {
-		case NEU: {
+		case NEU:
+		case IN_BEARBEITUNG_GEMEINDE: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
 				&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
 				return;
-			} else {
-				throwViolation(antrag);
+			}
+			throwViolation(antrag);
+			break;
+		}
+		case IN_PRUEFUNG_KANTON: {
+			if(principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+				return;
 			}
 		}
 		default: {
