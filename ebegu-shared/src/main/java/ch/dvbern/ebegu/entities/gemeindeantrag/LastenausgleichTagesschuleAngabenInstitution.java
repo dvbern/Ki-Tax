@@ -39,68 +39,68 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 
 	// A: Informationen zur Tagesschule
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean isLehrbetrieb;
 
 	// B: Quantitative Angaben
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinder;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderKindergarten;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderPrimarstufe;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagFruehbetreuung;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagMittag;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagNachmittag1;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagNachmittag2;
 
 	// C: Qualitative Vorgaben der Tagesschuleverordnung
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean schuleAufBasisOrganisatorischesKonzept;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean schuleAufBasisPaedagogischesKonzept;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean raeumlicheVoraussetzungenEingehalten;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean betreuungsverhaeltnisEingehalten;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean ernaehrungsGrundsaetzeEingehalten;
 
 	// Bemerkungen

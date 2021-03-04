@@ -18,10 +18,7 @@
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 
@@ -31,53 +28,53 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 
 	// A: Informationen zur Tagesschule
 
-	@NotNull @Nonnull
+	@Nullable
 	private Boolean isLehrbetrieb;
 
 	// B: Quantitative Angaben
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinder;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderKindergarten;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderPrimarstufe;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal durchschnittKinderProTagFruehbetreuung;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal durchschnittKinderProTagMittag;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal durchschnittKinderProTagNachmittag1;
 
-	@NotNull @Nonnull
+	@Nullable
 	private BigDecimal durchschnittKinderProTagNachmittag2;
 
 	// C: Qualitative Vorgaben der Tagesschuleverordnung
 
-	@NotNull @Nonnull
+	@Nullable
 	private Boolean schuleAufBasisOrganisatorischesKonzept;
 
-	@NotNull @Nonnull
+	@Nullable
 	private Boolean schuleAufBasisPaedagogischesKonzept;
 
-	@NotNull @Nonnull
+	@Nullable
 	private Boolean raeumlicheVoraussetzungenEingehalten;
 
-	@NotNull @Nonnull
+	@Nullable
 	private Boolean betreuungsverhaeltnisEingehalten;
 
-	@NotNull @Nonnull
+	@Nullable
 	private Boolean ernaehrungsGrundsaetzeEingehalten;
 
 	// Bemerkungen
@@ -85,138 +82,138 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 	@Nullable
 	private String bemerkungen;
 
-	@Nonnull
+	@Nullable
 	public Boolean getLehrbetrieb() {
 		return isLehrbetrieb;
 	}
 
-	public void setLehrbetrieb(@Nonnull Boolean lehrbetrieb) {
+	public void setLehrbetrieb(@Nullable Boolean lehrbetrieb) {
 		isLehrbetrieb = lehrbetrieb;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinder() {
 		return anzahlEingeschriebeneKinder;
 	}
 
-	public void setAnzahlEingeschriebeneKinder(@Nonnull BigDecimal anzahlEingeschriebeneKinder) {
+	public void setAnzahlEingeschriebeneKinder(@Nullable BigDecimal anzahlEingeschriebeneKinder) {
 		this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderKindergarten() {
 		return anzahlEingeschriebeneKinderKindergarten;
 	}
 
-	public void setAnzahlEingeschriebeneKinderKindergarten(@Nonnull BigDecimal anzahlEingeschriebeneKinderKindergarten) {
+	public void setAnzahlEingeschriebeneKinderKindergarten(@Nullable BigDecimal anzahlEingeschriebeneKinderKindergarten) {
 		this.anzahlEingeschriebeneKinderKindergarten = anzahlEingeschriebeneKinderKindergarten;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
 		return anzahlEingeschriebeneKinderBasisstufe;
 	}
 
-	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nonnull BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
+	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
 		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderPrimarstufe() {
 		return anzahlEingeschriebeneKinderPrimarstufe;
 	}
 
-	public void setAnzahlEingeschriebeneKinderPrimarstufe(@Nonnull BigDecimal anzahlEingeschriebeneKinderPrimarstufe) {
+	public void setAnzahlEingeschriebeneKinderPrimarstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderPrimarstufe) {
 		this.anzahlEingeschriebeneKinderPrimarstufe = anzahlEingeschriebeneKinderPrimarstufe;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen() {
 		return anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 	}
 
-	public void setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(@Nonnull BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen) {
+	public void setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(@Nullable BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen) {
 		this.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagFruehbetreuung() {
 		return durchschnittKinderProTagFruehbetreuung;
 	}
 
-	public void setDurchschnittKinderProTagFruehbetreuung(@Nonnull BigDecimal durchschnittKinderProTagFruehbetreuung) {
+	public void setDurchschnittKinderProTagFruehbetreuung(@Nullable BigDecimal durchschnittKinderProTagFruehbetreuung) {
 		this.durchschnittKinderProTagFruehbetreuung = durchschnittKinderProTagFruehbetreuung;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagMittag() {
 		return durchschnittKinderProTagMittag;
 	}
 
-	public void setDurchschnittKinderProTagMittag(@Nonnull BigDecimal durchschnittKinderProTagMittag) {
+	public void setDurchschnittKinderProTagMittag(@Nullable BigDecimal durchschnittKinderProTagMittag) {
 		this.durchschnittKinderProTagMittag = durchschnittKinderProTagMittag;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagNachmittag1() {
 		return durchschnittKinderProTagNachmittag1;
 	}
 
-	public void setDurchschnittKinderProTagNachmittag1(@Nonnull BigDecimal durchschnittKinderProTagNachmittag1) {
+	public void setDurchschnittKinderProTagNachmittag1(@Nullable BigDecimal durchschnittKinderProTagNachmittag1) {
 		this.durchschnittKinderProTagNachmittag1 = durchschnittKinderProTagNachmittag1;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagNachmittag2() {
 		return durchschnittKinderProTagNachmittag2;
 	}
 
-	public void setDurchschnittKinderProTagNachmittag2(@Nonnull BigDecimal durchschnittKinderProTagNachmittag2) {
+	public void setDurchschnittKinderProTagNachmittag2(@Nullable BigDecimal durchschnittKinderProTagNachmittag2) {
 		this.durchschnittKinderProTagNachmittag2 = durchschnittKinderProTagNachmittag2;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getSchuleAufBasisOrganisatorischesKonzept() {
 		return schuleAufBasisOrganisatorischesKonzept;
 	}
 
-	public void setSchuleAufBasisOrganisatorischesKonzept(@Nonnull Boolean schuleAufBasisOrganisatorischesKonzept) {
+	public void setSchuleAufBasisOrganisatorischesKonzept(@Nullable Boolean schuleAufBasisOrganisatorischesKonzept) {
 		this.schuleAufBasisOrganisatorischesKonzept = schuleAufBasisOrganisatorischesKonzept;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getSchuleAufBasisPaedagogischesKonzept() {
 		return schuleAufBasisPaedagogischesKonzept;
 	}
 
-	public void setSchuleAufBasisPaedagogischesKonzept(@Nonnull Boolean schuleAufBasisPaedagogischesKonzept) {
+	public void setSchuleAufBasisPaedagogischesKonzept(@Nullable Boolean schuleAufBasisPaedagogischesKonzept) {
 		this.schuleAufBasisPaedagogischesKonzept = schuleAufBasisPaedagogischesKonzept;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getRaeumlicheVoraussetzungenEingehalten() {
 		return raeumlicheVoraussetzungenEingehalten;
 	}
 
-	public void setRaeumlicheVoraussetzungenEingehalten(@Nonnull Boolean raeumlicheVoraussetzungenEingehalten) {
+	public void setRaeumlicheVoraussetzungenEingehalten(@Nullable Boolean raeumlicheVoraussetzungenEingehalten) {
 		this.raeumlicheVoraussetzungenEingehalten = raeumlicheVoraussetzungenEingehalten;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getBetreuungsverhaeltnisEingehalten() {
 		return betreuungsverhaeltnisEingehalten;
 	}
 
-	public void setBetreuungsverhaeltnisEingehalten(@Nonnull Boolean betreuungsverhaeltnisEingehalten) {
+	public void setBetreuungsverhaeltnisEingehalten(@Nullable Boolean betreuungsverhaeltnisEingehalten) {
 		this.betreuungsverhaeltnisEingehalten = betreuungsverhaeltnisEingehalten;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getErnaehrungsGrundsaetzeEingehalten() {
 		return ernaehrungsGrundsaetzeEingehalten;
 	}
 
-	public void setErnaehrungsGrundsaetzeEingehalten(@Nonnull Boolean ernaehrungsGrundsaetzeEingehalten) {
+	public void setErnaehrungsGrundsaetzeEingehalten(@Nullable Boolean ernaehrungsGrundsaetzeEingehalten) {
 		this.ernaehrungsGrundsaetzeEingehalten = ernaehrungsGrundsaetzeEingehalten;
 	}
 

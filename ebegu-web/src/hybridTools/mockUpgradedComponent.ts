@@ -16,6 +16,7 @@
  */
 
 import {Directive, EventEmitter, Input, Output} from '@angular/core';
+import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
 
 /**
@@ -46,5 +47,6 @@ export const SHARED_MODULE_OVERRIDES = {
     add: {
         declarations: [MockDvLoadingButton],
         exports: [MockDvLoadingButton],
+        providers: [WindowRef]
     },
 };

@@ -15,6 +15,322 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>
-  tagesschulen-angaben works!
-</p>
+<div class="tagesschule-angaben">
+    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN' | translate}}</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2 translate>LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN</h2>
+            <hr class="header"/>
+        </div>
+    </div>
+
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+
+        <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
+
+        <dv-input-container-x>
+            <label required
+                   id="isLehrbetrieb-radio-group">
+                {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode?.gesuchsperiodeString} }}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="isLehrbetrieb-radio-group"
+                    class=""
+                    name="isLehrbetrieb"
+                    horizontal
+                    formControlName="isLehrbetrieb">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <h3 class="uppercase">{{'LATS_QUANTITATIVE_ANGABEN' | translate}}</h3>
+
+        <div *ngIf="!angabenAusKibon">
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit.gueltigAb.year()} }}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinder"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_DAVON_KINDERGARTEN' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderKindergarten"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_DAVON_BASISSTUFE' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderBasisstufe"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_DAVON_PRIMARSTUFE' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderPrimarstufe"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderSekundarstufe"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <dv-input-container-x>
+            <label>
+                {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       formControlName="anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <div *ngIf="!angabenAusKibon">
+
+            <mat-divider></mat-divider>
+
+            <dv-input-container-x>
+                <label>{{'LATS_IN_BETREUUNG_EINLEITUNG' | translate:{jahr: gesuchsPeriode?.gueltigkeit.gueltigAb.year()} }}</label>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="durchschnittKinderProTagFruehbetreuung"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_ANZAHL_IN_MITTAGSBETREUUNG' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="durchschnittKinderProTagMittag"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="durchschnittKinderProTagNachmittag1"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
+                    <span>&nbsp;*</span>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="durchschnittKinderProTagNachmittag2"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <h3 translate class="uppercase">QUALITATIVE_VORGABEN_TAGESSCHULVERORDNUNG</h3>
+
+        <dv-input-container-x>
+            <label required
+                   id="schuleAufBasisOrganisatorischesKonzept-radio-group">
+                {{'LATS_AUF_BASIS_ORG_KONZEPT' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="schuleAufBasisOrganisatorischesKonzept-radio-group"
+                    class=""
+                    name="schuleAufBasisOrganisatorischesKonzept"
+                    horizontal
+                    formControlName="schuleAufBasisOrganisatorischesKonzept">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   id="schuleAufBasisPaedagogischesKonzept-radio-group">
+                {{'LATS_AUF_BASIS_PAEDAGOGISCH_KONZEPT' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="schuleAufBasisPaedagogischesKonzept-radio-group"
+                    class=""
+                    name="schuleAufBasisPaedagogischesKonzept"
+                    horizontal
+                    formControlName="schuleAufBasisPaedagogischesKonzept">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   id="raeumlicheVoraussetzungenEingehalten-radio-group">
+                {{'LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="raeumlicheVoraussetzungenEingehalten-radio-group"
+                    class=""
+                    name="raeumlicheVoraussetzungenEingehalten"
+                    horizontal
+                    formControlName="raeumlicheVoraussetzungenEingehalten">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   id="betreuungsverhaeltnisEingehalten-radio-group">
+                {{'LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="betreuungsverhaeltnisEingehalten-radio-group"
+                    class=""
+                    name="betreuungsverhaeltnisEingehalten"
+                    horizontal
+                    formControlName="betreuungsverhaeltnisEingehalten">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   id="ernaehrungsGrundsaetzeEingehalten-radio-group">
+                {{'LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN' | translate}}
+                <span>&nbsp;*</span>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <dv-radio-container-x>
+
+                <mat-radio-group
+                    aria-labelledby="ernaehrungsGrundsaetzeEingehalten-radio-group"
+                    class=""
+                    name="ernaehrungsGrundsaetzeEingehalten"
+                    horizontal
+                    formControlName="ernaehrungsGrundsaetzeEingehalten">
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+            </dv-radio-container-x>
+        </dv-input-container-x>
+        <mat-divider></mat-divider>
+
+        <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+        <dv-input-container-x>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          formControlName="bemerkungen"
+                          class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <div class="actions">
+            <dv-loading-button
+                type="button"
+                (buttonClick)="onFormSubmit()">
+                <span translate>SAVE</span>
+            </dv-loading-button>
+        </div>
+
+    </form>
+</div>

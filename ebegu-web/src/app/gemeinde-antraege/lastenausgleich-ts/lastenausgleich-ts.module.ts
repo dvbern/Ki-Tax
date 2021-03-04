@@ -37,6 +37,9 @@ import {LastenausgleichTsRoutingModule} from './lastenausgleich-ts-routing/laste
 import {LastenausgleichTsSideNavComponent} from './lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
 import {LastenausgleichTsToolbarComponent} from './lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';
 import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-ts.component';
+import { GemeindeAntraegeComponent } from './gemeinde-antraege/gemeinde-antraege.component';
+import { TagesschulenListComponent } from './antrag/tagesschulen-list/tagesschulen-list.component';
+import { TagesschulenUiViewComponent } from './antrag/tagesschulen-ui-view/tagesschulen-ui-view.component';
 
 @NgModule({
     declarations: [
@@ -49,7 +52,8 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-t
         FreigabeComponent,
         LastenausgleichTsBerechnungComponent,
         GemeindeAntraegeComponent,
-        TagesschulenListComponent
+        TagesschulenListComponent,
+        TagesschulenUiViewComponent
     ],
     imports: [
         CommonModule,
