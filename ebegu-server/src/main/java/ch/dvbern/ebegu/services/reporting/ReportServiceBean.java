@@ -966,6 +966,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
 		zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
+		zahlungAuftragTotalsExcelConverter.hideAntragstellerColumnsIfNecessary(sheetTotals, zahlungenBerechtigt);
 
 		byte[] bytes = createWorkbook(workbook);
 
@@ -1656,7 +1657,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return row;
 	}
 
-	private boolean isSozialhilfeBezueger(
+	@Override
+	public boolean isSozialhilfeBezueger(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull FamiliensituationContainer familiensituationContainer,
 		@Nonnull Familiensituation familiensituation
