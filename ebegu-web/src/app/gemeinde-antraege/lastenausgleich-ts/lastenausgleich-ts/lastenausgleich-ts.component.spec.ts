@@ -27,7 +27,7 @@ import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
-import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
+import {WizardstepXModule} from '../../../wizardstepX/wizardstep-x.module';
 import {LastenausgleichTsKommentarComponent} from '../lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
 import {LastenausgleichTsSideNavComponent} from '../lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
 import {LastenausgleichTsToolbarComponent} from '../lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';

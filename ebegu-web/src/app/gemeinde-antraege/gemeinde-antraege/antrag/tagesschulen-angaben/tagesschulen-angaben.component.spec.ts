@@ -21,15 +21,15 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
-import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
-import {ErrorService} from '../../../core/errors/service/ErrorService';
-import {WindowRef} from '../../../core/service/windowRef.service';
-import {MaterialModule} from '../../../shared/material.module';
-import {SharedModule} from '../../../shared/shared.module';
-import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {WindowRef} from '../../../../core/service/windowRef.service';
+import {MaterialModule} from '../../../../shared/material.module';
+import {SharedModule} from '../../../../shared/shared.module';
+import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
 import {TagesschulenAngabenComponent} from './tagesschulen-angaben.component';
 
