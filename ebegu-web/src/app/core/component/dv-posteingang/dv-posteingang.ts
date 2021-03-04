@@ -64,7 +64,7 @@ export class DvPosteingangComponent implements OnDestroy {
                             .pipe(switchMap(() => this.getMitteilungenCount$()));
                     }
 
-                    if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
+                    if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles())) {
                         return this.getMitteilungenCount$();
                     }
 

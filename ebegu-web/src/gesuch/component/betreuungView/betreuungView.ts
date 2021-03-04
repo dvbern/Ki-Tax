@@ -938,7 +938,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles())
             || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
                 && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
     }
@@ -1155,7 +1155,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         const gemeindeUser = this.authServiceRS
-            .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+            .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
         return !this.isSavingData
             && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);

@@ -439,8 +439,8 @@ public enum AntragStatus {
 		return inBearbeitung.contains(this);
 	}
 
-	public boolean isAnyOfInBearbeitungGS() {
-		return this == FREIGABEQUITTUNG || this == IN_BEARBEITUNG_GS;
+	public boolean isAnyOfInBearbeitungGSOrSZD() {
+		return this == FREIGABEQUITTUNG || this == IN_BEARBEITUNG_GS || this == IN_BEARBEITUNG_SOZIALDIENST;
 	}
 
 	/**
@@ -449,14 +449,14 @@ public enum AntragStatus {
 	 */
 	public boolean isReadableByJugendamtSchulamtSteueramt() {
 		//JA/SCH darf keine Gesuche sehen die noch nicht Freigegeben sind
-		return !(this.isAnyOfInBearbeitungGS());
+		return !(this.isAnyOfInBearbeitungGSOrSZD());
 	}
 
 	/**
 	 * schulamt darf eigentlich alle Status lesen ausser denen die noch vom GS bearbeitet werden
 	 */
 	public boolean isReadableBySchulamtSachbearbeiter() {
-		return !(this.isAnyOfInBearbeitungGS());
+		return !(this.isAnyOfInBearbeitungGSOrSZD());
 	}
 
 	/**

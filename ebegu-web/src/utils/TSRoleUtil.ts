@@ -189,7 +189,7 @@ export class TSRoleUtil {
         ];
     }
 
-    public static getGesuchstellerJugendamtSchulamtRoles(): ReadonlyArray<TSRole> {
+    public static getGesuchstellerSozialdienstJugendamtSchulamtRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
             TSRole.GESUCHSTELLER,
@@ -199,6 +199,8 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
         ];
     }
 
@@ -388,7 +390,7 @@ export class TSRoleUtil {
         ];
     }
 
-    public static getAdministratorJugendamtSchulamtGesuchstellerRoles(): ReadonlyArray<TSRole> {
+    public static getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_BG,
@@ -398,6 +400,8 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
             TSRole.GESUCHSTELLER,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
         ];
     }
 

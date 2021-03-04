@@ -295,7 +295,7 @@
                                              name="keineKesbPlatzierung"
                                              aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
                                              dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles()"
                                              dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
                                     <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
                                 </md-checkbox>
@@ -314,7 +314,7 @@
                                              name="erweiterteBeduerfnisse"
                                              aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
                                              dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles()"
                                              dv-enable-expression="vm.enableErweiterteBeduerfnisse()"
                                              ng-change="vm.changedBesondereBeduerfnisse()">
                                     <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
@@ -729,7 +729,7 @@
 
                         <!--falsche Angaben-->
                         <div class="row" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                             dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                              dv-show-expression="vm.showFalscheAngaben()">
                             <div class="col-md-12">
                                 <a href="" ng-click="vm.platzAnfordern()"
@@ -739,7 +739,7 @@
 
                         <!--Angabe korrigieren-->
                         <div class="row" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                             dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                              dv-show-expression="vm.showAngabenKorrigieren()">
                             <div class="col-md-12">
                                 <a href="" ng-click="vm.platzAnfordern()"
@@ -787,7 +787,7 @@
                     <!--Die Order der Knoepfe soll im HTML so sein, dass der weiter Knopf als erster im Form ist, dies wird dann fuer die darstelltung
                     mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in einem input Feld automaitisch der erste submit button triggered wird-->
                     <span dv-show-element
-                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                           dv-show-expression="vm.isTagesschule() && !vm.tageschuleSaveDisabled()">
 
                         <dv-loading-button button-click="vm.saveSchulamt()" type="submit"
@@ -851,7 +851,7 @@
 
                     <!--Platz anfordern-->
                     <span dv-show-element
-                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                           dv-show-expression="vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution() && !vm.isProvisorischeBetreuung()">
                         <dv-loading-button button-click="vm.platzAnfordern()" type="submit">
                             <span class="uppercase" data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
@@ -860,7 +860,7 @@
 
                     <!-- Save -->
                     <span dv-show-element
-                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles()"
                           dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
                         <dv-loading-button button-click="vm.saveBetreuung()" type="submit">
                             <span class="uppercase" data-translate="SPEICHERN"></span>

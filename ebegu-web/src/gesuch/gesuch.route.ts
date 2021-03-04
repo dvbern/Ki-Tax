@@ -140,7 +140,7 @@ export class EbeguMutationState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles(),
     };
 }
 
@@ -162,7 +162,7 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles(),
     };
 }
 
