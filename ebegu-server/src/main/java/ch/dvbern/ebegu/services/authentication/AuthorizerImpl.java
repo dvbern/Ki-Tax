@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
@@ -81,6 +82,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -143,7 +145,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	private InstitutionStammdatenService stammdatenService;
 
 	@Inject
-	GemeindeAntragService gemeindeAntragService;
+	private GemeindeAntragService gemeindeAntragService;
+
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller
@@ -1785,5 +1790,23 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			throwViolation(sozialdienst);
 
 		}
+	}
+
+	@Override
+	public void checkReadAuthorizationFerienbetreuung(@Nonnull String id) {
+		Objects.requireNonNull(id);
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(
+				id
+			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationFerienbetreuung", id));
+
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			return;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+			&& principalBean.belongsToGemeinde(container.getGemeinde())) {
+			return;
+		}
+		throwViolation(container);
 	}
 }

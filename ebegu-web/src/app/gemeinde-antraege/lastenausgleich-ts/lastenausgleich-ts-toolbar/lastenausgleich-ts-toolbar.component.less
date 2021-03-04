@@ -1,0 +1,62 @@
+/*
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+@import (reference) 'src/style/variables.less';
+@import (reference) 'src/style/mixins.less';
+
+mat-toolbar {
+    background-color: @secondary;
+    height: 4rem;
+    justify-content: space-between;
+    min-height: 4rem;
+    padding-left: 2rem;
+    padding-right: 0;
+
+    button {
+        background: #68ACFC;
+        border: none;
+        display: flex;
+        font-size: 1.6rem;
+        font-weight: 400;
+        height: 4rem;
+        justify-content: center;
+        min-width: 15rem;
+        padding: 0;
+
+        &:hover, &:focus {
+            background: @secondary-dark;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            outline: 0;
+        }
+    }
+
+    span, button {
+        &.menu-item {
+            .menu-item-link();
+            color: @contrast-lightest;
+            min-width: 15rem !important;
+            padding: 0 2rem 0;
+
+            &.bold-menu {
+                .ebeguBold();
+                white-space: nowrap;
+            }
+        }
+    }
+}
+

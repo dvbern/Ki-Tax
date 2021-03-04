@@ -31,6 +31,9 @@ import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
+import ch.dvbern.ebegu.api.dtos.JaxFile;
+import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity;
@@ -41,6 +44,9 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.entities.FileMetadata;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -285,6 +291,22 @@ public class AbstractConverter {
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}
 
+	protected JaxFile convertFileToJax(FileMetadata fileMetadata, JaxFile jaxFile) {
+		jaxFile.setFilename(fileMetadata.getFilename());
+		jaxFile.setFilepfad(fileMetadata.getFilepfad());
+		jaxFile.setFilesize(fileMetadata.getFilesize());
+		return jaxFile;
+	}
+
+	protected FileMetadata convertFileToEnity(JaxFile jaxFile, FileMetadata fileMetadata) {
+		requireNonNull(fileMetadata);
+		requireNonNull(jaxFile);
+		fileMetadata.setFilename(jaxFile.getFilename());
+		fileMetadata.setFilepfad(jaxFile.getFilepfad());
+		fileMetadata.setFilesize(jaxFile.getFilesize());
+		return fileMetadata;
+	}
+
 	@Nonnull
 	@CanIgnoreReturnValue
 	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
@@ -321,5 +343,66 @@ public class AbstractConverter {
 		jaxAdresse.setLand(adresse.getLand());
 		jaxAdresse.setOrganisation(adresse.getOrganisation());
 		return jaxAdresse;
+	}
+
+	@Nonnull
+	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde jaxGemeinde, @Nonnull final Gemeinde gemeinde) {
+		requireNonNull(gemeinde);
+		requireNonNull(jaxGemeinde);
+		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
+		gemeinde.setName(jaxGemeinde.getName());
+		gemeinde.setStatus(jaxGemeinde.getStatus());
+		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
+		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
+		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+		gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
+		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
+		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
+		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
+		return gemeinde;
+	}
+
+	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
+		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
+		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
+		jaxGemeinde.setKey(persistedGemeinde.getId());
+		jaxGemeinde.setName(persistedGemeinde.getName());
+		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
+		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
+		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
+		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
+		jaxGemeinde.setTagesschulanmeldungenStartdatum(persistedGemeinde.getTagesschulanmeldungenStartdatum());
+		jaxGemeinde.setFerieninselanmeldungenStartdatum(persistedGemeinde.getFerieninselanmeldungenStartdatum());
+		jaxGemeinde.setGueltigBis(persistedGemeinde.getGueltigBis());
+		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
+		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
+		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
+		return jaxGemeinde;
+	}
+
+	@Nonnull
+	public JaxGesuchsperiode gesuchsperiodeToJAX(@Nonnull Gesuchsperiode persistedGesuchsperiode) {
+
+		JaxGesuchsperiode jaxGesuchsperiode = new JaxGesuchsperiode();
+		convertAbstractDateRangedFieldsToJAX(persistedGesuchsperiode, jaxGesuchsperiode);
+		jaxGesuchsperiode.setStatus(persistedGesuchsperiode.getStatus());
+
+		return jaxGesuchsperiode;
+	}
+
+	@Nonnull
+	public Gesuchsperiode gesuchsperiodeToEntity(
+		@Nonnull JaxGesuchsperiode jaxGesuchsperiode,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		convertAbstractDateRangedFieldsToEntity(jaxGesuchsperiode, gesuchsperiode);
+		gesuchsperiode.setStatus(jaxGesuchsperiode.getStatus());
+
+		return gesuchsperiode;
 	}
 }
