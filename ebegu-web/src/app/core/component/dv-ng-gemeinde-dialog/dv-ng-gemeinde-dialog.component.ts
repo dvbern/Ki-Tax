@@ -15,8 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
