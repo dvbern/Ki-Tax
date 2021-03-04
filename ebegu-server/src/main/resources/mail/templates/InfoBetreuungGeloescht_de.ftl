@@ -30,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Die folgende Betreuung wurde gelöscht:
+		Die Familie hat die Löschung der folgenden Betreuung veranlasst:
 	</p>
 	<table>
 		<tbody>
@@ -65,8 +65,8 @@ ${templateConfiguration.mailCss}
 		Die Betreuung wurde am ${datumErstellung} erfasst.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Mit freundlichen Grüssen <br/>
+		kiBon
 	</p>
 	<p>
 		<#if configuration.isDevmode>
