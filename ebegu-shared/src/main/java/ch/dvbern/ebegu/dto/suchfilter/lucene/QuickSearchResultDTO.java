@@ -139,6 +139,6 @@ public class QuickSearchResultDTO implements Serializable {
 	 */
 	private boolean fallAlreadyInResultEntities(@NotNull String fallID) {
 		return resultEntities.stream()
-			.anyMatch(searchResultEntryDTO -> fallID.equalsIgnoreCase(searchResultEntryDTO.getFallID()));
+			.anyMatch(searchResultEntryDTO -> fallID.equalsIgnoreCase(searchResultEntryDTO.getFallId()));
 	}
 }
