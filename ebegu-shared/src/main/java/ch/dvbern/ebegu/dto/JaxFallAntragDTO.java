@@ -31,29 +31,7 @@ public class JaxFallAntragDTO extends JaxAbstractAntragDTO {
 
 	private static final long serialVersionUID = -1277026654457135397L;
 
-	@NotNull
-	private String fallID;
-
-	@NotNull
-	private String dossierId;
-
 	public JaxFallAntragDTO() {
 		super(JaxFallAntragDTO.class.getSimpleName());
-	}
-
-	public String getFallID() {
-		return fallID;
-	}
-
-	public void setFallID(String fallID) {
-		this.fallID = fallID;
-	}
-
-	public String getDossierId() {
-		return dossierId;
-	}
-
-	public void setDossierId(String dossierId) {
-		this.dossierId = dossierId;
 	}
 }

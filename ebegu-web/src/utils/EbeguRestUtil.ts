@@ -2595,7 +2595,7 @@ export class EbeguRestUtil {
     }
 
     public parseFallAntragDTO(fallAntragTS: TSFallAntragDTO, antragFromServer: any): TSFallAntragDTO {
-        fallAntragTS.fallID = antragFromServer.fallID;
+        fallAntragTS.fallId = antragFromServer.fallId;
         fallAntragTS.dossierId = antragFromServer.dossierId;
         fallAntragTS.fallNummer = antragFromServer.fallNummer;
         fallAntragTS.familienName = antragFromServer.familienName;

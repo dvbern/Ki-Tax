@@ -201,7 +201,7 @@ export class DVQuicksearchListController implements IController {
         } else {
             this.$state.go('mitteilungen.view', {
                 dossierId: fallAntrag.dossierId,
-                fallId: fallAntrag.fallID,
+                fallId: fallAntrag.fallId,
             });
         }
     }

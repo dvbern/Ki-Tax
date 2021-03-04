@@ -85,7 +85,7 @@ public class QuickSearchResultDTO implements Serializable {
 	private SearchResultEntryDTO createFakeAntragDTO(@NotNull SearchResultEntryDTO searchResultEntryDTO, @NotNull Dossier dossier) {
 		if (searchResultEntryDTO.getAntragDTO() == null) {
 			final JaxFallAntragDTO antragDTO = new JaxFallAntragDTO();
-			antragDTO.setFallID(dossier.getFall().getId());
+			antragDTO.setFallId(dossier.getFall().getId());
 			antragDTO.setDossierId(dossier.getId());
 			antragDTO.setFallNummer(dossier.getFall().getFallNummer());
 			if (dossier.getFall().getBesitzer() != null) {

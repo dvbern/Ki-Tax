@@ -163,9 +163,6 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	private String gemeinde;
 
 	@NotNull
-	private String fallId;
-
-	@NotNull
 	private String gemeindeId;
 
 	public String getAntragId() {
@@ -375,14 +372,6 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	public void setGemeinde(String gemeinde) {
 		this.gemeinde = gemeinde;
-	}
-
-	public String getFallId() {
-		return fallId;
-	}
-
-	public void setFallId(String fallId) {
-		this.fallId = fallId;
 	}
 
 	public String getGemeindeId() {
