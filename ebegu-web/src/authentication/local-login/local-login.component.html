@@ -112,6 +112,26 @@
                          (click)="logIn(sachbearbeiterTraegerschaftStadtBern)"></div>
                 </td>
             </tr>
+            <!-- Sozialdienst -->
+            <tr>
+                <td>Administrator Sozialdienst: BernerSozialdienst</td>
+                <td></td>
+                <td>
+                    <div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorSozialdienst?.vorname  + ' ' + administratorSozialdienst?.nachname"
+                         (click)="logIn(administratorSozialdienst)"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>Sachbearbeiter Sozialdienst: BernerSozialdienst</td>
+                <td></td>
+                <td>
+                    <div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterSozialdienst?.vorname  + ' ' + sachbearbeiterSozialdienst?.nachname"
+                         (click)="logIn(sachbearbeiterSozialdienst)"></div>
+                </td>
+            </tr>
+
             <!-- Gesuchsteller -->
             <tr>
                 <td>Gesuchsteller/in</td>
@@ -288,7 +308,7 @@
                 </td>
             </tr>
 
-            <!-- Divese -->
+            <!-- Diverse -->
             <tr>
                 <td>Steueramt</td>
                 <td>
