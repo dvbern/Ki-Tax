@@ -1,0 +1,55 @@
+/*
+ * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+@import (reference) 'src/style/variables.less';
+@import (reference) 'src/style/mixins.less';
+
+.lastenausgleich-ts-container {
+    background-color: @contrast-light;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .antrag-container {
+        display: flex;
+        flex: auto;
+        flex-grow: 1;
+        overflow: auto;
+
+        dv-lastenausgleich-ts-side-nav, dv-wizard-side-nav {
+            background-color: @contrast-lightest;
+            display: flex;
+            flex-direction: column;
+            width: 35.5rem;
+        }
+
+        .antrag {
+            box-sizing: border-box;
+            flex-basis: 0;
+            flex-grow: 1;
+
+            ::ng-deep ui-view > *:not(dv-tagesschulen-ui-view) {
+                padding: 5rem 2.5rem 10rem 5rem;
+            }
+        }
+
+        dv-lastenausgleich-ts-kommentar {
+            background-color: @contrast-lightest;
+            width: 45rem;
+        }
+    }
+}

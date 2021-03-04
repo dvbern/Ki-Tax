@@ -789,6 +789,8 @@
     "TSRole_REVISOR": "Revisor/in",
     "TSRole_STEUERAMT": "Sachbearbeiter/in Steueramt",
     "TSRole_NONE": "Keine Rolle (Antragsteller/in)",
+    "TSRole_ADMIN_SOZIALDIENST": "Administrator/in Sozialdienst",
+    "TSRole_SACHBEARBEITER_SOZIALDIENST": "Sachbearbeiter/in Sozialdienst",
     "PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG": "Minimale Einkommenveschlechterung (%)",
     "VORJAHR": "Vorjahr",
     "JANUARY": "Januar",
@@ -2270,9 +2272,8 @@
     "SOZIALDIENST_STATUS_EINGELADEN": "Eingeladen",
     "SOZIALDIENST_STATUS_AKTIV": "Aktiv",
     "SOZIALDIENST_NOCH_KEINE": "Noch keine Sozialdienst",
-    "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "SOZIALDIENST_HINZUFUEGEN": "Sozialdienst hinzufügen",
-    "NEUE_SOZIALDIENST": "Neuer Sozialdienst",
+    "NEUE_SOZIALDIENST": "Neue Sozialdienst",
     "SOZIALDIENST_STAMMDATEN": "Sozialdienst Stammdaten",
     "SOZIALDIENST_EDIT": "Sozialdienst bearbeiten",
     "SOZIALDIENST_SPEICHERN": "Sozialdienst speichern",
@@ -2296,5 +2297,7 @@
     "LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN": "Art. 6 der TSV schreibt vor, dass sich die Räume, die Einrichtung und die Umgebung für das Tagesschulangebot eignen und den Bedürfnissen der Schülerinnen und Schüler der jeweiligen Schulstufe entsprechen müssen. Es soll ausreichend Raum für Verpflegung, Hausaufgaben, Gemeinschaftsaktivitäten und Rückzugsmöglichkeiten vorhanden sein (in der Regel zwei Räume und genügend Platz für Aktivitäten im Freien). Sind diese räumlichen Voraussetzungen eingehalten?",
     "LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN": "Ist das vorgeschriebene Betreuungsverhältnis eingehalten, d. h. betreut eine Betreuungsperson maximal 10 Kinder (TSV Art. 5 Abs. 1)?",
     "LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN": "Werden in der Tagesschule ernährungswissenschaftliche Grundsätze für eine ausgewogene und den Bedürfnissen der Schülerinnen und Schüler entsprechende Ernährung beachtet (TSV Art. 7 Abs. 5)?",
+    "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Sozialdienste Fall eröffnen",
+    "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -91,7 +91,6 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
-import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
@@ -99,7 +98,6 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
-import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
@@ -191,7 +189,6 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -3757,27 +3754,6 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public JaxGesuchsperiode gesuchsperiodeToJAX(@Nonnull Gesuchsperiode persistedGesuchsperiode) {
-
-		JaxGesuchsperiode jaxGesuchsperiode = new JaxGesuchsperiode();
-		convertAbstractDateRangedFieldsToJAX(persistedGesuchsperiode, jaxGesuchsperiode);
-		jaxGesuchsperiode.setStatus(persistedGesuchsperiode.getStatus());
-
-		return jaxGesuchsperiode;
-	}
-
-	@Nonnull
-	public Gesuchsperiode gesuchsperiodeToEntity(
-		@Nonnull JaxGesuchsperiode jaxGesuchsperiode,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-
-		convertAbstractDateRangedFieldsToEntity(jaxGesuchsperiode, gesuchsperiode);
-		gesuchsperiode.setStatus(jaxGesuchsperiode.getStatus());
-
-		return gesuchsperiode;
-	}
-
-	@Nonnull
 	public Benutzer jaxBenutzerToBenutzer(
 		@Nonnull JaxBenutzer jaxBenutzer,
 		@Nonnull Benutzer benutzer) {
@@ -4157,13 +4133,6 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxVorlage;
 	}
 
-	private JaxFile convertFileToJax(FileMetadata fileMetadata, JaxFile jaxFile) {
-		jaxFile.setFilename(fileMetadata.getFilename());
-		jaxFile.setFilepfad(fileMetadata.getFilepfad());
-		jaxFile.setFilesize(fileMetadata.getFilesize());
-		return jaxFile;
-	}
-
 	public EbeguVorlage ebeguVorlageToEntity(
 		@Nonnull final JaxEbeguVorlage ebeguVorlageJAXP,
 		@Nonnull final EbeguVorlage ebeguVorlage) {
@@ -4188,15 +4157,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(jaxVorlage, vorlage);
 		convertFileToEnity(jaxVorlage, vorlage);
 		return vorlage;
-	}
-
-	private FileMetadata convertFileToEnity(JaxFile jaxFile, FileMetadata fileMetadata) {
-		requireNonNull(fileMetadata);
-		requireNonNull(jaxFile);
-		fileMetadata.setFilename(jaxFile.getFilename());
-		fileMetadata.setFilepfad(jaxFile.getFilepfad());
-		fileMetadata.setFilesize(jaxFile.getFilesize());
-		return fileMetadata;
 	}
 
 	public JaxAntragStatusHistory antragStatusHistoryToJAX(AntragStatusHistory antragStatusHistory) {
@@ -4802,46 +4762,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTag.setTag(persistedFerieninselTag.getTag());
 
 		return jaxTag;
-	}
-
-	@Nonnull
-	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde jaxGemeinde, @Nonnull final Gemeinde gemeinde) {
-		requireNonNull(gemeinde);
-		requireNonNull(jaxGemeinde);
-		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
-		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
-		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
-		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
-		gemeinde.setName(jaxGemeinde.getName());
-		gemeinde.setStatus(jaxGemeinde.getStatus());
-		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
-		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
-		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
-		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
-		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
-		gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
-		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
-		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
-		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
-		return gemeinde;
-	}
-
-	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
-		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
-		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
-		jaxGemeinde.setKey(persistedGemeinde.getId());
-		jaxGemeinde.setName(persistedGemeinde.getName());
-		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
-		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
-		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
-		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
-		jaxGemeinde.setTagesschulanmeldungenStartdatum(persistedGemeinde.getTagesschulanmeldungenStartdatum());
-		jaxGemeinde.setFerieninselanmeldungenStartdatum(persistedGemeinde.getFerieninselanmeldungenStartdatum());
-		jaxGemeinde.setGueltigBis(persistedGemeinde.getGueltigBis());
-		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
-		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
-		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
-		return jaxGemeinde;
 	}
 
 	@Nonnull

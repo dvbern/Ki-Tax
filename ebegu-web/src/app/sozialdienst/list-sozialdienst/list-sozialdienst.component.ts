@@ -16,9 +16,10 @@
  */
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSSozialdienst} from '../../../models/sozialdienst/TSSozialdienst';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
@@ -66,23 +67,30 @@ export class ListSozialdienstComponent implements OnInit {
     private loadData(): void {
         // For now only SuperAdmin
         const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForSozialdienst());
-        this.antragList$ = this.sozialdienstRS.getSozialdienstList().pipe(
-            map(sozialdienstList => {
-                const entitaetListItems: DVEntitaetListItem[] = [];
-                sozialdienstList.forEach(
-                    sozialdienst => {
-                        const dvListItem = {
-                            id: sozialdienst.id,
-                            name: sozialdienst.name,
-                            status: sozialdienst.status.toString(),
-                            canEdit: editPossible,
-                            canRemove: false,
-                        };
-                        entitaetListItems.push(dvListItem);
-                    },
-                );
-                return entitaetListItems;
-            }),
-        );
+        this.antragList$ = this.getSozialdienstForPrincipal().pipe(map(sozialdienstList => {
+            const entitaetListItems: DVEntitaetListItem[] = [];
+            sozialdienstList.forEach(
+                sozialdienst => {
+                    const dvListItem = {
+                        id: sozialdienst.id,
+                        name: sozialdienst.name,
+                        status: sozialdienst.status.toString(),
+                        canEdit: editPossible,
+                        canRemove: false,
+                    };
+                    entitaetListItems.push(dvListItem);
+                },
+            );
+            return entitaetListItems;
+        }));
+    }
+
+    private getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+            const sozialDienstList =
+                [this.authServiceRS.getPrincipal().currentBerechtigung.sozialdienst];
+            return of(sozialDienstList);
+        }
+        return this.sozialdienstRS.getSozialdienstList();
     }
 }

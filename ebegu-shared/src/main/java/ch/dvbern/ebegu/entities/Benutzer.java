@@ -42,6 +42,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -279,6 +280,15 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 		getCurrentBerechtigung().setTraegerschaft(traegerschaft);
 	}
 
+	@Nullable
+	public Sozialdienst getSozialdienst() {
+		return getCurrentBerechtigung().getSozialdienst();
+	}
+
+	public void setSozialdienst(@Nullable Sozialdienst sozialdienst) {
+		getCurrentBerechtigung().setSozialdienst(sozialdienst);
+	}
+
 	@Nonnull
 	public Set<Gemeinde> extractGemeindenForUser() {
 		return this.getCurrentBerechtigung().getGemeindeList();
@@ -299,6 +309,8 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 			return requireNonNull(getTraegerschaft()).getName();
 		case KANTON:
 			return requireNonNull(getMandant()).getName();
+		case SOZIALDIENST:
+			return requireNonNull(getSozialdienst()).getName();
 		}
 
 		throw new IllegalStateException("No mapping defined for " + rollenAbhaengigkeit);

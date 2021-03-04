@@ -24,6 +24,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -40,6 +41,8 @@ describe('EinladungAbschliessenComponent', () => {
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
             ['getInstitutionenEditableForCurrentBenutzer']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
+        const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+            ['getSozialdienstList']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['getVisibleRolesForPrincipal']);
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
@@ -52,6 +55,7 @@ describe('EinladungAbschliessenComponent', () => {
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
 
         TestBed.configureTestingModule({
@@ -67,6 +71,7 @@ describe('EinladungAbschliessenComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ]
         })

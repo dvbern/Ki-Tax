@@ -24,6 +24,9 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
@@ -115,6 +118,12 @@ public interface ReportService {
 		@Nonnull Locale locale
 	)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
+
+	boolean isSozialhilfeBezueger(
+			@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+			@Nonnull FamiliensituationContainer familiensituationContainer,
+			@Nonnull Familiensituation familiensituation
+	);
 
 	@Nonnull
 	UploadFileInfo generateExcelReportKinder(

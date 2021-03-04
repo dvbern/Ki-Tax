@@ -18,6 +18,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
+import {TSSozialdienst} from './sozialdienst/TSSozialdienst';
 import {TSBenutzerNoDetails} from './TSBenutzerNoDetails';
 import {TSBerechtigung} from './TSBerechtigung';
 import {TSGemeinde} from './TSGemeinde';
@@ -50,6 +51,7 @@ export class TSBenutzer {
         traegerschaft?: TSTraegerschaft,
         institution?: TSInstitution,
         gemeinde?: TSGemeinde[],
+        sozialdienst?: TSSozialdienst,
         status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
         externalUUID?: string,
     ) {
@@ -66,6 +68,7 @@ export class TSBenutzer {
         this._currentBerechtigung.role = role;
         this._currentBerechtigung.institution = institution;
         this._currentBerechtigung.traegerschaft = traegerschaft;
+        this._currentBerechtigung.sozialdienst = sozialdienst;
         if (gemeinde) {
             this._currentBerechtigung.gemeindeList = gemeinde;
         }
