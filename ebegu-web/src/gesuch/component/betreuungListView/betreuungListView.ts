@@ -318,7 +318,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             || this.gesuchModelManager.isGesuchReadonlyForRole()
             || this.gesuchModelManager.isKorrekturModusJugendamt()
             || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
-        const allowedRoles = TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles();
+        const allowedRoles = TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
         const isRole = this.authServiceRS.isOneOfRoles(allowedRoles);
         const istNotStatusFreigabequittung = this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG;
         return isStatus && isRole && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();

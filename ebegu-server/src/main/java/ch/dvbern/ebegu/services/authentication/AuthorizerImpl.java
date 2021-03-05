@@ -803,7 +803,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isGSOwner(Supplier<Fall> fallSupplier) {
-		if (!principalBean.isCallerInRole(GESUCHSTELLER.name())) {
+		if (!principalBean.isCallerInAnyOfRole(
+			UserRole.GESUCHSTELLER,
+			UserRole.ADMIN_SOZIALDIENST,
+			SACHBEARBEITER_SOZIALDIENST)) {
 			return false;
 		}
 
@@ -1233,6 +1236,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		switch (currentBenutzer.getRole()) {
 		case GESUCHSTELLER:
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
 		case SUPER_ADMIN: {

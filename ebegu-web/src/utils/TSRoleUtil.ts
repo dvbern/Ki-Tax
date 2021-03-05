@@ -390,7 +390,7 @@ export class TSRoleUtil {
         ];
     }
 
-    public static getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles(): ReadonlyArray<TSRole> {
+    public static getAdminJaSchulamtSozialdienstGesuchstellerRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_BG,

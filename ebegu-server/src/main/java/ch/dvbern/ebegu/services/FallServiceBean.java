@@ -95,7 +95,10 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	public Fall saveFall(@Nonnull Fall fall) {
 		Objects.requireNonNull(fall);
 		// Den "Besitzer" auf dem Fall ablegen
-		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+		if (principalBean.isCallerInAnyOfRole(
+			UserRole.GESUCHSTELLER,
+			UserRole.ADMIN_SOZIALDIENST,
+			UserRole.SACHBEARBEITER_SOZIALDIENST)) {
 			Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 			currentBenutzer.ifPresent(fall::setBesitzer);
 		}
@@ -164,7 +167,8 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	public void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(fall);
 		Optional<Fall> fallToRemove = findFall(fall.getId());
-		Fall loadedFall = fallToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeFall",
+		Fall loadedFall = fallToRemove.orElseThrow(() -> new EbeguEntityNotFoundException(
+			"removeFall",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			fall));
 		authorizer.checkWriteAuthorization(loadedFall);

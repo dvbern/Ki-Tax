@@ -136,7 +136,7 @@
                     </div>
 
                     <!--vertrag radiogroup-->
-                    <div class="row" ng-if="vm.isGesuchsteller() && !vm.isSchulamt()">
+                    <div class="row" ng-if="vm.isGesuchstellerSozialdienst() && !vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <md-radio-group class="radio"
@@ -295,7 +295,7 @@
                                              name="keineKesbPlatzierung"
                                              aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
                                              dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles()"
+                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
                                              dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
                                     <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
                                 </md-checkbox>
@@ -314,7 +314,7 @@
                                              name="erweiterteBeduerfnisse"
                                              aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
                                              dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles()"
+                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
                                              dv-enable-expression="vm.enableErweiterteBeduerfnisse()"
                                              ng-change="vm.changedBesondereBeduerfnisse()">
                                     <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
@@ -860,7 +860,7 @@
 
                     <!-- Save -->
                     <span dv-show-element
-                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtSozialdienstGesuchstellerRoles()"
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
                           dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
                         <dv-loading-button button-click="vm.saveBetreuung()" type="submit">
                             <span class="uppercase" data-translate="SPEICHERN"></span>
