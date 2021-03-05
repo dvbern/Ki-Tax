@@ -160,6 +160,8 @@ public class UploadResource {
 	private static final String FILENAME_HEADER = "x-filename";
 	private static final String GESUCHID_HEADER = "x-gesuchID";
 
+	private static final String UPLOAD_WARNING = "Need to upload something";
+
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
 
 	@ApiOperation(value = "Speichert ein oder mehrere Dokumente in der Datenbank", response = JaxDokumentGrund.class)
@@ -312,7 +314,7 @@ public class UploadResource {
 		@Nonnull @NotNull MultipartFormDataInput input) {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		gesuchsperiodeService.uploadGesuchsperiodeDokument(periodeId, sprache, dokumentTyp,
 			fileList.get(0).getContent());
@@ -336,7 +338,7 @@ public class UploadResource {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
@@ -361,7 +363,7 @@ public class UploadResource {
 		@Nonnull @NotNull MultipartFormDataInput input) throws IOException, MailException {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 		TransferFile file = fileList.get(0);
 
 		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent());
@@ -543,7 +545,7 @@ public class UploadResource {
 		@Nonnull @NotNull MultipartFormDataInput input) {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		fallService.uploadSozialdienstVollmachtDokument(fallId,
 			fileList.get(0).getContent());
