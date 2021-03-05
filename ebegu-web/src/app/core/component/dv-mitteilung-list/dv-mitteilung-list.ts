@@ -124,7 +124,8 @@ export class DVMitteilungListController implements IOnInit {
                 } else {
                     this.initMitteilungForCurrentBenutzer();
                     // Wenn JA oder Institution -> Neue Mitteilungen als gelesen markieren
-                    if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles())) {
+                    if (this.authServiceRS.isOneOfRoles(
+                        TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles())) {
                         this.setAllMitteilungenGelesen().then(() => {
                             this.loadAllMitteilungen();
                             this.posteingangService.posteingangChanged();

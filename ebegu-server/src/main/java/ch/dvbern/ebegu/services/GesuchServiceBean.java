@@ -1259,7 +1259,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	private Eingangsart calculateEingangsart() {
 		Eingangsart eingangsart;
-		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+		if (this.principalBean.isCallerInAnyOfRole(UserRole.GESUCHSTELLER, UserRole.ADMIN_SOZIALDIENST, UserRole.SACHBEARBEITER_SOZIALDIENST)) {
 			eingangsart = Eingangsart.ONLINE;
 		} else {
 			eingangsart = Eingangsart.PAPIER;

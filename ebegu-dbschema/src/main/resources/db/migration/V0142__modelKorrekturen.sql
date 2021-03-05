@@ -43,3 +43,8 @@ ALTER TABLE sozialdienst_fall_aud
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
+ALTER TABLE fall
+	DROP CONSTRAINT UK_fall_besitzer;
+
+ALTER TABLE fall
+    ADD CONSTRAINT UNIQUE (besitzer_id, sozialdienst_fall_id);

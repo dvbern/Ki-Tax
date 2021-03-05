@@ -1662,7 +1662,7 @@ export class GesuchModelManager {
     ): IPromise<TSGesuch> {
         return this.gesuchGenerator.initSozialdienstFall(fallId, gemeindeId, gesuchId, gesuchsperiodeId)
             .then(gesuch => {
-                    this.setGesuchDaten(gesuch);
+                    this.setGesuch(gesuch);
                     if (!gesuch.isNew()) {
                         return gesuch;
                     }
