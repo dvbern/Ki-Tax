@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,6 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -54,10 +52,8 @@ import ch.dvbern.ebegu.reporting.massenversand.MassenversandRepeatKindDataCol;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -89,7 +85,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	@Inject
 	private MassenversandService massenversandService;
 
-
 	@Nonnull
 	@Override
 	public List<MassenversandDataRow> getReportMassenversand(
@@ -104,37 +99,37 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		@Nonnull Locale locale
 	) {
 
-		List<Gesuch> ermittelteGesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+	List<Gesuch> ermittelteGesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+		datumVon,
+		datumBis,
+		gesuchPeriodeID
+	);
+
+	// Filter Gesuche by AngebotTyp
+	List<Gesuch> gesucheFilteredByAngebotTyp =
+		filterGesucheByAngebotTyp(inklBgGesuche, inklMischGesuche, inklTsGesuche, ermittelteGesuche);
+
+	List<Gesuch> resultGesuchFinalList =
+		filterGesucheByFolgegesuch(ohneErneuerungsgesuch, gesucheFilteredByAngebotTyp);
+
+	// Wenn ein Text eingegeben wurde, wird der Massenversand gespeichert
+		if(StringUtils.isNotEmpty(text)&&!resultGesuchFinalList.isEmpty()) {
+		saveMassenversand(
 			datumVon,
 			datumBis,
-			gesuchPeriodeID
-		);
-
-		// Filter Gesuche by AngebotTyp
-		List<Gesuch> gesucheFilteredByAngebotTyp =
-			filterGesucheByAngebotTyp(inklBgGesuche, inklMischGesuche, inklTsGesuche, ermittelteGesuche);
-
-		List<Gesuch> resultGesuchFinalList =
-			filterGesucheByFolgegesuch(ohneErneuerungsgesuch, gesucheFilteredByAngebotTyp);
-
-		// Wenn ein Text eingegeben wurde, wird der Massenversand gespeichert
-		if (StringUtils.isNotEmpty(text) && !resultGesuchFinalList.isEmpty()) {
-			saveMassenversand(
-				datumVon,
-				datumBis,
-				gesuchPeriodeID,
-				inklBgGesuche,
-				inklMischGesuche,
-				inklTsGesuche,
-				ohneErneuerungsgesuch,
-				text,
-				resultGesuchFinalList);
-		}
-
-		final List<MassenversandDataRow> reportDataMassenversand =
-			createReportDataMassenversand(resultGesuchFinalList, locale);
-		return reportDataMassenversand;
+			gesuchPeriodeID,
+			inklBgGesuche,
+			inklMischGesuche,
+			inklTsGesuche,
+			ohneErneuerungsgesuch,
+			text,
+			resultGesuchFinalList);
 	}
+
+	final List<MassenversandDataRow> reportDataMassenversand =
+		createReportDataMassenversand(resultGesuchFinalList, locale);
+		return reportDataMassenversand;
+}
 
 	@Nonnull
 	@Override
@@ -186,7 +181,8 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -209,7 +205,9 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 				setKinderData(gesuch, row);
 
-				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(getEingangsartFromFallBesitzer(gesuch), locale));
+				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(
+					getEingangsartFromFallBesitzer(gesuch),
+					locale));
 				row.setStatus(ServerMessageUtil.translateEnumValue(gesuch.getStatus(), locale));
 				row.setTyp(ServerMessageUtil.translateEnumValue(gesuch.getTyp(), locale));
 
@@ -221,17 +219,17 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	}
 
 	/**
-	* If we are only interested in the Eingangsart of the Erstgesuch, i.e:
-	* Papier_erstgesuch + Papier_mutation --> Eingangsart = PAPIER
-	* Online_erstgesuch + Papier_mutation --> Eingangsart = ONLINE
-	* we need to take the Eingangsart of the Erstgesuch and not from the mutation. For this case there is a much
-	* more performant way than to looking for the Erstgesuch.
-	* If the fall has a Besitzer, it is an online Gesuch.
-	*/
- 	private Eingangsart getEingangsartFromFallBesitzer(@Nonnull Gesuch gesuch) {
+	 * If we are only interested in the Eingangsart of the Erstgesuch, i.e:
+	 * Papier_erstgesuch + Papier_mutation --> Eingangsart = PAPIER
+	 * Online_erstgesuch + Papier_mutation --> Eingangsart = ONLINE
+	 * we need to take the Eingangsart of the Erstgesuch and not from the mutation. For this case there is a much
+	 * more performant way than to looking for the Erstgesuch.
+	 * If the fall has a Besitzer, it is an online Gesuch.
+	 */
+	private Eingangsart getEingangsartFromFallBesitzer(@Nonnull Gesuch gesuch) {
 		if (gesuch.getFall().getBesitzer() != null) {
-					return Eingangsart.ONLINE;
-			}
+			return Eingangsart.ONLINE;
+		}
 		return Eingangsart.PAPIER;
 	}
 
@@ -301,7 +299,9 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		}
 	}
 
-	private List<Gesuch> filterGesucheByFolgegesuch(boolean ohneErneuerungsgesuch, List<Gesuch> gesucheFilteredByAngebotTyp) {
+	private List<Gesuch> filterGesucheByFolgegesuch(
+		boolean ohneErneuerungsgesuch,
+		List<Gesuch> gesucheFilteredByAngebotTyp) {
 		if (ohneErneuerungsgesuch) {
 			return gesucheFilteredByAngebotTyp.stream()
 				.filter(gesuch -> !gesuchService.hasFolgegesuchForAmt(gesuch.getId()))

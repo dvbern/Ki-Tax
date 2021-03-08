@@ -21,8 +21,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -2123,6 +2125,22 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
 			);
 
+		Map<String, Gesuch> neustesGeprueftesFreigegebensGesuchCache = new HashMap<>();
+		List<Gesuch> gesuches = getNeustesGeprueftesFreigegebensGesuchFuerPeriode(gesuchsperiode.getId());
+		gesuches.forEach(
+			gueltigeGesuch -> {
+				Gesuch gesuch = neustesGeprueftesFreigegebensGesuchCache.get(gueltigeGesuch.getDossier().getId());
+				if (gesuch != null && gueltigeGesuch.getTimestampErstellt() != null
+					&& gesuch.getTimestampErstellt() != null
+					&& gesuch.getTimestampErstellt().isAfter(gueltigeGesuch.getTimestampErstellt())) {
+					return;
+				}
+				neustesGeprueftesFreigegebensGesuchCache.put(
+					gueltigeGesuch.getDossier().getId(),
+					gueltigeGesuch);
+			}
+		);
+
 		// We first look for all Gesuche that belongs to the gesuchsperiode and were geprueft/nurschulamt/freigegeben
 		// between
 		// the given dates.
@@ -2132,11 +2150,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		List<Gesuch> gesuche = new ArrayList<>();
 		allTuples.forEach(tuple -> {
 			final String dossierIdValue = String.valueOf(tuple.get(0));
-			final String gesuchsperiodeIdValue = String.valueOf(tuple.get(1));
-
-			Optional<Gesuch> gesuch =
-				getNeustesGeprueftesFreigegebensGesuchFuerDossierPeriode(gesuchsperiodeIdValue, dossierIdValue);
-			gesuch.ifPresent(gesuche::add);
+			Gesuch gesuch = neustesGeprueftesFreigegebensGesuchCache.get(dossierIdValue);
+			if(gesuch != null){
+				gesuche.add(gesuch);
+			}
 		});
 
 		return gesuche;
@@ -2218,73 +2235,32 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	 * or at least Geprueft (for Papiergesuche)
 	 */
 	@Nonnull
-	public Optional<Gesuch> getNeustesGeprueftesFreigegebensGesuchFuerDossierPeriode(
-		@Nonnull String gesuchsperiodeId,
-		@Nonnull String dossierId
+	public List<Gesuch> getNeustesGeprueftesFreigegebensGesuchFuerPeriode(
+		@Nonnull String gesuchsperiodeId
 	) {
 		Objects.requireNonNull(gesuchsperiodeId);
-		Objects.requireNonNull(dossierId);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
 
-		ParameterExpression<String> dossierParam = cb.parameter(String.class, "dossierId");
 		ParameterExpression<String> gesuchsperiodeParam = cb.parameter(String.class, "gesuchsperiodeId");
-		ParameterExpression<Eingangsart> papierParam = cb.parameter(Eingangsart.class, "papier");
-		ParameterExpression<Eingangsart> onlineParam = cb.parameter(Eingangsart.class, "online");
 		//noinspection rawtypes
-		ParameterExpression<Collection> geprueftParam = cb.parameter(Collection.class, "geprueft");
-		//noinspection rawtypes
-		ParameterExpression<Collection> freigegebenParam = cb.parameter(Collection.class, "freigegeben");
+		ParameterExpression<Collection> statusParam = cb.parameter(Collection.class, "status");
 
-		Predicate predicateStatus = getStatusFromEingangsartPredicate(cb, root, papierParam, onlineParam,
-			geprueftParam, freigegebenParam);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierParam);
+		Predicate predicateStatus = root.get(Gesuch_.status).in(statusParam);
 		Predicate predicateGesuchsperiode = cb.equal(
 			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id),
 			gesuchsperiodeParam);
 
-		query.where(predicateStatus, predicateGesuchsperiode, predicateFall);
+		query.where(predicateStatus, predicateGesuchsperiode);
 		query.select(root);
 
-		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
-
 		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
-		typedQuery.setParameter(dossierParam, dossierId);
 		typedQuery.setParameter(gesuchsperiodeParam, gesuchsperiodeId);
-		typedQuery.setParameter(papierParam, Eingangsart.PAPIER);
-		typedQuery.setParameter(onlineParam, Eingangsart.ONLINE);
-		typedQuery.setParameter(geprueftParam, AntragStatus.getAllGepruefteStatus());
-		typedQuery.setParameter(freigegebenParam, AntragStatus.getAllFreigegebeneStatus());
+		typedQuery.setParameter(statusParam, AntragStatus.getAllFreigegebeneStatus());
 
-		final List<Gesuch> gesuche = typedQuery.getResultList();
-		if (gesuche.isEmpty()) {
-			return Optional.empty();
-		}
-		Gesuch gesuch = gesuche.get(0);
-		authorizer.checkReadAuthorization(gesuch);
-		return Optional.of(gesuch);
-	}
-
-	private Predicate getStatusFromEingangsartPredicate(
-		@Nonnull CriteriaBuilder cb,
-		@Nonnull Root<Gesuch> root,
-		@Nonnull ParameterExpression<Eingangsart> papierParam,
-		@Nonnull ParameterExpression<Eingangsart> onlineParam,
-		@SuppressWarnings("rawtypes") @Nonnull ParameterExpression<Collection> geprueftParam,
-		@SuppressWarnings("rawtypes") @Nonnull ParameterExpression<Collection> freigegebenParam
-	) {
-		final Predicate predicateGeprueft = root.get(Gesuch_.status).in(geprueftParam);
-		final Predicate predicateFreigegeben = root.get(Gesuch_.status).in(freigegebenParam);
-
-		final Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), papierParam);
-		final Predicate predicateOnline = cb.equal(root.get(Gesuch_.eingangsart), onlineParam);
-
-		return cb.or(
-			cb.and(predicateGeprueft, predicatePapier),
-			cb.and(predicateFreigegeben, predicateOnline)
-		);
+		return typedQuery.getResultList();
 	}
 
 	/**
