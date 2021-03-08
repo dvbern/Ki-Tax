@@ -68,11 +68,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -107,7 +109,6 @@ public class SearchResource {
 	@Inject
 	private InstitutionService institutionService;
 
-
 	/**
 	 * Gibt eine Liste mit allen Pendenzen des Jugendamtes zurueck.
 	 * Sollte keine Pendenze gefunden werden oder ein Fehler passieren, wird eine leere Liste zurueckgegeben.
@@ -119,7 +120,8 @@ public class SearchResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/jugendamt")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response getAllPendenzenJA(
 		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
 		@Context UriInfo uriInfo,
@@ -135,14 +137,20 @@ public class SearchResource {
 		});
 	}
 
-	@ApiOperation(value = "Gibt eine Liste mit allen Betreuungen die pendent sind und zur Institution oder Traegerschaft des eingeloggten Benutzers " +
-		"gehoeren zurueck. Fuer das Schulamt werden alle SCH-Anmeldungen zurueckgegeben", responseContainer = "List", response = JaxPendenzBetreuungen.class)
+	@ApiOperation(value =
+		"Gibt eine Liste mit allen Betreuungen die pendent sind und zur Institution oder Traegerschaft des "
+			+ "eingeloggten Benutzers "
+			+
+			"gehoeren zurueck. Fuer das Schulamt werden alle SCH-Anmeldungen zurueckgegeben",
+		responseContainer = "List",
+		response = JaxPendenzBetreuungen.class)
 	@Nonnull
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/pendenzenBetreuungen")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxPendenzBetreuungen> getAllPendenzenBetreuungen() {
 		Collection<AbstractPlatz> betreuungenInStatus = betreuungService.getPendenzenBetreuungen();
@@ -190,7 +198,10 @@ public class SearchResource {
 	) {
 		Objects.requireNonNull(dossierJAXPId.getId());
 		Dossier dossier = dossierService.findDossier(dossierJAXPId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getAllAntraegeOfDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAXPId.getId()));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getAllAntraegeOfDossier",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				dossierJAXPId.getId()));
 
 		List<Gesuch> antraege = gesuchService.getAntraegeOfDossier(dossier);
 		final List<JaxAntragDTO> jaxAntragDTOS = new ArrayList<>();
@@ -205,7 +216,8 @@ public class SearchResource {
 
 	}
 
-	@ApiOperation(value = "Sucht Antraege mit den uebergebenen Suchkriterien/Filtern. Es werden nur Antraege zurueck " +
+	@ApiOperation(value = "Sucht Antraege mit den uebergebenen Suchkriterien/Filtern. Es werden nur Antraege zurueck"
+		+ " " +
 		"gegeben, fuer die der eingeloggte Benutzer berechtigt ist.", response = JaxAntragSearchresultDTO.class)
 	@Nonnull
 	@POST
@@ -234,7 +246,8 @@ public class SearchResource {
 
 		List<JaxAntragDTO> antragDTOList = new ArrayList<>(foundAntraege.size());
 		foundAntraege.forEach(gesuch -> {
-			JaxAntragDTO antragDTO = converter.gesuchToAntragDTO(gesuch, principalBean.discoverMostPrivilegedRole(), allowedInst);
+			JaxAntragDTO antragDTO =
+				converter.gesuchToAntragDTO(gesuch, principalBean.discoverMostPrivilegedRole(), allowedInst);
 			antragDTO.setFamilienName(gesuch.extractFamiliennamenString());
 			antragDTOList.add(antragDTO);
 		});
@@ -242,7 +255,10 @@ public class SearchResource {
 	}
 
 	@Nonnull
-	private JaxAntragSearchresultDTO buildResultDTO(@Nonnull @NotNull AntragTableFilterDTO antragSearch, Pair<Long, List<Gesuch>> searchResultPair, List<JaxAntragDTO> antragDTOList) {
+	private JaxAntragSearchresultDTO buildResultDTO(
+		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
+		Pair<Long, List<Gesuch>> searchResultPair,
+		List<JaxAntragDTO> antragDTOList) {
 		JaxAntragSearchresultDTO resultDTO = new JaxAntragSearchresultDTO();
 		resultDTO.setAntragDTOs(antragDTOList);
 		PaginationDTO pagination = antragSearch.getPagination();

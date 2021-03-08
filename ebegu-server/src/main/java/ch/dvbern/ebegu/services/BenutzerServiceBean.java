@@ -789,6 +789,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			benutzer.setRole(UserRole.SUPER_ADMIN);
 			benutzer.setInstitution(null);
 			benutzer.setTraegerschaft(null);
+			benutzer.setSozialdienst(null);
 			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
 		}
 	}

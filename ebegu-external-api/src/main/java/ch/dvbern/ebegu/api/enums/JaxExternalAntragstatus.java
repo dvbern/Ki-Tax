@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.enums;
 public enum JaxExternalAntragstatus {
 
 	IN_BEARBEITUNG_GS,
+	IN_BEARBEITUNG_SOZIALDIENST,
 	FREIGABEQUITTUNG,   // = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig ist)
 	NUR_SCHULAMT,
 	FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig

@@ -20,6 +20,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BerechtigungChangedEntityListener;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeinde;
 import ch.dvbern.ebegu.validators.CheckBerechtigungInstitutionTraegerschaft;
+import ch.dvbern.ebegu.validators.CheckBerechtigungSozialdienst;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 @Audited
 @CheckBerechtigungInstitutionTraegerschaft
 @CheckBerechtigungGemeinde
+@CheckBerechtigungSozialdienst
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Berechtigung extends AbstractDateRangedEntity implements Comparable<Berechtigung> {

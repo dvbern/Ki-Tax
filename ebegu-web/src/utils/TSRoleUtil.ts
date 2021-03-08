@@ -256,8 +256,11 @@ export class TSRoleUtil {
     }
 
     public static getAdministratorOrAmtRole(): ReadonlyArray<TSRole> {
+        return this.getAmtRole().concat(TSRole.SUPER_ADMIN);
+    }
+
+    public static getAmtRole(): ReadonlyArray<TSRole> {
         return [
-            TSRole.SUPER_ADMIN,
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_GEMEINDE,
@@ -589,6 +592,10 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT].includes(role);
     }
 
+    public static isSozialdienstRole(role: TSRole): boolean {
+        return PERMISSIONS[Permission.ROLE_SOZIALDIENST].includes(role);
+    }
+
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }
@@ -613,5 +620,28 @@ export class TSRoleUtil {
             TSRole.ADMIN_SOZIALDIENST,
             TSRole.SACHBEARBEITER_SOZIALDIENST,
         ];
+    }
+
+    public static getSozialdienstRolle(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
+        ];
+    }
+
+    public static getAdministratorOrSozialdienstRolle(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
+        ];
+    }
+
+    public static getAdministratorOrAmtOrSozialdienstRolle(): ReadonlyArray<TSRole> {
+        return this.getAdministratorOrAmtRole().concat(this.getSozialdienstRolle());
+    }
+
+    public static getAmtOrSozialdienstRolle(): ReadonlyArray<TSRole> {
+        return this.getAmtRole().concat(this.getSozialdienstRolle());
     }
 }

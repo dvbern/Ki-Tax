@@ -18,6 +18,7 @@ import {StateService, TargetState} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
+import {TSSozialdienst} from '../../models/sozialdienst/TSSozialdienst';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSInstitution} from '../../models/TSInstitution';
@@ -91,6 +92,9 @@ export class LocalLoginComponent {
     public revisorParisLondon: TSBenutzer;
     public juristParisLondon: TSBenutzer;
 
+    public administratorSozialdienst: TSBenutzer;
+    public sachbearbeiterSozialdienst: TSBenutzer;
+
     public sachbearbeiterinFerienbetreuungGemeindeParis: TSBenutzer;
     public adminFerienbetreuungGemeindeParis: TSBenutzer;
     public sachbearbeiterinFerienbetreuungGemeindeLondon: TSBenutzer;
@@ -105,6 +109,7 @@ export class LocalLoginComponent {
     private readonly institution: TSInstitution;
     private readonly tagesschule: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
+    private readonly sozialdienst: TSSozialdienst;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -117,6 +122,7 @@ export class LocalLoginComponent {
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern();
         this.institution = this.getInsitution();
         this.tagesschule = this.getTagesschule();
+        this.sozialdienst = this.getSozialdienst();
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
         });
@@ -261,6 +267,28 @@ export class LocalLoginComponent {
             'hans.zimmermann@mailbucket.dvbern.ch',
             this.mandant,
             TSRole.GESUCHSTELLER);
+        this.administratorSozialdienst = new TSBenutzer('Patrick',
+            'Melcher',
+            'patrick.melcher@mailbucket.dvbern.ch',
+            'password1',
+            'patrick.melcher@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.ADMIN_SOZIALDIENST,
+            undefined,
+            undefined,
+            undefined,
+            this.sozialdienst);
+        this.sachbearbeiterSozialdienst = new TSBenutzer('Max',
+            'Palmer',
+            'max.palmer@mailbucket.dvbern.ch',
+            'password1',
+            'max.palmer@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            undefined,
+            undefined,
+            undefined,
+            this.sozialdienst);
     }
 
     private createUsersOfParis(): void {
@@ -628,5 +656,12 @@ export class LocalLoginComponent {
     public logIn(credentials: TSBenutzer): void {
         this.authServiceRS.loginRequest(credentials)
             .then(() => returnToOriginalState(this.stateService, this.returnTo));
+    }
+
+    private getSozialdienst(): TSSozialdienst {
+        const sozialdienst = new TSSozialdienst();
+        sozialdienst.name = 'BernerSozialdienst';
+        sozialdienst.id = 'f44a68f2-dda2-4bf2-936a-68e20264b620';
+        return sozialdienst;
     }
 }

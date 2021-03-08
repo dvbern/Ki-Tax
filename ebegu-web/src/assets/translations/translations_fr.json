@@ -791,6 +791,8 @@
     "TSRole_SACHBEARBEITER_FERIENBETREUUNG": "Sachbearbeiter/in Ferienbetreuung",
     "TSRole_ADMIN_FERIENBETREUUNG": "Administrator/in Ferienbetreuung",
     "TSRole_NONE": "Aucun rôle (auteur-e de la demande)",
+    "TSRole_ADMIN_SOZIALDIENST": "Administrateur/-trice service social",
+    "TSRole_SACHBEARBEITER_SOZIALDIENST": "Collaborateur/-trice spécialisé-e service social",
     "PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG": "Détérioration minimale du revenu (%)",
     "VORJAHR": "Année précédente",
     "JANUARY": "Janvier",
@@ -2269,5 +2271,6 @@
     "SOZIALDIENST_STAMMDATEN": "Donnnée de base du service social",
     "SOZIALDIENST_EDIT": "Modifier le service social",
     "SOZIALDIENST_SPEICHERN": "Enregistrer le service social",
+    "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Ouvrir un cas pour service social",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

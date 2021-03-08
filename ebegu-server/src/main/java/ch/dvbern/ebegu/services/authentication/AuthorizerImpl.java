@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
@@ -81,6 +82,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -91,6 +93,7 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
@@ -100,6 +103,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
@@ -143,11 +147,16 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	private InstitutionStammdatenService stammdatenService;
 
 	@Inject
-	GemeindeAntragService gemeindeAntragService;
+	private GemeindeAntragService gemeindeAntragService;
+
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
 
 	/**
-	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller need to
-	 * see all gemeinde. All other roles which must have a gemeinde linked to it can only see those gemeinde which they belong to
+	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller
+	 * need to
+	 * see all gemeinde. All other roles which must have a gemeinde linked to it can only see those gemeinde which
+	 * they belong to
 	 */
 	@Override
 	public void checkReadAuthorization(@Nullable Gemeinde gemeinde) {
@@ -169,7 +178,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkWriteAuthorization(@Nullable Gemeinde gemeinde) {
 		if (gemeinde != null) {
-			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			boolean allGemeindenAllowed =
+				principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
 			if (allGemeindenAllowed) {
 				return;
 			}
@@ -433,27 +443,27 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			// verfügt/abgeschlossen war. Damit müssen alle Rollen, die Module akzeptieren dürfen, auch
 			// die Verfügung speichern dürfen!
 			if (!principalBean.isCallerInAnyOfRole(
-							SUPER_ADMIN,
-							ADMIN_GEMEINDE,
-							SACHBEARBEITER_GEMEINDE,
-							ADMIN_TS,
-							SACHBEARBEITER_TS,
-							ADMIN_BG,
-							SACHBEARBEITER_BG,
-							ADMIN_INSTITUTION,
-							SACHBEARBEITER_INSTITUTION,
-							ADMIN_TRAEGERSCHAFT,
-							SACHBEARBEITER_TRAEGERSCHAFT)) {
+				SUPER_ADMIN,
+				ADMIN_GEMEINDE,
+				SACHBEARBEITER_GEMEINDE,
+				ADMIN_TS,
+				SACHBEARBEITER_TS,
+				ADMIN_BG,
+				SACHBEARBEITER_BG,
+				ADMIN_INSTITUTION,
+				SACHBEARBEITER_INSTITUTION,
+				ADMIN_TRAEGERSCHAFT,
+				SACHBEARBEITER_TRAEGERSCHAFT)) {
 				throwViolation(verfuegung);
 			}
 		} else {
 			// Bei BGs bleiben weiterhin die Admins/Sachbearbeiter BG/Gemeinde berechtigt
 			if (!principalBean.isCallerInAnyOfRole(
-							SUPER_ADMIN,
-							ADMIN_BG,
-							SACHBEARBEITER_BG,
-							ADMIN_GEMEINDE,
-							SACHBEARBEITER_GEMEINDE)) {
+				SUPER_ADMIN,
+				ADMIN_BG,
+				SACHBEARBEITER_BG,
+				ADMIN_GEMEINDE,
+				SACHBEARBEITER_GEMEINDE)) {
 				throwViolation(verfuegung);
 			}
 		}
@@ -492,7 +502,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		if(principalBean.isCallerInAnyOfRole(SUPER_ADMIN)){
+		if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN)) {
 			return;
 		}
 		// Der Mandant muss stimmen
@@ -515,7 +525,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case ADMIN_BG:
 		case ADMIN_TS: {
 			if (benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.GEMEINDE
-			&& benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
+				&& benutzer.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.INSTITUTION) {
 				throwViolation(benutzer);
 			}
 			return;
@@ -579,8 +589,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Set<Gemeinde> gemeindenOfUser = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
 			return (userHasSameGemeindeAsPrincipal(benutzer))
 				|| (benutzer.getInstitution() != null
-					&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser)
-						|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))));
+				&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser)
+				|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return benutzer.getRole().isRoleMandant()
@@ -602,16 +612,22 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return false;
 	}
 
-	private boolean tagesschuleBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
-		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+	private boolean tagesschuleBelongsToGemeinde(
+		@Nonnull String institutionId,
+		@Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten =
+			stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
 		if (stammdaten == null || stammdaten.getInstitutionStammdatenTagesschule() == null) {
 			return false;
 		}
 		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
 	}
 
-	private boolean ferieninselBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
-		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+	private boolean ferieninselBelongsToGemeinde(
+		@Nonnull String institutionId,
+		@Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten =
+			stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
 		if (stammdaten == null || stammdaten.getInstitutionStammdatenFerieninsel() == null) {
 			return false;
 		}
@@ -643,7 +659,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public <T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T>betreuungen) {
+	public <T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T> betreuungen) {
 		if (betreuungen != null) {
 			betreuungen.stream()
 				.filter(betreuung -> !isReadAuthorized(betreuung))
@@ -825,7 +841,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return abstractPlatz.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
-			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), abstractPlatz.getInstitutionStammdaten().getInstitution());
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(
+				principalBean.getBenutzer(),
+				abstractPlatz.getInstitutionStammdaten().getInstitution());
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
@@ -1254,7 +1272,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT: {
-			return isTraegerschaftsBenutzerAuthorizedForInstitution(currentBenutzer, institutionStammdaten.getInstitution());
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(
+				currentBenutzer,
+				institutionStammdaten.getInstitution());
 		}
 		default: {
 			return false;
@@ -1284,7 +1304,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT: {
-			return isTraegerschaftsBenutzerAuthorizedForInstitution(currentBenutzer, institutionStammdaten.getInstitution());
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(
+				currentBenutzer,
+				institutionStammdaten.getInstitution());
 		}
 		case ADMIN_GEMEINDE:
 		case SACHBEARBEITER_GEMEINDE:
@@ -1292,8 +1314,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case SACHBEARBEITER_BG:
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS: {
-			if (institutionStammdaten.getBetreuungsangebotTyp().isKita() || institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
-				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch Gemeinde-Benutzer,
+			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
+				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch
+				// Gemeinde-Benutzer,
 				return false;
 			}
 			Gemeinde gemeinde = null;
@@ -1545,7 +1569,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
+	public void checkReadAuthorization(
+		@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
 		if (latsGemeindeContainer != null) {
 			checkMandantMatches(latsGemeindeContainer.getGemeinde());
 			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
@@ -1565,21 +1590,24 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
+	public void checkWriteAuthorization(
+		@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
 		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
 		checkReadAuthorization(latsGemeindeContainer);
 	}
 
 	@Override
-	public void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
+	public void checkReadAuthorization(
+		@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
 		if (latsInstitutionContainer != null) {
 			checkMandantMatches(latsInstitutionContainer.getGemeinde());
 			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 				return;
 			} else if (principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig()) {
-				final boolean gehoertZuGemeinde = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
-					.stream()
-					.anyMatch(latsInstitutionContainer.getGemeinde()::equals);
+				final boolean gehoertZuGemeinde =
+					principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
+						.stream()
+						.anyMatch(latsInstitutionContainer.getGemeinde()::equals);
 				if (gehoertZuGemeinde) {
 					return;
 				}
@@ -1592,7 +1620,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
+	public void checkWriteAuthorization(
+		@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer) {
 		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
 		checkReadAuthorization(latsInstitutionContainer);
 	}
@@ -1604,7 +1633,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			(LastenausgleichTagesschuleAngabenGemeindeContainer) gemeindeAntragService.findGemeindeAntrag(
 				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
 				gemeindeAntragId
-			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
+			)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"checkReadAuthorizationLATSGemeindeAntrag",
+					gemeindeAntragId));
 
 		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			return;
@@ -1623,7 +1655,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			(LastenausgleichTagesschuleAngabenGemeindeContainer) gemeindeAntragService.findGemeindeAntrag(
 				GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
 				gemeindeAntragId
-			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationLATSGemeindeAntrag", gemeindeAntragId));
+			)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"checkReadAuthorizationLATSGemeindeAntrag",
+					gemeindeAntragId));
 
 		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
 			return;
@@ -1637,7 +1672,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			} else {
 				throwViolation(antrag);
 			}
-		} default: {
+		}
+		default: {
 			throwViolation(antrag);
 		}
 		}
@@ -1671,9 +1707,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getUsername());
 	}
 
-	private boolean isTraegerschaftsBenutzerAuthorizedForInstitution(@Nonnull Benutzer currentBenutzer, @Nonnull Institution institution) {
+	private boolean isTraegerschaftsBenutzerAuthorizedForInstitution(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Institution institution) {
 		Traegerschaft traegerschaft = currentBenutzer.getTraegerschaft();
-		Objects.requireNonNull(traegerschaft,
+		Objects.requireNonNull(
+			traegerschaft,
 			"Traegerschaft des Sachbearbeiters muss gesetzt sein " + currentBenutzer);
 		Collection<Institution> institutions =
 			institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
@@ -1733,7 +1772,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	/**
 	 * For now only admin and mandant allowed
-	 * @param sozialdienst
 	 */
 	@Override
 	public void checkReadAuthorization(@Nullable Sozialdienst sozialdienst) {
@@ -1742,18 +1780,47 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	/**
 	 * For now only admin and mandant allowed
-	 * @param sozialdienst
 	 */
 	@Override
 	public void checkWriteAuthorization(@Nullable Sozialdienst sozialdienst) {
 		if (sozialdienst != null) {
-			boolean allSozialdienstAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			boolean allSozialdienstAllowed =
+				principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
 			if (allSozialdienstAllowed) {
 				return;
 			}
-			else {
-				throwViolation(sozialdienst);
+			if (principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)) {
+				Sozialdienst benutzerSozialdienst = principalBean.getBenutzer().getSozialdienst();
+				Objects.requireNonNull(
+					benutzerSozialdienst,
+					String.format(
+						"Sozialdienst des Sachbearbeiters muss gesetzt sein: {%s} ",
+						principalBean.getBenutzer()));
+				if (benutzerSozialdienst.equals(sozialdienst)) {
+					return;
+				}
 			}
+
+			throwViolation(sozialdienst);
+
 		}
+	}
+
+	@Override
+	public void checkReadAuthorizationFerienbetreuung(@Nonnull String id) {
+		Objects.requireNonNull(id);
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(
+				id
+			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationFerienbetreuung", id));
+
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			return;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+			&& principalBean.belongsToGemeinde(container.getGemeinde())) {
+			return;
+		}
+		throwViolation(container);
 	}
 }

@@ -24,5 +24,6 @@ export enum Permission {
     ROLE_MANDANT = 'ROLE_MANDANT',
     ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
     ROLE_TS = 'ROLE_TS', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
+    ROLE_SOZIALDIENST = 'ROLE_SOZIALDIENST',
     BENUTZER_FERIENBETREUUNG_EINLADEN = 'BENUTZER_FERIENBETREUUNG_EINLADEN',
 }

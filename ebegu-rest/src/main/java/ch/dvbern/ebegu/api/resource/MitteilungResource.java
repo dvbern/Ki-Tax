@@ -85,6 +85,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
@@ -94,6 +95,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -130,7 +132,6 @@ public class MitteilungResource {
 
 	@Inject
 	private GesuchService gesuchService;
-
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
 	@Nullable
@@ -169,11 +170,12 @@ public class MitteilungResource {
 		Objects.requireNonNull(mitteilungJAXP.getBetreuung().getId());
 
 		Betreuung betreuung =
-			betreuungService.findBetreuung(mitteilungJAXP.getBetreuung().getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
-				"sendBetreuungsmitteilung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				mitteilungJAXP.getBetreuung()
-			));
+			betreuungService.findBetreuung(mitteilungJAXP.getBetreuung().getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"sendBetreuungsmitteilung",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					mitteilungJAXP.getBetreuung()
+				));
 
 		// we first clear all the Mutationsmeldungen for the current Betreuung
 		mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
@@ -190,7 +192,9 @@ public class MitteilungResource {
 		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
 
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sendBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
 
@@ -210,11 +214,13 @@ public class MitteilungResource {
 			betreuungsmitteilung.getBetreuungspensen(),
 			mahlzeitenverguenstigungEnabled, locale));
 
-		Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
+		Betreuungsmitteilung persistedMitteilung =
+			this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 		return converter.betreuungsmitteilungToJAX(persistedMitteilung);
 	}
 
-	@ApiOperation(value = "Uebernimmt eine Betreuungsmitteilung in eine Mutation. Falls aktuell keine Mutation offen " +
+	@ApiOperation(value = "Uebernimmt eine Betreuungsmitteilung in eine Mutation. Falls aktuell keine Mutation offen"
+		+ " " +
 		"ist, wird eine neue erstellt. Falls eine Mutation im Status VERFUEGEN vorhanden ist, oder die Mutation im " +
 		"Status BESCHWERDE ist, wird ein Fehler zurueckgegeben", response = JaxId.class)
 	@Nullable
@@ -228,7 +234,8 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		final Optional<Betreuungsmitteilung> mitteilung = mitteilungService.findBetreuungsmitteilung(betreuungsmitteilungId.getId());
+		final Optional<Betreuungsmitteilung> mitteilung =
+			mitteilungService.findBetreuungsmitteilung(betreuungsmitteilungId.getId());
 		if (!mitteilung.isPresent()) {
 			throw new EbeguEntityNotFoundException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"BetreuungsmitteilungID invalid: " + betreuungsmitteilungId.getId());
@@ -314,14 +321,19 @@ public class MitteilungResource {
 		Optional<Betreuung> optional = betreuungService.findBetreuung(betreuungId);
 
 		if (!optional.isPresent()) {
-			throw new EbeguEntityNotFoundException("findNewestBetreuunsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, betreuungId);
+			throw new EbeguEntityNotFoundException(
+				"findNewestBetreuunsmitteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				betreuungId);
 		}
 
-		Optional<Betreuungsmitteilung> optBetMitteilung = mitteilungService.findNewestBetreuungsmitteilung(betreuungId);
+		Optional<Betreuungsmitteilung> optBetMitteilung =
+			mitteilungService.findNewestBetreuungsmitteilung(betreuungId);
 		return optBetMitteilung.map(mitteilung -> converter.betreuungsmitteilungToJAX(mitteilung)).orElse(null);
 	}
 
-	@ApiOperation(value = "Gibt einen Wrapper mit der Liste aller Mitteilungen zurueck, welche fuer den eingeloggten " +
+	@ApiOperation(value = "Gibt einen Wrapper mit der Liste aller Mitteilungen zurueck, welche fuer den eingeloggten"
+		+ " " +
 		"Benutzer fuer das uebergebene Dossier vorhanden sind", response = JaxMitteilungen.class)
 	@Nullable
 	@GET
@@ -341,7 +353,8 @@ public class MitteilungResource {
 		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
 		if (dossier.isPresent()) {
 			final Collection<JaxMitteilung> convertedMitteilungen = new ArrayList<>();
-			final Collection<Mitteilung> mitteilungen = mitteilungService.getMitteilungenForCurrentRolle(dossier.get());
+			final Collection<Mitteilung> mitteilungen =
+				mitteilungService.getMitteilungenForCurrentRolle(dossier.get());
 			mitteilungen.forEach(mitteilung -> {
 				if (mitteilung instanceof Betreuungsmitteilung) {
 					convertedMitteilungen.add(converter.betreuungsmitteilungToJAX((Betreuungsmitteilung) mitteilung));
@@ -351,10 +364,14 @@ public class MitteilungResource {
 			});
 			return new JaxMitteilungen(convertedMitteilungen); // We wrap the list to avoid loosing subtypes attributes
 		}
-		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, FALL_ID_INVALID + jaxDossierId.getId());
+		throw new EbeguEntityNotFoundException(
+			"getMitteilungenForCurrentRolle",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			FALL_ID_INVALID + jaxDossierId.getId());
 	}
 
-	@ApiOperation(value = "Gibt einen Wrapper mit der Liste aller Mitteilungen zurueck, welche fuer den eingeloggten " +
+	@ApiOperation(value = "Gibt einen Wrapper mit der Liste aller Mitteilungen zurueck, welche fuer den eingeloggten"
+		+ " " +
 		"Benutzer fuer die uebergebene Betreuung vorhanden sind", response = JaxMitteilungen.class)
 	@Nullable
 	@GET
@@ -373,11 +390,15 @@ public class MitteilungResource {
 		String id = converter.toEntityId(betreuungId);
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(id);
 		if (betreuung.isPresent()) {
-			final Collection<Mitteilung> mitteilungen = mitteilungService.getMitteilungenForCurrentRolle(betreuung.get());
+			final Collection<Mitteilung> mitteilungen =
+				mitteilungService.getMitteilungenForCurrentRolle(betreuung.get());
 			return new JaxMitteilungen(mitteilungen.stream().map(mitteilung ->
 				converter.mitteilungToJAX(mitteilung, new JaxMitteilung())).collect(Collectors.toList()));
 		}
-		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolleForBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID invalid: " + betreuungId.getId());
+		throw new EbeguEntityNotFoundException(
+			"getMitteilungenForCurrentRolleForBetreuung",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"BetreuungID invalid: " + betreuungId.getId());
 	}
 
 	@ApiOperation(value = "Ermittelt die Anzahl neuer Mitteilungen im Posteingang des eingeloggten Benutzers",
@@ -416,7 +437,10 @@ public class MitteilungResource {
 			mitteilungService.removeMitteilung(mitteilung.get());
 			return Response.ok().build();
 		}
-		throw new EbeguEntityNotFoundException("removeMitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "MitteilungID invalid: " + mitteilungJAXPId.getId());
+		throw new EbeguEntityNotFoundException(
+			"removeMitteilung",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"MitteilungID invalid: " + mitteilungJAXPId.getId());
 	}
 
 	@ApiOperation(value = "Setzt alle Mitteilungen des Dossiers mit der uebergebenen Id auf gelesen",
@@ -438,7 +462,8 @@ public class MitteilungResource {
 		String dossierId = converter.toEntityId(jaxDossierId);
 		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
 		if (dossier.isPresent()) {
-			final Collection<Mitteilung> mitteilungen = mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier.get());
+			final Collection<Mitteilung> mitteilungen =
+				mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier.get());
 			Collection<JaxMitteilung> convertedMitteilungen = new ArrayList<>();
 			final Iterator<Mitteilung> iterator = mitteilungen.iterator();
 			//noinspection WhileLoopReplaceableByForEach
@@ -447,7 +472,10 @@ public class MitteilungResource {
 			}
 			return new JaxMitteilungen(convertedMitteilungen);
 		}
-		throw new EbeguEntityNotFoundException("setAllNewMitteilungenOfDossierGelesen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, FALL_ID_INVALID + jaxDossierId.getId());
+		throw new EbeguEntityNotFoundException(
+			"setAllNewMitteilungenOfDossierGelesen",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			FALL_ID_INVALID + jaxDossierId.getId());
 	}
 
 	private Mitteilung readAndConvertMitteilung(@Nonnull JaxMitteilung mitteilungJAXP) {
@@ -460,7 +488,8 @@ public class MitteilungResource {
 		return converter.mitteilungToEntity(mitteilungJAXP, mitteilung);
 	}
 
-	@ApiOperation(value = "Ermittelt die Anzahl neuer Mitteilungen fuer das uebergebene Dossier aller Benutzer in der Rolle des eingeloggten Benutzers",
+	@ApiOperation(value = "Ermittelt die Anzahl neuer Mitteilungen fuer das uebergebene Dossier aller Benutzer in der "
+		+ "Rolle des eingeloggten Benutzers",
 		response = Integer.class)
 	@Nullable
 	@GET
@@ -481,7 +510,10 @@ public class MitteilungResource {
 		if (dossier.isPresent()) {
 			return mitteilungService.getNewMitteilungenOfDossierForCurrentRolle(dossier.get()).size();
 		}
-		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, DOSSIER_ID_INVALID + jaxDossierId.getId());
+		throw new EbeguEntityNotFoundException(
+			"getMitteilungenForCurrentRolle",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			DOSSIER_ID_INVALID + jaxDossierId.getId());
 	}
 
 	@ApiOperation(value = "Weiterleiten der Mitteilung", response = JaxMitteilung.class)
@@ -490,7 +522,8 @@ public class MitteilungResource {
 	@Path("/weiterleiten/{mitteilungId}/{userName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE,
+		SACHBEARBEITER_GEMEINDE })
 	public JaxMitteilung mitteilungWeiterleiten(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId,
 		@Nonnull @NotNull @PathParam("userName") String username,
@@ -503,15 +536,16 @@ public class MitteilungResource {
 		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
 	}
 
-	@ApiOperation(value = "Sucht Mitteilungen mit den uebergebenen Suchkriterien/Filtern", response = JaxMitteilungSearchresultDTO.class)
+	@ApiOperation(value = "Sucht Mitteilungen mit den uebergebenen Suchkriterien/Filtern",
+		response = JaxMitteilungSearchresultDTO.class)
 	@Nonnull
 	@POST
 	@Path("/search/{includeClosed}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS })
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response searchMitteilungen(
 		@Nonnull @PathParam("includeClosed") String includeClosed,
 		@Nonnull @NotNull MitteilungTableFilterDTO tableFilterDTO,
