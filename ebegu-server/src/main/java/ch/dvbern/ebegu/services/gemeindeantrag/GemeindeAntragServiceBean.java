@@ -49,7 +49,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@Nonnull
-	public List<GemeindeAntrag> createGemeindeAntrag(
+	public List<GemeindeAntrag> createAllGemeindeAntraege(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull GemeindeAntragTyp typ) {
 		switch (typ) {

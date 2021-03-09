@@ -60,7 +60,7 @@ public class GemeindeAntragServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void createGemeindeAntrag() {
-		final List<? extends GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createGemeindeAntrag(
+		final List<? extends GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createAllGemeindeAntraege(
 			gesuchsperiode1920,
 			GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
 		Assert.assertNotNull(gemeindeAntragList);

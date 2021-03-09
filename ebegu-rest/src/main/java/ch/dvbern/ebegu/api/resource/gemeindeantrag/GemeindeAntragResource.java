@@ -51,7 +51,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -101,7 +100,7 @@ public class GemeindeAntragResource {
 	@ApiOperation(
 		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
-	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
+	@Path("/createAllAntraege/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxGemeindeAntrag> createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
@@ -121,7 +120,7 @@ public class GemeindeAntragResource {
 
 		try {
 			final List<GemeindeAntrag> gemeindeAntragList =
-				gemeindeAntragService.createGemeindeAntrag(gesuchsperiode, gemeindeAntragTyp);
+				gemeindeAntragService.createAllGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
 			return converter.gemeindeAntragListToJax(gemeindeAntragList);
 		} catch (EntityExistsException e) {
 			throw new WebApplicationException(e, Status.CONFLICT);

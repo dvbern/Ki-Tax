@@ -140,6 +140,17 @@ export class GemeindeAntraegeComponent implements OnInit {
             );
     }
 
+    public createAllAntraege(): void {
+        if (!this.formGroup.valid) {
+            this.triedSending = true;
+            return;
+        }
+        this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(() => {
+            this.loadAntragList();
+            this.cd.markForCheck();
+        }, this.handleCreateAntragError);
+    }
+
     public createAntrag(): void {
         if (!this.formGroup.valid) {
             this.triedSending = true;
@@ -148,14 +159,16 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
-        }, (error: HttpErrorResponse) => {
-            const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
-                this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
+        }, this.handleCreateAntragError);
+    }
 
-            errorMessage$.subscribe(message => {
-                this.errorService.addMesageAsError(message);
-            }, translateError => console.error('Could no translate', translateError));
-        });
+    private handleCreateAntragError(error: HttpErrorResponse): void {
+        const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
+            this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
+
+        errorMessage$.subscribe(message => {
+            this.errorService.addMesageAsError(message);
+        }, translateError => console.error('Could no translate', translateError));
     }
 
     public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
