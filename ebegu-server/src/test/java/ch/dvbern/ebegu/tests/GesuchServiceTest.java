@@ -839,7 +839,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
 			Constants.END_OF_TIME,
-			verfuegtesGesuch.getGesuchsperiode().getId()
+			verfuegtesGesuch.getGesuchsperiode()
 		);
 
 		Assert.assertEquals(1, gesuche.size());
@@ -858,7 +858,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
 			Constants.END_OF_TIME,
-			gesuchFeutz.getGesuchsperiode().getId()
+			gesuchFeutz.getGesuchsperiode()
 		);
 
 		Assert.assertTrue(gesuche.isEmpty());
@@ -880,7 +880,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
 			Constants.END_OF_TIME,
-			otherGesuchsperiode.getId()
+			otherGesuchsperiode
 		);
 
 		Assert.assertTrue(gesuche.isEmpty());
@@ -903,7 +903,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
 			Constants.END_OF_TIME,
-			mergedGesuch.getGesuchsperiode().getId()
+			mergedGesuch.getGesuchsperiode()
 		);
 
 		Assert.assertTrue(gesuche.isEmpty());
@@ -927,7 +927,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
 			Constants.END_OF_TIME,
-			freigegebenesGesuch.getGesuchsperiode().getId()
+			freigegebenesGesuch.getGesuchsperiode()
 		);
 
 		Assert.assertEquals(1, gesuche.size());
@@ -952,22 +952,22 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.END_OF_TIME.minusMonths(2),
 			Constants.END_OF_TIME,
-			freigegebenesGesuch.getGesuchsperiode().getId()
+			freigegebenesGesuch.getGesuchsperiode()
 		);
 
 		Assert.assertTrue(gesuche.isEmpty());
 	}
 
 	@Test
-	public void testHasFolgegesuchWithoutFolgegesuch() {
+	public void testGetAllGesuchForAmtAfterGPEmpty() {
 		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
-		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
+		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode).isEmpty());
 	}
 
 	@Test
-	public void testHasFolgegesuchWithFolgegesuch() {
+	public void testGetAllGesuchForAmtAfterGP() {
 		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
@@ -975,8 +975,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final Gesuchsperiode savedGesuchsperiode1819 = persistence.persist(gesuchsperiode1819);
 
 		Gesuch erneuerung = testfaelleService.antragErneuern(gesuch, savedGesuchsperiode1819, null);
-		Assert.assertTrue(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
-		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(erneuerung.getId()));
+		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode).size() == 1);
+		Assert.assertFalse(gesuchService.getAllGesuchForAmtAfterGP(savedGesuchsperiode1819).isEmpty());
 	}
 
 

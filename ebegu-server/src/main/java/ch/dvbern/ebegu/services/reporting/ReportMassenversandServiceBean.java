@@ -17,8 +17,10 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -31,7 +33,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -99,10 +100,16 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		@Nonnull Locale locale
 	) {
 
+		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeID)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException("getReportMassenversand",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchPeriodeID)
+			);
+
 	List<Gesuch> ermittelteGesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 		datumVon,
 		datumBis,
-		gesuchPeriodeID
+		gesuchsperiode
 	);
 
 	// Filter Gesuche by AngebotTyp
@@ -110,7 +117,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		filterGesucheByAngebotTyp(inklBgGesuche, inklMischGesuche, inklTsGesuche, ermittelteGesuche);
 
 	List<Gesuch> resultGesuchFinalList =
-		filterGesucheByFolgegesuch(ohneErneuerungsgesuch, gesucheFilteredByAngebotTyp);
+		filterGesucheByFolgegesuch(ohneErneuerungsgesuch, gesucheFilteredByAngebotTyp, gesuchsperiode);
 
 	// Wenn ein Text eingegeben wurde, wird der Massenversand gespeichert
 		if(StringUtils.isNotEmpty(text)&&!resultGesuchFinalList.isEmpty()) {
@@ -301,13 +308,29 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 	private List<Gesuch> filterGesucheByFolgegesuch(
 		boolean ohneErneuerungsgesuch,
-		List<Gesuch> gesucheFilteredByAngebotTyp) {
+		List<Gesuch> gesucheFilteredByAngebotTyp,
+		Gesuchsperiode gesuchsperiode) {
 		if (ohneErneuerungsgesuch) {
+			// Find alle Gesuchen die sind nach dieser Gesuchsperiode gestartet fuer die BenutzerGemeinden
+			Map<String, Gesuch> zukunftigeGesucheForAmt = new HashMap<>();
+			List<Gesuch> gesuchList = gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode);
+			// es interessiert uns nur zu wissen ob eine in Zufunkt liegt, desto muss man nur eine Pro dossier cachen
+			gesuchList.forEach(
+				gesuch ->
+					zukunftigeGesucheForAmt.put(gesuch.getDossier().getId(),gesuch)
+			);
 			return gesucheFilteredByAngebotTyp.stream()
-				.filter(gesuch -> !gesuchService.hasFolgegesuchForAmt(gesuch.getId()))
+				.filter(gesuch -> !hasFolgegesuchForAmt(gesuch, zukunftigeGesucheForAmt))
 				.collect(Collectors.toList());
 		}
 		return gesucheFilteredByAngebotTyp;
+	}
+
+	private boolean hasFolgegesuchForAmt(Gesuch gesuch, Map<String, Gesuch> zukunftigeGesucheForAmt) {
+		if(zukunftigeGesucheForAmt.get(gesuch.getDossier().getId()) != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private List<Gesuch> filterGesucheByAngebotTyp(

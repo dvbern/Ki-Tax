@@ -2116,14 +2116,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public List<Gesuch> getGepruefteFreigegebeneGesucheForGesuchsperiode(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull String gesuchsperiodeId
+		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
-
-		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-			.orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGepruefteFreigegebeneGesucheForGesuchsperiode",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
-			);
 
 		Map<String, Gesuch> neustesGeprueftesFreigegebensGesuchCache = new HashMap<>();
 		List<Gesuch> gesuches = getNeustesGeprueftesFreigegebensGesuchFuerPeriode(gesuchsperiode.getId());
@@ -2251,7 +2245,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		//noinspection rawtypes
 		ParameterExpression<Collection> statusParam = cb.parameter(Collection.class, "status");
 
-		List<Predicate> predicates = new ArrayList<>();;
+		List<Predicate> predicates = new ArrayList<>();
 
 		Predicate predicateStatus = root.get(Gesuch_.status).in(statusParam);
 		predicates.add(predicateStatus);
@@ -2320,41 +2314,43 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	public boolean hasFolgegesuchForAmt(@Nonnull String gesuchId) {
-		Objects.requireNonNull(gesuchId);
-		final Optional<Gesuch> optGesuch = findGesuch(gesuchId);
-		final Gesuch gesuch = optGesuch.orElseThrow(()
-			-> new EbeguEntityNotFoundException("hasFolgegesuchForAmt", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			gesuchId));
+	public List<Gesuch> getAllGesuchForAmtAfterGP(@Nonnull Gesuchsperiode gesuchsperiode) {
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getAllGesuchForAmtAfterGP", "No User is logged in"));
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 		Root<Gesuch> root = query.from(Gesuch.class);
 
-		query.select(root.get(AbstractEntity_.id));
-
-		ParameterExpression<String> dossierIdParam = cb.parameter(String.class, "dossierId");
 		ParameterExpression<LocalDate> gesuchsperiodeGueltigAbParam = cb.parameter(LocalDate.class, "gueltigAb");
 		//noinspection rawtypes
 		ParameterExpression<Collection> freigegebenParam = cb.parameter(Collection.class, "freigegeben");
 
+		List<Predicate> predicates = new ArrayList<>();
 		Predicate freigegebenPredicate = root.get(Gesuch_.status).in(freigegebenParam);
-		Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
+		predicates.add(freigegebenPredicate);
 		Predicate gesuchsperiodePredicate = cb.greaterThan(
 			root.get(Gesuch_.gesuchsperiode).get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			gesuchsperiodeGueltigAbParam);
+		predicates.add(gesuchsperiodePredicate);
 
-		query.where(fallPredicate, gesuchsperiodePredicate, freigegebenPredicate);
+		if(user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.LEFT);
+			Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
+			Predicate inGemeinde = joinGemeinde.in(user.extractGemeindenForUser());
+			predicates.add(inGemeinde);
+		}
 
-		TypedQuery<String> typedQuery = persistence.getEntityManager().createQuery(query);
-		typedQuery.setParameter(dossierIdParam, gesuch.getDossier().getId());
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.select(root);
+
+		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(
 			gesuchsperiodeGueltigAbParam,
-			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
+			gesuchsperiode.getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(freigegebenParam, AntragStatus.getAllFreigegebeneStatus());
 
-		final List<String> resultList = typedQuery.getResultList();
-		return !resultList.isEmpty();
+		return typedQuery.getResultList();
 	}
 
 	private void createFinSitDokument(Gesuch persistedGesuch, String methodname) {
