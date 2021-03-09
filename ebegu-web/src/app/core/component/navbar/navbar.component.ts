@@ -117,6 +117,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     private createNewFall(sozialdienstId: string): void {
         this.getGemeindeIDFromUser$(EbeguUtil.isNotNullOrUndefined(sozialdienstId)).pipe(
             take(1),
+            filter(result => !!result),
             filter(result => !!result.gemeindeId),
         )
             .subscribe(

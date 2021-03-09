@@ -2272,6 +2272,7 @@
     "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Sozialdienstfall",
     "SOZIALDIENST_FALL_ERSTELLEN": "Sozialdienst Fall erstellen",
+    "SOZIALDIENST_AUSWAEHLEN": "Sozialdienst auswählen",
     "IN_BEARBEITUNG_SOZIALDIENST": "In bearbeitung Sozialdienst",
     "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",

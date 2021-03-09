@@ -189,14 +189,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
      * gesuchsperiode set
      */
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV) {
+        if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV) {
             return true;
         }
         return false;
     }
 
     public isAktivierungMoeglich(): boolean {
-        if (this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.INAKTIV
+        if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
             && this.isVollmachtHochgeladet) {
             return true;
         }
