@@ -2236,9 +2236,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	 */
 	@Nonnull
 	public List<Gesuch> getNeustesGeprueftesFreigegebensGesuchFuerPeriode(
-		@Nonnull String gesuchsperiodeId
-	) {
+		@Nonnull String gesuchsperiodeId) {
 		Objects.requireNonNull(gesuchsperiodeId);
+
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
@@ -2248,12 +2251,23 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		//noinspection rawtypes
 		ParameterExpression<Collection> statusParam = cb.parameter(Collection.class, "status");
 
+		List<Predicate> predicates = new ArrayList<>();;
+
 		Predicate predicateStatus = root.get(Gesuch_.status).in(statusParam);
+		predicates.add(predicateStatus);
 		Predicate predicateGesuchsperiode = cb.equal(
 			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id),
 			gesuchsperiodeParam);
+		predicates.add(predicateGesuchsperiode);
 
-		query.where(predicateStatus, predicateGesuchsperiode);
+		if(user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.LEFT);
+			Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
+			Predicate inGemeinde = joinGemeinde.in(user.extractGemeindenForUser());
+			predicates.add(inGemeinde);
+		}
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		query.select(root);
 
 		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
