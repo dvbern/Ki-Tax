@@ -1259,7 +1259,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	private Eingangsart calculateEingangsart() {
 		Eingangsart eingangsart;
-		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+		if (this.principalBean.isCallerInAnyOfRole(UserRole.GESUCHSTELLER, UserRole.ADMIN_SOZIALDIENST, UserRole.SACHBEARBEITER_SOZIALDIENST)) {
 			eingangsart = Eingangsart.ONLINE;
 		} else {
 			eingangsart = Eingangsart.PAPIER;
@@ -1272,7 +1272,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		AntragStatus status;
 		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			status = AntragStatus.IN_BEARBEITUNG_GS;
-		} else {
+		} else if (this.principalBean.isCallerInAnyOfRole(UserRole.getAllSozialdienstRoles())){
+			status = AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
+		}
+		else {
 			status = AntragStatus.IN_BEARBEITUNG_JA;
 		}
 		return status;

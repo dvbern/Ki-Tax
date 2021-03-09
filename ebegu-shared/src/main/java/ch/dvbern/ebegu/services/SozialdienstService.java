@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 
 public interface SozialdienstService {
@@ -55,7 +56,7 @@ public interface SozialdienstService {
 	 * Gibt die Stammdaten zurück
 	 */
 	@Nonnull
-	Optional<SozialdienstStammdaten> getSozialdienstStammdaten(String id);
+	Optional<SozialdienstStammdaten> getSozialdienstStammdaten(@Nonnull String id);
 
 	/**
 	 * Gibt die Stammdaten von dieser Sozialdienst zurück
@@ -68,4 +69,12 @@ public interface SozialdienstService {
 	 */
 	@Nonnull
 	SozialdienstStammdaten saveSozialdienstStammdaten(@Nonnull SozialdienstStammdaten stammdaten);
+
+	/**
+	 * Gibt der Sozialdienst Fall zurück
+	 * @param id
+	 * @return
+	 */
+	@Nonnull
+	Optional<SozialdienstFall> findSozialdienstFall(@Nonnull String id);
 }

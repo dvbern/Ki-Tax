@@ -40,6 +40,9 @@ public class JaxAbstractAntragDTO implements Serializable {
 	@NotNull
 	private String dossierId;
 
+	@NotNull
+	private String fallId;
+
 	private String clazz;
 
 	public JaxAbstractAntragDTO(String clazz) {
@@ -76,5 +79,13 @@ public class JaxAbstractAntragDTO implements Serializable {
 
 	public void setClazz(String clazz) {
 		this.clazz = clazz;
+	}
+
+	public String getFallId() {
+		return fallId;
+	}
+
+	public void setFallId(String fallId) {
+		this.fallId = fallId;
 	}
 }
