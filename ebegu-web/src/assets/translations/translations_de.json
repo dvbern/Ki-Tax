@@ -2306,5 +2306,6 @@
     "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Aktivieren",
+    "ERR_GEMEINDEN_LADEN": "Gemeinden konnten nicht gelden werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

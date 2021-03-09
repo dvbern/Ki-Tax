@@ -21,9 +21,12 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -62,6 +65,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public gesuchsperioden: TSGesuchsperiode[];
     public formGroup: FormGroup;
     public totalItems: number;
+    public gemeinden: TSGemeinde[];
 
     private readonly filterDebounceSubject: BehaviorSubject<DVAntragListFilter> =
         new BehaviorSubject<DVAntragListFilter>({});
@@ -80,20 +84,23 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly cd: ChangeDetectorRef,
-        private readonly wizardStepXRS: WizardStepXRS
+        private readonly wizardStepXRS: WizardStepXRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 
     public ngOnInit(): void {
-        this.loadData();
+        this.loadAntragList();
+        this.loadGemeinden();
         this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
         this.formGroup = this.fb.group({
             periode: ['', Validators.required],
             antragTyp: ['', Validators.required],
+            gemeinde: ['', Validators.required],
         });
     }
 
-    private loadData(): void {
+    private loadAntragList(): void {
         this.antragList$ = combineLatest([this.filterDebounceSubject, this.sortDebounceSubject]).pipe(
             mergeMap(filterAndSort => this.gemeindeAntragService.getGemeindeAntraege(filterAndSort[0], filterAndSort[1])
                 .pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
@@ -115,13 +122,31 @@ export class GemeindeAntraegeComponent implements OnInit {
         );
     }
 
+    private loadGemeinden(): void {
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .subscribe(
+                gemeinden => {
+                    this.gemeinden = gemeinden;
+                    // select gemeinde if only one is returned
+                    if (gemeinden.length === 1) {
+                        this.formGroup.get('gemeinde').setValue(gemeinden[0]);
+                    }
+                },
+                err => {
+                    const msg = this.translate.instant('ERR_GEMEINDEN_LADEN');
+                    this.errorService.addMesageAsError(msg);
+                    LOG.error(err);
+                }
+            );
+    }
+
     public createAntrag(): void {
         if (!this.formGroup.valid) {
             this.triedSending = true;
             return;
         }
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
-            this.loadData();
+            this.loadAntragList();
             this.cd.markForCheck();
         }, (error: HttpErrorResponse) => {
             const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
@@ -162,5 +187,9 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public onSortChange(sortChange: { predicate?: string; reverse?: boolean }): void {
         this.sortDebounceSubject.next(sortChange);
+    }
+
+    public ferienBetreuungSelected(): boolean {
+        return this.formGroup?.get('antragTyp').value === TSGemeindeAntragTyp.FERIENBETREUUNG;
     }
 }
