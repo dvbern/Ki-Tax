@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+import {TSSozialdienstFall} from './sozialdienst/TSSozialdienstFall';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBenutzer} from './TSBenutzer';
 
@@ -21,6 +21,7 @@ export class TSFall extends TSAbstractMutableEntity {
     private _fallNummer: number;
     private _nextNumberKind: number;
     private _besitzer: TSBenutzer;
+    private _sozialdienstFall: TSSozialdienstFall;
 
     public constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSBenutzer) {
         super();
@@ -51,5 +52,13 @@ export class TSFall extends TSAbstractMutableEntity {
 
     public set besitzer(value: TSBenutzer) {
         this._besitzer = value;
+    }
+
+    public get sozialdienstFall(): TSSozialdienstFall {
+        return this._sozialdienstFall;
+    }
+
+    public set sozialdienstFall(value: TSSozialdienstFall) {
+        this._sozialdienstFall = value;
     }
 }

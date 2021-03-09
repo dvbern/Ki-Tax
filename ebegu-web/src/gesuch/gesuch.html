@@ -88,6 +88,19 @@
             </div>
             <ul class="sidenav gesuch-menu">
                 <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
+                <li ng-if="vm.isStepVisible('SOZIALDIENSTFALL_ERSTELLEN')"
+                    ui-sref-active="active" class="row"
+                    ng-class="{'active-element': vm.isElementActive('SOZIALDIENSTFALL_ERSTELLEN')}">
+                    <button ng-if="vm.isSozialdienstFall()" type="button" class="col-xs-10  btn-link"
+                            ui-sref="gesuch.sozialdienstfallcreation({gesuchsperiodeId: vm.getGesuchsperiodeId(),
+                            gesuchId: vm.getGesuchId(), fallId: vm.getFallId(), gemeindeId: vm.getGemeindeId()})"
+                            ng-disabled="vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')"
+                            aria-hidden="{{vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')}}"
+                            ng-click="vm.closeSidenav('sidenav')">
+                        <span data-translate="MENU_SOZIALDIENSTFALL_ERSTELLEN"></span>
+                    </button>
+                    <span class="col-xs-2 fa  ng-class:vm.getIcon('SOZIALDIENSTFALL_ERSTELLEN')" aria-hidden="true"></span>
+                </li>
 
                 <li ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"
                     ui-sref-active="active" class="row"

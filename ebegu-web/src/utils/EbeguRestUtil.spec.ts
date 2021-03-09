@@ -142,6 +142,7 @@ describe('EbeguRestUtil', () => {
                 myGesuch.dossier = dossier;
                 myGesuch.dossier.fall = fall;
                 myGesuch.dossier.fall.besitzer = undefined;
+                myGesuch.dossier.fall.sozialdienstFall = undefined;
                 const gesuchsteller = createGesuchsteller();
                 gesuchsteller.gesuchstellerGS = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(gesuchsteller);

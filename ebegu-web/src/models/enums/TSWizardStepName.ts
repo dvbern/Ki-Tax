@@ -14,6 +14,7 @@
  */
 
 export enum TSWizardStepName {
+    SOZIALDIENSTFALL_ERSTELLEN = 'SOZIALDIENSTFALL_ERSTELLEN',
     GESUCH_ERSTELLEN = 'GESUCH_ERSTELLEN',
     FAMILIENSITUATION = 'FAMILIENSITUATION',
     GESUCHSTELLER = 'GESUCHSTELLER',
@@ -36,6 +37,7 @@ export enum TSWizardStepName {
  */
 export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
     return [
+        TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
         TSWizardStepName.GESUCH_ERSTELLEN,
         TSWizardStepName.FAMILIENSITUATION,
         TSWizardStepName.GESUCHSTELLER,

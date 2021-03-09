@@ -47,6 +47,7 @@ import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
+import {SozialdienstFallCreationViewComponentConfig} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
 import {SozialhilfeZeitraumListViewComponentConfig} from './component/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
 import {SozialhilfeZeitraumViewComponentConfig} from './component/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
 import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
@@ -96,4 +97,5 @@ export const GESUCH_JS_MODULE =
         .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
+        .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
 ;

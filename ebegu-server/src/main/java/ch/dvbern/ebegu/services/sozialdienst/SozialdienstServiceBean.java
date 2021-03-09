@@ -32,6 +32,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst_;
@@ -130,5 +131,13 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 	public SozialdienstStammdaten saveSozialdienstStammdaten(@Nonnull SozialdienstStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		return persistence.merge(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<SozialdienstFall> findSozialdienstFall(
+		@Nonnull String id) {
+		SozialdienstFall sozialdienstFall = persistence.find(SozialdienstFall.class, id);
+		return Optional.ofNullable(sozialdienstFall);
 	}
 }
