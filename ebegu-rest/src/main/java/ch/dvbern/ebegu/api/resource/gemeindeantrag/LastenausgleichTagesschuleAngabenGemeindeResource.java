@@ -191,6 +191,46 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 	}
 
+
+	@ApiOperation(
+		value = "Schliesst das LastenausgleichTagesschuleAngabenGemeinde Formular ab",
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+	@Nonnull
+	@PUT
+	@Path("/abschliessen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenAbschliessen(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		try {
+			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+				angabenGemeindeService.lastenausgleichTagesschuleGemeindeFuerInstitutionenAbschliessen(converted);
+
+			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+		} catch (EJBTransactionRolledbackException e) {
+			if (e.getCause() instanceof IllegalArgumentException) {
+				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+					.entity(e.getMessage())
+					.type(MediaType.TEXT_PLAIN)
+					.build());
+			}
+			throw e;
+		}
+	}
+
 	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(
 		value = "Reicht den Lastenausgleich ein",

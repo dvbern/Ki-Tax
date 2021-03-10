@@ -28,6 +28,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
+import com.google.common.base.Preconditions;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -361,5 +362,30 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeFormularStatus status) {
 		this.status = status;
+	}
+
+	public boolean plausibilisierungLATSBerechtigteStundenHolds() {
+		Preconditions.checkState(
+			getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null,
+			"geleisteteBetreuungsstundenBesondereBeduerfnisse darf nicht null sein"
+		);
+		Preconditions.checkState(
+			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null,
+			"geleisteteBetreuungsstundenOhneBesondereBeduerfnisse darf nicht null sein"
+		);
+		Preconditions.checkState(
+			getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() != null,
+			"davonStundenZuNormlohnMehrAls50ProzentAusgebildete darf nicht null sein"
+		);
+		Preconditions.checkState(
+			getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() != null,
+			"davonStundenZuNormlohnWenigerAls50ProzentAusgebildete darf nicht null sein"
+		);
+		assert getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null;
+		assert getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null;
+		return getGeleisteteBetreuungsstundenBesondereBeduerfnisse().add(
+			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+			.compareTo(getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
+				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete())) == 0;
 	}
 }

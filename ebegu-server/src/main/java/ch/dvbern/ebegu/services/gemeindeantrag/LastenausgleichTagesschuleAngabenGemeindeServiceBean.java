@@ -38,6 +38,10 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -52,6 +56,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
@@ -113,7 +118,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			fallContainer.setGemeinde(gemeinde);
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
 			fallContainer.setAngabenKorrektur(null);    // Wird bei Freigabe rueberkopiert
-			fallContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenGemeinde());
+			LastenausgleichTagesschuleAngabenGemeinde angabenDeklaration =
+				new LastenausgleichTagesschuleAngabenGemeinde();
+			angabenDeklaration.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+			fallContainer.setAngabenDeklaration(angabenDeklaration);
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(saved);
@@ -189,7 +197,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		// Nur moeglich, wenn noch OFFEN und die zwingenden Fragen beantwortet
 		Preconditions.checkState(
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
-			"LastenausgleichAngabenGemeinde muss im Status NEU sein");
+			"LastenausgleichAngabenGemeindeContainer muss im Status NEU sein");
 		Preconditions.checkNotNull(
 			fallContainer.getAlleAngabenInKibonErfasst(),
 			"Die zwingenden Fragen muessen zu diesem Zeitpunkt beantwortet sein");
@@ -209,7 +217,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		Preconditions.checkState(
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
-			"LastenausgleichAngabenGemeinde muss im Status IN_BEARBEITUNG_GEMEINDE sein");
+			"LastenausgleichAngabenGemeindeContainer muss im Status IN_BEARBEITUNG_GEMEINDE sein");
 		Preconditions.checkArgument(
 			fallContainer.getAngabenInstitutionContainers()
 				.stream()
@@ -281,12 +289,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 					.in(Objects.requireNonNull(principal.getBenutzer()
 						.getInstitution()));
 
-					Predicate notNeu = cb.not(
-						cb.equal(
-							root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status),
-							LastenausgleichTagesschuleAngabenGemeindeStatus.NEU)
+				Predicate notNeu = cb.not(
+					cb.equal(
+						root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status),
+						LastenausgleichTagesschuleAngabenGemeindeStatus.NEU)
 				);
-					query.where(institutionIn, notNeu);
+				query.where(institutionIn, notNeu);
 			} else {
 				Predicate gemeindeIn =
 					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
@@ -347,7 +355,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		// Nur moeglich, wenn noch nicht geprüft
 		Preconditions.checkState(
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
-			"LastenausgleichAngabenGemeinde muss im Status IN_PRUEFUNG sein");
+			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG sein");
 		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
 
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
@@ -365,6 +373,44 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				);
 		latsContainer.setInternerKommentar(kommentar);
 		persistence.persist(latsContainer);
+	}
+
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenAbschliessen(
+		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
+
+		Preconditions.checkState(
+			fallContainer.getAngabenDeklaration() != null,
+			"angabenDeklaration must not be null"
+		);
+		Preconditions.checkState(
+			fallContainer.getAngabenDeklaration().getStatus()
+				== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG,
+			"angabenDeklaration muss im Status IN_BEARBEITUNG sein"
+		);
+		Preconditions.checkState(
+			fallContainer.angabenDeklarationComplete(),
+			"angabenDeklaration incomplete"
+		);
+
+		try {
+			Preconditions.checkArgument(
+				fallContainer.getAngabenDeklaration().plausibilisierungLATSBerechtigteStundenHolds(),
+				"plausibilisierung geleistete stunden zu normlohnkosten failed"
+			);
+			Preconditions.checkArgument(
+				fallContainer.plausibilisierungTagesschulenStundenHoldsForDeklaration(),
+				"plausibilisierung stunden tagesschulen failed"
+			);
+
+			fallContainer.getAngabenDeklaration()
+				.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
+		} catch (IllegalArgumentException e) {
+			fallContainer.getAngabenDeklaration()
+				.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN);
+		}
+
+		return persistence.persist(fallContainer);
 	}
 }
 
