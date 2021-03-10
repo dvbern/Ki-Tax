@@ -60,6 +60,12 @@ public interface GemeindeAntragService {
 		@Nullable String status);
 
 	@Nonnull
+	List<GemeindeAntrag> getGemeindeAntraege(
+		@Nullable String gemeindeId,
+		@Nullable String periodeId,
+		@Nullable String status);
+
+	@Nonnull
 	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	@Nonnull

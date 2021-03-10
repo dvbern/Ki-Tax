@@ -30,7 +30,9 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import org.apache.commons.lang.NotImplementedException;
@@ -107,9 +109,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 				throw new NotImplementedException("Typ" + typ + "wurde noch nicht implementiert");
 			}
 		}
-		return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-			gemeinde, periode, status
-		);
+		return getGemeindeAntraege(gemeinde, periode, status);
 
 	}
 
@@ -133,6 +133,27 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull GemeindeAntragTyp typ) {
 		return Collections.emptyList();
+	}
+
+	@Nonnull
+	@Override
+	public List<GemeindeAntrag> getGemeindeAntraege(
+		@Nullable String gemeindeId,
+		@Nullable String periodeId,
+		@Nullable String status) {
+
+		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege = lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
+			gemeindeId, periodeId, status
+		);
+
+		List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
+			gemeindeId, periodeId, status
+		);
+
+		List<GemeindeAntrag> antraege = new ArrayList<>();
+		antraege.addAll(latsAntraege);
+		antraege.addAll(ferienbetreuungAntraege);
+		return antraege;
 	}
 
 	@Nonnull
