@@ -22,6 +22,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService, UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -40,6 +42,8 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
 
 const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContainer.name,
     ['path']);
+
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
@@ -80,11 +84,13 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ControlContainer, useValue: controlContainerSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
             ],
         })
             .compileComponents();
 
         gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(Promise.resolve([]));
+        gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
     });
 
     beforeEach(() => {

@@ -148,7 +148,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
-        }, this.handleCreateAntragError);
+        }, err => {
+            this.handleCreateAntragError(err);
+        });
     }
 
     public createAntrag(): void {
@@ -159,7 +161,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
-        }, this.handleCreateAntragError);
+        }, err => {
+            this.handleCreateAntragError(err);
+        });
     }
 
     private handleCreateAntragError(error: HttpErrorResponse): void {
