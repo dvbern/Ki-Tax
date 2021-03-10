@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
+import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -99,12 +100,14 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -148,11 +151,16 @@ public class UploadResource {
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
 
+	@Inject
+	private FallService fallService;
+
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
 
 	private static final String FILENAME_HEADER = "x-filename";
 	private static final String GESUCHID_HEADER = "x-gesuchID";
+
+	private static final String UPLOAD_WARNING = "Need to upload something";
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
 
@@ -306,7 +314,7 @@ public class UploadResource {
 		@Nonnull @NotNull MultipartFormDataInput input) {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		gesuchsperiodeService.uploadGesuchsperiodeDokument(periodeId, sprache, dokumentTyp,
 			fileList.get(0).getContent());
@@ -330,7 +338,7 @@ public class UploadResource {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
@@ -355,7 +363,7 @@ public class UploadResource {
 		@Nonnull @NotNull MultipartFormDataInput input) throws IOException, MailException {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 		TransferFile file = fileList.get(0);
 
 		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent());
@@ -526,4 +534,22 @@ public class UploadResource {
 		LOG.info("Add on {} file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());
 	}
 
+	@ApiOperation("Stores the Vollmacht zu einen gewissen SozialdienstFall und setzt der Fall als aktiv")
+	@POST
+	@Path("/sozialdienstfall/{fallid}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	public Response saveVollmachtDokument(
+		@Nonnull @NotNull @PathParam("fallid") String fallId,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
+
+		fallService.uploadSozialdienstVollmachtDokument(fallId,
+			fileList.get(0).getContent());
+
+		return Response.ok().build();
+	}
 }

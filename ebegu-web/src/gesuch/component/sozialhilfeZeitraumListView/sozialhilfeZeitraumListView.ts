@@ -40,7 +40,8 @@ export class SozialhilfeZeitraumListViewComponentConfig implements IComponentOpt
     public controllerAs = 'vm';
 }
 
-export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewController<TSSozialhilfeZeitraumContainer> implements IDVFocusableController {
+export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewController<TSSozialhilfeZeitraumContainer>
+    implements IDVFocusableController {
 
     public static $inject: string[] = [
         '$state',
@@ -132,7 +133,10 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     }
 
     private findIndexOfSozialhilfeZeitraum(sozialhilfeZeitraum: any): number {
-        return this.gesuchModelManager.getGesuch().familiensituationContainer.sozialhilfeZeitraumContainers.indexOf(sozialhilfeZeitraum);
+        return this.gesuchModelManager.getGesuch()
+            .familiensituationContainer
+            .sozialhilfeZeitraumContainers
+            .indexOf(sozialhilfeZeitraum);
     }
 
     private openSozialhilfeZeitraumView(sozialhilfeZeitraumNum: number): void {

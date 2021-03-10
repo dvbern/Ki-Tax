@@ -24,6 +24,7 @@ package ch.dvbern.ebegu.enums;
  * ausstehend ist. Auf dem Server bleibt es aber im Status IN_BEARBEITUNG.
  */
 public enum AntragStatusDTO {
+	IN_BEARBEITUNG_SOZIALDIENST,
 	IN_BEARBEITUNG_GS,
 	FREIGABEQUITTUNG,
 	NUR_SCHULAMT,

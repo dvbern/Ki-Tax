@@ -19,7 +19,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {TSQuickSearchResult} from '../../../../../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../../../../../models/dto/TSSearchResultEntry';
-import {isAnyStatusOfVerfuegt} from '../../../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
@@ -136,6 +136,8 @@ export class DvQuicksearchboxController {
                 } else {
                     this.openGesuch(this.selectedItem.antragDTO, 'gesuch.betreuungen');
                 }
+            } else if (this.selectedItem.antragDTO.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
+                this.openGesuch(this.selectedItem.antragDTO, 'gesuch.sozialdienstfallcreation');
             } else {
                 this.openGesuch(this.selectedItem.antragDTO, 'gesuch.fallcreation');
             }
@@ -157,12 +159,17 @@ export class DvQuicksearchboxController {
         if (!antrag) {
             return;
         }
-
+        const navObj: any = {
+            gesuchId: antrag.antragId,
+            dossierId: antrag.dossierId,
+            fallId: antrag.fallId,
+            gemeindeId: antrag.gemeindeId,
+        };
         if (inNewTab) {
-            const url = this.$state.href(urlToGoTo, {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+            const url = this.$state.href(urlToGoTo, navObj);
             window.open(url, '_blank');
         } else {
-            this.$state.go(urlToGoTo, {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+            this.$state.go(urlToGoTo, navObj);
         }
     }
 }

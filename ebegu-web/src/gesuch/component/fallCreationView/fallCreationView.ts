@@ -20,6 +20,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -128,7 +129,15 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             return this.$q.when(this.gesuchModelManager.getGesuch());
         }
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveGesuchAndFall();
+        return this.gesuchModelManager.saveGesuchAndFall().then(
+            gesuch => {
+                // if sozialdienst Fall Step muss be updated
+                if (EbeguUtil.isNotNullOrUndefined(gesuch.dossier.fall.sozialdienstFall)) {
+                    this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                }
+                return gesuch;
+            },
+        );
     }
 
     public getGesuchModel(): TSGesuch {

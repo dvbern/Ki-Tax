@@ -27,11 +27,12 @@ import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../m
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
 import {TSBetreuung} from '../../../models/TSBetreuung';
@@ -208,7 +209,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.provisorischeBetreuung = false;
 
             if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
-                    && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
+                && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
                 this.provisorischeBetreuung = true;
             }
 
@@ -237,7 +238,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+            this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG)
                 .forEach(value => {
@@ -259,7 +260,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         // radio group für vertrag soll zu beginn leer sein falls GS, ansonsten true
         tsBetreuung.vertrag = null;
-        if (!this.isGesuchsteller()) {
+        if (!this.isGesuchstellerSozialdienst()) {
             tsBetreuung.vertrag = true;
         }
         tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
@@ -564,7 +565,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.betreuungsangebotValues.push({
             key: TSBetreuungsangebotTyp.TAGESSCHULE,
-            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE),
         });
     }
 
@@ -608,10 +609,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
                             isTagi = einstellungTagesschule.tagi;
                         }
-                    }
+                    },
                 );
                 return isTagi;
-            }
+            },
         );
     }
 
@@ -675,10 +676,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProHauptmahlzeit = 0;
             tsBetreuungspensum.tarifProNebenmahlzeit = 0;
         } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
-            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten Institution,
-            // dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die Tarife auf dem Modul hinterlegt sind)
-            tsBetreuungspensum.tarifProHauptmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
-            tsBetreuungspensum.tarifProNebenmahlzeit = this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
+            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten
+            // Institution, dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die
+            // Tarife auf dem Modul hinterlegt sind)
+            tsBetreuungspensum.tarifProHauptmahlzeit =
+                this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
+            tsBetreuungspensum.tarifProNebenmahlzeit =
+                this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
@@ -938,7 +942,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
             || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
                 && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
     }
@@ -1026,7 +1030,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.mutationsmeldungModel = undefined;
             this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         }).catch(() => {
-            // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a general message
+            // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a general
+            // message
             this.errorService.addMesageAsError(this.$translate.instant('ERROR_COULD_NOT_SAVE'));
         });
     }
@@ -1155,7 +1160,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         const gemeindeUser = this.authServiceRS
-            .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+            .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
         return !this.isSavingData
             && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);
@@ -1278,8 +1283,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    public isGesuchsteller(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+    public isGesuchstellerSozialdienst(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle().concat(TSRole.GESUCHSTELLER));
     }
 
     public getBetreuungInGemeindeLabel(): string {
@@ -1318,7 +1323,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber
+            kindNumber: this.$stateParams.kindNumber,
         });
     }
 

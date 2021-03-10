@@ -43,7 +43,7 @@ public class SearchResultEntryDTO implements Serializable {
 	@Nullable
 	private String gesuchID;
 	@Nullable
-	private String fallID;
+	private String fallId;
 	@Nullable
 	private String dossierId;
 
@@ -56,7 +56,7 @@ public class SearchResultEntryDTO implements Serializable {
 		@Nonnull String text,
 		@Nullable String additionalInformation,
 		@Nullable String gesuchID,
-		@Nullable String fallID,
+		@Nullable String fallId,
 		@Nullable String dossierID) {
 
 		this.entity = entity;
@@ -64,7 +64,7 @@ public class SearchResultEntryDTO implements Serializable {
 		this.text = text;
 		this.additionalInformation = additionalInformation;
 		this.gesuchID = gesuchID;
-		this.fallID = fallID;
+		this.fallId = fallId;
 		this.dossierId = dossierID;
 	}
 
@@ -100,12 +100,12 @@ public class SearchResultEntryDTO implements Serializable {
 	}
 
 	@Nullable
-	public String getFallID() {
-		return fallID;
+	public String getFallId() {
+		return fallId;
 	}
 
-	public void setFallID(@Nullable String fallID) {
-		this.fallID = fallID;
+	public void setFallId(@Nullable String fallId) {
+		this.fallId = fallId;
 	}
 
 	@Nullable

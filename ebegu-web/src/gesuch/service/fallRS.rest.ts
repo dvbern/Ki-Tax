@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSFall} from '../../models/TSFall';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
@@ -59,6 +59,26 @@ export class FallRS {
             .then((response: any) => {
                 this.$log.debug('PARSING fall REST object ', response.data);
                 return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
+            });
+    }
+
+    public removeVollmachtDokument(fallId: string): IHttpPromise<TSFall> {
+        return this.$http.delete(`${this.serviceURL}/vollmachtDokument/${encodeURIComponent(fallId)}`);
+    }
+
+    public downloadVollmachtDokument(fallId: string): IPromise<BlobPart> {
+        return this.$http.get(`${this.serviceURL}/downloadVollmachtDokument/${encodeURIComponent(fallId)}`,
+            {responseType: 'blob'})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public existVollmachtDokument(fallId: string): IPromise<boolean> {
+        return this.$http.get(
+            `${this.serviceURL}/existVollmachtDokument/${encodeURIComponent(fallId)}`)
+            .then((response: any) => {
+                return response.data;
             });
     }
 

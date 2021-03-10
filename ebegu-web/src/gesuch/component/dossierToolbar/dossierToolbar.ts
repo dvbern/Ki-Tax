@@ -152,6 +152,9 @@ export class DossierToolbarController implements IDVFocusableController {
         this.updateAntragDTOList();
         // add watchers
         this.addWatchers(this.$scope);
+        if (EbeguUtil.isEmptyStringNullOrUndefined(this.dossierId)) {
+            return;
+        }
         this.gesuchsperiodeRS.getActiveGesuchsperiodenForDossier(this.dossierId)
             .then((response: TSGesuchsperiode[]) => {
                 // Die neueste ist zuoberst
@@ -747,5 +750,9 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public getGesuchName(): string {
         return this.gesuchModelManager.getGesuchName();
+    }
+
+    public showVerantwortlicher(): boolean {
+        return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
     }
 }

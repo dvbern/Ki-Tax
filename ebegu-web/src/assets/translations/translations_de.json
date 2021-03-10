@@ -788,6 +788,8 @@
     "TSRole_JURIST": "Jurist/in",
     "TSRole_REVISOR": "Revisor/in",
     "TSRole_STEUERAMT": "Sachbearbeiter/in Steueramt",
+    "TSRole_SACHBEARBEITER_FERIENBETREUUNG": "Sachbearbeiter/in Ferienbetreuung",
+    "TSRole_ADMIN_FERIENBETREUUNG": "Administrator/in Ferienbetreuung",
     "TSRole_NONE": "Keine Rolle (Antragsteller/in)",
     "TSRole_ADMIN_SOZIALDIENST": "Administrator/in Sozialdienst",
     "TSRole_SACHBEARBEITER_SOZIALDIENST": "Sachbearbeiter/in Sozialdienst",
@@ -2299,5 +2301,12 @@
     "LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN": "Werden in der Tagesschule ernährungswissenschaftliche Grundsätze für eine ausgewogene und den Bedürfnissen der Schülerinnen und Schüler entsprechende Ernährung beachtet (TSV Art. 7 Abs. 5)?",
     "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Sozialdienste Fall eröffnen",
     "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
+    "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Sozialdienstfall",
+    "SOZIALDIENST_FALL_ERSTELLEN": "Sozialdienst Fall erstellen",
+    "SOZIALDIENST_AUSWAEHLEN": "Sozialdienst auswählen",
+    "IN_BEARBEITUNG_SOZIALDIENST": "In bearbeitung Sozialdienst",
+    "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
+    "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
+    "SOZIALDIENSTFALL_AKTIVIEREN": "Aktivieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
