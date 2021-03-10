@@ -22,6 +22,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService, UIRouterModule} from '@uirouter/angular';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -40,6 +41,9 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
 
 const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContainer.name,
     ['path']);
+
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
@@ -80,6 +84,7 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ControlContainer, useValue: controlContainerSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
         })
             .compileComponents();

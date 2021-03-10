@@ -466,7 +466,7 @@
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.bemerkungen"
                     [korrektur]="form.get('bemerkungen').value"
-                    [showBisher]="latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
