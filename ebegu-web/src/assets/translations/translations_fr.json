@@ -2206,6 +2206,7 @@
     "LATS_GEMEINDE_ANGABEN": "Noch nicht übersetzen",
     "LATS_ANGABEN_GEMEINDE_FRAGE_1": "Noch nicht übersetzen",
     "LATS_ANTRAG_ERSTELLEN": "Créer une demande",
+    "LATS_ANTRAEGE_ERSTELLEN": "Anträge erstellen",
     "FERIENBETREUUNG": "Prise en charge de vacances",
     "CREATE_ANTRAG_ERROR": "Une erreur est survenue lors de la création de la demande",
     "DATA_RETRIEVAL_ERROR": "Une erreur est survenue lors du chargement de la demande",
