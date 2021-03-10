@@ -301,7 +301,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			!= null, "angabenDeklaration incomplete");
 		Preconditions.checkState(getAngabenDeklaration().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()
 			!= null, "angabenDeklaration incomplete");
-		
+
 		BigDecimal sumTagesschulen = getAngabenInstitutionContainers().stream()
 			.map(container -> {
 				Preconditions.checkArgument(

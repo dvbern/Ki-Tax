@@ -38,10 +38,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -223,6 +219,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				.stream()
 				.allMatch(LastenausgleichTagesschuleAngabenInstitutionContainer::isAntragAbgeschlossen),
 			"Alle LastenausgleichAngabenInstitution muessen abgeschlossen sein");
+		Preconditions.checkState(
+			fallContainer.getAngabenDeklaration() != null
+				&& fallContainer.getAngabenDeklaration().getStatus()
+				== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
+			"Das LastenausgleichAngabenGemeinde Formular muss abgeschlossen sein"
+		);
 		Objects.requireNonNull(fallContainer.getAngabenDeklaration());
 
 		Preconditions.checkArgument(
@@ -385,8 +387,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 		Preconditions.checkState(
 			fallContainer.getAngabenDeklaration().getStatus()
-				== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG,
-			"angabenDeklaration muss im Status IN_BEARBEITUNG sein"
+				== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG ||
+				fallContainer.getAngabenDeklaration().getStatus()
+					== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ,
+			"angabenDeklaration muss im Status IN_BEARBEITUNG oder VALIDIERUNG_FEHLGESCHLAGEN sein"
 		);
 		Preconditions.checkState(
 			fallContainer.angabenDeklarationComplete(),
