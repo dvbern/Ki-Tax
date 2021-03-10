@@ -2269,6 +2269,7 @@
     "LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO": "<b>Beispiel</b><br> 2 Kinder mit besonderen Betreuungsanforderungen (Faktor 1,5) besuchten die Tagesschule im SJ {{schuljahr}} während je 100 Stunden: Eingabe 300.",
     "LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO": "Jedes Kind zählt nur einmal, auch wenn es die Tagesschule an mehereren Wochentagen besucht",
     "LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO": "Gemäss TSV Art. 8 Abs. 2 (\"Faktor 1,5\")",
+    "LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE": "Betreuungsstunden im Schuljahr {{schuljahr}} einschliesslich derer für Kinder mit besonderen Betreuungsanforderungen",
     "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
     "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Bitte korrigieren Sie Ihre Eingaben.",
     "MENU_SOZIALDIENST": "Sozialdienste",

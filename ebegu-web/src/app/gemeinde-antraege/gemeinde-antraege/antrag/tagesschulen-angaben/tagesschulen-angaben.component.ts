@@ -63,7 +63,7 @@ export class TagesschulenAngabenComponent {
         private readonly translate: TranslateService,
         private readonly authService: AuthServiceRS,
         private readonly dialog: MatDialog,
-        private readonly routerGlobals: UIRouterGlobals
+        private readonly routerGlobals: UIRouterGlobals,
     ) {
     }
 
@@ -113,6 +113,8 @@ export class TagesschulenAngabenComponent {
             durchschnittKinderProTagMittag: latsAngabenInstiution?.durchschnittKinderProTagMittag,
             durchschnittKinderProTagNachmittag1: latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
             durchschnittKinderProTagNachmittag2: latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
+            betreuungsstundenEinschliesslichBesondereBeduerfnisse:
+            latsAngabenInstiution?.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
             // C
             schuleAufBasisOrganisatorischesKonzept: latsAngabenInstiution?.schuleAufBasisOrganisatorischesKonzept,
             schuleAufBasisPaedagogischesKonzept: latsAngabenInstiution?.schuleAufBasisPaedagogischesKonzept,
@@ -235,6 +237,8 @@ export class TagesschulenAngabenComponent {
             this.form.get('durchschnittKinderProTagNachmittag1')
                 .setValidators([Validators.required, this.numberValidator()]);
             this.form.get('durchschnittKinderProTagNachmittag2')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
                 .setValidators([Validators.required, this.numberValidator()]);
         }
         this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')

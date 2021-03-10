@@ -4610,6 +4610,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.durchschnittKinderProTagNachmittag1;
             angabenInstitutionTS.durchschnittKinderProTagNachmittag2 =
                 angabenInstitutionFromServer.durchschnittKinderProTagNachmittag2;
+            angabenInstitutionTS.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
+                angabenInstitutionFromServer.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
             // C: Qualitative Vorgaben der Tagesschuleverordnung
             angabenInstitutionTS.schuleAufBasisOrganisatorischesKonzept =
                 angabenInstitutionFromServer.schuleAufBasisOrganisatorischesKonzept;
@@ -4653,6 +4655,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.durchschnittKinderProTagNachmittag1;
             restAngabenInstitution.durchschnittKinderProTagNachmittag2 =
                 tsAngabenInstitution.durchschnittKinderProTagNachmittag2;
+            restAngabenInstitution.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
+                tsAngabenInstitution.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
             // C: Qualitative Vorgaben der Tagesschuleverordnung
             restAngabenInstitution.schuleAufBasisOrganisatorischesKonzept =
                 tsAngabenInstitution.schuleAufBasisOrganisatorischesKonzept;
@@ -4760,7 +4764,7 @@ export class EbeguRestUtil {
 
     public ferienbetreuungContainerToRestObject(
         restContainer: any,
-        containerTS: TSFerienbetreuungAngabenContainer
+        containerTS: TSFerienbetreuungAngabenContainer,
     ): any {
         if (!containerTS) {
             return undefined;
@@ -4792,7 +4796,7 @@ export class EbeguRestUtil {
 
     private ferienbetreuungStammdatenToRestObject(
         restStammdaten: any,
-        stammdatenTS: TSFerienbetreuungAngabenStammdaten
+        stammdatenTS: TSFerienbetreuungAngabenStammdaten,
     ): any {
         if (!stammdatenTS) {
             return undefined;
@@ -4873,7 +4877,7 @@ export class EbeguRestUtil {
 
     private ferienbetreuungKostenEinnahmenToRestObject(
         restKostenEinnahmen: any,
-        kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen
+        kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen,
     ): any {
         if (!kostenEinnahmenTS) {
             return undefined;
@@ -4918,19 +4922,19 @@ export class EbeguRestUtil {
         this.parseAbstractEntity(ferienbetreuungTS, ferienbetreuungFromServer);
         ferienbetreuungTS.stammdaten = this.parseFerienbetreuungStammdaten(
             new TSFerienbetreuungAngabenStammdaten(),
-            ferienbetreuungFromServer.stammdaten
+            ferienbetreuungFromServer.stammdaten,
         );
         ferienbetreuungTS.angebot = this.parseFerienbetreuungAngebot(
             new TSFerienbetreuungAngabenAngebot(),
-            ferienbetreuungFromServer.angebot
+            ferienbetreuungFromServer.angebot,
         );
         ferienbetreuungTS.nutzung = this.parseFerienbetreuungNutzung(
             new TSFerienbetreuungAngabenNutzung(),
-            ferienbetreuungFromServer.nutzung
+            ferienbetreuungFromServer.nutzung,
         );
         ferienbetreuungTS.kostenEinnahmen = this.parseFerienbetreuungKostenEinnahmen(
             new TSFerienbetreuungAngabenKostenEinnahmen(),
-            ferienbetreuungFromServer.kostenEinnahmen
+            ferienbetreuungFromServer.kostenEinnahmen,
         );
         ferienbetreuungTS.kantonsbeitrag = ferienbetreuungFromServer.kantonsbeitrag;
         ferienbetreuungTS.gemeindebeitrag = ferienbetreuungFromServer.gemeindebeitrag;
@@ -5026,7 +5030,7 @@ export class EbeguRestUtil {
 
     private parseFerienbetreuungKostenEinnahmen(
         kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen,
-        kostenEinnahmenFromServer: any
+        kostenEinnahmenFromServer: any,
     ): TSFerienbetreuungAngabenKostenEinnahmen | undefined {
 
         if (!kostenEinnahmenFromServer) {

@@ -5956,6 +5956,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenInstitution.setDurchschnittKinderProTagMittag(angabenInstitution.getDurchschnittKinderProTagMittag());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		jaxAngabenInstitution.setSchuleAufBasisPaedagogischesKonzept(angabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
@@ -5987,6 +5988,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setDurchschnittKinderProTagMittag(jaxAngabenInstitution.getDurchschnittKinderProTagMittag());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag1(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag2(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		angabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(jaxAngabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		angabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(jaxAngabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		angabenInstitution.setSchuleAufBasisPaedagogischesKonzept(jaxAngabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
