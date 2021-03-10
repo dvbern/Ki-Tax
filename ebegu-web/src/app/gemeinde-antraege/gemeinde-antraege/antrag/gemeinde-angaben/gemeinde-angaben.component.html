@@ -259,6 +259,9 @@
                 <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
+                           translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
+                </mat-error>
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
                     [korrektur]="angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value"
@@ -287,6 +290,9 @@
                 </mat-error>
                 <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.noNumberError"
                            translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
+                           translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"

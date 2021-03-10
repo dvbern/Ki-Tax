@@ -213,11 +213,13 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
         this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
         this.angabenForm.get('einnahmenElterngebuehren')
             .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
+            .setValidators([this.plausibilisierungAddition()]);
 
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
@@ -246,6 +248,17 @@ export class GemeindeAngabenComponent implements OnInit {
         };
     }
 
+    private plausibilisierungAddition(): ValidatorFn {
+        return (control: AbstractControl) => {
+            return this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value ===
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value +
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value ?
+                {
+                    plausibilisierungAdditionError: control.value,
+                } : null;
+        };
+    }
+
     /**
      * Sets up form obervers that calculate intermediate results of the form that are presented to the user each
      * time the inputs change
@@ -269,7 +282,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').valueChanges.pipe(
-                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete)
+                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete),
             ),
             this.lohnnormkostenSettingLessThanFifty$,
         ]).subscribe(valueAndParamter => {
@@ -281,7 +294,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
-                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete)
+                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete),
             ),
             this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
