@@ -20,7 +20,7 @@ import {IComponentOptions} from 'angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
-import {isAnyStatusOfVerfuegt} from '../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -89,7 +89,15 @@ export class FaelleListViewController {
                     {gesuchId: antrag.antragId},
                     isCtrlKeyPressed);
             }
-        } else {
+        } else if (antrag.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
+                const navObj: any = {
+                    gesuchId: antrag.antragId,
+                    dossierId: antrag.dossierId,
+                    fallId: antrag.fallId,
+                    gemeindeId: antrag.gemeindeId,
+                };
+                this.openGesuch(antrag, 'gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
+            } else {
             this.openGesuch(antrag, 'gesuch.fallcreation',
                 {gesuchId: antrag.antragId, dossierId: antrag.dossierId},
                 isCtrlKeyPressed);

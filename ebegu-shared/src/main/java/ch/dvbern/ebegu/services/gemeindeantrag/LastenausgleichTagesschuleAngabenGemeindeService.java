@@ -94,6 +94,10 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nullable String periode,
 		@Nullable String status);
 
+	@Nonnull
+	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindePruefen(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+
 	/**
 	 * Speichert interne Kommentare in einem LastenausgleichTagesschuleAngabeGemeindeContainer
 	 */

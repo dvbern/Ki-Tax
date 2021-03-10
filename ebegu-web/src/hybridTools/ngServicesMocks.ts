@@ -32,7 +32,7 @@ ngServicesMock.$inject = ['$provide'];
 class GesuchGeneratorMock extends GesuchGenerator {
 
     public constructor() {
-        super(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+        super(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
     }
 
     public initGesuch(

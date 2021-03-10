@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 
 /**
@@ -49,10 +49,10 @@ export class DvNgGesuchstellerDialogComponent {
         this.confirmGesuchDelete = false;
         this.question = this.translate.instant('GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE', {
             emailAdresse: this.emailAdresse,
-            administratorRolle: this.administratorRolle
+            administratorRolle: this.administratorRolle,
         });
         this.confirmationText = this.translate.instant('GESUCHSTELLER_DIALOG_CONFIRM_DELETE', {
-            gesuchstellerName: this.gesuchstellerName
+            gesuchstellerName: this.gesuchstellerName,
         });
     }
 

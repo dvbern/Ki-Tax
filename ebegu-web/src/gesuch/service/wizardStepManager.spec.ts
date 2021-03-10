@@ -26,6 +26,8 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
 import {TSAdresseContainer} from '../../models/TSAdresseContainer';
+import {TSDossier} from '../../models/TSDossier';
+import {TSFall} from '../../models/TSFall';
 import {TSGesuch} from '../../models/TSGesuch';
 import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
 import {TSWizardStep} from '../../models/TSWizardStep';
@@ -127,7 +129,8 @@ describe('wizardStepManager', () => {
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith('123');
             expect(wizardStepManager.getWizardSteps()).toBeDefined();
             expect(wizardStepManager.getWizardSteps().length).toBe(2); // erste 2 states sind definiert
-            expect(wizardStepManager.getWizardSteps()[0].wizardStepName).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
+            expect(wizardStepManager.getWizardSteps()[0].wizardStepName)
+                .toBe(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
             expect(wizardStepManager.getWizardSteps()[0].wizardStepStatus).toBe(TSWizardStepStatus.IN_BEARBEITUNG);
             expect(wizardStepManager.getWizardSteps()[0].verfuegbar).toBe(true);
             expect(wizardStepManager.getCurrentStep()).toBe(wizardStepManager.getWizardSteps()[0]);
@@ -272,6 +275,8 @@ describe('wizardStepManager', () => {
             const gesuch = new TSGesuch();
             gesuch.eingangsart = TSEingangsart.ONLINE;
             gesuch.typ = TSAntragTyp.ERSTGESUCH;
+            gesuch.dossier = new TSDossier();
+            gesuch.dossier.fall = new TSFall();
             wizardStepManager.setHiddenSteps(gesuch);
 
             expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(true);
@@ -284,6 +289,8 @@ describe('wizardStepManager', () => {
                 const gesuch = new TSGesuch();
                 gesuch.eingangsart = TSEingangsart.PAPIER;
                 gesuch.typ = TSAntragTyp.ERSTGESUCH;
+                gesuch.dossier = new TSDossier();
+                gesuch.dossier.fall = new TSFall();
                 wizardStepManager.setHiddenSteps(gesuch);
 
                 expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
@@ -295,6 +302,8 @@ describe('wizardStepManager', () => {
             const gesuch = new TSGesuch();
             gesuch.eingangsart = TSEingangsart.PAPIER;
             gesuch.typ = TSAntragTyp.MUTATION;
+            gesuch.dossier = new TSDossier();
+            gesuch.dossier.fall = new TSFall();
             wizardStepManager.setHiddenSteps(gesuch);
 
             expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
@@ -314,7 +323,8 @@ describe('wizardStepManager', () => {
                                                                              // than one Wohnadressen
             gesuch.eingangsart = TSEingangsart.ONLINE;
             gesuch.typ = TSAntragTyp.ERSTGESUCH;
-
+            gesuch.dossier = new TSDossier();
+            gesuch.dossier.fall = new TSFall();
             wizardStepManager.setHiddenSteps(gesuch);
 
             expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(true);
@@ -323,6 +333,8 @@ describe('wizardStepManager', () => {
 
     function createAllSteps(status: TSWizardStepStatus): void {
         wizardStepManager.getWizardSteps().splice(0, wizardStepManager.getWizardSteps().length);
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN, status, '', false));
         wizardStepManager.getWizardSteps().push(
             wizardStepManager.createWizardStep('', TSWizardStepName.GESUCH_ERSTELLEN, status, '', true));
         wizardStepManager.getWizardSteps().push(

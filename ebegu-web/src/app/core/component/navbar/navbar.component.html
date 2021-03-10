@@ -77,7 +77,7 @@
 
 
         <div id="navbar_falleroeffnen" class="dv-ng-navbar-element-fall-eroeffnen" uiSrefActive="active">
-            <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button"
+            <button (click)="startNewFall()" class="dv-btn dv-ng-navbar-button"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAmtOrSozialdienstRolle()">
                 <i class="fa fa-plus-square"></i>
                 <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
@@ -88,10 +88,10 @@
                 <i class="fa fa-plus-square"></i>
             </button>
             <mat-menu #menu="matMenu" class="user-menu" xPosition="before" tabindex="-1">
-                <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
+                <button (click)="startNewFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
                     <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
                 </button>
-                <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
+                <button (click)="createNewSozialdienstFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
                     <span [textContent]="'MENU_SOZIALDIENST_FALL_EROEFFNEN' | translate"></span>
                 </button>
             </mat-menu>

@@ -21,6 +21,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
+import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -42,7 +43,7 @@ export class PendenzenListViewController {
         '$log',
         'SearchRS',
         'AuthServiceRS',
-        'GemeindeRS'
+        'GemeindeRS',
     ];
 
     public totalResultCount: string = '0';
@@ -54,7 +55,7 @@ export class PendenzenListViewController {
         private readonly $log: ILogService,
         private readonly searchRS: SearchRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -85,6 +86,14 @@ export class PendenzenListViewController {
                 gesuchId: pendenz.antragId,
             };
             this.navigate('gesuch.familiensituation', navObj, isCtrlKeyPressed);
+        } else if (pendenz.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
+            const navObj: any = {
+                gesuchId: pendenz.antragId,
+                dossierId: pendenz.dossierId,
+                fallId: pendenz.fallId,
+                gemeindeId: pendenz.gemeindeId,
+            };
+            this.navigate('gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
         } else {
             const navObj: any = {
                 gesuchId: pendenz.antragId,

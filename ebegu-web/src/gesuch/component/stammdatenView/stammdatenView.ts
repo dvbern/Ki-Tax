@@ -326,7 +326,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      */
     public areEmailTelefonEditable(): boolean {
         return this.isLastVerfuegtesGesuch
-        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()) ?
+        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()) ?
             true :
             !this.isGesuchReadonly();
     }

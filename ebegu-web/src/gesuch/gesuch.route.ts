@@ -55,6 +55,8 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 const fallCreationView = '<fall-creation-view>';
 
+const sozialdienstfallCreationView = '<sozialdienst-fall-creation-view>';
+
 const kommentarView = '<kommentar-view>';
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
@@ -72,6 +74,39 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
             template: fallCreationView,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: reloadGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+    };
+}
+
+export class EbeguNewSozialdienstFallState implements Ng1StateDeclaration {
+    public name = 'gesuch.sozialdienstfallcreation';
+    public url =
+        '/sozialdienstfall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId/:sozialdienstId/:fallId';
+    public params = {
+        creationAction: '',
+        eingangsart: '',
+        gesuchsperiodeId: '',
+        gesuchId: '',
+        dossierId: '',
+        gemeindeId: '',
+        sozialdienstId: '',
+        fallId: '',
+    };
+
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: sozialdienstfallCreationView,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -105,7 +140,7 @@ export class EbeguMutationState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
+        roles: TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles(),
     };
 }
 
@@ -127,7 +162,7 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
+        roles: TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles(),
     };
 }
 
@@ -711,6 +746,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguBetreuungAbweichungenState(),
     new EbeguAbwesenheitState(),
     new EbeguNewFallState(),
+    new EbeguNewSozialdienstFallState(),
     new EbeguMutationState(),
     new EbeguErneuerungsgesuchState(),
     new EbeguVerfuegenListState(),
@@ -753,6 +789,8 @@ export class INewFallStateParams {
     public gesuchId: string;
     public dossierId: string;
     public gemeindeId: string;
+    public sozialdienstId: string;
+    public fallId: string;
 }
 
 export class ITourParams {
@@ -846,10 +884,19 @@ export function reloadGesuchModelManager(
                 $stateParams.eingangsart,
                 $stateParams.gemeindeId,
                 $stateParams.gesuchsperiodeId,
-                $stateParams.creationAction);
+                $stateParams.creationAction,
+                $stateParams.sozialdienstId);
         }
 
+        const fallId = $stateParams.fallId;
         const gesuchIdParam = $stateParams.gesuchId;
+        if (fallId) {
+            return gesuchModelManager.openSozialdienstFall(fallId,
+                $stateParams.gemeindeId,
+                gesuchIdParam,
+                $stateParams.gesuchsperiodeId);
+        }
+
         if (!gesuchIdParam) {
             $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
         }

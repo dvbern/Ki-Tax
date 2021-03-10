@@ -37,6 +37,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
@@ -110,8 +112,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			fallContainer.setGesuchsperiode(gesuchsperiode);
 			fallContainer.setGemeinde(gemeinde);
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
-			fallContainer.setAngabenKorrektur(null);    // Wird erst mit den Daten initialisiert, da alles zwingend
-			fallContainer.setAngabenDeklaration(null);    // Wird bei Freigabe rueberkopiert
+			fallContainer.setAngabenKorrektur(null);    // Wird bei Freigabe rueberkopiert
+			fallContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenGemeinde());
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(saved);
@@ -213,7 +215,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				.stream()
 				.allMatch(LastenausgleichTagesschuleAngabenInstitutionContainer::isAntragAbgeschlossen),
 			"Alle LastenausgleichAngabenInstitution muessen abgeschlossen sein");
-		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
+		Objects.requireNonNull(fallContainer.getAngabenDeklaration());
+
+		Preconditions.checkArgument(
+			fallContainer.angabenDeklarationComplete(),
+			"angabenDeklaration incomplete"
+		);
 
 		fallContainer.copyForFreigabe();
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);
@@ -262,9 +269,39 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
 			UserRole.SACHBEARBEITER_MANDANT)) {
-			Predicate gemeindeIn =
-				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+
+			if (principal.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+				final SetJoin<LastenausgleichTagesschuleAngabenGemeindeContainer,
+					LastenausgleichTagesschuleAngabenInstitutionContainer>
+					join = root.join(
+					LastenausgleichTagesschuleAngabenGemeindeContainer_.angabenInstitutionContainers,
+					JoinType.LEFT);
+
+				Predicate institutionIn = join.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution)
+					.in(Objects.requireNonNull(principal.getBenutzer()
+						.getInstitution()));
+
+					Predicate notNeu = cb.not(
+						cb.equal(
+							root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status),
+							LastenausgleichTagesschuleAngabenGemeindeStatus.NEU)
+				);
+					query.where(institutionIn, notNeu);
+			} else {
+				Predicate gemeindeIn =
+					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
+				query.where(gemeindeIn);
+			}
+		}
+
+		if (principal.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+			Predicate geprueftGemeinde = root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status).in(
+				LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+				LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
+				LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
+				LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT
+			);
+			query.where(geprueftGemeinde);
 		}
 
 		if (gemeinde != null) {
@@ -304,6 +341,23 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		});
 
 		return containerList;
+	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindePruefen(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
+		Objects.requireNonNull(fallContainer);
+		authorizer.checkWriteAuthorization(fallContainer);
+
+		// Nur moeglich, wenn noch nicht geprüft
+		Preconditions.checkState(
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+			"LastenausgleichAngabenGemeinde muss im Status IN_PRUEFUNG sein");
+		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
+
+		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
+		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 	}
 
 	@Override

@@ -42,4 +42,33 @@ export class TagesschuleAngabenRS {
                     lastenausgleichAngabenList)),
             );
     }
+
+    public saveTagesschuleAngaben(latsInstitutionAngabenContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
+        return this.http.put(`${CONSTANTS.REST_API}/lats/institution/save`,
+            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
+                latsInstitutionAngabenContainer)).pipe(
+            map(latsAngabenInstitutionContainer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainer)),
+        );
+    }
+
+    public tagesschuleAngabenFreigeben(latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
+        return this.http.put(`${CONSTANTS.REST_API}/lats/institution/freigeben`,
+            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
+                latsAngabenInstitutionContainer)).pipe(
+            map(latsAngabenInstitutionContainerfromServer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainerfromServer,
+            )),
+        );
+
+    }
+
+    public tagesschuleAngabenGeprueft(latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
+        return this.http.put(`${CONSTANTS.REST_API}/lats/institution/geprueft`,
+            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
+                latsAngabenInstitutionContainer)).pipe(
+            map(latsAngabenInstitutionContainerfromServer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainerfromServer)),
+        );
+    }
 }

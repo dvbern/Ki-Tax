@@ -204,7 +204,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 						} else {
 							protokolliereResultat(csvCreator, neuesterAntrag, KibonLogLevel.INFO, "Antrag im Status VERFUEGEN, Betreuungen noch nicht verfuegt");
 						}
-					} else if (neuesterAntrag.getStatus().isAnyOfInBearbeitungGS() && neuesterAntrag.getEingangsart() == Eingangsart.ONLINE) {
+					} else if (neuesterAntrag.getStatus().isAnyOfInBearbeitungGSOrSZD() && neuesterAntrag.getEingangsart() == Eingangsart.ONLINE) {
 						// Falls beim GS: Muessen auf eine Pendenzenliste. Es muss sichergestellt werden, dass die Mutation auch tatsaechlich
 						// eingereicht / verfuegt wird.
 						protokolliereResultat(csvCreator, neuesterAntrag, KibonLogLevel.WARN, "Mutation bei Gesuchsteller offen");
