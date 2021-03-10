@@ -21,6 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
+import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
@@ -71,9 +72,10 @@ export class GemeindeAntraegeComponent implements OnInit {
         reverse?: boolean
     }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
     public triedSending: boolean = false;
+    public types: TSGemeindeAntragTyp[];
 
     public constructor(
-        public readonly gemeindeAntragService: GemeindeAntragService,
+        private readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
         private readonly fb: FormBuilder,
         private readonly $state: StateService,
@@ -91,6 +93,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             periode: ['', Validators.required],
             antragTyp: ['', Validators.required],
         });
+        this.initAntragTypes();
     }
 
     private loadData(): void {
@@ -113,6 +116,13 @@ export class GemeindeAntraegeComponent implements OnInit {
             }),
             tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
         );
+    }
+
+    private initAntragTypes(): void {
+        this.types = this.gemeindeAntragService.getTypesForRole();
+        if (this.types.length === 1) {
+            this.formGroup.get('antragTyp').setValue(this.types[0]);
+        }
     }
 
     public createAntrag(): void {
