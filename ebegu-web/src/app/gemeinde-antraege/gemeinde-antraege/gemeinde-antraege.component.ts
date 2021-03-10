@@ -129,7 +129,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     this.gemeinden = gemeinden;
                     // select gemeinde if only one is returned
                     if (gemeinden.length === 1) {
-                        this.formGroup.get('gemeinde').setValue(gemeinden[0]);
+                        this.formGroup.get('gemeinde').setValue(gemeinden[0].id);
                     }
                 },
                 err => {

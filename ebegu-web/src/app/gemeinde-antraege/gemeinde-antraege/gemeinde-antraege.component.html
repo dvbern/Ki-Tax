@@ -75,7 +75,7 @@
                                     formControlName="gemeinde"
                                     class="form-control">
                                 <option *ngFor="let gemeinde of gemeinden"
-                                        [value]="gemeinde">{{gemeinde.name}}</option>
+                                        [value]="gemeinde.id">{{gemeinde.name}}</option>
                             </select>
                             <div class="dv-error-messages">
                                 <div *ngIf="(formGroup?.get('gemeinde').touched || triedSending) && formGroup?.get('gemeinde')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
