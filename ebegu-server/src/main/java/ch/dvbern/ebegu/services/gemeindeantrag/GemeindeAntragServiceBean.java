@@ -82,13 +82,6 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 	@Nonnull
 	@Override
-	public List<? extends GemeindeAntrag> getGemeindeAntraege() {
-		// TODO
-		return lastenausgleichTagesschuleAngabenGemeindeService.getAllLastenausgleicheTagesschulen();
-	}
-
-	@Nonnull
-	@Override
 	public List<? extends GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeinde,
 		@Nullable String periode,
@@ -111,28 +104,6 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		}
 		return getGemeindeAntraege(gemeinde, periode, status);
 
-	}
-
-	@Nonnull
-	@Override
-	public List<GemeindeAntrag> getGemeindeAntraege(
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		return Collections.emptyList();
-	}
-
-	@Nonnull
-	@Override
-	public List<GemeindeAntrag> getGemeindeAntraege(
-		@Nonnull GemeindeAntragTyp typ) {
-		return Collections.emptyList();
-	}
-
-	@Nonnull
-	@Override
-	public List<GemeindeAntrag> getGemeindeAntraege(
-		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull GemeindeAntragTyp typ) {
-		return Collections.emptyList();
 	}
 
 	@Nonnull

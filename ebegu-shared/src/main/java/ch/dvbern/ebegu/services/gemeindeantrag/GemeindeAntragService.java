@@ -50,9 +50,6 @@ public interface GemeindeAntragService {
 	 * wird entsprechend gefiltert.
 	 */
 	@Nonnull
-	List<? extends GemeindeAntrag> getGemeindeAntraege();
-
-	@Nonnull
 	List<? extends GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeinde,
 		@Nullable String periode,
@@ -64,15 +61,6 @@ public interface GemeindeAntragService {
 		@Nullable String gemeindeId,
 		@Nullable String periodeId,
 		@Nullable String status);
-
-	@Nonnull
-	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode);
-
-	@Nonnull
-	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull GemeindeAntragTyp typ);
-
-	@Nonnull
-	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
 
 	@Nonnull
 	Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId);
