@@ -2271,6 +2271,7 @@
     "LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO": "Gemäss TSV Art. 8 Abs. 2 (\"Faktor 1,5\")",
     "LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE": "Betreuungsstunden im Schuljahr {{schuljahr}} einschliesslich derer für Kinder mit besonderen Betreuungsanforderungen",
     "ERROR_LATS_PLAUSIBLISIERUNG_ADDITION": "Die Felder \"zu mehr als 50% Ausgebildete\" und \"zu weniger als 50% Ausgebildete\" müssen den lastenausgleichberechtigten Stunden entsprechen",
+    "ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN_STUNDEN": "Die Lastenberechtigten Betreuungstunden stimmen nicht mit den Betreuungstunden der einzelnen Tagesschulen überein. Kontrollieren Sie die Eingaben",
     "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
     "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Bitte korrigieren Sie Ihre Eingaben.",
     "MENU_SOZIALDIENST": "Sozialdienste",

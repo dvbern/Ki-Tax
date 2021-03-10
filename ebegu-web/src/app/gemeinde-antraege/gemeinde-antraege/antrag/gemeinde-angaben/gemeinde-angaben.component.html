@@ -294,6 +294,9 @@
                 <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
                            translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
                 </mat-error>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError"
+                           translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN_STUNDEN
+                </mat-error>
                 <dv-bisher-x
                     [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
                     [korrektur]="angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value"

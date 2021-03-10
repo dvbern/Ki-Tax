@@ -219,7 +219,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('einnahmenElterngebuehren')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
-            .setValidators([this.plausibilisierungAddition()]);
+            .setValidators([this.plausibilisierungAddition(), this.plausibilisierungTageschulenStunden()]);
 
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
@@ -250,12 +250,33 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private plausibilisierungAddition(): ValidatorFn {
         return (control: AbstractControl) => {
-            return this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value ===
-            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value +
-            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value ?
+            return this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value === this.angabenForm.get(
+                'davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value +
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value ? null : {
+                plausibilisierungAdditionError: control.value,
+            };
+        };
+    }
+
+    private plausibilisierungTageschulenStunden(): ValidatorFn {
+        return (control: AbstractControl) => {
+            const tagesschulenSum = this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
+                this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
+                    accumulator,
+                    next,
+                    ) => accumulator + next.angabenDeklaration.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
+                    0) :
+                this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
+                    accumulator,
+                    next,
+                    ) => accumulator + next.angabenKorrektur.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
+                    0);
+
+            return this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value === tagesschulenSum ?
+                null :
                 {
-                    plausibilisierungAdditionError: control.value,
-                } : null;
+                    plausibilisierungTagesschulenStundenError: control.value,
+                };
         };
     }
 
