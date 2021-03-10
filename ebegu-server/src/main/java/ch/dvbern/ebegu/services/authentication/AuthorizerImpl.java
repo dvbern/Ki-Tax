@@ -87,8 +87,10 @@ import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.sentry.event.User;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
@@ -551,6 +553,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			return;
 		}
+		case ADMIN_FERIENBETREUUNG: {
+			if(!(benutzer.getRole().isRoleFerienbetreuung() && userHasSameGemeindeAsPrincipal(benutzer))) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
 		case GESUCHSTELLER: {
 			if (!hasPrincipalName(benutzer)) {
 				throwViolation(benutzer);
@@ -604,6 +612,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInRole(ADMIN_INSTITUTION) && benutzer.getInstitution() != null) {
 			return userBelongsToInstitutionOfPrincipal(benutzer);
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_FERIENBETREUUNG)) {
+			return benutzer.getRole().isRoleFerienbetreuung() &&
+				userHasSameGemeindeAsPrincipal(benutzer);
 		}
 
 		return false;
@@ -1582,11 +1594,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 				return;
 			}
-			final boolean gehoertZuGemeinde = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
-				.stream()
-				.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
-			if (gehoertZuGemeinde) {
-				return;
+			if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
+				final boolean gehoertZuGemeinde = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
+					.stream()
+					.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
+				if (gehoertZuGemeinde) {
+					return;
+				}
 			}
 			// Alle anderen sind Stand heute nicht berechtigt
 			throwViolation(latsGemeindeContainer);

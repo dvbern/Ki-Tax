@@ -70,6 +70,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 
 	// Seit dem Release vom 24.02.21 gibt die GeoAdmin API einem exact match die weight 100
 	private static final Long EXACT_MATCH = (long) 100;    // highest weight
+	private static final Long EXACT_MATCH_LEGACY = (long) 14;    // legacy highest weight from experiments
 	private static final int SEARCHSERVICE_MAX_RESULTS = 50; // Max fuer die Search API
 
 	private static final Pattern ILLEGAL_SEARCH_CHARS = Pattern.compile("[.]");
@@ -116,7 +117,7 @@ public class GeoadminSearchServiceBean extends AbstractBaseService implements Ge
 		boolean fuzzy = searchResult.isFuzzy();
 
 		Optional<JaxGeoadminSearchResultEntry> exactGeoadminAddress = searchResult.getResults().stream()
-			.filter(a -> EXACT_MATCH.equals(a.getWeight()))
+			.filter(a -> EXACT_MATCH.equals(a.getWeight()) || EXACT_MATCH_LEGACY.equals(a.getWeight()))
 			.findFirst();
 
 		if (exactGeoadminAddress.isPresent()) {

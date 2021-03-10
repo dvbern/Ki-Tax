@@ -95,8 +95,14 @@ export class LocalLoginComponent {
     public administratorSozialdienst: TSBenutzer;
     public sachbearbeiterSozialdienst: TSBenutzer;
 
-    public devMode: boolean;
+    public sachbearbeiterinFerienbetreuungGemeindeParis: TSBenutzer;
+    public adminFerienbetreuungGemeindeParis: TSBenutzer;
+    public sachbearbeiterinFerienbetreuungGemeindeLondon: TSBenutzer;
+    public adminFerienbetreuungGemeindeLondon: TSBenutzer;
+    public sachbearbeiterinFerienbetreuungGemeindeParisundLondon: TSBenutzer;
+    public adminFerienbetreuungGemeindeParisundLondon: TSBenutzer;
 
+    public devMode: boolean;
     private readonly mandant: TSMandant;
     private gemeindeParis: TSGemeinde;
     private gemeindeLondon: TSGemeinde;
@@ -346,6 +352,26 @@ export class LocalLoginComponent {
             undefined,
             undefined,
             [this.gemeindeParis]);
+        this.sachbearbeiterinFerienbetreuungGemeindeParis = new TSBenutzer('Marlene',
+            'Stöckli',
+            'stma',
+            'password1',
+            'marlene.stoeckli@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+            undefined,
+            undefined,
+            [this.gemeindeParis]);
+        this.adminFerienbetreuungGemeindeParis = new TSBenutzer('Sarah',
+            'Riesen',
+            'risa',
+            'password1',
+            'sarah.riesen@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.ADMIN_FERIENBETREUUNG,
+            undefined,
+            undefined,
+            [this.gemeindeParis]);
         this.steueramtParis = new TSBenutzer('Rodolfo',
             'Geldmacher',
             'gero',
@@ -469,6 +495,26 @@ export class LocalLoginComponent {
             undefined,
             undefined,
             [this.gemeindeLondon]);
+        this.sachbearbeiterinFerienbetreuungGemeindeLondon = new TSBenutzer('Jordan',
+            'Hefti',
+            'hejo',
+            'password1',
+            'jordan.hefti@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+            undefined,
+            undefined,
+            [this.gemeindeLondon]);
+        this.adminFerienbetreuungGemeindeLondon = new TSBenutzer('Jean-Pierre',
+            'Kraeuchi',
+            'krjp',
+            'password1',
+            'jordan.hefti@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.ADMIN_FERIENBETREUUNG,
+            undefined,
+            undefined,
+            [this.gemeindeLondon]);
     }
 
     private createUsersOfBothParisAndLondon(): void {
@@ -559,6 +605,26 @@ export class LocalLoginComponent {
             'julia.jurist@mailbucket.dvbern.ch',
             this.mandant,
             TSRole.JURIST,
+            undefined,
+            undefined,
+            [this.gemeindeParis, this.gemeindeLondon]);
+        this.adminFerienbetreuungGemeindeParisundLondon = new TSBenutzer('Christoph',
+            'Hütter',
+            'huch',
+            'password1',
+            'christoph.huetter@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.ADMIN_FERIENBETREUUNG,
+            undefined,
+            undefined,
+            [this.gemeindeParis, this.gemeindeLondon]);
+        this.sachbearbeiterinFerienbetreuungGemeindeParisundLondon = new TSBenutzer('Valentin',
+            'Burgener',
+            'buva',
+            'password1',
+            'valentin.burgener@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.SACHBEARBEITER_FERIENBETREUUNG,
             undefined,
             undefined,
             [this.gemeindeParis, this.gemeindeLondon]);

@@ -181,7 +181,7 @@ public class GemeindeAntragResource {
 	@GET
 	@Path("")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION })
+		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, SACHBEARBEITER_FERIENBETREUUNG, ADMIN_FERIENBETREUUNG })
 	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,

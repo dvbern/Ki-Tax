@@ -27,6 +27,7 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.ADMIN_TS,
         TSRole.ADMIN_INSTITUTION,
         TSRole.ADMIN_TRAEGERSCHAFT,
+        TSRole.ADMIN_FERIENBETREUUNG
     ],
     [Permission.ROLE_TRAEGERSCHAFT]: [
         TSRole.ADMIN_TRAEGERSCHAFT,
@@ -43,6 +44,8 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.SACHBEARBEITER_BG,
         TSRole.ADMIN_TS,
         TSRole.SACHBEARBEITER_TS,
+        TSRole.ADMIN_FERIENBETREUUNG,
+        TSRole.SACHBEARBEITER_FERIENBETREUUNG,
         TSRole.JURIST,
         TSRole.REVISOR,
         TSRole.STEUERAMT,
@@ -59,6 +62,8 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.STEUERAMT,
         TSRole.ADMIN_INSTITUTION,
         TSRole.SACHBEARBEITER_INSTITUTION,
+        TSRole.ADMIN_FERIENBETREUUNG,
+        TSRole.SACHBEARBEITER_FERIENBETREUUNG,
     ],
     [Permission.ROLE_BG]: [
         // todo This Permission should be removed in KIBON version 2. The permission Permission.ROLE_GEMEINDE should be
@@ -85,5 +90,9 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
     [Permission.ROLE_SOZIALDIENST]: [
         TSRole.ADMIN_SOZIALDIENST,
         TSRole.SACHBEARBEITER_SOZIALDIENST,
+    ],
+    [Permission.BENUTZER_FERIENBETREUUNG_EINLADEN]: [
+        TSRole.ADMIN_FERIENBETREUUNG,
+        TSRole.SACHBEARBEITER_FERIENBETREUUNG
     ]
 };
