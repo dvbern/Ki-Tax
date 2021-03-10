@@ -2217,7 +2217,7 @@
     "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Achtung: Das Geburtsdatum dieses Kindes liegt in der Zukunft. Bei der Geburt des Kindes muss dieser Antrag mutiert werden.",
     "LATS_STATUS_OFFEN": "Offen",
     "LATS_STATUS_GEPRUEFT": "Geprüft",
-    "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Bearbeitung Gemeinde",
+    "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "In Prüfung Gemeinde",
     "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Periode",
     "ERROR_LATS_KOMMENTAR_SAVE": "Es gab ein Problem beim Speichern des Kommentars",
