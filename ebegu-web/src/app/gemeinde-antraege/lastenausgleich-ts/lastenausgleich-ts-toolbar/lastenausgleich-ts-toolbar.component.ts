@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 
 @Component({
     selector: 'dv-lastenausgleich-ts-toolbar',
