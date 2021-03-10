@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@ang
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -63,7 +63,8 @@ export class TagesschulenAngabenComponent {
         private readonly translate: TranslateService,
         private readonly authService: AuthServiceRS,
         private readonly dialog: MatDialog,
-        private readonly routerGlobals: UIRouterGlobals
+        private readonly routerGlobals: UIRouterGlobals,
+        private readonly $state: StateService,
     ) {
     }
 
@@ -287,5 +288,15 @@ export class TagesschulenAngabenComponent {
 
     public canSeeSaveButton(): boolean {
         return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+    }
+
+    public back($event?: MouseEvent): void {
+        const parentState = 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST';
+        if ($event && $event.ctrlKey) {
+            const url = this.$state.href(parentState);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go(parentState);
+        }
     }
 }
