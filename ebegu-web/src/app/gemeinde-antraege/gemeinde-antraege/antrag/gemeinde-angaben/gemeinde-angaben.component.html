@@ -180,6 +180,7 @@
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                 {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <dv-tooltip [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -205,7 +206,9 @@
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
                 {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
             </label>
+
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
