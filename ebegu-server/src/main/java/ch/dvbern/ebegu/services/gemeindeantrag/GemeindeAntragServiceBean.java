@@ -28,6 +28,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -60,6 +61,21 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			throw new NotImplementedException("Masseninitialisierung für Ferienbetreuungen wird nicht umgesetzt");
 		}
 		return Collections.emptyList();
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeAntrag createGemeindeAntrag(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull GemeindeAntragTyp gemeindeAntragTyp
+	) {
+		switch (gemeindeAntragTyp) {
+		case FERIENBETREUUNG:
+			return ferienbetreuungService.createFerienbetreuungAntrag(gemeinde, gesuchsperiode);
+		default:
+			throw new NotImplementedException("createGemeindeAntrag für andere Antragtypen noch nicht implementiert");
+		}
 	}
 
 	@Nonnull
