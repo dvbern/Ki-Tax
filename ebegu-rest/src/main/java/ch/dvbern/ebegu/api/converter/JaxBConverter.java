@@ -5784,6 +5784,8 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxLastenausgleichTagesschuleAngabenGemeinde();
 		convertAbstractFieldsToJAX(angabenGemeinde, jaxAngabenGemeinde);
 
+		jaxAngabenGemeinde.setStatus(angabenGemeinde.getStatus());
+
 		// A: Allgemeine Angaben
 		jaxAngabenGemeinde.setBedarfBeiElternAbgeklaert(angabenGemeinde.getBedarfBeiElternAbgeklaert());
 		jaxAngabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(angabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
@@ -5820,6 +5822,8 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
 	) {
 		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
+
+		angabenGemeinde.setStatus(jaxAngabenGemeinde.getStatus());
 
 		// A: Allgemeine Angaben
 		angabenGemeinde.setBedarfBeiElternAbgeklaert(jaxAngabenGemeinde.getBedarfBeiElternAbgeklaert());

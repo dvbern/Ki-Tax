@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -36,6 +37,10 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	private static final long serialVersionUID = 7179246039479930826L;
+
+	@NotNull
+	@Column(nullable = false)
+	private LastenausgleichTagesschuleAngabenGemeindeFormularStatus status;
 
 	// A: Allgemeine Angaben
 
@@ -347,5 +352,14 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return getId().equals(other.getId());
+	}
+
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenGemeindeFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeFormularStatus status) {
+		this.status = status;
 	}
 }

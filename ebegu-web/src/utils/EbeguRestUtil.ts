@@ -4404,6 +4404,8 @@ export class EbeguRestUtil {
     ): TSLastenausgleichTagesschuleAngabenGemeinde {
         if (gemeindeFromServer) {
             this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
+
+            gemeindeTS.status = gemeindeFromServer.status;
             // A: Allgemeine Angaben
             gemeindeTS.bedarfBeiElternAbgeklaert =
                 gemeindeFromServer.bedarfBeiElternAbgeklaert;
@@ -4462,6 +4464,7 @@ export class EbeguRestUtil {
         if (tsAngabenGemeinde) {
             this.abstractEntityToRestObject(restAngabenGemeinde, tsAngabenGemeinde);
 
+            restAngabenGemeinde.status = tsAngabenGemeinde.status;
             // A: Allgemeine Angaben
             restAngabenGemeinde.bedarfBeiElternAbgeklaert =
                 tsAngabenGemeinde.bedarfBeiElternAbgeklaert;
