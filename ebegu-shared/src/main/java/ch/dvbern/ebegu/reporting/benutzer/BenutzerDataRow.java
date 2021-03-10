@@ -35,6 +35,8 @@ public class BenutzerDataRow {
 	@Nullable
 	private String gemeinden = null;
 	@Nullable
+	private String angebotGemeinden = null;
+	@Nullable
 	private String institution = null;
 	@Nullable
 	private String traegerschaft = null;
@@ -113,6 +115,15 @@ public class BenutzerDataRow {
 
 	public void setGemeinden(@Nullable String gemeinden) {
 		this.gemeinden = gemeinden;
+	}
+
+	@Nullable
+	public String getAngebotGemeinden() {
+		return angebotGemeinden;
+	}
+
+	public void setAngebotGemeinden(@Nullable String angebotGemeinden) {
+		this.angebotGemeinden = angebotGemeinden;
 	}
 
 	@Nullable

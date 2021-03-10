@@ -73,7 +73,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
-        private readonly $translate: TranslateService
+        private readonly $translate: TranslateService,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
@@ -194,11 +194,14 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     public canBeFreigegeben(): boolean {
         return this.wizardStepManager.areAllStepsOK(this.gesuchModelManager.getGesuch()) &&
             this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
-            && !this.isGesuchReadonly() && this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS);
+            && !this.isGesuchReadonly()
+            && (this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
+                || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST));
     }
 
     public isNotFreigegeben(): boolean {
-        return this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS);
+        return this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
+            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
     }
 
     public isThereAnyAbgewieseneBetreuung(): boolean {

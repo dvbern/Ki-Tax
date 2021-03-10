@@ -31,7 +31,7 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'pendenzen',
         data: {
-            roles: TSRoleUtil.getAdministratorOrAmtRole(),
+            roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle(),
         },
     },
     {

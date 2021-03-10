@@ -25,4 +25,11 @@ export class TSLastenausgleichTagesschuleAngabenInstitutionContainer extends TSA
     public institution: TSInstitution;
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenInstitution;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenInstitution;
+
+    public isAtLeastInBearbeitungGemeinde(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE,
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT,
+        ].includes(this.status);
+    }
 }

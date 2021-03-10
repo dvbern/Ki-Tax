@@ -25,7 +25,9 @@ import java.util.Set;
  */
 public enum AntragStatus {
 	IN_BEARBEITUNG_GS,
-	FREIGABEQUITTUNG,   // = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig ist)
+	IN_BEARBEITUNG_SOZIALDIENST,
+	FREIGABEQUITTUNG,   // = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine
+	// Freigabequittung notwendig ist)
 	NUR_SCHULAMT,
 	FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 	IN_BEARBEITUNG_JA,
@@ -60,13 +62,16 @@ public enum AntragStatus {
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV,
 		NUR_SCHULAMT
-		);
+	);
 
 	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
-		FREIGABEQUITTUNG,   // = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig ist)
+		FREIGABEQUITTUNG,
+		// = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig
+		// ist)
 		NUR_SCHULAMT,
-		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
+		FREIGEGEBEN,
+		// Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
 		ERSTE_MAHNUNG_ABGELAUFEN,
@@ -103,6 +108,26 @@ public enum AntragStatus {
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV);
 
+	public static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
+		FREIGEGEBEN,
+		IN_BEARBEITUNG_JA,
+		ERSTE_MAHNUNG,
+		ERSTE_MAHNUNG_ABGELAUFEN,
+		ZWEITE_MAHNUNG,
+		ZWEITE_MAHNUNG_ABGELAUFEN,
+		GEPRUEFT,
+		KEIN_KONTINGENT,
+		VERFUEGEN,
+		VERFUEGT,
+		KEIN_ANGEBOT,
+		BESCHWERDE_HAENGIG,
+		PRUEFUNG_STV,
+		IN_BEARBEITUNG_STV,
+		GEPRUEFT_STV,
+		NUR_SCHULAMT,
+		IN_BEARBEITUNG_SOZIALDIENST
+	);
+
 	public static final Set<AntragStatus> FIRST_STATUS_OF_VERFUEGT = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
 
 	private static final Set<AntragStatus> all = EnumSet.allOf(AntragStatus.class);
@@ -121,8 +146,10 @@ public enum AntragStatus {
 	private static final Set<AntragStatus> forSteueramt = FOR_STEUERAMT_ROLE;
 	private static final Set<AntragStatus> forAdminMandantRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterMandantRole = FOR_JURIST_REVISOR_ROLE;
+	private static final Set<AntragStatus> forSozialdienstRole = FOR_SOZIALDIENST_ROLE;
 
-	// range ist etwas gefaehrlich, da man sehr vorsichtig sein muss, in welcher Reihenfolge man die Werte schreibt. Ausserdem kann man
+	// range ist etwas gefaehrlich, da man sehr vorsichtig sein muss, in welcher Reihenfolge man die Werte schreibt.
+	// Ausserdem kann man
 	// kein range mit Ausnahmen machen. In diesem Fall ist es deshalb besser ein .of zu benutzen
 
 	public static final Set<AntragStatus> FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN = EnumSet.of(
@@ -187,8 +214,11 @@ public enum AntragStatus {
 
 	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
-		FREIGABEQUITTUNG,   // = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig ist)
-		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
+		FREIGABEQUITTUNG,
+		// = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig
+		// ist)
+		FREIGEGEBEN,
+		// Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
 		ERSTE_MAHNUNG_ABGELAUFEN,
@@ -213,7 +243,21 @@ public enum AntragStatus {
 	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE_WRITE = EnumSet.of(
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
-		GEPRUEFT_STV // Der Status wird schon vor dem Speichern gesetzt. Falls dies mal in eine separate Methode kommt, kann dieser Status entfernt werden
+		GEPRUEFT_STV
+		// Der Status wird schon vor dem Speichern gesetzt. Falls dies mal in eine separate Methode kommt, kann dieser
+		// Status entfernt werden
+	);
+
+	public static final Set<AntragStatus> FOR_SOZIALDIENSTE_ROLE_WRITE = EnumSet.of(
+		IN_BEARBEITUNG_SOZIALDIENST,
+		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
+		FREIGABEQUITTUNG,
+		NUR_SCHULAMT, // damit eine Mutation erstellt werden kann
+		ERSTE_MAHNUNG,
+		ERSTE_MAHNUNG_ABGELAUFEN,
+		ZWEITE_MAHNUNG,
+		ZWEITE_MAHNUNG_ABGELAUFEN,
+		VERFUEGT // Damit eine Mutation erstellt werden kann
 	);
 
 	/**
@@ -222,78 +266,104 @@ public enum AntragStatus {
 	 * @param userRole die Rolle
 	 * @return Liefert die einsehbaren Antragsstatus fuer die Rolle
 	 */
-	@SuppressWarnings({"Duplicates", "checkstyle:CyclomaticComplexity"})
+	@SuppressWarnings({ "Duplicates", "checkstyle:CyclomaticComplexity" })
 	public static Set<AntragStatus> allowedforRole(UserRole userRole) {
-        switch (userRole) {
-			case SUPER_ADMIN: return  all;
-			case ADMIN_BG: return forAdminRole;
-            case GESUCHSTELLER: return none;
-            case JURIST: return forJuristRole;
-            case REVISOR: return forRevisorRole;
-			case ADMIN_INSTITUTION: return forAdminInstitutionRole;
-            case SACHBEARBEITER_INSTITUTION: return forSachbearbeiterInstitutionRole;
-            case SACHBEARBEITER_BG: return forSachbearbeiterJugendamtRole;
-			case ADMIN_TRAEGERSCHAFT: return forAdminTraegerschaftRole;
-            case SACHBEARBEITER_TRAEGERSCHAFT: return forSachbearbeiterTraegerschaftRole;
-            case SACHBEARBEITER_TS: return forSchulamtRole;
-            case ADMIN_TS: return forSchulamtRole;
-            case STEUERAMT: return forSteueramt;
-			case ADMIN_GEMEINDE: return forAdminGemeindeRole;
-			case SACHBEARBEITER_GEMEINDE: return forSachbearbeiterGemeindeRole;
-			case ADMIN_MANDANT: return forAdminMandantRole;
-			case SACHBEARBEITER_MANDANT: return forSachbearbeiterMandantRole;
-            default: return none;
-        }
-    }
+		switch (userRole) {
+		case SUPER_ADMIN:
+			return all;
+		case ADMIN_BG:
+			return forAdminRole;
+		case GESUCHSTELLER:
+			return none;
+		case JURIST:
+			return forJuristRole;
+		case REVISOR:
+			return forRevisorRole;
+		case ADMIN_INSTITUTION:
+			return forAdminInstitutionRole;
+		case SACHBEARBEITER_INSTITUTION:
+			return forSachbearbeiterInstitutionRole;
+		case SACHBEARBEITER_BG:
+			return forSachbearbeiterJugendamtRole;
+		case ADMIN_TRAEGERSCHAFT:
+			return forAdminTraegerschaftRole;
+		case SACHBEARBEITER_TRAEGERSCHAFT:
+			return forSachbearbeiterTraegerschaftRole;
+		case SACHBEARBEITER_TS:
+			return forSchulamtRole;
+		case ADMIN_TS:
+			return forSchulamtRole;
+		case STEUERAMT:
+			return forSteueramt;
+		case ADMIN_GEMEINDE:
+			return forAdminGemeindeRole;
+		case SACHBEARBEITER_GEMEINDE:
+			return forSachbearbeiterGemeindeRole;
+		case ADMIN_MANDANT:
+			return forAdminMandantRole;
+		case SACHBEARBEITER_MANDANT:
+			return forSachbearbeiterMandantRole;
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
+			return forSozialdienstRole;
+		default:
+			return none;
+		}
+	}
 
-
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public static Set<AntragStatus> pendenzenForRole(UserRole userRole) {
-        switch (userRole) {
-			case SUPER_ADMIN:
-			case ADMIN_BG:
-            case JURIST:
-            case REVISOR:
-            case SACHBEARBEITER_BG:
-            case ADMIN_GEMEINDE:
-			case SACHBEARBEITER_GEMEINDE:
-			case ADMIN_MANDANT:
-			case SACHBEARBEITER_MANDANT:
-            	return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
-            case SACHBEARBEITER_TS:
-            case ADMIN_TS:
-            	return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
-            case STEUERAMT:
-            case GESUCHSTELLER:
-            default:
-            	return none;
-        }
-    }
+		switch (userRole) {
+		case SUPER_ADMIN:
+		case ADMIN_BG:
+		case JURIST:
+		case REVISOR:
+		case SACHBEARBEITER_BG:
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
+			return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
+		case SACHBEARBEITER_TS:
+		case ADMIN_TS:
+			return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
+			return FOR_SOZIALDIENST_PENDENZEN;
+		case STEUERAMT:
+		case GESUCHSTELLER:
+		default:
+			return none;
+		}
+	}
 
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public static Set<AntragStatus> writeAllowedForRole(UserRole userRole) {
 		switch (userRole) {
-			case SUPER_ADMIN:
-				return  all;
-			case ADMIN_BG:
-			case SACHBEARBEITER_BG:
-			case ADMIN_GEMEINDE:
-			case SACHBEARBEITER_GEMEINDE:
-				return FOR_ADMIN_ROLE_WRITE;
-			case GESUCHSTELLER:
-				return FOR_GESUCHSTELLER_ROLE_WRITE;
-			case ADMIN_INSTITUTION:
-			case SACHBEARBEITER_INSTITUTION:
-			case ADMIN_TRAEGERSCHAFT:
-			case SACHBEARBEITER_TRAEGERSCHAFT:
-				return FOR_INSTITUTION_ROLE_WRITE;
-			case STEUERAMT:
-				return FOR_STEUERAMT_ROLE_WRITE;
-			case SACHBEARBEITER_TS:
-			case ADMIN_TS:
-				return FOR_ADMIN_ROLE_WRITE;
-			default:
-				return none;
+		case SUPER_ADMIN:
+			return all;
+		case ADMIN_BG:
+		case SACHBEARBEITER_BG:
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
+			return FOR_ADMIN_ROLE_WRITE;
+		case GESUCHSTELLER:
+			return FOR_GESUCHSTELLER_ROLE_WRITE;
+		case ADMIN_INSTITUTION:
+		case SACHBEARBEITER_INSTITUTION:
+		case ADMIN_TRAEGERSCHAFT:
+		case SACHBEARBEITER_TRAEGERSCHAFT:
+			return FOR_INSTITUTION_ROLE_WRITE;
+		case STEUERAMT:
+			return FOR_STEUERAMT_ROLE_WRITE;
+		case SACHBEARBEITER_TS:
+		case ADMIN_TS:
+			return FOR_ADMIN_ROLE_WRITE;
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
+			return FOR_SOZIALDIENSTE_ROLE_WRITE;
+		default:
+			return none;
 		}
 	}
 
@@ -346,6 +416,9 @@ public enum AntragStatus {
 		);
 	}
 
+	public static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
+		IN_BEARBEITUNG_SOZIALDIENST);
+
 	/**
 	 * Ein verfuegtes Gesuch kann mehrere Status haben. Diese Methode immer anwenden um herauszufinden
 	 * ob ein Gesuch verfuegt ist.
@@ -366,8 +439,8 @@ public enum AntragStatus {
 		return inBearbeitung.contains(this);
 	}
 
-	public boolean isAnyOfInBearbeitungGS() {
-		return this == FREIGABEQUITTUNG || this == IN_BEARBEITUNG_GS;
+	public boolean isAnyOfInBearbeitungGSOrSZD() {
+		return this == FREIGABEQUITTUNG || this == IN_BEARBEITUNG_GS || this == IN_BEARBEITUNG_SOZIALDIENST;
 	}
 
 	/**
@@ -376,14 +449,14 @@ public enum AntragStatus {
 	 */
 	public boolean isReadableByJugendamtSchulamtSteueramt() {
 		//JA/SCH darf keine Gesuche sehen die noch nicht Freigegeben sind
-		return !(this.isAnyOfInBearbeitungGS());
+		return !(this.isAnyOfInBearbeitungGSOrSZD());
 	}
 
 	/**
 	 * schulamt darf eigentlich alle Status lesen ausser denen die noch vom GS bearbeitet werden
 	 */
 	public boolean isReadableBySchulamtSachbearbeiter() {
-		return !(this.isAnyOfInBearbeitungGS());
+		return !(this.isAnyOfInBearbeitungGSOrSZD());
 	}
 
 	/**

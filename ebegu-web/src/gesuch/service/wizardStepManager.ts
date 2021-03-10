@@ -95,21 +95,32 @@ export class WizardStepManager {
      * This method must be called only when the Gesuch doesn't exist yet.
      */
     public initWizardSteps(): void {
-        this.wizardSteps = [
-            this.createWizardStep(undefined,
-                TSWizardStepName.GESUCH_ERSTELLEN,
-                TSWizardStepStatus.IN_BEARBEITUNG,
-                undefined,
-                true),
-        ];
+        if (this.isStepVisible(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN)) {
+            this.wizardSteps = [
+                this.createWizardStep(undefined,
+                    TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
+                    TSWizardStepStatus.IN_BEARBEITUNG,
+                    undefined,
+                    true),
+            ];
+            this.currentStepName = TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN;
+        } else {
+            this.wizardSteps = [
+                this.createWizardStep(undefined,
+                    TSWizardStepName.GESUCH_ERSTELLEN,
+                    TSWizardStepStatus.IN_BEARBEITUNG,
+                    undefined,
+                    true),
+            ];
+            this.currentStepName = TSWizardStepName.GESUCH_ERSTELLEN;
+        }
         this.wizardSteps.push(
             this.createWizardStep(undefined,
                 TSWizardStepName.FAMILIENSITUATION,
                 TSWizardStepStatus.UNBESUCHT,
                 'initFinSit dummy',
-                false)
+                false),
         );
-        this.currentStepName = TSWizardStepName.GESUCH_ERSTELLEN;
     }
 
     public getAllowedSteps(): Array<TSWizardStepName> {
@@ -133,7 +144,11 @@ export class WizardStepManager {
         } else if (TSRoleUtil.getSteueramtOnlyRoles().indexOf(role) > -1) {
             this.setAllowedStepsForSteueramt();
 
+        } else if (TSRoleUtil.getAmtRole().concat(TSRole.GESUCHSTELLER).indexOf(role) > -1) {
+            this.setAllowedStepsForAmtAndGesuchsteller();
+            // TODO abklaeren ob die Gemeinde koennen auch sehe dieser Schritt
         } else {
+            // Nur sozialdienst und superadmin koennen alle Step sehen
             this.setAllAllowedSteps();
         }
     }
@@ -152,6 +167,23 @@ export class WizardStepManager {
         this.allowedSteps = [];
         this.allowedSteps.push(TSWizardStepName.FAMILIENSITUATION);
         this.allowedSteps.push(TSWizardStepName.GESUCHSTELLER);
+    }
+
+    private setAllowedStepsForAmtAndGesuchsteller(): void {
+        this.allowedSteps = [];
+        this.allowedSteps.push(TSWizardStepName.GESUCH_ERSTELLEN);
+        this.allowedSteps.push(TSWizardStepName.FAMILIENSITUATION);
+        this.allowedSteps.push(TSWizardStepName.GESUCHSTELLER);
+        this.allowedSteps.push(TSWizardStepName.UMZUG);
+        this.allowedSteps.push(TSWizardStepName.KINDER);
+        this.allowedSteps.push(TSWizardStepName.BETREUUNG);
+        this.allowedSteps.push(TSWizardStepName.ABWESENHEIT);
+        this.allowedSteps.push(TSWizardStepName.ERWERBSPENSUM);
+        this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
+        this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+        this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
+        this.allowedSteps.push(TSWizardStepName.FREIGABE);
+        this.allowedSteps.push(TSWizardStepName.VERFUEGEN);
     }
 
     private setAllAllowedSteps(): void {
@@ -220,12 +252,12 @@ export class WizardStepManager {
     }
 
     /**
-     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given stepName.
-     * Use this method to avoid changing the status of a different Step than the one you have to change.
+     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given
+     * stepName. Use this method to avoid changing the status of a different Step than the one you have to change.
      */
     public updateCurrentWizardStepStatusSafe(
         stepName: TSWizardStepName,
-        stepStatus: TSWizardStepStatus
+        stepStatus: TSWizardStepStatus,
     ): IPromise<void> {
         if (this.getCurrentStepName() === stepName) {
             return this.updateCurrentWizardStepStatus(stepStatus);
@@ -355,7 +387,7 @@ export class WizardStepManager {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
                 !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
-                    !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
+                !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
             }
             return this.areAllStepsOK(gesuch);
@@ -483,6 +515,11 @@ export class WizardStepManager {
             this.hideStep(TSWizardStepName.UMZUG);
         } else {
             this.unhideStep(TSWizardStepName.UMZUG);
+        }
+        if (EbeguUtil.isNullOrUndefined(gesuch.dossier.fall.sozialdienstFall)) {
+            this.hideStep(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
+        } else {
+            this.unhideStep(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
         }
     }
 }

@@ -1,0 +1,220 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="sozialdienst-view gesuch-modul">
+    <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span data-translate="SOZIALDIENST_FALL_ERSTELLEN"></span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <div class="row margin-top-40">
+        <div class="col-md-12">
+            <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
+                <fieldset ng-disabled="vm.isSozialdienstFallReadOnly()">
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="NAME" for="name_ID"></label>
+                                <input aria-describedby="name_ID-error" id="name_ID" type="text" name="name"
+                                       ng-model="vm.sozialdienstFall.name"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="VORNAME" for="vorname_ID"></label>
+                                <input aria-describedby="vorname_ID-error" id="vorname_ID" type="text" name="vorname"
+                                       ng-model="vm.sozialdienstFall.vorname"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="vorname_ID" for="vm.form.vorname.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--Geburtsdatum-->
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="GEBURTSDATUM" for="geburtsdatum_ID">
+                                </label>
+                                <dv-datepicker no-future="true"
+                                               input-id="geburtsdatum_ID" name="geburtsdatum"
+                                               ng-model="vm.sozialdienstFall.geburtsdatum" ng-required="true"
+                                               class="input-element">
+                                </dv-datepicker>
+                                <dv-error-messages input-id="geburtsdatum_ID" for="vm.form.geburtsdatum.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="ADRESSE_STRASSE" for="name_ID"></label>
+                                <input aria-describedby="strasse_ID-error" id="strasse_ID" type="text" name="strasse"
+                                       ng-model="vm.sozialdienstFall.adresse.strasse"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="strasse_ID" for="vm.form.strasse.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float"
+                                       data-translate="ADRESSE_HAUSNUMMER"
+                                       for="hausnummer_ID"></label>
+                                <input aria-describedby="hausnummer_ID-error"
+                                       id="hausnummer_ID"
+                                       type="text"
+                                       name="hausnummer"
+                                       ng-model="vm.sozialdienstFall.adresse.hausnummer"
+                                       dv-max-length
+                                       class="form-control">
+                                <dv-error-messages input-id="hausnummer_ID" for="vm.form.hausnummer.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float"
+                                       data-translate="ADRESSE_ZUSATZZEILE"
+                                       for="zusatzzeile_ID"></label>
+                                <input aria-describedby="zusatzzeile_ID-error"
+                                       id="zusatzzeile_ID"
+                                       type="text"
+                                       name="zusatzzeile"
+                                       ng-model="vm.sozialdienstFall.adresse.zusatzzeile"
+                                       dv-max-length
+                                       class="form-control">
+                                <dv-error-messages input-id="zusatzzeile_ID" for="vm.form.zusatzzeile.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="ADRESSE_PLZ" for="plz_ID"></label>
+                                <input aria-describedby="plz_ID-error" id="plz_ID" type="text" name="plz"
+                                       ng-model="vm.sozialdienstFall.adresse.plz"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="plz_ID" for="vm.form.plz.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="ADRESSE_ORT" for="ort_ID"></label>
+                                <input aria-describedby="ort_ID-error" id="ort_ID" type="text" name="ort"
+                                       ng-model="vm.sozialdienstFall.adresse.ort"
+                                       dv-max-length class="form-control" required>
+                                <dv-error-messages input-id="ort_ID" for="vm.form.ort.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Vollmacht Dokument hochladen -->
+                <div class="row view-title margin-top-30" ng-if="!vm.sozialdienstFall.isNew()">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <h1>
+                            <span data-translate="VOLLMACHT_HOCHLADEN"></span>
+                        </h1>
+                        <hr class="header"/>
+                        <table class="table table-striped" width="100%">
+                            <tbody>
+                            <tr>
+                                <td translate="VOLLMACHT_DOKUMENT"></td>
+                                <td width="2%"
+                                    class="symbol"
+                                    tabindex="-1"
+                                    ng-click="$event.stopPropagation()">
+                                    <button
+                                        ngf-select="vm.uploadVollmachtDokument($files)"
+                                        ngf-multiple="false"
+                                        accept="application/pdf"
+                                        ng-disabled="vm.isSozialdienstFallReadOnly()"
+                                        class="dv-btn fa fa-upload dv-btn-operation"
+                                        title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                        aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                        tabindex="0">
+                                    </button>
+                                </td>
+                                <td width="2%"
+                                    class="symbol"
+                                    tabindex="-1">
+                                    <button
+                                        ng-click="vm.downloadVollmachtDokument();$event.stopPropagation()"
+                                        ng-disabled="!vm.isVollmachtHochgeladet"
+                                        class="dv-btn fa fa-eye dv-btn-operation"
+                                        title="{{'DOKUMENT_DOWNLOAD' | translate}}"
+                                        [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                        aria-hidden="true"
+                                        tabindex="0"></button>
+                                </td>
+                                <td width="2%"
+                                    class="symbol"
+                                    tabindex="-1">
+                                    <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
+                                            ng-disabled="!vm.isVollmachtHochgeladet || vm.isSozialdienstFallReadOnly()"
+                                            class="dv-btn fa fa-trash dv-btn-operation"
+                                            title="{{'DOKUMENT_DELETE' | translate}}"
+                                            [attr.aria-label]="'DOKUMENT_DELETE' | translate"
+                                            aria-hidden="true"
+                                            tabindex="0"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!--Buttons-->
+                <div class="dv-navigation dv-navigation-flex">
+                    <span ng-if="!vm.isSozialdienstFallReadOnly()">
+                        <dv-loading-button button-click="vm.save()" type="submit">
+                            <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
+                        </dv-loading-button>
+                    </span>
+                    <span ng-if="vm.isSozialdienstFallReadOnly()">
+                        <dv-loading-button button-click="vm.weiter()" type="submit">
+                            <span class="uppercase" data-translate="WEITER_ONLY"></span>
+                        </dv-loading-button>
+                    </span>
+                        <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
+                          dv-show-expression="vm.isAktivierungMoeglich()">
+                        <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
+                            <span class="uppercase" data-translate="SOZIALDIENSTFALL_AKTIVIEREN"></span>
+                        </dv-loading-button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

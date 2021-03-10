@@ -56,7 +56,18 @@ public class Freigabe implements WizardStep<TagesschuleWizard> {
 	}
 
 	@Override
-	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) { return true; }
+	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
+		switch (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus()) {
+		case IN_BEARBEITUNG_GEMEINDE:
+			return false;
+		case IN_PRUEFUNG_KANTON:
+			return !(wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin());
+		case NEU:
+		default:
+			return true;
+		}
+
+	}
 
 	@Override
 	public WizardTyp getWizardTyp() {

@@ -121,12 +121,20 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 
 		final Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
 			.orElseThrow(() -> new EbeguRuntimeException("createZahlung", "GS1 not found for Gesuch " + gesuch.getId()));
+		Gesuchsteller gesuchsteller2 = null;
+
+		if (gesuch.getGesuchsteller2() != null) {
+			gesuchsteller2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
+		}
 
 		Zahlung zahlung = new Zahlung();
 		zahlung.setStatus(ZahlungStatus.ENTWURF);
 		zahlung.setAuszahlungsdaten(auszahlungsdaten);
 		zahlung.setEmpfaengerId(fallId);
 		zahlung.setEmpfaengerName(gesuchsteller1.getFullName());
+		if (gesuchsteller2 != null) {
+			zahlung.setEmpfaenger2Name(gesuchsteller2.getFullName());
+		}
 		zahlung.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		zahlung.setZahlungsauftrag(zahlungsauftrag);
 		zahlungsauftrag.getZahlungen().add(zahlung);

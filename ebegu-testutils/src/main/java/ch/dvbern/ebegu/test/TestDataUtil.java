@@ -2231,8 +2231,10 @@ public final class TestDataUtil {
 		@Nonnull Gemeinde gemeinde
 	) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer cnt = new LastenausgleichTagesschuleAngabenGemeindeContainer();
+		LastenausgleichTagesschuleAngabenGemeinde angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde();
 		cnt.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
 		cnt.setGesuchsperiode(gesuchsperiode);
+		cnt.setAngabenDeklaration(angabenDeklaration);
 		cnt.setGemeinde(gemeinde);
 		return cnt;
 	}

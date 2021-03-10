@@ -14,7 +14,7 @@
  */
 
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
@@ -25,13 +25,17 @@ import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
-import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {GUIDED_TOUR_SUPPORTED_ROLES, GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
+import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
+import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgSozialdienstDialogComponent} from '../dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
 
 const LOG = LogFactory.createLog('NavbarComponent');
 
@@ -56,6 +60,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly sozialdienstRS: SozialdienstRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
     ) {
     }
 
@@ -86,27 +92,59 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         this.unsubscribe$.complete();
     }
 
-    public createNewFall(): void {
-        this.getGemeindeIDFromUser$()
-            .pipe(
-                take(1),
-                filter(gemeindeId => !!gemeindeId),
-            )
+    public startNewFall(): void {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+            this.createNewSozialdienstFall();
+        } else {
+            this.createNewFall(null);
+        }
+    }
+
+    public createNewSozialdienstFall(): void {
+        this.getSozialdienstIDFromUser$().pipe(
+            take(1),
+            filter(sozialdienstId => !!sozialdienstId),
+        )
             .subscribe(
-                gemeindeId => {
-                    const params: INewFallStateParams = {
-                        gesuchsperiodeId: null,
-                        creationAction: TSCreationAction.CREATE_NEW_FALL,
-                        gesuchId: null,
-                        dossierId: null,
-                        gemeindeId,
-                        eingangsart: TSEingangsart.PAPIER,
-                    };
-                    this.$state.go('gesuch.fallcreation', params);
+                sozialdienstId => {
+                    this.createNewFall(sozialdienstId);
                 }
                 ,
                 err => LOG.error(err),
             );
+    }
+
+    private createNewFall(sozialdienstId: string): void {
+        this.getGemeindeIDFromUser$(EbeguUtil.isNotNullOrUndefined(sozialdienstId)).pipe(
+            take(1),
+            filter(result => !!result),
+            filter(result => !!result.gemeindeId),
+        )
+            .subscribe(
+            result => {
+                if (EbeguUtil.isNullOrUndefined(result) || EbeguUtil.isNullOrUndefined(result.gemeindeId)) {
+                    return;
+                }
+
+                const params: INewFallStateParams = {
+                    gesuchsperiodeId: result.gesuchsperiodeId,
+                    creationAction: TSCreationAction.CREATE_NEW_FALL,
+                    gesuchId: null,
+                    dossierId: null,
+                    gemeindeId: result.gemeindeId,
+                    eingangsart: TSEingangsart.PAPIER,
+                    sozialdienstId,
+                    fallId: null,
+                };
+                if (sozialdienstId) {
+                    this.$state.go('gesuch.sozialdienstfallcreation', params);
+                } else {
+                    this.$state.go('gesuch.fallcreation', params);
+                }
+            }
+            ,
+            err => LOG.error(err),
+        );
     }
 
     public ngAfterViewInit(): void {
@@ -124,21 +162,50 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         }
     }
 
-    private getGemeindeIDFromUser$(): Observable<string> {
+    private getGemeindeIDFromUser$(withGesuchsperiode: boolean): Observable<any> {
         return this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
                     if (principal && principal.hasJustOneGemeinde()) {
-                        return of(principal.extractCurrentGemeindeId());
+                        return of({gemeindeId: principal.extractCurrentGemeindeId()});
                     }
 
                     return this.getListOfGemeinden$()
                         .pipe(
                             switchMap(gemeindeList => {
                                 const dialogConfig = new MatDialogConfig();
+                                if (withGesuchsperiode) {
+                                    return fromPromise(this.gesuchsperiodeRS.getAllActiveGesuchsperioden()).pipe(
+                                        switchMap(gesuchsperiodeList => {
+                                            dialogConfig.data = {gemeindeList, gesuchsperiodeList};
+                                            return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig)
+                                                .afterClosed();
+                                        },
+                                    ));
+                                }
                                 dialogConfig.data = {gemeindeList};
-
                                 return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+                            }),
+                        );
+                }),
+            );
+    }
+
+    private getSozialdienstIDFromUser$(): Observable<string> {
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (principal && principal.currentBerechtigung.sozialdienst) {
+                        return of(principal.currentBerechtigung.sozialdienst.id);
+                    }
+
+                    return this.getListOfSozialdienst$()
+                        .pipe(
+                            switchMap(sozialdienstList => {
+                                const dialogConfig = new MatDialogConfig();
+                                dialogConfig.data = {sozialdienstList};
+
+                                return this.dialog.open(DvNgSozialdienstDialogComponent, dialogConfig).afterClosed();
                             }),
                         );
                 }),
@@ -150,12 +217,16 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
      * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
      */
     private getListOfGemeinden$(): Observable<TSGemeinde[]> {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrSozialdienstRolle())) {
             return fromPromise(this.gemeindeRS.getAktiveGemeinden());
         }
 
         return this.authServiceRS.principal$
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
+    }
+
+    private getListOfSozialdienst$(): Observable<TSSozialdienst[]> {
+        return this.sozialdienstRS.getSozialdienstList();
     }
 
     public isTagesschulangebotEnabled(): boolean {

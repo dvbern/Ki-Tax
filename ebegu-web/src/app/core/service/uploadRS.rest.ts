@@ -92,7 +92,7 @@ export class UploadRS {
                 'x-filename': names.join(';'),
             },
             data: {
-                file: files
+                file: files,
             },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
@@ -112,7 +112,7 @@ export class UploadRS {
                 'x-filename': this.base64.encode(file.name),
             },
             data: {
-                file
+                file,
             },
         }).then((response: any) => {
             return response.data;
@@ -123,12 +123,13 @@ export class UploadRS {
     }
 
     public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string,
-                                        dokumentTyp: TSDokumentTyp): IPromise<any> {
+                                        dokumentTyp: TSDokumentTyp,
+    ): IPromise<any> {
         return this.upload.upload({
             url: `${this.serviceURL}/gesuchsperiodeDokument/${sprache}/${periodeID}/${dokumentTyp}`,
             method: 'POST',
             data: {
-                file
+                file,
             },
         }).then((response: any) => {
             return response.data;
@@ -139,13 +140,15 @@ export class UploadRS {
     }
 
     public uploadGemeindeGesuchsperiodeDokument(file: any, sprache: TSSprache, gemeindeId: string, periodeID: string,
-                                                dokumentTyp: TSDokumentTyp): IPromise<any> {
+                                                dokumentTyp: TSDokumentTyp,
+    ): IPromise<any> {
         return this.upload.upload({
             // tslint:disable-next-line:max-line-length
-            url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(periodeID)}/${sprache}/${dokumentTyp}`,
+            url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(
+                periodeID)}/${sprache}/${dokumentTyp}`,
             method: 'POST',
             data: {
-                file
+                file,
             },
         }).then((response: any) => {
             return response.data;
@@ -157,6 +160,22 @@ export class UploadRS {
 
     public getServiceName(): string {
         return 'UploadRS';
+    }
+
+    public uploadVollmachtDokument(file: any, fallId: string): IPromise<any> {
+        return this.upload.upload({
+            // tslint:disable-next-line:max-line-length
+            url: `${this.serviceURL}/sozialdienstfall/${encodeURIComponent(fallId)}`,
+            method: 'POST',
+            data: {
+                file,
+            },
+        }).then((response: any) => {
+            return response.data;
+        }, (response: any) => {
+            console.log('Upload Vollmacht File: NOT SUCCESS');
+            return this.q.reject(response);
+        });
     }
 
     private notifyCallbackByUpload(evt: any): void {

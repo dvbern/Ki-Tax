@@ -172,6 +172,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	public List<WizardStep> createWizardStepList(Gesuch gesuch) {
 		List<WizardStep> wizardStepList = new ArrayList<>();
 		if (AntragTyp.MUTATION == gesuch.getTyp()) {
+			if(gesuch.getDossier().getFall().getSozialdienstFall() != null){
+				wizardStepList.add(saveWizardStep(createWizardStepObject(
+					gesuch,
+					WizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
+					WizardStepStatus.OK,
+					true)));
+			}
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
 				WizardStepName.GESUCH_ERSTELLEN,
@@ -239,11 +246,18 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				WizardStepStatus.WARTEN,
 				true)));
 		} else { // GESUCH
+			if(gesuch.getDossier().getFall().getSozialdienstFall() != null){
+				wizardStepList.add(saveWizardStep(createWizardStepObject(
+					gesuch,
+					WizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
+					WizardStepStatus.IN_BEARBEITUNG,
+					true)));
+			}
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
 				WizardStepName.GESUCH_ERSTELLEN,
-				WizardStepStatus.OK,
-				true)));
+				gesuch.getDossier().getFall().getSozialdienstFall() != null ? WizardStepStatus.UNBESUCHT : WizardStepStatus.OK,
+				gesuch.getDossier().getFall().getSozialdienstFall() != null ? false : true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
 				WizardStepName.FAMILIENSITUATION,

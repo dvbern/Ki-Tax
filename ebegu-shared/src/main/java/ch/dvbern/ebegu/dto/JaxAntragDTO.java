@@ -46,7 +46,8 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	private static final long serialVersionUID = -1277026654764135397L;
 
 	//probably unused
-	public JaxAntragDTO(String antragId, LocalDate gesuchsperiodeGueltigAb, LocalDate gesuchsperiodeGueltigBis,
+	public JaxAntragDTO(
+		String antragId, LocalDate gesuchsperiodeGueltigAb, LocalDate gesuchsperiodeGueltigBis,
 		@Nullable LocalDate eingangsdatum, @Nullable LocalDate eingangsdatumSTV, AntragTyp antragTyp,
 		int laufnummer, Eingangsart eingangsart) {
 		this();
@@ -61,7 +62,8 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	}
 
 	//constructor fuer query
-	public JaxAntragDTO(String antragId, LocalDate gesuchsperiodeGueltigAb, LocalDate gesuchsperiodeGueltigBis,
+	public JaxAntragDTO(
+		String antragId, LocalDate gesuchsperiodeGueltigAb, LocalDate gesuchsperiodeGueltigBis,
 		@Nullable LocalDate eingangsdatum, @Nullable LocalDate eingangsdatumSTV, AntragTyp antragTyp,
 		AntragStatus antragStatus, int laufnummer, Eingangsart eingangsart, @Nullable String besitzerUsername) {
 		this();
@@ -103,13 +105,13 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	private LocalDate gesuchsperiodeGueltigBis = null;
 
 	@NotNull
-	private String verantwortlicherBG; 	// Name Vorname
+	private String verantwortlicherBG;    // Name Vorname
 
 	@Nullable
 	private String verantwortlicherTS; // Name Vorname
 
 	@Nullable
-	private String verantwortlicherUsernameBG; 	// Wird fuer Freigabe gebraucht
+	private String verantwortlicherUsernameBG;    // Wird fuer Freigabe gebraucht
 
 	@Nullable
 	private String verantwortlicherUsernameTS; // Wird fuer Freigabe gebraucht
@@ -160,6 +162,8 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	@NotNull
 	private String gemeinde;
 
+	@NotNull
+	private String gemeindeId;
 
 	public String getAntragId() {
 		return antragId;
@@ -369,4 +373,13 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	public void setGemeinde(String gemeinde) {
 		this.gemeinde = gemeinde;
 	}
+
+	public String getGemeindeId() {
+		return gemeindeId;
+	}
+
+	public void setGemeindeId(String gemeindeId) {
+		this.gemeindeId = gemeindeId;
+	}
+
 }

@@ -18,6 +18,7 @@ import {TSRole} from './TSRole';
 
 export enum TSAntragStatus {
     IN_BEARBEITUNG_GS = 'IN_BEARBEITUNG_GS',
+    IN_BEARBEITUNG_SOZIALDIENST = 'IN_BEARBEITUNG_SOZIALDIENST',
     FREIGABEQUITTUNG = 'FREIGABEQUITTUNG',
     NUR_SCHULAMT = 'NUR_SCHULAMT',
     FREIGEGEBEN = 'FREIGEGEBEN',
@@ -210,6 +211,11 @@ export function isAnyStatusOfMahnung(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.ZWEITE_MAHNUNG || status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN;
 }
 
-export function getStartAntragStatusFromEingangsart(eingangsart: TSEingangsart): TSAntragStatus {
-    return TSEingangsart.ONLINE === eingangsart ? TSAntragStatus.IN_BEARBEITUNG_GS : TSAntragStatus.IN_BEARBEITUNG_JA;
+export function getStartAntragStatusFromEingangsart(
+    eingangsart: TSEingangsart,
+    sozialdienstFall: boolean,
+): TSAntragStatus {
+    return TSEingangsart.ONLINE === eingangsart ?
+        TSAntragStatus.IN_BEARBEITUNG_GS :
+        sozialdienstFall ? TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST : TSAntragStatus.IN_BEARBEITUNG_JA;
 }

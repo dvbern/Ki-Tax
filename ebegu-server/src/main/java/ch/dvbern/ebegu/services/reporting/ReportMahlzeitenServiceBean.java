@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -78,6 +79,7 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
+import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungExcelConverter;
 import ch.dvbern.ebegu.services.FileSaverService;
@@ -89,6 +91,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -112,6 +115,9 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private ReportService reportService;
 
 	@Nonnull
 	@Override
@@ -242,6 +248,29 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			row.setGs2Name(gs2.getNachname());
 			row.setGs2Vorname(gs2.getVorname());
 		}
+
+		if (gueltigeGesuch.getFamiliensituationContainer() != null
+			&& gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA() != null) {
+			// Sozialhilfebezueger
+			boolean sozialhilfeBezueger = reportService.isSozialhilfeBezueger(
+				zeitabschnitt,
+				gueltigeGesuch.getFamiliensituationContainer(),
+				gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA()
+			);
+			row.setSozialhilfeBezueger(sozialhilfeBezueger);
+
+			// IBAN-Nummer
+			if (gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten() != null) {
+				IBAN iban = gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getIban();
+				row.setIban(iban.getIban());
+			}
+		}
+
+		// massgebendes Einkommen
+		final BGCalculationResult bgCalculationResult = zeitabschnitt.getRelevantBgCalculationResult();
+		row.setMassgebendesEinkommenVorFamAbzug(bgCalculationResult.getMassgebendesEinkommenVorAbzugFamgr());
+		row.setFamGroesse(bgCalculationResult.getFamGroesse());
+		row.setMassgebendesEinkommenNachFamAbzug(MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO));
 
 		// Kind
 		Kind kind = gueltigePlatz.getKind().getKindJA();

@@ -100,6 +100,18 @@ public final class FilterFunctions {
 		predicates.add(sameInstitution);
 	}
 
+	public static void setGemeindeFilterForCurrentFerienbetreuungUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull List<Predicate> predicates) {
+
+		Predicate isFerienbetreuungRole = joinCurrentBerechtigung.get(Berechtigung_.role)
+			.in(UserRole.ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG);
+
+		predicates.add(isFerienbetreuungRole);
+	}
+
 	public static void setTraegerschaftFilterForCurrentUser(
 		@Nonnull Benutzer currentBenutzer,
 		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,

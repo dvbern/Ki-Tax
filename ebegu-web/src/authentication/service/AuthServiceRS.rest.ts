@@ -300,6 +300,10 @@ export class AuthServiceRS {
                 return PERMISSIONS[Permission.BENUTZER_EINLADEN_AS_GEMEINDE];
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
+            case TSRole.ADMIN_SOZIALDIENST:
+                    return PERMISSIONS[Permission.ROLE_SOZIALDIENST];
+            case TSRole.ADMIN_FERIENBETREUUNG:
+                return PERMISSIONS[Permission.BENUTZER_FERIENBETREUUNG_EINLADEN];
 
             default:
                 // by default the role of the user itself. the user can always see his role

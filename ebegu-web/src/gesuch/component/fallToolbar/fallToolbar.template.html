@@ -27,7 +27,7 @@
             </button>
 
             <button
-                *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                 (click)="createNewDossier()" class="dossier-element add-dossier"
                 (mouseover)="toggleGemeindeText()" (mouseout)="toggleGemeindeText()"
                 [disabled]="isNavigationDisabled()">
@@ -63,7 +63,7 @@
                             [disabled]="isNavigationDisabled()">{{dossier.extractGemeindeName()}}
                     </button>
                 </li>
-                <li *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()">
+                <li *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()">
                     <button href class="fall-toolbar-mobile-dropdown-button"
                             (click)="createNewDossier()" [disabled]="isNavigationDisabled()">
                         <i class="fa fa-plus fall-toolbar-symbol-padding"></i> {{'GEMEINDE_HINZUFUEGEN' | translate}}
