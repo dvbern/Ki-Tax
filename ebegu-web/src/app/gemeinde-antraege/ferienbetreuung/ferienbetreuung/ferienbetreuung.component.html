@@ -19,7 +19,10 @@
     <div class="antrag-container">
         <dv-wizard-side-nav
             [id]="ferienbetreuungId"
-            [wizardTyp]="wizardTyp">
+            [wizardTyp]="wizardTyp"
+            [status]="ferienbetreuungContainer?.status | translate"
+            [gemeinde]="ferienbetreuungContainer?.gemeinde"
+        >
         </dv-wizard-side-nav>
         <div class="antrag">
             <ui-view></ui-view>

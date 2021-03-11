@@ -17,6 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {SharedModule} from '../../shared/shared.module';
 import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
 import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot/ferienbetreuung-angebot.component';
 import {FerienbetreuungFreigabeComponent} from './ferienbetreuung-freigabe/ferienbetreuung-freigabe.component';
@@ -46,6 +47,7 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         CommonModule,
         FerienbetreuungRoutingModule,
         WizardstepXModule,
+        SharedModule,
     ],
     providers: [
         FerienbetreuungService
