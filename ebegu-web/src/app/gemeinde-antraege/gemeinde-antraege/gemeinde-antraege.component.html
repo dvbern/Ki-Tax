@@ -42,7 +42,7 @@
                         </div>
                     </div>
 
-                    <!-- Selbstbehalt pro 100% Platz -->
+                    <!-- Gemeindeantragtyp -->
                     <div class="col-md-3">
 
                         <div>
@@ -61,18 +61,51 @@
                             </div>
                         </div>
 
-
                     </div>
-                    <div class="col-md-3 layout-align-center-center layout-row flex"
+
+                    <!--                        Gemeinde-->
+                    <div class="col-md-3" *ngIf="ferienBetreuungSelected()">
+                        <div>
+                            <label class="md-no-float"
+                                   [ngClass]="{required: ferienBetreuungSelected()}"
+                                   for="select-gemeinde"
+                                   translate>GEMEINDE</label>
+                            <select aria-describedby="select-gemeinde-error" name="gemeinde"
+                                    id="select-gemeinde"
+                                    formControlName="gemeinde"
+                                    class="form-control">
+                                <option *ngFor="let gemeinde of gemeinden"
+                                        [value]="gemeinde.id">{{gemeinde.name}}</option>
+                            </select>
+                            <div class="dv-error-messages">
+                                <div *ngIf="(formGroup?.get('gemeinde').touched || triedSending) && formGroup?.get('gemeinde')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!ferienBetreuungSelected()"
+                        class="col-md-3 layout-align-center-center layout-row flex actions"
                          flex
                          layout="row"
-                         layout-align="center center"
-                         id="actions">
+                         layout-align="center center">
                         <div dvLoadingButtonX
                              [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate"
                              type="submit"
-                             (buttonClick)="createAntrag()">
+                             (buttonClick)="createAllAntraege()">
                             <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="ferienBetreuungSelected()"
+                        class="col-md-3 layout-align-center-center layout-row flex actions"
+                         flex
+                         layout="row"
+                         layout-align="center center">
+                        <div dvLoadingButtonX
+                             [ariaLabel]="'GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN' | translate"
+                             type="submit"
+                             (buttonClick)="createAntrag()">
+                            <span class="uppercase" translate>GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN</span>
                         </div>
                     </div>
                 </div>

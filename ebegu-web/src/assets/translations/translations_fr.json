@@ -2308,5 +2308,7 @@
     "VOLLMACHT_HOCHLADEN": "Télécharger la procuration",
     "VOLLMACHT_DOKUMENT": "Document de procuration",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Activer",
+    "ERR_GEMEINDEN_LADEN": "Gemeinden konnten nicht gelden werden",
+    "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Créer une demande",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

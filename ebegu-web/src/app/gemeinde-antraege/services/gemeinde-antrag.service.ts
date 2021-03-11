@@ -20,6 +20,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -64,9 +65,20 @@ export class GemeindeAntragService {
         return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG];
     }
 
-    public createAntrag(toCreate: { periode: string, antragTyp: string }): Observable<TSGemeindeAntrag[]> {
+    public createAllAntrage(
+        toCreate: { periode: string, antragTyp: string, gemeinde?: TSGemeinde }
+        ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
-            `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
+            `${this.API_BASE_URL}/createAllAntraege/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
+            toCreate)
+            .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
+    }
+
+    public createAntrag(
+        toCreate: { periode: string, antragTyp: string, gemeinde: string }
+        ): Observable<TSGemeindeAntrag[]> {
+        return this.http.post<TSGemeindeAntrag[]>(
+            `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`,
             toCreate)
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }

@@ -21,7 +21,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -49,21 +51,36 @@ public class GemeindeAntragServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private Gesuchsperiode gesuchsperiode1920;
 
+	private Gemeinde gemeindeLondon;
+
 	@Before
 	public void init() {
 		gesuchsperiode1920 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
 		TestDataUtil.prepareParameters(gesuchsperiode1920, persistence);
 		insertInstitutionen();
 		TestDataUtil.getGemeindeParis(persistence);
-		TestDataUtil.getGemeindeLondon(persistence);
+		gemeindeLondon = TestDataUtil.getGemeindeLondon(persistence);
 	}
 
 	@Test
-	public void createGemeindeAntrag() {
-		final List<? extends GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createGemeindeAntrag(
+	public void createAllGemeindeAntraege() {
+		final List<? extends GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createAllGemeindeAntraege(
 			gesuchsperiode1920,
 			GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
 		Assert.assertNotNull(gemeindeAntragList);
 		Assert.assertEquals("Wir erwarten pro Gemeinde einen Antrag", 2, gemeindeAntragList.size());
+	}
+
+	@Test
+	public void createGemeindeAntrag() {
+		final FerienbetreuungAngabenContainer ferienbetreuungAntrag = (FerienbetreuungAngabenContainer) gemeindeAntragService.createGemeindeAntrag(
+			gemeindeLondon,
+			gesuchsperiode1920,
+			GemeindeAntragTyp.FERIENBETREUUNG);
+		Assert.assertNotNull(ferienbetreuungAntrag);
+		Assert.assertEquals("Ostermundigen", ferienbetreuungAntrag.getGemeinde().getName());
+		Assert.assertEquals("IN_BEARBEITUNG_GEMEINDE", ferienbetreuungAntrag.getStatusString());
+		Assert.assertEquals(2017, ferienbetreuungAntrag.getGesuchsperiode().getBasisJahr());
+		Assert.assertNotNull(ferienbetreuungAntrag.getAngabenDeklaration());
 	}
 }

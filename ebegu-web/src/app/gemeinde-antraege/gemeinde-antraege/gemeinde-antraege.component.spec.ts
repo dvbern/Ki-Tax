@@ -15,13 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {HttpClientModule} from '@angular/common/http';
-import {Directive, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Directive, EventEmitter, Input, Output} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ControlContainer, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService, UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -40,6 +44,8 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
 
 const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContainer.name,
     ['path']);
+
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
@@ -80,11 +86,16 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ControlContainer, useValue: controlContainerSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
             ],
         })
+            .overrideComponent(GemeindeAntraegeComponent, {
+                set: {  changeDetection: ChangeDetectionStrategy.Default  }
+            })
             .compileComponents();
 
         gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(Promise.resolve([]));
+        gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
     });
 
     beforeEach(() => {
@@ -95,5 +106,17 @@ describe('GemeindeAntraegeComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should display third dropdown if ferienbetreuung is selected', () => {
+        component.formGroup.controls.antragTyp.setValue(TSGemeindeAntragTyp.FERIENBETREUUNG);
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('#select-gemeinde'))).not.toBeNull();
+    });
+
+    it('should NOT display third dropdown if tagesschule is selected', () => {
+        component.formGroup.controls.antragTyp.setValue(TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('#select-gemeinde'))).toBeNull();
     });
 });
