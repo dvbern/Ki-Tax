@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.enums;
  */
 public enum AntragEvents {
 	FREIGABEQUITTUNG_ERSTELLEN,
+	FREIGABEQUITTUNG_ZURUECKZIEHEN,
 	FREIGEBEN,
 	ERSTES_OEFFNEN_JA,
 	MAHNEN, GEPRUEFT,
