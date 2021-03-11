@@ -16,11 +16,13 @@
  */
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, ReplaySubject} from 'rxjs';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
+import {LogFactory} from '../../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('FerienbetreuungService');
 
 @Injectable({
     providedIn: 'root',
@@ -29,18 +31,34 @@ export class FerienbetreuungService {
 
     private readonly API_BASE_URL = `${CONSTANTS.REST_API}ferienbetreuung`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
+    // return last item but don't provide initial value like BehaviourSubject does
+    private ferienbetreuungAngabenContainerStore =
+        new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
 
     public constructor(private readonly http: HttpClient) {
     }
 
-    public findFerienbetreuungContainer(id: string): Observable<TSFerienbetreuungAngabenContainer> {
+    public updateFerienbetreuungContainerStore(id: string): void {
         const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
-        return this.http.get<TSFerienbetreuungAngabenContainer>(url)
-            .pipe(
-                map(container => this.ebeguRestUtil.parseFerienbetreuungContainer(
-                    new TSFerienbetreuungAngabenContainer(),
-                    container
-                ))
-            );
+        this.http.get<TSFerienbetreuungAngabenContainer>(url)
+            .subscribe(container => {
+                this.next(container);
+            }, error => LOG.error(error));
+    }
+
+    public getFerienbetreuungContainer(): Observable<TSFerienbetreuungAngabenContainer> {
+        return this.ferienbetreuungAngabenContainerStore.asObservable();
+    }
+
+    public emptyStore(): void {
+        this.ferienbetreuungAngabenContainerStore = new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
+    }
+
+    private next(restContainer: TSFerienbetreuungAngabenContainer): void {
+        const container = this.ebeguRestUtil.parseFerienbetreuungContainer(
+            new TSFerienbetreuungAngabenContainer(),
+            restContainer
+        );
+        this.ferienbetreuungAngabenContainerStore.next(container);
     }
 }
