@@ -15,9 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx;
+package ch.dvbern.ebegu.wizardx.ferienbetreuung;
 
-public enum WizardTyp {
-	LASTENAUSGLEICH_TS,
-	FERIENBETREUUNG
+public enum FerienbetreuungWizardStepsEnum {
+	STAMMDATEN_GEMEINDE,
+	ANGEBOT,
+	NUTZUNG,
+	KOSTEN_EINNAHMEN,
+	UPLOAD,
+	FREIGABE,
+	VERFUEGUNG
 }
