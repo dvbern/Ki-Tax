@@ -14,22 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import {HttpClientModule} from '@angular/common/http';
-import {TestBed} from '@angular/core/testing';
 
-import {FerienbetreuungService} from './ferienbetreuung.service';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-describe('GemeindeAngaben', () => {
-  let service: FerienbetreuungService;
+import {FerienbetreuungKostenEinnahmenComponent} from './ferienbetreuung-kosten-einnahmen.component';
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [HttpClientModule]
-    });
-    service = TestBed.inject(FerienbetreuungService);
+describe('FerienbetreuungKostenEinnahmenComponent', () => {
+  let component: FerienbetreuungKostenEinnahmenComponent;
+  let fixture: ComponentFixture<FerienbetreuungKostenEinnahmenComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ FerienbetreuungKostenEinnahmenComponent ]
+    })
+    .compileComponents();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FerienbetreuungKostenEinnahmenComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });

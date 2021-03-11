@@ -14,22 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import {HttpClientModule} from '@angular/common/http';
-import {TestBed} from '@angular/core/testing';
 
-import {FerienbetreuungService} from './ferienbetreuung.service';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
-describe('GemeindeAngaben', () => {
-  let service: FerienbetreuungService;
+@Component({
+  selector: 'dv-ferienbetreuung-angebot',
+  templateUrl: './ferienbetreuung-angebot.component.html',
+  styleUrls: ['./ferienbetreuung-angebot.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class FerienbetreuungAngebotComponent implements OnInit {
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [HttpClientModule]
-    });
-    service = TestBed.inject(FerienbetreuungService);
-  });
+  constructor() { }
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+  ngOnInit(): void {
+  }
+
+}

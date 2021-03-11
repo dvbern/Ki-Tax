@@ -17,21 +17,21 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {FerienbetreuungUiViewComponent} from './ferienbetreuung-ui-view.component';
+import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stammdaten-gemeinde.component';
 
-describe('FerienbetreuungUiViewComponent', () => {
-  let component: FerienbetreuungUiViewComponent;
-  let fixture: ComponentFixture<FerienbetreuungUiViewComponent>;
+describe('FerienbetreuungStammdatenGemeindeComponent', () => {
+  let component: FerienbetreuungStammdatenGemeindeComponent;
+  let fixture: ComponentFixture<FerienbetreuungStammdatenGemeindeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungUiViewComponent ]
+      declarations: [ FerienbetreuungStammdatenGemeindeComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungUiViewComponent);
+    fixture = TestBed.createComponent(FerienbetreuungStammdatenGemeindeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
