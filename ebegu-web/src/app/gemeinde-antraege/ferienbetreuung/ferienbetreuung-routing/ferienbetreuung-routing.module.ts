@@ -18,6 +18,7 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
+import {FerienbetreuungStammdatenGemeindeComponent} from '../ferienbetreuung-stammdaten-gemeinde/ferienbetreuung-stammdaten-gemeinde.component';
 import {FerienbetreuungComponent} from '../ferienbetreuung/ferienbetreuung.component';
 
 const states: NgHybridStateDeclaration[] = [
@@ -34,6 +35,11 @@ const states: NgHybridStateDeclaration[] = [
                     (trans.params().id),
             },
         ],
+    },
+    {
+        name: 'FERIENBETREUUNG.STAMMDATEN_GEMEINDE',
+        url: '/stammdaten-gemeinde',
+        component: FerienbetreuungStammdatenGemeindeComponent,
     },
 ];
 

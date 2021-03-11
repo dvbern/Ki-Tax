@@ -15,19 +15,33 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 @Component({
-  selector: 'dv-ferienbetreuung',
-  templateUrl: './ferienbetreuung.component.html',
-  styleUrls: ['./ferienbetreuung.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-ferienbetreuung',
+    templateUrl: './ferienbetreuung.component.html',
+    styleUrls: ['./ferienbetreuung.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    public ferienbetreuungId: string;
 
-  ngOnInit(): void {
-  }
+    public wizardTyp = TSWizardStepXTyp.FERIENBETREUUNG;
 
+    public constructor(
+        private authServiceRS: AuthServiceRS
+    ) {
+    }
+
+    public ngOnInit(): void {
+    }
+
+    public showKommentare(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
 }

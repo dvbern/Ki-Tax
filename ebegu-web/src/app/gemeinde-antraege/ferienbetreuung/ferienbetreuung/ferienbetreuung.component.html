@@ -15,4 +15,15 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>ferienbetreuung works!</p>
+<div class="ferienbetreuung-container">
+    <div class="antrag-container">
+        <dv-wizard-side-nav
+            [id]="ferienbetreuungId"
+            [wizardTyp]="wizardTyp">
+        </dv-wizard-side-nav>
+        <div class="antrag">
+            <ui-view></ui-view>
+        </div>
+        <dv-ferienbetreuung-kommantar *ngIf="showKommentare()"></dv-ferienbetreuung-kommantar>
+    </div>
+</div>

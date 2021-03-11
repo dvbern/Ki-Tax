@@ -17,9 +17,16 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
+import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot/ferienbetreuung-angebot.component';
+import {FerienbetreuungFreigabeComponent} from './ferienbetreuung-freigabe/ferienbetreuung-freigabe.component';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar/ferienbetreuung-kommantar.component';
+import {FerienbetreuungKostenEinnahmenComponent} from './ferienbetreuung-kosten-einnahmen/ferienbetreuung-kosten-einnahmen.component';
+import {FerienbetreuungNutzungComponent} from './ferienbetreuung-nutzung/ferienbetreuung-nutzung.component';
 import {FerienbetreuungRoutingModule} from './ferienbetreuung-routing/ferienbetreuung-routing.module';
-import {FerienbetreuungUiViewComponent} from './ferienbetreuung-ui-view/ferienbetreuung-ui-view.component';
+import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stammdaten-gemeinde/ferienbetreuung-stammdaten-gemeinde.component';
+import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload/ferienbetreuung-upload.component';
+import {FerienbetreuungVerfuegungComponent} from './ferienbetreuung-verfuegung/ferienbetreuung-verfuegung.component';
 import {FerienbetreuungComponent} from './ferienbetreuung/ferienbetreuung.component';
 import {FerienbetreuungService} from './services/ferienbetreuung.service';
 
@@ -27,11 +34,18 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
     declarations: [
         FerienbetreuungComponent,
         FerienbetreuungKommantarComponent,
-        FerienbetreuungUiViewComponent,
+        FerienbetreuungStammdatenGemeindeComponent,
+        FerienbetreuungAngebotComponent,
+        FerienbetreuungNutzungComponent,
+        FerienbetreuungKostenEinnahmenComponent,
+        FerienbetreuungUploadComponent,
+        FerienbetreuungFreigabeComponent,
+        FerienbetreuungVerfuegungComponent,
     ],
     imports: [
         CommonModule,
         FerienbetreuungRoutingModule,
+        WizardstepXModule,
     ],
     providers: [
         FerienbetreuungService

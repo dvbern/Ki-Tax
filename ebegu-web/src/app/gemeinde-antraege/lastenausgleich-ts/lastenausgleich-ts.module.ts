@@ -31,7 +31,6 @@ import {GemeindeAngabenComponent} from '../gemeinde-antraege/antrag/gemeinde-ang
 import {LastenausgleichTsBerechnungComponent} from '../gemeinde-antraege/antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from '../gemeinde-antraege/antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {TagesschulenListComponent} from '../gemeinde-antraege/antrag/tagesschulen-list/tagesschulen-list.component';
-import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
 import {LastenausgleichTsRoutingModule} from './lastenausgleich-ts-routing/lastenausgleich-ts-routing.module';
 import {LastenausgleichTsSideNavComponent} from './lastenausgleich-ts-side-nav/lastenausgleich-ts-side-nav.component';
@@ -49,7 +48,6 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         TagesschulenAngabenComponent,
         FreigabeComponent,
         LastenausgleichTsBerechnungComponent,
-        GemeindeAntraegeComponent,
         TagesschulenListComponent,
         TagesschulenUiViewComponent
     ],
@@ -62,9 +60,9 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         UIRouterModule,
         MatMenuModule,
         MatButtonModule,
-        WizardstepXModule,
         SharedModule,
         ReactiveFormsModule,
+        WizardstepXModule,
     ],
 })
 export class LastenausgleichTSModule {
