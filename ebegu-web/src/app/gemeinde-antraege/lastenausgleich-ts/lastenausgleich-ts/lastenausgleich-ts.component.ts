@@ -42,7 +42,7 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     public wizardSteps$: Observable<TSWizardStepX[]>;
-    public wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TS;
+    public wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,

@@ -121,7 +121,7 @@ export class GemeindeAntragService {
             return undefined;
         }
         if (wizardTypStr === 'LASTENAUSGLEICH_TAGESSCHULEN') {
-            return TSWizardStepXTyp.LASTENAUSGLEICH_TS;
+            return TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
         }
         if (wizardTypStr === 'FERIENBETREUUNG') {
             return TSWizardStepXTyp.FERIENBETREUUNG;

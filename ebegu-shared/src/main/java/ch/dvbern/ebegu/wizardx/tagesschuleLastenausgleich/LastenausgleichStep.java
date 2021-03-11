@@ -52,6 +52,6 @@ public class LastenausgleichStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.LASTENAUSGLEICH_TS;
+		return WizardTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 	}
 }

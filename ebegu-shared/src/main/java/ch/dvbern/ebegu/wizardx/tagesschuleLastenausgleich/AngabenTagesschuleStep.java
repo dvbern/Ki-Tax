@@ -62,6 +62,6 @@ public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard>  {
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.LASTENAUSGLEICH_TS;
+		return WizardTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 	}
 }

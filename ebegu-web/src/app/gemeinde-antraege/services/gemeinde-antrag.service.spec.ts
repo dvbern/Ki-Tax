@@ -38,6 +38,6 @@ describe('GemeindeAntragService', () => {
       expect(service.gemeindeAntragTypStringToWizardStepTyp('FERIENBETREUUNG'))
           .toEqual(TSWizardStepXTyp.FERIENBETREUUNG);
       expect(service.gemeindeAntragTypStringToWizardStepTyp('LASTENAUSGLEICH_TAGESSCHULEN'))
-          .toEqual(TSWizardStepXTyp.LASTENAUSGLEICH_TS);
+          .toEqual(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN);
     });
 });

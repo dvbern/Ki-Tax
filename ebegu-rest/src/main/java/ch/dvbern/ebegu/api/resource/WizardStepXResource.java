@@ -91,7 +91,7 @@ public class WizardStepXResource {
 
 		Wizard wizard;
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case LASTENAUSGLEICH_TS:
+		case LASTENAUSGLEICH_TAGESSCHULEN:
 			LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer =
 				lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(id)
 				.orElseThrow(() -> new EbeguEntityNotFoundException("initWizardStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
@@ -129,7 +129,7 @@ public class WizardStepXResource {
 		Wizard wizard;
 
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case LASTENAUSGLEICH_TS:
+		case LASTENAUSGLEICH_TAGESSCHULEN:
 
 			LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer =
 				lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(id)
@@ -180,7 +180,7 @@ public class WizardStepXResource {
 		Wizard wizard;
 
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case LASTENAUSGLEICH_TS:
+		case LASTENAUSGLEICH_TAGESSCHULEN:
 
 			FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer =
 				ferienbetreuungService.findFerienbetreuungAngabenContainer(id)
@@ -226,7 +226,7 @@ public class WizardStepXResource {
 		Wizard wizard = null;
 		List<JaxWizardStepX> jaxWizardStepXList = new ArrayList<>();
 		switch (WizardTyp.valueOf(wizardtyp)) {
-		case LASTENAUSGLEICH_TS:
+		case LASTENAUSGLEICH_TAGESSCHULEN:
 
 			LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer =
 				lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(id)
