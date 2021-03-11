@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -132,6 +133,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungEventHelper betreuungEventHelper;
+
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private InstitutionExternalClient institutionExternalClient;
 
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
@@ -871,7 +877,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.where(Betreuungsmitteilung::getEmpfaengerTyp, is(MitteilungTeilnehmerTyp.JUGENDAMT))
 				.where(Betreuungsmitteilung::getEmpfaenger, sameInstance(dossier.getFall().getBesitzer()))
 				.where(Betreuungsmitteilung::getMitteilungStatus, is(MitteilungStatus.NEU))
-				.where(Betreuungsmitteilung::getSubject, is("Mutationsmeldung"))
+				.where(Betreuungsmitteilung::getSubject, is("Mutationsmeldung von TestClient"))
 				.where(Betreuungsmitteilung::getBetreuung, sameInstance(betreuung))
 				.where(Betreuungsmitteilung::getBetreuungspensen, contains(
 					matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
@@ -1186,6 +1192,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.andReturn(Optional.of(betreuung));
 
 			mockClient(clientGueltigkeit);
+
+			ExternalClient mockClient = new ExternalClient();
+			mockClient.setClientName("TestClient");
+			expect(institutionExternalClient.getExternalClient())
+				.andReturn(mockClient);
+
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
 
 			expect(betreuungEventHelper.getMutationsmeldungBenutzer()).andReturn(new Benutzer());
@@ -1209,11 +1221,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
-		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
+		institutionExternalClient = mock(InstitutionExternalClient.class);
 
 		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), anyObject()))
 			.andReturn(Optional.of(institutionExternalClient));
-
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andReturn(clientGueltigkeit);
