@@ -47,7 +47,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -100,8 +99,6 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Kind_;
-import ch.dvbern.ebegu.entities.Massenversand;
-import ch.dvbern.ebegu.entities.Massenversand_;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -160,8 +157,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private WizardStepService wizardStepService;
 	@Inject
 	private AntragStatusHistoryService antragStatusHistoryService;
-	@Inject
-	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
 	private MahnungService mahnungService;
 	@Inject
