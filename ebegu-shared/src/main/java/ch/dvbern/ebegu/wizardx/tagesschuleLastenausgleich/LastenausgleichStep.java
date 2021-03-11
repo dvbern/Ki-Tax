@@ -19,45 +19,35 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
+public class LastenausgleichStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
-	public void next(
-		@Nonnull TagesschuleWizard wizard) {
-		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
-			wizard.setStep(new Freigabe());
-		}
+	public void next(@Nonnull TagesschuleWizard wizard) {
+		//Last Step nothing to do
 	}
 
 	@Override
-	public void prev(
-		@Nonnull TagesschuleWizard wizard) {
-		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
-			wizard.setStep(new AngabenGemeinde());
-		}
+	public void prev(@Nonnull TagesschuleWizard wizard) {
+		wizard.setStep(new AngabenTagesschuleStep());
 	}
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
-		// IF ALL DATA Filled RETURN OK
-		// IF NOT KO
 		return WizardStateEnum.OK;
 	}
 
 	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.ANGABEN_TAGESSCHULEN.name();
+		return TagesschuleWizardStepsEnum.LASTENAUSGLEICH.name();
 	}
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		LastenausgleichTagesschuleAngabenGemeindeStatus status = wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus();
-		return status.equals(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
+		return true;
 	}
 
 	@Override

@@ -36,9 +36,9 @@ public class TagesschuleWizard implements Wizard {
 		this.role = roleToUse;
 		this.lastenausgleichTagesschuleAngabenGemeindeContainer = lastenausgleichTagesschuleAngabenGemeindeContainer;
 		if (role.isRoleGemeindeOrTS() || role.isRoleMandant() || role.isSuperadmin()) {
-			this.setStep(new AngabenGemeinde());
+			this.setStep(new AngabenGemeindeStep());
 		} else {
-			this.setStep(new AngabenTagesschule());
+			this.setStep(new AngabenTagesschuleStep());
 		}
 	}
 
