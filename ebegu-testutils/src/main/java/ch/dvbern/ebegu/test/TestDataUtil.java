@@ -2304,19 +2304,19 @@ public final class TestDataUtil {
 
 	public static Fall addSozialdienstToFall(Persistence persistence, FallService fallService, Fall fall) {
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
-		sozialdienstFall.setName("Test");
-		sozialdienstFall.setVorname("Test");
+		sozialdienstFall.setName("SozialName");
+		sozialdienstFall.setVorname("SozialVorname");
 		sozialdienstFall.setGeburtsdatum(LocalDate.now());
 		sozialdienstFall.setStatus(SozialdienstFallStatus.AKTIV);
 		Adresse adresse = new Adresse();
-		adresse.setGemeinde("Bern");
+		adresse.setGemeinde("Biel");
 		adresse.setLand(Land.CH);
-		adresse.setOrt("Test");
-		adresse.setPlz("3000");
-		adresse.setStrasse("Test");
+		adresse.setOrt("Biel");
+		adresse.setPlz("2500");
+		adresse.setStrasse("Bielerseestrasse");
 		sozialdienstFall.setAdresse(adresse);
 		Sozialdienst sozialdienst = new Sozialdienst();
-		sozialdienst.setName("Sozialdienst Bern");
+		sozialdienst.setName("Sozialdienst Biel");
 		sozialdienst.setStatus(SozialdienstStatus.AKTIV);
 		assert fall.getMandant() != null;
 		sozialdienst.setMandant(fall.getMandant());
@@ -2326,7 +2326,7 @@ public final class TestDataUtil {
 		sozialdienstStammdaten.setSozialdienst(sozialdienst);
 		sozialdienstStammdaten.setAdresse(adresse);
 		sozialdienstStammdaten.setMail("sozialmail@mailbucket.dvbern.ch");
-		sozialdienstStammdaten.setTelefon("078 888 88 88");
+		sozialdienstStammdaten.setTelefon("078 818 82 84");
 		sozialdienstStammdaten.setWebseite("");
 		persistence.persist(sozialdienstStammdaten);
 		return fallService.saveFall(fall);
