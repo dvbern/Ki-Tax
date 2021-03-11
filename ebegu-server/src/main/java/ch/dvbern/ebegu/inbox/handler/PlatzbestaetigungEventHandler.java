@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -80,7 +81,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
 
 	static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
-	private static final String BETREFF_KEY = "mutationsmeldung_betreff";
+	private static final String BETREFF_KEY = "mutationsmeldung_betreff_von";
 	private static final String MESSAGE_KEY = "mutationsmeldung_message";
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
 	static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
@@ -169,7 +170,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		return betreuungEventHelper.getExternalClient(clientName, betreuung)
-			.map(externalClient -> processEventForExternalClient(dto, betreuung, externalClient.getGueltigkeit()))
+			.map(externalClient -> processEventForExternalClient(dto, betreuung, externalClient))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(clientName, betreuung));
 	}
 
@@ -181,9 +182,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private Processing processEventForExternalClient(
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull Betreuung betreuung,
-		@Nonnull DateRange clientGueltigkeit) {
+		@Nonnull InstitutionExternalClient client) {
 
 		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
+		DateRange clientGueltigkeit = client.getGueltigkeit();
 		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
 		if (overlap.isEmpty()) {
 			return Processing.failure("Der Client hat innerhalb der Periode keinen Berechtigung.");
@@ -204,7 +206,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		if (isMutationsMitteilungStatus(status)) {
-			return handleMutationsMitteilung(ctx);
+			return handleMutationsMitteilung(ctx, client);
 		}
 
 		return Processing.failure("Die Betreuung hat einen ungültigen Status: " + status);
@@ -312,7 +314,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	@Nonnull
-	private Processing handleMutationsMitteilung(@Nonnull ProcessingContext ctx) {
+	private Processing handleMutationsMitteilung(
+		@Nonnull ProcessingContext ctx,
+		InstitutionExternalClient client) {
 		Betreuung betreuung = ctx.getBetreuung();
 
 		Collection<Betreuungsmitteilung> open =
@@ -320,10 +324,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		Optional<Betreuungsmitteilung> latest = findLatest(open);
 
-		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
+		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null), client);
 
 		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
-			return Processing.failure("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
+			return Processing.failure("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung"
+				+ ".");
 		}
 
 		if (latest.isEmpty() && isSame(betreuungsmitteilung, betreuung)) {
@@ -339,7 +344,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Nonnull
 	private Betreuungsmitteilung createBetreuungsmitteilung(
 		@Nonnull ProcessingContext ctx,
-		@Nullable Betreuungsmitteilung latest) {
+		@Nullable Betreuungsmitteilung latest, InstitutionExternalClient client) {
 
 		Betreuung betreuung = ctx.getBetreuung();
 		Gesuch gesuch = betreuung.extractGesuch();
@@ -352,7 +357,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale));
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale) + ' ' + client.getExternalClient().getClientName());
 		betreuungsmitteilung.setBetreuung(betreuung);
 
 		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung);
