@@ -17,22 +17,25 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FerienbetreuungModule} from './ferienbetreuung/ferienbetreuung.module';
-import {GemeindeAntraegeRoutingModule} from './gemeinde-antraege-routing/gemeinde-antraege-routing.module';
-import {LastenausgleichTSModule} from './lastenausgleich-ts/lastenausgleich-ts.module';
+import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar/ferienbetreuung-kommantar.component';
+import {FerienbetreuungRoutingModule} from './ferienbetreuung-routing/ferienbetreuung-routing.module';
+import {FerienbetreuungUiViewComponent} from './ferienbetreuung-ui-view/ferienbetreuung-ui-view.component';
+import {FerienbetreuungComponent} from './ferienbetreuung/ferienbetreuung.component';
+import {FerienbetreuungService} from './services/ferienbetreuung.service';
 
 @NgModule({
-    declarations: [],
+    declarations: [
+        FerienbetreuungComponent,
+        FerienbetreuungKommantarComponent,
+        FerienbetreuungUiViewComponent,
+    ],
     imports: [
         CommonModule,
-        LastenausgleichTSModule,
-        FerienbetreuungModule,
-        GemeindeAntraegeRoutingModule,
+        FerienbetreuungRoutingModule,
     ],
-    exports: [
-        LastenausgleichTSModule,
-        FerienbetreuungModule,
+    providers: [
+        FerienbetreuungService
     ]
 })
-export class GemeindeAntraegeModule {
+export class FerienbetreuungModule {
 }
