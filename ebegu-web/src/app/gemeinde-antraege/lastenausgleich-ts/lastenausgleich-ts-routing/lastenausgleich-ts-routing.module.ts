@@ -23,17 +23,10 @@ import {GemeindeAngabenComponent} from '../../gemeinde-antraege/antrag/gemeinde-
 import {LastenausgleichTsBerechnungComponent} from '../../gemeinde-antraege/antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from '../../gemeinde-antraege/antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {TagesschulenListComponent} from '../../gemeinde-antraege/antrag/tagesschulen-list/tagesschulen-list.component';
-import {GemeindeAntraegeComponent} from '../../gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
 import {TagesschulenUiViewComponent} from '../tagesschulen-ui-view/tagesschulen-ui-view.component';
 
 const states: NgHybridStateDeclaration[] = [
-    {
-        parent: 'app',
-        name: 'GEMEINDE_ANTRAEGE',
-        url: '/gemeinde-antraege',
-        component: GemeindeAntraegeComponent,
-    },
     {
         parent: 'app',
         name: 'LASTENAUSGLEICH_TS',
