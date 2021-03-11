@@ -19,11 +19,15 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
+
+const LOG = LogFactory.createLog('GemeindeAntragService');
 
 @Injectable({
     providedIn: 'root',
@@ -109,5 +113,20 @@ export class GemeindeAntragService {
             default:
                 return antraege;
         }
+    }
+
+    public gemeindeAntragTypStringToWizardStepTyp(wizardTypStr: string): TSWizardStepXTyp | undefined {
+        if (!wizardTypStr) {
+            LOG.error('no wizardTypStr provided');
+            return undefined;
+        }
+        if (wizardTypStr === 'LASTENAUSGLEICH_TAGESSCHULEN') {
+            return TSWizardStepXTyp.LASTENAUSGLEICH_TS;
+        }
+        if (wizardTypStr === 'FERIENBETREUUNG') {
+            return TSWizardStepXTyp.FERIENBETREUUNG;
+        }
+        LOG.error('wrong wizardTypStr provided');
+        return undefined;
     }
 }

@@ -16,20 +16,28 @@
  */
 import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 
 import {GemeindeAntragService} from './gemeinde-antrag.service';
 
 describe('GemeindeAntragService', () => {
-  let service: GemeindeAntragService;
+    let service: GemeindeAntragService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [HttpClientModule]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule]
+        });
+        service = TestBed.inject(GemeindeAntragService);
     });
-    service = TestBed.inject(GemeindeAntragService);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
+
+    it('should ensure wizardStepType is compatible with backend', () => {
+      expect(service.gemeindeAntragTypStringToWizardStepTyp('FERIENBETREUUNG'))
+          .toEqual(TSWizardStepXTyp.FERIENBETREUUNG);
+      expect(service.gemeindeAntragTypStringToWizardStepTyp('LASTENAUSGLEICH_TAGESSCHULEN'))
+          .toEqual(TSWizardStepXTyp.LASTENAUSGLEICH_TS);
+    });
 });
