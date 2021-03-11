@@ -130,6 +130,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.durchschnittKinderProTagMittag = source.durchschnittKinderProTagMittag;
 		this.durchschnittKinderProTagNachmittag1 = source.durchschnittKinderProTagNachmittag1;
 		this.durchschnittKinderProTagNachmittag2 = source.durchschnittKinderProTagNachmittag2;
+		this.betreuungsstundenEinschliesslichBesondereBeduerfnisse = source.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		this.schuleAufBasisOrganisatorischesKonzept = source.schuleAufBasisOrganisatorischesKonzept;
 		this.schuleAufBasisPaedagogischesKonzept = source.schuleAufBasisPaedagogischesKonzept;

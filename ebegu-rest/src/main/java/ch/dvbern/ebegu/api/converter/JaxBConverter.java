@@ -5961,6 +5961,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
+		jaxAngabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		jaxAngabenInstitution.setSchuleAufBasisPaedagogischesKonzept(angabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
