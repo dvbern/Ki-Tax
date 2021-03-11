@@ -176,7 +176,8 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
-        const wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TS;
+        // antragtyp is FERIENBETREUUNG or LASTENAUSGLEICH_TAGESSCHULEN
+        const wizardTyp: TSWizardStepXTyp = antrag.antragTyp as TSWizardStepXTyp;
         this.wizardStepXRS.initFirstStep(wizardTyp, antrag.antragId)
             .subscribe(step => {
                 const pathName = `${step.wizardTyp}.${step.stepName}`;

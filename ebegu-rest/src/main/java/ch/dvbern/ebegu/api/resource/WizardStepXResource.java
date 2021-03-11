@@ -40,14 +40,17 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBWizardStepXConverter;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.FerienbetreuungWizard;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizard;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,6 +70,9 @@ public class WizardStepXResource {
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService lastenausgleichTagesschuleAngabenGemeindeService;
 
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
+
 	@ApiOperation(value = "Gibt den ersten Step.", response = JaxWizardStepX.class)
 	@Nullable
 	@GET
@@ -83,18 +89,26 @@ public class WizardStepXResource {
 		Objects.requireNonNull(userRole);
 		Objects.requireNonNull(id);
 
+		Wizard wizard;
 		switch (WizardTyp.valueOf(wizardtyp)) {
 		case LASTENAUSGLEICH_TS:
 			LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer =
 				lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(id)
 				.orElseThrow(() -> new EbeguEntityNotFoundException("initWizardStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
-			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
-			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep(), tagesschuleWizard);
-		default:
+			wizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
 			break;
+		case FERIENBETREUUNG:
+			FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer =
+				ferienbetreuungService.findFerienbetreuungAngabenContainer(id)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("initWizardStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+			wizard = new FerienbetreuungWizard(userRole, ferienbetreuungAngabenContainer);
+			break;
+		default:
+			return null;
 		}
-		return null;
+		return wizardStepXConverter.convertStepToJax(wizard.getStep(), wizard);
 	}
 
 	@ApiOperation(value = "Gibt den nachfolgenden Step zurück.", response = JaxWizardStepX.class)
@@ -112,6 +126,8 @@ public class WizardStepXResource {
 		Objects.requireNonNull(userRole);
 		Objects.requireNonNull(id);
 
+		Wizard wizard;
+
 		switch (WizardTyp.valueOf(wizardtyp)) {
 		case LASTENAUSGLEICH_TS:
 
@@ -119,16 +135,31 @@ public class WizardStepXResource {
 				lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(id)
 					.orElseThrow(() -> new EbeguEntityNotFoundException("getNextStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
-			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
-			tagesschuleWizard.setStep(
+			wizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
+			wizard.setStep(
 				wizardStepXConverter.convertTagesschuleWizardStepJaxToStep(stepName)
 			);
-			tagesschuleWizard.nextState();
-			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep(), tagesschuleWizard);
-		default:
 			break;
+
+		case FERIENBETREUUNG:
+
+			FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer =
+				ferienbetreuungService.findFerienbetreuungAngabenContainer(id)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("getNextStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+			wizard = new FerienbetreuungWizard(userRole, ferienbetreuungAngabenContainer);
+			wizard.setStep(
+				wizardStepXConverter.convertFerienbetreuungWizardStepJaxToStep(stepName)
+			);
+			break;
+
+		default:
+			return null;
 		}
-		return null;
+
+		wizard.nextState();
+		return wizardStepXConverter.convertStepToJax(wizard.getStep(), wizard);
+
 	}
 
 	@ApiOperation(value = "Gibt den vorherigen Step zurück.", response = JaxWizardStepX.class)
@@ -146,21 +177,34 @@ public class WizardStepXResource {
 		Objects.requireNonNull(userRole);
 		Objects.requireNonNull(id);
 
+		Wizard wizard;
+
 		switch (WizardTyp.valueOf(wizardtyp)) {
 		case LASTENAUSGLEICH_TS:
+
+			FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer =
+				ferienbetreuungService.findFerienbetreuungAngabenContainer(id)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("getPreviousStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+			wizard = new FerienbetreuungWizard(userRole, ferienbetreuungAngabenContainer);
+			wizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToStep(stepName));
+			break;
+
+		case FERIENBETREUUNG:
 
 			LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer =
 				lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(id)
 					.orElseThrow(() -> new EbeguEntityNotFoundException("getPreviousStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
-			TagesschuleWizard tagesschuleWizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
-			tagesschuleWizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToStep(stepName));
-			tagesschuleWizard.previousState();
-			return wizardStepXConverter.convertStepToJax(tagesschuleWizard.getStep(), tagesschuleWizard);
-		default:
+			wizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
+			wizard.setStep(wizardStepXConverter.convertTagesschuleWizardStepJaxToStep(stepName));
 			break;
+
+		default:
+			return null;
 		}
-		return null;
+		wizard.previousState();
+		return wizardStepXConverter.convertStepToJax(wizard.getStep(), wizard);
 	}
 
 	@ApiOperation(value = "Gibt alle steps zurück.", response = JaxWizardStepX.class)
@@ -189,6 +233,15 @@ public class WizardStepXResource {
 					.orElseThrow(() -> new EbeguEntityNotFoundException("getAllWizardSteps", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 			wizard = new TagesschuleWizard(userRole, lastenausgleichTagesschuleAngabenGemeindeContainer);
+			break;
+
+		case FERIENBETREUUNG:
+
+			FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer =
+				ferienbetreuungService.findFerienbetreuungAngabenContainer(id)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("getAllWizardSteps", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+			wizard = new FerienbetreuungWizard(userRole, ferienbetreuungAngabenContainer);
 			break;
 		default:
 			return jaxWizardStepXList;

@@ -22,6 +22,14 @@ import javax.enterprise.context.RequestScoped;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
 import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.AngebotStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.FerienbetreuungWizardStepsEnum;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.FreigabeStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.KostenEinnahmenStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.NutzungStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.StammdatenGemeindeStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.UploadStep;
+import ch.dvbern.ebegu.wizardx.ferienbetreuung.VerfuegungStep;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenGemeindeStep;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.AngabenTagesschuleStep;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.LastenausgleichStep;
@@ -48,6 +56,28 @@ public class JaxBWizardStepXConverter {
 			return new AngabenTagesschuleStep();
 		case FREIGABE:
 			return new LastenausgleichStep();
+		}
+		return null;
+	}
+
+	public WizardStep convertFerienbetreuungWizardStepJaxToStep(
+		String step
+	) {
+		switch (FerienbetreuungWizardStepsEnum.valueOf(step)) {
+		case STAMMDATEN_GEMEINDE:
+			return new StammdatenGemeindeStep();
+		case ANGEBOT:
+			return new AngebotStep();
+		case NUTZUNG:
+			return new NutzungStep();
+		case KOSTEN_EINNAHMEN:
+			return new KostenEinnahmenStep();
+		case UPLOAD:
+			return new UploadStep();
+		case FREIGABE:
+			return new FreigabeStep();
+		case VERFUEGUNG:
+			return new VerfuegungStep();
 		}
 		return null;
 	}

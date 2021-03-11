@@ -22,22 +22,21 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
-import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizard;
 
-public class NutzungStep implements WizardStep<TagesschuleWizard> {
+public class NutzungStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
-	public void next(@Nonnull TagesschuleWizard wizard) {
+	public void next(@Nonnull FerienbetreuungWizard wizard) {
 		wizard.setStep(new KostenEinnahmenStep());
 	}
 
 	@Override
-	public void prev(@Nonnull TagesschuleWizard wizard) {
+	public void prev(@Nonnull FerienbetreuungWizard wizard) {
 		wizard.setStep(new AngebotStep());
 	}
 
 	@Override
-	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
+	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
 		return WizardStateEnum.OK;
 	}
 
@@ -47,7 +46,7 @@ public class NutzungStep implements WizardStep<TagesschuleWizard> {
 	}
 
 	@Override
-	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
+	public boolean isDisabled(@Nonnull FerienbetreuungWizard wizard) {
 		return false;
 	}
 
