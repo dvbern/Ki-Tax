@@ -20,6 +20,7 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSBenutzerStatus} from '../../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSInstitution} from '../../../../models/TSInstitution';
@@ -28,6 +29,7 @@ import {TSUserSearchresultDTO} from '../../../../models/TSUserSearchresultDTO';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 
 const LOG = LogFactory.createLog('DVBenutzerListController');
@@ -57,6 +59,7 @@ export class DVBenutzerListController implements IOnInit {
         '$window',
         'GemeindeRS',
         'EinstellungRS',
+        'SozialdienstRS',
     ];
 
     public totalResultCount: number;
@@ -66,6 +69,7 @@ export class DVBenutzerListController implements IOnInit {
     public institutionenList: Array<TSInstitution>;
     public traegerschaftenList: Array<TSTraegerschaft>;
     public gemeindeList: Array<TSGemeinde>;
+    public sozialdienstList: Array<TSSozialdienst>;
 
     public selectedUsername: string;
     public selectedVorname: string;
@@ -76,6 +80,7 @@ export class DVBenutzerListController implements IOnInit {
     public selectedInstitution: TSInstitution;
     public selectedTraegerschaft: TSTraegerschaft;
     public selectedBenutzerStatus: TSBenutzerStatus;
+    public selectedSozialdienst: TSSozialdienst;
 
     public tableId: string;
     public tableTitle: string;
@@ -93,14 +98,20 @@ export class DVBenutzerListController implements IOnInit {
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
         public readonly einstellungRS: EinstellungRS,
+        public readonly sozialdienstRS: SozialdienstRS,
     ) {
     }
 
     public $onInit(): void {
-        // statt diese Listen zu laden koenne man sie auch von aussen setzen
-        this.updateInstitutionenList();
-        this.updateTraegerschaftenList();
-        this.updateGemeindeList();
+        // liste sind geladen nur wenn benoetigt
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+            this.updateInstitutionenList();
+            this.updateGemeindeList();
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())) {
+            this.updateTraegerschaftenList();
+            this.updateSozialdienstList();
+        }
     }
 
     private updateInstitutionenList(): void {
@@ -112,6 +123,12 @@ export class DVBenutzerListController implements IOnInit {
     private updateTraegerschaftenList(): void {
         this.traegerschaftenRS.getAllTraegerschaften().then((response: any) => {
             this.traegerschaftenList = angular.copy(response);
+        });
+    }
+
+    private updateSozialdienstList(): void {
+        this.sozialdienstRS.getSozialdienstList().toPromise().then((response: any) => {
+            this.sozialdienstList = angular.copy(response);
         });
     }
 

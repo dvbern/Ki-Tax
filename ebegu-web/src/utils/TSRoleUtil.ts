@@ -323,7 +323,8 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT,
             TSRole.ADMIN_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.ADMIN_FERIENBETREUUNG
+            TSRole.ADMIN_FERIENBETREUUNG,
+            TSRole.ADMIN_SOZIALDIENST
         ];
     }
 
