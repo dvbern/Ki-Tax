@@ -18,16 +18,17 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-ferienbetreuung-kosten-einnahmen',
-  templateUrl: './ferienbetreuung-kosten-einnahmen.component.html',
-  styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-ferienbetreuung-kosten-einnahmen',
+    templateUrl: './ferienbetreuung-kosten-einnahmen.component.html',
+    styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
 
-  constructor() { }
+    public constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    public ngOnInit(): void {
+    }
 
 }

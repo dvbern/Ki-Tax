@@ -18,16 +18,17 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-ferienbetreuung-freigabe',
-  templateUrl: './ferienbetreuung-freigabe.component.html',
-  styleUrls: ['./ferienbetreuung-freigabe.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-ferienbetreuung-freigabe',
+    templateUrl: './ferienbetreuung-freigabe.component.html',
+    styleUrls: ['./ferienbetreuung-freigabe.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungFreigabeComponent implements OnInit {
 
-  constructor() { }
+    public constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    public ngOnInit(): void {
+    }
 
 }

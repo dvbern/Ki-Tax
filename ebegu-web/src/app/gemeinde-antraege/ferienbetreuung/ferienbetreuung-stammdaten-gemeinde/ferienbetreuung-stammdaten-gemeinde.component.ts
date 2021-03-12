@@ -18,16 +18,17 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-ferienbetreuung-stammdaten-gemeinde',
-  templateUrl: './ferienbetreuung-stammdaten-gemeinde.component.html',
-  styleUrls: ['./ferienbetreuung-stammdaten-gemeinde.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-ferienbetreuung-stammdaten-gemeinde',
+    templateUrl: './ferienbetreuung-stammdaten-gemeinde.component.html',
+    styleUrls: ['./ferienbetreuung-stammdaten-gemeinde.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
 
-  constructor() { }
+    public constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    public ngOnInit(): void {
+    }
 
 }

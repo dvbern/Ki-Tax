@@ -44,9 +44,9 @@ export class FerienbetreuungComponent implements OnInit {
     private subscription: Subscription;
 
     public constructor(
-        private authServiceRS: AuthServiceRS,
-        private ferienbetreuungService: FerienbetreuungService,
-        private wizardStepXRS: WizardStepXRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly wizardStepXRS: WizardStepXRS
     ) {
     }
 

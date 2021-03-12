@@ -24,7 +24,6 @@ import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
-import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -176,8 +175,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
-        const wizardTyp: TSWizardStepXTyp =
-            this.gemeindeAntragService.gemeindeAntragTypStringToWizardStepTyp(antrag.antragTyp);
+        const wizardTyp = this.gemeindeAntragService.gemeindeAntragTypStringToWizardStepTyp(antrag.antragTyp);
         this.wizardStepXRS.initFirstStep(wizardTyp, antrag.antragId)
             .subscribe(step => {
                 const pathName = `${step.wizardTyp}.${step.stepName}`;

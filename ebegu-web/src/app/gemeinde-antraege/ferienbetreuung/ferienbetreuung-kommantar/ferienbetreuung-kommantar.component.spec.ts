@@ -15,28 +15,48 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
+import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar.component';
 
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
+
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
+    ['addMesageAsError']);
+
+const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
+    ['instant']);
+
 describe('FerienbetreuungKommantarComponent', () => {
-  let component: FerienbetreuungKommantarComponent;
-  let fixture: ComponentFixture<FerienbetreuungKommantarComponent>;
+    let component: FerienbetreuungKommantarComponent;
+    let fixture: ComponentFixture<FerienbetreuungKommantarComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungKommantarComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [FerienbetreuungKommantarComponent],
+            providers: [
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: TranslateService, useValue: translateServiceSpy},
+            ],
+            imports: [
+                HttpClientModule
+            ]
+        })
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungKommantarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FerienbetreuungKommantarComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
