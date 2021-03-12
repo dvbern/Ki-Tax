@@ -45,6 +45,8 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	@NotNull @Nonnull
 	private String mail;
 	@Nullable
+	private String alternativeEmailFamilienportal;
+	@Nullable
 	private String telefon;
 	@Nullable
 	private String webseite;
@@ -118,6 +120,15 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 
 	public void setMail(@Nonnull String mail) {
 		this.mail = mail;
+	}
+
+	@Nullable
+	public String getAlternativeEmailFamilienportal() {
+		return alternativeEmailFamilienportal;
+	}
+
+	public void setAlternativeEmailFamilienportal(@Nullable String alternativeEmailFamilienportal) {
+		this.alternativeEmailFamilienportal = alternativeEmailFamilienportal;
 	}
 
 	@Nullable

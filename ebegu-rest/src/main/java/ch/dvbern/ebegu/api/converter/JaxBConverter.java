@@ -1562,6 +1562,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxInstStammdaten.setBetreuungsangebotTyp(persistedInstStammdaten.getBetreuungsangebotTyp());
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
+		jaxInstStammdaten.setAlternativeEmailFamilienportal(persistedInstStammdaten.getAlternativeEmailFamilienportal());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
 		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
@@ -1616,6 +1617,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
 
 		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
+		institutionStammdaten.setAlternativeEmailFamilienportal(institutionStammdatenJAXP.getAlternativeEmailFamilienportal());
 		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setWebseite(institutionStammdatenJAXP.getWebseite());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());

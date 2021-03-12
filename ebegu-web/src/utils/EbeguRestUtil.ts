@@ -1388,6 +1388,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.institution = this.institutionToRestObject({}, institutionStammdaten.institution);
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
             restInstitutionStammdaten.mail = institutionStammdaten.mail;
+            restInstitutionStammdaten.alternativeEmailFamilienportal = institutionStammdaten.alternativeEmailFamilienportal;
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
@@ -1418,6 +1419,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.adresse =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresse);
             institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
+            institutionStammdatenTS.alternativeEmailFamilienportal =
+                institutionStammdatenFromServer.alternativeEmailFamilienportal;
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
             institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
             institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
