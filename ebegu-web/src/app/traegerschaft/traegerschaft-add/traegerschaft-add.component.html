@@ -49,6 +49,7 @@
                             <label translate for="email_id">EMAIL</label>
                             <input id="email_id" type="email" name="email_id" #name="ngModel"
                                    [(ngModel)]="adminMail"
+                                   email
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.email_id?.errors"
                                                inputId="email_id"></dv-error-messages>
