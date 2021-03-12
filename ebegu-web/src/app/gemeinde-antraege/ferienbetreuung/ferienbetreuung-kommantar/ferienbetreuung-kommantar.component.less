@@ -15,3 +15,48 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@import (reference) 'src/style/variables.less';
+@import (reference) 'src/style/mixins.less';
+
+.kommentar-view {
+    height: 100%;
+    overflow-y: auto;
+
+    & > form {
+        height: inherit;
+    }
+
+    .form-group {
+        margin: 0;
+
+        label {
+            .ebeguH3();
+            position: static;
+        }
+
+        textarea.form-control {
+            .ebeguP();
+            background-color: @contrast-lightest;
+            border: 1px solid @blue;
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+
+            &[disabled] {
+                background-color: @contrast;
+            }
+
+            &:focus {
+                outline: 0;
+            }
+        }
+    }
+
+}
+
+.kommentar-padding {
+    padding: 1.5rem;
+
+    & + & {
+        padding-top: 0;
+    }
+}
