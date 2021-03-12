@@ -559,6 +559,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			return;
 		}
+		case ADMIN_SOZIALDIENST: {
+			if (benutzer.getSozialdienst() == null || !userBelongsToSozialdienstOfPrincipal(benutzer)) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
 		case GESUCHSTELLER: {
 			if (!hasPrincipalName(benutzer)) {
 				throwViolation(benutzer);
