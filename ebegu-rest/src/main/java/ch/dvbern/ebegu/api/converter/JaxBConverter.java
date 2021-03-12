@@ -1699,7 +1699,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedAdresseKontoinhaber != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedAdresseKontoinhaber));
 		}
-		jaxInstStammdaten.setAlternativeEmailFamilienportal(jaxInstStammdaten.getAlternativeEmailFamilienportal());
+		jaxInstStammdaten.setAlternativeEmailFamilienportal(persistedInstStammdaten.getAlternativeEmailFamilienportal());
 		return jaxInstStammdaten;
 	}
 

@@ -1485,7 +1485,10 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
             restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
             restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
-            restInstitutionStammdaten.alternativeEmailFamilienportal = institutionStammdaten.alternativeEmailFamilienportal;
+            restInstitutionStammdaten.alternativeEmailFamilienportal =
+                (institutionStammdaten.alternativeEmailFamilienportal) ?
+                    institutionStammdaten.alternativeEmailFamilienportal :
+                null;
             return restInstitutionStammdaten;
         }
         return undefined;
