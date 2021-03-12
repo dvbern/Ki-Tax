@@ -910,7 +910,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			validateGesuchComplete(gesuch);
 
 			if (gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG && gesuch.getStatus() != AntragStatus
-				.IN_BEARBEITUNG_GS) {
+				.IN_BEARBEITUNG_GS && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
 				throw new EbeguRuntimeException(
 					"antragFreigeben",
 					"Gesuch war im falschen Status: "

@@ -62,14 +62,20 @@ public class ResourceHelper {
 	public void assertGesuchStatusForFreigabe(@Nonnull String gesuchId) {
 		requireNonNull(gesuchId);
 		Gesuch gesuch = gesuchService.findGesuchForFreigabe(gesuchId, 0, false);
-		assertGesuchStatus(gesuch, AntragStatusDTO.IN_BEARBEITUNG_GS, AntragStatusDTO.FREIGABEQUITTUNG);
+		assertGesuchStatus(
+			gesuch,
+			AntragStatusDTO.IN_BEARBEITUNG_GS,
+			AntragStatusDTO.IN_BEARBEITUNG_SOZIALDIENST,
+			AntragStatusDTO.FREIGABEQUITTUNG);
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	public void assertGesuchStatusEqual(@Nonnull String gesuchId, @Nonnull AntragStatusDTO... antragStatusFromClient) {
 		requireNonNull(gesuchId);
 		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchId);
-		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
+		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL,
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			gesuchId));
 		assertGesuchStatus(gesuch, antragStatusFromClient);
 	}
 
@@ -86,7 +92,11 @@ public class ResourceHelper {
 		// Kein Status hat gepasst
 		String msg = "Expected GesuchStatus to be one of " + Arrays.toString(antragStatusFromClient) + " but was "
 			+ gesuch.getStatus();
-		throw new EbeguRuntimeException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
+		throw new EbeguRuntimeException(
+			ASSERT_GESUCH_STATUS_EQUAL,
+			ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+			gesuch.getId(),
+			msg);
 	}
 
 	public void assertGesuchStatusForBenutzerRole(@Nonnull Gesuch gesuch) {
@@ -95,12 +105,25 @@ public class ResourceHelper {
 			// Superadmin darf alles
 			return;
 		}
-		String msg = "Cannot update entity containing Gesuch " + gesuch.getId() + " in Status " + gesuch.getStatus() + " in UserRole " + userRole;
+		String msg = "Cannot update entity containing Gesuch "
+			+ gesuch.getId()
+			+ " in Status "
+			+ gesuch.getStatus()
+			+ " in UserRole "
+			+ userRole;
 		if (userRole == UserRole.GESUCHSTELLER && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
-			throw new EbeguRuntimeException("assertGesuchStatusForBenutzerRole", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
+			throw new EbeguRuntimeException(
+				"assertGesuchStatusForBenutzerRole",
+				ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+				gesuch.getId(),
+				msg);
 		}
 		if (gesuch.getStatus().ordinal() >= AntragStatus.VERFUEGEN.ordinal()) {
-			throw new EbeguRuntimeException("assertGesuchStatusForBenutzerRole", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
+			throw new EbeguRuntimeException(
+				"assertGesuchStatusForBenutzerRole",
+				ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+				gesuch.getId(),
+				msg);
 		}
 	}
 
@@ -111,31 +134,54 @@ public class ResourceHelper {
 			// Superadmin darf alles
 			return;
 		}
-		String msg = "Cannot update entity containing Gesuch " + gesuch.getId() + " in Status " + gesuch.getStatus() + " in UserRole " + userRole;
+		String msg = "Cannot update entity containing Gesuch "
+			+ gesuch.getId()
+			+ " in Status "
+			+ gesuch.getStatus()
+			+ " in UserRole "
+			+ userRole;
 		if (userRole == UserRole.GESUCHSTELLER && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
 			// Schulamt-Anmeldungen duerfen auch nach der Freigabe hinzugefügt werden!
 			if (!betreuung.getBetreuungsangebotTyp().isSchulamt()) {
-				throw new EbeguRuntimeException("assertGesuchStatusForBenutzerRole", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
+				throw new EbeguRuntimeException(
+					"assertGesuchStatusForBenutzerRole",
+					ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+					gesuch.getId(),
+					msg);
 			}
 		}
 		if (gesuch.getStatus().ordinal() >= AntragStatus.VERFUEGEN.ordinal()) {
 			// Schulamt-Anmeldungen duerfen auch nach der Freigabe hinzugefügt werden!
 			if (!betreuung.getBetreuungsangebotTyp().isSchulamt()) {
-				throw new EbeguRuntimeException("assertGesuchStatusForBenutzerRole", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
+				throw new EbeguRuntimeException(
+					"assertGesuchStatusForBenutzerRole",
+					ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+					gesuch.getId(),
+					msg);
 			}
 		}
 	}
 
-	public void assertBetreuungStatusEqual(@Nonnull String betreuungId, @Nonnull Betreuungsstatus... betreuungsstatusFromClient) {
+	public void assertBetreuungStatusEqual(
+		@Nonnull String betreuungId,
+		@Nonnull Betreuungsstatus... betreuungsstatusFromClient) {
 		requireNonNull(betreuungId);
 		Optional<? extends AbstractPlatz> platzOptional = betreuungService.findPlatz(betreuungId);
 		AbstractPlatz platzFromDB = platzOptional.orElseThrow(() ->
-			new EbeguEntityNotFoundException(ASSERT_BETREUUNG_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, betreuungId));
+			new EbeguEntityNotFoundException(
+				ASSERT_BETREUUNG_STATUS_EQUAL,
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				betreuungId));
 		// Der Status des Client-Objektes darf nicht weniger weit sein als der des Server-Objektes
-		if (Arrays.stream(betreuungsstatusFromClient).noneMatch(status -> platzFromDB.getBetreuungsstatus() == status)) {
+		if (Arrays.stream(betreuungsstatusFromClient)
+			.noneMatch(status -> platzFromDB.getBetreuungsstatus() == status)) {
 			String msg = "Expected BetreuungStatus to be " + Arrays.toString(betreuungsstatusFromClient)
 				+ " but was " + platzFromDB.getBetreuungsstatus();
-			throw new EbeguRuntimeException(ASSERT_BETREUUNG_STATUS_EQUAL, msg, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, betreuungId);
+			throw new EbeguRuntimeException(
+				ASSERT_BETREUUNG_STATUS_EQUAL,
+				msg,
+				ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+				betreuungId);
 		}
 	}
 }

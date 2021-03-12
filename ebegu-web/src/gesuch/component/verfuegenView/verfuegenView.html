@@ -500,7 +500,7 @@
 
                         <!--export for external programs-->
                         <div class="col-xs-12" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
                              dv-show-expression="vm.showExportLink()">
                             <a type="button" class="btn-link link-underline" ng-click="vm.openExport()" href="">
                                 <i class="fa fa-file-text-o"></i>
@@ -510,7 +510,7 @@
                         </div>
                         <!--schemalinks-->
                         <div class="col-xs-12 margin-top-10" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
                              dv-show-expression="vm.showSchemas && vm.showExportLink()">
                             <span class="marginRight10"> Schemas:</span>
                             <a ng-click="vm.exportJsonSchema()" href=""

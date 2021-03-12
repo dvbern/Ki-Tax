@@ -123,7 +123,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         if (!this.isGesuchValid()) {
             return undefined;
         }
-        if (!this.form.$dirty && !this.gesuchModelManager.getGesuch().isNew()) {
+        if (!this.form.$dirty && !this.gesuchModelManager.getGesuch().isNew()
+            && ((this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle())
+                && this.wizardStepManager.isStepStatusOk(TSWizardStepName.GESUCH_ERSTELLEN))
+                || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()))) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             return this.$q.when(this.gesuchModelManager.getGesuch());
@@ -189,7 +192,9 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 return this.$translate.instant('ERSTELLEN');
             }
             if (this.gesuchModelManager.isGesuchReadonly()
-                || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
+                || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())
+                || (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle()) && this.wizardStepManager.isStepStatusOk(
+                    TSWizardStepName.GESUCH_ERSTELLEN))) {
                 return this.$translate.instant('WEITER_ONLY');
             }
         }
