@@ -186,4 +186,25 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		String email = emailAddressForFall.get();
 		Assert.assertEquals("test@mailbucket.dvbern.ch", email);
 	}
+
+	@Test
+	public void testGetEmailAddressForFallFromSozialdienstFall() {
+		loginAsGesuchsteller("gesuchst");
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null, null, gesuchsperiode1718);
+
+		TestDataUtil.addSozialdienstToFall(persistence, fallService, gesuch.getFall());
+
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(gesuch.getGesuchsteller1().getGesuchstellerJA().getMail());
+		Assert.assertNotNull(gesuch.getFall().getBesitzer());
+		Assert.assertNotEquals(gesuch.getFall().getBesitzer().getEmail(), gesuch.getGesuchsteller1().getGesuchstellerJA().getMail());
+		Assert.assertNotNull(gesuch.getFall().getSozialdienstFall());
+
+		Optional<String> emailAddressForFall = fallService.getCurrentEmailAddress(gesuch.getFall().getId());
+		Assert.assertTrue(emailAddressForFall.isPresent());
+		String email = emailAddressForFall.get();
+		Assert.assertEquals("sozialmail@mailbucket.dvbern.ch", email);
+	}
 }
