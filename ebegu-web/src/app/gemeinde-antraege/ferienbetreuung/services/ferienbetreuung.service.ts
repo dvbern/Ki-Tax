@@ -61,4 +61,11 @@ export class FerienbetreuungService {
         );
         this.ferienbetreuungAngabenContainerStore.next(container);
     }
+
+    public saveKommentar(containerId: string, kommentar: string): Observable<void> {
+        return this.http.put<void>(
+            `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
+            kommentar,
+        );
+    }
 }

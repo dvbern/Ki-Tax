@@ -15,10 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {ReplaySubject, Subscription} from 'rxjs';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -40,7 +43,9 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
-        private readonly ref: ChangeDetectorRef
+        private readonly ref: ChangeDetectorRef,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService
     ) {}
 
     public ngOnInit(): void {
@@ -57,7 +62,20 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     public saveKommentar(): void {
-        // todo
+        if (!this.kommentarControl.valid) {
+            return;
+        }
+        this.saving$.next(true);
+        this.ferienbetreuungService.saveKommentar(
+            this.ferienbetreuungContainer.id,
+            this.kommentarControl.value
+        ).subscribe(() => {
+            this.saving$.next(false);
+        }, (error: HttpErrorResponse) => {
+            LOG.error(error);
+            const translated = this.translate.instant('ERROR_LATS_KOMMENTAR_SAVE');
+            this.errorService.addMesageAsError(translated);
+        });
     }
 
     private initForm(): void {

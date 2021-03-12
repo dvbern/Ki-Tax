@@ -44,8 +44,10 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -140,6 +142,20 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		container.setGesuchsperiode(gesuchsperiode);
 		container.setAngabenDeklaration(new FerienbetreuungAngaben());
 		return persistence.persist(container);
+	}
+
+	@Nonnull
+	@Override
+	public void saveKommentar(@Nonnull String containerId, @Nonnull String kommentar) {
+		FerienbetreuungAngabenContainer container =
+			this.findFerienbetreuungAngabenContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveKommentar",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+		container.setInternerKommentar(kommentar);
+		persistence.persist(container);
 	}
 }
 
