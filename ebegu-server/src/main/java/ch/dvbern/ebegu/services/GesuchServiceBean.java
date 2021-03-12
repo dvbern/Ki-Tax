@@ -1836,7 +1836,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Jedes Loeschen eines Antrags muss geloggt werden!
 		logDeletingOfAntrag(gesuch);
 		boolean isRolleGesuchsteller = principalBean.isCallerInRole(UserRole.GESUCHSTELLER);
-		if (isRolleGesuchsteller) {
+		boolean isRolleSozialdiesnt = principalBean.isCallerInAnyOfRole(UserRole.getAllSozialdienstRoles());
+		if (isRolleGesuchsteller || isRolleSozialdiesnt) {
 			// Gesuchsteller:
 			// Antrag muss Online sein, und darf noch nicht freigegeben sein
 			if (gesuch.getEingangsart().isPapierGesuch()) {
@@ -1844,7 +1845,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					"removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_GS);
 			}
-			if (gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
+			if ((isRolleGesuchsteller && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS)
+			|| (isRolleSozialdiesnt && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
 				throw new EbeguRuntimeException("removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
 			}
