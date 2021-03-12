@@ -81,6 +81,7 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.EinladungTyp;
@@ -118,6 +119,7 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForC
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -956,6 +958,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			currentBerechtigungJoin.join(Berechtigung_.traegerschaft, JoinType.LEFT);
 		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin =
 			currentBerechtigungJoin.join(Berechtigung_.gemeindeList, JoinType.LEFT);
+		Join<Berechtigung, Sozialdienst> sozialdienstJoin =
+			currentBerechtigungJoin.join(Berechtigung_.sozialdienst, JoinType.LEFT);
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -1027,6 +1031,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			setTraegerschaftFilterForCurrentUser(user, currentBerechtigungJoin, cb, predicates);
 		}
 
+		if (principalBean.isCallerInRole(UserRole.ADMIN_SOZIALDIENST)) {
+			setSozialdienstFilterForCurrentUser(user, currentBerechtigungJoin, cb, predicates);
+		}
+
 		//prepare predicates from table filters
 		if (benutzerTableFilterDTO.getSearch() != null) {
 			BenutzerPredicateObjectDTO predicateObjectDto = benutzerTableFilterDTO.getSearch().getPredicateObject();
@@ -1094,6 +1102,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				predicates.add(cb.equal(
 					traegerschaftJoin.get(Traegerschaft_.name),
 					predicateObjectDto.getTraegerschaft()));
+			}
+			// sozialdienst
+			if (predicateObjectDto.getSozialdienst() != null) {
+				predicates.add(cb.equal(
+					sozialdienstJoin.get(Sozialdienst_.name),
+					predicateObjectDto.getSozialdienst()));
 			}
 			// gesperrt
 			if (predicateObjectDto.getStatus() != null) {
