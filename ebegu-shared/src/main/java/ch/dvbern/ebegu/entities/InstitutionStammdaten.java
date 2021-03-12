@@ -76,12 +76,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	String mail;
 
-	@Nullable
-	@Column(nullable = true)
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
-	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	private String alternativeEmailFamilienportal;
-
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
 	private @Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
@@ -192,15 +186,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 
 	public void setMail(@Nonnull String mail) {
 		this.mail = mail;
-	}
-
-	@Nullable
-	public String getAlternativeEmailFamilienportal() {
-		return alternativeEmailFamilienportal;
-	}
-
-	public void setAlternativeEmailFamilienportal(@Nullable String alternativeEmailFuerFamilienportal) {
-		this.alternativeEmailFamilienportal = alternativeEmailFuerFamilienportal;
 	}
 
 	@Override

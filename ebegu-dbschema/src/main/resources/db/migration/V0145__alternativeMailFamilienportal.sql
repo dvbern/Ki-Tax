@@ -15,5 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE institution_stammdaten ADD alternative_email_familienportal VARCHAR(255);
-ALTER TABLE institution_stammdaten_aud ADD alternative_email_familienportal VARCHAR(255);
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD alternative_email_familienportal VARCHAR(255);
+ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD alternative_email_familienportal VARCHAR(255);

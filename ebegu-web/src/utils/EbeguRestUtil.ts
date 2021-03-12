@@ -1388,7 +1388,6 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.institution = this.institutionToRestObject({}, institutionStammdaten.institution);
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
             restInstitutionStammdaten.mail = institutionStammdaten.mail;
-            restInstitutionStammdaten.alternativeEmailFamilienportal = institutionStammdaten.alternativeEmailFamilienportal;
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
@@ -1419,8 +1418,6 @@ export class EbeguRestUtil {
             institutionStammdatenTS.adresse =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresse);
             institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
-            institutionStammdatenTS.alternativeEmailFamilienportal =
-                institutionStammdatenFromServer.alternativeEmailFamilienportal;
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
             institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
             institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
@@ -1488,6 +1485,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
             restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
             restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
+            restInstitutionStammdaten.alternativeEmailFamilienportal = institutionStammdaten.alternativeEmailFamilienportal;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1534,6 +1532,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
             institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
             institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
+            institutionStammdatenTS.alternativeEmailFamilienportal =
+                institutionStammdatenFromServer.alternativeEmailFamilienportal;
             institutionStammdatenTS.betreuungsstandorte =
                 this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
             return institutionStammdatenTS;

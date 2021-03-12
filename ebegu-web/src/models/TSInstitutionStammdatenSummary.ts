@@ -30,7 +30,6 @@ export class TSInstitutionStammdatenSummary extends TSAbstractDateRangedEntity {
     public institution: TSInstitution = undefined;
     public adresse: TSAdresse = undefined;
     public mail: string = undefined;
-    public alternativeEmailFamilienportal: string = undefined;
     public telefon: string = undefined;
     public webseite: string = undefined;
     public oeffnungszeiten: string = undefined;
