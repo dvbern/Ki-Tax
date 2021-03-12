@@ -193,8 +193,9 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             }
             if (this.gesuchModelManager.isGesuchReadonly()
                 || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())
-                || (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle()) && this.wizardStepManager.isStepStatusOk(
-                    TSWizardStepName.GESUCH_ERSTELLEN))) {
+                || (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle())
+                    && this.wizardStepManager.isStepStatusOk(
+                        TSWizardStepName.GESUCH_ERSTELLEN))) {
                 return this.$translate.instant('WEITER_ONLY');
             }
         }
