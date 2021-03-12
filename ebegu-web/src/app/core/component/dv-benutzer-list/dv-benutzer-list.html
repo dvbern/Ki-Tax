@@ -55,6 +55,9 @@
                     <th st-sort="traegerschaft" class="sortable row-traegerschaft" data-translate="TRAEGERSCHAFT"
                         dv-show-element
                         dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"></th>
+                    <th st-sort="sozialdienst" class="sortable row-sozialdienst" data-translate="SOZIALDIENST"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"></th>
                     <th st-sort="status" class="sortable row-status" data-translate="STATUS"></th>
                 </tr>
                 <!--Filterspalten-->
@@ -111,6 +114,17 @@
                                     st-search="traegerschaft" class="form-control"
                                     ng-options="traegersch.name for traegersch in vm.traegerschaftenList | orderBy: 'name' track by traegersch.name"
                                     ng-model="vm.selectedTraegerschaft">
+                                <option value="">{{"ALLE" | translate}}</option>
+                            </select>
+                        </div>
+                    </th>
+                    <th dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                        <div class="dv-select-style">
+                            <select st-input-event="change" name="sozialdienst" id="sozialdienst"
+                                    st-search="sozialdienst" class="form-control"
+                                    ng-options="soziald.name for soziald in vm.sozialdienstList | orderBy: 'name' track by soziald.name"
+                                    ng-model="vm.selectedSozialdienst">
                                 <option value="">{{"ALLE" | translate}}</option>
                             </select>
                         </div>
@@ -175,6 +189,12 @@
                     <td class="ellipsis"
                         title="{{row.currentBerechtigung.traegerschaft.name}}"
                         ng-bind="row.currentBerechtigung.traegerschaft.name"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.currentBerechtigung.sozialdienst.name}}"
+                        ng-bind="row.currentBerechtigung.sozialdienst.name"
                         dv-show-element
                         dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
                     </td>
