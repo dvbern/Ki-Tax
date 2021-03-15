@@ -23,16 +23,16 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class VerfuegungStep implements WizardStep<FerienbetreuungWizard> {
+public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public void next(@Nonnull FerienbetreuungWizard wizard) {
-		//Last Step nothing to do
+		// last step, do nothing
 	}
 
 	@Override
 	public void prev(@Nonnull FerienbetreuungWizard wizard) {
-		wizard.setStep(new FreigabeStep());
+		wizard.setStep(new UploadStep());
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class VerfuegungStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public String getWizardStepName() {
-		return FerienbetreuungWizardStepsEnum.VERFUEGUNG.name();
+		return FerienbetreuungWizardStepsEnum.ABSCHLUSS.name();
 	}
 
 	@Override

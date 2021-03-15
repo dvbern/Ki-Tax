@@ -27,7 +27,7 @@ public class UploadStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public void next(@Nonnull FerienbetreuungWizard wizard) {
-		wizard.setStep(new FreigabeStep());
+		wizard.setStep(new AbschlussStep());
 	}
 
 	@Override

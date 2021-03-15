@@ -17,21 +17,21 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {FerienbetreuungVerfuegungComponent} from './ferienbetreuung-verfuegung.component';
+import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss.component';
 
 describe('FerienbetreuungVerfuegungComponent', () => {
-  let component: FerienbetreuungVerfuegungComponent;
-  let fixture: ComponentFixture<FerienbetreuungVerfuegungComponent>;
+  let component: FerienbetreuungAbschlussComponent;
+  let fixture: ComponentFixture<FerienbetreuungAbschlussComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungVerfuegungComponent ]
+      declarations: [ FerienbetreuungAbschlussComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungVerfuegungComponent);
+    fixture = TestBed.createComponent(FerienbetreuungAbschlussComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

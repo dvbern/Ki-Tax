@@ -2315,7 +2315,6 @@
     "FERIENBETREUUNG_NUTZUNG": "Nutzung",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Kosten und Einnahmen",
     "FERIENBETREUUNG_UPLOAD": "Upload",
-    "FERIENBETREUUNG_FREIGABE": "Freigabe",
-    "FERIENBETREUUNG_VERFUEGUNG": "Verfügung",
+    "FERIENBETREUUNG_ABSCHLUSS": "Abschluss",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

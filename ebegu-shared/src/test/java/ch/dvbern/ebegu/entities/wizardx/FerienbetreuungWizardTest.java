@@ -45,10 +45,7 @@ public class FerienbetreuungWizardTest {
 		wizard.nextState();
 		Assert.assertEquals(FerienbetreuungWizardStepsEnum.UPLOAD.name(), wizard.getStep().getWizardStepName());
 		wizard.nextState();
-		Assert.assertEquals(FerienbetreuungWizardStepsEnum.FREIGABE.name(), wizard.getStep().getWizardStepName());
-		Assert.assertTrue(wizard.getStep().isDisabled(wizard));
-		wizard.nextState();
-		Assert.assertEquals(FerienbetreuungWizardStepsEnum.VERFUEGUNG.name(), wizard.getStep().getWizardStepName());
+		Assert.assertEquals(FerienbetreuungWizardStepsEnum.ABSCHLUSS.name(), wizard.getStep().getWizardStepName());
 		Assert.assertTrue(wizard.getStep().isDisabled(wizard));
 	}
 }
