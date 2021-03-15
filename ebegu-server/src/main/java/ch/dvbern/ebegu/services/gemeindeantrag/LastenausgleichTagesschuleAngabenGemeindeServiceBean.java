@@ -408,6 +408,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			fallContainer.angabenDeklarationComplete(),
 			"angabenDeklaration incomplete"
 		);
+		Preconditions.checkState(
+			fallContainer.allInstitutionenGeprueft(),
+			"not all institutionen are geprueft"
+		);
 
 		try {
 			Preconditions.checkArgument(

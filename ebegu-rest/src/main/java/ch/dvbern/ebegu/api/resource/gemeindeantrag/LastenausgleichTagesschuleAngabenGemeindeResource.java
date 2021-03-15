@@ -221,7 +221,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 		} catch (EJBTransactionRolledbackException e) {
-			if (e.getCause() instanceof IllegalArgumentException) {
+			if (e.getCause() instanceof IllegalArgumentException || e.getCause() instanceof IllegalStateException) {
 				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
 					.entity(e.getMessage())
 					.type(MediaType.TEXT_PLAIN)

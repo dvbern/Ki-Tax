@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -59,9 +60,11 @@ public class Freigabe implements WizardStep<TagesschuleWizard> {
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
 		switch (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus()) {
 		case IN_BEARBEITUNG_GEMEINDE:
-			return false;
+			return !(wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenDeklarationAbgeschlossen() &&
+				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
 		case IN_PRUEFUNG_KANTON:
-			return !(wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin());
+			return !(wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) ||
+				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen();
 		case NEU:
 		default:
 			return true;

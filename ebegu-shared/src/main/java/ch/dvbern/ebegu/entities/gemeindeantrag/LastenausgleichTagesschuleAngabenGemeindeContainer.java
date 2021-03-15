@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
@@ -305,7 +306,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		BigDecimal sumTagesschulen = getAngabenInstitutionContainers().stream()
 			.map(container -> {
 				Preconditions.checkArgument(
-					container.getAngabenDeklaration() != null,
+					container.getAngabenDeklaration() != null && container.isAntragAbgeschlossen(),
 					"angabenDeklaration Tagesschulen incomplete"
 				);
 				return container.getAngabenDeklaration().getBetreuungsstundenEinschliesslichBesondereBeduerfnisse();
@@ -316,11 +317,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			.compareTo(sumTagesschulen) != 0;
 	}
 
-
 	public boolean isAtLeastInBearbeitungKanton() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT ||
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT ||
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
+	}
+
+	public boolean isAngabenDeklarationAbgeschlossen() {
+		return angabenDeklaration != null
+			&& angabenDeklaration.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isAngabenKorrekturAbgeschlossen() {
+		return angabenKorrektur != null
+			&& angabenKorrektur.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
 	}
 }
