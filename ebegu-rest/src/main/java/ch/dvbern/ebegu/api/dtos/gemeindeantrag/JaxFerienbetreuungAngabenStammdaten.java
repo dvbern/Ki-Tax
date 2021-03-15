@@ -33,6 +33,9 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 	private List<JaxGemeinde> amAngebotBeteiligteGemeinden;
 
 	@Nullable
+	private String seitWannFerienbetreuungen;
+
+	@Nullable
 	private String traegerschaft;
 
 	@Nullable
@@ -62,6 +65,9 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private JaxAdresse adresseKontoinhaber;
 
+	@Nullable
+	private String vermerkAuszahlung;
+
 
 	@Nullable
 	public List<JaxGemeinde> getAmAngebotBeteiligteGemeinden() {
@@ -70,6 +76,15 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	public void setAmAngebotBeteiligteGemeinden(@Nullable List<JaxGemeinde> amAngebotBeteiligteGemeinden) {
 		this.amAngebotBeteiligteGemeinden = amAngebotBeteiligteGemeinden;
+	}
+
+	@Nullable
+	public String getSeitWannFerienbetreuungen() {
+		return seitWannFerienbetreuungen;
+	}
+
+	public void setSeitWannFerienbetreuungen(@Nullable String seitWannFerienbetreuungen) {
+		this.seitWannFerienbetreuungen = seitWannFerienbetreuungen;
 	}
 
 	@Nullable
@@ -160,5 +175,14 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	public void setAdresseKontoinhaber(@Nullable JaxAdresse adresseKontoinhaber) {
 		this.adresseKontoinhaber = adresseKontoinhaber;
+	}
+
+	@Nullable
+	public String getVermerkAuszahlung() {
+		return vermerkAuszahlung;
+	}
+
+	public void setVermerkAuszahlung(@Nullable String vermerkAuszahlung) {
+		this.vermerkAuszahlung = vermerkAuszahlung;
 	}
 }

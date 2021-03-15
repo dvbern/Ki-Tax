@@ -31,6 +31,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _anzahlFerienwochenSommerferien: number;
     private _anzahlTage: number;
     private _anzahlStundenProBetreuungstag: number;
+    private _betreuungErfolgtTagsueber: boolean;
     private _bemerkungenOeffnungszeiten: string;
     private _finanziellBeteiligteGemeinden: TSGemeinde[];
     private _gemeindeFuehrtAngebotSelber: boolean;
@@ -38,6 +39,9 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _angebotVereineUndPrivateIntegriert: boolean;
     private _bemerkungenKooperation: boolean;
     private _leitungDurchPersonMitAusbildung: string;
+    private _betreuungDurchPersonenMitErfahrung: boolean;
+    private _anzahlKinderAngemessen: boolean;
+    private _betreuungsschluessel: number;
     private _aufwandBetreuungspersonal: number;
     private _zusaetzlicherAufwandLeitungAdmin: number;
     private _bemerkungenPersonal: string;
@@ -128,6 +132,14 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
         this._anzahlStundenProBetreuungstag = value;
     }
 
+    public get betreuungErfolgtTagsueber(): boolean {
+        return this._betreuungErfolgtTagsueber;
+    }
+
+    public set betreuungErfolgtTagsueber(value: boolean) {
+        this._betreuungErfolgtTagsueber = value;
+    }
+
     public get bemerkungenOeffnungszeiten(): string {
         return this._bemerkungenOeffnungszeiten;
     }
@@ -182,6 +194,30 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
 
     public set leitungDurchPersonMitAusbildung(value: string) {
         this._leitungDurchPersonMitAusbildung = value;
+    }
+
+    public get betreuungDurchPersonenMitErfahrung(): boolean {
+        return this._betreuungDurchPersonenMitErfahrung;
+    }
+
+    public set betreuungDurchPersonenMitErfahrung(value: boolean) {
+        this._betreuungDurchPersonenMitErfahrung = value;
+    }
+
+    public get anzahlKinderAngemessen(): boolean {
+        return this._anzahlKinderAngemessen;
+    }
+
+    public set anzahlKinderAngemessen(value: boolean) {
+        this._anzahlKinderAngemessen = value;
+    }
+
+    public get betreuungsschluessel(): number {
+        return this._betreuungsschluessel;
+    }
+
+    public set betreuungsschluessel(value: number) {
+        this._betreuungsschluessel = value;
     }
 
     public get aufwandBetreuungspersonal(): number {

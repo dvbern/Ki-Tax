@@ -75,6 +75,11 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column()
+	private String seitWannFerienbetreuungen;
+
+	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column()
 	private String traegerschaft;
 
 	@Nullable
@@ -114,6 +119,11 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_auszahlungsdaten_id"))
 	private Auszahlungsdaten auszahlungsdaten;
+
+	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column()
+	private String vermerkAuszahlung;
 
 	// ANGEBOT
 
@@ -161,6 +171,10 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	@Column()
 	private BigDecimal anzahlStundenProBetreuungstag;
 
+	@Nullable
+	@Column()
+	private Boolean betreuungErfolgtTagsueber;
+
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	@Column(length = Constants.DB_TEXTAREA_LENGTH)
@@ -204,11 +218,15 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 
 	@Nullable
 	@Column()
-	private BigDecimal aufwandBetreuungspersonal;
+	private Boolean betreuungDurchPersonenMitErfahrung;
 
 	@Nullable
 	@Column()
-	private BigDecimal zusaetzlicherAufwandLeitungAdmin;
+	private Boolean anzahlKinderAngemessen;
+
+	@Nullable
+	@Column()
+	private BigDecimal betreuungsschluessel;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -337,6 +355,15 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	}
 
 	@Nullable
+	public String getSeitWannFerienbetreuungen() {
+		return seitWannFerienbetreuungen;
+	}
+
+	public void setSeitWannFerienbetreuungen(@Nullable String seitWannFerienbetreuungen) {
+		this.seitWannFerienbetreuungen = seitWannFerienbetreuungen;
+	}
+
+	@Nullable
 	public String getTraegerschaft() {
 		return traegerschaft;
 	}
@@ -406,6 +433,15 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 
 	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
 		this.auszahlungsdaten = auszahlungsdaten;
+	}
+
+	@Nullable
+	public String getVermerkAuszahlung() {
+		return vermerkAuszahlung;
+	}
+
+	public void setVermerkAuszahlung(@Nullable String vermerkAuszahlung) {
+		this.vermerkAuszahlung = vermerkAuszahlung;
 	}
 
 	@Nullable
@@ -499,6 +535,15 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	}
 
 	@Nullable
+	public Boolean getBetreuungErfolgtTagsueber() {
+		return betreuungErfolgtTagsueber;
+	}
+
+	public void setBetreuungErfolgtTagsueber(@Nullable Boolean betreuungErfolgtTagsueber) {
+		this.betreuungErfolgtTagsueber = betreuungErfolgtTagsueber;
+	}
+
+	@Nullable
 	public String getBemerkungenOeffnungszeiten() {
 		return bemerkungenOeffnungszeiten;
 	}
@@ -562,21 +607,30 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	}
 
 	@Nullable
-	public BigDecimal getAufwandBetreuungspersonal() {
-		return aufwandBetreuungspersonal;
+	public Boolean getBetreuungDurchPersonenMitErfahrung() {
+		return betreuungDurchPersonenMitErfahrung;
 	}
 
-	public void setAufwandBetreuungspersonal(@Nullable BigDecimal aufwandBetreuungspersonal) {
-		this.aufwandBetreuungspersonal = aufwandBetreuungspersonal;
+	public void setBetreuungDurchPersonenMitErfahrung(@Nullable Boolean betreuungDurchPersonenMitErfahrung) {
+		this.betreuungDurchPersonenMitErfahrung = betreuungDurchPersonenMitErfahrung;
 	}
 
 	@Nullable
-	public BigDecimal getZusaetzlicherAufwandLeitungAdmin() {
-		return zusaetzlicherAufwandLeitungAdmin;
+	public Boolean getAnzahlKinderAngemessen() {
+		return anzahlKinderAngemessen;
 	}
 
-	public void setZusaetzlicherAufwandLeitungAdmin(@Nullable BigDecimal zusaetzlicherAufwandLeitungAdmin) {
-		this.zusaetzlicherAufwandLeitungAdmin = zusaetzlicherAufwandLeitungAdmin;
+	public void setAnzahlKinderAngemessen(@Nullable Boolean anzahlKinderAngemessen) {
+		this.anzahlKinderAngemessen = anzahlKinderAngemessen;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsschluessel() {
+		return betreuungsschluessel;
+	}
+
+	public void setBetreuungsschluessel(@Nullable BigDecimal betreuungsschluessel) {
+		this.betreuungsschluessel = betreuungsschluessel;
 	}
 
 	@Nullable
@@ -849,7 +903,11 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 			this.anzahlFerienwochenSommerferien,
 			this.anzahlTage,
 			this.anzahlStundenProBetreuungstag,
+			this.betreuungErfolgtTagsueber,
 			this.leitungDurchPersonMitAusbildung,
+			this.betreuungDurchPersonenMitErfahrung,
+			this.anzahlKinderAngemessen,
+			this.betreuungsschluessel,
 			this.anzahlBetreuungstageKinderBern,
 			this.betreuungstageKinderDieserGemeinde,
 			this.davonBetreuungstageKinderAndererGemeinden,

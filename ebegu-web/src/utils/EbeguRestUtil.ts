@@ -4800,6 +4800,7 @@ export class EbeguRestUtil {
         this.abstractEntityToRestObject(restStammdaten, stammdatenTS);
         restStammdaten.amAngebotBeteiligteGemeinden =
             this.gemeindeListToRestObject(stammdatenTS.amAngebotBeteiligteGemeinden);
+        restStammdaten.seitWannFerienbetreuungen = stammdatenTS.seitWannFerienbetreuungen;
         restStammdaten.traegerschaft = stammdatenTS.traegerschaft;
         restStammdaten.stammdatenAdresse = this.adresseToRestObject({}, stammdatenTS.stammdatenAdresse);
         restStammdaten.stammdatenKontaktpersonVorname = stammdatenTS.stammdatenKontaktpersonVorname;
@@ -4810,6 +4811,7 @@ export class EbeguRestUtil {
         restStammdaten.iban = stammdatenTS.iban;
         restStammdaten.kontoinhaber = stammdatenTS.kontoinhaber;
         restStammdaten.adresseKontoinhaber = this.adresseToRestObject({}, stammdatenTS.adresseKontoinhaber);
+        restStammdaten.vermerkAuszahlung = stammdatenTS.vermerkAuszahlung;
         return stammdatenTS;
     }
 
@@ -4828,6 +4830,7 @@ export class EbeguRestUtil {
         restAngebot.anzahlFerienwochenSommerferien = angebotTS.anzahlFerienwochenSommerferien;
         restAngebot.anzahlTage = angebotTS.anzahlTage;
         restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
+        restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
         restAngebot.finanziellBeteiligteGemeinden =
             this.gemeindeListToRestObject(angebotTS.finanziellBeteiligteGemeinden);
@@ -4836,8 +4839,9 @@ export class EbeguRestUtil {
         restAngebot.angebotVereineUndPrivateIntegriert = angebotTS.angebotVereineUndPrivateIntegriert;
         restAngebot.bemerkungenKooperation = angebotTS.bemerkungenKooperation;
         restAngebot.leitungDurchPersonMitAusbildung = angebotTS.leitungDurchPersonMitAusbildung;
-        restAngebot.aufwandBetreuungspersonal = angebotTS.aufwandBetreuungspersonal;
-        restAngebot.zusaetzlicherAufwandLeitungAdmin = angebotTS.zusaetzlicherAufwandLeitungAdmin;
+        restAngebot.betreuungDurchPersonenMitErfahrung = angebotTS.betreuungDurchPersonenMitErfahrung;
+        restAngebot.anzahlKinderAngemessen = angebotTS.anzahlKinderAngemessen;
+        restAngebot.betreuungsschluessel = angebotTS.betreuungsschluessel;
         restAngebot.bemerkungenPersonal = angebotTS.bemerkungenPersonal;
         restAngebot.fixerTarifKinderDerGemeinde = angebotTS.fixerTarifKinderDerGemeinde;
         restAngebot.einkommensabhaengigerTarifKinderDerGemeinde =
@@ -4946,6 +4950,7 @@ export class EbeguRestUtil {
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.amAngebotBeteiligteGemeinden =
             this.parseGemeindeList(stammdatenFromServer.amAngebotBeteiligteGemeinden);
+        stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
         stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
@@ -4957,6 +4962,7 @@ export class EbeguRestUtil {
         stammdatenTS.kontoinhaber = stammdatenFromServer.kontoinhaber;
         stammdatenTS.adresseKontoinhaber =
             this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresseKontoinhaber);
+        stammdatenTS.vermerkAuszahlung = stammdatenFromServer.vermerkAuszahlung;
         return stammdatenTS;
     }
 
@@ -4977,6 +4983,7 @@ export class EbeguRestUtil {
         angebotTS.anzahlFerienwochenSommerferien = angebotFromServer.anzahlFerienwochenSommerferien;
         angebotTS.anzahlTage = angebotFromServer.anzahlTage;
         angebotTS.anzahlStundenProBetreuungstag = angebotFromServer.anzahlStundenProBetreuungstag;
+        angebotTS.betreuungErfolgtTagsueber = angebotFromServer.betreuungErfolgtTagsueber;
         angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;
         angebotTS.finanziellBeteiligteGemeinden =
             this.parseGemeindeList(angebotFromServer.finanziellBeteiligteGemeinden);
@@ -4985,8 +4992,9 @@ export class EbeguRestUtil {
         angebotTS.angebotVereineUndPrivateIntegriert = angebotFromServer.angebotVereineUndPrivateIntegriert;
         angebotTS.bemerkungenKooperation = angebotFromServer.bemerkungenKooperation;
         angebotTS.leitungDurchPersonMitAusbildung = angebotFromServer.leitungDurchPersonMitAusbildung;
-        angebotTS.aufwandBetreuungspersonal = angebotFromServer.aufwandBetreuungspersonal;
-        angebotTS.zusaetzlicherAufwandLeitungAdmin = angebotFromServer.zusaetzlicherAufwandLeitungAdmin;
+        angebotTS.betreuungDurchPersonenMitErfahrung = angebotFromServer.betreuungDurchPersonenMitErfahrung;
+        angebotTS.anzahlKinderAngemessen = angebotFromServer.anzahlKinderAngemessen;
+        angebotTS.betreuungsschluessel = angebotFromServer.betreuungsschluessel;
         angebotTS.bemerkungenPersonal = angebotFromServer.bemerkungenPersonal;
         angebotTS.fixerTarifKinderDerGemeinde = angebotFromServer.fixerTarifKinderDerGemeinde;
         angebotTS.einkommensabhaengigerTarifKinderDerGemeinde =

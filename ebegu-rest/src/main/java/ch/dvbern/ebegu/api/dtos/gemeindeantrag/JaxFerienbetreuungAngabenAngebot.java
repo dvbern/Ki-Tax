@@ -61,6 +61,9 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private BigDecimal anzahlStundenProBetreuungstag;
 
 	@Nullable
+	private Boolean betreuungErfolgtTagsueber;
+
+	@Nullable
 	private String bemerkungenOeffnungszeiten;
 
 	@Nullable
@@ -82,10 +85,13 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private Boolean leitungDurchPersonMitAusbildung;
 
 	@Nullable
-	private BigDecimal aufwandBetreuungspersonal;
+	private Boolean betreuungDurchPersonenMitErfahrung;
 
 	@Nullable
-	private BigDecimal zusaetzlicherAufwandLeitungAdmin;
+	private Boolean anzahlKinderAngemessen;
+
+	@Nullable
+	private BigDecimal betreuungsschluessel;
 
 	@Nullable
 	private String bemerkungenPersonal;
@@ -199,6 +205,15 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
+	public Boolean getBetreuungErfolgtTagsueber() {
+		return betreuungErfolgtTagsueber;
+	}
+
+	public void setBetreuungErfolgtTagsueber(@Nullable Boolean betreuungErfolgtTagsueber) {
+		this.betreuungErfolgtTagsueber = betreuungErfolgtTagsueber;
+	}
+
+	@Nullable
 	public String getBemerkungenOeffnungszeiten() {
 		return bemerkungenOeffnungszeiten;
 	}
@@ -262,21 +277,30 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getAufwandBetreuungspersonal() {
-		return aufwandBetreuungspersonal;
+	public Boolean getBetreuungDurchPersonenMitErfahrung() {
+		return betreuungDurchPersonenMitErfahrung;
 	}
 
-	public void setAufwandBetreuungspersonal(@Nullable BigDecimal aufwandBetreuungspersonal) {
-		this.aufwandBetreuungspersonal = aufwandBetreuungspersonal;
+	public void setBetreuungDurchPersonenMitErfahrung(@Nullable Boolean betreuungDurchPersonenMitErfahrung) {
+		this.betreuungDurchPersonenMitErfahrung = betreuungDurchPersonenMitErfahrung;
 	}
 
 	@Nullable
-	public BigDecimal getZusaetzlicherAufwandLeitungAdmin() {
-		return zusaetzlicherAufwandLeitungAdmin;
+	public Boolean getAnzahlKinderAngemessen() {
+		return anzahlKinderAngemessen;
 	}
 
-	public void setZusaetzlicherAufwandLeitungAdmin(@Nullable BigDecimal zusaetzlicherAufwandLeitungAdmin) {
-		this.zusaetzlicherAufwandLeitungAdmin = zusaetzlicherAufwandLeitungAdmin;
+	public void setAnzahlKinderAngemessen(@Nullable Boolean anzahlKinderAngemessen) {
+		this.anzahlKinderAngemessen = anzahlKinderAngemessen;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsschluessel() {
+		return betreuungsschluessel;
+	}
+
+	public void setBetreuungsschluessel(@Nullable BigDecimal betreuungsschluessel) {
+		this.betreuungsschluessel = betreuungsschluessel;
 	}
 
 	@Nullable

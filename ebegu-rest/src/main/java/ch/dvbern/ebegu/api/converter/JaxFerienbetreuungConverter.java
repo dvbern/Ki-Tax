@@ -110,6 +110,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		} else {
 			ferienbetreuungAngaben.setAmAngebotBeteiligteGemeinden(Collections.emptySet());
 		}
+		ferienbetreuungAngaben.setSeitWannFerienbetreuungen(stammdaten.getSeitWannFerienbetreuungen());
 		ferienbetreuungAngaben.setTraegerschaft(stammdaten.getTraegerschaft());
 		if (stammdaten.getStammdatenAdresse() != null) {
 			if (ferienbetreuungAngaben.getStammdatenAdresse() == null) {
@@ -139,6 +140,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 				auszahlungsdaten.setAdresseKontoinhaber(adresseToEntity(stammdaten.getAdresseKontoinhaber(), adresse));
 			}
 		}
+		ferienbetreuungAngaben.setVermerkAuszahlung(stammdaten.getVermerkAuszahlung());
 	}
 
 	private void ferienbetreuungAngabenAngebotToEntity(
@@ -163,6 +165,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		ferienbetreuungAngaben.setAnzahlFerienwochenSommerferien(angebot.getAnzahlFerienwochenSommerferien());
 		ferienbetreuungAngaben.setAnzahlTage(angebot.getAnzahlTage());
 		ferienbetreuungAngaben.setAnzahlStundenProBetreuungstag(angebot.getAnzahlStundenProBetreuungstag());
+		ferienbetreuungAngaben.setBetreuungErfolgtTagsueber(angebot.getBetreuungErfolgtTagsueber());
 		ferienbetreuungAngaben.setBemerkungenOeffnungszeiten(angebot.getBemerkungenOeffnungszeiten());
 
 		if (angebot.getFinanziellBeteiligteGemeinden() != null) {
@@ -177,8 +180,9 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		ferienbetreuungAngaben.setAngebotVereineUndPrivateIntegriert(angebot.getAngebotVereineUndPrivateIntegriert());
 		ferienbetreuungAngaben.setBemerkungenKooperation(angebot.getBemerkungenKooperation());
 		ferienbetreuungAngaben.setLeitungDurchPersonMitAusbildung(angebot.getLeitungDurchPersonMitAusbildung());
-		ferienbetreuungAngaben.setAufwandBetreuungspersonal(angebot.getAufwandBetreuungspersonal());
-		ferienbetreuungAngaben.setZusaetzlicherAufwandLeitungAdmin(angebot.getZusaetzlicherAufwandLeitungAdmin());
+		ferienbetreuungAngaben.setBetreuungDurchPersonenMitErfahrung(angebot.getBetreuungDurchPersonenMitErfahrung());
+		ferienbetreuungAngaben.setAnzahlKinderAngemessen(angebot.getAnzahlKinderAngemessen());
+		ferienbetreuungAngaben.setBetreuungsschluessel(angebot.getBetreuungsschluessel());
 		ferienbetreuungAngaben.setBemerkungenPersonal(angebot.getBemerkungenPersonal());
 		ferienbetreuungAngaben.setFixerTarifKinderDerGemeinde(angebot.getFixerTarifKinderDerGemeinde());
 		ferienbetreuungAngaben.setEinkommensabhaengigerTarifKinderDerGemeinde(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde());
@@ -292,6 +296,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 				);
 			}
 		}
+		jaxStammdaten.setVermerkAuszahlung(ferienbetreuungAngaben.getVermerkAuszahlung());
 
 		jaxFerienbetreuungAngaben.setStammdaten(jaxStammdaten);
 	}
@@ -316,6 +321,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setAnzahlFerienwochenSommerferien(ferienbetreuungAngaben.getAnzahlFerienwochenSommerferien());
 		jaxAngebot.setAnzahlTage(ferienbetreuungAngaben.getAnzahlTage());
 		jaxAngebot.setAnzahlStundenProBetreuungstag(ferienbetreuungAngaben.getAnzahlStundenProBetreuungstag());
+		jaxAngebot.setBetreuungErfolgtTagsueber(ferienbetreuungAngaben.getBetreuungErfolgtTagsueber());
 		jaxAngebot.setBemerkungenOeffnungszeiten(ferienbetreuungAngaben.getBemerkungenOeffnungszeiten());
 
 		List<JaxGemeinde> jaxGemeinden = gemeindeListToJax(ferienbetreuungAngaben.getFinanziellBeteiligteGemeinden());
@@ -326,8 +332,9 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setAngebotVereineUndPrivateIntegriert(ferienbetreuungAngaben.getAngebotVereineUndPrivateIntegriert());
 		jaxAngebot.setBemerkungenKooperation(ferienbetreuungAngaben.getBemerkungenKooperation());
 		jaxAngebot.setLeitungDurchPersonMitAusbildung(ferienbetreuungAngaben.getLeitungDurchPersonMitAusbildung());
-		jaxAngebot.setAufwandBetreuungspersonal(ferienbetreuungAngaben.getAufwandBetreuungspersonal());
-		jaxAngebot.setZusaetzlicherAufwandLeitungAdmin(ferienbetreuungAngaben.getZusaetzlicherAufwandLeitungAdmin());
+		jaxAngebot.setBetreuungDurchPersonenMitErfahrung(ferienbetreuungAngaben.getBetreuungDurchPersonenMitErfahrung());
+		jaxAngebot.setAnzahlKinderAngemessen(ferienbetreuungAngaben.getAnzahlKinderAngemessen());
+		jaxAngebot.setBetreuungsschluessel(ferienbetreuungAngaben.getBetreuungsschluessel());
 		jaxAngebot.setBemerkungenPersonal(ferienbetreuungAngaben.getBemerkungenPersonal());
 		jaxAngebot.setFixerTarifKinderDerGemeinde(ferienbetreuungAngaben.getFixerTarifKinderDerGemeinde());
 		jaxAngebot.setEinkommensabhaengigerTarifKinderDerGemeinde(ferienbetreuungAngaben.getEinkommensabhaengigerTarifKinderDerGemeinde());
