@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../enums/TSRole';
 import {TSAbstractEntity} from '../TSAbstractEntity';
@@ -46,36 +47,37 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public isInBearbeitungGemeinde(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
         ].includes(this.status);
     }
 
     public isInBearbeitungKanton(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
         ].includes(this.status);
     }
 
     public isAtLeastInBearbeitungKanton(): boolean {
         return ![
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
         ].includes(this.status);
     }
 
-    public isInBearbeitungForRole(role: TSRole): boolean {
+    public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {
         switch (role) {
             case TSRole.SUPER_ADMIN:
-                return this.isInBearbeitungKanton() || this.isInBearbeitungGemeinde();
+                return (this.isInBearbeitungKanton() && this.angabenKorrektur.isInBearbeitung()) ||
+                    (this.isInBearbeitungGemeinde() && this.angabenDeklaration.isInBearbeitung());
             case TSRole.SACHBEARBEITER_MANDANT:
             case TSRole.ADMIN_MANDANT:
-                return this.isInBearbeitungKanton();
+                return this.isInBearbeitungKanton() && this.angabenKorrektur.isInBearbeitung();
             case TSRole.ADMIN_TS:
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return this.isInBearbeitungGemeinde();
+                return this.isInBearbeitungGemeinde() && this.angabenDeklaration.isInBearbeitung();
             default:
                 return false;
         }

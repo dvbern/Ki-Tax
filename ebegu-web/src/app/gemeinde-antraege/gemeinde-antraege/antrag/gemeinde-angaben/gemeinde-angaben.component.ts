@@ -126,6 +126,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         this.angabenForm = this.fb.group({
+            status: initialGemeindeAngaben.status,
             // A
             alleFaelleInKibon: [{value: this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst, disabled: true}],
             angebotVerfuegbarFuerAlleSchulstufen: [
@@ -183,7 +184,7 @@ export class GemeindeAngabenComponent implements OnInit {
             erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
 
-        if (!this.lATSAngabenGemeindeContainer.isInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
+        if (!this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
             this.angabenForm.disable();
         }
 
@@ -263,16 +264,12 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private plausibilisierungTageschulenStunden(): ValidatorFn {
         return (control: AbstractControl) => {
-            const tagesschulenSum = this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-                this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
+            const tagesschulenSum = this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
                     accumulator,
                     next,
-                    ) => accumulator + next.angabenDeklaration.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
-                    0) :
-                this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
-                    accumulator,
-                    next,
-                    ) => accumulator + next.angabenKorrektur.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
+                    ) => accumulator + (next.isAtLeastInBearbeitungGemeinde() ?
+                    next.angabenDeklaration.betreuungsstundenEinschliesslichBesondereBeduerfnisse :
+                    next.angabenKorrektur.betreuungsstundenEinschliesslichBesondereBeduerfnisse),
                     0);
 
             return this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value === tagesschulenSum ?
@@ -316,7 +313,7 @@ export class GemeindeAngabenComponent implements OnInit {
             const lohnkostenParam = parseFloat(valueAndParamter[1].value);
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
@@ -329,7 +326,8 @@ export class GemeindeAngabenComponent implements OnInit {
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
-            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet').updateValueAndValidity();
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
+                .updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest(
@@ -429,7 +427,9 @@ export class GemeindeAngabenComponent implements OnInit {
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
         }
-        this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer).subscribe(() => {}, console.log);
+        this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
+            .subscribe(() => {
+            }, console.log);
     }
 
     public triggerFormValidation(): void {

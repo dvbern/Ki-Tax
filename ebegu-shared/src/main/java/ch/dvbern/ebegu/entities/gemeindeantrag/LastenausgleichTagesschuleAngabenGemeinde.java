@@ -145,6 +145,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	}
 
 	public LastenausgleichTagesschuleAngabenGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeinde source) {
+		this.status = LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG;
 		// A: Allgemeine Angaben
 		this.bedarfBeiElternAbgeklaert = source.bedarfBeiElternAbgeklaert;
 		this.angebotFuerFerienbetreuungVorhanden = source.angebotFuerFerienbetreuungVorhanden;

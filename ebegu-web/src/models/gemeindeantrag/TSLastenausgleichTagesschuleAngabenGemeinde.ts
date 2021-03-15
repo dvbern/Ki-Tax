@@ -53,4 +53,11 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
 
     // Bemerkungen
     public bemerkungen: string;
+
+    public isInBearbeitung(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG,
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN,
+        ].includes(this.status);
+    }
 }
