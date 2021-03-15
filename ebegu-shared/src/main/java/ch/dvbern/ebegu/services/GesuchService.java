@@ -440,14 +440,12 @@ public interface GesuchService {
 	List<Gesuch> getGepruefteFreigegebeneGesucheForGesuchsperiode(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull String gesuchsperiodeId);
+		@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Returns true when the fall linked to the Gesuch has another gesuch in a newer Gesuchsperiode.
-	 * The status of the Gesuch must be at least freigegeben, because it must be available for Amt-users.
-	 * It will check all Gesuche independently if the user is allowed to access them or not though.
+	 * Returns a list of all Gesuchen fuer die eingeloggte Benutzer Gemeinde nach dieser gesuchsperiode
 	 */
-	boolean hasFolgegesuchForAmt(@Nonnull String gesuchId);
+	List<Gesuch> getAllGesuchForAmtAfterGP(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Erstellt eine Mutation und verlangt alle Platzbestaetigungen neu.
