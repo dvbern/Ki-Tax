@@ -109,4 +109,12 @@ export class LastenausgleichTSService {
             this.next(result);
         }, error => LOG.error(error));
     }
+
+    // tslint:disable-next-line:max-line-length
+    public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<Object> {
+        return this.http.put(
+            `${this.API_BASE_URL}/abschliessen`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(tap(result => this.next(result)));
+    }
 }

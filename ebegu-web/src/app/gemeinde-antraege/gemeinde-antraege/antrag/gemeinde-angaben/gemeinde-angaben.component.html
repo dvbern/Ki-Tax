@@ -684,6 +684,12 @@
                 (buttonClick)="onAngabenFormSubmit()">
                 <span translate>SAVE</span>
             </dv-loading-button>
+            <dv-loading-button
+                type="button"
+                [buttonDisabled]="formularNotEditable()"
+                (buttonClick)="onAbschliessen()">
+                <span translate>ABSCHLIESSEN</span>
+            </dv-loading-button>
         </div>
 
     </form>
