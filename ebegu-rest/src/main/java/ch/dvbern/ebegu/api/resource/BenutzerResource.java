@@ -123,7 +123,8 @@ public class BenutzerResource {
 		ADMIN_MANDANT,
 		ADMIN_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT,
-		ADMIN_FERIENBETREUUNG
+		ADMIN_FERIENBETREUUNG,
+		ADMIN_SOZIALDIENST
 	})
 	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
@@ -289,7 +290,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, REVISOR })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, REVISOR, ADMIN_SOZIALDIENST })
 	public JaxBenutzerSearchresultDTO searchBenutzer(
 		@Nonnull @NotNull @Valid BenutzerTableFilterDTO benutzerSearch,
 		@Context UriInfo uriInfo,
@@ -347,7 +348,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, ADMIN_SOZIALDIENST })
 	public JaxBenutzer inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
@@ -364,7 +365,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, ADMIN_SOZIALDIENST })
 	public JaxBenutzer reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
@@ -381,7 +382,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, ADMIN_SOZIALDIENST })
 	public JaxBenutzer saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
@@ -445,7 +446,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, REVISOR })
+		ADMIN_MANDANT, ADMIN_FERIENBETREUUNG, REVISOR, ADMIN_SOZIALDIENST })
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
