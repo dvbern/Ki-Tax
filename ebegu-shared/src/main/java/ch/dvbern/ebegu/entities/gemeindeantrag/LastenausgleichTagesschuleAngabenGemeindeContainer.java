@@ -315,4 +315,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			.add(getAngabenDeklaration().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
 			.compareTo(sumTagesschulen) != 0;
 	}
+
+
+	public boolean isAtLeastInBearbeitungKanton() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
+	}
 }

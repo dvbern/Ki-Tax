@@ -378,17 +378,29 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	}
 
 	@Override
-	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenAbschliessen(
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
 		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
 
+		LastenausgleichTagesschuleAngabenGemeinde formular;
+
+		if (fallContainer.isAtLeastInBearbeitungKanton()) {
+			Preconditions.checkState(
+				fallContainer.getAngabenKorrektur() != null,
+				"angabenKorrektur must not be null"
+			);
+			formular = fallContainer.getAngabenKorrektur();
+		} else {
+			Preconditions.checkState(
+				fallContainer.getAngabenDeklaration() != null,
+				"angabenDeklaration must not be null"
+			);
+			formular = fallContainer.getAngabenDeklaration();
+		}
+
 		Preconditions.checkState(
-			fallContainer.getAngabenDeklaration() != null,
-			"angabenDeklaration must not be null"
-		);
-		Preconditions.checkState(
-			fallContainer.getAngabenDeklaration().getStatus()
+			formular.getStatus()
 				== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG ||
-				fallContainer.getAngabenDeklaration().getStatus()
+				formular.getStatus()
 					== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ,
 			"angabenDeklaration muss im Status IN_BEARBEITUNG oder VALIDIERUNG_FEHLGESCHLAGEN sein"
 		);
@@ -399,7 +411,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		try {
 			Preconditions.checkArgument(
-				fallContainer.getAngabenDeklaration().plausibilisierungLATSBerechtigteStundenHolds(),
+				formular.plausibilisierungLATSBerechtigteStundenHolds(),
 				"plausibilisierung geleistete stunden zu normlohnkosten failed"
 			);
 			Preconditions.checkArgument(
@@ -407,11 +419,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				"plausibilisierung stunden tagesschulen failed"
 			);
 
-			fallContainer.getAngabenDeklaration()
-				.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
+			formular.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
 		} catch (IllegalArgumentException e) {
-			fallContainer.getAngabenDeklaration()
-				.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN);
+			formular.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN);
 		}
 
 		return persistence.persist(fallContainer);

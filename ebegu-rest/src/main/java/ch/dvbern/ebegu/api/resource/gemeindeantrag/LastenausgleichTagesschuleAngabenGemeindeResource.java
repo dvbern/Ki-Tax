@@ -217,7 +217,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		try {
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
-				angabenGemeindeService.lastenausgleichTagesschuleGemeindeFuerInstitutionenAbschliessen(converted);
+				angabenGemeindeService.lastenausgleichTagesschuleGemeindeFormularAbschliessen(converted);
 
 			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 		} catch (EJBTransactionRolledbackException e) {
