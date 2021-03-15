@@ -54,6 +54,7 @@ public interface TestfaelleService {
 	String ASIV8 = "ASIV8";
 	String ASIV9 = "ASIV9";
 	String ASIV10 = "ASIV10";
+	String SOZIALDIENST = "Sozialdienst";
 
 	String heirat = "1";
 

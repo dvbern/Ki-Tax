@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -95,6 +96,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
+import ch.dvbern.ebegu.testfaelle.Testfall_Sozialdienst;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -157,6 +159,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private EbeguConfiguration configuration;
 	@Inject
 	private TestfaelleService testfaelleService;
+	@Inject
+	private SozialdienstService sozialdienstService;
 
 
 	@Override
@@ -253,6 +257,18 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			} else if (ASIV10.equals(fallid)) {
 				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
 				responseString.append("Fall ASIV 10 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+			} else if (SOZIALDIENST.equals(fallid)) {
+				Sozialdienst sozialdienst = getBernerSozialdienst();
+				Benutzer sozialdienstBenutzer = getBernerSozialdienstBenutzer();
+				Testfall_Sozialdienst testfallSozialdienst = new Testfall_Sozialdienst(
+					gesuchsperiode,
+					institutionStammdatenList,
+					betreuungenBestaetigt,
+					gemeinde,
+					sozialdienst
+					);
+				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, sozialdienstBenutzer);
+				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
 				createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -275,7 +291,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 				createAndSaveAsivGesuch(new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
 				createAndSaveAsivGesuch(new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
 				createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
-				responseString.append("Testfaelle 1-11 und ASIV-Testfaelle 1-10 erstellt");
+				createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde, getBernerSozialdienst()), verfuegen, getBernerSozialdienstBenutzer());
+				responseString.append("Testfaelle 1-11, ASIV-Testfaelle 1-10 und Sozialdiensttestfall erstellt");
 			} else {
 				responseString.append("Usage: /Nummer des Testfalls an die URL anhaengen. Bisher umgesetzt: 1-11. "
 					+ "'/all' erstellt alle Testfaelle");
@@ -365,6 +382,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		}
 		if (ASIV10.equals(fallid)) {
 			return createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
+		}
+		if (SOZIALDIENST.equals(fallid)) {
+			return createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde, getBernerSozialdienst()), verfuegen, getBernerSozialdienstBenutzer());
 		}
 		throw new IllegalArgumentException("Unbekannter Testfall: " + fallid);
 	}
@@ -977,5 +997,17 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	public Gesuch antragMutieren(@Nonnull Gesuch antrag, @Nullable LocalDate eingangsdatum) {
 		Gesuch mutation = Gesuch.createMutation(antrag.getDossier(), antrag.getGesuchsperiode(), eingangsdatum);
 		return gesuchService.createGesuch(mutation);
+	}
+
+	@Nonnull
+	private Sozialdienst getBernerSozialdienst() {
+		return sozialdienstService.findSozialdienst(AbstractTestfall.ID_BERNER_SOZIALDIENST)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+	}
+
+	@Nonnull
+	private Benutzer getBernerSozialdienstBenutzer() {
+		return benutzerService.findBenutzerByEmail("patrick.melcher@mailbucket.dvbern.ch")
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienstBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
 }
