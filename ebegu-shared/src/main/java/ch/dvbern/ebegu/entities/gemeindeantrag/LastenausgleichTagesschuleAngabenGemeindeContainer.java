@@ -297,24 +297,32 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean plausibilisierungTagesschulenStundenHoldsForDeklaration() {
-		Preconditions.checkState(getAngabenDeklaration() != null, "angabenDeklaration must not be null");
-		Preconditions.checkState(getAngabenDeklaration().getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
+		LastenausgleichTagesschuleAngabenGemeinde formular;
+		if(isAtLeastInBearbeitungKanton()) {
+			formular = getAngabenKorrektur();
+		} else {
+			formular = getAngabenDeklaration();
+		}
+		Preconditions.checkState(formular != null, "angabenDeklaration must not be null");
+		Preconditions.checkState(formular.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
 			!= null, "angabenDeklaration incomplete");
-		Preconditions.checkState(getAngabenDeklaration().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()
+		Preconditions.checkState(formular.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()
 			!= null, "angabenDeklaration incomplete");
 
 		BigDecimal sumTagesschulen = getAngabenInstitutionContainers().stream()
 			.map(container -> {
-				Preconditions.checkArgument(
-					container.getAngabenDeklaration() != null && container.isAntragAbgeschlossen(),
-					"angabenDeklaration Tagesschulen incomplete"
-				);
-				return container.getAngabenDeklaration().getBetreuungsstundenEinschliesslichBesondereBeduerfnisse();
+				// we should not be here if there are tagesschule formulare that are not geprueft
+					Preconditions.checkArgument(
+						container.getAngabenKorrektur() != null && container.isAntragAbgeschlossen(),
+						"angabenDeklaration Tagesschulen incomplete"
+					);
+					return container.getAngabenKorrektur().getBetreuungsstundenEinschliesslichBesondereBeduerfnisse();
+
 			}).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		return getAngabenDeklaration().getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
-			.add(getAngabenDeklaration().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
-			.compareTo(sumTagesschulen) != 0;
+		return formular.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
+			.add(formular.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+			.compareTo(sumTagesschulen) == 0;
 	}
 
 	public boolean isAtLeastInBearbeitungKanton() {

@@ -179,7 +179,7 @@ export class GemeindeAngabenComponent implements OnInit {
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
             // calculated values
-            lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
+            lastenausgleichberechtigteBetreuungsstunden: [{value: ''}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
@@ -229,7 +229,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('einnahmenElterngebuehren')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
-            .setValidators([this.plausibilisierungAddition(), this.plausibilisierungTageschulenStunden()]);
+            .setValidators([this.plausibilisierungTageschulenStunden()]);
 
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
@@ -273,7 +273,7 @@ export class GemeindeAngabenComponent implements OnInit {
             const tagesschulenSum = this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
                 accumulator,
                 next,
-                ) => accumulator + (next.isAtLeastInBearbeitungGemeinde() ?
+                ) => accumulator + (next.isInBearbeitungInstitution() ?
                 next.angabenDeklaration.betreuungsstundenEinschliesslichBesondereBeduerfnisse :
                 next.angabenKorrektur.betreuungsstundenEinschliesslichBesondereBeduerfnisse),
                 0);
@@ -307,6 +307,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
+            this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').updateValueAndValidity({emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
@@ -425,7 +426,9 @@ export class GemeindeAngabenComponent implements OnInit {
         this.triggerFormValidation();
 
         if (!this.angabenForm.valid) {
-            return;
+            this.errorService.addMesageAsError(
+                this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN')
+            );
         }
 
         // tslint:disable-next-line:max-line-length
@@ -435,7 +438,15 @@ export class GemeindeAngabenComponent implements OnInit {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
         }
         this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
-            .subscribe(() => {
+            .subscribe((container: TSLastenausgleichTagesschuleAngabenGemeindeContainer) => {
+                if (container.isInBearbeitungGemeinde() && container.angabenDeklaration.status ===
+                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ||
+                    container.isAtLeastInBearbeitungKanton() && container.angabenKorrektur.status ===
+                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
+                    this.triggerFormValidation();
+                    this.errorService.addMesageAsError(this.translateService.instant(
+                        'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
+                }
                 this.wizardRS.updateSteps(this.WIZARD_TYPE, this.lastenausgleichID);
             }, error => {
                 // tslint:disable-next-line:early-exit
@@ -443,8 +454,6 @@ export class GemeindeAngabenComponent implements OnInit {
                     if (error.error.includes('institution')) {
                         this.errorService.addMesageAsError(this.translateService.instant(
                             'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST'),
-                            this.ROUTING_DELAY);
                     } else {
                         this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
                     }

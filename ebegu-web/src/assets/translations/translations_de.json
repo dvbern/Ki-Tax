@@ -2303,6 +2303,8 @@
     "LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN": "Art. 6 der TSV schreibt vor, dass sich die Räume, die Einrichtung und die Umgebung für das Tagesschulangebot eignen und den Bedürfnissen der Schülerinnen und Schüler der jeweiligen Schulstufe entsprechen müssen. Es soll ausreichend Raum für Verpflegung, Hausaufgaben, Gemeinschaftsaktivitäten und Rückzugsmöglichkeiten vorhanden sein (in der Regel zwei Räume und genügend Platz für Aktivitäten im Freien). Sind diese räumlichen Voraussetzungen eingehalten?",
     "LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN": "Ist das vorgeschriebene Betreuungsverhältnis eingehalten, d. h. betreut eine Betreuungsperson maximal 10 Kinder (TSV Art. 5 Abs. 1)?",
     "LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN": "Werden in der Tagesschule ernährungswissenschaftliche Grundsätze für eine ausgewogene und den Bedürfnissen der Schülerinnen und Schüler entsprechende Ernährung beachtet (TSV Art. 7 Abs. 5)?",
+    "ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN": "Die angegebenen lastenausgleichsberechtigten Betreuungsstunden entsprechen nicht der Summe der lastenausgleichsberechtigten Betreuungsstunden der Tagesschulen. Bitte prüfen Sie die Angaben.",
+    "LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN": "Die Validierung für das Formular enthält Fehler.",
     "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Sozialdienste Fall eröffnen",
     "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Sozialdienstfall",

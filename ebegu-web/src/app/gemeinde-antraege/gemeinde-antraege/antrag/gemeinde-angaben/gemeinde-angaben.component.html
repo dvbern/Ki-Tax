@@ -239,7 +239,11 @@
                 <mat-label translate></mat-label>
                 <input matInput
                        formControlName="lastenausgleichberechtigteBetreuungsstunden"
+                       [readonly]="true"
                        class="form-control dv-input"/>
+                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError"
+                           translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN
+                </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 

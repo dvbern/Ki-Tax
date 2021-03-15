@@ -17,7 +17,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
@@ -111,10 +111,14 @@ export class LastenausgleichTSService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<Object> {
+    public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/abschliessen`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
-        ).pipe(tap(result => this.next(result)));
+        )
+            .pipe(tap(result => this.next(result)),
+                map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                    new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                    result)));
     }
 }
