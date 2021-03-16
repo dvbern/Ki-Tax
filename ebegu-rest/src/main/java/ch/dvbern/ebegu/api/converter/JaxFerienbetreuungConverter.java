@@ -39,7 +39,11 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -86,13 +90,25 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		convertAbstractFieldsToEntity(jaxContainer, ferienbetreuungAngaben);
 
 		// stammdaten
-		ferienbetreuungAngabenStammdatenToEntity(jaxContainer.getStammdaten(), ferienbetreuungAngaben);
+		ferienbetreuungAngabenStammdatenToEntity(
+			jaxContainer.getStammdaten(),
+			ferienbetreuungAngaben.getFerienbetreuungAngabenStammdaten()
+		);
 		// angebot
-		ferienbetreuungAngabenAngebotToEntity(jaxContainer.getAngebot(), ferienbetreuungAngaben);
+		ferienbetreuungAngabenAngebotToEntity(
+			jaxContainer.getAngebot(),
+			ferienbetreuungAngaben.getFerienbetreuungAngabenAngebot()
+		);
 		// nutzung
-		ferienbetreuungAngabenNutzungToEntity(jaxContainer.getNutzung(), ferienbetreuungAngaben);
+		ferienbetreuungAngabenNutzungToEntity(
+			jaxContainer.getNutzung(),
+			ferienbetreuungAngaben.getFerienbetreuungAngabenNutzung()
+		);
 		// kosten und einnahmen
-		ferienbetreuungAngabenKostenEinnahmenToEntity(jaxContainer.getKostenEinnahmen(), ferienbetreuungAngaben);
+		ferienbetreuungAngabenKostenEinnahmenToEntity(
+			jaxContainer.getKostenEinnahmen(),
+			ferienbetreuungAngaben.getFerienbetreuungAngabenKostenEinnahmen()
+		);
 
 		// never save resultate from client
 
@@ -101,125 +117,125 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	private void ferienbetreuungAngabenStammdatenToEntity(
-		@Nonnull JaxFerienbetreuungAngabenStammdaten stammdaten,
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben
+		@Nonnull JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
-		if (stammdaten.getAmAngebotBeteiligteGemeinden() != null) {
-			Set<Gemeinde> gemeinden = gemeindeListToEntity(stammdaten.getAmAngebotBeteiligteGemeinden());
-			ferienbetreuungAngaben.setAmAngebotBeteiligteGemeinden(gemeinden);
+		if (jaxStammdaten.getAmAngebotBeteiligteGemeinden() != null) {
+			Set<Gemeinde> gemeinden = gemeindeListToEntity(jaxStammdaten.getAmAngebotBeteiligteGemeinden());
+			stammdaten.setAmAngebotBeteiligteGemeinden(gemeinden);
 		} else {
-			ferienbetreuungAngaben.setAmAngebotBeteiligteGemeinden(Collections.emptySet());
+			stammdaten.setAmAngebotBeteiligteGemeinden(Collections.emptySet());
 		}
-		ferienbetreuungAngaben.setSeitWannFerienbetreuungen(stammdaten.getSeitWannFerienbetreuungen());
-		ferienbetreuungAngaben.setTraegerschaft(stammdaten.getTraegerschaft());
-		if (stammdaten.getStammdatenAdresse() != null) {
-			if (ferienbetreuungAngaben.getStammdatenAdresse() == null) {
-				ferienbetreuungAngaben.setStammdatenAdresse(new Adresse());
+		stammdaten.setSeitWannFerienbetreuungen(jaxStammdaten.getSeitWannFerienbetreuungen());
+		stammdaten.setTraegerschaft(jaxStammdaten.getTraegerschaft());
+		if (jaxStammdaten.getStammdatenAdresse() != null) {
+			if (stammdaten.getStammdatenAdresse() == null) {
+				stammdaten.setStammdatenAdresse(new Adresse());
 			}
-			ferienbetreuungAngaben.setStammdatenAdresse(
-				adresseToEntity(stammdaten.getStammdatenAdresse(), ferienbetreuungAngaben.getStammdatenAdresse())
+			stammdaten.setStammdatenAdresse(
+				adresseToEntity(jaxStammdaten.getStammdatenAdresse(), stammdaten.getStammdatenAdresse())
 			);
 		}
-		ferienbetreuungAngaben.setStammdatenKontaktpersonVorname(stammdaten.getStammdatenKontaktpersonVorname());
-		ferienbetreuungAngaben.setStammdatenKontaktpersonNachname(stammdaten.getStammdatenKontaktpersonNachname());
-		ferienbetreuungAngaben.setStammdatenKontaktpersonFunktion(stammdaten.getStammdatenKontaktpersonFunktion());
-		ferienbetreuungAngaben.setStammdatenKontaktpersonTelefon(stammdaten.getStammdatenKontaktpersonTelefon());
-		ferienbetreuungAngaben.setStammdatenKontaktpersonEmail(stammdaten.getStammdatenKontaktpersonEmail());
-		if (stammdaten.getIban() != null && stammdaten.getKontoinhaber() != null) {
-			Auszahlungsdaten auszahlungsdaten = ferienbetreuungAngaben.getAuszahlungsdaten();
+		stammdaten.setStammdatenKontaktpersonVorname(jaxStammdaten.getStammdatenKontaktpersonVorname());
+		stammdaten.setStammdatenKontaktpersonNachname(jaxStammdaten.getStammdatenKontaktpersonNachname());
+		stammdaten.setStammdatenKontaktpersonFunktion(jaxStammdaten.getStammdatenKontaktpersonFunktion());
+		stammdaten.setStammdatenKontaktpersonTelefon(jaxStammdaten.getStammdatenKontaktpersonTelefon());
+		stammdaten.setStammdatenKontaktpersonEmail(jaxStammdaten.getStammdatenKontaktpersonEmail());
+		if (jaxStammdaten.getIban() != null && jaxStammdaten.getKontoinhaber() != null) {
+			Auszahlungsdaten auszahlungsdaten = stammdaten.getAuszahlungsdaten();
 			if (auszahlungsdaten == null) {
 				auszahlungsdaten = new Auszahlungsdaten();
 			}
-			auszahlungsdaten.setIban(new IBAN(stammdaten.getIban()));
-			auszahlungsdaten.setKontoinhaber(stammdaten.getKontoinhaber());
-			if (stammdaten.getAdresseKontoinhaber() != null) {
+			auszahlungsdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+			auszahlungsdaten.setKontoinhaber(jaxStammdaten.getKontoinhaber());
+			if (jaxStammdaten.getAdresseKontoinhaber() != null) {
 				Adresse adresse = auszahlungsdaten.getAdresseKontoinhaber();
 				if (adresse == null) {
 					adresse = new Adresse();
 				}
-				auszahlungsdaten.setAdresseKontoinhaber(adresseToEntity(stammdaten.getAdresseKontoinhaber(), adresse));
+				auszahlungsdaten.setAdresseKontoinhaber(adresseToEntity(jaxStammdaten.getAdresseKontoinhaber(), adresse));
 			}
 		}
-		ferienbetreuungAngaben.setVermerkAuszahlung(stammdaten.getVermerkAuszahlung());
+		stammdaten.setVermerkAuszahlung(jaxStammdaten.getVermerkAuszahlung());
 	}
 
 	private void ferienbetreuungAngabenAngebotToEntity(
-		@Nonnull JaxFerienbetreuungAngabenAngebot angebot,
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben
+		@Nonnull JaxFerienbetreuungAngabenAngebot jaxAngebot,
+		@Nonnull FerienbetreuungAngabenAngebot angebot
 	) {
 
-		ferienbetreuungAngaben.setAngebot(angebot.getAngebot());
-		ferienbetreuungAngaben.setAngebotKontaktpersonVorname(angebot.getAngebotKontaktpersonVorname());
-		ferienbetreuungAngaben.setAngebotKontaktpersonNachname(angebot.getAngebotKontaktpersonNachname());
-		if (angebot.getAngebotAdresse() != null) {
-			if (ferienbetreuungAngaben.getAngebotAdresse() == null) {
-				ferienbetreuungAngaben.setAngebotAdresse(new Adresse());
+		angebot.setAngebot(jaxAngebot.getAngebot());
+		angebot.setAngebotKontaktpersonVorname(jaxAngebot.getAngebotKontaktpersonVorname());
+		angebot.setAngebotKontaktpersonNachname(jaxAngebot.getAngebotKontaktpersonNachname());
+		if (jaxAngebot.getAngebotAdresse() != null) {
+			if (angebot.getAngebotAdresse() == null) {
+				angebot.setAngebotAdresse(new Adresse());
 			}
-			ferienbetreuungAngaben.setAngebotAdresse(
-				adresseToEntity(angebot.getAngebotAdresse(), ferienbetreuungAngaben.getAngebotAdresse())
+			angebot.setAngebotAdresse(
+				adresseToEntity(jaxAngebot.getAngebotAdresse(), angebot.getAngebotAdresse())
 			);
 		}
-		ferienbetreuungAngaben.setAnzahlFerienwochenHerbstferien(angebot.getAnzahlFerienwochenHerbstferien());
-		ferienbetreuungAngaben.setAnzahlFerienwochenWinterferien(angebot.getAnzahlFerienwochenWinterferien());
-		ferienbetreuungAngaben.setAnzahlFerienwochenFruehlingsferien(angebot.getAnzahlFerienwochenFruehlingsferien());
-		ferienbetreuungAngaben.setAnzahlFerienwochenSommerferien(angebot.getAnzahlFerienwochenSommerferien());
-		ferienbetreuungAngaben.setAnzahlTage(angebot.getAnzahlTage());
-		ferienbetreuungAngaben.setAnzahlStundenProBetreuungstag(angebot.getAnzahlStundenProBetreuungstag());
-		ferienbetreuungAngaben.setBetreuungErfolgtTagsueber(angebot.getBetreuungErfolgtTagsueber());
-		ferienbetreuungAngaben.setBemerkungenOeffnungszeiten(angebot.getBemerkungenOeffnungszeiten());
+		angebot.setAnzahlFerienwochenHerbstferien(jaxAngebot.getAnzahlFerienwochenHerbstferien());
+		angebot.setAnzahlFerienwochenWinterferien(jaxAngebot.getAnzahlFerienwochenWinterferien());
+		angebot.setAnzahlFerienwochenFruehlingsferien(jaxAngebot.getAnzahlFerienwochenFruehlingsferien());
+		angebot.setAnzahlFerienwochenSommerferien(jaxAngebot.getAnzahlFerienwochenSommerferien());
+		angebot.setAnzahlTage(jaxAngebot.getAnzahlTage());
+		angebot.setAnzahlStundenProBetreuungstag(jaxAngebot.getAnzahlStundenProBetreuungstag());
+		angebot.setBetreuungErfolgtTagsueber(jaxAngebot.getBetreuungErfolgtTagsueber());
+		angebot.setBemerkungenOeffnungszeiten(jaxAngebot.getBemerkungenOeffnungszeiten());
 
-		if (angebot.getFinanziellBeteiligteGemeinden() != null) {
-			Set<Gemeinde> gemeinden = gemeindeListToEntity(angebot.getFinanziellBeteiligteGemeinden());
-			ferienbetreuungAngaben.setFinanziellBeteiligteGemeinden(gemeinden);
+		if (jaxAngebot.getFinanziellBeteiligteGemeinden() != null) {
+			Set<Gemeinde> gemeinden = gemeindeListToEntity(jaxAngebot.getFinanziellBeteiligteGemeinden());
+			angebot.setFinanziellBeteiligteGemeinden(gemeinden);
 		} else {
-			ferienbetreuungAngaben.setFinanziellBeteiligteGemeinden(Collections.emptySet());
+			angebot.setFinanziellBeteiligteGemeinden(Collections.emptySet());
 		}
 
-		ferienbetreuungAngaben.setGemeindeFuehrtAngebotSelber(angebot.getGemeindeFuehrtAngebotSelber());
-		ferienbetreuungAngaben.setGemeindeBeauftragtExterneAnbieter(angebot.getGemeindeBeauftragtExterneAnbieter());
-		ferienbetreuungAngaben.setAngebotVereineUndPrivateIntegriert(angebot.getAngebotVereineUndPrivateIntegriert());
-		ferienbetreuungAngaben.setBemerkungenKooperation(angebot.getBemerkungenKooperation());
-		ferienbetreuungAngaben.setLeitungDurchPersonMitAusbildung(angebot.getLeitungDurchPersonMitAusbildung());
-		ferienbetreuungAngaben.setBetreuungDurchPersonenMitErfahrung(angebot.getBetreuungDurchPersonenMitErfahrung());
-		ferienbetreuungAngaben.setAnzahlKinderAngemessen(angebot.getAnzahlKinderAngemessen());
-		ferienbetreuungAngaben.setBetreuungsschluessel(angebot.getBetreuungsschluessel());
-		ferienbetreuungAngaben.setBemerkungenPersonal(angebot.getBemerkungenPersonal());
-		ferienbetreuungAngaben.setFixerTarifKinderDerGemeinde(angebot.getFixerTarifKinderDerGemeinde());
-		ferienbetreuungAngaben.setEinkommensabhaengigerTarifKinderDerGemeinde(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde());
-		ferienbetreuungAngaben.setTagesschuleTarifGiltFuerFerienbetreuung(angebot.getTagesschuleTarifGiltFuerFerienbetreuung());
-		ferienbetreuungAngaben.setFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(angebot.getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet());
-		ferienbetreuungAngaben.setKinderAusAnderenGemeindenZahlenAnderenTarif(angebot.getKinderAusAnderenGemeindenZahlenAnderenTarif());
-		ferienbetreuungAngaben.setBemerkungenTarifsystem(angebot.getBemerkungenTarifsystem());
+		angebot.setGemeindeFuehrtAngebotSelber(jaxAngebot.getGemeindeFuehrtAngebotSelber());
+		angebot.setGemeindeBeauftragtExterneAnbieter(jaxAngebot.getGemeindeBeauftragtExterneAnbieter());
+		angebot.setAngebotVereineUndPrivateIntegriert(jaxAngebot.getAngebotVereineUndPrivateIntegriert());
+		angebot.setBemerkungenKooperation(jaxAngebot.getBemerkungenKooperation());
+		angebot.setLeitungDurchPersonMitAusbildung(jaxAngebot.getLeitungDurchPersonMitAusbildung());
+		angebot.setBetreuungDurchPersonenMitErfahrung(jaxAngebot.getBetreuungDurchPersonenMitErfahrung());
+		angebot.setAnzahlKinderAngemessen(jaxAngebot.getAnzahlKinderAngemessen());
+		angebot.setBetreuungsschluessel(jaxAngebot.getBetreuungsschluessel());
+		angebot.setBemerkungenPersonal(jaxAngebot.getBemerkungenPersonal());
+		angebot.setFixerTarifKinderDerGemeinde(jaxAngebot.getFixerTarifKinderDerGemeinde());
+		angebot.setEinkommensabhaengigerTarifKinderDerGemeinde(jaxAngebot.getEinkommensabhaengigerTarifKinderDerGemeinde());
+		angebot.setTagesschuleTarifGiltFuerFerienbetreuung(jaxAngebot.getTagesschuleTarifGiltFuerFerienbetreuung());
+		angebot.setFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(jaxAngebot.getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet());
+		angebot.setKinderAusAnderenGemeindenZahlenAnderenTarif(jaxAngebot.getKinderAusAnderenGemeindenZahlenAnderenTarif());
+		angebot.setBemerkungenTarifsystem(jaxAngebot.getBemerkungenTarifsystem());
 	}
 
 	private void ferienbetreuungAngabenNutzungToEntity(
-		@Nonnull JaxFerienbetreuungAngabenNutzung nutzung,
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben
+		@Nonnull JaxFerienbetreuungAngabenNutzung jaxNutzung,
+		@Nonnull FerienbetreuungAngabenNutzung nutzung
 	) {
-		ferienbetreuungAngaben.setAnzahlBetreuungstageKinderBern(nutzung.getAnzahlBetreuungstageKinderBern());
-		ferienbetreuungAngaben.setBetreuungstageKinderDieserGemeinde(nutzung.getBetreuungstageKinderDieserGemeinde());
-		ferienbetreuungAngaben.setBetreuungstageKinderDieserGemeindeSonderschueler(nutzung.getBetreuungstageKinderDieserGemeindeSonderschueler());
-		ferienbetreuungAngaben.setDavonBetreuungstageKinderAndererGemeinden(nutzung.getDavonBetreuungstageKinderAndererGemeinden());
-		ferienbetreuungAngaben.setDavonBetreuungstageKinderAndererGemeindenSonderschueler(nutzung.getDavonBetreuungstageKinderAndererGemeindenSonderschueler());
-		ferienbetreuungAngaben.setAnzahlBetreuteKinder(nutzung.getAnzahlBetreuteKinder());
-		ferienbetreuungAngaben.setAnzahlBetreuteKinderSonderschueler(nutzung.getAnzahlBetreuteKinderSonderschueler());
-		ferienbetreuungAngaben.setAnzahlBetreuteKinder1Zyklus(nutzung.getAnzahlBetreuteKinder1Zyklus());
-		ferienbetreuungAngaben.setAnzahlBetreuteKinder2Zyklus(nutzung.getAnzahlBetreuteKinder2Zyklus());
-		ferienbetreuungAngaben.setAnzahlBetreuteKinder3Zyklus(nutzung.getAnzahlBetreuteKinder3Zyklus());
+		nutzung.setAnzahlBetreuungstageKinderBern(jaxNutzung.getAnzahlBetreuungstageKinderBern());
+		nutzung.setBetreuungstageKinderDieserGemeinde(jaxNutzung.getBetreuungstageKinderDieserGemeinde());
+		nutzung.setBetreuungstageKinderDieserGemeindeSonderschueler(jaxNutzung.getBetreuungstageKinderDieserGemeindeSonderschueler());
+		nutzung.setDavonBetreuungstageKinderAndererGemeinden(jaxNutzung.getDavonBetreuungstageKinderAndererGemeinden());
+		nutzung.setDavonBetreuungstageKinderAndererGemeindenSonderschueler(jaxNutzung.getDavonBetreuungstageKinderAndererGemeindenSonderschueler());
+		nutzung.setAnzahlBetreuteKinder(jaxNutzung.getAnzahlBetreuteKinder());
+		nutzung.setAnzahlBetreuteKinderSonderschueler(jaxNutzung.getAnzahlBetreuteKinderSonderschueler());
+		nutzung.setAnzahlBetreuteKinder1Zyklus(jaxNutzung.getAnzahlBetreuteKinder1Zyklus());
+		nutzung.setAnzahlBetreuteKinder2Zyklus(jaxNutzung.getAnzahlBetreuteKinder2Zyklus());
+		nutzung.setAnzahlBetreuteKinder3Zyklus(jaxNutzung.getAnzahlBetreuteKinder3Zyklus());
 	}
 
 	private void ferienbetreuungAngabenKostenEinnahmenToEntity(
-		@Nonnull JaxFerienbetreuungAngabenKostenEinnahmen kostenEinnahmen,
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben
+		@Nonnull JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
 	) {
-		ferienbetreuungAngaben.setPersonalkosten(kostenEinnahmen.getPersonalkosten());
-		ferienbetreuungAngaben.setPersonalkostenLeitungAdmin(kostenEinnahmen.getPersonalkostenLeitungAdmin());
-		ferienbetreuungAngaben.setSachkosten(kostenEinnahmen.getSachkosten());
-		ferienbetreuungAngaben.setVerpflegungskosten(kostenEinnahmen.getVerpflegungskosten());
-		ferienbetreuungAngaben.setWeitereKosten(kostenEinnahmen.getWeitereKosten());
-		ferienbetreuungAngaben.setBemerkungenKosten(kostenEinnahmen.getBemerkungenKosten());
-		ferienbetreuungAngaben.setElterngebuehren(kostenEinnahmen.getElterngebuehren());
-		ferienbetreuungAngaben.setWeitereEinnahmen(kostenEinnahmen.getWeitereEinnahmen());
+		kostenEinnahmen.setPersonalkosten(jaxKostenEinnahmen.getPersonalkosten());
+		kostenEinnahmen.setPersonalkostenLeitungAdmin(jaxKostenEinnahmen.getPersonalkostenLeitungAdmin());
+		kostenEinnahmen.setSachkosten(jaxKostenEinnahmen.getSachkosten());
+		kostenEinnahmen.setVerpflegungskosten(jaxKostenEinnahmen.getVerpflegungskosten());
+		kostenEinnahmen.setWeitereKosten(jaxKostenEinnahmen.getWeitereKosten());
+		kostenEinnahmen.setBemerkungenKosten(jaxKostenEinnahmen.getBemerkungenKosten());
+		kostenEinnahmen.setElterngebuehren(jaxKostenEinnahmen.getElterngebuehren());
+		kostenEinnahmen.setWeitereEinnahmen(jaxKostenEinnahmen.getWeitereEinnahmen());
 	}
 
 	@Nonnull
@@ -249,16 +265,28 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(ferienbetreuungAngaben, jaxFerienbetreuungAngaben);
 
 		// stammdaten
-		ferienbetreuungAngabenStammdatenToJax(ferienbetreuungAngaben, jaxFerienbetreuungAngaben);
+		JaxFerienbetreuungAngabenStammdaten jaxStammdaten = ferienbetreuungAngabenStammdatenToJax(
+			ferienbetreuungAngaben.getFerienbetreuungAngabenStammdaten()
+		);
+		jaxFerienbetreuungAngaben.setStammdaten(jaxStammdaten);
 
 		// angebot
-		ferienbetreuungAngabenAngebotToJax(ferienbetreuungAngaben, jaxFerienbetreuungAngaben);
+		JaxFerienbetreuungAngabenAngebot angebot = ferienbetreuungAngabenAngebotToJax(
+			ferienbetreuungAngaben.getFerienbetreuungAngabenAngebot()
+		);
+		jaxFerienbetreuungAngaben.setAngebot(angebot);
 
 		// nutzung
-		ferienbetreuungAngabenNutzungToJax(ferienbetreuungAngaben, jaxFerienbetreuungAngaben);
+		JaxFerienbetreuungAngabenNutzung nutzung = ferienbetreuungAngabenNutzungToJax(
+			ferienbetreuungAngaben.getFerienbetreuungAngabenNutzung()
+		);
+		jaxFerienbetreuungAngaben.setNutzung(nutzung);
 
 		// kosten und einnahmen
-		ferienbetreuungAngabenKostenEinnahmenToJax(ferienbetreuungAngaben, jaxFerienbetreuungAngaben);
+		JaxFerienbetreuungAngabenKostenEinnahmen kostenEinnahmen = ferienbetreuungAngabenKostenEinnahmenToJax(
+			ferienbetreuungAngaben.getFerienbetreuungAngabenKostenEinnahmen()
+		);
+		jaxFerienbetreuungAngaben.setKostenEinnahmen(kostenEinnahmen);
 
 		// resultate
 		jaxFerienbetreuungAngaben.setGemeindebeitrag(ferienbetreuungAngaben.getGemeindebeitrag());
@@ -269,42 +297,40 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private void ferienbetreuungAngabenStammdatenToJax(
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben,
-		@Nonnull JaxFerienbetreuungAngaben jaxFerienbetreuungAngaben
+	private JaxFerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToJax(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
 		JaxFerienbetreuungAngabenStammdaten jaxStammdaten = new JaxFerienbetreuungAngabenStammdaten();
 
-		List<JaxGemeinde> jaxGemeinden = gemeindeListToJax(ferienbetreuungAngaben.getAmAngebotBeteiligteGemeinden());
+		List<JaxGemeinde> jaxGemeinden = gemeindeListToJax(stammdaten.getAmAngebotBeteiligteGemeinden());
 
 		jaxStammdaten.setAmAngebotBeteiligteGemeinden(jaxGemeinden);
-		jaxStammdaten.setTraegerschaft(ferienbetreuungAngaben.getTraegerschaft());
-		if (ferienbetreuungAngaben.getStammdatenAdresse() != null) {
-			jaxStammdaten.setStammdatenAdresse(adresseToJAX(ferienbetreuungAngaben.getStammdatenAdresse()));
+		jaxStammdaten.setTraegerschaft(stammdaten.getTraegerschaft());
+		if (stammdaten.getStammdatenAdresse() != null) {
+			jaxStammdaten.setStammdatenAdresse(adresseToJAX(stammdaten.getStammdatenAdresse()));
 		}
-		jaxStammdaten.setStammdatenKontaktpersonVorname(ferienbetreuungAngaben.getStammdatenKontaktpersonVorname());
-		jaxStammdaten.setStammdatenKontaktpersonNachname(ferienbetreuungAngaben.getStammdatenKontaktpersonNachname());
-		jaxStammdaten.setStammdatenKontaktpersonFunktion(ferienbetreuungAngaben.getStammdatenKontaktpersonFunktion());
-		jaxStammdaten.setStammdatenKontaktpersonTelefon(ferienbetreuungAngaben.getStammdatenKontaktpersonTelefon());
-		jaxStammdaten.setStammdatenKontaktpersonEmail(ferienbetreuungAngaben.getStammdatenKontaktpersonEmail());
-		if (ferienbetreuungAngaben.getAuszahlungsdaten() != null) {
-			jaxStammdaten.setIban(ferienbetreuungAngaben.getAuszahlungsdaten().getIban().getIban());
-			jaxStammdaten.setKontoinhaber(ferienbetreuungAngaben.getAuszahlungsdaten().getKontoinhaber());
-			if (ferienbetreuungAngaben.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
+		jaxStammdaten.setStammdatenKontaktpersonVorname(stammdaten.getStammdatenKontaktpersonVorname());
+		jaxStammdaten.setStammdatenKontaktpersonNachname(stammdaten.getStammdatenKontaktpersonNachname());
+		jaxStammdaten.setStammdatenKontaktpersonFunktion(stammdaten.getStammdatenKontaktpersonFunktion());
+		jaxStammdaten.setStammdatenKontaktpersonTelefon(stammdaten.getStammdatenKontaktpersonTelefon());
+		jaxStammdaten.setStammdatenKontaktpersonEmail(stammdaten.getStammdatenKontaktpersonEmail());
+		if (stammdaten.getAuszahlungsdaten() != null) {
+			jaxStammdaten.setIban(stammdaten.getAuszahlungsdaten().getIban().getIban());
+			jaxStammdaten.setKontoinhaber(stammdaten.getAuszahlungsdaten().getKontoinhaber());
+			if (stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
 				jaxStammdaten.setAdresseKontoinhaber(
-					adresseToJAX(ferienbetreuungAngaben.getAuszahlungsdaten().getAdresseKontoinhaber())
+					adresseToJAX(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber())
 				);
 			}
 		}
-		jaxStammdaten.setVermerkAuszahlung(ferienbetreuungAngaben.getVermerkAuszahlung());
+		jaxStammdaten.setVermerkAuszahlung(stammdaten.getVermerkAuszahlung());
 
-		jaxFerienbetreuungAngaben.setStammdaten(jaxStammdaten);
+		return jaxStammdaten;
 	}
 
 	@Nonnull
-	private void ferienbetreuungAngabenAngebotToJax(
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben,
-		@Nonnull JaxFerienbetreuungAngaben jaxFerienbetreuungAngaben
+	private JaxFerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebotToJax(
+		@Nonnull FerienbetreuungAngabenAngebot ferienbetreuungAngaben
 	) {
 		JaxFerienbetreuungAngabenAngebot jaxAngebot = new JaxFerienbetreuungAngabenAngebot();
 		jaxAngebot.setAngebot(ferienbetreuungAngaben.getAngebot());
@@ -343,13 +369,12 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setKinderAusAnderenGemeindenZahlenAnderenTarif(ferienbetreuungAngaben.getKinderAusAnderenGemeindenZahlenAnderenTarif());
 		jaxAngebot.setBemerkungenTarifsystem(ferienbetreuungAngaben.getBemerkungenTarifsystem());
 
-		jaxFerienbetreuungAngaben.setAngebot(jaxAngebot);
+		return jaxAngebot;
 	}
 
 	@Nonnull
-	private void ferienbetreuungAngabenNutzungToJax(
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben,
-		@Nonnull JaxFerienbetreuungAngaben jaxFerienbetreuungAngaben
+	private JaxFerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungToJax(
+		@Nonnull FerienbetreuungAngabenNutzung ferienbetreuungAngaben
 	) {
 		JaxFerienbetreuungAngabenNutzung jaxNutzung = new JaxFerienbetreuungAngabenNutzung();
 		jaxNutzung.setAnzahlBetreuungstageKinderBern(ferienbetreuungAngaben.getAnzahlBetreuungstageKinderBern());
@@ -363,13 +388,12 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxNutzung.setAnzahlBetreuteKinder2Zyklus(ferienbetreuungAngaben.getAnzahlBetreuteKinder2Zyklus());
 		jaxNutzung.setAnzahlBetreuteKinder3Zyklus(ferienbetreuungAngaben.getAnzahlBetreuteKinder3Zyklus());
 
-		jaxFerienbetreuungAngaben.setNutzung(jaxNutzung);
+		return jaxNutzung;
 	}
 
 	@Nonnull
-	private void ferienbetreuungAngabenKostenEinnahmenToJax(
-		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben,
-		@Nonnull JaxFerienbetreuungAngaben jaxFerienbetreuungAngaben
+	private JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenToJax(
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngaben
 	) {
 		JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen = new JaxFerienbetreuungAngabenKostenEinnahmen();
 		jaxKostenEinnahmen.setPersonalkosten(ferienbetreuungAngaben.getPersonalkosten());
@@ -381,7 +405,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxKostenEinnahmen.setElterngebuehren(ferienbetreuungAngaben.getElterngebuehren());
 		jaxKostenEinnahmen.setWeitereEinnahmen(ferienbetreuungAngaben.getWeitereEinnahmen());
 
-		jaxFerienbetreuungAngaben.setKostenEinnahmen(jaxKostenEinnahmen);
+		return jaxKostenEinnahmen;
 	}
 
 	@Nonnull

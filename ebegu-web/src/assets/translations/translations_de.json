@@ -2316,5 +2316,6 @@
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Kosten und Einnahmen",
     "FERIENBETREUUNG_UPLOAD": "Upload",
     "FERIENBETREUUNG_ABSCHLUSS": "Abschluss",
+    "FERIENBETREUUNG_TRAEGERSCHAFT": "Trägerschaft des Ferienbetreuungsangebots",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
