@@ -430,6 +430,41 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		return persistence.persist(fallContainer);
 	}
+
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
+		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
+
+		Preconditions.checkState(
+			fallContainer.isInBearbeitungGemeinde(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+		);
+
+		LastenausgleichTagesschuleAngabenGemeinde angaben;
+
+		if (fallContainer.isAtLeastInBearbeitungKanton()) {
+			Preconditions.checkState(
+				fallContainer.getAngabenKorrektur() != null,
+				"angabenKorrektur must not be null"
+			);
+			angaben = fallContainer.getAngabenKorrektur();
+		} else {
+			Preconditions.checkState(
+				fallContainer.getAngabenDeklaration() != null,
+				"angabenDeklaration must not be null"
+			);
+			angaben = fallContainer.getAngabenDeklaration();
+		}
+
+		Preconditions.checkState(
+			angaben.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
+			"LastenausgleichTagesschuleAngabenGemeinde muss im Status ABGESCHLOSSEN sein"
+		);
+
+		angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+
+		return persistence.persist(fallContainer);
+	}
 }
 
 

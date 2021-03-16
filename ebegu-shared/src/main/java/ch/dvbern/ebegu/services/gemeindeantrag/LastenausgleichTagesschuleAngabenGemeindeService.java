@@ -111,4 +111,7 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	 */
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
 		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+
+	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
+		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 }

@@ -121,4 +121,13 @@ export class LastenausgleichTSService {
                     new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
                     result)));
     }
+
+    public falscheAngaben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        this.http.put(
+            `${this.API_BASE_URL}/falsche-angaben`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+            new TSLastenausgleichTagesschuleAngabenGemeindeContainer(), result))
+        ).subscribe(reopenendContainer => this.next(reopenendContainer));
+    }
 }

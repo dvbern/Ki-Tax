@@ -341,4 +341,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		return angabenKorrektur != null
 			&& angabenKorrektur.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
 	}
+
+	public boolean isInBearbeitungGemeinde() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE;
+	}
 }

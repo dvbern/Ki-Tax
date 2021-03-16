@@ -82,6 +82,7 @@
                     class=""
                     name="bedarfBeiElternAbgeklaert"
                     horizontal
+                    [disabled]="angabenForm.get('bedarfBeiElternAbgeklaert').disabled"
                     formControlName="bedarfBeiElternAbgeklaert">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -109,6 +110,7 @@
                     class=""
                     name="angebotFuerFerienbetreuungVorhanden"
                     horizontal
+                    [disabled]="angabenForm.get('angebotFuerFerienbetreuungVorhanden').disabled"
                     formControlName="angebotFuerFerienbetreuungVorhanden">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -136,6 +138,7 @@
                     class=""
                     name="angebotVerfuegbarFuerAlleSchulstufen"
                     horizontal
+                    [disabled]="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').disabled"
                     formControlName="angebotVerfuegbarFuerAlleSchulstufen"
                     (change)="deleteBegruendung($event)">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -507,6 +510,7 @@
                     class=""
                     name="betreuungsstundenDokumentiertUndUeberprueft"
                     horizontal
+                    [disabled]="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').disabled"
                     formControlName="betreuungsstundenDokumentiertUndUeberprueft">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -534,6 +538,7 @@
                     class=""
                     name="elterngebuehrenGemaessVerordnungBerechnet"
                     horizontal
+                    [disabled]="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').disabled"
                     formControlName="elterngebuehrenGemaessVerordnungBerechnet">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -567,6 +572,7 @@
                     class=""
                     name="einkommenElternBelegt"
                     horizontal
+                    [disabled]="angabenForm.get('einkommenElternBelegt').disabled"
                     formControlName="einkommenElternBelegt">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -594,6 +600,7 @@
                     class=""
                     name="maximalTarif"
                     horizontal
+                    [disabled]="angabenForm.get('maximalTarif').disabled"
                     formControlName="maximalTarif">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -623,6 +630,7 @@
                     class=""
                     name="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal"
                     horizontal
+                    [disabled]="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').disabled"
                     formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -650,6 +658,7 @@
                     class=""
                     name="ausbildungenMitarbeitendeBelegt"
                     horizontal
+                    [disabled]="angabenForm.get('ausbildungenMitarbeitendeBelegt').disabled"
                     formControlName="ausbildungenMitarbeitendeBelegt">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -697,6 +706,13 @@
         </div>
 
     </form>
+
+    <div class="row" *ngIf="falscheAngabenVisible()">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
+
 
 </div>
 
