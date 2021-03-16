@@ -53,7 +53,7 @@ export class GemeindeAngabenComponent implements OnInit {
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public formularInitForm: FormGroup;
     private subscription: Subscription;
-    public formFreigebenTriggered = false;
+    public formValidationActive = false;
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
@@ -194,7 +194,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.disable();
         }
 
-        if (this.triggerValidationOnInit) {
+        if (this.formValidationActive) {
             this.triggerFormValidation();
         }
     }
@@ -307,7 +307,8 @@ export class GemeindeAngabenComponent implements OnInit {
                 .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
-            this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').updateValueAndValidity({emitEvent: false});
+            this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
+                .updateValueAndValidity({emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
@@ -409,9 +410,6 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onAngabenFormSubmit(): void {
-        if (!this.angabenForm.valid) {
-            return;
-        }
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
@@ -427,7 +425,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
         if (!this.angabenForm.valid) {
             this.errorService.addMesageAsError(
-                this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN')
+                this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
             );
         }
 
@@ -438,33 +436,40 @@ export class GemeindeAngabenComponent implements OnInit {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
         }
         this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
-            .subscribe((container: TSLastenausgleichTagesschuleAngabenGemeindeContainer) => {
-                if (container.isInBearbeitungGemeinde() && container.angabenDeklaration.status ===
-                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ||
-                    container.isAtLeastInBearbeitungKanton() && container.angabenKorrektur.status ===
-                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
-                    this.triggerFormValidation();
+            .subscribe(this.handleSaveSuccess, this.handleSaveError);
+    }
+
+    private handleSaveSuccess(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+            if (container.isInBearbeitungGemeinde() && container.angabenDeklaration.status ===
+                TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ||
+                container.isAtLeastInBearbeitungKanton() && container.angabenKorrektur.status ===
+                TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
+                this.triggerFormValidation();
+                this.errorService.addMesageAsError(this.translateService.instant(
+                    'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
+            }
+            this.wizardRS.updateSteps(this.WIZARD_TYPE, this.lastenausgleichID);
+    }
+
+    private handleSaveError(error: any): void {
+            // tslint:disable-next-line:early-exit
+            if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
+                if (error.error.includes('institution')) {
+                    this.errorService.addMesageAsError(this.translateService.instant(
+                        'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
+                } else if (error.error.includes('incomplete')) {
                     this.errorService.addMesageAsError(this.translateService.instant(
                         'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
-                }
-                this.wizardRS.updateSteps(this.WIZARD_TYPE, this.lastenausgleichID);
-            }, error => {
-                // tslint:disable-next-line:early-exit
-                if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-                    if (error.error.includes('institution')) {
-                        this.errorService.addMesageAsError(this.translateService.instant(
-                            'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-                    } else {
-                        this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
-                    }
                 } else {
                     this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
                 }
-            });
+            } else {
+                this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
+            }
     }
 
     public triggerFormValidation(): void {
-        this.formFreigebenTriggered = true;
+        this.formValidationActive = true;
         this.enableFormValidation();
         for (const key in this.angabenForm.controls) {
             if (this.angabenForm.get(key) !== null) {

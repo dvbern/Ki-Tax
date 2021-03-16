@@ -71,7 +71,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('bedarfBeiElternAbgeklaert').errors}"
                    id="bedarfBeiElternAbgeklaert-radio-group">
                 {{'LATS_BEDARF_BEI_ELTERN_ABGEKLAERT' | translate}}
             </label>
@@ -97,7 +97,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
                    id="angebotFuerFerienbetreuungVorhanden-radio-group">
                 {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             </label>
@@ -124,7 +124,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').errors}"
                    id="angebotVerfuegbarFuerAlleSchulstufen-radio-group">
                 {{'LATS_ANGEBOT_VERFUEGBAR_ALLE_SCHULSTUFEN' | translate}}
             </label>
@@ -153,7 +153,7 @@
         <div *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
             <dv-input-container-x>
                 <mat-form-field floatLabel="always" class="no-margin-left" required>
-                    <label required [ngClass]="{'label-required-error': formFreigebenTriggered &&
+                    <label required [ngClass]="{'label-required-error': formValidationActive &&
                                                         angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
                                                         angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
                         {{'LATS_ANGEBOT_NICHT_VERFUEGBAR_ALLE_SCHULSTUFEN_BEGRUENDUNG' | translate}}
@@ -178,7 +178,7 @@
         <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                 {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
                 <dv-tooltip [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
             </label>
@@ -188,10 +188,10 @@
                 <input matInput
                        formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
@@ -204,7 +204,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
                 {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
                 <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
             </label>
@@ -215,10 +215,10 @@
                 <input matInput
                        formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
@@ -231,7 +231,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors}">
+            <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors}">
                 {{'LATS_LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -241,14 +241,14 @@
                        formControlName="lastenausgleichberechtigteBetreuungsstunden"
                        [readonly]="true"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError"
                            translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN
                 </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
                    >
                 {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
             </label>
@@ -257,13 +257,13 @@
                 <input matInput
                        formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
                            translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
                 </mat-error>
                 <dv-bisher-x
@@ -282,23 +282,23 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
                 {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
             </label>
             <mat-form-field floatLabel="always">
                 <input matInput
                        formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
                            translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError"
                            translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN_STUNDEN
                 </mat-error>
                 <dv-bisher-x
@@ -316,7 +316,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('normlohnkostenBetreuungBerechnet').errors}">
+            <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('normlohnkostenBetreuungBerechnet').errors}">
                 {{'LATS_NORMLOHNKOSTEN_BETREUUNG' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -326,16 +326,16 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
                 {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
@@ -350,7 +350,7 @@
         <mat-divider></mat-divider>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
+            <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
                 {{'LATS_LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -363,16 +363,16 @@
         <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('gesamtKostenTagesschule').errors}">
                 {{'LATS_GESAMTKOSTEN_TAGESSCHULE' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <input matInput formControlName="gesamtKostenTagesschule" class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('gesamtKostenTagesschule').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
@@ -395,16 +395,16 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einnnahmenVerpflegung').errors}">
                 {{'LATS_EINNAHMEN_VERPFLEGUNG' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <input matInput formControlName="einnnahmenVerpflegung" class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('einnnahmenVerpflegung').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
@@ -417,16 +417,16 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors}">
+            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
                 {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <input matInput formControlName="einnahmenSubventionenDritter" class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors?.required"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
+                <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
                 <dv-bisher-x
@@ -495,7 +495,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').errors}"
                    id="betreuungsstundenDokumentiertUndUeberprueft-radio-group">
                 {{'LATS_BETREUUNGSSTUNDEN_DOKUMENTIERT_UEBERPRUEFT' | translate}}
             </label>
@@ -522,7 +522,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').errors}"
                    id="elterngebuehrenGemaessVerordnungBerechnet-radio-group">
                 {{'LATS_ELTERNGEBUEHREN_VERORDNUNG_BERECHNET' | translate}}
             </label>
@@ -555,7 +555,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('einkommenElternBelegt').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einkommenElternBelegt').errors}"
                    id="einkommenElternBelegt-radio-group">
                 {{'LATS_EINKOMMEN_ELTERN_BELEGT' | translate}}
             </label>
@@ -582,7 +582,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('maximalTarif').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('maximalTarif').errors}"
                    id="maximalTarif-radio-group">
                 {{'LATS_EINKOMMEN_ELTERN_MAXIMALTARIF' | translate}}
             </label>
@@ -611,7 +611,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').errors}"
                    id="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal-radio-group">
                 {{'LATS_MNIDESTENS50_BETREUUNGSZEIT_AUSGEBILDETES_PERSONAL' | translate}}
             </label>
@@ -638,7 +638,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && angabenForm.get('ausbildungenMitarbeitendeBelegt').errors}"
+                   [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('ausbildungenMitarbeitendeBelegt').errors}"
                    id="ausbildungenMitarbeitendeBelegt-radio-group">
                 {{'LATS_AUSBILDUNG_MITARBEITENDE_BELEGT' | translate}}
             </label>
