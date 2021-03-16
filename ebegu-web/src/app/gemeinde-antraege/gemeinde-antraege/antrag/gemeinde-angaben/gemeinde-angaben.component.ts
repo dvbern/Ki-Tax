@@ -427,6 +427,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.errorService.addMesageAsError(
                 this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
             );
+            return;
         }
 
         // tslint:disable-next-line:max-line-length
