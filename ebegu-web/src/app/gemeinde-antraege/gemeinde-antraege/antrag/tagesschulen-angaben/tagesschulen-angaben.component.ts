@@ -139,16 +139,16 @@ export class TagesschulenAngabenComponent {
             [
                 this.form.get('anzahlEingeschriebeneKinder')
                     .valueChanges
-                    .pipe(startWith(angaben.anzahlEingeschriebeneKinder || 0)),
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinder || 0)),
                 this.form.get('anzahlEingeschriebeneKinderKindergarten')
                     .valueChanges
-                    .pipe(startWith(angaben.anzahlEingeschriebeneKinderKindergarten || 0)),
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderKindergarten || 0)),
                 this.form.get('anzahlEingeschriebeneKinderBasisstufe')
                     .valueChanges
-                    .pipe(startWith(angaben.anzahlEingeschriebeneKinderBasisstufe || 0)),
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderBasisstufe || 0)),
                 this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                     .valueChanges
-                    .pipe(startWith(angaben.anzahlEingeschriebeneKinderPrimarstufe || 0)),
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderPrimarstufe || 0)),
             ],
         ).subscribe(values => {
             this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
@@ -318,7 +318,7 @@ export class TagesschulenAngabenComponent {
     }
 
     public onFalscheAngaben(): void {
-        if(!this.gemeindeAntragContainer?.angabenDeklaration?.isInBearbeitung()) {
+        if (!this.gemeindeAntragContainer?.angabenDeklaration?.isInBearbeitung()) {
             this.errorService.addMesageAsError(this.translate.instant('LATS_FA_INSTI_NUR_WENN_GEMEINDE_OFFEN'));
         }
         this.tagesschulenAngabenRS.falscheAngaben(this.latsAngabenInstitutionContainer).subscribe(container => {
@@ -326,6 +326,8 @@ export class TagesschulenAngabenComponent {
             this.form = this.setupForm(container.angabenKorrektur);
             this.setupCalculation(container.angabenKorrektur);
             this.cd.markForCheck();
+        }, () => {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
         });
     }
 

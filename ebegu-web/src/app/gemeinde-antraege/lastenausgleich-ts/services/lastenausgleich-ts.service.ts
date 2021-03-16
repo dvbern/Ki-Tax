@@ -128,6 +128,7 @@ export class LastenausgleichTSService {
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).pipe(map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
             new TSLastenausgleichTagesschuleAngabenGemeindeContainer(), result))
-        ).subscribe(reopenendContainer => this.next(reopenendContainer));
+            // TODO: add proper error handling
+        ).subscribe(reopenendContainer => this.next(reopenendContainer), err => console.error(err));
     }
 }

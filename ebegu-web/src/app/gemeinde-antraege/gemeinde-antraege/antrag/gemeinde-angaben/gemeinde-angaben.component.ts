@@ -262,7 +262,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private plausibilisierungAddition(): ValidatorFn {
-        return (control: AbstractControl) => {
+        return control => {
             return parseFloat(this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value) ===
             parseFloat(this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value) +
             parseFloat(this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value) ? null : {
@@ -272,7 +272,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private plausibilisierungTageschulenStunden(): ValidatorFn {
-        return (control: AbstractControl) => {
+        return control => {
             const tagesschulenSum = this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
                 accumulator,
                 next,
@@ -521,7 +521,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onFalscheAngaben(): void {
-        return this.lastenausgleichTSService.falscheAngaben(this.lATSAngabenGemeindeContainer);
+        this.lastenausgleichTSService.falscheAngaben(this.lATSAngabenGemeindeContainer);
     }
 
     public falscheAngabenVisible(): boolean {

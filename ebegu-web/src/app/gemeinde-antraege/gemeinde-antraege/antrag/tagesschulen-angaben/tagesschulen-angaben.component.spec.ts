@@ -16,6 +16,7 @@
  */
 
 import {HttpClientModule} from '@angular/common/http';
+import {Directive, Input} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -39,6 +40,7 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
 const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+
 describe('TagesschulenAngabenComponent', () => {
     let component: TagesschulenAngabenComponent;
     let fixture: ComponentFixture<TagesschulenAngabenComponent>;

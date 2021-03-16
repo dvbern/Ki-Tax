@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../enums/TSRole';
 import {TSAbstractEntity} from '../TSAbstractEntity';
