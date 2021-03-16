@@ -42,7 +42,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -67,7 +67,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 			@Index(name = "IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id", columnList = "gemeinde_id"),
 		}
 	)
-	private Set<Gemeinde> amAngebotBeteiligteGemeinden = new HashSet<>();
+	private Set<BfsGemeinde> amAngebotBeteiligteGemeinden = new HashSet<>();
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -123,11 +123,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private String vermerkAuszahlung;
 
 	@Nonnull
-	public Set<Gemeinde> getAmAngebotBeteiligteGemeinden() {
+	public Set<BfsGemeinde> getAmAngebotBeteiligteGemeinden() {
 		return amAngebotBeteiligteGemeinden;
 	}
 
-	public void setAmAngebotBeteiligteGemeinden(@Nonnull Set<Gemeinde> amAngebotBeteiligteGemeinden) {
+	public void setAmAngebotBeteiligteGemeinden(@Nonnull Set<BfsGemeinde> amAngebotBeteiligteGemeinden) {
 		this.amAngebotBeteiligteGemeinden = amAngebotBeteiligteGemeinden;
 	}
 

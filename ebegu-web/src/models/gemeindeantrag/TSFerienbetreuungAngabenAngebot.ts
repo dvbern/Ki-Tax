@@ -17,7 +17,7 @@
 
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSAdresse} from '../TSAdresse';
-import {TSGemeinde} from '../TSGemeinde';
+import {TSBfsGemeinde} from '../TSBfsGemeinde';
 
 export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
 
@@ -33,7 +33,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _anzahlStundenProBetreuungstag: number;
     private _betreuungErfolgtTagsueber: boolean;
     private _bemerkungenOeffnungszeiten: string;
-    private _finanziellBeteiligteGemeinden: TSGemeinde[];
+    private _finanziellBeteiligteGemeinden: TSBfsGemeinde[];
     private _gemeindeFuehrtAngebotSelber: boolean;
     private _gemeindeBeauftragtExterneAnbieter: boolean;
     private _angebotVereineUndPrivateIntegriert: boolean;
@@ -148,11 +148,11 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
         this._bemerkungenOeffnungszeiten = value;
     }
 
-    public get finanziellBeteiligteGemeinden(): TSGemeinde[] {
+    public get finanziellBeteiligteGemeinden(): TSBfsGemeinde[] {
         return this._finanziellBeteiligteGemeinden;
     }
 
-    public set finanziellBeteiligteGemeinden(value: TSGemeinde[]) {
+    public set finanziellBeteiligteGemeinden(value: TSBfsGemeinde[]) {
         this._finanziellBeteiligteGemeinden = value;
     }
 

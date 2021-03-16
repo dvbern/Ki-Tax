@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.api.converter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
@@ -37,7 +36,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdat
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -45,8 +44,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -121,7 +119,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
 		if (jaxStammdaten.getAmAngebotBeteiligteGemeinden() != null) {
-			Set<Gemeinde> gemeinden = gemeindeListToEntity(jaxStammdaten.getAmAngebotBeteiligteGemeinden());
+			Set<BfsGemeinde> gemeinden = jaxGemeindeListToEntity(jaxStammdaten.getAmAngebotBeteiligteGemeinden());
 			stammdaten.setAmAngebotBeteiligteGemeinden(gemeinden);
 		} else {
 			stammdaten.setAmAngebotBeteiligteGemeinden(Collections.emptySet());
@@ -185,7 +183,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		angebot.setBemerkungenOeffnungszeiten(jaxAngebot.getBemerkungenOeffnungszeiten());
 
 		if (jaxAngebot.getFinanziellBeteiligteGemeinden() != null) {
-			Set<Gemeinde> gemeinden = gemeindeListToEntity(jaxAngebot.getFinanziellBeteiligteGemeinden());
+			Set<BfsGemeinde> gemeinden = jaxGemeindeListToEntity(jaxAngebot.getFinanziellBeteiligteGemeinden());
 			angebot.setFinanziellBeteiligteGemeinden(gemeinden);
 		} else {
 			angebot.setFinanziellBeteiligteGemeinden(Collections.emptySet());
@@ -302,7 +300,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	) {
 		JaxFerienbetreuungAngabenStammdaten jaxStammdaten = new JaxFerienbetreuungAngabenStammdaten();
 
-		List<JaxGemeinde> jaxGemeinden = gemeindeListToJax(stammdaten.getAmAngebotBeteiligteGemeinden());
+		List<JaxBfsGemeinde> jaxGemeinden = bfsGemeindeListToJax(stammdaten.getAmAngebotBeteiligteGemeinden());
 
 		jaxStammdaten.setAmAngebotBeteiligteGemeinden(jaxGemeinden);
 		jaxStammdaten.setTraegerschaft(stammdaten.getTraegerschaft());
@@ -350,7 +348,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setBetreuungErfolgtTagsueber(ferienbetreuungAngaben.getBetreuungErfolgtTagsueber());
 		jaxAngebot.setBemerkungenOeffnungszeiten(ferienbetreuungAngaben.getBemerkungenOeffnungszeiten());
 
-		List<JaxGemeinde> jaxGemeinden = gemeindeListToJax(ferienbetreuungAngaben.getFinanziellBeteiligteGemeinden());
+		List<JaxBfsGemeinde> jaxGemeinden = bfsGemeindeListToJax(ferienbetreuungAngaben.getFinanziellBeteiligteGemeinden());
 		jaxAngebot.setFinanziellBeteiligteGemeinden(jaxGemeinden);
 
 		jaxAngebot.setGemeindeFuehrtAngebotSelber(ferienbetreuungAngaben.getGemeindeFuehrtAngebotSelber());
@@ -423,25 +421,26 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private Set<Gemeinde> gemeindeListToEntity(@Nonnull List<JaxGemeinde> gemeindeList) {
-		return gemeindeList
+	private List<JaxBfsGemeinde> bfsGemeindeListToJax(@Nonnull Set<BfsGemeinde> gemeindeSet) {
+		return gemeindeSet
 			.stream()
-			.map(g -> {
-				Objects.requireNonNull(g.getId());
-				return gemeindeService.findGemeinde(g.getId()).orElseThrow(() -> new EbeguRuntimeException(
-					"findGemeinde",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					g.getId()));
-			})
-			.collect(Collectors.toSet());
+			.map(this::gemeindeBfsToJax)
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private List<JaxGemeinde> gemeindeListToJax(@Nonnull Set<Gemeinde> gemeindeSet) {
-		return gemeindeSet
-			.stream()
-			.map(this::gemeindeToJAX)
-			.collect(Collectors.toList());
+	private Set<BfsGemeinde> jaxGemeindeListToEntity(List<JaxBfsGemeinde> gemeinden) {
+		return gemeinden.stream()
+			.map(this::jaxBfsGemeindeToEntity)
+			.collect(Collectors.toSet());
+	}
+
+	// we don't want to overwrite properties from client
+	@Nonnull
+	private BfsGemeinde jaxBfsGemeindeToEntity(@Nonnull JaxBfsGemeinde bfsGemeinde) {
+		return gemeindeService.findBfsGemeinde(bfsGemeinde.getBfsNummer()).orElseThrow(() -> {
+			throw new EbeguEntityNotFoundException("jaxBfsGemeindeToEntity", bfsGemeinde.getBfsNummer());
+		});
 	}
 
 }

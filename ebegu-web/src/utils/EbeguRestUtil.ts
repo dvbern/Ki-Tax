@@ -928,6 +928,19 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    public bfsGemeindeListToRestObject(gemeinden: TSBfsGemeinde[]): any[] {
+        return gemeinden
+            ? gemeinden.map(item => this.bfsGemeindeToRestObject({}, item))
+            : [];
+    }
+
+    public bfsGemeindeToRestObject(restGemeinde: any, tsGemeinde: TSBfsGemeinde): any {
+        this.abstractEntityToRestObject(restGemeinde, tsGemeinde);
+        restGemeinde.name = tsGemeinde.name;
+        restGemeinde.bfsNummer = tsGemeinde.bfsNummer;
+        return restGemeinde;
+    }
+
     public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
@@ -4799,7 +4812,7 @@ export class EbeguRestUtil {
         }
         this.abstractEntityToRestObject(restStammdaten, stammdatenTS);
         restStammdaten.amAngebotBeteiligteGemeinden =
-            this.gemeindeListToRestObject(stammdatenTS.amAngebotBeteiligteGemeinden);
+            this.bfsGemeindeListToRestObject(stammdatenTS.amAngebotBeteiligteGemeinden);
         restStammdaten.seitWannFerienbetreuungen = stammdatenTS.seitWannFerienbetreuungen;
         restStammdaten.traegerschaft = stammdatenTS.traegerschaft;
         restStammdaten.stammdatenAdresse = this.adresseToRestObject({}, stammdatenTS.stammdatenAdresse);
@@ -4833,7 +4846,7 @@ export class EbeguRestUtil {
         restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
         restAngebot.finanziellBeteiligteGemeinden =
-            this.gemeindeListToRestObject(angebotTS.finanziellBeteiligteGemeinden);
+            this.bfsGemeindeListToRestObject(angebotTS.finanziellBeteiligteGemeinden);
         restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
         restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
         restAngebot.angebotVereineUndPrivateIntegriert = angebotTS.angebotVereineUndPrivateIntegriert;
@@ -4949,7 +4962,7 @@ export class EbeguRestUtil {
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.amAngebotBeteiligteGemeinden =
-            this.parseGemeindeList(stammdatenFromServer.amAngebotBeteiligteGemeinden);
+            this.parseBfsGemeindeList(stammdatenFromServer.amAngebotBeteiligteGemeinden);
         stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
@@ -4986,7 +4999,7 @@ export class EbeguRestUtil {
         angebotTS.betreuungErfolgtTagsueber = angebotFromServer.betreuungErfolgtTagsueber;
         angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;
         angebotTS.finanziellBeteiligteGemeinden =
-            this.parseGemeindeList(angebotFromServer.finanziellBeteiligteGemeinden);
+            this.parseBfsGemeindeList(angebotFromServer.finanziellBeteiligteGemeinden);
         angebotTS.gemeindeFuehrtAngebotSelber = angebotFromServer.gemeindeFuehrtAngebotSelber;
         angebotTS.gemeindeBeauftragtExterneAnbieter = angebotFromServer.gemeindeBeauftragtExterneAnbieter;
         angebotTS.angebotVereineUndPrivateIntegriert = angebotFromServer.angebotVereineUndPrivateIntegriert;

@@ -40,7 +40,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -118,7 +118,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 			@Index(name = "IX_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id", columnList = "gemeinde_id"),
 		}
 	)
-	private Set<Gemeinde> finanziellBeteiligteGemeinden = new HashSet<>(); // Gibt es weitere Gemeinden, die sich finanziell am Angebot beteiligen, ohne an der Trägerschaft beteiligt zu sein? Welche?
+	private Set<BfsGemeinde> finanziellBeteiligteGemeinden = new HashSet<>(); // Gibt es weitere Gemeinden, die sich finanziell am Angebot beteiligen, ohne an der Trägerschaft beteiligt zu sein? Welche?
 
 	@Nullable
 	@Column()
@@ -292,11 +292,11 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Set<Gemeinde> getFinanziellBeteiligteGemeinden() {
+	public Set<BfsGemeinde> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nonnull Set<Gemeinde> finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nonnull Set<BfsGemeinde> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 

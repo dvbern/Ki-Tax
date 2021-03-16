@@ -23,14 +23,14 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 
 public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 4363557668421396679L;
 
 	@Nullable
-	private List<JaxGemeinde> amAngebotBeteiligteGemeinden;
+	private List<JaxBfsGemeinde> amAngebotBeteiligteGemeinden;
 
 	@Nullable
 	private String seitWannFerienbetreuungen;
@@ -70,11 +70,11 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 
 	@Nullable
-	public List<JaxGemeinde> getAmAngebotBeteiligteGemeinden() {
+	public List<JaxBfsGemeinde> getAmAngebotBeteiligteGemeinden() {
 		return amAngebotBeteiligteGemeinden;
 	}
 
-	public void setAmAngebotBeteiligteGemeinden(@Nullable List<JaxGemeinde> amAngebotBeteiligteGemeinden) {
+	public void setAmAngebotBeteiligteGemeinden(@Nullable List<JaxBfsGemeinde> amAngebotBeteiligteGemeinden) {
 		this.amAngebotBeteiligteGemeinden = amAngebotBeteiligteGemeinden;
 	}
 

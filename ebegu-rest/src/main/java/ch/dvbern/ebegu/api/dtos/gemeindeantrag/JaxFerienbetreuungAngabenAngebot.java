@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 
 public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
@@ -67,7 +67,7 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private String bemerkungenOeffnungszeiten;
 
 	@Nullable
-	private List<JaxGemeinde> finanziellBeteiligteGemeinden;
+	private List<JaxBfsGemeinde> finanziellBeteiligteGemeinden;
 
 	@Nullable
 	private Boolean gemeindeFuehrtAngebotSelber;
@@ -223,11 +223,11 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public List<JaxGemeinde> getFinanziellBeteiligteGemeinden() {
+	public List<JaxBfsGemeinde> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nullable List<JaxGemeinde> finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nullable List<JaxBfsGemeinde> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 
