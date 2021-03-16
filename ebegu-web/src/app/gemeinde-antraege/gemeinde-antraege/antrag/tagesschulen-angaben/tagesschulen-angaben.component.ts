@@ -214,7 +214,14 @@ export class TagesschulenAngabenComponent {
         this.formFreigebenTriggered = true;
         this.enableFormValidation();
 
-        if (!this.form.valid || !await this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT')) {
+        if (!this.form.valid) {
+            this.errorService.addMesageAsError(
+                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+            );
+            return;
+        }
+
+        if (!await this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT')) {
             return;
         }
 

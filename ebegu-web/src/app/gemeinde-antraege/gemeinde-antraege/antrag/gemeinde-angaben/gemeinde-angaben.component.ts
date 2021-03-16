@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService} from '@uirouter/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
@@ -59,7 +58,6 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp.LASTENAUSGLEICH_TS;
-    private readonly ROUTING_DELAY = 3500;
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -71,7 +69,6 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly translateService: TranslateService,
         private readonly settings: EinstellungRS,
         private readonly wizardRS: WizardStepXRS,
-        private readonly $state: StateService,
     ) {
     }
 
@@ -194,7 +191,8 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.disable();
         }
 
-        if (this.formValidationActive) {
+        if (this.formValidationActive || initialGemeindeAngaben?.status ===
+                TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
             this.triggerFormValidation();
         }
     }
@@ -441,32 +439,32 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private handleSaveSuccess(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
-            if (container.isInBearbeitungGemeinde() && container.angabenDeklaration.status ===
-                TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ||
-                container.isAtLeastInBearbeitungKanton() && container.angabenKorrektur.status ===
-                TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
-                this.triggerFormValidation();
-                this.errorService.addMesageAsError(this.translateService.instant(
-                    'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
-            }
-            this.wizardRS.updateSteps(this.WIZARD_TYPE, this.lastenausgleichID);
+        if (container.isInBearbeitungGemeinde() && container.angabenDeklaration.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ||
+            container.isAtLeastInBearbeitungKanton() && container.angabenKorrektur.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
+            this.triggerFormValidation();
+            this.errorService.addMesageAsError(this.translateService.instant(
+                'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
+        }
+        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.lastenausgleichID);
     }
 
     private handleSaveError(error: any): void {
-            // tslint:disable-next-line:early-exit
-            if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-                if (error.error.includes('institution')) {
-                    this.errorService.addMesageAsError(this.translateService.instant(
-                        'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-                } else if (error.error.includes('incomplete')) {
-                    this.errorService.addMesageAsError(this.translateService.instant(
-                        'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
-                } else {
-                    this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
-                }
+        // tslint:disable-next-line:early-exit
+        if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
+            if (error.error.includes('institution')) {
+                this.errorService.addMesageAsError(this.translateService.instant(
+                    'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
+            } else if (error.error.includes('incomplete')) {
+                this.errorService.addMesageAsError(this.translateService.instant(
+                    'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
             } else {
                 this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
             }
+        } else {
+            this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
+        }
     }
 
     public triggerFormValidation(): void {
