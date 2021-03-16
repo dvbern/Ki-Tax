@@ -320,6 +320,7 @@ export class TagesschulenAngabenComponent {
     public onFalscheAngaben(): void {
         if (!this.gemeindeAntragContainer?.angabenDeklaration?.isInBearbeitung()) {
             this.errorService.addMesageAsError(this.translate.instant('LATS_FA_INSTI_NUR_WENN_GEMEINDE_OFFEN'));
+            return;
         }
         this.tagesschulenAngabenRS.falscheAngaben(this.latsAngabenInstitutionContainer).subscribe(container => {
             this.latsAngabenInstitutionContainer = container;

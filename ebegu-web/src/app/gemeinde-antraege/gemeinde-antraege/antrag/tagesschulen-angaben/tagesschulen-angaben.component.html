@@ -63,7 +63,7 @@
         <div *ngIf="!angabenAusKibon">
             <dv-input-container-x>
                 <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
-                    {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit.gueltigAb.year()} }}
+                    {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit?.gueltigAb?.year()} }}
                     <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
                 </label>
                 <div class="flex-whitespace-item"></div>
