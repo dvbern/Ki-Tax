@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <form *ngIf="form" [formGroup]="form" class="tagesschule-angaben-wrapper" (ngSubmit)="onFormSubmit()">
 
         <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
 
@@ -501,6 +501,7 @@
         <div class="actions">
             <dv-loading-button
                 type="button"
+                [ngClass]="{'secondary': !actionButtonsDisabled()}"
                 *ngIf="canSeeSaveButton()"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFormSubmit()">

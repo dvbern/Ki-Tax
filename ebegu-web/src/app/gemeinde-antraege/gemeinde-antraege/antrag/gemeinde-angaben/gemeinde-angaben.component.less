@@ -36,14 +36,6 @@ textarea {
     // we need to leave space for the outline
     margin-left: 2px;
 }
-.actions {
-    display: flex;
-    justify-content: center;
-
-    & > dv-loading-button {
-        margin: 0 5px;
-    }
-}
 
 mat-divider {
     margin-bottom: 2.3rem;
@@ -55,4 +47,29 @@ mat-divider {
 
 .pointer-cursor {
     cursor: pointer;
+}
+
+.gemeinde-angaben-wrapper {
+
+    .dv-input-container {
+        margin-bottom: 3rem;
+    }
+
+
+    .actions {
+        display: flex;
+        justify-content: center;
+
+        & > dv-loading-button {
+            margin: 0 5px;
+        }
+
+        .secondary {
+            .dv-btn {
+                background-color: #cfcfcf;
+                color: black;
+            }
+        }
+    }
+
 }

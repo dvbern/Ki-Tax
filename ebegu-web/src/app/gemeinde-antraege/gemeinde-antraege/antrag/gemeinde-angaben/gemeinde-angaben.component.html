@@ -65,7 +65,7 @@
 
 <mat-divider *ngIf="angabenForm"></mat-divider>
 
-<form *ngIf="angabenForm" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
+<form *ngIf="angabenForm" class="gemeinde-angaben-wrapper" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
 
         <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
 
@@ -693,6 +693,7 @@
         <div class="actions">
             <dv-loading-button
                 type="button"
+                [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
                 <span translate>SAVE</span>

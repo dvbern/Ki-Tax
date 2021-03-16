@@ -16,7 +16,6 @@
  */
 
 import {HttpClientModule} from '@angular/common/http';
-import {Directive, Input} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
