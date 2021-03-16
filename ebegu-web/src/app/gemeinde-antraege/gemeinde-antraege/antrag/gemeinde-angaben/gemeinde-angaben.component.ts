@@ -295,6 +295,8 @@ export class GemeindeAngabenComponent implements OnInit {
      *
      * @param gemeindeAngabenFromServer existing data, used for initiating some calculations
      */
+    // TODO: refactor
+    // tslint:disable-next-line:cognitive-complexity
     private setupCalculcations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest(
             [
@@ -359,13 +361,22 @@ export class GemeindeAngabenComponent implements OnInit {
         );
 
         combineLatest([
-            this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('gesamtKostenTagesschule')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0)),
             this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenElterngebuehren')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
+            this.angabenForm.get('einnnahmenVerpflegung')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0)),
+            this.angabenForm.get('einnahmenSubventionenDritter')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0)),
         ]).subscribe(values => {
-                const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
+                const gemeindeBeitragOderUeberschuss = parseFloat(values[0]) - parseFloat(values[1]) - parseFloat(values[2]) - parseFloat(
+                    values[3]) - parseFloat(values[4]);
                 if (gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.get('kostenueberschussGemeinde')
                         .setValue(gemeindeBeitragOderUeberschuss);
@@ -386,7 +397,9 @@ export class GemeindeAngabenComponent implements OnInit {
 
         combineLatest([
             this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenElterngebuehren')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
                     // round to 0.2
