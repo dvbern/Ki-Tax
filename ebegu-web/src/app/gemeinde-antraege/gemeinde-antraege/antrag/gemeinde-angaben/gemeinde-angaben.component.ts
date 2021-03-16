@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -32,6 +33,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
@@ -70,7 +72,8 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly translateService: TranslateService,
         private readonly settings: EinstellungRS,
         private readonly wizardRS: WizardStepXRS,
-        private readonly uiRouterGlobals: UIRouterGlobals
+        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -173,7 +176,7 @@ export class GemeindeAngabenComponent implements OnInit {
                     initialGemeindeAngaben?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal,
                 ],
             ausbildungenMitarbeitendeBelegt: [
-                {value: initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegt, disabled: false}
+                {value: initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegt, disabled: false},
             ],
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
@@ -420,13 +423,16 @@ export class GemeindeAngabenComponent implements OnInit {
 
     }
 
-    public onAbschliessen(): void {
+    public async onAbschliessen(): Promise<void> {
         this.triggerFormValidation();
 
         if (!this.angabenForm.valid) {
             this.errorService.addMesageAsError(
                 this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
             );
+            return;
+        }
+        if (!await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
             return;
         }
 
@@ -439,6 +445,16 @@ export class GemeindeAngabenComponent implements OnInit {
         this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
             .subscribe(container => this.handleSaveSuccess(container),
                 err => this.handleSaveError(err));
+    }
+
+    private confirmDialog(frageKey: string): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translateService.instant(frageKey),
+        };
+        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
     }
 
     private handleSaveSuccess(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {

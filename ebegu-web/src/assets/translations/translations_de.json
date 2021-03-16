@@ -2306,6 +2306,7 @@
     "ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN": "Die angegebenen lastenausgleichsberechtigten Betreuungsstunden entsprechen nicht der Summe der lastenausgleichsberechtigten Betreuungsstunden der Tagesschulen. Bitte prüfen Sie die Angaben.",
     "LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN": "Die Validierung für das Formular enthält Fehler.",
     "LATS_FA_INSTI_NUR_WENN_GEMEINDE_OFFEN": "Um dieses Formular wieder zu öffnen müssen Sie zuerst das \"Angaben Gemeinde\" Formular wieder öffnen, indem Sie dort auf \"Falsche Angaben\" klicken.",
+    "FRAGE_FORMULAR_ABSCHLIESSEN": "Sind Sie sicher, dass Sie dieses Formular abschliessen möchten?",
     "MENU_SOZIALDIENST_FALL_EROEFFNEN": "Sozialdienste Fall eröffnen",
     "SOZIALDIENST_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Sozialdienstes",
     "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Sozialdienstfall",
