@@ -42,6 +42,7 @@
                     class=""
                     name="isLehrbetrieb"
                     horizontal
+                    [disabled]="form.get('isLehrbetrieb').disabled"
                     formControlName="isLehrbetrieb">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -360,6 +361,7 @@
                     class=""
                     name="schuleAufBasisOrganisatorischesKonzept"
                     horizontal
+                    [disabled]="form.get('schuleAufBasisOrganisatorischesKonzept').disabled"
                     formControlName="schuleAufBasisOrganisatorischesKonzept">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -387,6 +389,7 @@
                     class=""
                     name="schuleAufBasisPaedagogischesKonzept"
                     horizontal
+                    [disabled]="form.get('schuleAufBasisPaedagogischesKonzept').disabled"
                     formControlName="schuleAufBasisPaedagogischesKonzept">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -414,6 +417,7 @@
                     class=""
                     name="raeumlicheVoraussetzungenEingehalten"
                     horizontal
+                    [disabled]="form.get('raeumlicheVoraussetzungenEingehalten').disabled"
                     formControlName="raeumlicheVoraussetzungenEingehalten">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -441,6 +445,7 @@
                     class=""
                     name="betreuungsverhaeltnisEingehalten"
                     horizontal
+                    [disabled]="form.get('betreuungsverhaeltnisEingehalten').disabled"
                     formControlName="betreuungsverhaeltnisEingehalten">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -468,6 +473,7 @@
                     class=""
                     name="ernaehrungsGrundsaetzeEingehalten"
                     horizontal
+                    [disabled]="form.get('ernaehrungsGrundsaetzeEingehalten').disabled"
                     formControlName="ernaehrungsGrundsaetzeEingehalten">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -517,4 +523,10 @@
         </div>
 
     </form>
+
+    <div class="row" *ngIf="falscheAngabenVisible()">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
 </div>

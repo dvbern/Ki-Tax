@@ -25,6 +25,7 @@ import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
@@ -54,6 +55,8 @@ export class TagesschulenAngabenComponent {
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;
 
+    private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly tagesschulenAngabenRS: TagesschuleAngabenRS,
@@ -69,6 +72,7 @@ export class TagesschulenAngabenComponent {
 
     public ngOnInit(): void {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
+            this.gemeindeAntragContainer = container;
             this.latsAngabenInstitutionContainer =
                 container.angabenInstitutionContainers?.find(institutionContainer => {
                     return institutionContainer.id === this.institutionContainerId;
@@ -77,8 +81,7 @@ export class TagesschulenAngabenComponent {
             const angaben = this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 this.latsAngabenInstitutionContainer?.angabenDeklaration :
                 this.latsAngabenInstitutionContainer?.angabenKorrektur;
-            this.form =
-                this.setupForm(angaben);
+            this.form = this.setupForm(angaben);
             if (container.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU || !this.canEditForm()) {
                 this.form.disable();
             }
@@ -312,5 +315,25 @@ export class TagesschulenAngabenComponent {
 
     public canSeeSaveButton(): boolean {
         return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+    }
+
+    public onFalscheAngaben(): void {
+        if(!this.gemeindeAntragContainer?.angabenDeklaration?.isInBearbeitung()) {
+            this.errorService.addMesageAsError(this.translate.instant('LATS_FA_INSTI_NUR_WENN_GEMEINDE_OFFEN'));
+        }
+        this.tagesschulenAngabenRS.falscheAngaben(this.latsAngabenInstitutionContainer).subscribe(container => {
+            this.latsAngabenInstitutionContainer = container;
+            this.form = this.setupForm(container.angabenKorrektur);
+            this.setupCalculation(container.angabenKorrektur);
+            this.cd.markForCheck();
+        });
+    }
+
+    public falscheAngabenVisible(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getInstitutionRoles())) &&
+            this.gemeindeAntragContainer?.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE &&
+            this.latsAngabenInstitutionContainer?.status ===
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT;
     }
 }
