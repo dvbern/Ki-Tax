@@ -44,7 +44,7 @@
                 </mat-error>
             </dv-input-container-x>
 
-            <hr/>
+            <mat-divider></mat-divider>
             <h3 translate class="uppercase">FERIENBETREUUNG_KONTAKTPERSON</h3>
 
             <div class="row">
@@ -131,7 +131,7 @@
 
         </div>
 
-        <hr/>
+        <mat-divider></mat-divider>
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_ANGEBOT' | translate }}
             <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
@@ -237,20 +237,18 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <div class="limit-width">
-            <dv-input-container-x [verticalAlign]="true">
-                <label>
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          formControlName="bemerkungenAnzahlFerienwochen"
-                          class="form-control dv-input"></textarea>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
+        <dv-input-container-x>
+            <label>
+                {{'BEMERKUNGEN' | translate }}
+            </label>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+            <textarea matInput
+                      formControlName="bemerkungenAnzahlFerienwochen"
+                      class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
 
-        <hr/>
+        <mat-divider></mat-divider>
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
             <dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
@@ -296,29 +294,28 @@
             </dv-radio-container-x>
         </dv-input-container-x>
 
-        <div class="limit-width">
-            <dv-input-container-x [verticalAlign]="true">
-                <label>
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          formControlName="bemerkungenOeffnungszeiten"
-                          class="form-control dv-input"></textarea>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
+        <dv-input-container-x>
+            <label>
+                {{'BEMERKUNGEN' | translate }}
+            </label>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+            <textarea matInput
+                      formControlName="bemerkungenOeffnungszeiten"
+                      class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
 
-        <hr/>
+        <mat-divider></mat-divider>
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_KOOPERATION' | translate }}
         </h3>
 
-        <dv-input-container-x [verticalAlign]="true">
+        <dv-input-container-x>
             <label for="am-angebot-beteiligte-gemeinden">
                 {{'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN' | translate}}
                 <dv-tooltip [text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
             </label>
+            <mat-form-field>
             <mat-select *ngIf="bfsGemeinden?.length"
                         class="form-control"
                         formControlName="finanziellBeteiligteGemeinden"
@@ -330,6 +327,7 @@
                     {{gemeinde.name}}
                 </mat-option>
             </mat-select>
+            </mat-form-field>
         </dv-input-container-x>
 
         <p>{{'FERIENBETREUUNG_WIE_ORGANISIERT' | translate }}</p>
@@ -385,20 +383,18 @@
             </dv-radio-container-x>
         </dv-input-container-x>
 
-        <div class="limit-width">
-            <dv-input-container-x [verticalAlign]="true">
-                <label>
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          formControlName="bemerkungenKooperation"
-                          class="form-control dv-input"></textarea>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
+        <dv-input-container-x>
+            <label>
+                {{'BEMERKUNGEN' | translate }}
+            </label>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+            <textarea matInput
+                      formControlName="bemerkungenKooperation"
+                      class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
 
-        <hr/>
+        <mat-divider></mat-divider>
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_PERSONAL_UND_QUALITAET' | translate }}
         </h3>
@@ -484,20 +480,18 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <div class="limit-width">
-            <dv-input-container-x [verticalAlign]="true">
-                <label>
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          formControlName="bemerkungenPersonal"
-                          class="form-control dv-input"></textarea>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
+        <dv-input-container-x>
+            <label>
+                {{'BEMERKUNGEN' | translate }}
+            </label>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+            <textarea matInput
+                      formControlName="bemerkungenPersonal"
+                      class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
 
-        <hr/>
+        <mat-divider></mat-divider>
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_TARIFSYSTEM' | translate }}
         </h3>
@@ -588,18 +582,16 @@
             </dv-radio-container-x>
         </dv-input-container-x>
 
-        <div class="limit-width">
-            <dv-input-container-x [verticalAlign]="true">
-                <label>
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          formControlName="bemerkungenAnzahlFerienwochen"
-                          class="form-control dv-input"></textarea>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
+        <dv-input-container-x>
+            <label>
+                {{'BEMERKUNGEN' | translate }}
+            </label>
+            <mat-form-field floatLabel="always" class="no-margin-left">
+            <textarea matInput
+                      formControlName="bemerkungenAnzahlFerienwochen"
+                      class="form-control dv-input"></textarea>
+            </mat-form-field>
+        </dv-input-container-x>
 
 
     </form>

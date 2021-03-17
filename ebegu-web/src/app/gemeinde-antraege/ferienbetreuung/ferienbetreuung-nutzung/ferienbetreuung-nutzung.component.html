@@ -52,7 +52,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label class="padding-left-10" required [ngClass]="{'label-required-error': form && form.get('betreuungstageKinderDieserGemeinde').errors}">
+            <label class="padding-left-20" required [ngClass]="{'label-required-error': form && form.get('betreuungstageKinderDieserGemeinde').errors}">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE' | translate }}
                 <dv-tooltip inputId="betreuungstageKinderDieserGemeinde_id"
                             [text]="'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE_HINT' | translate">
@@ -76,7 +76,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label class="padding-left-20">
+            <label class="padding-left-40">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -95,7 +95,7 @@
 
         <dv-input-container-x>
             <label required
-                   class="padding-left-10"
+                   class="padding-left-20"
                    [ngClass]="{'label-required-error': form && form.get('davonBetreuungstageKinderAndererGemeinden').errors}">
                 {{'FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN' | translate }}
             </label>
@@ -116,7 +116,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label class="padding-left-20">
+            <label class="padding-left-40">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -133,7 +133,7 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <hr>
+        <mat-divider></mat-divider>
 
         <h3 translate class="uppercase">KINDER</h3>
 
