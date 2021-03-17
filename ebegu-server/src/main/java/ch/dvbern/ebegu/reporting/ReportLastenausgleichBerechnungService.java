@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.reporting;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.transaction.RollbackException;
 
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -30,7 +31,7 @@ public interface ReportLastenausgleichBerechnungService {
 	UploadFileInfo generateExcelReportLastenausgleichKibon(
 		@Nonnull String lastenausgleichId,
 		@Nonnull Locale locale
-	) throws ExcelMergeException;
+	) throws ExcelMergeException, RollbackException;
 
 	@Nonnull
 	UploadFileInfo generateCSVReportLastenausgleichKibon(

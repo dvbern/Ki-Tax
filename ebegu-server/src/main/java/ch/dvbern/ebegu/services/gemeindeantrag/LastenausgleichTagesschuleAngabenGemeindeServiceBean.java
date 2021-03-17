@@ -344,7 +344,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			);
 		}
 
-		return persistence.getCriteriaResults(query);
+		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList = persistence.getCriteriaResults(query);
+
+		containerList.forEach(lastenausgleichTagesschuleAngabenGemeindeContainer -> {
+			authorizer.checkReadAuthorization(lastenausgleichTagesschuleAngabenGemeindeContainer);
+		});
+
+		return containerList;
 	}
 
 	@Nonnull

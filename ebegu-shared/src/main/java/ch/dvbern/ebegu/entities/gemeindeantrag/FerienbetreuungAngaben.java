@@ -63,8 +63,8 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 		name = "ferienbetreuung_am_angebot_beteiligte_gemeinden",
 		joinColumns = @JoinColumn(name = "ferienbetreuung_angaben_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_gemeinde_ferienbetreuung_angaben_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_gemeinde_ferienbetreuung_angaben_id"),
+		foreignKey = @ForeignKey(name = "ferienbetreuung_am_angebot_beteiligte_gemeinden_angaben_id"),
+		inverseForeignKey = @ForeignKey(name = "ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id"),
 		indexes = {
 			@Index(name = "IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_angaben_id", columnList = "ferienbetreuung_angaben_id"),
 			@Index(name = "IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id", columnList = "gemeinde_id"),
@@ -172,8 +172,8 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 		name = "ferienbetreuung_finanziell_beteiligte_gemeinden",
 		joinColumns = @JoinColumn(name = "ferienbetreuung_angaben_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_gemeinde_ferienbetreuung_angaben_id_2"),
-		inverseForeignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_gemeinde_ferienbetreuung_angaben_id_2"),
+		foreignKey = @ForeignKey(name = "FK_ferienbetreuung_finanziell_beteiligte_gemeinden_angaben_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id"),
 		indexes = {
 			@Index(name = "IX_ferienbetreuung_finanziell_beteiligte_gemeinden_angaben_id", columnList = "ferienbetreuung_angaben_id"),
 			@Index(name = "IX_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id", columnList = "gemeinde_id"),

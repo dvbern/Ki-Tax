@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 
@@ -100,6 +101,18 @@ public final class FilterFunctions {
 		predicates.add(sameInstitution);
 	}
 
+	public static void setGemeindeFilterForCurrentFerienbetreuungUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull List<Predicate> predicates) {
+
+		Predicate isFerienbetreuungRole = joinCurrentBerechtigung.get(Berechtigung_.role)
+			.in(UserRole.ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG);
+
+		predicates.add(isFerienbetreuungRole);
+	}
+
 	public static void setTraegerschaftFilterForCurrentUser(
 		@Nonnull Benutzer currentBenutzer,
 		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
@@ -145,5 +158,18 @@ public final class FilterFunctions {
 				joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN).not();
 			predicates.add(predicateRoleNotSuperadmin);
 		}
+	}
+
+	public static void setSozialdienstFilterForCurrentUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull List<Predicate> predicates) {
+
+		final Sozialdienst userSozialdienst = currentBenutzer.getCurrentBerechtigung().getSozialdienst();
+		Objects.requireNonNull(userSozialdienst);
+
+		Predicate sameSozialdienst = cb.equal(joinCurrentBerechtigung.get(Berechtigung_.sozialdienst), userSozialdienst);
+		predicates.add(sameSozialdienst);
 	}
 }

@@ -54,6 +54,8 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 	@Nullable
 	private String traegerschaft = null;
 	@Nullable
+	private String sozialdienst = null;
+	@Nullable
 	private BenutzerStatus status = null;
 
 	@Override
@@ -68,6 +70,7 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 			.append("gemeinde", gemeinde)
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
+			.append("sozialdienst", sozialdienst)
 			.append("status", status)
 			.toString();
 	}
@@ -160,5 +163,14 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 
 	public void setStatus(@Nullable BenutzerStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public String getSozialdienst() {
+		return sozialdienst;
+	}
+
+	public void setSozialdienst(@Nullable String sozialdienst) {
+		this.sozialdienst = sozialdienst;
 	}
 }

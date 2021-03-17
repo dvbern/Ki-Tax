@@ -88,7 +88,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status);
 			}
 			default:
-				throw new NotImplementedException("Typ" + typ + "wurde noch nicht implementiert");
+				throw new NotImplementedException("getGemeindeAntraege Typ: " + typ + " wurde noch nicht implementiert");
 			}
 		}
 		return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(

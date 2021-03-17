@@ -788,6 +788,8 @@
     "TSRole_JURIST": "Jurist/in",
     "TSRole_REVISOR": "Revisor/in",
     "TSRole_STEUERAMT": "Sachbearbeiter/in Steueramt",
+    "TSRole_SACHBEARBEITER_FERIENBETREUUNG": "Sachbearbeiter/in Ferienbetreuung",
+    "TSRole_ADMIN_FERIENBETREUUNG": "Administrator/in Ferienbetreuung",
     "TSRole_NONE": "Keine Rolle (Antragsteller/in)",
     "TSRole_ADMIN_SOZIALDIENST": "Administrator/in Sozialdienst",
     "TSRole_SACHBEARBEITER_SOZIALDIENST": "Sachbearbeiter/in Sozialdienst",

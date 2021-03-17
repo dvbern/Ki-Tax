@@ -788,6 +788,8 @@
     "TSRole_JURIST": "Juriste",
     "TSRole_REVISOR": "Réviseur/-euse",
     "TSRole_STEUERAMT": "Collaborateur/-trice spécialisé-e bureau des impôts",
+    "TSRole_SACHBEARBEITER_FERIENBETREUUNG": "Sachbearbeiter/in Ferienbetreuung",
+    "TSRole_ADMIN_FERIENBETREUUNG": "Administrator/in Ferienbetreuung",
     "TSRole_NONE": "Aucun rôle (auteur-e de la demande)",
     "TSRole_ADMIN_SOZIALDIENST": "Administrateur/-trice service social",
     "TSRole_SACHBEARBEITER_SOZIALDIENST": "Collaborateur/-trice spécialisé-e service social",
