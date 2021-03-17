@@ -22,7 +22,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
-import {startWith} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
@@ -45,7 +45,7 @@ import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
     templateUrl: './gemeinde-angaben.component.html',
     styleUrls: ['./gemeinde-angaben.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class GemeindeAngabenComponent implements OnInit {
 
@@ -364,20 +364,23 @@ export class GemeindeAngabenComponent implements OnInit {
         combineLatest([
             this.angabenForm.get('gesamtKostenTagesschule')
                 .valueChanges
-                .pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0)),
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+                .pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0),
+                    map(this.parseFloatSafe)),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0),
+                map(this.parseFloatSafe)),
             this.angabenForm.get('einnahmenElterngebuehren')
                 .valueChanges
-                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
+                    map(this.parseFloatSafe)),
             this.angabenForm.get('einnnahmenVerpflegung')
                 .valueChanges
-                .pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0)),
+                .pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0),
+                    map(this.parseFloatSafe)),
             this.angabenForm.get('einnahmenSubventionenDritter')
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0)),
         ]).subscribe(values => {
-                const gemeindeBeitragOderUeberschuss = parseFloat(values[0]) - parseFloat(values[1]) - parseFloat(values[2]) - parseFloat(
-                    values[3]) - parseFloat(values[4]);
+                const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
                 if (gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.get('kostenueberschussGemeinde')
                         .setValue(gemeindeBeitragOderUeberschuss);
@@ -410,6 +413,11 @@ export class GemeindeAngabenComponent implements OnInit {
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
 
+    }
+
+    private parseFloatSafe(formValue: string): number {
+        const unsafeParsed = parseFloat(formValue);
+        return isNaN(unsafeParsed) ? 0 : unsafeParsed;
     }
 
     private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
