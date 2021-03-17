@@ -42,8 +42,6 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _betreuungDurchPersonenMitErfahrung: boolean;
     private _anzahlKinderAngemessen: boolean;
     private _betreuungsschluessel: number;
-    private _aufwandBetreuungspersonal: number;
-    private _zusaetzlicherAufwandLeitungAdmin: number;
     private _bemerkungenPersonal: string;
     private _fixerTarifKinderDerGemeinde: boolean;
     private _einkommensabhaengigerTarifKinderDerGemeinde: boolean;
@@ -218,22 +216,6 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
 
     public set betreuungsschluessel(value: number) {
         this._betreuungsschluessel = value;
-    }
-
-    public get aufwandBetreuungspersonal(): number {
-        return this._aufwandBetreuungspersonal;
-    }
-
-    public set aufwandBetreuungspersonal(value: number) {
-        this._aufwandBetreuungspersonal = value;
-    }
-
-    public get zusaetzlicherAufwandLeitungAdmin(): number {
-        return this._zusaetzlicherAufwandLeitungAdmin;
-    }
-
-    public set zusaetzlicherAufwandLeitungAdmin(value: number) {
-        this._zusaetzlicherAufwandLeitungAdmin = value;
     }
 
     public get bemerkungenPersonal(): string {
