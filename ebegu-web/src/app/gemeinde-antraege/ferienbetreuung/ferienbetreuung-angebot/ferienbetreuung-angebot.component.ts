@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
+import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
+import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 @Component({
     selector: 'dv-ferienbetreuung-angebot',
@@ -25,10 +31,144 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class FerienbetreuungAngebotComponent implements OnInit {
 
-    public constructor() {
+    public form: FormGroup;
+    public formFreigebenTriggered: false;
+    public bfsGemeinden: TSBfsGemeinde[];
+
+    public constructor(
+        private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly fb: FormBuilder,
+        private readonly cd: ChangeDetectorRef,
+        private readonly gemeindeRS: GemeindeRS
+    ) {
     }
 
     public ngOnInit(): void {
+        this.ferienbetreuungService.getFerienbetreuungContainer()
+            .subscribe(container => {
+                const fbAngaben = container.angabenDeklaration;
+                this.setupForm(fbAngaben);
+                this.cd.markForCheck();
+            });
+        this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
+            this.bfsGemeinden = gemeinden;
+            this.cd.markForCheck();
+        });
     }
 
+    private setupForm(angaben: TSFerienbetreuungAngaben): void {
+        if (!angaben.angebot) {
+            return;
+        }
+        const angebot = angaben.angebot;
+        this.form = this.fb.group({
+            angebot: [
+                angebot?.angebot
+            ],
+            angebotKontaktpersonVorname: [
+                angebot?.angebotKontaktpersonVorname
+            ],
+            angebotKontaktpersonNachname: [
+                angebot?.angebotKontaktpersonNachname
+            ],
+            angebotStrasse: [
+                angebot?.angebotAdresse?.strasse
+            ],
+            angebotNr: [
+                angebot?.angebotAdresse?.hausnummer
+            ],
+            angebotPlz: [
+                angebot?.angebotAdresse?.plz
+            ],
+            angebotOrt: [
+                angebot?.angebotAdresse?.ort
+            ],
+            anzahlFerienwochenHerbstferien: [
+                angebot?.anzahlFerienwochenHerbstferien,
+                numberValidator(ValidationType.INTEGER)
+            ],
+            anzahlFerienwochenWinterferien: [
+                angebot?.anzahlFerienwochenWinterferien,
+                numberValidator(ValidationType.INTEGER)
+            ],
+            anzahlFerienwochenFruehlingsferien: [
+                angebot?.anzahlFerienwochenFruehlingsferien,
+                numberValidator(ValidationType.INTEGER)
+            ],
+            anzahlFerienwochenSommerferien: [
+                angebot?.anzahlFerienwochenSommerferien,
+                numberValidator(ValidationType.INTEGER)
+            ],
+            anzahlTage: [
+                angebot?.anzahlTage,
+                numberValidator(ValidationType.INTEGER)
+            ],
+            bemerkungenAnzahlFerienwochen: [
+                // TODO: add this property
+            ],
+            anzahlStundenProBetreuungstag: [
+                angebot?.anzahlStundenProBetreuungstag
+            ],
+            betreuungErfolgtTagsueber: [
+                angebot?.betreuungErfolgtTagsueber
+            ],
+            bemerkungenOeffnungszeiten: [
+                angebot?.bemerkungenOeffnungszeiten
+            ],
+            finanziellBeteiligteGemeinden: [
+                angebot?.finanziellBeteiligteGemeinden
+            ],
+            gemeindeFuehrtAngebotSelber: [
+                angebot?.gemeindeFuehrtAngebotSelber
+            ],
+            gemeindeBeauftragtExterneAnbieter: [
+                angebot?.gemeindeBeauftragtExterneAnbieter
+            ],
+            angebotVereineUndPrivateIntegriert: [
+                angebot?.angebotVereineUndPrivateIntegriert
+            ],
+            bemerkungenKooperation: [
+                angebot?.bemerkungenKooperation
+            ],
+            leitungDurchPersonMitAusbildung: [
+                angebot?.leitungDurchPersonMitAusbildung
+            ],
+            betreuungDurchPersonenMitErfahrung: [
+                angebot?.betreuungDurchPersonenMitErfahrung
+            ],
+            anzahlKinderAngemessen: [
+                angebot?.anzahlKinderAngemessen
+            ],
+            betreuungsschluessel: [
+                angebot?.betreuungsschluessel
+            ],
+            bemerkungenPersonal: [
+                angebot?.bemerkungenPersonal
+            ],
+            fixerTarifKinderDerGemeinde: [
+                angebot?.fixerTarifKinderDerGemeinde
+            ],
+            einkommensabhaengigerTarifKinderDerGemeinde: [
+                angebot?.einkommensabhaengigerTarifKinderDerGemeinde
+            ],
+            tagesschuleTarifGiltFuerFerienbetreuung: [
+                angebot?.tagesschuleTarifGiltFuerFerienbetreuung
+            ],
+            ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet: [
+                angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet
+            ],
+            kinderAusAnderenGemeindenZahlenAnderenTarif: [
+                angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif
+            ],
+            bemerkungenTarifsystem: [
+                angebot?.bemerkungenTarifsystem
+            ],
+        }, {
+            updateOn: 'blur'
+        });
+    }
+
+    public onFormSubmit(): void {
+        // todo
+    }
 }
