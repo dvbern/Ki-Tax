@@ -74,9 +74,10 @@ export class GemeindeAntraegeComponent implements OnInit {
         reverse?: boolean
     }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
     public triedSending: boolean = false;
+    public types: TSGemeindeAntragTyp[];
 
     public constructor(
-        public readonly gemeindeAntragService: GemeindeAntragService,
+        private readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
         private readonly fb: FormBuilder,
         private readonly $state: StateService,
@@ -84,7 +85,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly cd: ChangeDetectorRef,
         private readonly wizardStepXRS: WizardStepXRS,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -97,6 +98,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             antragTyp: ['', Validators.required],
             gemeinde: ['', Validators.required],
         });
+        this.initAntragTypes();
     }
 
     private loadAntragList(): void {
@@ -150,6 +152,13 @@ export class GemeindeAntraegeComponent implements OnInit {
         }, err => {
             this.handleCreateAntragError(err);
         });
+    }
+
+    private initAntragTypes(): void {
+        this.types = this.gemeindeAntragService.getTypesForRole();
+        if (this.types.length === 1) {
+            this.formGroup.get('antragTyp').setValue(this.types[0]);
+        }
     }
 
     public createAntrag(): void {
