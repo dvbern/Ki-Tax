@@ -20,7 +20,8 @@ import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {catchError, map, mergeMap, tap} from 'rxjs/operators';
+import {catchError, filter, map, mergeMap, tap} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
@@ -86,6 +87,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly wizardStepXRS: WizardStepXRS,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
@@ -137,7 +139,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     const msg = this.translate.instant('ERR_GEMEINDEN_LADEN');
                     this.errorService.addMesageAsError(msg);
                     LOG.error(err);
-                }
+                },
             );
     }
 
@@ -155,10 +157,15 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private initAntragTypes(): void {
-        this.types = this.gemeindeAntragService.getTypesForRole();
-        if (this.types.length === 1) {
-            this.formGroup.get('antragTyp').setValue(this.types[0]);
-        }
+        this.authService.principal$.pipe(
+            filter(principal => !!principal)
+        ).subscribe(() => {
+            this.types = this.gemeindeAntragService.getTypesForRole();
+            if (this.types.length === 1) {
+                this.formGroup.get('antragTyp').setValue(this.types[0]);
+            }
+        });
+
     }
 
     public createAntrag(): void {
