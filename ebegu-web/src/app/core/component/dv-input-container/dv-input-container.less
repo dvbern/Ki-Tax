@@ -19,6 +19,14 @@
 
 dv-input-container-x {
     .dv-input-container {
+        &.vertical-align {
+            flex-direction: column;
+            > label, > mat-form-field {
+                width: 100%;
+                flex-grow: 1;
+            }
+        }
+
         align-items: center;
         display: flex;
         justify-content: space-between;
