@@ -19,7 +19,7 @@
 
     <form role="form" class="" unsaved-warning-form="" novalidate dv-show-element
           [formGroup]="formGroup"
-          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForLastenausgleich()">
+          *ngIf="canCreateAntrag() | async">
 
         <div class="row">
             <div class="col-md-8 col-md-offset-2">

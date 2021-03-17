@@ -20,12 +20,14 @@ import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {catchError, map, mergeMap, tap} from 'rxjs/operators';
+import {catchError, filter, map, mergeMap, tap} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -82,7 +84,8 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly cd: ChangeDetectorRef,
-        private readonly wizardStepXRS: WizardStepXRS
+        private readonly wizardStepXRS: WizardStepXRS,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
@@ -172,5 +175,12 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public onSortChange(sortChange: { predicate?: string; reverse?: boolean }): void {
         this.sortDebounceSubject.next(sortChange);
+    }
+
+    public canCreateAntrag(): Observable<boolean> {
+        return this.authService.principal$.pipe(
+            filter(principal => !!principal),
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSorMandantRoles()))
+        );
     }
 }
