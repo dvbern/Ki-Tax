@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Audited
@@ -55,6 +56,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private static final long serialVersionUID = -4711352384230177665L;
 
 	@Nonnull
+	@Audited(targetAuditMode = NOT_AUDITED)
 	@ManyToMany
 	@JoinTable(
 		name = "ferienbetreuung_am_angebot_beteiligte_gemeinden",
