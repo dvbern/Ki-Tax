@@ -98,7 +98,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.formGroup = this.fb.group({
             periode: ['', Validators.required],
             antragTyp: ['', Validators.required],
-            gemeinde: ['', Validators.required],
+            gemeinde: [''],
         });
         this.initAntragTypes();
     }
@@ -158,7 +158,7 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     private initAntragTypes(): void {
         this.authService.principal$.pipe(
-            filter(principal => !!principal)
+            filter(principal => !!principal),
         ).subscribe(() => {
             this.types = this.gemeindeAntragService.getTypesForRole();
             if (this.types.length === 1) {
@@ -223,5 +223,16 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public ferienBetreuungSelected(): boolean {
         return this.formGroup?.get('antragTyp').value === TSGemeindeAntragTyp.FERIENBETREUUNG;
+    }
+
+    public onAntragTypChange(): void {
+        const gemeindeControl = this.formGroup.get('gemeinde');
+        if (this.ferienBetreuungSelected()) {
+            gemeindeControl.setValidators([Validators.required]);
+        } else {
+            gemeindeControl.clearValidators();
+        }
+        gemeindeControl.updateValueAndValidity({onlySelf: true, emitEvent: false});
+        this.formGroup.updateValueAndValidity();
     }
 }

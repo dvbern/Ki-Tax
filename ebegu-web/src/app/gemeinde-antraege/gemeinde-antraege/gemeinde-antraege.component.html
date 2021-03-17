@@ -52,6 +52,7 @@
                             <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtyp"
                                     id="gemeindeantragtyp"
                                     formControlName="antragTyp"
+                                    (change)="onAntragTypChange()"
                                     class="form-control">
                                 <option *ngFor="let typ of types"
                                         [value]="typ" translate>{{typ}}</option>
