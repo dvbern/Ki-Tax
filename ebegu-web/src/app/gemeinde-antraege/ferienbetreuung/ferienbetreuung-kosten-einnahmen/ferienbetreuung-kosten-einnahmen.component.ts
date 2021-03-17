@@ -54,37 +54,37 @@ export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
         if (!angaben.kostenEinnahmen) {
             return;
         }
-        const nutzung = angaben.kostenEinnahmen;
+        const kostenEinnahmen = angaben.kostenEinnahmen;
         this.form = this.fb.group({
             personalkosten: [
-                nutzung.personalkosten,
+                kostenEinnahmen.personalkosten,
                 numberValidator(ValidationType.INTEGER)
             ],
             personalkostenLeitungAdmin: [
-                nutzung.personalkostenLeitungAdmin,
+                kostenEinnahmen.personalkostenLeitungAdmin,
                 numberValidator(ValidationType.INTEGER)
             ],
             sachkosten: [
-                nutzung.sachkosten,
+                kostenEinnahmen.sachkosten,
                 numberValidator(ValidationType.INTEGER)
             ],
             verpflegungskosten: [
-                nutzung.verpflegungskosten,
+                kostenEinnahmen.verpflegungskosten,
                 numberValidator(ValidationType.INTEGER)
             ],
             weitereKosten: [
-                nutzung.weitereKosten,
+                kostenEinnahmen.weitereKosten,
                 numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenKosten: [
-                nutzung.bemerkungenKosten
+                kostenEinnahmen.bemerkungenKosten
             ],
             elterngebuehren: [
-                nutzung.elterngebuehren,
+                kostenEinnahmen.elterngebuehren,
                 numberValidator(ValidationType.INTEGER)
             ],
             weitereEinnahmen: [
-                nutzung.weitereEinnahmen,
+                kostenEinnahmen.weitereEinnahmen,
                 numberValidator(ValidationType.INTEGER)
             ],
         });
