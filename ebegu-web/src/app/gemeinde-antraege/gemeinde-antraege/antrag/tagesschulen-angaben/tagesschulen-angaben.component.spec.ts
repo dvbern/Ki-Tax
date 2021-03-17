@@ -19,7 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -39,6 +39,7 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
 const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href', 'go']);
 
 describe('TagesschulenAngabenComponent', () => {
     let component: TagesschulenAngabenComponent;
@@ -62,6 +63,7 @@ describe('TagesschulenAngabenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

@@ -304,16 +304,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			}
 		}
 
-		if (principal.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
-			Predicate geprueftGemeinde = root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status).in(
-				LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
-				LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
-				LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
-				LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT
-			);
-			query.where(geprueftGemeinde);
-		}
-
 		if (gemeinde != null) {
 			query.where(
 				cb.equal(

@@ -100,7 +100,9 @@
             <label required
                    [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('angebotFuerFerienbetreuungVorhanden').errors}"
                    id="angebotFuerFerienbetreuungVorhanden-radio-group">
-                {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                {{'LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN' | translate: {
+                    jahr: lATSAngabenGemeindeContainer.gesuchsperiode | nextPeriodeStr
+                } }}
             </label>
             <div class="flex-whitespace-item"></div>
             <dv-radio-container-x>
