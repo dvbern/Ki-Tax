@@ -16,10 +16,12 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ibanValidator} from 'ngx-iban';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 @Component({
@@ -98,13 +100,16 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
                 stammdaten?.stammdatenKontaktpersonFunktion
             ],
             stammdatenKontaktpersonTelefon: [
-                stammdaten?.stammdatenKontaktpersonTelefon
+                stammdaten?.stammdatenKontaktpersonTelefon,
+                Validators.pattern(CONSTANTS.PATTERN_PHONE)
             ],
             stammdatenKontaktpersonEmail: [
-                stammdaten?.stammdatenKontaktpersonEmail
+                stammdaten?.stammdatenKontaktpersonEmail,
+                Validators.pattern(CONSTANTS.PATTERN_EMAIL),
             ],
             iban: [
-                stammdaten?.iban
+                stammdaten?.iban,
+                ibanValidator()
             ],
             kontoinhaber: [
                 stammdaten?.kontoinhaber
@@ -115,6 +120,8 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
             vermerkAuszahlung: [
                 stammdaten?.vermerkAuszahlung
             ],
+        }, {
+            updateOn: 'blur'
         });
     }
 
