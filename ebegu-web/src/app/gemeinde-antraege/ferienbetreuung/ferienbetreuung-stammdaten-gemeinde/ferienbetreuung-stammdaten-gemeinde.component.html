@@ -15,4 +15,216 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>ferienbetreuung-stammdaten-gemeinde works!</p>
+<div class="ferienbetreuung-stammdaten">
+    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_STAMMDATEN</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2 translate>FERIENBETREUUNG_STAMMDATEN</h2>
+            <hr class="header"/>
+        </div>
+    </div>
+
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+
+        <h3 translate class="uppercase">GEMEINDE</h3>
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label>
+                {{'FERIENBETREUUNG_TRAEGERSCHAFT' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="traegerschaft" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+<!--        am angebot beteiligte gemeinden-->
+        <dv-input-container-x>
+            <label for="am-angebot-beteiligte-gemeinden" translate>AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
+            <mat-select *ngIf="bfsGemeinden?.length"
+                        class="form-control"
+                        formControlName="amAngebotBeteiligteGemeinden"
+                        name="amAngebotBeteiligteGemeinden"
+                        id="am-angebot-beteiligte-gemeinden"
+                        [multiple]="true">
+                <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                            [value]="gemeinde">
+                    {{gemeinde.name}}
+                </mat-option>
+            </mat-select>
+        </dv-input-container-x>
+
+
+        <h3 translate class="uppercase">ADRESSE_GEMEINDE</h3>
+        <dv-input-container-x [verticalAlign]="true">
+            <label>
+                {{'ADRESSE_ANSCHRIFT' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="stammdatenAdresseAnschrift" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label>
+                {{'ADRESSE_ZUSATZZEILE' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="stammdatenAdresseZusatz" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <div class="row">
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                <label>
+                    {{'ADRESSE_STRASSE' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdresseStrasse" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                <label>
+                    {{'ADRESSE_HAUSNUMMER' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdresseNr" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <div class="row">
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                <label>
+                    {{'ADRESSE_PLZ' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdressePlz" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                <label>
+                    {{'ADRESSE_ORT' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdresseOrt" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+
+        <h3 translate class="uppercase">KONTAKTPERSON</h3>
+        <div class="row">
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label>
+                    {{'VORNAME' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonVorname" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label>
+                    {{'NACHNAME' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonNachname" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label>
+                {{'FUNKTION' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="stammdatenKontaktpersonFunktion" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <div class="row">
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label>
+                    {{'TELEFON' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonTelefon" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label>
+                    {{'EMAIL' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonEmail" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <h3 translate class="uppercase">AUSZAHLUNG</h3>
+        <div class="row">
+            <div class="col-xs-6">
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <label>
+                        {{'KONTOINHABER' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="kontoinhaber" class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <label>
+                        {{'ANSCHRIFT' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="adresseKontoinhaber" class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <label>
+                        {{'IBAN' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="iban" class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
+            <div class="col-xs-6">
+                <dv-input-container-x [verticalAlign]="true">
+                    <label>
+                        {{'VERMERK_AUSZAHLUNG' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="vermerkAuszahlung" class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
+        </div>
+
+    </form>
+</div>
