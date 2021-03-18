@@ -24,6 +24,7 @@ import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantr
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -126,8 +127,17 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
             kontoinhaber: [
                 stammdaten?.kontoinhaber
             ],
-            adresseKontoinhaber: [
-                stammdaten?.adresseKontoinhaber
+            adresseKontoinhaberStrasse: [
+                stammdaten?.adresseKontoinhaber?.strasse
+            ],
+            adresseKontoinhaberNr: [
+                stammdaten?.adresseKontoinhaber?.hausnummer
+            ],
+            adresseKontoinhaberOrt: [
+                stammdaten?.adresseKontoinhaber?.ort
+            ],
+            adresseKontoinhaberPlz: [
+                stammdaten?.adresseKontoinhaber?.plz
             ],
             vermerkAuszahlung: [
                 stammdaten?.vermerkAuszahlung
@@ -152,6 +162,7 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
         this.stammdaten.amAngebotBeteiligteGemeinden = this.form.get('amAngebotBeteiligteGemeinden').value;
         this.stammdaten.seitWannFerienbetreuungen = this.form.get('seitWannFerienbetreuungen').value;
         this.stammdaten.traegerschaft = this.form.get('traegerschaft').value;
+
         const adresse = new TSAdresse();
         adresse.organisation = this.form.get('stammdatenAdresseAnschrift').value;
         adresse.zusatzzeile = this.form.get('stammdatenAdresseZusatz').value;
@@ -160,7 +171,8 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
         adresse.plz = this.form.get('stammdatenAdressePlz').value;
         adresse.ort = this.form.get('stammdatenAdresseOrt').value;
         // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
-        this.stammdaten.stammdatenAdresse = (adresse.strasse && adresse.plz && adresse.ort) ? adresse : null;
+        this.stammdaten.stammdatenAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
+
         this.stammdaten.stammdatenKontaktpersonVorname = this.form.get('stammdatenKontaktpersonVorname').value;
         this.stammdaten.stammdatenKontaktpersonNachname = this.form.get('stammdatenKontaktpersonNachname').value;
         this.stammdaten.stammdatenKontaktpersonFunktion = this.form.get('stammdatenKontaktpersonFunktion').value;
@@ -168,7 +180,16 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
         this.stammdaten.stammdatenKontaktpersonEmail = this.form.get('stammdatenKontaktpersonEmail').value;
         this.stammdaten.iban = this.form.get('iban').value;
         this.stammdaten.kontoinhaber = this.form.get('kontoinhaber').value;
-        this.stammdaten.adresseKontoinhaber = this.form.get('adresseKontoinhaber').value;
+
+        const adresseKontoinhaber = new TSAdresse();
+        adresseKontoinhaber.strasse = this.form.get('adresseKontoinhaberStrasse').value;
+        adresseKontoinhaber.hausnummer = this.form.get('adresseKontoinhaberNr').value;
+        adresseKontoinhaber.plz = this.form.get('adresseKontoinhaberOrt').value;
+        adresseKontoinhaber.ort = this.form.get('adresseKontoinhaberPlz').value;
+        // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
+        this.stammdaten.adresseKontoinhaber =
+            (EbeguUtil.adresseValid(adresseKontoinhaber)) ? adresseKontoinhaber : null;
+
         this.stammdaten.vermerkAuszahlung = this.form.get('vermerkAuszahlung').value;
         return this.stammdaten;
     }

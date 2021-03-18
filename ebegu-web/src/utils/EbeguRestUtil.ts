@@ -4820,9 +4820,9 @@ export class EbeguRestUtil {
         restStammdaten.stammdatenKontaktpersonFunktion = stammdatenTS.stammdatenKontaktpersonFunktion;
         restStammdaten.stammdatenKontaktpersonTelefon = stammdatenTS.stammdatenKontaktpersonTelefon;
         restStammdaten.stammdatenKontaktpersonEmail = stammdatenTS.stammdatenKontaktpersonEmail;
-        restStammdaten.iban = stammdatenTS.iban;
+        restStammdaten.iban = (!!stammdatenTS.iban) ? stammdatenTS.iban : null;
         restStammdaten.kontoinhaber = stammdatenTS.kontoinhaber;
-        restStammdaten.adresseKontoinhaber = stammdatenTS.adresseKontoinhaber;
+        restStammdaten.adresseKontoinhaber = this.adresseToRestObject({}, stammdatenTS.adresseKontoinhaber);
         restStammdaten.vermerkAuszahlung = stammdatenTS.vermerkAuszahlung;
         return restStammdaten;
     }

@@ -154,6 +154,9 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 				}
 				auszahlungsdaten.setAdresseKontoinhaber(adresseToEntity(jaxStammdaten.getAdresseKontoinhaber(), adresse));
 			}
+			stammdaten.setAuszahlungsdaten(auszahlungsdaten);
+		} else {
+			stammdaten.setAuszahlungsdaten(null);
 		}
 		stammdaten.setVermerkAuszahlung(jaxStammdaten.getVermerkAuszahlung());
 	}

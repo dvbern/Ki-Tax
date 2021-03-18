@@ -23,6 +23,7 @@ import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
@@ -195,15 +196,15 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         this.angebot.angebot = this.form.get('angebot').value;
         this.angebot.angebotKontaktpersonVorname = this.form.get('angebotKontaktpersonVorname').value;
         this.angebot.angebotKontaktpersonNachname = this.form.get('angebotKontaktpersonNachname').value;
+
+        const adresse = new TSAdresse();
+        adresse.strasse = this.form.get('angebotStrasse').value;
+        adresse.hausnummer = this.form.get('angebotNr').value;
+        adresse.plz = this.form.get('angebotPlz').value;
+        adresse.ort = this.form.get('angebotOrt').value;
         // set only if adresse is valid
-        if (this.adresseValid()) {
-            const adresse = new TSAdresse();
-            adresse.strasse = this.form.get('angebotStrasse').value;
-            adresse.hausnummer = this.form.get('angebotNr').value;
-            adresse.plz = this.form.get('angebotPlz').value;
-            adresse.ort = this.form.get('angebotOrt').value;
-            this.angebot.angebotAdresse = adresse;
-        }
+        this.angebot.angebotAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
+
         this.angebot.anzahlFerienwochenHerbstferien = this.form.get('anzahlFerienwochenHerbstferien').value;
         this.angebot.anzahlFerienwochenWinterferien = this.form.get('anzahlFerienwochenWinterferien').value;
         this.angebot.anzahlFerienwochenFruehlingsferien = this.form.get('anzahlFerienwochenFruehlingsferien').value;
@@ -232,11 +233,5 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         this.angebot.kinderAusAnderenGemeindenZahlenAnderenTarif = this.form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value;
         this.angebot.bemerkungenTarifsystem = this.form.get('bemerkungenTarifsystem').value;
         return this.angebot;
-    }
-
-    private adresseValid(): boolean {
-        return this.form.get('angebotStrasse').value
-            && this.form.get('angebotPlz').value
-            && this.form.get('angebotOrt').value;
     }
 }
