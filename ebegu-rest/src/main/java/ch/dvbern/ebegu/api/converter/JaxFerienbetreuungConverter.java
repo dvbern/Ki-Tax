@@ -81,7 +81,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 
 	@Nonnull
-	private FerienbetreuungAngaben ferienbetreuungenAngabenToEntity(
+	public FerienbetreuungAngaben ferienbetreuungenAngabenToEntity(
 		@Nonnull JaxFerienbetreuungAngaben jaxContainer,
 		@Nonnull FerienbetreuungAngaben ferienbetreuungAngaben
 	) {
@@ -114,7 +114,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	}
 
-	private void ferienbetreuungAngabenStammdatenToEntity(
+	public void ferienbetreuungAngabenStammdatenToEntity(
 		@Nonnull JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
@@ -159,7 +159,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		stammdaten.setVermerkAuszahlung(jaxStammdaten.getVermerkAuszahlung());
 	}
 
-	private void ferienbetreuungAngabenAngebotToEntity(
+	public void ferienbetreuungAngabenAngebotToEntity(
 		@Nonnull JaxFerienbetreuungAngabenAngebot jaxAngebot,
 		@Nonnull FerienbetreuungAngabenAngebot angebot
 	) {
@@ -209,7 +209,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		angebot.setBemerkungenTarifsystem(jaxAngebot.getBemerkungenTarifsystem());
 	}
 
-	private void ferienbetreuungAngabenNutzungToEntity(
+	public void ferienbetreuungAngabenNutzungToEntity(
 		@Nonnull JaxFerienbetreuungAngabenNutzung jaxNutzung,
 		@Nonnull FerienbetreuungAngabenNutzung nutzung
 	) {
@@ -227,7 +227,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		nutzung.setAnzahlBetreuteKinder3Zyklus(jaxNutzung.getAnzahlBetreuteKinder3Zyklus());
 	}
 
-	private void ferienbetreuungAngabenKostenEinnahmenToEntity(
+	public void ferienbetreuungAngabenKostenEinnahmenToEntity(
 		@Nonnull JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
 	) {
@@ -263,7 +263,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxFerienbetreuungAngaben ferienbetreuungAngabenToJax(
+	public JaxFerienbetreuungAngaben ferienbetreuungAngabenToJax(
 		@Nonnull final FerienbetreuungAngaben ferienbetreuungAngaben
 	) {
 		JaxFerienbetreuungAngaben jaxFerienbetreuungAngaben = new JaxFerienbetreuungAngaben();
@@ -302,7 +302,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxFerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToJax(
+	public JaxFerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToJax(
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
 		JaxFerienbetreuungAngabenStammdaten jaxStammdaten = new JaxFerienbetreuungAngabenStammdaten();
@@ -337,7 +337,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxFerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebotToJax(
+	public JaxFerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebotToJax(
 		@Nonnull FerienbetreuungAngabenAngebot angebot
 	) {
 		JaxFerienbetreuungAngabenAngebot jaxAngebot = new JaxFerienbetreuungAngabenAngebot();
@@ -384,7 +384,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxFerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungToJax(
+	public JaxFerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungToJax(
 		@Nonnull FerienbetreuungAngabenNutzung nutzung
 	) {
 		JaxFerienbetreuungAngabenNutzung jaxNutzung = new JaxFerienbetreuungAngabenNutzung();
@@ -406,7 +406,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenToJax(
+	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenToJax(
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
 	) {
 		JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen = new JaxFerienbetreuungAngabenKostenEinnahmen();
