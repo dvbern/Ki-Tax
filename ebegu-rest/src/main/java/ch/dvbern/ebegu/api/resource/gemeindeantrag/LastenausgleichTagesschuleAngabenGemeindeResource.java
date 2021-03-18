@@ -127,6 +127,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 							.filter(instiContainer -> Objects.requireNonNull(principal.getBenutzer().getInstitution())
 								.getId().equals(instiContainer.getInstitution().getId())
 							).collect(Collectors.toSet()));
+					jaxLastenausgleichTagesschuleAngabenGemeindeContainer.setAngabenDeklaration(null);
+					jaxLastenausgleichTagesschuleAngabenGemeindeContainer.setAngabenKorrektur(null);
 				}
 				return jaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 			})
