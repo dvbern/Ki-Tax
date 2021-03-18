@@ -63,8 +63,8 @@ public class Freigabe implements WizardStep<TagesschuleWizard> {
 			return !(wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenDeklarationAbgeschlossen() &&
 				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
 		case IN_PRUEFUNG_KANTON:
-			return !(wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) ||
-				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen();
+			return !((wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) &&
+				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen());
 		case NEU:
 		default:
 			return true;

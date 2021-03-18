@@ -507,14 +507,6 @@
 
         <div class="actions">
             <dv-loading-button
-                type="button"
-                [ngClass]="{'secondary': !actionButtonsDisabled(), 'upercase': true}"
-                *ngIf="canSeeSaveButton()"
-                [buttonDisabled]="actionButtonsDisabled()"
-                (buttonClick)="onFormSubmit()">
-                <span translate>SAVE</span>
-            </dv-loading-button>
-            <dv-loading-button
                 class="uppercase"
                 *ngIf="canSeeFreigebenButton()"
                 type="button"
