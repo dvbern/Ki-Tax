@@ -27,13 +27,13 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -42,12 +42,10 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Audited
@@ -55,21 +53,14 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -4711352384230177665L;
 
-	@Nonnull
-	@Audited(targetAuditMode = NOT_AUDITED)
-	@ManyToMany
-	@JoinTable(
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
 		name = "ferienbetreuung_am_angebot_beteiligte_gemeinden",
-		joinColumns = @JoinColumn(name = "ferienbetreuung_stammdaten_id", nullable = false),
-		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
-		foreignKey = @ForeignKey(name = "ferienbetreuung_am_angebot_beteiligte_gemeinden_stammdaten_id"),
-		inverseForeignKey = @ForeignKey(name = "ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id"),
-		indexes = {
-			@Index(name = "IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_stammdaten_id", columnList = "ferienbetreuung_stammdaten_id"),
-			@Index(name = "IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id", columnList = "gemeinde_id"),
-		}
+		joinColumns = @JoinColumn(name = "ferienbetreuung_stammdaten_id")
 	)
-	private Set<BfsGemeinde> amAngebotBeteiligteGemeinden = new HashSet<>();
+	@Column(nullable = false)
+	@Nonnull
+	private Set<String> amAngebotBeteiligteGemeinden = new HashSet<>();
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -125,11 +116,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private String vermerkAuszahlung;
 
 	@Nonnull
-	public Set<BfsGemeinde> getAmAngebotBeteiligteGemeinden() {
+	public Set<String> getAmAngebotBeteiligteGemeinden() {
 		return amAngebotBeteiligteGemeinden;
 	}
 
-	public void setAmAngebotBeteiligteGemeinden(@Nonnull Set<BfsGemeinde> amAngebotBeteiligteGemeinden) {
+	public void setAmAngebotBeteiligteGemeinden(@Nonnull Set<String> amAngebotBeteiligteGemeinden) {
 		this.amAngebotBeteiligteGemeinden = amAngebotBeteiligteGemeinden;
 	}
 

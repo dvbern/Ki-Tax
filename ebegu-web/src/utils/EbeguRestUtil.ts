@@ -4811,8 +4811,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.abstractEntityToRestObject(restStammdaten, stammdatenTS);
-        restStammdaten.amAngebotBeteiligteGemeinden =
-            this.bfsGemeindeListToRestObject(stammdatenTS.amAngebotBeteiligteGemeinden);
+        restStammdaten.amAngebotBeteiligteGemeinden = stammdatenTS.amAngebotBeteiligteGemeinden;
         restStammdaten.seitWannFerienbetreuungen = stammdatenTS.seitWannFerienbetreuungen;
         restStammdaten.traegerschaft = stammdatenTS.traegerschaft;
         restStammdaten.stammdatenAdresse = this.adresseToRestObject({}, stammdatenTS.stammdatenAdresse);
@@ -4845,8 +4844,7 @@ export class EbeguRestUtil {
         restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
         restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
-        restAngebot.finanziellBeteiligteGemeinden =
-            this.bfsGemeindeListToRestObject(angebotTS.finanziellBeteiligteGemeinden);
+        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden;
         restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
         restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
         restAngebot.angebotVereineUndPrivateIntegriert = angebotTS.angebotVereineUndPrivateIntegriert;
@@ -4961,8 +4959,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
-        stammdatenTS.amAngebotBeteiligteGemeinden =
-            this.parseBfsGemeindeList(stammdatenFromServer.amAngebotBeteiligteGemeinden);
+        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
@@ -4998,8 +4995,7 @@ export class EbeguRestUtil {
         angebotTS.anzahlStundenProBetreuungstag = angebotFromServer.anzahlStundenProBetreuungstag;
         angebotTS.betreuungErfolgtTagsueber = angebotFromServer.betreuungErfolgtTagsueber;
         angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;
-        angebotTS.finanziellBeteiligteGemeinden =
-            this.parseBfsGemeindeList(angebotFromServer.finanziellBeteiligteGemeinden);
+        angebotTS.finanziellBeteiligteGemeinden = angebotFromServer.finanziellBeteiligteGemeinden;
         angebotTS.gemeindeFuehrtAngebotSelber = angebotFromServer.gemeindeFuehrtAngebotSelber;
         angebotTS.gemeindeBeauftragtExterneAnbieter = angebotFromServer.gemeindeBeauftragtExterneAnbieter;
         angebotTS.angebotVereineUndPrivateIntegriert = angebotFromServer.angebotVereineUndPrivateIntegriert;

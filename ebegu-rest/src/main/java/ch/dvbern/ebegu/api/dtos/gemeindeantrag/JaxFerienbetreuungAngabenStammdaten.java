@@ -17,20 +17,19 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 
 public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 4363557668421396679L;
 
 	@Nullable
-	private List<JaxBfsGemeinde> amAngebotBeteiligteGemeinden;
+	private Set<String> amAngebotBeteiligteGemeinden;
 
 	@Nullable
 	private String seitWannFerienbetreuungen;
@@ -70,11 +69,11 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 
 	@Nullable
-	public List<JaxBfsGemeinde> getAmAngebotBeteiligteGemeinden() {
+	public Set<String> getAmAngebotBeteiligteGemeinden() {
 		return amAngebotBeteiligteGemeinden;
 	}
 
-	public void setAmAngebotBeteiligteGemeinden(@Nullable List<JaxBfsGemeinde> amAngebotBeteiligteGemeinden) {
+	public void setAmAngebotBeteiligteGemeinden(@Nullable Set<String> amAngebotBeteiligteGemeinden) {
 		this.amAngebotBeteiligteGemeinden = amAngebotBeteiligteGemeinden;
 	}
 

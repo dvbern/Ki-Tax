@@ -323,7 +323,7 @@
                         id="am-angebot-beteiligte-gemeinden"
                         [multiple]="true">
                 <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                            [value]="gemeinde">
+                            [value]="gemeinde.name">
                     {{gemeinde.name}}
                 </mat-option>
             </mat-select>

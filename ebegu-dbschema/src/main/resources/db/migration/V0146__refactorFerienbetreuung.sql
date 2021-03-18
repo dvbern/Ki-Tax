@@ -264,30 +264,30 @@ create table ferienbetreuung_angaben_aud (
 
 create table ferienbetreuung_am_angebot_beteiligte_gemeinden (
 	ferienbetreuung_stammdaten_id binary(16) not null,
-	gemeinde_id binary(16) not null,
-	primary key (ferienbetreuung_stammdaten_id, gemeinde_id)
+	am_angebot_beteiligte_gemeinden varchar(255) not null,
+	primary key (ferienbetreuung_stammdaten_id, am_angebot_beteiligte_gemeinden)
 );
 
 create table ferienbetreuung_am_angebot_beteiligte_gemeinden_aud (
 	rev integer not null,
 	ferienbetreuung_stammdaten_id binary(16) not null,
-	gemeinde_id binary(16) not null,
+	am_angebot_beteiligte_gemeinden varchar(255) not null,
 	revtype tinyint,
-	primary key (rev, ferienbetreuung_stammdaten_id, gemeinde_id)
+	primary key (rev, ferienbetreuung_stammdaten_id, am_angebot_beteiligte_gemeinden)
 );
 
 create table ferienbetreuung_finanziell_beteiligte_gemeinden (
 	ferienbetreuung_angebot_id binary(16) not null,
-	gemeinde_id binary(16) not null,
-	primary key (ferienbetreuung_angebot_id, gemeinde_id)
+	finanziell_beteiligte_gemeinden varchar(255) not null,
+	primary key (ferienbetreuung_angebot_id, finanziell_beteiligte_gemeinden)
 );
 
 create table ferienbetreuung_finanziell_beteiligte_gemeinden_aud (
 	rev integer not null,
 	ferienbetreuung_angebot_id binary(16) not null,
-	gemeinde_id binary(16) not null,
+	finanziell_beteiligte_gemeinden varchar(255) not null,
 	revtype tinyint,
-	primary key (rev, ferienbetreuung_angebot_id, gemeinde_id)
+	primary key (rev, ferienbetreuung_angebot_id, finanziell_beteiligte_gemeinden)
 );
 
 # ADD NEW FOREIGN KEYS
@@ -351,46 +351,24 @@ alter table ferienbetreuung_angaben_kosten_einnahmen_aud
 
 # foreign keys and indexes for ferienbetreuung_am_angebot_beteiligte_gemeinden
 
+alter table ferienbetreuung_am_angebot_beteiligte_gemeinden
+	add constraint FK_am_angebot_beteiligte_gemeinden
+		foreign key (ferienbetreuung_stammdaten_id)
+			references ferienbetreuung_angaben_stammdaten (id);
+
 alter table ferienbetreuung_am_angebot_beteiligte_gemeinden_aud
 	add constraint FK_am_angebot_beteiligte_gemeinden_aud
 		foreign key (rev)
-			references revinfo(rev);
-
-alter table ferienbetreuung_am_angebot_beteiligte_gemeinden
-	add constraint ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id
-		foreign key (gemeinde_id)
-			references gemeinde(id);
-
-alter table ferienbetreuung_am_angebot_beteiligte_gemeinden
-	add constraint ferienbetreuung_am_angebot_beteiligte_gemeinden_stammdaten_id
-		foreign key (ferienbetreuung_stammdaten_id)
-			references ferienbetreuung_angaben_stammdaten(id);
-
-create index IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_stammdaten_id
-	on ferienbetreuung_am_angebot_beteiligte_gemeinden(ferienbetreuung_stammdaten_id);
-
-create index IX_ferienbetreuung_am_angebot_beteiligte_gemeinden_gemeinde_id
-	on ferienbetreuung_am_angebot_beteiligte_gemeinden(gemeinde_id);
+			references revinfo (rev);
 
 # foreign keys and indexes for ferienbetreuung_finanziell_beteiligte_gemeinden
+
+alter table ferienbetreuung_finanziell_beteiligte_gemeinden
+	add constraint FK_finanziell_beteiligte_gemeinden
+		foreign key (ferienbetreuung_angebot_id)
+			references ferienbetreuung_angaben_angebot (id);
 
 alter table ferienbetreuung_finanziell_beteiligte_gemeinden_aud
 	add constraint FK_finanziell_beteiligte_gemeinden_aud
 		foreign key (rev)
-			references revinfo(rev);
-
-alter table ferienbetreuung_finanziell_beteiligte_gemeinden
-	add constraint FK_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id
-		foreign key (gemeinde_id)
-			references gemeinde(id);
-
-alter table ferienbetreuung_finanziell_beteiligte_gemeinden
-	add constraint FK_ferienbetreuung_finanziell_beteiligte_gemeinden_angebot_id
-		foreign key (ferienbetreuung_angebot_id)
-			references ferienbetreuung_angaben_angebot(id);
-
-create index IX_ferienbetreuung_finanziell_beteiligte_gemeinden_angebot_id
-	on ferienbetreuung_finanziell_beteiligte_gemeinden(ferienbetreuung_angebot_id);
-
-create index IX_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id
-	on ferienbetreuung_finanziell_beteiligte_gemeinden(gemeinde_id);
+			references revinfo (rev);

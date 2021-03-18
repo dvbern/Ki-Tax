@@ -121,8 +121,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
 		if (jaxStammdaten.getAmAngebotBeteiligteGemeinden() != null) {
-			Set<BfsGemeinde> gemeinden = jaxGemeindeListToEntity(jaxStammdaten.getAmAngebotBeteiligteGemeinden());
-			stammdaten.setAmAngebotBeteiligteGemeinden(gemeinden);
+			stammdaten.setAmAngebotBeteiligteGemeinden(jaxStammdaten.getAmAngebotBeteiligteGemeinden());
 		} else {
 			stammdaten.setAmAngebotBeteiligteGemeinden(Collections.emptySet());
 		}
@@ -186,8 +185,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		angebot.setBemerkungenOeffnungszeiten(jaxAngebot.getBemerkungenOeffnungszeiten());
 
 		if (jaxAngebot.getFinanziellBeteiligteGemeinden() != null) {
-			Set<BfsGemeinde> gemeinden = jaxGemeindeListToEntity(jaxAngebot.getFinanziellBeteiligteGemeinden());
-			angebot.setFinanziellBeteiligteGemeinden(gemeinden);
+			angebot.setFinanziellBeteiligteGemeinden(jaxAngebot.getFinanziellBeteiligteGemeinden());
 		} else {
 			angebot.setFinanziellBeteiligteGemeinden(Collections.emptySet());
 		}
@@ -309,9 +307,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
 
-		List<JaxBfsGemeinde> jaxGemeinden = bfsGemeindeListToJax(stammdaten.getAmAngebotBeteiligteGemeinden());
-
-		jaxStammdaten.setAmAngebotBeteiligteGemeinden(jaxGemeinden);
+		jaxStammdaten.setAmAngebotBeteiligteGemeinden(stammdaten.getAmAngebotBeteiligteGemeinden());
 		jaxStammdaten.setSeitWannFerienbetreuungen(stammdaten.getSeitWannFerienbetreuungen());
 		jaxStammdaten.setTraegerschaft(stammdaten.getTraegerschaft());
 		if (stammdaten.getStammdatenAdresse() != null) {
@@ -360,10 +356,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setAnzahlStundenProBetreuungstag(angebot.getAnzahlStundenProBetreuungstag());
 		jaxAngebot.setBetreuungErfolgtTagsueber(angebot.getBetreuungErfolgtTagsueber());
 		jaxAngebot.setBemerkungenOeffnungszeiten(angebot.getBemerkungenOeffnungszeiten());
-
-		List<JaxBfsGemeinde> jaxGemeinden = bfsGemeindeListToJax(angebot.getFinanziellBeteiligteGemeinden());
-		jaxAngebot.setFinanziellBeteiligteGemeinden(jaxGemeinden);
-
+		jaxAngebot.setFinanziellBeteiligteGemeinden(angebot.getFinanziellBeteiligteGemeinden());
 		jaxAngebot.setGemeindeFuehrtAngebotSelber(angebot.getGemeindeFuehrtAngebotSelber());
 		jaxAngebot.setGemeindeBeauftragtExterneAnbieter(angebot.getGemeindeBeauftragtExterneAnbieter());
 		jaxAngebot.setAngebotVereineUndPrivateIntegriert(angebot.getAngebotVereineUndPrivateIntegriert());

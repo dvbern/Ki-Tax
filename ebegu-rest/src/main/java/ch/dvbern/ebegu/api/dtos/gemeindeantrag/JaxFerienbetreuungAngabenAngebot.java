@@ -18,13 +18,12 @@
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 
 public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
@@ -67,7 +66,7 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private String bemerkungenOeffnungszeiten;
 
 	@Nullable
-	private List<JaxBfsGemeinde> finanziellBeteiligteGemeinden;
+	private Set<String> finanziellBeteiligteGemeinden;
 
 	@Nullable
 	private Boolean gemeindeFuehrtAngebotSelber;
@@ -223,11 +222,11 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public List<JaxBfsGemeinde> getFinanziellBeteiligteGemeinden() {
+	public Set<String> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nullable List<JaxBfsGemeinde> finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nullable Set<String> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 

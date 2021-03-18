@@ -28,24 +28,22 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Audited
@@ -106,21 +104,14 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenOeffnungszeiten;
 
-	@Nonnull
-	@ManyToMany
-	@Audited(targetAuditMode = NOT_AUDITED)
-	@JoinTable(
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
 		name = "ferienbetreuung_finanziell_beteiligte_gemeinden",
-		joinColumns = @JoinColumn(name = "ferienbetreuung_angebot_id", nullable = false),
-		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_ferienbetreuung_finanziell_beteiligte_gemeinden_angebot_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id"),
-		indexes = {
-			@Index(name = "IX_ferienbetreuung_finanziell_beteiligte_gemeinden_angebot_id", columnList = "ferienbetreuung_angebot_id"),
-			@Index(name = "IX_ferienbetreuung_finanziell_beteiligte_gemeinden_gemeinde_id", columnList = "gemeinde_id"),
-		}
+		joinColumns = @JoinColumn(name = "ferienbetreuung_angebot_id")
 	)
-	private Set<BfsGemeinde> finanziellBeteiligteGemeinden = new HashSet<>(); // Gibt es weitere Gemeinden, die sich finanziell am Angebot beteiligen, ohne an der Trägerschaft beteiligt zu sein? Welche?
+	@Column(nullable = false)
+	@Nonnull
+	private Set<String> finanziellBeteiligteGemeinden = new HashSet<>();
 
 	@Nullable
 	@Column()
@@ -294,11 +285,11 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Set<BfsGemeinde> getFinanziellBeteiligteGemeinden() {
+	public Set<String> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nonnull Set<BfsGemeinde> finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nonnull Set<String> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 

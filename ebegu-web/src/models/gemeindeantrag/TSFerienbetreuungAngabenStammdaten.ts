@@ -17,11 +17,10 @@
 
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSAdresse} from '../TSAdresse';
-import {TSBfsGemeinde} from '../TSBfsGemeinde';
 
 export class TSFerienbetreuungAngabenStammdaten extends TSAbstractEntity {
 
-    private _amAngebotBeteiligteGemeinden: TSBfsGemeinde[];
+    private _amAngebotBeteiligteGemeinden: string[];
     private _seitWannFerienbetreuungen: string;
     private _traegerschaft: string;
     private _stammdatenAdresse: TSAdresse;
@@ -35,11 +34,11 @@ export class TSFerienbetreuungAngabenStammdaten extends TSAbstractEntity {
     private _adresseKontoinhaber: TSAdresse;
     private _vermerkAuszahlung: string;
 
-    public get amAngebotBeteiligteGemeinden(): TSBfsGemeinde[] {
+    public get amAngebotBeteiligteGemeinden(): string[] {
         return this._amAngebotBeteiligteGemeinden;
     }
 
-    public set amAngebotBeteiligteGemeinden(value: TSBfsGemeinde[]) {
+    public set amAngebotBeteiligteGemeinden(value: string[]) {
         this._amAngebotBeteiligteGemeinden = value;
     }
 
