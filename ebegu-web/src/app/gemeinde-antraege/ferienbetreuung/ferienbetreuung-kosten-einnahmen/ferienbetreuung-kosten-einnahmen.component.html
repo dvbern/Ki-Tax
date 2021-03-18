@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <form *ngIf="form" [formGroup]="form">
 
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
@@ -205,5 +205,12 @@
         </dv-input-container-x>
 
     </form>
+
+    <div class="actions">
+        <button type="button" class="dv-btn cancel-button"
+                (click)="save()"
+                [textContent]="'SAVE' | translate">
+        </button>
+    </div>
 
 </div>

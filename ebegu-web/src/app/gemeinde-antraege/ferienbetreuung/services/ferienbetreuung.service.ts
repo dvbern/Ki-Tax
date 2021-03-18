@@ -18,7 +18,10 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
@@ -80,6 +83,45 @@ export class FerienbetreuungService {
             return this.ebeguRestUtil.parseFerienbetreuungStammdaten(
                 new TSFerienbetreuungAngabenStammdaten(),
                 restStammdaten
+            );
+        }));
+    }
+
+    public saveAngebot(containerId: string, angebot: TSFerienbetreuungAngabenAngebot):
+        Observable<TSFerienbetreuungAngabenAngebot> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/angebot/save`,
+            this.ebeguRestUtil.ferienbetreuungAngebotToRestObject({}, angebot),
+        ).pipe(map(restAngebot => {
+            return this.ebeguRestUtil.parseFerienbetreuungAngebot(
+                new TSFerienbetreuungAngabenAngebot(),
+                restAngebot
+            );
+        }));
+    }
+
+    public saveNutzung(containerId: string, nutzung: TSFerienbetreuungAngabenNutzung):
+        Observable<TSFerienbetreuungAngabenNutzung> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/nutzung/save`,
+            this.ebeguRestUtil.ferienbetreuungNutzungToRestObject({}, nutzung),
+        ).pipe(map(restNutzung => {
+            return this.ebeguRestUtil.parseFerienbetreuungNutzung(
+                new TSFerienbetreuungAngabenNutzung(),
+                restNutzung
+            );
+        }));
+    }
+
+    public saveKostenEinnahmen(containerId: string, kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen):
+        Observable<TSFerienbetreuungAngabenKostenEinnahmen> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/kostenEinnahmen/save`,
+            this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
+        ).pipe(map(restKostenEinnahmen => {
+            return this.ebeguRestUtil.parseFerienbetreuungKostenEinnahmen(
+                new TSFerienbetreuungAngabenKostenEinnahmen(),
+                restKostenEinnahmen
             );
         }));
     }

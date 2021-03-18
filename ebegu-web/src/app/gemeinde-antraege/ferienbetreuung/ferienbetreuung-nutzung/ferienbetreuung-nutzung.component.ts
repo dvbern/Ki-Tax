@@ -17,9 +17,15 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
+import {TranslateService} from '@ngx-translate/core';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../core/logging/LogFactory';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
+
+const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
 
 @Component({
     selector: 'dv-ferienbetreuung-nutzung',
@@ -31,27 +37,32 @@ export class FerienbetreuungNutzungComponent implements OnInit {
 
     public form: FormGroup;
 
+    private nutzung: TSFerienbetreuungAngabenNutzung;
+    private container: TSFerienbetreuungAngabenContainer;
+
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService
     ) {
     }
 
     public ngOnInit(): void {
         this.ferienbetreuungService.getFerienbetreuungContainer()
             .subscribe(container => {
-                const fbAngaben = container.angabenDeklaration;
-                this.setupForm(fbAngaben);
+                this.container = container;
+                this.nutzung = container.angabenDeklaration?.nutzung;
+                this.setupForm(this.nutzung);
                 this.cd.markForCheck();
             });
     }
 
-    private setupForm(angaben: TSFerienbetreuungAngaben): void {
-        if (!angaben.nutzung) {
+    private setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
+        if (!nutzung) {
             return;
         }
-        const nutzung = angaben.nutzung;
         this.form = this.fb.group({
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
@@ -96,7 +107,31 @@ export class FerienbetreuungNutzungComponent implements OnInit {
         });
     }
 
-    public onFormSubmit(): void {
-        // TODO: implement
+    public save(): void {
+        this.ferienbetreuungService.saveNutzung(this.container.id, this.extractFormValues())
+            .subscribe(() => {
+                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
+            }, err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
+            });
+    }
+
+    private extractFormValues(): TSFerienbetreuungAngabenNutzung {
+        this.nutzung.anzahlBetreuungstageKinderBern = this.form.controls.anzahlBetreuungstageKinderBern.value;
+        this.nutzung.betreuungstageKinderDieserGemeinde = this.form.controls.betreuungstageKinderDieserGemeinde.value;
+        this.nutzung.betreuungstageKinderDieserGemeindeSonderschueler =
+            this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.value;
+        this.nutzung.davonBetreuungstageKinderAndererGemeinden =
+            this.form.controls.davonBetreuungstageKinderAndererGemeinden.value;
+        this.nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler =
+            this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.value;
+        this.nutzung.anzahlBetreuteKinder = this.form.controls.anzahlBetreuteKinder.value;
+        this.nutzung.anzahlBetreuteKinderSonderschueler = this.form.controls.anzahlBetreuteKinderSonderschueler.value;
+        this.nutzung.anzahlBetreuteKinder1Zyklus = this.form.controls.anzahlBetreuteKinder1Zyklus.value;
+        this.nutzung.anzahlBetreuteKinder2Zyklus = this.form.controls.anzahlBetreuteKinder2Zyklus.value;
+        this.nutzung.anzahlBetreuteKinder3Zyklus = this.form.controls.anzahlBetreuteKinder3Zyklus.value;
+        return this.nutzung;
     }
 }

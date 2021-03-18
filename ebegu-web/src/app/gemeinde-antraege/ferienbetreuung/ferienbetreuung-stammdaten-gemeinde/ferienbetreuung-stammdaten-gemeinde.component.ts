@@ -138,7 +138,7 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
     }
 
     public save(): void {
-        this.ferienbetreuungService.saveStammdaten(this.container.id, this.getFormValues())
+        this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => {
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
@@ -148,7 +148,7 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
             });
     }
 
-    private getFormValues(): TSFerienbetreuungAngabenStammdaten {
+    private extractFormValues(): TSFerienbetreuungAngabenStammdaten {
         this.stammdaten.amAngebotBeteiligteGemeinden = this.form.get('amAngebotBeteiligteGemeinden').value;
         this.stammdaten.seitWannFerienbetreuungen = this.form.get('seitWannFerienbetreuungen').value;
         this.stammdaten.traegerschaft = this.form.get('traegerschaft').value;

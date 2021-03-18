@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <form *ngIf="form" [formGroup]="form">
 
         <div class="limit-width">
 
@@ -593,7 +593,14 @@
             </mat-form-field>
         </dv-input-container-x>
 
-
     </form>
+
+
+    <div class="actions">
+        <button type="button" class="dv-btn cancel-button"
+                (click)="save()"
+                [textContent]="'SAVE' | translate">
+        </button>
+    </div>
 
 </div>

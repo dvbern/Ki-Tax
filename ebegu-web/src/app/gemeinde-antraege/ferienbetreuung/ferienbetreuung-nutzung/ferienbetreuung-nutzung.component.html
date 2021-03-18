@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <form *ngIf="form" [formGroup]="form">
 
         <h3 translate class="uppercase">FERIENBETREUUNG_BETREUUNGSTAGE</h3>
         <dv-input-container-x>
@@ -244,4 +244,12 @@
         </dv-input-container-x>
 
     </form>
+
+    <div class="actions">
+        <button type="button" class="dv-btn cancel-button"
+                (click)="save()"
+                [textContent]="'SAVE' | translate">
+        </button>
+    </div>
+
 </div>

@@ -4827,7 +4827,7 @@ export class EbeguRestUtil {
         return restStammdaten;
     }
 
-    private ferienbetreuungAngebotToRestObject(restAngebot: any, angebotTS: TSFerienbetreuungAngabenAngebot): any {
+    public ferienbetreuungAngebotToRestObject(restAngebot: any, angebotTS: TSFerienbetreuungAngabenAngebot): any {
         if (!angebotTS) {
             return undefined;
         }
@@ -4864,10 +4864,10 @@ export class EbeguRestUtil {
         restAngebot.kinderAusAnderenGemeindenZahlenAnderenTarif =
             angebotTS.kinderAusAnderenGemeindenZahlenAnderenTarif;
         restAngebot.bemerkungenTarifsystem = angebotTS.bemerkungenTarifsystem;
-        return angebotTS;
+        return restAngebot;
     }
 
-    private ferienbetreuungNutzungToRestObject(restNutzung: any, nutzungTS: TSFerienbetreuungAngabenNutzung): any {
+    public ferienbetreuungNutzungToRestObject(restNutzung: any, nutzungTS: TSFerienbetreuungAngabenNutzung): any {
         if (!nutzungTS) {
             return undefined;
         }
@@ -4884,10 +4884,10 @@ export class EbeguRestUtil {
         restNutzung.anzahlBetreuteKinder1Zyklus = nutzungTS.anzahlBetreuteKinder1Zyklus;
         restNutzung.anzahlBetreuteKinder2Zyklus = nutzungTS.anzahlBetreuteKinder2Zyklus;
         restNutzung.anzahlBetreuteKinder3Zyklus = nutzungTS.anzahlBetreuteKinder3Zyklus;
-        return nutzungTS;
+        return restNutzung;
     }
 
-    private ferienbetreuungKostenEinnahmenToRestObject(
+    public ferienbetreuungKostenEinnahmenToRestObject(
         restKostenEinnahmen: any,
         kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen
     ): any {
@@ -4903,7 +4903,7 @@ export class EbeguRestUtil {
         restKostenEinnahmen.bemerkungenKosten = kostenEinnahmenTS.bemerkungenKosten;
         restKostenEinnahmen.elterngebuehren = kostenEinnahmenTS.elterngebuehren;
         restKostenEinnahmen.weitereEinnahmen = kostenEinnahmenTS.weitereEinnahmen;
-        return kostenEinnahmenTS;
+        return restKostenEinnahmen;
     }
 
     public parseFerienbetreuungContainer(containerTS: TSFerienbetreuungAngabenContainer, containerFromServer: any):
@@ -4977,7 +4977,7 @@ export class EbeguRestUtil {
         return stammdatenTS;
     }
 
-    private parseFerienbetreuungAngebot(angebotTS: TSFerienbetreuungAngabenAngebot, angebotFromServer: any):
+    public parseFerienbetreuungAngebot(angebotTS: TSFerienbetreuungAngabenAngebot, angebotFromServer: any):
         TSFerienbetreuungAngabenAngebot | undefined {
 
         if (!angebotFromServer) {
@@ -5020,7 +5020,7 @@ export class EbeguRestUtil {
         return angebotTS;
     }
 
-    private parseFerienbetreuungNutzung(nutzungTS: TSFerienbetreuungAngabenNutzung, nutzungFromServer: any):
+    public parseFerienbetreuungNutzung(nutzungTS: TSFerienbetreuungAngabenNutzung, nutzungFromServer: any):
         TSFerienbetreuungAngabenNutzung | undefined {
 
         if (!nutzungFromServer) {
@@ -5043,7 +5043,7 @@ export class EbeguRestUtil {
         return nutzungTS;
     }
 
-    private parseFerienbetreuungKostenEinnahmen(
+    public parseFerienbetreuungKostenEinnahmen(
         kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen,
         kostenEinnahmenFromServer: any
     ): TSFerienbetreuungAngabenKostenEinnahmen | undefined {
