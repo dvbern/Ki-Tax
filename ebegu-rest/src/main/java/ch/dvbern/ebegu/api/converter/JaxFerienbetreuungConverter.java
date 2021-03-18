@@ -180,6 +180,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		angebot.setAnzahlFerienwochenFruehlingsferien(jaxAngebot.getAnzahlFerienwochenFruehlingsferien());
 		angebot.setAnzahlFerienwochenSommerferien(jaxAngebot.getAnzahlFerienwochenSommerferien());
 		angebot.setAnzahlTage(jaxAngebot.getAnzahlTage());
+		angebot.setBemerkungenAnzahlFerienwochen(jaxAngebot.getBemerkungenAnzahlFerienwochen());
 		angebot.setAnzahlStundenProBetreuungstag(jaxAngebot.getAnzahlStundenProBetreuungstag());
 		angebot.setBetreuungErfolgtTagsueber(jaxAngebot.getBetreuungErfolgtTagsueber());
 		angebot.setBemerkungenOeffnungszeiten(jaxAngebot.getBemerkungenOeffnungszeiten());
@@ -353,6 +354,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setAnzahlFerienwochenFruehlingsferien(angebot.getAnzahlFerienwochenFruehlingsferien());
 		jaxAngebot.setAnzahlFerienwochenSommerferien(angebot.getAnzahlFerienwochenSommerferien());
 		jaxAngebot.setAnzahlTage(angebot.getAnzahlTage());
+		jaxAngebot.setBemerkungenAnzahlFerienwochen(angebot.getBemerkungenAnzahlFerienwochen());
 		jaxAngebot.setAnzahlStundenProBetreuungstag(angebot.getAnzahlStundenProBetreuungstag());
 		jaxAngebot.setBetreuungErfolgtTagsueber(angebot.getBetreuungErfolgtTagsueber());
 		jaxAngebot.setBemerkungenOeffnungszeiten(angebot.getBemerkungenOeffnungszeiten());

@@ -57,6 +57,9 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private BigDecimal anzahlTage;
 
 	@Nullable
+	private String bemerkungenAnzahlFerienwochen;
+
+	@Nullable
 	private BigDecimal anzahlStundenProBetreuungstag;
 
 	@Nullable
@@ -192,6 +195,15 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
 	public void setAnzahlTage(@Nullable BigDecimal anzahlTage) {
 		this.anzahlTage = anzahlTage;
+	}
+
+	@Nullable
+	public String getBemerkungenAnzahlFerienwochen() {
+		return bemerkungenAnzahlFerienwochen;
+	}
+
+	public void setBemerkungenAnzahlFerienwochen(@Nullable String bemerkungenAnzahlFerienwochen) {
+		this.bemerkungenAnzahlFerienwochen = bemerkungenAnzahlFerienwochen;
 	}
 
 	@Nullable

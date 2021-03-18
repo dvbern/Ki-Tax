@@ -104,7 +104,7 @@ export class FerienbetreuungAngebotComponent implements OnInit {
                 numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
-                // TODO: add this property
+                angebot?.bemerkungenAnzahlFerienwochen
             ],
             anzahlStundenProBetreuungstag: [
                 angebot?.anzahlStundenProBetreuungstag

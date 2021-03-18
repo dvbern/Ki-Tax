@@ -29,6 +29,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _anzahlFerienwochenFruehlingsferien: number;
     private _anzahlFerienwochenSommerferien: number;
     private _anzahlTage: number;
+    private _bemerkungenAnzahlFerienwochen: string;
     private _anzahlStundenProBetreuungstag: number;
     private _betreuungErfolgtTagsueber: boolean;
     private _bemerkungenOeffnungszeiten: string;
@@ -119,6 +120,14 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
 
     public set anzahlTage(value: number) {
         this._anzahlTage = value;
+    }
+
+    public get bemerkungenAnzahlFerienwochen(): string {
+        return this._bemerkungenAnzahlFerienwochen;
+    }
+
+    public set bemerkungenAnzahlFerienwochen(value: string) {
+        this._bemerkungenAnzahlFerienwochen = value;
     }
 
     public get anzahlStundenProBetreuungstag(): number {

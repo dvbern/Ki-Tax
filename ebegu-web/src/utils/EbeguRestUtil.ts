@@ -4841,6 +4841,7 @@ export class EbeguRestUtil {
         restAngebot.anzahlFerienwochenFruehlingsferien = angebotTS.anzahlFerienwochenFruehlingsferien;
         restAngebot.anzahlFerienwochenSommerferien = angebotTS.anzahlFerienwochenSommerferien;
         restAngebot.anzahlTage = angebotTS.anzahlTage;
+        restAngebot.bemerkungenAnzahlFerienwochen = angebotTS.bemerkungenAnzahlFerienwochen;
         restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
         restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
@@ -4992,6 +4993,7 @@ export class EbeguRestUtil {
         angebotTS.anzahlFerienwochenFruehlingsferien = angebotFromServer.anzahlFerienwochenFruehlingsferien;
         angebotTS.anzahlFerienwochenSommerferien = angebotFromServer.anzahlFerienwochenSommerferien;
         angebotTS.anzahlTage = angebotFromServer.anzahlTage;
+        angebotTS.bemerkungenAnzahlFerienwochen = angebotFromServer.bemerkungenAnzahlFerienwochen;
         angebotTS.anzahlStundenProBetreuungstag = angebotFromServer.anzahlStundenProBetreuungstag;
         angebotTS.betreuungErfolgtTagsueber = angebotFromServer.betreuungErfolgtTagsueber;
         angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;

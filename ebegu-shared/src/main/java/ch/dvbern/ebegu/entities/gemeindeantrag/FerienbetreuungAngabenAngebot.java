@@ -91,6 +91,11 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Column()
 	private BigDecimal anzahlTage;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Column(length = Constants.DB_TEXTAREA_LENGTH)
+	private String bemerkungenAnzahlFerienwochen;
+
 	@Nullable
 	@Column()
 	private BigDecimal anzahlStundenProBetreuungstag;
@@ -255,6 +260,15 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	public void setAnzahlTage(@Nullable BigDecimal anzahlTage) {
 		this.anzahlTage = anzahlTage;
+	}
+
+	@Nullable
+	public String getBemerkungenAnzahlFerienwochen() {
+		return bemerkungenAnzahlFerienwochen;
+	}
+
+	public void setBemerkungenAnzahlFerienwochen(@Nullable String bemerkungenAnzahlFerienwochen) {
+		this.bemerkungenAnzahlFerienwochen = bemerkungenAnzahlFerienwochen;
 	}
 
 	@Nullable
