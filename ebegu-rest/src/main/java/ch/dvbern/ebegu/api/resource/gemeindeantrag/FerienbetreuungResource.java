@@ -27,6 +27,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -41,7 +42,11 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import io.swagger.annotations.Api;
@@ -109,7 +114,7 @@ public class FerienbetreuungResource {
 	@Path("/saveKommentar/{containerId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public void saveLATSKommentar(
+	public void saveKommentar(
 		@Nonnull String kommentar,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response,
@@ -120,4 +125,43 @@ public class FerienbetreuungResource {
 
 		ferienbetreuungService.saveKommentar(containerId.getId(), kommentar);
 	}
+
+	@ApiOperation(
+		value = "Speichert FerieninselAngabenStammdaten in der Datenbank",
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+	@Nonnull
+	@PUT
+	@Path("/{containerId}/stammdaten/save")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxFerienbetreuungAngabenStammdaten saveFerienbetreuungStammdaten(
+		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(jaxStammdaten.getId());
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungStammdaten", containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenStammdaten stammdaten =
+			ferienbetreuungService.findFerienbetreuungAngabenStammdaten(jaxStammdaten.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungStammdaten", jaxStammdaten.getId()));
+
+		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
+
+		FerienbetreuungAngabenStammdaten persisted = ferienbetreuungService.saveFerienbetreuungAngabenStammdaten(stammdaten);
+		return converter.ferienbetreuungAngabenStammdatenToJax(persisted);
+	}
+
+
+
+
 }

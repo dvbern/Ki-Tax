@@ -87,7 +87,6 @@ import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.sentry.event.User;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_FERIENBETREUUNG;
@@ -97,7 +96,6 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.JURIST;
 import static ch.dvbern.ebegu.enums.UserRole.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
@@ -110,6 +108,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.getAllAdminRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getMandantSuperadminRoles;
 import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 
@@ -1837,6 +1836,32 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			throwViolation(sozialdienst);
 
 		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull FerienbetreuungAngabenContainer container) {
+		Objects.requireNonNull(container);
+		switch (container.getStatus()) {
+		case IN_BEARBEITUNG_GEMEINDE: {
+			if (principalBean.isCallerInAnyOfRole(ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG)
+			|| principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())) {
+				return;
+			}
+			throwViolation(container);
+		} case IN_PRUEFUNG_KANTON: {
+			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
+				return;
+			}
+			throwViolation(container);
+		}
+		case VERFUEGT:
+		case ABGELEHNT:
+			throwViolation(container);
+			return;
+		default:
+			throwViolation(container);
+		}
+
 	}
 
 	@Override

@@ -4803,7 +4803,7 @@ export class EbeguRestUtil {
         // never send kantonsbeitrag and gemeindebeitrag to server
     }
 
-    private ferienbetreuungStammdatenToRestObject(
+    public ferienbetreuungStammdatenToRestObject(
         restStammdaten: any,
         stammdatenTS: TSFerienbetreuungAngabenStammdaten
     ): any {
@@ -4822,9 +4822,9 @@ export class EbeguRestUtil {
         restStammdaten.stammdatenKontaktpersonEmail = stammdatenTS.stammdatenKontaktpersonEmail;
         restStammdaten.iban = stammdatenTS.iban;
         restStammdaten.kontoinhaber = stammdatenTS.kontoinhaber;
-        restStammdaten.adresseKontoinhaber = this.adresseToRestObject({}, stammdatenTS.adresseKontoinhaber);
+        restStammdaten.adresseKontoinhaber = stammdatenTS.adresseKontoinhaber;
         restStammdaten.vermerkAuszahlung = stammdatenTS.vermerkAuszahlung;
-        return stammdatenTS;
+        return restStammdaten;
     }
 
     private ferienbetreuungAngebotToRestObject(restAngebot: any, angebotTS: TSFerienbetreuungAngabenAngebot): any {
@@ -4952,7 +4952,7 @@ export class EbeguRestUtil {
         return ferienbetreuungTS;
     }
 
-    private parseFerienbetreuungStammdaten(stammdatenTS: TSFerienbetreuungAngabenStammdaten, stammdatenFromServer: any):
+    public parseFerienbetreuungStammdaten(stammdatenTS: TSFerienbetreuungAngabenStammdaten, stammdatenFromServer: any):
         TSFerienbetreuungAngabenStammdaten | undefined {
 
         if (!stammdatenFromServer) {

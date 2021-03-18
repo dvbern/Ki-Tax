@@ -17,7 +17,9 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -67,5 +69,18 @@ export class FerienbetreuungService {
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
             kommentar,
         );
+    }
+
+    public saveStammdaten(containerId: string, stammdaten: TSFerienbetreuungAngabenStammdaten):
+        Observable<TSFerienbetreuungAngabenStammdaten> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/stammdaten/save`,
+            this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
+        ).pipe(map(restStammdaten => {
+            return this.ebeguRestUtil.parseFerienbetreuungStammdaten(
+                new TSFerienbetreuungAngabenStammdaten(),
+                restStammdaten
+            );
+        }));
     }
 }
