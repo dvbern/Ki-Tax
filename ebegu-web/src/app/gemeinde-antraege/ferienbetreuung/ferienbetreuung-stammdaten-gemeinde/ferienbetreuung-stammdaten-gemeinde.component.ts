@@ -195,4 +195,19 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
         this.stammdaten.vermerkAuszahlung = this.form.get('vermerkAuszahlung').value;
         return this.stammdaten;
     }
+
+    public fillAdress(): void {
+        const gemeinde = this.container.gemeinde;
+        this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then(stammdaten => {
+            const adresse = stammdaten.extractTsAdresse();
+            this.form.get('stammdatenAdresseAnschrift').setValue(adresse?.organisation);
+            this.form.get('stammdatenAdresseStrasse').setValue(adresse?.strasse);
+            this.form.get('stammdatenAdresseNr').setValue(adresse?.hausnummer);
+            this.form.get('stammdatenAdressePlz').setValue(adresse?.plz);
+            this.form.get('stammdatenAdresseOrt').setValue(adresse.ort);
+        }, err => {
+            this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN'));
+            LOG.error(err);
+        });
+    }
 }

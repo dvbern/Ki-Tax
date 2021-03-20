@@ -2311,7 +2311,7 @@
     "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Aktivieren",
-    "ERR_GEMEINDEN_LADEN": "Gemeinden konnten nicht gelden werden",
+    "ERR_GEMEINDEN_LADEN": "Gemeinden konnten nicht geladen werden",
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Antrag erstellen",
     "FERIENBETREUUNG_STAMMDATEN_GEMEINDE": "Stammdaten Gemeinde",
     "FERIENBETREUUNG_ANGEBOT": "Angebot",
@@ -2391,5 +2391,7 @@
     "FERIENBETREUUNG_TARIF_ABGELEITET":  "Aus dem Tarif der Tagesschule werden Tarifstufen für die Ferienbetreuung abgeleitet.",
     "FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF": "Kinder aus anderen Gemeinden bezahlen einen anderen Tarif.",
     "FERIENBETREUUNG_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Formulars",
+    "FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN": "Beim Abrufen der Informationen ist ein Fehler aufgetreten",
+    "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

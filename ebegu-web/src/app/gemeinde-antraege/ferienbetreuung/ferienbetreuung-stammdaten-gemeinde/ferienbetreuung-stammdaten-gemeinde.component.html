@@ -61,12 +61,21 @@
 
         <mat-divider></mat-divider>
 
-        <h3 translate class="uppercase" id="adresse-header">
-            {{'FERIENBETREUUNG_ADRESSE_GEMEINDE' | translate}}
-            <dv-tooltip inputId="adresse-header"
-                        [text]="'FERIENBETREUUNG_ADRESSE_GEMEINDE_HINT' | translate">
-            </dv-tooltip>
+        <h3 translate class="uppercase margin-bottom-20" id="adresse-header">
+            <div>
+                {{'FERIENBETREUUNG_ADRESSE_GEMEINDE' | translate}}
+                <dv-tooltip inputId="adresse-header"
+                            [text]="'FERIENBETREUUNG_ADRESSE_GEMEINDE_HINT' | translate">
+                </dv-tooltip>
+            </div>
+            <div class="flex-whitespace-item"></div>
+            <button type="button"
+                    (click)="fillAdress()"
+                    class="dv-btn cancel-button">
+                {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
+            </button>
         </h3>
+
         <dv-input-container-x [verticalAlign]="true">
             <label required [ngClass]="{'label-required-error': form && form.get('stammdatenAdresseAnschrift').errors}">
                 {{'ADRESSE_ANSCHRIFT' | translate}}
@@ -78,16 +87,6 @@
             <mat-error *ngIf="form && form.get('stammdatenAdresseAnschrift').errors?.required"
                        translate>ERROR_REQUIRED
             </mat-error>
-        </dv-input-container-x>
-
-        <dv-input-container-x [verticalAlign]="true">
-            <label>
-                {{'ADRESSE_ZUSATZZEILE' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <input type="text" matInput formControlName="stammdatenAdresseZusatz" class="form-control dv-input"/>
-            </mat-form-field>
         </dv-input-container-x>
 
         <div class="row">
