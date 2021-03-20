@@ -558,6 +558,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			return;
 		}
+		case ADMIN_SOZIALDIENST: {
+			if (benutzer.getSozialdienst() == null || !userBelongsToSozialdienstOfPrincipal(benutzer)) {
+				throwViolation(benutzer);
+			}
+			return;
+		}
 		case GESUCHSTELLER: {
 			if (!hasPrincipalName(benutzer)) {
 				throwViolation(benutzer);
@@ -612,9 +618,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInRole(ADMIN_INSTITUTION) && benutzer.getInstitution() != null) {
 			return userBelongsToInstitutionOfPrincipal(benutzer);
 		}
-		if (principalBean.isCallerInAnyOfRole(ADMIN_FERIENBETREUUNG)) {
+		if (principalBean.isCallerInRole(ADMIN_FERIENBETREUUNG)) {
 			return benutzer.getRole().isRoleFerienbetreuung() &&
 				userHasSameGemeindeAsPrincipal(benutzer);
+		}
+		if (principalBean.isCallerInRole(ADMIN_SOZIALDIENST) && benutzer.getSozialdienst() != null) {
+			return userBelongsToSozialdienstOfPrincipal(benutzer);
 		}
 
 		return false;
@@ -665,6 +674,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList().stream()
 			.anyMatch(gemeinde -> benutzer.getCurrentBerechtigung().getGemeindeList().contains(gemeinde));
 	}
+
+	private boolean userBelongsToSozialdienstOfPrincipal(@Nonnull Benutzer benutzer) {
+		return benutzer.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.SOZIALDIENST
+			&& Objects.requireNonNull(principalBean.getBenutzer().getSozialdienst()).equals(benutzer.getSozialdienst());
+	}
+
 
 	@Override
 	public <T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T> betreuungen) {

@@ -111,6 +111,9 @@ import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -129,18 +132,22 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
+import ch.dvbern.ebegu.enums.SozialdienstStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
@@ -2293,5 +2300,35 @@ public final class TestDataUtil {
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(null);
 		return angabenInstitution;
+	}
+
+	public static Fall addSozialdienstToFall(Persistence persistence, FallService fallService, Fall fall) {
+		SozialdienstFall sozialdienstFall = new SozialdienstFall();
+		sozialdienstFall.setName("SozialName");
+		sozialdienstFall.setVorname("SozialVorname");
+		sozialdienstFall.setGeburtsdatum(LocalDate.now());
+		sozialdienstFall.setStatus(SozialdienstFallStatus.AKTIV);
+		Adresse adresse = new Adresse();
+		adresse.setGemeinde("Biel");
+		adresse.setLand(Land.CH);
+		adresse.setOrt("Biel");
+		adresse.setPlz("2500");
+		adresse.setStrasse("Bielerseestrasse");
+		sozialdienstFall.setAdresse(adresse);
+		Sozialdienst sozialdienst = new Sozialdienst();
+		sozialdienst.setName("Sozialdienst Biel");
+		sozialdienst.setStatus(SozialdienstStatus.AKTIV);
+		assert fall.getMandant() != null;
+		sozialdienst.setMandant(fall.getMandant());
+		sozialdienstFall.setSozialdienst(sozialdienst);
+		fall.setSozialdienstFall(sozialdienstFall);
+		SozialdienstStammdaten sozialdienstStammdaten = new SozialdienstStammdaten();
+		sozialdienstStammdaten.setSozialdienst(sozialdienst);
+		sozialdienstStammdaten.setAdresse(adresse);
+		sozialdienstStammdaten.setMail("sozialmail@mailbucket.dvbern.ch");
+		sozialdienstStammdaten.setTelefon("078 818 82 84");
+		sozialdienstStammdaten.setWebseite("");
+		persistence.persist(sozialdienstStammdaten);
+		return fallService.saveFall(fall);
 	}
 }
