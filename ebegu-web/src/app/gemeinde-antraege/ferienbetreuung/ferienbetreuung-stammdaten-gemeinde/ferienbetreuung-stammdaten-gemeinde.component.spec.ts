@@ -19,6 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -34,6 +35,8 @@ const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(ErrorService.name,
+    ['getPrincipal']);
 
 describe('FerienbetreuungStammdatenGemeindeComponent', () => {
     let component: FerienbetreuungStammdatenGemeindeComponent;
@@ -55,6 +58,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
             ]
         })
             .compileComponents();

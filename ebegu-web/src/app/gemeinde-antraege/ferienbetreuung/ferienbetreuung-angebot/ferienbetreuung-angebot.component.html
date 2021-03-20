@@ -315,9 +315,8 @@
                 {{'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN' | translate}}
                 <dv-tooltip [text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
             </label>
-            <mat-form-field>
-            <mat-select *ngIf="bfsGemeinden?.length"
-                        class="form-control"
+            <mat-form-field *ngIf="bfsGemeinden?.length">
+            <mat-select class="form-control"
                         formControlName="finanziellBeteiligteGemeinden"
                         name="finanziellBeteiligteGemeinden"
                         id="am-angebot-beteiligte-gemeinden"
