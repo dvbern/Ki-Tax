@@ -15,28 +15,56 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {of} from 'rxjs';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {SharedModule} from '../../../shared/shared.module';
+import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungKostenEinnahmenComponent} from './ferienbetreuung-kosten-einnahmen.component';
 
+const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
+    FerienbetreuungService.name,
+    ['getFerienbetreuungContainer']
+);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
+    ['addMesageAsError', 'addMesageAsInfo']);
+
 describe('FerienbetreuungKostenEinnahmenComponent', () => {
-  let component: FerienbetreuungKostenEinnahmenComponent;
-  let fixture: ComponentFixture<FerienbetreuungKostenEinnahmenComponent>;
+    let component: FerienbetreuungKostenEinnahmenComponent;
+    let fixture: ComponentFixture<FerienbetreuungKostenEinnahmenComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungKostenEinnahmenComponent ]
-    })
-    .compileComponents();
-  });
+    const container = new TSFerienbetreuungAngabenContainer();
+    container.angabenDeklaration = null;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungKostenEinnahmenComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [FerienbetreuungKostenEinnahmenComponent],
+            imports: [
+                FormsModule,
+                ReactiveFormsModule,
+                SharedModule,
+                HttpClientModule
+            ],
+            providers: [
+                {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+            ]
+        })
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        fixture = TestBed.createComponent(FerienbetreuungKostenEinnahmenComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
