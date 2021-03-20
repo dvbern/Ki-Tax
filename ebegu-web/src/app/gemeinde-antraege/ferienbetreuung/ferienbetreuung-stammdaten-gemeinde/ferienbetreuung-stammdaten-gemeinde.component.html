@@ -144,12 +144,21 @@
 
         <mat-divider></mat-divider>
 
-        <h3 translate class="uppercase">
-            {{'KONTAKTPERSON' | translate}}
-            <dv-tooltip inputId="auszahlung-header"
-                        [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
-            </dv-tooltip>
+        <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
+            <div>
+                {{'KONTAKTPERSON' | translate}}
+                <dv-tooltip inputId="kontaktperson-header"
+                            [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
+                </dv-tooltip>
+            </div>
+            <div class="flex-whitespace-item"></div>
+            <button type="button"
+                    (click)="fillBenutzer()"
+                    class="dv-btn cancel-button">
+                {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
+            </button>
         </h3>
+
         <div class="row">
 
             <dv-input-container-x [verticalAlign]="true" class="col-xs-6">

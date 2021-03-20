@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@an
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ibanValidator} from 'ngx-iban';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
@@ -53,7 +54,8 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly gemeindeRS: GemeindeRS,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -209,5 +211,12 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
             this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN'));
             LOG.error(err);
         });
+    }
+
+    public fillBenutzer(): void {
+        const benutzer = this.authServiceRS.getPrincipal();
+        this.form.get('stammdatenKontaktpersonVorname').setValue(benutzer.vorname);
+        this.form.get('stammdatenKontaktpersonNachname').setValue(benutzer.nachname);
+        this.form.get('stammdatenKontaktpersonEmail').setValue(benutzer.email);
     }
 }

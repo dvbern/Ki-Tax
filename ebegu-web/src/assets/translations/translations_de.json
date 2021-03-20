@@ -2393,5 +2393,6 @@
     "FERIENBETREUUNG_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Formulars",
     "FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN": "Beim Abrufen der Informationen ist ein Fehler aufgetreten",
     "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
+    "FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN": "Aus Benutzer übernehmen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
