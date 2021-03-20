@@ -28,4 +28,6 @@ export class TSPublicAppConfig {
     public kitaxEndpoint: string;
     public notverordnungDefaultEinreichefristOeffentlich: string;
     public notverordnungDefaultEinreichefristPrivat: string;
+    public ferienbetreuungAktiv: string;
+    public lastenausgleichTagesschulenAktiv: string;
 }
