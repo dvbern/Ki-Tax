@@ -64,6 +64,8 @@ export class FerienbetreuungStammdatenGemeindeComponent implements OnInit {
                 this.stammdaten = container.angabenDeklaration?.stammdaten;
                 this.setupForm(this.stammdaten);
                 this.cd.markForCheck();
+            }, error => {
+                LOG.error(error);
             });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
             this.bfsGemeinden = gemeinden;

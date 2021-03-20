@@ -55,6 +55,8 @@ export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
                 this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
                 this.setupForm(this.kostenEinnahmen);
                 this.cd.markForCheck();
+            }, error => {
+                LOG.error(error);
             });
     }
 

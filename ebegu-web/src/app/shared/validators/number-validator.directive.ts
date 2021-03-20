@@ -1,4 +1,4 @@
-import {AbstractControl, ValidatorFn} from '@angular/forms';
+import {ValidatorFn} from '@angular/forms';
 
 export enum ValidationType {
     INTEGER,
@@ -6,7 +6,7 @@ export enum ValidationType {
 }
 
 export function numberValidator(type: ValidationType): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
+    return (control): {[key: string]: any} | null => {
         if (!control.value) {
             return null;
         }

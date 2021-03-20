@@ -63,6 +63,8 @@ export class FerienbetreuungAngebotComponent implements OnInit {
                 this.angebot = container.angabenDeklaration?.angebot;
                 this.setupForm(this.angebot);
                 this.cd.markForCheck();
+            }, error => {
+                LOG.error(error);
             });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
             this.bfsGemeinden = gemeinden;

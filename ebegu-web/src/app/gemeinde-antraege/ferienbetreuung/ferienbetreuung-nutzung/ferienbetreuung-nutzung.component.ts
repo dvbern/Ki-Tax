@@ -56,6 +56,8 @@ export class FerienbetreuungNutzungComponent implements OnInit {
                 this.nutzung = container.angabenDeklaration?.nutzung;
                 this.setupForm(this.nutzung);
                 this.cd.markForCheck();
+            }, error => {
+                LOG.error(error);
             });
     }
 
