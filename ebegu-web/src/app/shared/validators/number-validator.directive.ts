@@ -11,12 +11,27 @@ export function numberValidator(type: ValidationType): ValidatorFn {
             return null;
         }
         if (type === ValidationType.INTEGER) {
-            return Number.isInteger(control.value) ? null : {isNotInteger: {value: control.value}};
+            const err = {isNotInteger: {value: control.value}};
+            return isInteger(control.value) ? null : err;
         }
         if (type === ValidationType.HALF) {
-            const isHalf = control.value * 2 % 1 === 0;
-            return isHalf ? null : {isNotHalf: {value: control.value}};
+            const err = {isNotHalf: {value: control.value}};
+            return isHalf(control.value) ? null : err;
         }
         throw new Error('Not implemented');
     };
+}
+
+function isInteger(val: any): boolean {
+    if (isNaN(val)) {
+        return false;
+    }
+    return Number.isInteger(val * 1);
+}
+
+function isHalf(val: any): boolean {
+    if (isNaN(val)) {
+        return false;
+    }
+    return val * 2 % 1 === 0;
 }

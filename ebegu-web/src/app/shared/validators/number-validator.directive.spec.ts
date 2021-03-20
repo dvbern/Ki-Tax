@@ -35,4 +35,12 @@ describe('numberValidator', () => {
         const test = numberValidator(ValidationType.HALF)(new FormControl('1.5'));
         expect(test).toEqual(null);
     });
+    it('should return an error if "abc" ist tested for integer', () => {
+        const test = numberValidator(ValidationType.INTEGER)(new FormControl('abc'));
+        expect(test).toEqual({isNotInteger: {value: 'abc'}});
+    });
+    it('should return an error if "abc" ist tested for half number', () => {
+        const test = numberValidator(ValidationType.HALF)(new FormControl('abc'));
+        expect(test).toEqual({isNotHalf: {value: 'abc'}});
+    });
 });
