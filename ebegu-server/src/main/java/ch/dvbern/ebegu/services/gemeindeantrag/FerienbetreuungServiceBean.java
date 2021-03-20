@@ -65,6 +65,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 public class FerienbetreuungServiceBean extends AbstractBaseService
 	implements FerienbetreuungService {
 
+	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
+
 	@Inject
 	private Persistence persistence;
 
@@ -129,7 +131,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull String containerId) {
-		Objects.requireNonNull(containerId, "id muss gesetzt sein");
+		Objects.requireNonNull(containerId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenContainer container =
 			persistence.find(FerienbetreuungAngabenContainer.class, containerId);
@@ -165,7 +167,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Optional<FerienbetreuungAngabenStammdaten> findFerienbetreuungAngabenStammdaten(@Nonnull String stammdatenId) {
-		Objects.requireNonNull(stammdatenId, "id muss gesetzt sein");
+		Objects.requireNonNull(stammdatenId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenStammdaten stammdaten =
 			persistence.find(FerienbetreuungAngabenStammdaten.class, stammdatenId);
@@ -176,7 +178,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Optional<FerienbetreuungAngabenAngebot> findFerienbetreuungAngabenAngebot(@Nonnull String angebotId) {
-		Objects.requireNonNull(angebotId, "id muss gesetzt sein");
+		Objects.requireNonNull(angebotId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenAngebot angebot =
 			persistence.find(FerienbetreuungAngabenAngebot.class, angebotId);
@@ -187,7 +189,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Optional<FerienbetreuungAngabenNutzung> findFerienbetreuungAngabenNutzung(@Nonnull String nutzungId) {
-		Objects.requireNonNull(nutzungId, "id muss gesetzt sein");
+		Objects.requireNonNull(nutzungId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenNutzung nutzung =
 			persistence.find(FerienbetreuungAngabenNutzung.class, nutzungId);
@@ -198,7 +200,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Optional<FerienbetreuungAngabenKostenEinnahmen> findFerienbetreuungAngabenKostenEinnahmen(@Nonnull String kostenEinnahmenId) {
-		Objects.requireNonNull(kostenEinnahmenId, "id muss gesetzt sein");
+		Objects.requireNonNull(kostenEinnahmenId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
 			persistence.find(FerienbetreuungAngabenKostenEinnahmen.class, kostenEinnahmenId);
