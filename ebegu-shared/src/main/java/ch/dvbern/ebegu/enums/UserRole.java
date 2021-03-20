@@ -174,6 +174,11 @@ public enum UserRole {
 		return Arrays.asList(SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS);
 	}
 
+	public static List<UserRole> getAllGemeindeFerienbetreuungRoles() {
+		return Arrays.asList(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
+			SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
+	}
+
 	public static List<UserRole> getAllInstitutionAdminRoles() {
 		return Arrays.asList(ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT);
 	}

@@ -1843,8 +1843,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		Objects.requireNonNull(container);
 		switch (container.getStatus()) {
 		case IN_BEARBEITUNG_GEMEINDE: {
-			if (principalBean.isCallerInAnyOfRole(ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG)
-			|| principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())) {
+			if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+				return;
+			}
+			boolean isFBRole = principalBean.isCallerInAnyOfRole(
+				UserRole.getAllGemeindeFerienbetreuungRoles()
+			);
+			if (isFBRole && principalBean.belongsToGemeinde(container.getGemeinde())) {
 				return;
 			}
 			throwViolation(container);
@@ -1875,7 +1880,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			return;
 		}
-		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+		if (principalBean.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungRoles())
 			&& principalBean.belongsToGemeinde(container.getGemeinde())) {
 			return;
 		}
