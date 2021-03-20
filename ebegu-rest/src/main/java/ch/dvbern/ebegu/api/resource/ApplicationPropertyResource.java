@@ -242,6 +242,12 @@ public class ApplicationPropertyResource {
 		ApplicationProperty einreichefristPrivat  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		ApplicationProperty ferienbetreuungAktiv  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		ApplicationProperty lastenausgleichTagesschulenAktiv  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		String nodeName = "";
 		try {
@@ -261,7 +267,9 @@ public class ApplicationPropertyResource {
 			kitaxHost,
 			kitaxendpoint,
 			einreichefristOeffentlich.getValue(),
-			einreichefristPrivat.getValue()
+			einreichefristPrivat.getValue(),
+			ferienbetreuungAktiv.getValue(),
+			lastenausgleichTagesschulenAktiv.getValue()
 		);
 		return Response.ok(pubAppConf).build();
 	}

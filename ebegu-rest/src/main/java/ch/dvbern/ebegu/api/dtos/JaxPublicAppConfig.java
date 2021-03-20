@@ -23,6 +23,8 @@ public class JaxPublicAppConfig {
 	private String kitaxEndpoint;
 	private String notverordnungDefaultEinreichefristOeffentlich;
 	private String notverordnungDefaultEinreichefristPrivat;
+	private String ferienbetreuungAktiv;
+	private String lastenausgleichTagesschulenAktiv;
 
 	public JaxPublicAppConfig(
 		String currentNode,
@@ -36,7 +38,9 @@ public class JaxPublicAppConfig {
 		String kitaxHost,
 		String kitaxEndpoint,
 		String notverordnungDefaultEinreichefristOeffentlich,
-		String notverordnungDefaultEinreichefristPrivat
+		String notverordnungDefaultEinreichefristPrivat,
+		String ferienbetreuungAktiv,
+		String lastenausgleichTagesschulenAktiv
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -50,6 +54,8 @@ public class JaxPublicAppConfig {
 		this.kitaxEndpoint = kitaxEndpoint;
 		this.notverordnungDefaultEinreichefristOeffentlich = notverordnungDefaultEinreichefristOeffentlich;
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
+		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
+		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
 	}
 
 	public String getCurrentNode() {

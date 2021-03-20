@@ -2308,5 +2308,7 @@
     "VOLLMACHT_HOCHLADEN": "Télécharger la procuration",
     "VOLLMACHT_DOKUMENT": "Document de procuration",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Activer",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
+    "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

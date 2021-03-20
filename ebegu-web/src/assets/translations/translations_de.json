@@ -2308,5 +2308,7 @@
     "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Aktivieren",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
+    "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
