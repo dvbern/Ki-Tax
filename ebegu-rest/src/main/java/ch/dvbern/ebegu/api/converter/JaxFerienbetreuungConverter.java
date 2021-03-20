@@ -18,15 +18,11 @@
 package ch.dvbern.ebegu.api.converter;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
@@ -36,7 +32,6 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdat
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -44,7 +39,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -435,29 +429,6 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxFerienbetreuungDokument.setTimestampUpload(jaxFerienbetreuungDokument.getTimestampUpload());
 
 		return jaxFerienbetreuungDokument;
-	}
-
-	@Nonnull
-	private List<JaxBfsGemeinde> bfsGemeindeListToJax(@Nonnull Set<BfsGemeinde> gemeindeSet) {
-		return gemeindeSet
-			.stream()
-			.map(this::gemeindeBfsToJax)
-			.collect(Collectors.toList());
-	}
-
-	@Nonnull
-	private Set<BfsGemeinde> jaxGemeindeListToEntity(List<JaxBfsGemeinde> gemeinden) {
-		return gemeinden.stream()
-			.map(this::jaxBfsGemeindeToEntity)
-			.collect(Collectors.toSet());
-	}
-
-	// we don't want to overwrite properties from client
-	@Nonnull
-	private BfsGemeinde jaxBfsGemeindeToEntity(@Nonnull JaxBfsGemeinde bfsGemeinde) {
-		return gemeindeService.findBfsGemeinde(bfsGemeinde.getBfsNummer()).orElseThrow(() -> {
-			throw new EbeguEntityNotFoundException("jaxBfsGemeindeToEntity", bfsGemeinde.getBfsNummer());
-		});
 	}
 
 }
