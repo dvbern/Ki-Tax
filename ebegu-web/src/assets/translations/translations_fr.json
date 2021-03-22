@@ -1529,7 +1529,7 @@
     "ONBOARDING_ZURUCK": "Retour",
     "ONBOARDING_NEU_INTRO": "Nous avons besoin d'informations supplémentaires de votre part en tant qu'auteur-e de la demande. L'enregistrement se fera sur la plate-forme cantonale \"BE-Login\".",
     "ONBOARDING_MEIN_WOHNGEMEINDE": "Ma commune",
-    "ONBOARDING_MEIN_GEMEINDE": "Ma commune",
+    "ONBOARDING_MEIN_GEMEINDE": "Pour quelle commune êtes-vous responsable?",
     "ONBOARDING_NAME_INSTITUION": "Nom de l'institution",
     "ONBOARDING_TS_GEMEINDE": "Commune(s) de l'école à journée continue",
     "ONBOARDING_INFO_GEMEINDE_LINK": "Informations pour les communes",

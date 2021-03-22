@@ -1529,7 +1529,7 @@
     "ONBOARDING_ZURUCK": "Zurück",
     "ONBOARDING_NEU_INTRO": "Wir benötigen von Ihnen als Antragsteller/in noch einzelne Angaben. Die Registrierung wird auf der kantonalen Plattform \"BE-Login\" erfolgen.",
     "ONBOARDING_MEIN_WOHNGEMEINDE": "Ihre Wohngemeinde",
-    "ONBOARDING_MEIN_GEMEINDE": "Ihre Gemeinde",
+    "ONBOARDING_MEIN_GEMEINDE": "Für welche Gemeinde sind Sie zuständig?",
     "ONBOARDING_NAME_INSTITUION": "Name der Institution",
     "ONBOARDING_TS_GEMEINDE": "Gemeinde der Tagesschule",
     "ONBOARDING_INFO_GEMEINDE_LINK": "Informationen für Gemeinden",
