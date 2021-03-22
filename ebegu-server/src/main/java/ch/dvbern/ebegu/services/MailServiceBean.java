@@ -109,7 +109,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			"InfoBetreuungBestaetigt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr,
 				sprache),
-			AntragStatus.IN_BEARBEITUNG_GS
+			AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.IN_BEARBEITUNG_SOZIALDIENST
 		);
 	}
 
