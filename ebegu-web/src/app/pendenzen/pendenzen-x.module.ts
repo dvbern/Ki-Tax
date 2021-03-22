@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {downgradeComponent} from '@angular/upgrade/static';
-import {CORE_JS_MODULE} from '../../core/core.angularjs.module';
-import {PendenzenListViewComponent} from './component/pendenzenListView/pendenzen-list-view.component';
-import {EllipsisTooltip} from './directive/ellipsisTooltip';
-import {pendenzRun} from './pendenzen.route';
+import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
+import {PendenzenListViewComponent} from './default/component/pendenzenListView/pendenzen-list-view.component';
 
-export const PENDENZEN_JS_MODULE =
-    angular.module('ebeguWeb.pendenzen', [CORE_JS_MODULE.name])
-        .run(pendenzRun)
-        .directive('ellipsisTooltip', EllipsisTooltip.factory())
-        .directive('pendenzenListView', downgradeComponent({component: PendenzenListViewComponent}));
+@NgModule({
+    imports: [SharedModule],
+    declarations: [PendenzenListViewComponent],
+    exports: [PendenzenListViewComponent],
+    entryComponents: [PendenzenListViewComponent],
+})
+export class PendenzenXModule {}

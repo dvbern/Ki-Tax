@@ -21,13 +21,14 @@
             <div class="col-md-12 table-responsive">
 
                 <!-- Warnung, falls noch Gemeinden im Status EINGELADEN -->
-                <div class="well well-status-abgewiesen" ng-if="vm.hasGemeindenInStatusAngemeldet">
-                    <span data-translate="WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG"></span>
+                <div class="well well-status-abgewiesen" *ngIf="hasGemeindenInStatusAngemeldet">
+                    <span translate>WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG</span>
                     <p>
-                        <a ui-sref="gemeinde.list" data-translate="ZUR_LISTE"></a>
+                        <a uiSref="gemeinde.list" translate>ZUR_LISTE</a>
                     </p>
                 </div>
 
+                <!--
                 <dv-antrag-list
                     table-title="{{'PENDENZEN_LIST' | translate}}"
                     on-filter-change="vm.passFilterToServer(tableState)"
@@ -37,7 +38,7 @@
                     total-result-count="vm.totalResultCount"
                     pendenz="true">
                 </dv-antrag-list>
-
+-->
             </div>
 
         </div>

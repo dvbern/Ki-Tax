@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
@@ -25,26 +25,17 @@ import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import ILogService = angular.ILogService;
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import IPromise = angular.IPromise;
 
-export class PendenzenListViewComponentConfig implements IComponentOptions {
-    public transclude = false;
-    public template = require('./pendenzenListView.html');
-    public controller = PendenzenListViewController;
-    public controllerAs = 'vm';
-}
+const LOG = LogFactory.createLog('PendenzenListViewComponent');
 
-export class PendenzenListViewController {
-
-    public static $inject: string[] = [
-        'GesuchModelManager',
-        '$state',
-        '$log',
-        'SearchRS',
-        'AuthServiceRS',
-        'GemeindeRS',
-    ];
+@Component({
+    selector: 'pendenzen-list-view',
+    templateUrl: './pendenzen-list-view.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class PendenzenListViewComponent {
 
     public totalResultCount: string = '0';
     public hasGemeindenInStatusAngemeldet: boolean = false;
@@ -52,19 +43,18 @@ export class PendenzenListViewController {
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $state: StateService,
-        private readonly $log: ILogService,
         private readonly searchRS: SearchRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
-    public $onInit(): void {
+    public ngOnInit(): void {
         this.initHasGemeindenInStatusAngemeldet();
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
-        this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
+        LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
         return this.searchRS.getPendenzenList(tableFilterState).then((response: TSAntragSearchresultDTO) => {
             this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
             return response;
