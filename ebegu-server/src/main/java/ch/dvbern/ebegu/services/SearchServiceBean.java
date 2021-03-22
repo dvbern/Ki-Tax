@@ -42,6 +42,8 @@ import javax.persistence.criteria.SetJoin;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -132,6 +134,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		// Join all the relevant relations (except gesuchsteller join, which is only done when needed)
 		Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.INNER);
+		Join<Fall, SozialdienstFall> joinSozialdienstFall = joinFall.join(Fall_.sozialdienstFall, JoinType.LEFT);
 		Join<Dossier, Benutzer> joinVerantwortlicherBG = joinDossier.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
 		Join<Dossier, Benutzer> joinVerantwortlicherTS = joinDossier.join(Dossier_.verantwortlicherTS, JoinType.LEFT);
 		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
@@ -183,6 +186,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			}
 			break;
 		case STEUERAMT:
+			break;
+		case ADMIN_SOZIALDIENST:
+		case SACHBEARBEITER_SOZIALDIENST:
+			predicates.add(cb.equal(joinSozialdienstFall.get(SozialdienstFall_.sozialdienst), user.getSozialdienst()));
 			break;
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:

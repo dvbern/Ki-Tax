@@ -19,6 +19,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
@@ -39,6 +40,7 @@ import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng
 import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
@@ -93,6 +95,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
             },
         }),
         GuidedTourModule.forRoot(),
+        MatMenuModule,
     ],
     declarations: [
         AccordionDirective,
@@ -143,6 +146,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         SavingInfo,
         DVInputContainerXComponent,
         DvBisherXComponent,
+        DvNgSozialdienstDialogComponent,
     ],
     exports: [
         CommonModule,
@@ -193,6 +197,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         SavingInfo,
         DVInputContainerXComponent,
         DvBisherXComponent,
+        DvNgSozialdienstDialogComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

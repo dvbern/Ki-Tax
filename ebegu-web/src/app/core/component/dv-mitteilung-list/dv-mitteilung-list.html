@@ -127,6 +127,9 @@
                                     <div>
                                         <span data-translate="AN_COLON"></span><dv-benutzer-entry [benutzer]="mitteilung.empfaenger"></dv-benutzer-entry>
                                     </div>
+                                    <div ng-if="!!mitteilung.betreuung.institutionStammdaten.institution">
+                                        <span data-translate="INSTITUTION"></span>: <i class='fa fa-building'></i><span>{{mitteilung.betreuung.institutionStammdaten.institution.name}}</span>
+                                    </div>
                                 </div>
                                 <div class="message-delegation">
                                     <dv-mitteilung-delegation ng-if="vm.canUebergeben(mitteilung)" (value-change)='vm.mitteilungWeitergeleitet()' mitteilung-id="{{mitteilung.id}}" gemeinde-id="{{mitteilung.dossier.gemeinde.id}}"></dv-mitteilung-delegation>

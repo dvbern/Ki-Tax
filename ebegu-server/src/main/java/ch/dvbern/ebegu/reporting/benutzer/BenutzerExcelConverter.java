@@ -60,6 +60,7 @@ public class BenutzerExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldBenutzer.roleGueltigAb, dataRow.getRoleGueltigAb());
 			excelRowGroup.addValue(MergeFieldBenutzer.roleGueltigBis, dataRow.getRoleGueltigBis());
 			excelRowGroup.addValue(MergeFieldBenutzer.gemeinden, dataRow.getGemeinden());
+			excelRowGroup.addValue(MergeFieldBenutzer.angebotGemeinden, dataRow.getAngebotGemeinden());
 			excelRowGroup.addValue(MergeFieldBenutzer.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldBenutzer.traegerschaft, dataRow.getTraegerschaft());
 			excelRowGroup.addValue(MergeFieldBenutzer.status, ServerMessageUtil.translateEnumValue(checkNotNull(dataRow.getStatus()), locale));
@@ -83,6 +84,7 @@ public class BenutzerExcelConverter implements ExcelConverter {
 		mergerDTO.addValue(MergeFieldBenutzer.roleTitle, ServerMessageUtil.getMessage("Reports_roleTitle", locale));
 		mergerDTO.addValue(MergeFieldBenutzer.roleGueltigBisTitel, ServerMessageUtil.getMessage("Reports_roleGueltigBisTitel", locale));
 		mergerDTO.addValue(MergeFieldBenutzer.gemeindenTitle, ServerMessageUtil.getMessage("Reports_gemeindenTitle", locale));
+		mergerDTO.addValue(MergeFieldBenutzer.angebotGemeindenTitle, ServerMessageUtil.getMessage("Reports_angebotGemeindenTitle", locale));
 		mergerDTO.addValue(MergeFieldBenutzer.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
 		mergerDTO.addValue(MergeFieldBenutzer.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
 		mergerDTO.addValue(MergeFieldBenutzer.kitaTitel, ServerMessageUtil.getMessage("Reports_kitaTitel", locale));

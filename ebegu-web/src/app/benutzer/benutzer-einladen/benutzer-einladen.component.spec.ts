@@ -25,6 +25,7 @@ import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -40,6 +41,8 @@ describe('BenutzerEinladenComponent', () => {
         ['getInstitutionenEditableForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
+        ['getSozialdienstList']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
@@ -52,7 +55,7 @@ describe('BenutzerEinladenComponent', () => {
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-
+        sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
@@ -66,6 +69,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: BenutzerRS, useValue: benutzerSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
+                {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
             ],

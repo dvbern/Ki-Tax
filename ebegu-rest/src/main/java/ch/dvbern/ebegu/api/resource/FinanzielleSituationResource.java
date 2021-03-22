@@ -67,6 +67,7 @@ import io.swagger.annotations.ApiOperation;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
@@ -74,6 +75,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -103,15 +105,18 @@ public class FinanzielleSituationResource {
 	@Resource
 	private EJBContext context;    //fuer rollback
 
-
-	@ApiOperation(value = "Create a new JaxFinanzielleSituationContainer in the database. The transfer object also has a " +
-		"relation to FinanzielleSituation, it is stored in the database as well.", response = JaxFinanzielleSituationContainer.class)
+	@ApiOperation(value =
+		"Create a new JaxFinanzielleSituationContainer in the database. The transfer object also has a "
+			+
+			"relation to FinanzielleSituation, it is stored in the database as well.",
+		response = JaxFinanzielleSituationContainer.class)
 	@Nullable
 	@PUT
 	@Path("/finanzielleSituation/{gesuchId}/{gesuchstellerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public JaxFinanzielleSituationContainer saveFinanzielleSituation(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId jaxGesuchId,
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
@@ -129,8 +134,12 @@ public class FinanzielleSituationResource {
 		requireNonNull(gesuchstellerId);
 
 		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId));
-		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(jaxFinanzielleSituationContainer,
+			-> new EbeguEntityNotFoundException(
+			"saveFinanzielleSituation",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchstellerId invalid: " + gesuchstellerId));
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
+			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
 
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
@@ -141,13 +150,15 @@ public class FinanzielleSituationResource {
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
-	@ApiOperation(value = "Updates all required Data for the finanzielle Situation in Gesuch", response = JaxFinanzielleSituationContainer.class)
+	@ApiOperation(value = "Updates all required Data for the finanzielle Situation in Gesuch",
+		response = JaxFinanzielleSituationContainer.class)
 	@Nullable
 	@PUT
 	@Path("/finanzielleSituationStart")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public JaxGesuch saveFinanzielleSituationStart(
 		@Nonnull @NotNull @Valid JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
@@ -158,10 +169,12 @@ public class FinanzielleSituationResource {
 		requireNonNull(jaxFamiliensituationContainer);
 		JaxFamiliensituation familiensituationJA = jaxFamiliensituationContainer.getFamiliensituationJA();
 		requireNonNull(familiensituationJA);
-		// Bei FinanzielleSituationStart arbeiten wir immer mit GS1: Wenn Sie gemeinsame Stek haben, werden die Fragen zu Veranlagung und Stek von GS1 genommen!
+		// Bei FinanzielleSituationStart arbeiten wir immer mit GS1: Wenn Sie gemeinsame Stek haben, werden die Fragen
+		// zu Veranlagung und Stek von GS1 genommen!
 		JaxGesuchstellerContainer gesuchsteller1 = gesuchJAXP.getGesuchsteller1();
 		requireNonNull(gesuchsteller1);
-		JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer = gesuchsteller1.getFinanzielleSituationContainer();
+		JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer =
+			gesuchsteller1.getFinanzielleSituationContainer();
 		requireNonNull(jaxFinanzielleSituationContainer);
 
 		String gesuchId = gesuchJAXP.getId();
@@ -181,8 +194,12 @@ public class FinanzielleSituationResource {
 		}
 
 		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId));
-		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(jaxFinanzielleSituationContainer,
+			-> new EbeguEntityNotFoundException(
+			"saveFinanzielleSituation",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchstellerId invalid: " + gesuchstellerId));
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
+			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
@@ -205,8 +222,8 @@ public class FinanzielleSituationResource {
 			if (storedFamSitContOptional.isPresent()) {
 				Familiensituation storedFamSit = storedFamSitContOptional.get().getFamiliensituationJA();
 				if (storedFamSit != null
-						&& storedFamSit.getAuszahlungsdaten() != null
-						&& storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
+					&& storedFamSit.getAuszahlungsdaten() != null
+					&& storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
 					storedAdresse = storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber();
 				}
 			}
@@ -240,17 +257,22 @@ public class FinanzielleSituationResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Gesuch gesuch = converter.gesuchToEntity(gesuchJAXP, new Gesuch()); // nur konvertieren, nicht mergen mit Gesuch von DB!
-		FinanzielleSituationResultateDTO finanzielleSituationResultateDTO = finanzielleSituationService.calculateResultate(gesuch);
+		Gesuch gesuch =
+			converter.gesuchToEntity(gesuchJAXP, new Gesuch()); // nur konvertieren, nicht mergen mit Gesuch von DB!
+		FinanzielleSituationResultateDTO finanzielleSituationResultateDTO =
+			finanzielleSituationService.calculateResultate(gesuch);
 
 		return Response.ok(finanzielleSituationResultateDTO).build();
 	}
 
 	/**
-	 * Finanzielle Situation wird hier im gegensatz zur /calculate mehtode nur als DTO mitgegeben statt als ganzes gesuch
+	 * Finanzielle Situation wird hier im gegensatz zur /calculate mehtode nur als DTO mitgegeben statt als ganzes
+	 * gesuch
 	 */
-	@ApiOperation(value = "Berechnet die FinanzielleSituation fuer das Gesuch mit der uebergebenen Id. Die Berechnung " +
-		"nicht gespeichert. Die FinanzielleSituation wird hier im Gegensatz zur /calculate mehtode nur als DTO " +
+	@ApiOperation(value = "Berechnet die FinanzielleSituation fuer das Gesuch mit der uebergebenen Id. Die Berechnung "
+		+
+		"nicht gespeichert. Die FinanzielleSituation wird hier im Gegensatz zur /calculate mehtode nur als DTO "
+		+
 		"mitgegeben statt als ganzes Gesuch", response = FinanzielleSituationResultateDTO.class)
 	@Nullable
 	@POST
@@ -272,16 +294,21 @@ public class FinanzielleSituationResource {
 			gesuch.setGesuchsteller1(new GesuchstellerContainer());
 			//noinspection ConstantConditions
 			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(
-				converter.finanzielleSituationContainerToEntity(jaxFinSitModel.getFinanzielleSituationContainerGS1(), new FinanzielleSituationContainer()));
+				converter.finanzielleSituationContainerToEntity(
+					jaxFinSitModel.getFinanzielleSituationContainerGS1(),
+					new FinanzielleSituationContainer()));
 		}
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS2() != null) {
 			gesuch.setGesuchsteller2(new GesuchstellerContainer());
 			//noinspection ConstantConditions
 			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(
-				converter.finanzielleSituationContainerToEntity(jaxFinSitModel.getFinanzielleSituationContainerGS2(), new FinanzielleSituationContainer()));
+				converter.finanzielleSituationContainerToEntity(
+					jaxFinSitModel.getFinanzielleSituationContainerGS2(),
+					new FinanzielleSituationContainer()));
 		}
 
-		FinanzielleSituationResultateDTO finanzielleSituationResultateDTO = finanzielleSituationService.calculateResultate(gesuch);
+		FinanzielleSituationResultateDTO finanzielleSituationResultateDTO =
+			finanzielleSituationService.calculateResultate(gesuch);
 		// Wir wollen nur neu berechnen. Das Gesuch soll auf keinen Fall neu gespeichert werden
 		context.setRollbackOnly();
 		return Response.ok(finanzielleSituationResultateDTO).build();
@@ -294,14 +321,17 @@ public class FinanzielleSituationResource {
 	@Path("/{finanzielleSituationId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER, STEUERAMT,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		GESUCHSTELLER, STEUERAMT,
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST,
+		SACHBEARBEITER_SOZIALDIENST })
 	public JaxFinanzielleSituationContainer findFinanzielleSituation(
 		@Nonnull @NotNull @PathParam("finanzielleSituationId") JaxId finanzielleSituationId) {
 
 		requireNonNull(finanzielleSituationId.getId());
 		String finanzielleSituationID = converter.toEntityId(finanzielleSituationId);
-		Optional<FinanzielleSituationContainer> optional = finanzielleSituationService.findFinanzielleSituation(finanzielleSituationID);
+		Optional<FinanzielleSituationContainer> optional =
+			finanzielleSituationService.findFinanzielleSituation(finanzielleSituationID);
 
 		if (!optional.isPresent()) {
 			return null;

@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -55,7 +56,6 @@ public class PrincipalBean {
 
 	private Benutzer benutzer = null;
 	private Mandant mandant = null;
-
 
 	private void loadNormalUser() {
 		String name = principal.getName();
@@ -155,5 +155,10 @@ public class PrincipalBean {
 	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
 		final Benutzer currentBenutzer = this.getBenutzer();
 		return currentBenutzer.belongsToGemeinde(gemeinde);
+	}
+
+	public boolean belongsToSozialdienst(Sozialdienst sozialdienst) {
+		final Benutzer currentBenuter = this.getBenutzer();
+		return currentBenuter.getSozialdienst() != null && currentBenuter.getSozialdienst().equals(sozialdienst);
 	}
 }

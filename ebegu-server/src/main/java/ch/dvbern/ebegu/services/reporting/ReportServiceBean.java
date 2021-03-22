@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -966,6 +967,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
 		zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
+		zahlungAuftragTotalsExcelConverter.hideAntragstellerColumnsIfNecessary(sheetTotals, zahlungenBerechtigt);
 
 		byte[] bytes = createWorkbook(workbook);
 
@@ -1656,7 +1658,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return row;
 	}
 
-	private boolean isSozialhilfeBezueger(
+	@Override
+	public boolean isSozialhilfeBezueger(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull FamiliensituationContainer familiensituationContainer,
 		@Nonnull Familiensituation familiensituation
@@ -2018,6 +2021,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String institution = benutzer.getInstitution() != null ? benutzer.getInstitution().getName() : null;
 		String traegerschaft = getTraegerschaftForBenutzer(benutzer);
 		row.setGemeinden(benutzer.getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
+		row.setAngebotGemeinden(getAngebotGemeindenString(benutzer));
 		row.setInstitution(institution);
 		row.setTraegerschaft(traegerschaft);
 		row.setStatus(benutzer.getStatus());
@@ -2231,5 +2235,32 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS };
 
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
+	}
+
+	/**
+	 * Returns if Angebote of Gemeinden of a Benutzer as a comma separated list
+	 * E.g.
+	 * - benutzer has Berechtigung for Gemeinde London and Gemeinde Paris
+	 * - Gemeinde London has BG
+	 * - Gemeinde Paris has BG and TS
+	 * - this function would return "BG, TS"
+	 */
+	private String getAngebotGemeindenString(@Nonnull Benutzer benutzer) {
+		Set<Gemeinde> gemeinden = benutzer.getCurrentBerechtigung().getGemeindeList();
+		Set<String> angebote = new HashSet<>();
+		gemeinden.forEach(g -> {
+			if (g.isAngebotBG()) {
+				angebote.add("BG");
+			}
+			if (g.isAngebotFI()) {
+				angebote.add("FI");
+			}
+			if (g.isAngebotTS()) {
+				angebote.add("TS");
+			}
+		});
+		return angebote.stream()
+			.sorted()
+			.collect(Collectors.joining(", "));
 	}
 }

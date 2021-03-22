@@ -69,6 +69,14 @@ export class SozialdienstRS {
         }));
     }
 
+    public getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
+        return this.$http.get<any[]>(this.serviceURL + '/').pipe(
+            map(response => {
+                LOG.debug('PARSING Sozialdienst REST array object', response);
+                return this.ebeguRestUtil.parseSozialdienstList(response);
+            }));
+    }
+
     public getSozialdienstStammdaten(sozialdienstId: string): Observable<TSSozialdienstStammdaten> {
         return this.$http.get<any[]>(`${this.serviceURL}/stammdaten/${encodeURIComponent(sozialdienstId)}`)
             .pipe(map(response => {

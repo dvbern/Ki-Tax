@@ -85,6 +85,30 @@
             </div>
         </div>
     </div>
+    <!-- Sozialdienst -->
+    <div [class]="displayClass" *ngIf="berechtigung.hasSozialdienstRole()">
+        <div class="form-group">
+            <label translate [for]="sozialdienstId">SOZIALDIENST</label>
+            <div class="dv-select-style">
+                <select [attr.aria-describedby]="sozialdienstId + '-error'"
+                        [name]="sozialdienstId"
+                        [id]="sozialdienstId"
+                        class="form-control"
+                        [disabled]="disabled"
+                        [required]="true"
+                        [(ngModel)]="berechtigung.sozialdienst"
+                        [compareWith]="compareById">
+                    <option *ngFor="let sozialdienst of sozialdienste$ | async"
+                            [ngValue]="sozialdienst">
+                        {{sozialdienst.name}}
+                    </option>
+                </select>
+                <dv-error-messages [inputId]="sozialdienstId"
+                                   [errorObject]="form.controls[sozialdienstId]?.errors">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
 </div>
 <div *ngIf="!useInputComponents">
     <fieldset>
@@ -106,6 +130,10 @@
             <tr *ngIf="berechtigung.hasTraegerschaftRole()">
                 <td class="bold" translate>TRAEGERSCHAFT</td>
                 <td>{{berechtigung.traegerschaft.name}}</td>
+            </tr>
+            <tr *ngIf="berechtigung.hasSozialdienstRole()">
+                <td class="bold" translate>SOZIALDIENST</td>
+                <td>{{berechtigung.sozialdienst.name}}</td>
             </tr>
             </tbody>
         </table>

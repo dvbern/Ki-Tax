@@ -274,4 +274,6 @@ public interface Authorizer {
 	void checkReadAuthorization(@Nullable Sozialdienst sozialdienst);
 
 	void checkWriteAuthorization(@Nullable Sozialdienst sozialdienst);
+
+	void checkReadAuthorizationFerienbetreuung(@Nonnull String id);
 }

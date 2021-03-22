@@ -26,11 +26,10 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 
 public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 
@@ -86,7 +85,7 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	repeatCol5(new RepeatColMergeField<>("repeatCol5", STRING_CONVERTER)),
 
 	modulName(new RepeatValMergeField<>("modulName", STRING_CONVERTER)),
-	modulStunden(new RepeatValMergeField<>("modulStunden", LONG_CONVERTER)),
+	modulStunden(new RepeatValMergeField<>("modulStunden", BIGDECIMAL_CONVERTER)),
 	verpflegungskosten(new RepeatValMergeField<>("verpflegungskosten", BIGDECIMAL_CONVERTER)),
 	angemeldet(new RepeatValMergeField<>("angemeldet", INTEGER_CONVERTER));
 

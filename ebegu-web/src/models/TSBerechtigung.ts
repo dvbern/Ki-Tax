@@ -15,6 +15,7 @@
 
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {TSRole} from './enums/TSRole';
+import {TSSozialdienst} from './sozialdienst/TSSozialdienst';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSGemeinde} from './TSGemeinde';
 import {TSInstitution} from './TSInstitution';
@@ -27,17 +28,20 @@ export class TSBerechtigung extends TSAbstractDateRangedEntity {
     private _institution?: TSInstitution;
     private _role: TSRole;
     private _gemeindeList: Array<TSGemeinde> = [];
+    private _sozialdienst?: TSSozialdienst;
 
     public constructor(
         gueltigkeit?: TSDateRange,
         role?: TSRole,
         traegerschaft?: TSTraegerschaft,
         institution?: TSInstitution,
+        sozialdienst?: TSSozialdienst,
     ) {
         super(gueltigkeit);
         this._role = role;
         this._traegerschaft = traegerschaft;
         this._institution = institution;
+        this._sozialdienst = sozialdienst;
     }
 
     public get role(): TSRole {
@@ -98,6 +102,9 @@ export class TSBerechtigung extends TSAbstractDateRangedEntity {
         if (!this.hasTraegerschaftRole()) {
             this.traegerschaft = undefined;
         }
+        if (!this.hasSozialdienstRole()) {
+            this.sozialdienst = undefined;
+        }
     }
 
     public gemeindeListToString(): string {
@@ -108,5 +115,17 @@ export class TSBerechtigung extends TSAbstractDateRangedEntity {
         }
 
         return gemeindeNamen.join(', ');
+    }
+
+    public get sozialdienst(): TSSozialdienst {
+        return this._sozialdienst;
+    }
+
+    public set sozialdienst(value: TSSozialdienst) {
+        this._sozialdienst = value;
+    }
+
+    public hasSozialdienstRole(): boolean {
+        return TSRoleUtil.isSozialdienstRole(this.role);
     }
 }

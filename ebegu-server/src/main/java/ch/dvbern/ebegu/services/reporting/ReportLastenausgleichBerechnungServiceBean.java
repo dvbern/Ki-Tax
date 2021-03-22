@@ -32,6 +32,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.RollbackException;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
@@ -80,7 +81,9 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportLastenausgleichKibon(@Nonnull String lastenausgleichId, @Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportLastenausgleichKibon(
+		@Nonnull String lastenausgleichId,
+		@Nonnull Locale locale) throws ExcelMergeException,	RollbackException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_BERECHNUNG;
 

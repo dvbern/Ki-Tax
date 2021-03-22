@@ -39,68 +39,68 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 
 	// A: Informationen zur Tagesschule
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean isLehrbetrieb;
 
 	// B: Quantitative Angaben
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinder;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderKindergarten;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderPrimarstufe;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagFruehbetreuung;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagMittag;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagNachmittag1;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagNachmittag2;
 
 	// C: Qualitative Vorgaben der Tagesschuleverordnung
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean schuleAufBasisOrganisatorischesKonzept;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean schuleAufBasisPaedagogischesKonzept;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean raeumlicheVoraussetzungenEingehalten;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean betreuungsverhaeltnisEingehalten;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private Boolean ernaehrungsGrundsaetzeEingehalten;
 
 	// Bemerkungen
@@ -136,7 +136,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.bemerkungen = source.bemerkungen;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getLehrbetrieb() {
 		return isLehrbetrieb;
 	}
@@ -145,7 +145,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		isLehrbetrieb = lehrbetrieb;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinder() {
 		return anzahlEingeschriebeneKinder;
 	}
@@ -154,7 +154,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderKindergarten() {
 		return anzahlEingeschriebeneKinderKindergarten;
 	}
@@ -163,7 +163,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinderKindergarten = anzahlEingeschriebeneKinderKindergarten;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
 		return anzahlEingeschriebeneKinderBasisstufe;
 	}
@@ -172,7 +172,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderPrimarstufe() {
 		return anzahlEingeschriebeneKinderPrimarstufe;
 	}
@@ -181,7 +181,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinderPrimarstufe = anzahlEingeschriebeneKinderPrimarstufe;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen() {
 		return anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 	}
@@ -190,7 +190,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagFruehbetreuung() {
 		return durchschnittKinderProTagFruehbetreuung;
 	}
@@ -199,7 +199,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.durchschnittKinderProTagFruehbetreuung = durchschnittKinderProTagFruehbetreuung;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagMittag() {
 		return durchschnittKinderProTagMittag;
 	}
@@ -208,7 +208,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.durchschnittKinderProTagMittag = durchschnittKinderProTagMittag;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagNachmittag1() {
 		return durchschnittKinderProTagNachmittag1;
 	}
@@ -217,7 +217,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.durchschnittKinderProTagNachmittag1 = durchschnittKinderProTagNachmittag1;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDurchschnittKinderProTagNachmittag2() {
 		return durchschnittKinderProTagNachmittag2;
 	}
@@ -226,7 +226,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.durchschnittKinderProTagNachmittag2 = durchschnittKinderProTagNachmittag2;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getSchuleAufBasisOrganisatorischesKonzept() {
 		return schuleAufBasisOrganisatorischesKonzept;
 	}
@@ -235,7 +235,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.schuleAufBasisOrganisatorischesKonzept = schuleAufBasisOrganisatorischesKonzept;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getSchuleAufBasisPaedagogischesKonzept() {
 		return schuleAufBasisPaedagogischesKonzept;
 	}
@@ -244,7 +244,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.schuleAufBasisPaedagogischesKonzept = schuleAufBasisPaedagogischesKonzept;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getRaeumlicheVoraussetzungenEingehalten() {
 		return raeumlicheVoraussetzungenEingehalten;
 	}
@@ -253,7 +253,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.raeumlicheVoraussetzungenEingehalten = raeumlicheVoraussetzungenEingehalten;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getBetreuungsverhaeltnisEingehalten() {
 		return betreuungsverhaeltnisEingehalten;
 	}
@@ -262,7 +262,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.betreuungsverhaeltnisEingehalten = betreuungsverhaeltnisEingehalten;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getErnaehrungsGrundsaetzeEingehalten() {
 		return ernaehrungsGrundsaetzeEingehalten;
 	}

@@ -16,8 +16,10 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 /**
  * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
@@ -34,16 +36,33 @@ export class DvNgGemeindeDialogComponent {
     public selectedGemeinde: TSGemeinde;
     public gemeindeList: TSGemeinde[];
 
+    public selectedGesuchsperiode: TSGesuchsperiode;
+    public gesuchsperiodeList: TSGesuchsperiode[];
+
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
 
         this.gemeindeList = data.gemeindeList;
+        this.gesuchsperiodeList = data.gesuchsperiodeList;
     }
 
     public save(): void {
-        this.dialogRef.close(this.selectedGemeinde ? this.selectedGemeinde.id : undefined);
+        if (!this.isValid()) {
+            return;
+        }
+        this.dialogRef.close({
+            gemeindeId: this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
+            gesuchsperiodeId: this.selectedGesuchsperiode ? this.selectedGesuchsperiode.id : undefined,
+        });
+    }
+
+    public isValid(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.selectedGemeinde) &&
+            ((EbeguUtil.isNotNullOrUndefined(this.gesuchsperiodeList)
+                && EbeguUtil.isNotNullOrUndefined(this.selectedGesuchsperiode))
+                || EbeguUtil.isNullOrUndefined(this.gesuchsperiodeList));
     }
 
     public close(): void {

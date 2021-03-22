@@ -17,17 +17,17 @@ import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
 export class TSFallAntragDTO extends TSAbstractAntragDTO {
 
-    public get fallID(): string {
-        return this._fallID;
+    public get fallId(): string {
+        return this._fallId;
     }
 
-    public set fallID(fallID: string) {
-        this._fallID = fallID;
+    public set fallId(fallId: string) {
+        this._fallId = fallId;
     }
 
     public static readonly SERVER_CLASS_NAME = 'JaxFallAntragDTO';
 
-    private _fallID: string;
+    private _fallId: string;
 
     public constructor() {
         super();
