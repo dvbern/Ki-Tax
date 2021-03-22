@@ -17,10 +17,11 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -54,10 +53,8 @@ import ch.dvbern.ebegu.reporting.massenversand.MassenversandRepeatKindDataCol;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -89,7 +86,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	@Inject
 	private MassenversandService massenversandService;
 
-
 	@Nonnull
 	@Override
 	public List<MassenversandDataRow> getReportMassenversand(
@@ -104,37 +100,43 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		@Nonnull Locale locale
 	) {
 
-		List<Gesuch> ermittelteGesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeID)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException("getReportMassenversand",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchPeriodeID)
+			);
+
+	List<Gesuch> ermittelteGesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+		datumVon,
+		datumBis,
+		gesuchsperiode
+	);
+
+	// Filter Gesuche by AngebotTyp
+	List<Gesuch> gesucheFilteredByAngebotTyp =
+		filterGesucheByAngebotTyp(inklBgGesuche, inklMischGesuche, inklTsGesuche, ermittelteGesuche);
+
+	List<Gesuch> resultGesuchFinalList =
+		filterGesucheByFolgegesuch(ohneErneuerungsgesuch, gesucheFilteredByAngebotTyp, gesuchsperiode);
+
+	// Wenn ein Text eingegeben wurde, wird der Massenversand gespeichert
+		if(StringUtils.isNotEmpty(text)&&!resultGesuchFinalList.isEmpty()) {
+		saveMassenversand(
 			datumVon,
 			datumBis,
-			gesuchPeriodeID
-		);
-
-		// Filter Gesuche by AngebotTyp
-		List<Gesuch> gesucheFilteredByAngebotTyp =
-			filterGesucheByAngebotTyp(inklBgGesuche, inklMischGesuche, inklTsGesuche, ermittelteGesuche);
-
-		List<Gesuch> resultGesuchFinalList =
-			filterGesucheByFolgegesuch(ohneErneuerungsgesuch, gesucheFilteredByAngebotTyp);
-
-		// Wenn ein Text eingegeben wurde, wird der Massenversand gespeichert
-		if (StringUtils.isNotEmpty(text) && !resultGesuchFinalList.isEmpty()) {
-			saveMassenversand(
-				datumVon,
-				datumBis,
-				gesuchPeriodeID,
-				inklBgGesuche,
-				inklMischGesuche,
-				inklTsGesuche,
-				ohneErneuerungsgesuch,
-				text,
-				resultGesuchFinalList);
-		}
-
-		final List<MassenversandDataRow> reportDataMassenversand =
-			createReportDataMassenversand(resultGesuchFinalList, locale);
-		return reportDataMassenversand;
+			gesuchPeriodeID,
+			inklBgGesuche,
+			inklMischGesuche,
+			inklTsGesuche,
+			ohneErneuerungsgesuch,
+			text,
+			resultGesuchFinalList);
 	}
+
+	final List<MassenversandDataRow> reportDataMassenversand =
+		createReportDataMassenversand(resultGesuchFinalList, locale);
+		return reportDataMassenversand;
+}
 
 	@Nonnull
 	@Override
@@ -186,7 +188,8 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -209,7 +212,9 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 				setKinderData(gesuch, row);
 
-				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(getEingangsartFromFallBesitzer(gesuch), locale));
+				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(
+					getEingangsartFromFallBesitzer(gesuch),
+					locale));
 				row.setStatus(ServerMessageUtil.translateEnumValue(gesuch.getStatus(), locale));
 				row.setTyp(ServerMessageUtil.translateEnumValue(gesuch.getTyp(), locale));
 
@@ -301,13 +306,31 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		}
 	}
 
-	private List<Gesuch> filterGesucheByFolgegesuch(boolean ohneErneuerungsgesuch, List<Gesuch> gesucheFilteredByAngebotTyp) {
+	private List<Gesuch> filterGesucheByFolgegesuch(
+		boolean ohneErneuerungsgesuch,
+		List<Gesuch> gesucheFilteredByAngebotTyp,
+		Gesuchsperiode gesuchsperiode) {
 		if (ohneErneuerungsgesuch) {
+			// Find alle Gesuchen die sind nach dieser Gesuchsperiode gestartet fuer die BenutzerGemeinden
+			Map<String, Gesuch> zukunftigeGesucheForAmt = new HashMap<>();
+			List<Gesuch> gesuchList = gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode);
+			// es interessiert uns nur zu wissen ob eine in Zufunkt liegt, desto muss man nur eine Pro dossier cachen
+			gesuchList.forEach(
+				gesuch ->
+					zukunftigeGesucheForAmt.put(gesuch.getDossier().getId(),gesuch)
+			);
 			return gesucheFilteredByAngebotTyp.stream()
-				.filter(gesuch -> !gesuchService.hasFolgegesuchForAmt(gesuch.getId()))
+				.filter(gesuch -> !hasFolgegesuchForAmt(gesuch, zukunftigeGesucheForAmt))
 				.collect(Collectors.toList());
 		}
 		return gesucheFilteredByAngebotTyp;
+	}
+
+	private boolean hasFolgegesuchForAmt(Gesuch gesuch, Map<String, Gesuch> zukunftigeGesucheForAmt) {
+		if(zukunftigeGesucheForAmt.get(gesuch.getDossier().getId()) != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private List<Gesuch> filterGesucheByAngebotTyp(

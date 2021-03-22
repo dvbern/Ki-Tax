@@ -78,8 +78,7 @@ export class BerechtigungComponent {
 
         this.traegerschaften$ = this.traegerschaftenForPrincipal$();
 
-        this.sozialdienste$ =
-            from(this.sozialdienstRS.getSozialdienstList()).pipe(map(BerechtigungComponent.sortByName));
+        this.sozialdienste$ = this.sozialdienstenForPrincipal$();
     }
 
     private static sortByName<T extends Displayable>(arr: T[]): T[] {
@@ -102,6 +101,29 @@ export class BerechtigungComponent {
 
                     if (principal.currentBerechtigung.traegerschaft) {
                         return of([principal.currentBerechtigung.traegerschaft]);
+                    }
+
+                    return of([]);
+                }),
+                map(BerechtigungComponent.sortByName),
+            );
+    }
+
+    private sozialdienstenForPrincipal$(): Observable<TSSozialdienst[]> {
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (!principal) {
+                        return of([]);
+                    }
+
+                    if (principal.currentBerechtigung.isSuperadmin()) {
+                        return from(this.sozialdienstRS.getSozialdienstList())
+                            .pipe(map(BerechtigungComponent.sortByName));
+                    }
+
+                    if (principal.currentBerechtigung.sozialdienst) {
+                        return of([principal.currentBerechtigung.sozialdienst]);
                     }
 
                     return of([]);

@@ -34,6 +34,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.RollbackException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -149,6 +150,7 @@ public class LastenausgleichResource {
 		return converter.lastenausgleichToJAX(lastenausgleich);
 	}
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlung'", response = JaxDownloadFile.class)
 	@Nonnull
 	@GET
@@ -162,17 +164,22 @@ public class LastenausgleichResource {
 	public Response getLastenausgleichReportExcel(
 		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException, RollbackException {
 
 		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);
 		String lastenausgleichId = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo =
-			reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, LocaleThreadLocal.get());
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
+		try {
+			UploadFileInfo uploadFileInfo =
+				reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, LocaleThreadLocal.get());
+			DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
+			return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
+		} catch (RollbackException rollbackException) {
+			RollbackException exceptionWithoutSuppressed = new RollbackException(rollbackException.getMessage());
+			exceptionWithoutSuppressed.setStackTrace(rollbackException.getStackTrace());
+			throw exceptionWithoutSuppressed;
+		}
 	}
 
 	@ApiOperation(value = "Erstellt ein CSV Textdokument für den Lastenausgleich", response = JaxDownloadFile.class)
