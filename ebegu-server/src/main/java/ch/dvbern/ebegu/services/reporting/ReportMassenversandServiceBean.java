@@ -226,10 +226,10 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	* Online_erstgesuch + Papier_mutation --> Eingangsart = ONLINE
 	* we need to take the Eingangsart of the Erstgesuch and not from the mutation. For this case there is a much
 	* more performant way than to looking for the Erstgesuch.
-	* If the fall has a Besitzer, it is an online Gesuch.
+	* If the fall has a Besitzer or is a Sozialdienstfall, it is an online Gesuch.
 	*/
  	private Eingangsart getEingangsartFromFallBesitzer(@Nonnull Gesuch gesuch) {
-		if (gesuch.getFall().getBesitzer() != null) {
+		if (gesuch.getFall().getBesitzer() != null || gesuch.getFall().getSozialdienstFall() != null) {
 					return Eingangsart.ONLINE;
 			}
 		return Eingangsart.PAPIER;
