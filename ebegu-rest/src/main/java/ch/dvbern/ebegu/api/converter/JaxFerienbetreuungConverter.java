@@ -21,7 +21,6 @@ import java.util.Collections;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
@@ -39,14 +38,10 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
 @RequestScoped
 public class JaxFerienbetreuungConverter extends AbstractConverter {
-
-	@Inject
-	private GemeindeService gemeindeService;
 
 	@Nonnull
 	public FerienbetreuungAngabenContainer ferienbetreuungenAngabenContainerToEntity(
