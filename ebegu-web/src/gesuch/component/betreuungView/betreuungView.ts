@@ -992,11 +992,24 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         for (const pensum of this.getBetreuungspensen()) {
             const container = pensum.betreuungspensumJA || pensum.betreuungspensumGS;
+            const institutionGueltigkeit = new TSDateRange(this.getBetreuungModel().institutionStammdaten.gueltigkeit.gueltigAb,
+                this.getBetreuungModel().institutionStammdaten.gueltigkeit.gueltigBis || DateUtil.endOfTime());
+
+            if (!container.gueltigkeit.contains(institutionGueltigkeit)) {
+                const dateFormat = 'DD.MM.YYYY';
+                this.errorService.addMesageAsError(
+                    this.$translate.instant('GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT',
+                        {
+                            gueltigAb: DateUtil.momentToLocalDateFormat(institutionGueltigkeit.gueltigAb, dateFormat),
+                            gueltigBis: DateUtil.momentToLocalDateFormat(institutionGueltigkeit.gueltigBis, dateFormat),
+                        }));
+                return;
+            }
             if (container.gueltigkeit.gueltigAb.isAfter(this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
                 this.errorService.addMesageAsError(this.$translate.instant('PENSUM_AFTER_PERIODE'));
                 return;
+
             }
-            
         }
 
         if (this.showExistingBetreuungsmitteilungInfoBox()) {

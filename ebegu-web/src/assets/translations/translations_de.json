@@ -2308,5 +2308,6 @@
     "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Aktivieren",
+    "GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT": "Die eingegebenen Daten der Betreuung liegen ausserhalb des gültigen Zeitraums ({{gueltigAb}} - {{gueltigBis}}) dieser Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
