@@ -49,6 +49,9 @@ export class TSDateRange {
     }
 
     public contains(other: TSDateRange): boolean {
-        return other.gueltigAb.isAfter(this.gueltigAb) && other.gueltigBis.isBefore(this.gueltigBis);
+        if (!this.gueltigBis || !other.gueltigBis) {
+            return other.gueltigAb.isSameOrAfter(this.gueltigAb);
+        }
+        return other.gueltigAb.isSameOrAfter(this.gueltigAb) && other.gueltigBis.isSameOrBefore(this.gueltigBis);
     }
 }

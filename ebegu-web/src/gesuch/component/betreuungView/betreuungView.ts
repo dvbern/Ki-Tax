@@ -995,7 +995,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             const institutionGueltigkeit = new TSDateRange(this.getBetreuungModel().institutionStammdaten.gueltigkeit.gueltigAb,
                 this.getBetreuungModel().institutionStammdaten.gueltigkeit.gueltigBis || DateUtil.endOfTime());
 
-            if (!container.gueltigkeit.contains(institutionGueltigkeit)) {
+            if (!institutionGueltigkeit.contains(container.gueltigkeit)) {
                 const dateFormat = 'DD.MM.YYYY';
                 this.errorService.addMesageAsError(
                     this.$translate.instant('GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT',
