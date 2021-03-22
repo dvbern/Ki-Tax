@@ -27,6 +27,7 @@ import {of} from 'rxjs';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -50,6 +51,10 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles']);
 
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+
+const user = new TSBenutzer();
+
+authServiceSpy.principal$ = of(user);
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
