@@ -133,8 +133,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Gesuchsperiode: Readonly -->
-                    <div class="row" ng-if="!vm.canChangeGesuchsperiode()">
+                    <!-- Gesuchsperiode: Readonly. Don't show for Sozialdienst -->
+                    <div class="row" ng-if="vm.showGesuchsperiodeReadonly()">
                         <div class="col-sm-12">
                             <dv-input-container>
                                 <label class="md-no-float" data-translate="GESUCHSPERIODE"

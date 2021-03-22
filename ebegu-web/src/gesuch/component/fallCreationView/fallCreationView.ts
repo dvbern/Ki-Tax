@@ -123,10 +123,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         if (!this.isGesuchValid()) {
             return undefined;
         }
-        if (!this.form.$dirty && !this.gesuchModelManager.getGesuch().isNew()
-            && ((this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle())
-                && this.wizardStepManager.isStepStatusOk(TSWizardStepName.GESUCH_ERSTELLEN))
-                || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()))) {
+        if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             return this.$q.when(this.gesuchModelManager.getGesuch());
@@ -141,6 +138,19 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 return gesuch;
             },
         );
+    }
+
+    private isSavingNecessary(): boolean {
+        // if form is dirty or gesuch is new => save
+        if (this.form.$dirty || this.gesuchModelManager.getGesuch().isNew()) {
+            return true;
+        }
+        // user is sozialdienst and step Sozialdienst is ok => don't save
+        if (this.isSozialdienstAndOk()) {
+            return false;
+        }
+        // if user is Gemeinde, Kanton or Superadmin => don't save
+        return !this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst());
     }
 
     public getGesuchModel(): TSGesuch {
@@ -193,13 +203,22 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             }
             if (this.gesuchModelManager.isGesuchReadonly()
                 || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())
-                || (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle())
-                    && this.wizardStepManager.isStepStatusOk(
-                        TSWizardStepName.GESUCH_ERSTELLEN))) {
+                || this.isSozialdienstAndOk()) {
                 return this.$translate.instant('WEITER_ONLY');
             }
         }
         return this.$translate.instant('WEITER');
+    }
+
+    /**
+     * Checks if logged in benutzer is in Sozialdienst role and if yes, check if status of GESUCH_ERSTELLEN
+     * step is ok (e.g. document is uploaded).
+     */
+    private isSozialdienstAndOk(): boolean {
+        const sozialdienstRole = this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle());
+        return sozialdienstRole
+            && this.wizardStepManager.isStepStatusOk(
+                TSWizardStepName.GESUCH_ERSTELLEN);
     }
 
     public isSelectedGesuchsperiodeInaktiv(): boolean {
@@ -235,5 +254,11 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     public isThereAnyGesuchsperiode(): boolean {
         return (this.yetUnusedGesuchsperiodenListe && this.yetUnusedGesuchsperiodenListe.length > 0)
             || (this.gesuchModelManager.getGesuch() && !!this.gesuchModelManager.getGesuch().gesuchsperiode);
+    }
+
+    public showGesuchsperiodeReadonly(): boolean {
+        return !this.canChangeGesuchsperiode()
+            // do not show readonly gesuchsperioden for sozialdienst
+            && !this.TSRoleUtil.isSozialdienstRole(this.authServiceRS.getPrincipalRole());
     }
 }
