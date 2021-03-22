@@ -554,7 +554,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return;
 		}
 		case ADMIN_FERIENBETREUUNG: {
-			if(!(benutzer.getRole().isRoleFerienbetreuung() && userHasSameGemeindeAsPrincipal(benutzer))) {
+			if (!(benutzer.getRole().isRoleFerienbetreuung() && userHasSameGemeindeAsPrincipal(benutzer))) {
 				throwViolation(benutzer);
 			}
 			return;
@@ -680,7 +680,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return benutzer.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.SOZIALDIENST
 			&& Objects.requireNonNull(principalBean.getBenutzer().getSozialdienst()).equals(benutzer.getSozialdienst());
 	}
-
 
 	@Override
 	public <T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T> betreuungen) {
@@ -846,6 +845,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		return (fall != null) && (
 			fall.getUserErstellt() == null || (fall.getBesitzer() != null && hasPrincipalName(fall.getBesitzer()))
+				|| (fall.getSozialdienstFall() != null && principalBean.getBenutzer().getSozialdienst() != null &&
+				fall.getSozialdienstFall()
+					.getSozialdienst()
+					.getId()
+					.equals(principalBean.getBenutzer().getSozialdienst().getId()))
 		);
 	}
 
@@ -1610,7 +1614,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
-				final boolean gehoertZuGemeinde = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
+				final boolean gehoertZuGemeinde =
+					principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
 					.stream()
 					.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
 				if (gehoertZuGemeinde) {
@@ -1717,7 +1722,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			break;
 		}
 		case IN_PRUEFUNG_KANTON: {
-			if(principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
 				return;
 			}
 		}
