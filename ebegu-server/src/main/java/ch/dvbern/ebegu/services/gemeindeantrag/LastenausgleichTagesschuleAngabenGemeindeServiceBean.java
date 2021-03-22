@@ -95,9 +95,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
 
-	@Inject
-	private InstitutionService institutionService;
-
 	@Override
 	@Nonnull
 	public List<? extends GemeindeAntrag> createLastenausgleichTagesschuleGemeinde(

@@ -365,17 +365,17 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.get('gesamtKostenTagesschule')
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0),
-                    map(this.parseFloatSafe)),
+                    map(value => this.parseFloatSafe(value))),
             this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0),
-                map(this.parseFloatSafe)),
+                map(value => this.parseFloatSafe(value))),
             this.angabenForm.get('einnahmenElterngebuehren')
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
-                    map(this.parseFloatSafe)),
+                    map(value => this.parseFloatSafe(value))),
             this.angabenForm.get('einnnahmenVerpflegung')
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0),
-                    map(this.parseFloatSafe)),
+                    map(value => this.parseFloatSafe(value))),
             this.angabenForm.get('einnahmenSubventionenDritter')
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0)),

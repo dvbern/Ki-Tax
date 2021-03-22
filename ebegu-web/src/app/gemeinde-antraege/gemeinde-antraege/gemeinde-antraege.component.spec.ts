@@ -22,7 +22,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService, UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -43,7 +45,9 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
     ['path']);
 
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
+    ['isOneOfRoles', 'principal$']);
+
+const user = new TSBenutzer();
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
@@ -64,6 +68,8 @@ export class MockDvLoadingButtonXDirective {
 describe('GemeindeAntraegeComponent', () => {
     let component: GemeindeAntraegeComponent;
     let fixture: ComponentFixture<GemeindeAntraegeComponent>;
+
+    authServiceSpy.principal$ = of(user) as any;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
