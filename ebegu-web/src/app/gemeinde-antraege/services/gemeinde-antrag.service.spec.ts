@@ -28,7 +28,6 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
 describe('GemeindeAntragService', () => {
     let service: GemeindeAntragService;
 
-
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],

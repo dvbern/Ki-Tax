@@ -164,6 +164,8 @@ export class GemeindeAntraegeComponent implements OnInit {
             if (this.types.length === 1) {
                 this.formGroup.get('antragTyp').setValue(this.types[0]);
             }
+        }, error => {
+            console.error(error);
         });
 
     }
