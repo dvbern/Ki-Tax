@@ -5913,7 +5913,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxInstitutionContainer.getInstitution().getId());
 		convertAbstractFieldsToJAX(institutionContainer, jaxInstitutionContainer);
 
-		// institutionContainer.setStatus(jaxInstitutionContainer.getStatus());
+		// status darf nicht vom client übernommen werden
 
 		// Die Institution darf nie vom Client uebernommen werden
 		institutionService.findInstitution(jaxInstitutionContainer.getInstitution().getId(), false)

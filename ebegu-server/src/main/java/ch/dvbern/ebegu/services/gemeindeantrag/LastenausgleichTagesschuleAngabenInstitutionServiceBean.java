@@ -180,6 +180,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	public LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnen(
 		LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer) {
 
+		authorizer.checkWriteAuthorization(fallContainer);
+
 		Preconditions.checkState(
 			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde(),
 			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"

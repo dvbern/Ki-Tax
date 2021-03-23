@@ -33,7 +33,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -46,8 +45,6 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -63,7 +60,6 @@ import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -419,9 +415,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		persistence.persist(latsContainer);
 	}
 
+	@Nonnull
 	@Override
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
-		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
 
 		LastenausgleichTagesschuleAngabenGemeinde formular;
 
@@ -473,9 +470,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return persistence.persist(fallContainer);
 	}
 
+	@Nonnull
 	@Override
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
-		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
 
 		Preconditions.checkState(
 			fallContainer.isInBearbeitungGemeinde(),

@@ -109,9 +109,11 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	/**
 	 * Schliesst das Angaben Gemeinde Formular ab
 	 */
+	@Nonnull
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
-		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 
+	@Nonnull
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
-		LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 }
