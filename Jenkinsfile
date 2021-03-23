@@ -21,7 +21,7 @@ pipeline {
 						spotbugsPublisher(disabled: true),
 						artifactsPublisher(disabled: true)
 				]) {
-					sh 'mvn -B -U -T 1C ' +
+					sh './mvnw -B -U -T 1C ' +
 							'-P dvbern.oss -P ci -P frontend clean install'
 				}
 			}
