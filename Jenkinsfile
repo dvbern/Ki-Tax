@@ -22,7 +22,7 @@ pipeline {
 						artifactsPublisher(disabled: true)
 				]) {
 					sh './mvnw -B -U -T 1C ' +
-							'-P dvbern.oss -P ci -P frontend clean install'
+							'-P dvbern.oss -P ci -P frontend clean test'
 				}
 			}
 
