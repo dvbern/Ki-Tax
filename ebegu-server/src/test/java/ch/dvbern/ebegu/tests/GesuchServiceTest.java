@@ -89,6 +89,7 @@ import ch.dvbern.ebegu.services.TestdataCreationService;
 import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.services.WizardStepService;
 import ch.dvbern.ebegu.services.ZahlungService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
@@ -106,6 +107,7 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +119,7 @@ import static ch.dvbern.ebegu.test.TestDataUtil.initVorgaengerVerfuegungenWithNU
  */
 @SuppressWarnings({ "LocalVariableNamingConvention", "JUnit3StyleTestMethodInJUnit4Class" })
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class GesuchServiceTest extends AbstractTestdataCreationTest {

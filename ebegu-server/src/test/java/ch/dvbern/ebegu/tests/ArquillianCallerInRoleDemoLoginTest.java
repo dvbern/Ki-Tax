@@ -25,12 +25,14 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
@@ -40,6 +42,7 @@ import static org.junit.Assert.assertTrue;
  * Integration tests demonstrating access to user roles.
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest {
 
 	@Inject
