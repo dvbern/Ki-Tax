@@ -15,7 +15,7 @@ pipeline {
 	stages {
 		stage("Test") {
 			steps {
-				withMaven(options: [
+				withMaven(jdk: 'OpenJDK_11.0.4', options: [
 						junitPublisher(healthScaleFactor: 1.0),
 						findbugsPublisher(disabled: true),
 						spotbugsPublisher(disabled: true),
