@@ -18,7 +18,8 @@
     <div class="row">
         <div class="col-md-10">
             <div id="titleText">
-                <h3 class="ng-scope" translate>FAELLE_LIST</h3>
+                <h3 class="ng-scope" *ngIf="title">{{title}}</h3>
+                <h3 class="ng-scope" *ngIf="!title" translate>FAELLE_LIST</h3>
             </div>
             <div id="refreshIcon">
                 <i class="fa fa-undo" dv-st-reset-search=""></i>

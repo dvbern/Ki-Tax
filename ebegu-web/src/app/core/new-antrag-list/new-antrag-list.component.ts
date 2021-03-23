@@ -173,6 +173,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     @Input()
     public pendenz: boolean = false;
 
+    /**
+     * The title displayed in the top left
+     */
+    @Input()
+    public title: string;
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
