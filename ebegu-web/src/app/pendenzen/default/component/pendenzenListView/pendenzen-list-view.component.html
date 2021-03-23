@@ -32,6 +32,7 @@
                                     [data$]="data$"
                                     [title]="'PENDENZEN_LIST' | translate"
                                     [initialFilter]="initialFilter"
+                                    [page]="calculatePage()"
                                     [totalItems]="pagination.totalItemCount"
                                     [pendenz]="true"
                                     (sortChange)="onSort($event)"

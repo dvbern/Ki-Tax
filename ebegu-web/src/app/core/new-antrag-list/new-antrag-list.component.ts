@@ -223,7 +223,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public displayedColumns: string[];
 
-    private readonly filterPredicate: DVAntragListFilter = {};
+    private filterPredicate: DVAntragListFilter = {};
 
     private readonly unsubscribe$ = new Subject<void>();
     /**
@@ -262,6 +262,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
+        this.initFilter();
         this.initDisplayedColumns();
         this.initTable();
         this.initBenutzerLists();
@@ -278,6 +279,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             if (!changes.data$.firstChange) {
                 this.loadData();
             }
+        }
+
+        if (changes.totalItems) {
+            this.updatePagination();
         }
     }
 
@@ -321,6 +326,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 },
                 err => LOG.error(err),
             );
+    }
+
+    private initFilter(): void {
+        if (this.initialFilter) {
+            this.filterPredicate = {...this.filterPredicate, ...this.initialFilter};
+        }
     }
 
     public ngOnDestroy(): void {
@@ -373,11 +384,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
-            this.paginationItems = [];
-            for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItems / this.pageSize),
-                this.page + 5); i++) {
-                this.paginationItems.push(i);
-            }
+            this.updatePagination();
             // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
             //  these since they are not zone-aware. Remove once the service is migrated
             this.changeDetectorRef.markForCheck();
@@ -386,6 +393,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could not load translation', translateError));
         });
+    }
+
+    private updatePagination(): void {
+        this.paginationItems = [];
+        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItems / this.pageSize),
+            this.page + 5); i++) {
+            this.paginationItems.push(i);
+        }
     }
 
     /**

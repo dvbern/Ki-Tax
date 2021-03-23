@@ -191,4 +191,8 @@ export class PendenzenListViewComponent {
 
         this.loadData();
     }
+
+    public calculatePage(): number {
+        return Math.floor(this.pagination.start / this.pagination.number);
+    }
 }
