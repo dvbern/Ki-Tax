@@ -15,13 +15,6 @@ pipeline {
 	}
 	stages {
 		stage("Test") {
-			agent {
-				docker {
-					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:jdk11-old"
-					args "--privileged"
-				}
-			}
-
 			steps {
 				withMaven(options: [
 						junitPublisher(healthScaleFactor: 1.0),
