@@ -28,17 +28,16 @@
                     </p>
                 </div>
 
-                <!--
-                <dv-antrag-list
-                    table-title="{{'PENDENZEN_LIST' | translate}}"
-                    on-filter-change="vm.passFilterToServer(tableState)"
-                    on-edit="vm.editpendenzJA(antrag, event)"
-                    table-id="pendenzenJATable"
-                    add-button-visible="false"
-                    total-result-count="vm.totalResultCount"
-                    pendenz="true">
-                </dv-antrag-list>
--->
+                <dv-new-antrag-list *ngIf="initialFilter.verantwortlicherGemeinde"
+                                    [data$]="data$"
+                                    [initialFilter]="initialFilter"
+                                    [totalItems]="pagination.totalItemCount"
+                                    [pendenz]="true"
+                                    (sortChange)="onSort($event)"
+                                    (filterChange)="onFilterChange($event)"
+                                    (paginationEvent)="onPagination($event)"
+                                    (rowClicked)="editpendenzJA($event.antrag, $event.event)">
+                </dv-new-antrag-list>
             </div>
 
         </div>

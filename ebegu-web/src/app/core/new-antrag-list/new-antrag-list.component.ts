@@ -49,11 +49,13 @@ import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
+import {BenutzerRS} from '../service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -92,10 +94,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      * 'institutionen',
      * 'verantwortlicheTS',
      * 'verantwortlicheBG',
+     * 'verantwortlicheGemeinde',
      *
      * Hides the column in the table
      */
     @Input() public hiddenColumns: string[] = [];
+
+    /**
+     * Inits the filter values. Does not trigger the EventEmitter
+     */
+    @Input() public initialFilter: DVAntragListFilter;
 
     /**
      * Used to provide other data than the default all faelle. Providing this input disables the provided filter and
@@ -158,13 +166,20 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     @Input()
     public disablePagination: boolean = false;
 
+    /**
+     * Does the table show pendenzen or general fälle
+     * TODO: is this necessary?
+     */
+    @Input()
+    public pendenz: boolean = false;
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
+
     public gemeindenList: Array<TSGemeinde> = [];
 
     private customData: boolean = false;
-
     public datasource: MatTableDataSource<DVAntragListItem>;
     public filterColumns: string[] = [
         'fallNummer-filter',
@@ -180,7 +195,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'institutionen-filter',
         'verantwortlicheTS-filter',
         'verantwortlicheBG-filter',
+        'verantwortlicheGemeinde-filter',
     ];
+
     private readonly allColumns = [
         'fallNummer',
         'gemeinde',
@@ -195,14 +212,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
+        'verantwortlicheGemeinde',
     ];
 
-    public displayedColumns: string[] = this.allColumns;
+    public displayedColumns: string[];
 
     private readonly filterPredicate: DVAntragListFilter = {};
 
     private readonly unsubscribe$ = new Subject<void>();
-
     /**
      * Filter change should not be triggered when user is still typing. Filter change is triggered
      * after user stopped typing for timeoutMS milliseconds
@@ -210,13 +227,17 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      * and we add some more extra for slow typers
      */
     private keyupTimeout: NodeJS.Timeout;
-    private readonly timeoutMS = 700;
 
+    private readonly timeoutMS = 700;
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
     } = {};
+
     public paginationItems: number[];
+    public userListBgTsOrGemeinde: TSBenutzerNoDetails[];
+    public userListTsOrGemeinde: TSBenutzerNoDetails[];
+    public userListBgOrGemeinde: TSBenutzerNoDetails[];
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -227,6 +248,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
+        private readonly benutzerRS: BenutzerRS,
     ) {
     }
 
@@ -234,13 +256,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
+        this.initDisplayedColumns();
         this.initTable();
+        this.initBenutzerLists();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.hiddenColumns) {
-            this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
-            this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+            this.updateColumns();
         }
 
         // tslint:disable-next-line:early-exit
@@ -250,6 +273,23 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.loadData();
             }
         }
+    }
+
+    private initDisplayedColumns(): void {
+        if (this.filterColumns?.length > 0) {
+            if (this.pendenz) {
+                this.hiddenColumns.push('verantwortlicheBG');
+                this.hiddenColumns.push('verantwortlicheTS');
+            } else {
+                this.hiddenColumns.push('verantwortlicheGemeinde');
+            }
+        }
+        this.updateColumns();
+    }
+
+    private updateColumns(): void {
+        this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+        this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
     }
 
     public updateInstitutionenList(): void {
@@ -416,6 +456,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.applyFilter();
     }
 
+    public filterVerantwortlicheGemeinde(verantwortliche: TSBenutzerNoDetails): void {
+        this.filterPredicate.verantwortlicherGemeinde = verantwortliche ? verantwortliche.getFullName() : null;
+        this.applyFilter();
+    }
+
     public filterFamilie(query: string): void {
         this.filterPredicate.familienName = query.length > 0 ? query : null;
         this.applyFilter();
@@ -499,5 +544,45 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         return bezeichnung;
+    }
+
+    public findUserByNameInList(name: string, list: TSBenutzerNoDetails[]): TSBenutzerNoDetails | null {
+        if (!name || !list) {
+            return null;
+        }
+        return list.find(user => user.getFullName() === name);
+    }
+
+    private initBenutzerLists(): void {
+        if (this.isPendenzGemeindeRolle()) {
+            this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+                this.userListBgTsOrGemeinde = response;
+                this.changeDetectorRef.markForCheck();
+            });
+        } else {
+            this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
+                this.userListBgOrGemeinde = response;
+                this.changeDetectorRef.markForCheck();
+            });
+            this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
+                this.userListTsOrGemeinde = response;
+                this.changeDetectorRef.markForCheck();
+            });
+        }
+    }
+
+    public isPendenzGemeindeRolle(): boolean {
+        return this.pendenz && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles());
+    }
+
+    public getVerantwortlicheBgAndTs(antrag: DVAntragListItem): string {
+        const verantwortliche: string[] = [];
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicheBG)) {
+            verantwortliche.push(antrag.verantwortlicheBG);
+        }
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicheTS)) {
+            verantwortliche.push(antrag.verantwortlicheTS);
+        }
+        return verantwortliche.join(', ');
     }
 }

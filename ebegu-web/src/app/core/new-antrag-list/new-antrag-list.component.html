@@ -136,6 +136,14 @@
                     <span [title]="element.verantwortlicheBG">{{element.verantwortlicheBG}}</span></mat-cell>
             </ng-container>
 
+            <ng-container matColumnDef="verantwortlicheGemeinde">
+                <mat-header-cell mat-sort-header="verantwortlicheGemeinde" *matHeaderCellDef>
+                    <span translate>VERANTWORTLICH</span></mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span [title]="getVerantwortlicheBgAndTs(element)">{{getVerantwortlicheBgAndTs(element)}}</span>
+                </mat-cell>
+            </ng-container>
+
             <ng-container matColumnDef="fallNummer-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field">
@@ -275,6 +283,7 @@
             <ng-container matColumnDef="verantwortlicheTS-filter" st-table="">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <div dvNewUserSelect
+                         [selectedUser]="findUserByNameInList(initialFilter?.verantwortlicherTS, userListTsOrGemeinde)"
                          [showSelectionAll]="true"
                          [angular2]="true"
                          [initialAll]="true"
@@ -287,9 +296,21 @@
                 <mat-header-cell *matHeaderCellDef="let column">
                     <div dvNewUserSelect
                          [showSelectionAll]="true"
+                         [selectedUser]="findUserByNameInList(initialFilter?.verantwortlicherBG, userListBgOrGemeinde)"
                          [angular2]="true"
                          [initialAll]="true"
-                         (onUserChanged)="filterVerantwortlicheBG($event.user)"
+                         (onUserChanged)="filterVerantwortlicheBG($event.user)"></div>
+                </mat-header-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="verantwortlicheGemeinde-filter" st-table="">
+                <mat-header-cell *matHeaderCellDef="let column">
+                    <div dvNewUserSelect
+                         [showSelectionAll]="true"
+                         [selectedUser]="findUserByNameInList(initialFilter?.verantwortlicherGemeinde, userListBgTsOrGemeinde)"
+                         [angular2]="true"
+                         [initialAll]="true"
+                         (onUserChanged)="filterVerantwortlicheGemeinde($event.user)"
                          [sachbearbeiterGemeinde]="true"></div>
                 </mat-header-cell>
             </ng-container>

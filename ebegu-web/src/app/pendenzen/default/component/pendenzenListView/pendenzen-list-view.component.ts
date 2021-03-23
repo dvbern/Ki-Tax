@@ -17,6 +17,8 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import {BehaviorSubject, from} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
@@ -26,19 +28,41 @@ import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
-import IPromise = angular.IPromise;
+import {DVAntragListFilter} from '../../../../shared/interfaces/DVAntragListFilter';
+import {DVAntragListItem} from '../../../../shared/interfaces/DVAntragListItem';
+import {DVPaginationEvent} from '../../../../shared/interfaces/DVPaginationEvent';
 
 const LOG = LogFactory.createLog('PendenzenListViewComponent');
 
 @Component({
     selector: 'pendenzen-list-view',
     templateUrl: './pendenzen-list-view.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PendenzenListViewComponent {
 
-    public totalResultCount: string = '0';
     public hasGemeindenInStatusAngemeldet: boolean = false;
+
+    public data$: BehaviorSubject<DVAntragListItem[]> = new BehaviorSubject<DVAntragListItem[]>([]);
+    public pagination: {
+        number: number,
+        totalItemCount: number,
+        start: number
+    } = {
+        number: 20,
+        totalItemCount: 0,
+        start: 0,
+    };
+    private search: { predicateObject: DVAntragListFilter } = {
+        predicateObject: {},
+    };
+
+    private sort: {
+        predicate?: string,
+        reverse?: boolean
+    } = {};
+
+    public initialFilter: DVAntragListFilter = {};
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
@@ -50,15 +74,58 @@ export class PendenzenListViewComponent {
     }
 
     public ngOnInit(): void {
+        this.authServiceRS.principal$.subscribe(principal => {
+            this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
+            this.search.predicateObject = this.initialFilter;
+            this.loadData();
+        });
         this.initHasGemeindenInStatusAngemeldet();
     }
 
-    public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
+    private loadData(): void {
+        this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
+            .then(response => {
+                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
+                // we lose the "this" if we don't map here
+                this.data$.next(response.antragDTOs.map(antragDto => {
+                    return {
+                        fallNummer: antragDto.fallNummer,
+                        dossierId: antragDto.dossierId,
+                        antragId: antragDto.antragId,
+                        gemeinde: antragDto.gemeinde,
+                        status: antragDto.status,
+                        familienName: antragDto.familienName,
+                        kinder: antragDto.kinder,
+                        laufNummer: antragDto.laufnummer,
+                        antragTyp: antragDto.antragTyp,
+                        periode: antragDto.gesuchsperiodeString,
+                        aenderungsdatum: antragDto.aenderungsdatum,
+                        dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
+                        angebote: antragDto.angebote,
+                        institutionen: antragDto.institutionen,
+                        verantwortlicheTS: antragDto.verantwortlicherTS,
+                        verantwortlicheBG: antragDto.verantwortlicherBG,
+                        hasBesitzer: () => antragDto.hasBesitzer(),
+                    };
+                }));
+            });
+    }
+
+    public onFilterChange(filter: DVAntragListFilter): void {
+        this.search.predicateObject = {
+            ...filter,
+        };
+        this.loadData();
+    }
+
+    public passFilterToServer(tableFilterState: any): void {
         LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        return this.searchRS.getPendenzenList(tableFilterState).then((response: TSAntragSearchresultDTO) => {
-            this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
-            return response;
-        });
+        from(this.searchRS.getPendenzenList(tableFilterState))
+            .pipe(tap((response: TSAntragSearchresultDTO) => {
+                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
+            }), map(response => response.antragDTOs.map(antragDTO => {
+                return antragDTO as DVAntragListItem;
+            })));
 
     }
 
@@ -110,5 +177,18 @@ export class PendenzenListViewComponent {
             .then(result => {
                 this.hasGemeindenInStatusAngemeldet = result;
             });
+    }
+
+    public onPagination(paginationEvent: DVPaginationEvent): void {
+        this.pagination.number = paginationEvent.pageSize;
+        this.pagination.start = paginationEvent.page * paginationEvent.pageSize;
+
+        this.loadData();
+    }
+
+    public onSort(sort: { predicate?: string; reverse?: boolean }): void {
+        this.sort = sort;
+
+        this.loadData();
     }
 }
