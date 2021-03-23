@@ -31,7 +31,7 @@ pipeline {
 						artifactsPublisher(disabled: true)
 				]) {
 					sh 'mvn -B -U -T 1C ' +
-							'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
+							'-P dvbern.oss -P ci -P frontend clean install'
 				}
 			}
 

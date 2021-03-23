@@ -36,6 +36,7 @@
 
         <!-- Wird ggf. im Profil "development-mode' ueberschrieben -->
         <skip-code-validation>false</skip-code-validation>
+        <surefire.excludedGroups>ch.dvbern.ebegu.test.IntegrationTest</surefire.excludedGroups>
 
         <!-- local database properties -->
         <database.jdbc.driver>org.mariadb.jdbc.Driver</database.jdbc.driver>
@@ -907,6 +908,7 @@
                 <unpack.artifactId>wildfly-dist</unpack.artifactId>
                 <unpack.version>${version.wildfly.container}</unpack.version>
                 <unpack.directory>${project.build.directory}</unpack.directory>
+                <surefire.excludedGroups/>
             </properties>
             <dependencies>
                 <dependency>
@@ -926,6 +928,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
+                    <excludedGroups>${surefire.excludedGroups}</excludedGroups>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <!--port offset fuer embedded wildfly -->
                     <argLine>

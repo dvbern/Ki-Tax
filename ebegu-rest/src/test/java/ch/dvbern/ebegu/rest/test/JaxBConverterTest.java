@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.TestdataCreationService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.TestfallName;
@@ -67,6 +68,7 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
@@ -91,6 +93,7 @@ import static org.junit.Assert.assertNotNull;
 @SuppressWarnings({ "LocalVariableNamingConvention", "InstanceMethodNamingConvention",
 	"InstanceVariableNamingConvention" })
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 

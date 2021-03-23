@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.services.HistorizationService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionType;
@@ -32,6 +33,7 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -39,6 +41,7 @@ import org.junit.runner.RunWith;
  * initialisiert.
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/applicationPropertyAudited.xml")
 @Transactional(TransactionMode.DISABLED)
 public class HistorizationServiceTest extends AbstractEbeguLoginTest {

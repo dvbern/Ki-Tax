@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.TestfaelleService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.data.VerfuegungZeitabschnittData;
 import ch.dvbern.ebegu.test.data.VerfuegungszeitabschnitteData;
@@ -50,6 +51,7 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({ "CdiInjectionPointsInspection", "JUnit3StyleTestMethodInJUnit4Class" })
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
