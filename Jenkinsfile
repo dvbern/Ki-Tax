@@ -1,8 +1,7 @@
 // Continuous delivery pipeline for feature branch builds.
 
 pipeline {
-	// It is important to use agent none, so stages that do not need an agent are not hogging a heavyweight executor.
-	agent none
+	agent any
 	triggers {
 		pollSCM('H 22 * * *')
 	}
