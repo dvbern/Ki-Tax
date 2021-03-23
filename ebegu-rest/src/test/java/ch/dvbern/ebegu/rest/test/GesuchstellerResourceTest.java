@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.api.resource.GesuchstellerResource;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,12 +36,14 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * Testet GesuchstellerResource
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @Transactional(TransactionMode.DISABLED)
 public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 

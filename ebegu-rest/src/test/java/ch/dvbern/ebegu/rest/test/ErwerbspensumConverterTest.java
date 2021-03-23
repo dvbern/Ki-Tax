@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,12 +31,14 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * Tests der die Konvertierung von Erwerbspensen prueft
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @Transactional(TransactionMode.DISABLED)
 public class ErwerbspensumConverterTest extends AbstractEbeguRestLoginTest {
 

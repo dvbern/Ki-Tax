@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,12 +33,14 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * Tests fuer die Klasse FinanzielleSituationService
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLoginTest {
