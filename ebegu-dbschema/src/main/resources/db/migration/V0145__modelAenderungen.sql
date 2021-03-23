@@ -18,3 +18,5 @@
 ALTER TABLE fall DROP CONSTRAINT besitzer_id;
 
 ALTER TABLE fall ADD CONSTRAINT UK_fall_besitzer UNIQUE (besitzer_id);
+
+ALTER TABLE sozialdienst_stammdaten MODIFY COLUMN telefon VARCHAR(255);

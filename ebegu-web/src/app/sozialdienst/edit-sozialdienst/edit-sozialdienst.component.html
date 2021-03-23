@@ -94,12 +94,11 @@
                     <!-- Telefon -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="telefon_id">TELEFON</label>
+                            <label translate for="telefon_id">TELEFON</label>
                             <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.telefon"
                                    [maxlength]="255" class="form-control"
                                    [pattern]="CONSTANTS.PATTERN_PHONE"
-                                   required
                             >
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
                                                inputId="telefon_id"></dv-error-messages>
@@ -132,10 +131,10 @@
                     <!-- Webseite -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="webseite_id">WEBSEITE</label>
+                            <label translate for="webseite_id">WEBSEITE</label>
                             <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.webseite"
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control">
                             <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
                                                inputId="webseite_id"></dv-error-messages>
                         </div>
