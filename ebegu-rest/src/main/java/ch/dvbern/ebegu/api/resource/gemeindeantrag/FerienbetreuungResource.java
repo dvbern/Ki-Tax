@@ -26,13 +26,17 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -96,5 +100,24 @@ public class FerienbetreuungResource {
 			.map(container ->
 				converter.ferienbetreuungAngabenContainerToJax(container))
 			.orElse(null);
+	}
+
+	@ApiOperation(
+		value = "Speichert die Kommentare eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveKommentar/{containerId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSKommentar(
+		@Nonnull String kommentar,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(kommentar);
+
+		ferienbetreuungService.saveKommentar(containerId.getId(), kommentar);
 	}
 }

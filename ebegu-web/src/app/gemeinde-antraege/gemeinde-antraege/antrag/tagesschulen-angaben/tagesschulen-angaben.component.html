@@ -16,10 +16,10 @@
   -->
 
 <div class="tagesschule-angaben">
-    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN' | translate}}</h1>
+    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN' | translate}}</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN</h2>
+            <h2 translate>LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN</h2>
             <hr class="header"/>
         </div>
     </div>
@@ -463,31 +463,47 @@
                 <textarea matInput
                           formControlName="bemerkungen"
                           class="form-control dv-input"></textarea>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.bemerkungen"
+                    [korrektur]="form.get('bemerkungen').value"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </mat-form-field>
         </dv-input-container-x>
 
         <div class="actions">
             <dv-loading-button
-                type="button"
-                *ngIf="canSeeSaveButton()"
-                [buttonDisabled]="actionButtonsDisabled()"
-                (buttonClick)="onFormSubmit()">
-                <span translate>SAVE</span>
-            </dv-loading-button>
-            <dv-loading-button
+                class="uppercase"
                 *ngIf="canSeeFreigebenButton()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
             </dv-loading-button>
+
             <dv-loading-button
+                class="uppercase"
                 *ngIf="canSeeGeprueftButton()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onGeprueft()">
                 <span translate>GEPRUEFT</span>
             </dv-loading-button>
+
+            <button class="dv-btn cancel-button uppercase"
+                type="button"
+                *ngIf="canSeeSaveButton()"
+                [disabled]="actionButtonsDisabled()"
+                (click)="onFormSubmit()">
+                <span translate>SAVE</span>
+            </button>
+
+            <button class="dv-btn cancel-button margin-left-5 uppercase"
+                    type="button"
+                    (click)="navigateBack($event)">
+                <span translate>CANCEL</span>
+            </button>
         </div>
 
     </form>

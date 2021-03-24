@@ -40,10 +40,14 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -127,6 +131,31 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			persistence.find(FerienbetreuungAngabenContainer.class, containerId);
 
 		return Optional.ofNullable(container);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();
+		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.setGemeinde(gemeinde);
+		container.setGesuchsperiode(gesuchsperiode);
+		container.setAngabenDeklaration(new FerienbetreuungAngaben());
+		return persistence.persist(container);
+	}
+
+	@Nonnull
+	@Override
+	public void saveKommentar(@Nonnull String containerId, @Nonnull String kommentar) {
+		FerienbetreuungAngabenContainer container =
+			this.findFerienbetreuungAngabenContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveKommentar",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+		container.setInternerKommentar(kommentar);
+		persistence.persist(container);
 	}
 }
 

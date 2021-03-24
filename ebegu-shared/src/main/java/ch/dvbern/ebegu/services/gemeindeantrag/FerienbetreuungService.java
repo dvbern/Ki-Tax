@@ -23,6 +23,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 
 /**
@@ -39,4 +41,10 @@ public interface FerienbetreuungService {
 
 	@Nonnull
 	Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull String containerId);
+
+	@Nonnull
+	FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	@Nonnull
+	void saveKommentar(@Nonnull String id, @Nonnull String kommentar);
 }

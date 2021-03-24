@@ -19,26 +19,27 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
+public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
-	public void next(
-		@Nonnull TagesschuleWizard wizard) {
-		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
-			wizard.setStep(new Freigabe());
+	public void next(@Nonnull TagesschuleWizard tagesschuleWizard) {
+		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS()
+			|| tagesschuleWizard.getRole().isRoleMandant()
+			|| tagesschuleWizard.getRole().isSuperadmin()) {
+			tagesschuleWizard.setStep(new LastenausgleichStep());
 		}
 	}
 
 	@Override
-	public void prev(
-		@Nonnull TagesschuleWizard wizard) {
-		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
-			wizard.setStep(new AngabenGemeinde());
+	public void prev(@Nonnull TagesschuleWizard tagesschuleWizard) {
+		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS()
+			|| tagesschuleWizard.getRole().isRoleMandant()
+			|| tagesschuleWizard.getRole().isSuperadmin()) {
+			tagesschuleWizard.setStep(new AngabenTagesschuleStep());
 		}
 	}
 
@@ -51,17 +52,25 @@ public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
 
 	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.ANGABEN_TAGESSCHULEN.name();
+		return TagesschuleWizardStepsEnum.FREIGABE.name();
 	}
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		LastenausgleichTagesschuleAngabenGemeindeStatus status = wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus();
-		return status.equals(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
+		switch (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus()) {
+		case IN_BEARBEITUNG_GEMEINDE:
+			return false;
+		case IN_PRUEFUNG_KANTON:
+			return !(wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin());
+		case NEU:
+		default:
+			return true;
+		}
+
 	}
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.LASTENAUSGLEICH_TS;
+		return WizardTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 	}
 }

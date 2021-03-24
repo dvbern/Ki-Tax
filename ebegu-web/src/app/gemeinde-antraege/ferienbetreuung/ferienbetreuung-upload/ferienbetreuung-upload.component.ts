@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,20 +18,17 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-lastenausgleich-ts-side-nav',
-  templateUrl: './lastenausgleich-ts-side-nav.component.html',
-  styleUrls: ['./lastenausgleich-ts-side-nav.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-ferienbetreuung-upload',
+    templateUrl: './ferienbetreuung-upload.component.html',
+    styleUrls: ['./ferienbetreuung-upload.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LastenausgleichTsSideNavComponent implements OnInit {
+export class FerienbetreuungUploadComponent implements OnInit {
 
-    // TODO: replace with real values
-    public readonly lastenausgleichTsId = '1234';
-    public readonly status = 'Status';
-
-    public constructor() { }
+    public constructor() {
+    }
 
     public ngOnInit(): void {
-  }
+    }
 
 }

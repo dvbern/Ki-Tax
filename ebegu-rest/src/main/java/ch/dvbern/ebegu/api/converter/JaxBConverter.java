@@ -5683,7 +5683,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxGemeindeAntrag gemeindeAntragToJax(@Nonnull final GemeindeAntrag gemeindeAntrag) {
+	public JaxGemeindeAntrag gemeindeAntragToJax(@Nonnull final GemeindeAntrag gemeindeAntrag) {
 		JaxGemeindeAntrag jaxGemeindeAntrag = new JaxGemeindeAntrag();
 
 		jaxGemeindeAntrag.setTimestampErstellt(gemeindeAntrag.getTimestampErstellt());

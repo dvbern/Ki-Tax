@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
+package ch.dvbern.ebegu.wizardx.ferienbetreuung;
 
 import javax.annotation.Nonnull;
 
@@ -23,35 +23,35 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class Lastenausgleich implements WizardStep<TagesschuleWizard> {
+public class AngebotStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
-	public void next(@Nonnull TagesschuleWizard wizard) {
-		//Last Step nothing to do
+	public void next(@Nonnull FerienbetreuungWizard wizard) {
+		wizard.setStep(new NutzungStep());
 	}
 
 	@Override
-	public void prev(@Nonnull TagesschuleWizard wizard) {
-		wizard.setStep(new AngabenTagesschule());
+	public void prev(@Nonnull FerienbetreuungWizard wizard) {
+		wizard.setStep(new StammdatenGemeindeStep());
 	}
 
 	@Override
-	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
+	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
 		return WizardStateEnum.OK;
 	}
 
 	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.LASTENAUSGLEICH.name();
+		return FerienbetreuungWizardStepsEnum.ANGEBOT.name();
 	}
 
 	@Override
-	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		return true;
+	public boolean isDisabled(@Nonnull FerienbetreuungWizard wizard) {
+		return false;
 	}
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.LASTENAUSGLEICH_TS;
+		return WizardTyp.FERIENBETREUUNG;
 	}
 }

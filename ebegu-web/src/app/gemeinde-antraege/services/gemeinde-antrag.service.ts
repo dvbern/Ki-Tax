@@ -18,11 +18,18 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
+
+const LOG = LogFactory.createLog('GemeindeAntragService');
 
 @Injectable({
     providedIn: 'root',
@@ -32,7 +39,10 @@ export class GemeindeAntragService {
     private readonly API_BASE_URL = `${CONSTANTS.REST_API}gemeindeantrag`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(private readonly http: HttpClient) {
+    public constructor(
+        private readonly http: HttpClient,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     public getGemeindeAntraege(filter: DVAntragListFilter, sort: {
@@ -60,13 +70,27 @@ export class GemeindeAntragService {
         );
     }
 
-    public getTypes(): string[] {
-        return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG];
+    public getTypesForRole(): TSGemeindeAntragTyp[] {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG];
+        }
+        return [TSGemeindeAntragTyp.FERIENBETREUUNG];
     }
 
-    public createAntrag(toCreate: { periode: string, antragTyp: string }): Observable<TSGemeindeAntrag[]> {
+    public createAllAntrage(
+        toCreate: { periode: string, antragTyp: string, gemeinde?: TSGemeinde }
+        ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
-            `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
+            `${this.API_BASE_URL}/createAllAntraege/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
+            toCreate)
+            .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
+    }
+
+    public createAntrag(
+        toCreate: { periode: string, antragTyp: string, gemeinde: string }
+        ): Observable<TSGemeindeAntrag[]> {
+        return this.http.post<TSGemeindeAntrag[]>(
+            `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`,
             toCreate)
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }
@@ -97,5 +121,20 @@ export class GemeindeAntragService {
             default:
                 return antraege;
         }
+    }
+
+    public gemeindeAntragTypStringToWizardStepTyp(wizardTypStr: string): TSWizardStepXTyp | undefined {
+        if (!wizardTypStr) {
+            LOG.error('no wizardTypStr provided');
+            return undefined;
+        }
+        if (wizardTypStr === 'LASTENAUSGLEICH_TAGESSCHULEN') {
+            return TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+        }
+        if (wizardTypStr === 'FERIENBETREUUNG') {
+            return TSWizardStepXTyp.FERIENBETREUUNG;
+        }
+        LOG.error('wrong wizardTypStr provided');
+        return undefined;
     }
 }

@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@ang
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -63,7 +63,8 @@ export class TagesschulenAngabenComponent {
         private readonly translate: TranslateService,
         private readonly authService: AuthServiceRS,
         private readonly dialog: MatDialog,
-        private readonly routerGlobals: UIRouterGlobals
+        private readonly routerGlobals: UIRouterGlobals,
+        private readonly $state: StateService,
     ) {
     }
 
@@ -155,6 +156,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
+            this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
@@ -210,6 +212,7 @@ export class TagesschulenAngabenComponent {
                 this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
                 this.form.disable();
                 this.cd.markForCheck();
+                this.navigateBack();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
             });
@@ -287,5 +290,15 @@ export class TagesschulenAngabenComponent {
 
     public canSeeSaveButton(): boolean {
         return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+    }
+
+    public navigateBack($event?: MouseEvent): void {
+        const parentState = 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST';
+        if ($event && $event.ctrlKey) {
+            const url = this.$state.href(parentState);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go(parentState);
+        }
     }
 }

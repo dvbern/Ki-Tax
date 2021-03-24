@@ -23,20 +23,13 @@ import {GemeindeAngabenComponent} from '../../gemeinde-antraege/antrag/gemeinde-
 import {LastenausgleichTsBerechnungComponent} from '../../gemeinde-antraege/antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from '../../gemeinde-antraege/antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {TagesschulenListComponent} from '../../gemeinde-antraege/antrag/tagesschulen-list/tagesschulen-list.component';
-import {GemeindeAntraegeComponent} from '../../gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
 import {TagesschulenUiViewComponent} from '../tagesschulen-ui-view/tagesschulen-ui-view.component';
 
 const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        name: 'GEMEINDE_ANTRAEGE',
-        url: '/gemeinde-antraege',
-        component: GemeindeAntraegeComponent,
-    },
-    {
-        parent: 'app',
-        name: 'LASTENAUSGLEICH_TS',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN',
         url: '/lastenausgleich-ts/:id',
         component: LastenausgleichTSComponent,
         resolve: [
@@ -49,7 +42,7 @@ const states: NgHybridStateDeclaration[] = [
         ],
     },
     {
-        name: 'LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
         url: '/angaben-gemeinde?triggerValidation',
         component: GemeindeAngabenComponent,
         resolve: [
@@ -62,17 +55,17 @@ const states: NgHybridStateDeclaration[] = [
         ],
     },
     {
-        name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN',
         url: '/angaben-tagesschulen',
         component: TagesschulenUiViewComponent,
     },
     {
-        name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST',
         url: '/list',
         component: TagesschulenListComponent,
     },
     {
-        name: 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.DETAIL',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.DETAIL',
         url: '/:institutionId',
         component: TagesschulenAngabenComponent,
         resolve: [
@@ -85,7 +78,7 @@ const states: NgHybridStateDeclaration[] = [
         ],
     },
     {
-        name: 'LASTENAUSGLEICH_TS.FREIGABE',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.FREIGABE',
         url: '/freigabe',
         component: FreigabeComponent,
     },
