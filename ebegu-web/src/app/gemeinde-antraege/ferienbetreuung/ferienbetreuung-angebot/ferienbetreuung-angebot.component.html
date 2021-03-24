@@ -37,7 +37,11 @@
                 </label>
                 <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
-                    <input type="text" matInput formControlName="angebot" id="angebot_id" class="form-control dv-input"/>
+                    <input type="text"
+                           matInput
+                           formControlName="angebot"
+                           id="angebot_id"
+                           class="form-control dv-input"/>
                 </mat-form-field>
                 <mat-error *ngIf="form && form.get('angebot').errors?.required"
                            translate>ERROR_REQUIRED
@@ -50,12 +54,16 @@
             <div class="row">
 
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonVorname').errors}">
+                    <label required
+                           [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonVorname').errors}">
                         {{'VORNAME' | translate}}
                     </label>
                     <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotKontaktpersonVorname" class="form-control dv-input"/>
+                        <input type="text"
+                               matInput
+                               formControlName="angebotKontaktpersonVorname"
+                               class="form-control dv-input"/>
                     </mat-form-field>
                     <mat-error *ngIf="form && form.get('angebotKontaktpersonVorname').errors?.required"
                                translate>ERROR_REQUIRED
@@ -63,12 +71,16 @@
                 </dv-input-container-x>
 
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonNachname').errors}">
+                    <label required
+                           [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonNachname').errors}">
                         {{'NAME' | translate}}
                     </label>
                     <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotKontaktpersonNachname" class="form-control dv-input"/>
+                        <input type="text"
+                               matInput
+                               formControlName="angebotKontaktpersonNachname"
+                               class="form-control dv-input"/>
                     </mat-form-field>
                     <mat-error *ngIf="form && form.get('angebotKontaktpersonNachname').errors?.required"
                                translate>ERROR_REQUIRED
@@ -79,7 +91,8 @@
             <div formGroupName="angebotAdresse">
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label required [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
+                        <label required
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
                             {{'ADRESSE_STRASSE' | translate}}
                         </label>
                         <div class="flex-whitespace-item"></div>
@@ -104,7 +117,8 @@
 
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                        <label required [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
+                        <label required
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
                             {{'ADRESSE_PLZ' | translate}}
                         </label>
                         <div class="flex-whitespace-item"></div>
@@ -117,7 +131,8 @@
                     </dv-input-container-x>
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label required [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
+                        <label required
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
                             {{'ADRESSE_ORT' | translate}}
                         </label>
                         <div class="flex-whitespace-item"></div>
@@ -141,7 +156,8 @@
         </h3>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
+            <label required
+                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -161,7 +177,8 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
+            <label required
+                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -181,7 +198,8 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
+            <label required
+                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -221,14 +239,14 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
+            <label required
+                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="anzahlFerienwochenSommerferien"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
@@ -258,7 +276,8 @@
         </h3>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
+            <label required
+                   [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -319,16 +338,16 @@
                 <dv-tooltip [text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
             </label>
             <mat-form-field *ngIf="bfsGemeinden?.length">
-            <mat-select class="form-control"
-                        formControlName="finanziellBeteiligteGemeinden"
-                        name="finanziellBeteiligteGemeinden"
-                        id="am-angebot-beteiligte-gemeinden"
-                        [multiple]="true">
-                <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                            [value]="gemeinde.name">
-                    {{gemeinde.name}}
-                </mat-option>
-            </mat-select>
+                <mat-select class="form-control"
+                            formControlName="finanziellBeteiligteGemeinden"
+                            name="finanziellBeteiligteGemeinden"
+                            id="am-angebot-beteiligte-gemeinden"
+                            [multiple]="true">
+                    <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                                [value]="gemeinde.name">
+                        {{gemeinde.name}}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
         </dv-input-container-x>
 
@@ -566,7 +585,7 @@
             </dv-radio-container-x>
         </dv-input-container-x>
 
-<!--        todo: ADD THIRD OPTION -->
+        <!--        todo: ADD THIRD OPTION -->
         <dv-input-container-x>
             <label>
                 {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
@@ -603,6 +622,12 @@
                 (click)="save()"
                 [textContent]="'SAVE' | translate">
         </button>
+        <dv-loading-button
+            type="button"
+            [buttonDisabled]="formularNotEditable()"
+            (buttonClick)="onAbschliessen()">
+            <span translate>ABSCHLIESSEN</span>
+        </dv-loading-button>
     </div>
 
 </div>

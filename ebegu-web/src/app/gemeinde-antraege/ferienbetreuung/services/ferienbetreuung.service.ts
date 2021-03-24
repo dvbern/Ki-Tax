@@ -17,7 +17,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
@@ -62,7 +62,7 @@ export class FerienbetreuungService {
     private next(restContainer: TSFerienbetreuungAngabenContainer): void {
         const container = this.ebeguRestUtil.parseFerienbetreuungContainer(
             new TSFerienbetreuungAngabenContainer(),
-            restContainer
+            restContainer,
         );
         this.ferienbetreuungAngabenContainerStore.next(container);
     }
@@ -82,7 +82,7 @@ export class FerienbetreuungService {
         ).pipe(map(restStammdaten => {
             return this.ebeguRestUtil.parseFerienbetreuungStammdaten(
                 new TSFerienbetreuungAngabenStammdaten(),
-                restStammdaten
+                restStammdaten,
             );
         }));
     }
@@ -95,7 +95,7 @@ export class FerienbetreuungService {
         ).pipe(map(restAngebot => {
             return this.ebeguRestUtil.parseFerienbetreuungAngebot(
                 new TSFerienbetreuungAngabenAngebot(),
-                restAngebot
+                restAngebot,
             );
         }));
     }
@@ -108,7 +108,7 @@ export class FerienbetreuungService {
         ).pipe(map(restNutzung => {
             return this.ebeguRestUtil.parseFerienbetreuungNutzung(
                 new TSFerienbetreuungAngabenNutzung(),
-                restNutzung
+                restNutzung,
             );
         }));
     }
@@ -121,8 +121,26 @@ export class FerienbetreuungService {
         ).pipe(map(restKostenEinnahmen => {
             return this.ebeguRestUtil.parseFerienbetreuungKostenEinnahmen(
                 new TSFerienbetreuungAngabenKostenEinnahmen(),
-                restKostenEinnahmen
+                restKostenEinnahmen,
             );
         }));
+    }
+
+    public angebotAbschliessen(
+        containerId: string,
+        angebot: TSFerienbetreuungAngabenAngebot,
+    ): Observable<TSFerienbetreuungAngabenAngebot> {
+        return this.http.put(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/angebot/abschliessen`,
+            this.ebeguRestUtil.ferienbetreuungAngebotToRestObject({}, angebot)
+        ).pipe(
+            map(restAngebot => {
+                return this.ebeguRestUtil.parseFerienbetreuungAngebot(
+                    new TSFerienbetreuungAngabenAngebot(),
+                    restAngebot
+                );
+            }),
+            tap(() => this.updateFerienbetreuungContainerStore(containerId))
+        );
     }
 }
