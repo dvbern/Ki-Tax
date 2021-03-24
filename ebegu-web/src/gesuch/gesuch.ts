@@ -141,7 +141,8 @@ export class GesuchRouteController implements IController {
             case TSWizardStepStatus.OK:
                 if (this.getGesuch().isMutation()) {
                     if (step.wizardStepName === TSWizardStepName.FREIGABE
-                        && this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_GS) {
+                        && (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_GS
+                        || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
                         // tslint:disable-next-line:no-duplicate-string
                         return 'fa-pencil black';
                     }

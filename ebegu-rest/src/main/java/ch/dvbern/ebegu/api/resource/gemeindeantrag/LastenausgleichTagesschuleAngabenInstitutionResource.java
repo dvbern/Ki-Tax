@@ -41,16 +41,11 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import io.swagger.annotations.Api;
@@ -94,7 +89,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer findLastenausgleichTagesschuleAngabenInstitutionContainer(
 		@Nonnull @NotNull @PathParam("latsInstitutionAngabenJaxId") JaxId latsInstitutionAngabenJaxId
@@ -120,7 +115,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer saveLastenausgleichTagesschuleInstitution(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax,
@@ -152,7 +147,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionFreigeben(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax,
@@ -179,7 +174,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleInstitutionGeprueft(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
 	) {
@@ -188,6 +183,29 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 
 		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
 			angabenInstitutionService.lastenausgleichTagesschuleInstitutionGeprueft(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
+	}
+
+	@ApiOperation(
+		value = "Setzt den LastenausgleichTagesschuleAngabenInstitutionContainer zurück in den Status Prüfung durch Gemeinde",
+		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class
+	)
+	@Nonnull
+	@PUT
+	@Path("/falsche-angaben")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer falscheAngaben(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
+	) {
+		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
+
+		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
+			angabenInstitutionService.latsAngabenInstitutionContainerWiederOeffnen(converted);
 
 		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
 	}

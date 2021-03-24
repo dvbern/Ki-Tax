@@ -19,7 +19,7 @@
 
     <form role="form" class="" unsaved-warning-form="" novalidate dv-show-element
           [formGroup]="formGroup"
-          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForLastenausgleich()">
+          *ngIf="canCreateAntrag() | async">
 
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -52,8 +52,9 @@
                             <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtyp"
                                     id="gemeindeantragtyp"
                                     formControlName="antragTyp"
+                                    (change)="onAntragTypChange()"
                                     class="form-control">
-                                <option *ngFor="let typ of gemeindeAntragService.getTypes()"
+                                <option *ngFor="let typ of types"
                                         [value]="typ" translate>{{typ}}</option>
                             </select>
                             <div class="dv-error-messages">
@@ -89,10 +90,10 @@
                          layout="row"
                          layout-align="center center">
                         <div dvLoadingButtonX
-                             [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate"
+                             [ariaLabel]="'LATS_ANTRAEGE_ERSTELLEN' | translate"
                              type="submit"
                              (buttonClick)="createAllAntraege()">
-                            <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
+                            <span class="uppercase" translate>LATS_ANTRAEGE_ERSTELLEN</span>
                         </div>
                     </div>
 
@@ -120,6 +121,6 @@
                         (filterChange)="onFilterChange($event)"
                         (sortChange)="onSortChange($event)"
                         [filterStateList]="getStateFilter()"
-                        [filterTypeList]="gemeindeAntragService.getTypes()"
+                        [filterTypeList]="types"
                         [totalItems]="totalItems"></dv-new-antrag-list>
 </div>

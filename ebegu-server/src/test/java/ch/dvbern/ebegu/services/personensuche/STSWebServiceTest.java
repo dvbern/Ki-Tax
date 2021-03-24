@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.ws.ewk.sts.STSWebService;
 import ch.dvbern.ebegu.ws.ewk.sts.STSWebServiceResult;
@@ -33,12 +34,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * STSWebService testen
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 @Ignore

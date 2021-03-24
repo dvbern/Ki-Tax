@@ -34,6 +34,7 @@
                 <input id="e_mail_bt_id" type="email" name="e_mail_bt_name"
                        #eMail="ngModel"
                        [(ngModel)]="standort.mail"
+                       email
                        [maxlength]="255" class="form-control">
                 <dv-error-messages [errorObject]="eMail.errors"
                                    inputId="e_mail_bt_id"></dv-error-messages>

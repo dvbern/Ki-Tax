@@ -16,16 +16,24 @@
  */
 import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 
 import {GemeindeAntragService} from './gemeinde-antrag.service';
+
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
 
 describe('GemeindeAntragService', () => {
     let service: GemeindeAntragService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientModule]
+            imports: [HttpClientModule],
+            providers: [
+                {provide: AuthServiceRS, useValue: authServiceSpy}
+            ]
         });
         service = TestBed.inject(GemeindeAntragService);
     });
@@ -39,5 +47,20 @@ describe('GemeindeAntragService', () => {
           .toEqual(TSWizardStepXTyp.FERIENBETREUUNG);
       expect(service.gemeindeAntragTypStringToWizardStepTyp('LASTENAUSGLEICH_TAGESSCHULEN'))
           .toEqual(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+    });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
+
+    it('should return only Ferienbetreuung', () => {
+        authServiceSpy.isOneOfRoles.and.returnValue(false);
+        expect(service.getTypesForRole()).toEqual([TSGemeindeAntragTyp.FERIENBETREUUNG]);
+    });
+
+    it('should return Ferienbetreuung and Lastenausgleich Tagesschule', () => {
+        authServiceSpy.isOneOfRoles.and.returnValue(true);
+        expect(service.getTypesForRole()).toEqual(
+            [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG]
+        );
     });
 });

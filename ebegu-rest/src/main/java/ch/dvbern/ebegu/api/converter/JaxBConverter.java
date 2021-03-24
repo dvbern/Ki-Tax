@@ -1697,6 +1697,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedAdresseKontoinhaber != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedAdresseKontoinhaber));
 		}
+		jaxInstStammdaten.setAlternativeEmailFamilienportal(persistedInstStammdaten.getAlternativeEmailFamilienportal());
 		return jaxInstStammdaten;
 	}
 
@@ -1767,6 +1768,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (institutionStammdatenJAXP.getOffenBis() != null) {
 			institutionStammdaten.setOffenBis(hoursAndMinutesToDate(institutionStammdatenJAXP.getOffenBis()));
 		}
+		institutionStammdaten.setAlternativeEmailFamilienportal(institutionStammdatenJAXP.getAlternativeEmailFamilienportal());
 
 		institutionStammdaten.setBetreuungsstandorte(betreuungsstandortListToEntity(
 			institutionStammdatenJAXP.getBetreuungsstandorte(),
@@ -5773,6 +5775,8 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxLastenausgleichTagesschuleAngabenGemeinde();
 		convertAbstractFieldsToJAX(angabenGemeinde, jaxAngabenGemeinde);
 
+		jaxAngabenGemeinde.setStatus(angabenGemeinde.getStatus());
+
 		// A: Allgemeine Angaben
 		jaxAngabenGemeinde.setBedarfBeiElternAbgeklaert(angabenGemeinde.getBedarfBeiElternAbgeklaert());
 		jaxAngabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(angabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
@@ -5809,6 +5813,8 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
 	) {
 		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
+
+		angabenGemeinde.setStatus(jaxAngabenGemeinde.getStatus());
 
 		// A: Allgemeine Angaben
 		angabenGemeinde.setBedarfBeiElternAbgeklaert(jaxAngabenGemeinde.getBedarfBeiElternAbgeklaert());
@@ -5898,7 +5904,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxInstitutionContainer.getInstitution().getId());
 		convertAbstractFieldsToJAX(institutionContainer, jaxInstitutionContainer);
 
-		institutionContainer.setStatus(jaxInstitutionContainer.getStatus());
+		// status darf nicht vom client übernommen werden
 
 		// Die Institution darf nie vom Client uebernommen werden
 		institutionService.findInstitution(jaxInstitutionContainer.getInstitution().getId(), false)
@@ -5945,6 +5951,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenInstitution.setDurchschnittKinderProTagMittag(angabenInstitution.getDurchschnittKinderProTagMittag());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		jaxAngabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		jaxAngabenInstitution.setSchuleAufBasisPaedagogischesKonzept(angabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
@@ -5976,6 +5984,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setDurchschnittKinderProTagMittag(jaxAngabenInstitution.getDurchschnittKinderProTagMittag());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag1(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag2(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		angabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(jaxAngabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		angabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(jaxAngabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		angabenInstitution.setSchuleAufBasisPaedagogischesKonzept(jaxAngabenInstitution.getSchuleAufBasisPaedagogischesKonzept());

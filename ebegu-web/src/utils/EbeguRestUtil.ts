@@ -1498,6 +1498,10 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
             restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
             restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
+            restInstitutionStammdaten.alternativeEmailFamilienportal =
+                (institutionStammdaten.alternativeEmailFamilienportal) ?
+                    institutionStammdaten.alternativeEmailFamilienportal :
+                null;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1544,6 +1548,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
             institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
             institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
+            institutionStammdatenTS.alternativeEmailFamilienportal =
+                institutionStammdatenFromServer.alternativeEmailFamilienportal;
             institutionStammdatenTS.betreuungsstandorte =
                 this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
             return institutionStammdatenTS;
@@ -4417,6 +4423,8 @@ export class EbeguRestUtil {
     ): TSLastenausgleichTagesschuleAngabenGemeinde {
         if (gemeindeFromServer) {
             this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
+
+            gemeindeTS.status = gemeindeFromServer.status;
             // A: Allgemeine Angaben
             gemeindeTS.bedarfBeiElternAbgeklaert =
                 gemeindeFromServer.bedarfBeiElternAbgeklaert;
@@ -4475,6 +4483,7 @@ export class EbeguRestUtil {
         if (tsAngabenGemeinde) {
             this.abstractEntityToRestObject(restAngabenGemeinde, tsAngabenGemeinde);
 
+            restAngabenGemeinde.status = tsAngabenGemeinde.status;
             // A: Allgemeine Angaben
             restAngabenGemeinde.bedarfBeiElternAbgeklaert =
                 tsAngabenGemeinde.bedarfBeiElternAbgeklaert;
@@ -4623,6 +4632,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.durchschnittKinderProTagNachmittag1;
             angabenInstitutionTS.durchschnittKinderProTagNachmittag2 =
                 angabenInstitutionFromServer.durchschnittKinderProTagNachmittag2;
+            angabenInstitutionTS.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
+                angabenInstitutionFromServer.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
             // C: Qualitative Vorgaben der Tagesschuleverordnung
             angabenInstitutionTS.schuleAufBasisOrganisatorischesKonzept =
                 angabenInstitutionFromServer.schuleAufBasisOrganisatorischesKonzept;
@@ -4666,6 +4677,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.durchschnittKinderProTagNachmittag1;
             restAngabenInstitution.durchschnittKinderProTagNachmittag2 =
                 tsAngabenInstitution.durchschnittKinderProTagNachmittag2;
+            restAngabenInstitution.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
+                tsAngabenInstitution.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
             // C: Qualitative Vorgaben der Tagesschuleverordnung
             restAngabenInstitution.schuleAufBasisOrganisatorischesKonzept =
                 tsAngabenInstitution.schuleAufBasisOrganisatorischesKonzept;
@@ -4773,7 +4786,7 @@ export class EbeguRestUtil {
 
     public ferienbetreuungContainerToRestObject(
         restContainer: any,
-        containerTS: TSFerienbetreuungAngabenContainer
+        containerTS: TSFerienbetreuungAngabenContainer,
     ): any {
         if (!containerTS) {
             return undefined;
@@ -4805,7 +4818,7 @@ export class EbeguRestUtil {
 
     public ferienbetreuungStammdatenToRestObject(
         restStammdaten: any,
-        stammdatenTS: TSFerienbetreuungAngabenStammdaten
+        stammdatenTS: TSFerienbetreuungAngabenStammdaten,
     ): any {
         if (!stammdatenTS) {
             return undefined;
@@ -4889,7 +4902,7 @@ export class EbeguRestUtil {
 
     public ferienbetreuungKostenEinnahmenToRestObject(
         restKostenEinnahmen: any,
-        kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen
+        kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen,
     ): any {
         if (!kostenEinnahmenTS) {
             return undefined;
@@ -4934,19 +4947,19 @@ export class EbeguRestUtil {
         this.parseAbstractEntity(ferienbetreuungTS, ferienbetreuungFromServer);
         ferienbetreuungTS.stammdaten = this.parseFerienbetreuungStammdaten(
             new TSFerienbetreuungAngabenStammdaten(),
-            ferienbetreuungFromServer.stammdaten
+            ferienbetreuungFromServer.stammdaten,
         );
         ferienbetreuungTS.angebot = this.parseFerienbetreuungAngebot(
             new TSFerienbetreuungAngabenAngebot(),
-            ferienbetreuungFromServer.angebot
+            ferienbetreuungFromServer.angebot,
         );
         ferienbetreuungTS.nutzung = this.parseFerienbetreuungNutzung(
             new TSFerienbetreuungAngabenNutzung(),
-            ferienbetreuungFromServer.nutzung
+            ferienbetreuungFromServer.nutzung,
         );
         ferienbetreuungTS.kostenEinnahmen = this.parseFerienbetreuungKostenEinnahmen(
             new TSFerienbetreuungAngabenKostenEinnahmen(),
-            ferienbetreuungFromServer.kostenEinnahmen
+            ferienbetreuungFromServer.kostenEinnahmen,
         );
         ferienbetreuungTS.kantonsbeitrag = ferienbetreuungFromServer.kantonsbeitrag;
         ferienbetreuungTS.gemeindebeitrag = ferienbetreuungFromServer.gemeindebeitrag;
@@ -5045,7 +5058,7 @@ export class EbeguRestUtil {
 
     public parseFerienbetreuungKostenEinnahmen(
         kostenEinnahmenTS: TSFerienbetreuungAngabenKostenEinnahmen,
-        kostenEinnahmenFromServer: any
+        kostenEinnahmenFromServer: any,
     ): TSFerienbetreuungAngabenKostenEinnahmen | undefined {
 
         if (!kostenEinnahmenFromServer) {
