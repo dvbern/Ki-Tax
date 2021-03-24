@@ -60,6 +60,9 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 	@Nullable
 	private BigDecimal durchschnittKinderProTagNachmittag2;
 
+	@Nullable
+	private BigDecimal betreuungsstundenEinschliesslichBesondereBeduerfnisse;
+
 	// C: Qualitative Vorgaben der Tagesschuleverordnung
 
 	@Nullable
@@ -224,5 +227,16 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 
 	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenEinschliesslichBesondereBeduerfnisse() {
+		return betreuungsstundenEinschliesslichBesondereBeduerfnisse;
+	}
+
+	public void setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(
+		@Nullable BigDecimal betreuungsstundenEinschliesslichBesondereBeduerfnisse) {
+		this.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
+			betreuungsstundenEinschliesslichBesondereBeduerfnisse;
 	}
 }

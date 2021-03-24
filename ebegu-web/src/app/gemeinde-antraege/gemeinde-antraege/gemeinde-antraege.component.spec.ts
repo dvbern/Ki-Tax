@@ -48,11 +48,11 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
     ['path']);
 
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
-
-const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+    ['isOneOfRoles', 'principal$']);
 
 const user = new TSBenutzer();
+
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
 authServiceSpy.principal$ = of(user);
 
@@ -75,6 +75,8 @@ export class MockDvLoadingButtonXDirective {
 describe('GemeindeAntraegeComponent', () => {
     let component: GemeindeAntraegeComponent;
     let fixture: ComponentFixture<GemeindeAntraegeComponent>;
+
+    authServiceSpy.principal$ = of(user) as any;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

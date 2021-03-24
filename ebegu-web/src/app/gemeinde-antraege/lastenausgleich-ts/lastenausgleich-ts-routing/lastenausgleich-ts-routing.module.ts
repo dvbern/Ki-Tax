@@ -52,6 +52,12 @@ const states: NgHybridStateDeclaration[] = [
                 resolveFn: (trans: Transition) =>
                     trans.params().triggerValidation,
             },
+            {
+                token: 'lastenausgleichId',
+                deps: [Transition],
+                resolveFn: (trans: Transition) =>
+                    (trans.params().id),
+            },
         ],
     },
     {

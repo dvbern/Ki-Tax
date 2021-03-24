@@ -51,11 +51,13 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -181,6 +183,29 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 
 		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
 			angabenInstitutionService.lastenausgleichTagesschuleInstitutionGeprueft(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
+	}
+
+	@ApiOperation(
+		value = "Setzt den LastenausgleichTagesschuleAngabenInstitutionContainer zurück in den Status Prüfung durch Gemeinde",
+		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class
+	)
+	@Nonnull
+	@PUT
+	@Path("/falsche-angaben")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer falscheAngaben(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
+	) {
+		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
+
+		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
+			angabenInstitutionService.latsAngabenInstitutionContainerWiederOeffnen(converted);
 
 		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
 	}

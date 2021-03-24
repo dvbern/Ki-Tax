@@ -28,6 +28,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -236,5 +237,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         }
         gemeindeControl.updateValueAndValidity({onlySelf: true, emitEvent: false});
         this.formGroup.updateValueAndValidity();
+    }
+
+    public canCreateAntrag(): Observable<boolean> {
+        return this.authService.principal$.pipe(
+            filter(principal => !!principal),
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSorMandantRoles()))
+        );
     }
 }
