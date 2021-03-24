@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {NEVER} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
@@ -92,15 +93,15 @@ export class FerienbetreuungUploadComponent implements OnInit {
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
-            .subscribe(
-                userAccepted => {
-                    if (!userAccepted) {
-                        return;
-                    }
-                    this.ferienbetreuungDokumentService.deleteDokument(dokument.id).subscribe(() => {
-                        this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
-                        this.cd.markForCheck();
-                    });
+            .pipe(concatMap(userAccepted => {
+                if (!userAccepted) {
+                    return NEVER;
+                }
+                return this.ferienbetreuungDokumentService.deleteDokument(dokument.id);
+            }))
+            .subscribe(() => {
+                    this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
+                    this.cd.markForCheck();
                 },
                 err => {
                     LOG.error(err);
