@@ -195,6 +195,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(
 		value = "Schliesst das LastenausgleichTagesschuleAngabenGemeinde Formular ab",
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
